@@ -1,0 +1,5 @@
+{
+    "require": {
+        "ezsql/ezsql": "^5.1"
+    }
+}
