@@ -1,12 +1,21 @@
 version: '3'
 
+# 가정 1. 현재 폴더가 /Users/thruthesky/docker/emp/ 라고 가정한다.
+#   이 아래에 docker 폴더는 docker 전용 파일 및 docker 가 생산하는 기타 설정 파일 및 mariadb 데이터 파일 등이 저장된다.
+
 services:
   nginx:
     image: nginx:1.19.7-alpine
     volumes:
+      # Guest OS 의 /root 경로를 HOST OS 의 폴더로 지정한다.
+      # 이렇게 함으로서, /root/storage 폴더는 /Users/thruthesky/docker/emp/storage 폴더가 된다.
+      - ..:/root
+      # Nginx 설정을 현재 docker-compose.yml 파일 폴더의 아래에 있는 etc 폴더로 연결한다.
+      # 즉, /Users/thruthesky/docker/emp/docker/etc/nginx.conf 파일을 사용한다.
       - ./etc/nginx.conf:/etc/nginx/nginx.conf
-      - /Users/thruthesky/docker/emp:/root
-      - /Users/thruthesky/docker/emp/docker/logs:/etc/nginx/logs
+      # 로그 폴더 mount. 기본적으로 /etc/nginx/logs 폴더에 로그가 기록되는데, 이 폴더를 HOST OS 로 지정해서, 로그가 HOST OS 에 쌓이도록 한다.
+      # Nginx 설정에서 logs/access.log 라고 지정하면 /Users/thruthesky/docker/emp/docker/logs/access.log 가 된다.
+      - ./logs:/etc/nginx/logs # HOST OS 에 로그를 기록해서, 로그를 쉽게 볼 수 있도록 한다.
     ports:
       - "80:80"
       - "443:443"
@@ -14,19 +23,24 @@ services:
   php:
     build:
       context: .
-      dockerfile: Dockerfile.php
+      dockerfile: Dockerfile.php # 별도의 Dockerfile 로 이미지를 생성하고, mysqli extension 설치를 하기 때문에, Dockerfile 로 작업한다.
     volumes:
-      - /Users/thruthesky/docker/emp:/root
+      - ..:/root # 루트 경로를 Nginx 와 맞춘다.
 
   mariadb:
     image: mariadb:latest
     environment:
-      - MYSQL_DATABASE=mydatabase
-      - MYSQL_USER=myuser
+      - MYSQL_DATABASE=mydatabase # 처음 이미지 생성 후, 컨테이너 실행시, DB 를 준비한다. 덮어쓰지 않음.
+      - MYSQL_USER=myuser # 컨테이너 실행시, 사용자를 지정한다.
       - MYSQL_PASSWORD=mypass
-      - MYSQL_ROOT_PASSWORD=8888
+      - MYSQL_ROOT_PASSWORD=7777 # 컨테이너 실행시, 관리자 비밀번호
     volumes:
-      - mysqldata:/var/lib/mysql
+#      - ./etc:/etc/mysql # mysql 설정을 ./etc 에 지정한다. 굳이 mysql 설정은 안해도 된다. 기본 설정이 충분하다.
+
+      # 현재 HOST OS 폴더의 mysqldata 에 mysql database 를 저장한다. 이렇게 해야 Docker container 가 삭제되어도, 자료는 HOST OS 에 저장된다.
+      # 참고로, 이 경로는 처음 docker-compose up 으로 설치 하기 전에 지정해야한다.
+      # 만약, 나중에 지정을 하면, docker system prune -a(또는 docker image 삭제)를 하고, 다시 설치해야 한다.
+      - ./mysqldata:/var/lib/mysql
     ports:
       - "3306:3306"
 
