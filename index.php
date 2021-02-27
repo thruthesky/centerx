@@ -1,15 +1,14 @@
 <?php
 include './boot.php';
 
-d($_SERVER);
-
-$dsn_path_user = 'myuser';
-$password = 'mypass';
-$database = 'mydatabase';
-$host = 'mariadb';
-
-
 
 use ezsql\Database;
-$db = Database::initialize('mysqli', [$dsn_path_user, $password, $database, $host]);
+$db = Database::initialize('mysqli', [DB_USER, DB_PASS, DB_NAME, DB_HOST]);
 
+d($db);
+
+//$db->insert(table: 'users', keyValue: ['id' => 1, 'name' => 'yo']);
+$db->query("INSERT INTO users (id,name) VALUES (2, 'JaeHo')");
+$rows = $db->get_results('select * from users', ARRAY_A);
+
+d($rows);

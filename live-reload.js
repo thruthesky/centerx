@@ -2,8 +2,8 @@
 var fs = require('fs');
 var https = require('https');
 var svrOptions = {
-    key: fs.readFileSync('tmp/ssl/sonub.com/privkey.pem'),
-    cert: fs.readFileSync('tmp/ssl/sonub.com/fullchain.pem'),
+    key: fs.readFileSync('tmp/ssl/philov.com/private.key'),
+    cert: fs.readFileSync('tmp/ssl/philov.com/cert-ca-bundle.crt'),
 };
 
 var server = https.createServer(svrOptions, function onRequest(req, res) {
@@ -31,7 +31,7 @@ io.on('connection', function (client) {
     client.on('disconnect', function () {});
 });
 var chokidar = require('chokidar');
-chokidar.watch('.', { ignored: [ '.idea', 'node_modules', 'wp-admin', 'wp-includes', 'wp-content/debug.log', '**/vendor', '**/scss', '**/.git', 'package*', 'live-reload.js', '**/*.mp4', '**/*.mp3', '**/*.jpg'] } ).on('all', function (event, path) {
+chokidar.watch('.', { ignored: [ '.idea', 'node_modules', 'tmp', '**/debug.log', '**/vendor', '**/scss', '**/.git', 'package*', 'hot-reload.js', '**/*.mp4', '**/*.mp3', '**/*.jpg', 'etc/phpMyAdmin', 'docker'] } ).on('all', function (event, path) {
     console.log(event, path, ' at ' + ( new Date ).toLocaleString());
     io.emit('reload', { code: 'reload' });
 });

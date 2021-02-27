@@ -5,7 +5,7 @@ services:
     image: nginx:1.19.7-alpine
     volumes:
       - ./etc/nginx.conf:/etc/nginx/nginx.conf
-      - /Users/thruthesky/docker/emp/src:/src
+      - /Users/thruthesky/docker/emp:/root
       - /Users/thruthesky/docker/emp/docker/logs:/etc/nginx/logs
     ports:
       - "80:80"
@@ -16,8 +16,7 @@ services:
       context: .
       dockerfile: Dockerfile.php
     volumes:
-      - /Users/thruthesky/docker/emp/src:/src
-
+      - /Users/thruthesky/docker/emp:/root
 
   mariadb:
     image: mariadb:latest
@@ -27,7 +26,7 @@ services:
       - MYSQL_PASSWORD=mypass
       - MYSQL_ROOT_PASSWORD=8888
     volumes:
-      - mysqldata/var/lib/mysql
+      - mysqldata:/var/lib/mysql
     ports:
       - "3306:3306"
 
