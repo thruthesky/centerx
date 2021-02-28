@@ -20,12 +20,14 @@ services:
       - "80:80"
       - "443:443"
 
+  # PHP 의 기본 설정 파일은 컨테이너의 /usr/local/etc 에 있다.
   php:
     build:
       context: .
       dockerfile: Dockerfile.php # 별도의 Dockerfile 로 이미지를 생성하고, mysqli extension 설치를 하기 때문에, Dockerfile 로 작업한다.
     volumes:
       - ..:/root # 루트 경로를 Nginx 와 맞춘다.
+      - ./etc/php.ini:/usr/local/etc/php/php.ini # php.ini 를 docker/etc/php.ini 로 연결한다.
 
   mariadb:
     image: mariadb:latest
