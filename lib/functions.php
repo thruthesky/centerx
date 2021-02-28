@@ -185,6 +185,23 @@ function jsGo($url)
     exit;
 }
 
+
+/**
+ * Javascript 로 돌아가기를 하고, PHP exit 한다.
+ * @param $msg
+ *
+ */
+function jsBack($msg) {
+    echo "
+    <script>
+        alert('$msg');
+        history.go(-1);
+    </script>
+    ";
+    exit;
+}
+
+
 /**
  * 문자열을 암호화한다.
  * @param $str
@@ -220,7 +237,10 @@ function checkPassword( $plain_text_password, $encrypted_password ) {
  * When user login, the session_id must be saved in cookie. And it is shared with Javascript.
  * @param $profile
  */
-function setLoginCookies($profile) {
+function setLoginCookies(mixed $profile) {
+    if ( is_numeric($profile) ) {
+        $profile = user($profile)->profile();
+    }
     setcookie ( SESSION_ID , $profile[SESSION_ID], time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
     if ( isset($profile[NICKNAME]) ) setcookie ( NICKNAME , $profile[NICKNAME] , time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
     if ( isset($profile[PROFILE_PHOTO_URL]) ) setcookie ( PROFILE_PHOTO_URL , $profile[PROFILE_PHOTO_URL] , time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
@@ -246,6 +266,7 @@ function unsetLoginCookies() {
  * @return false|string|null
  */
 function getSessionId($profile) {
+    if ( !$profile ) return null;
     $str= $profile[IDX] . $profile[CREATED_AT] . $profile[PASSWORD];
     return $profile[IDX] . '-' . md5($str);
 }
@@ -273,4 +294,21 @@ function getProfileFromCookieSessionId() : array|bool {
  */
 function loggedIn(): bool {
     return login()->loggedIn;
+}
+
+function my(string $field) {
+    if ( loggedIn() ) {
+        $profile = login()->profile();
+        if ( isset($profile[$field]) ) {
+            return $profile[$field];
+        }
+    }
+    return null;
+}
+
+
+function debug_log($message, $data='') {
+    $str = print_r($message, true);
+    $str .= ' ' . print_r($data, true);
+    file_put_contents(DEBUG_LOG_FILE_PATH, $str . "\n");
 }

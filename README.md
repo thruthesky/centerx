@@ -23,3 +23,24 @@
 - 모든 테이블에는 idx, createdAt, updatedAt 이 존재한다.(존재 해야 한다.)
 - 레코드가 사용자의 소유를 나타낼 때에는 추가적으로 userIdx 가 존재해야 한다.
 
+
+## EzSQL 을 통한 DB 관리
+
+- WordPress 에서 사용하는 것과 동일한 것이다.
+  
+- 조건을 배열로 하지 않고, db()->where(eq(), eq()) 와 같이 한다.
+
+- eq() 와 같은 글로벌 함수는 따로 import 해야 한다.
+  
+- 예제)
+```php
+  db()->debugOn(); // 디버깅 시작
+  $re = db()->update($this->getTable(), ['field' => 'value'], db()->where( eq(IDX, $this->idx) ));
+  db()->debug(); // SQL 출력
+```
+
+- 예제)
+```php
+$result = db()->select('wc_users', 'idx', eq('idx', 77));
+d($result);
+```

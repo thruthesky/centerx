@@ -3,3 +3,5 @@ node_modules
 logs
 etc/phpMyAdmin/tmp
 docker/mysqldata
+
+.bash_history

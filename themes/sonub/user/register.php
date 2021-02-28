@@ -18,6 +18,10 @@
             <label>Phone No</label>
             <input type="text" class="form-control" name="phoneNo">
         </div>
+        <div class="form-group">
+            <label>Your favorite color</label>
+            <input type="text" class="form-control" name="color">
+        </div>
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 </section>

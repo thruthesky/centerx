@@ -49,3 +49,6 @@ if ( !defined('COOKIE_DOMAIN') ) {
     define('COOKIE_DOMAIN', '.' . get_root_domain());
 }
 
+
+
+define('DEBUG_LOG_FILE_PATH', ROOT_DIR . 'var/logs/debug.log');

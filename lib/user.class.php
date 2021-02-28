@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * @file user.class.php
+ */
+/**
+ * Class User
+ */
 class User extends Entity {
 
     public Config $meta;
@@ -7,7 +12,7 @@ class User extends Entity {
 
     public function __construct(public int $idx)
     {
-        parent::__construct(USERS);
+        parent::__construct(USERS, $idx);
         $this->_setUid($idx);
 
         global $__login_user_profile;
@@ -77,21 +82,15 @@ class User extends Entity {
     }
 
 
-
-    public function register(array $fields) {
-        $idx = $this->create([
-            EMAIL => $fields[EMAIL],
-            PASSWORD => encryptPassword($fields[PASSWORD]),
-            NAME => $fields[NAME]
-        ]);
+    /**
+     * 회원 가입을 한다.
+     * @param array $in
+     * @return int|string
+     */
+    public function register(array $in) {
+        $in[PASSWORD] = encryptPassword($in[PASSWORD]);
+        $idx = $this->create($in);
         if ( !$idx ) return error()->register_failed;
-        unset($fields[EMAIL],$fields[PASSWORD], $fields[NAME] );
-
-        // 이 코드는 아래의 두 줄로된 코드와 동일하다. 하지만, 이 코드가 더 짧고 이해도 빠르다.
-        user($idx)->meta->set($fields);
-
-//        $this->_setUid($idx);
-//        $this->config->set($fields);
         return $idx;
     }
 
@@ -107,11 +106,7 @@ class User extends Entity {
     public function profile($unsetPassword=true) {
         if ( ! $this->idx ) return error()->idx_not_set;
         $profile = parent::get('idx', $this->idx);
-        if ( !$profile ) error()->user_not_found_by_that_idx;
-        $configs = $this->meta->getAll();
-        foreach($configs as $config) {
-            $profile[$config[CODE]] = $config[DATA];
-        }
+        if ( !$profile ) return error()->user_not_found_by_that_idx;
         $profile[SESSION_ID] = getSessionId($profile);
         if ( $unsetPassword ) unset($profile[PASSWORD]);
         return $profile;

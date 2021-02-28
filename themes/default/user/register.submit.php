@@ -1,3 +1,6 @@
 <?php
 
-user()->register(in());
+$idx = user()->register(in());
+if ( isError($idx) ) jsBack($idx);
+setLoginCookies($idx);
+jsGo('/');
