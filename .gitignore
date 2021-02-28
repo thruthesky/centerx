@@ -3,6 +3,7 @@ node_modules
 logs
 etc/phpMyAdmin/tmp/twig/*.php
 etc/phpMyAdmin/tmp/**
+etc/phpMyAdmin/tmp
 docker/mysqldata
 
 .bash_history
