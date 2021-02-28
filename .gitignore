@@ -1,7 +1,8 @@
 .idea
 node_modules
 logs
-etc/phpMyAdmin/tmp
+etc/phpMyAdmin/tmp/twig/*.php
+etc/phpMyAdmin/tmp/**
 docker/mysqldata
 
 .bash_history

@@ -10,7 +10,7 @@ live_reload_js();
  * @param $error_line
  */
 function customErrorHandler($errno, $errstr, $error_file, $error_line) {
-    if ( strpos($errstr, 'config') && strpos($errstr, "doesn't exist") ) {
+    if ( strpos($errstr, 'metas') && strpos($errstr, "doesn't exist") ) {
         jsGo('/etc/install/install.php');
         return;
     }

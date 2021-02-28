@@ -10,7 +10,52 @@
 
 - 훅시스템
   - entity()->create(), update(), delete(), get(), search() 등에서만 훅을 걸면 왠만한 것은 다 된다.
+
+# 설치
+
+- Docker 로 설치를 한다. Docker 설치가 제일 쉽다.
+  - 윈도우즈에서 Nginx(Apache)를 쓰지 않고, MariaDB 때신, SQLite 를 쓰고, PHP 만 설치해서, PHP Dev Webserver 만으로 실행을 한다고해도,
+    Docker 가 더 쉽다.
+    그냥 Docker 설치만 하면 된다.
+    
+- 먼저, Docker 를 설치한다.
+
+- 적절한 위치에 `git clone https://github.com/thruthesky/emp` 를 한다.
+
+- `cd emp/docker` 를 하고 `docker-compose up` 명령을 하면, 사용 바로 웹서버로 접속 가능하며 개발 가능하다.
+
+## 각종 설정
+
+- `emp` 폴더가 root 폴더가 된다.
+- `docker` 폴더에는 Docker 로 운영하기 위한 모든 설정들이 저장되어져 있다.
+  - `docker/etc` 폴더에는 nginx.conf 나 php.ini 와 같은 각종 설정 파일이 있으며,
+  - `docker/logs` 에는 각종 로그 파일이 저장된다.
+  - `docker/mysqldata` 에는 MariaDB 데이터베이스 파일들이 저장되는 폴더이다.
+  - `docker/docker-compose.yml` 이 Docker Compose 파일이다.
   
+# 폴더구조
+
+- `etc` 폴더는 각종(기타) 파일들이 저장된다.
+  - `etc/boot` 는 앱 부팅 과정에 필요한 코드/스크립트가 저장된다.
+  - `etc/install` 은 웹 설치에 필요한 코드들이 저장된다.
+  - `etc/phpMyAdmin` 은 phpMyAdmin 프로그램이 저장되어져 있다. 실제로 `https://www...com/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
+  - `etc/sql` 은 DB 에 필요한 SQL 파일이 저장되어져 있다.
+  
+- `lib` 폴더에는 시스템에 필요한 함수 파일과 클래스 파일이 저장된다.
+
+- `routes` 폴더에는 각종 라우트가 저장된다.
+
+- `storage` 폴더에는 각종 업로드 파일이 저장된다.
+
+- `themes` 폴더에는 웹사이트 테마가 저장된다.
+
+- `vendor` 폴더에는 composer 파일이 저장된다.
+
+- `widgets` 폴더에는 각종 위젯이 저장된다.
+
+
+
+
 
 # 설정
 

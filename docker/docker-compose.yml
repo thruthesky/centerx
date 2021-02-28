@@ -29,13 +29,15 @@ services:
       - ..:/root # 루트 경로를 Nginx 와 맞춘다.
       - ./etc/php.ini:/usr/local/etc/php/php.ini # php.ini 를 docker/etc/php.ini 로 연결한다.
 
+  # MariaDB 설정
+  # 주의: 각종 계정이나 루트 비번을 설정하면, DB 에 기록된다. 그래서 나중에 다시 변경하려면 DB 에서 변경을 해야 한다.
   mariadb:
     image: mariadb:latest
     environment:
       - MYSQL_DATABASE=mydatabase # 처음 이미지 생성 후, 컨테이너 실행시, DB 를 준비한다. 덮어쓰지 않음.
       - MYSQL_USER=myuser # 컨테이너 실행시, 사용자를 지정한다.
       - MYSQL_PASSWORD=mypass
-      - MYSQL_ROOT_PASSWORD=7777 # 컨테이너 실행시, 관리자 비밀번호
+      - MYSQL_ROOT_PASSWORD=7777 # 컨테이너 실행시, 관리자 비밀번호.
     volumes:
 #      - ./etc:/etc/mysql # mysql 설정을 ./etc 에 지정한다. 굳이 mysql 설정은 안해도 된다. 기본 설정이 충분하다.
 
