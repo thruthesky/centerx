@@ -54,12 +54,13 @@ class User extends Entity {
      * @param string $email
      * @return mixed
      * - 에러가 있으면 에러 코드를 리턴한다.
+     * - 에러가 없으면, (password 필드를 포함하는) 회원 프로필 레코드를 리턴한다.
      */
     private function _setUserByEmail(string $email): mixed {
         $record = parent::get(EMAIL, $email);
-        if ( !$record ) error()->user_not_found_by_that_email;
+        if ( !$record ) return e()->user_not_found_by_that_email;
         $this->_setUid($record[IDX]);
-        return null;
+        return $record;
     }
 
     /**
@@ -77,7 +78,7 @@ class User extends Entity {
      */
     public function data(string $field): mixed {
         $record = $this->profile(unsetPassword: false);
-        if ( error($record)->isError ) return $record;
+        if ( e($record)->isError ) return $record;
         return isset($record[$field]) ? $record[$field] : null;
     }
 
@@ -90,7 +91,7 @@ class User extends Entity {
     public function register(array $in) {
         $in[PASSWORD] = encryptPassword($in[PASSWORD]);
         $idx = $this->create($in);
-        if ( !$idx ) return error()->register_failed;
+        if ( !$idx ) return e()->register_failed;
         return $idx;
     }
 
@@ -104,27 +105,28 @@ class User extends Entity {
      * d( user(48)->profile() );
      */
     public function profile($unsetPassword=true) {
-        if ( ! $this->idx ) return error()->idx_not_set;
+        if ( ! $this->idx ) return e()->idx_not_set;
         $profile = parent::get('idx', $this->idx);
-        if ( !$profile ) return error()->user_not_found_by_that_idx;
+        if ( !$profile ) return e()->user_not_found_by_that_idx;
         $profile[SESSION_ID] = getSessionId($profile);
         if ( $unsetPassword ) unset($profile[PASSWORD]);
         return $profile;
     }
 
     /**
-     * @param array $in
+     * @param string $email
+     * @param string $password
      * @return mixed
      *
      * 예제)
-     * d(user()->login(['email' => '...', 'password' => '...']);
+     * d(user()->login(email: '...', password: '...');
      */
-    public function login(array $in):mixed {
-        $re = $this->_setUserByEmail($in[EMAIL]);
-        if ( error($re)->isError ) {
-            return $re;
-        }
-        if ( ! checkPassword($in[PASSWORD], $this->data(PASSWORD)) ) return error()->wrong_password;
+    public function login(string $email, string $password):mixed {
+        if ( !$password ) return e()->empty_password;
+        $profile = $this->_setUserByEmail($email);
+        if ( isError($profile) ) return $profile;
+
+        if ( ! checkPassword($password, $profile[PASSWORD]) ) return e()->wrong_password;
         return $this->profile();
     }
 

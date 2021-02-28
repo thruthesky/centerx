@@ -6,11 +6,8 @@ $where = '1';
 if ( $key ) {
     $where = "name LIKE '%$key%' OR email LIKE '%$key%' OR phoneNo LIKE '%$key%'";
 }
-$users = user()->search(where: $where, order: EMAIL, by: 'ASC', page: $page, limit: $limit);
+$users = user()->search(where: $where, order: IDX, by: 'DESC', page: $page, limit: $limit);
 $total = user()->count(where:  $where);
-
-
-
 
 ?>
 <h1>Admin User List</h1>

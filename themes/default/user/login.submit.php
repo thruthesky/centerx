@@ -1,8 +1,10 @@
 <?php
 
 
-$profile = user()->login(in());
-if ( error($profile)->isError ) echo "ERROR: $profile";
+$profile = user()->login(in(EMAIL), in(PASSWORD));
+if ( e($profile)->isError ) echo "ERROR: $profile";
+else {
 
-setLoginCookies($profile);
-jsGo('/');
+    setLoginCookies($profile);
+    jsGo('/');
+}

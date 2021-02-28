@@ -53,11 +53,7 @@ $installedAt = config()->get('installation check');
 debug_log('-- start -- boot.code.php: ', date('r'));
 
 
-/**
- * 로그인한 사용자의 프로필.
- * 이 변수를 직접 사용하지 말고, login() 을 사용하면 된다.
- */
-$__login_user_profile = getProfileFromCookieSessionId();
+setUserAsLogin(getProfileFromCookieSessionId());
 
 
 

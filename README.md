@@ -8,6 +8,10 @@
   
 - 설치 과정을 backend/model 에서 가져와서 그대로 사용 할 것.
 
+- 훅시스템
+  - entity()->create(), update(), delete(), get(), search() 등에서만 훅을 걸면 왠만한 것은 다 된다.
+  
+
 # 설정
 
 - 기본 설정은 root/config.php 에 저장되며, 각 테마에서 설정을 덮어 쓸 수 있다.
@@ -62,3 +66,25 @@ d(config()->get('admin'));
 $result = db()->select('wc_users', 'idx', eq('idx', 77));
 d($result);
 ```
+
+
+
+# API Protocol
+
+- `route` is the route of the api call.
+  Ex) `/?route=app.version`
+  
+- To get app version, access like below
+  Ex) `/?route=app.version`
+
+## User Api
+
+- To login, access like below
+  Ex) `/?route=user.login&email=...&password=...`
+  
+
+- Live reload test. If http input `reload=true` is set, then it will live reload on a browser.
+  Ex) /?route=user.login&email=...&password=...&reload=true
+  
+- To ge user profile
+  Ex) /?route=user.profile&sessionId=89-3a321efd6adf2e79673c7279d4189f2a

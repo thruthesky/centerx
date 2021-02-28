@@ -61,17 +61,20 @@ class Entity {
      * @see readme for detail.
      */
     public function create( array $in ): int|false|string {
-        if ( ! $in ) return error()->empty_param;
-        if ( isset($in['idx']) ) return error()->idx_must_not_set;
+        if ( ! $in ) return e()->empty_param;
+        if ( isset($in['idx']) ) return e()->idx_must_not_set;
+
+
+        $user = $this->get(EMAIL, $in[EMAIL]);
+        if ( $user ) return e()->email_exists;
 
         $record = $this->getRecordFields($in);
         $record[CREATED_AT] = time();
         $record[UPDATED_AT] = time();
-
-        $user = $this->get(EMAIL, $in[EMAIL]);
-        if ( $user ) return error()->email_exists;
+        d($record);
         $idx = db()->insert( $this->getTable(), $record );
-        if ( !$idx ) return error()->insert_failed;
+
+        if ( !$idx ) return e()->insert_failed;
 
         $this->createMetas($idx, $this->getMetaFields($in));
         return $idx;
@@ -96,14 +99,14 @@ class Entity {
      */
     public function update($in): array|string {
         global $entities;
-        if ( ! $in ) return error()->empty_param;
-        if ( isset($in['idx']) ) return error()->idx_not_set;
+        if ( ! $in ) return e()->empty_param;
+        if ( isset($in['idx']) ) return e()->idx_not_set;
 
         $up = $this->getRecordFields($in);
         $up[UPDATED_AT] = time();
 
         $re = db()->update($this->getTable(), $up, eq(IDX, $this->idx ));
-        if ( !$re ) return error()->update_failed;
+        if ( !$re ) return e()->update_failed;
         $this->updateMetas($this->idx, $this->getMetaFields($in));
 
         $fv = "idx=" . $this->idx;
@@ -264,7 +267,7 @@ class Entity {
      */
     public function getRecordFields($in): array {
         $fields = entity(USERS)->getTableFieldNames();
-        $diffs = array_diff(array_keys($in), ['email', 'password', 'name', 'gender']);
+        $diffs = array_diff(array_keys($in), $fields);
         return array_filter( $in, fn($v, $k) => !in_array($k, $diffs), ARRAY_FILTER_USE_BOTH );
     }
 

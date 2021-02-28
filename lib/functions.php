@@ -92,11 +92,23 @@ function is_localhost(): bool
     return $localhost;
 }
 
+/**
+ * 모바일이면 참을 리턴한다.
+ * @return bool
+ */
+function isMobile() {
+    $mobileDetect = new \Detection\MobileDetect();
+    return $mobileDetect->isMobile() || $mobileDetect->isTablet();
+}
 
-
+/**
+ *
+ */
 function live_reload_js()
 {
-    /// TODO print this only for localhost(local dev)
+    /// API 콜 이라도, &reload=true 로 들어오면, live reload 한다.
+    if ( in('route') && !in('reload') ) return;
+
     if ( is_localhost() )
         echo <<<EOH
    <script src="https://main.philov.com:12345/socket.io/socket.io.js"></script>
@@ -286,12 +298,36 @@ function getSessionId($profile) {
 /**
  * 로그인한 사용자의 User()->profile()을 리턴한다. 주의: 비밀번호 포함.
  * @return array|bool - 쿠키에 세션 정보가 없거나 올바르지 않으면 false 를 리턴한다.
+ *
+ * 예제) 쿠키에 있는 정보로 회원 로그인을 시킬 때, 아래와 같이 한다.
+ *  setUserAsLogin(getProfileFromCookieSessionId());
  */
 function getProfileFromCookieSessionId() : array|bool {
     if ( ! isset($_COOKIE[SESSION_ID]) ) return false;
-    $arr = explode('-', $_COOKIE[SESSION_ID]);
+    return getProfileFromSessionId($_COOKIE[SESSION_ID]);
+//
+//    $arr = explode('-', $_COOKIE[SESSION_ID]);
+//    $profile = user($arr[0])->profile(unsetPassword: false);
+//    if ( $_COOKIE[SESSION_ID] == getSessionId($profile) ) return $profile;
+//    else return false;
+}
+
+/**
+ * 입력된 sessionId 로 사용자를 로그인 시킨다.
+ * @param string $sessionId
+ * @return mixed
+ * - sessionId 가 올바르면, password 필드가 없는 사용자 정보를 리턴한다.
+ * - sessionId 가 올바르지 않으면 false 를 리턴한다.
+ *
+ * 예제) 세션 아이디를 입력받아 해당 사용자를 로그인 시킬 때,
+ *  setUserAsLogin( getProfileFromSessionId( in(SESSION_ID) ) );
+ */
+function getProfileFromSessionId(string $sessionId): mixed
+{
+    if ( ! $sessionId ) return false;
+    $arr = explode('-', $sessionId);
     $profile = user($arr[0])->profile(unsetPassword: false);
-    if ( $_COOKIE[SESSION_ID] == getSessionId($profile) ) return $profile;
+    if ( $sessionId == $profile[SESSION_ID] ) return $profile;
     else return false;
 }
 
@@ -305,6 +341,25 @@ function getProfileFromCookieSessionId() : array|bool {
  */
 function loggedIn(): bool {
     return login()->loggedIn;
+}
+function notLoggedIn(): bool {
+    return ! loggedIn();
+}
+
+
+/**
+ * 로그인한 사용자의 프로필을 담는 변수.
+ *
+ * 이 변수에 사용자 프로필이 있으면 그 사용자가 로그인을 한 사용자가 된다. 로그인 사용자를 변경하고자 한다면 이 변수를 다른 사용자의 users 레코드를 넣으면 된다.
+ * 이 변수를 직접 사용하지 말고, 사용자 로그인을 시킬 때에는 setUserAsLogin() 을 쓰고, 사용 할 때에는 login() 을 사용하면 된다.
+ */
+global $__login_user_profile;
+/**
+ * @param $profile
+ */
+function setUserAsLogin($profile): void {
+    global $__login_user_profile;
+    $__login_user_profile = $profile;
 }
 
 function my(string $field) {
@@ -351,3 +406,16 @@ function widget(string $path, array $options=[], string $widgetId=null) {
     return $_path;
 }
 
+
+
+function error(string $code) {
+    success($code);
+}
+
+function success($data) {
+    echo json_encode([
+        'response' => $data,
+        'request' => in(),
+    ]);
+    exit;
+}
