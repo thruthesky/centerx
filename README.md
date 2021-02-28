@@ -18,10 +18,28 @@
 - 설정은 root/config.php 의 모든 설정을 덮어 쓸 수 있다. 이 말은 DB 접속 자체를 다른 서버로 할 수 있다는 뜻이다.
   이와 같이 모든 설정을 테마별로 다 변경 할 수 있다.
 
-# 데이터엡이스
+# 개발자 팁
+
+- 데이터 관리를 Taxonomy(데이터 그룹, 테이블), Entity(레코드) 형태로
+  - 데이터를 관리하는데 있어, entity()->create(), entity()->update(), entity()->get() 함수가 사실상 거의 전부이다.
+  - User 클래스가 Entity 클래스를 상속하므로, user()->create(), user()->update(), user()->get() 을 사용 할 수 있다.
+    - 이 처럼 모든 Taxonomy 클래스가 Entity 객체의 것을 그대로 사용 가능하다.
+    - 다만, user()->register() 와 같이 wrapping 해서, 비밀번호 암호화 등의 작업을 한다.
+  
+- meta 값은 serialize 와 unserilize 가 된다. 즉, 배열을 집어 넣어도 된다.
+
+## 관리자 지정하기
+
+```php
+config()->set('admin', 'thruthesky@gmail.com');
+d(config()->get('admin'));
+```
+
+# 데이터베이스
 
 - 모든 테이블에는 idx, createdAt, updatedAt 이 존재한다.(존재 해야 한다.)
 - 레코드가 사용자의 소유를 나타낼 때에는 추가적으로 userIdx 가 존재해야 한다.
+
 
 
 ## EzSQL 을 통한 DB 관리

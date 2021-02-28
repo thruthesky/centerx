@@ -41,7 +41,165 @@ class Entity {
     {
     }
 
-    public function   getTable(): string {
+
+    /**
+     * entity 에 필드를 저장한다.
+     *
+     * 만약, Taxonomy 테이블에 존재하지 않는 필드가 입력되면, 자동으로 metas 테이블에 저장한다.
+     *
+     * 주의: 필드명에 따라서 자동으로 저장할 값이 정해지므로, meta 테이블과 같이 필드가 code, value 인 경우에는 사용 할 수 없다.
+     *
+     * @param array $in
+     * @return int|false - 성공이면, 마지막으로 입력된 idx 를 리턴한다.
+     *      - 성공이면, 마지막으로 입력된 idx 를 리턴한다.
+     *      - 실패하면 false 가 리턴된다.
+     *
+     *
+     *
+     * @note user is_success() to check if it was success()
+     *
+     * @see readme for detail.
+     */
+    public function create( array $in ): int|false|string {
+        if ( ! $in ) return error()->empty_param;
+        if ( isset($in['idx']) ) return error()->idx_must_not_set;
+
+        $record = $this->getRecordFields($in);
+        $record[CREATED_AT] = time();
+        $record[UPDATED_AT] = time();
+
+        $user = $this->get(EMAIL, $in[EMAIL]);
+        if ( $user ) return error()->email_exists;
+        $idx = db()->insert( $this->getTable(), $record );
+        if ( !$idx ) return error()->insert_failed;
+
+        $this->createMetas($idx, $this->getMetaFields($in));
+        return $idx;
+    }
+
+
+    /**
+     * Taxonomy 에 존재하지 않는 필드는 meta 에 자동 저장(추가 또는 업데이트)된다.
+     *
+     * 참고로, 'idx=123' 과 같이 'idx' 로 저장된, 캐시 정보를 삭제한다. 즉, 다음 사용 할 때, 다시 캐시를 한다.
+     * @param $in
+     *
+     * @return array|string
+     *
+     *
+     * 예제)
+     *  d(user(77)->update(['name'=>'name 77', 'a' => 'apple', 'color' => 'myColor']));
+     *
+     * 예제) 로그인 한 사용자의 프로필 정보를 FORM 으로 입력 받아 수정
+     *  login()->update(in());
+     *  d(login()->profile());
+     */
+    public function update($in): array|string {
+        global $entities;
+        if ( ! $in ) return error()->empty_param;
+        if ( isset($in['idx']) ) return error()->idx_not_set;
+
+        $up = $this->getRecordFields($in);
+        $up[UPDATED_AT] = time();
+
+        $re = db()->update($this->getTable(), $up, eq(IDX, $this->idx ));
+        if ( !$re ) return error()->update_failed;
+        $this->updateMetas($this->idx, $this->getMetaFields($in));
+
+        $fv = "idx=" . $this->idx;
+        unset($entities[ $this->taxonomy ][ $fv ]);
+
+        return $this->get();
+    }
+
+
+
+    /**
+     * 현재 Taxonomy 테이블 뿐만아니라, 그 meta 값들을 모두 같이 리턴한다.
+     *
+     * 참고로 사용자(게시글 등) 정보를 검색하는 경우 등을 위해서, $field 와 $value 로 값을 얻을 수 있다.
+     * 다만, $field, $value 값이 지정되지 않으면, 현재 taxonomy 의 entity 정보를 리턴한다.
+     *
+     * @attension 주의해야 할 것은
+     *  - Taxonomy 테이블 필드 이름과 meta code(이름)이 겹치면, Taxonomy 필드명을 사용한다.
+     *  - 메모리 캐시를 한다. MariaDB 자체적으로 동일한 쿼리를 캐시하지만, DB 서버가 원격에 있다면, 접속하는 것 자체만으로 시간이 많이 걸리므로 캐시하는 것이 맞다.
+     *      캐시는 $field=$value 가 맞아야 한다.
+     *      예를 들어, 아래의 두 코드에서 동일한 사용자라고 해도, 서로 다르게 캐시된다.
+    user(77)->profile(); // idx=77 로 캐시
+    user()->get('email', 'user10@gmail.com'); email=user10@gmail.com 으로 캐시
+     *
+     *
+     * @param string $field
+     * @param mixed $value
+     * @return mixed
+     *
+     * 예제)
+     * user()->get('email', 'user10@gmail.com');
+     */
+    private $entities = [];
+    public function get(string $field=null, mixed $value=null): mixed {
+        global $entities;
+        if ($field == null ) {
+            $field = 'idx';
+            $value = $this->idx;
+        }
+        $fv = "$field=$value";
+        if ( isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) return $entities[$this->taxonomy][$fv];
+        $q = "SELECT * FROM {$this->getTable()} WHERE `$field`='$value'";
+//        debug_log($q);
+
+        $record = db()->get_row($q, ARRAY_A);
+        if ( !$record ) return $record;
+        $meta = entity($this->taxonomy, $record['idx'])->getMetas();
+        $rets = array_merge($record, $meta);
+        $entities[$this->taxonomy][$fv] = $rets;
+        return $entities[$this->taxonomy][$fv];
+    }
+
+    /**
+     * 현재 Taxonomy 를 검색한다.
+     *
+     * - $where 에 필요한 조건식을 다 만들어 넣는다.
+     * - 만약, meta 데이터를 포함한 전체 값이 다 필요하다면, 이 함수를 통해서 'idx' 만 추출한 다음, user(idx)->get() 와 같이 한다.
+     *
+     * @param string $where
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @param string $by
+     * @param string $select
+     * @return mixed
+     * @throws Exception
+     *
+     * 예제)
+     *  $users = user()->search();
+     *  user()->search(where:  "name LIKE '%a%' AND idx < 100", order: EMAIL, by: 'ASC', page: 2, limit: 3, select: 'idx, name');
+     *
+     * 예제) 사용자 idx 만 추출해서 전체 정보 출력
+     *   $users = user()->search(where:  "name LIKE '%a%' AND idx < 100", order: EMAIL, by: 'ASC', page: 1, limit: 3);
+     *   foreach( $users as $user) {
+     *      d( user( $user[IDX])->profile() );
+     *   }
+     *
+     */
+    public function search(string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'): mixed {
+
+        $table = $this->getTable();
+        $from = ($page-1) * $limit;
+        $rows = db()->get_results(" SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ", ARRAY_A);
+        return $rows;
+    }
+
+    /**
+     * @param string $where
+     */
+    public function count(string $where) {
+        $table = $this->getTable();
+        return db()->get_var(" SELECT COUNT(*) FROM $table WHERE $where");
+    }
+
+
+    public function getTable(): string {
         return DB_PREFIX . $this->taxonomy;
     }
 
@@ -110,41 +268,6 @@ class Entity {
         return array_filter( $in, fn($v, $k) => !in_array($k, $diffs), ARRAY_FILTER_USE_BOTH );
     }
 
-    /**
-     * entity 에 필드를 저장한다.
-     *
-     * 만약, Taxonomy 테이블에 존재하지 않는 필드가 입력되면, 자동으로 metas 테이블에 저장한다.
-     *
-     * 주의: 필드명에 따라서 자동으로 저장할 값이 정해지므로, meta 테이블과 같이 필드가 code, value 인 경우에는 사용 할 수 없다.
-     *
-     * @param array $in
-     * @return int|false - 성공이면, 마지막으로 입력된 idx 를 리턴한다.
-     *      - 성공이면, 마지막으로 입력된 idx 를 리턴한다.
-     *      - 실패하면 false 가 리턴된다.
-     *
-     *
-     *
-     * @note user is_success() to check if it was success()
-     *
-     * @see readme for detail.
-     */
-    public function create( array $in ): int|false|string {
-        if ( ! $in ) return error()->empty_param;
-        if ( isset($in['idx']) ) return error()->idx_must_not_set;
-
-        $record = $this->getRecordFields($in);
-        $record[CREATED_AT] = time();
-        $record[UPDATED_AT] = time();
-
-        $user = $this->get(EMAIL, $in[EMAIL]);
-        if ( $user ) return error()->email_exists;
-        $idx = db()->insert( $this->getTable(), $record );
-        if ( !$idx ) return error()->insert_failed;
-
-        $this->saveMetas($idx, $this->getMetaFields($in));
-        return $idx;
-    }
-
 
     /**
      * 단순히, updateMeta() 를 재 지정한 것이다.
@@ -158,24 +281,11 @@ class Entity {
      * @return array
      * - 코드를 생성한 결과를 리턴한다. 키는 taxonomy.entity.idx, 값은 생성되었으면, meta 테이블의 idx 실패면, false.
      */
-    public function saveMetas(int $idx, array $in): array
+    public function createMetas(int $idx, array $in): array
     {
         return $this->updateMetas($idx, $in);
-//        $rets = [];
-//        foreach( $in as $k=>$v) {
-//            $record = [
-//                TAXONOMY => $this->taxonomy,
-//                ENTITY => $idx,
-//                CODE => $k,
-//                DATA => $v,
-//                CREATED_AT => time(),
-//                UPDATED_AT => time(),
-//            ];
-//            $metaIdx = db()->insert( entity(METAS)->getTable(), $record );
-//            $rets[$idx] = $metaIdx;
-//        }
-//        return $rets;
     }
+
 
     /**
      * meta 값 들을 추가 또는 업데이트 한다.
@@ -194,25 +304,8 @@ class Entity {
             $result = db()->select($table, 'idx', eq(TAXONOMY, $this->taxonomy), eq(ENTITY, $idx), eq(CODE, $k));
             if ( $result ) {
                 $metaIdx = $this->updateMeta($idx, $k, $v);
-//                $metaIdx = db()->update(
-//                    $table,
-//                    [DATA=>$v, UPDATED_AT => time()],
-//                    db()->where(
-//                        eq(TAXONOMY, $this->taxonomy),
-//                        eq(ENTITY, $idx),
-//                        eq(CODE, $k)
-//                    )
-//                );
             } else {
                 $metaIdx = $this->setMeta($idx, $k, $v);
-//                $metaIdx = db()->insert($table, [
-//                    TAXONOMY => $this->taxonomy,
-//                    ENTITY => $idx,
-//                    CODE => $k,
-//                    DATA => $v,
-//                    CREATED_AT => time(),
-//                    UPDATED_AT => time(),
-//                ]);
             }
             $rets[$idx] = $metaIdx;
         }
@@ -222,17 +315,26 @@ class Entity {
 
     /**
      * 현재 테이블의 taxonomy 와 entity idx 와 연결되는 meta 값 1개를 리턴한다.
+     *
+     * - entity(taxonomy)->updateMeta() 와 같이 taxonomy 에 아무 값이나 주고, 바로 호출 할 수 있다. 실제 taxonomy 테이블은 존재하지 않아도 된다.
+     *
      * @param string $code
      * @return bool|int|mixed|null
      */
     public function getMeta(string $code) {
         $q = "SELECT data FROM " . entity(METAS)->getTable() . " WHERE taxonomy='{$this->taxonomy}' AND entity={$this->idx} AND code='$code'";
-        return db()->get_var($q);
+        $data = db()->get_var($q);
+        return unserialize($data);
     }
 
 
     /**
      * 현재 테이블(taxonomy)과 연결되는, 그리고 입력된 entity $idx 와 연결되는 meta 값 1개를 저장한다.
+     *
+     * - 주의: 존재해도 생성을 하려한다. 그래서 에러가 난다. 만약, 존재하면 업데이트를 하려면 updateMetas() 함수를 사용한다.
+     *      이 부분에서 실수를 할 수 있으므로 각별히 주의한다.
+     *
+     * - entity(taxonomy)->updateMeta() 와 같이 taxonomy 에 아무 값이나 주고, 바로 호출 할 수 있다. 실제 taxonomy 테이블은 존재하지 않아도 된다.
      *
      * @param int $idx - taxonomy.idx 이다. 새로운 entity 가 생성될 때, 그 entity 로 연결하거나, 다른 entity 로 연결 할 수 있다.
      * @param string $code
@@ -246,14 +348,39 @@ class Entity {
             TAXONOMY => $this->taxonomy,
             ENTITY => $idx,
             CODE => $code,
-            DATA => $data,
+            DATA => serialize($data),
             CREATED_AT => time(),
             UPDATED_AT => time(),
         ]);
     }
 
     /**
+     * 해당 메타가 존재하지 않을 때만, 생성을 한다. 이미 존재한다면, 덮어쓰지 않는다.
+     *
+     * - entity(taxonomy)->updateMeta() 와 같이 taxonomy 에 아무 값이나 주고, 바로 호출 할 수 있다. 실제 taxonomy 테이블은 존재하지 않아도 된다.
+     *
+     * @param int $idx
+     * @param string $code
+     * @param mixed $data
+     * @return mixed
+     * - 추가되었으면 추가된 meta.idx
+     */
+    public function setMetaIfNotExists(int $idx, string $code, mixed $data): mixed {
+        $re = entity($this->taxonomy, $idx)->getMeta($code);
+        if ( !$re ) {
+            return $this->setMeta($idx, $code, $data);
+        }
+        return false;
+    }
+
+    /**
      * 현재 테이블(taxonomy)의 $idx 에 연결되는 meta 데이터를 업데이트한다.
+     *
+     * - entity(taxonomy)->updateMeta() 와 같이 taxonomy 에 아무 값이나 주고, 바로 호출 할 수 있다. 실제 taxonomy 테이블은 존재하지 않아도 된다.
+     *
+     * - 주의: 존재하지 않아도 업데이트 하려한다. 만약, 존재하지 않으면 생성하려 한다면, updateMetas() 함수를 사용한다.
+     *      이 부분에서 실수를 할 수 있으므로 각별히 주의한다.
+     *
      * @param int $idx
      * @param string $code
      * @param mixed $data
@@ -263,7 +390,7 @@ class Entity {
         $table = entity(METAS)->getTable();
         return db()->update(
             $table,
-            [DATA=>$data, UPDATED_AT => time()],
+            [DATA => serialize($data), UPDATED_AT => time()],
             db()->where(
                 eq(TAXONOMY, $this->taxonomy),
                 eq(ENTITY, $idx),
@@ -289,86 +416,9 @@ class Entity {
         $rows = db()->get_results($q, ARRAY_A);
         $rets = [];
         foreach($rows as $row) {
-            $rets[$row['code']] = $row['data'];
+            $rets[$row['code']] = unserialize($row['data']);
         }
         return $rets;
-    }
-
-
-    /**
-     * 현재 Taxonomy 테이블 뿐만아니라, 그 meta 값들을 모두 같이 리턴한다.
-     *
-     * 참고로 사용자(게시글 등) 정보를 검색하는 경우 등을 위해서, $field 와 $value 로 값을 얻을 수 있다.
-     * 다만, $field, $value 값이 지정되지 않으면, 현재 taxonomy 의 entity 정보를 리턴한다.
-     *
-     * @attension 주의해야 할 것은
-     *  - Taxonomy 테이블 필드 이름과 meta code(이름)이 겹치면, Taxonomy 필드명을 사용한다.
-     *  - 메모리 캐시를 한다. MariaDB 자체적으로 동일한 쿼리를 캐시하지만, DB 서버가 원격에 있다면, 접속하는 것 자체만으로 시간이 많이 걸리므로 캐시하는 것이 맞다.
-     *      캐시는 $field=$value 가 맞아야 한다.
-     *      예를 들어, 아래의 두 코드에서 동일한 사용자라고 해도, 서로 다르게 캐시된다.
-                user(77)->profile(); // idx=77 로 캐시
-                user()->get('email', 'user10@gmail.com'); email=user10@gmail.com 으로 캐시
-     *
-     *
-     * @param string $field
-     * @param mixed $value
-     * @return mixed
-     *
-     * 예제)
-     * user()->get('email', 'user10@gmail.com');
-     */
-    private $entities = [];
-    public function get(string $field=null, mixed $value=null): mixed {
-        global $entities;
-        if ($field == null ) {
-            $field = 'idx';
-            $value = $this->idx;
-        }
-        $fv = "$field=$value";
-        if ( isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) return $entities[$this->taxonomy][$fv];
-        $q = "SELECT * FROM {$this->getTable()} WHERE `$field`='$value'";
-//        debug_log($q);
-
-        $record = db()->get_row($q, ARRAY_A);
-        if ( !$record ) return $record;
-        $meta = entity($this->taxonomy, $record['idx'])->getMetas();
-        $rets = array_merge($record, $meta);
-        $entities[$this->taxonomy][$fv] = $rets;
-        return $entities[$this->taxonomy][$fv];
-    }
-
-    /**
-     * Taxonomy 에 존재하지 않는 필드는 meta 에 자동 저장(추가 또는 업데이트)된다.
-     *
-     * 참고로, 'idx=123' 과 같이 'idx' 로 저장된, 캐시 정보를 삭제한다. 즉, 다음 사용 할 때, 다시 캐시를 한다.
-     * @param $in
-     *
-     * @return array|string
-     *
-     *
-     * 예제)
-     *  d(user(77)->update(['name'=>'name 77', 'a' => 'apple', 'color' => 'myColor']));
-     *
-     * 예제) 로그인 한 사용자의 프로필 정보를 FORM 으로 입력 받아 수정
-     *  login()->update(in());
-     *  d(login()->profile());
-     */
-    public function update($in): array|string {
-        global $entities;
-        if ( ! $in ) return error()->empty_param;
-        if ( isset($in['idx']) ) return error()->idx_not_set;
-
-        $up = $this->getRecordFields($in);
-        $up[UPDATED_AT] = time();
-
-        $re = db()->update($this->getTable(), $up, eq(IDX, $this->idx ));
-        if ( !$re ) return error()->update_failed;
-        $this->updateMetas($this->idx, $this->getMetaFields($in));
-
-        $fv = "idx=" . $this->idx;
-        unset($entities[ $this->taxonomy ][ $fv ]);
-
-        return $this->get();
     }
 
 

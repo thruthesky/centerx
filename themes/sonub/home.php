@@ -1,6 +1,11 @@
 <?php
 
+
+
+
+
 ?>
+
 
 
 <?php if ( loggedIn() ) { ?>
@@ -12,6 +17,10 @@
         <a class="btn btn-primary" href="/?p=user.login">로그인</a>
         <a class="btn btn-primary" href="/?p=user.profile">회원 정보</a>
         <a class="btn btn-primary" href="/?p=user.logout.submit">로그아웃</a>
+
+        <?php if ( admin() ) { ?>
+            <a class="btn btn-primary" href="/?p=admin.user.list">관리자</a>
+        <?php } ?>
     </div>
 
 <?php

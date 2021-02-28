@@ -7,7 +7,7 @@ class Config extends Entity {
      *
      * Config constructor.
      */
-    public function __construct(private string $prefix='')
+    public function __construct()
     {
         parent::__construct(CONFIG, 0);
     }
@@ -31,7 +31,7 @@ class Config extends Entity {
      * @return mixed
      */
     public function set(string $code, $value) {
-        return $this->upateMeta($this->idx, $code, $value);
+        return $this->updateMetas($this->idx, [$code => $value]);
     }
 
 
@@ -94,9 +94,9 @@ $__Config = null;
  * Config 자체가 별거 없는 클래스라서 항상 새로 생성해서 리턴한다.
  * @return Config
  */
-function config($prefix=''): Config
+function config(): Config
 {
-    return new Config($prefix);
+    return new Config();
 }
 
 

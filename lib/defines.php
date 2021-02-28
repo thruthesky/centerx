@@ -7,6 +7,7 @@ define('METAS', 'metas');
 define('TAXONOMY', 'taxonomy');
 define('ENTITY', 'entity');
 
+define('ADMIN', 'admin');
 
 define('IDX', 'idx');
 define('USER', 'user');

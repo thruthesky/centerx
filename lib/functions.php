@@ -202,6 +202,17 @@ function jsBack($msg) {
 }
 
 
+function jsAlert($msg)
+{
+    echo "
+    <script>
+        alert('$msg');
+    </script>
+    ";
+    return 0;
+}
+
+
 /**
  * 문자열을 암호화한다.
  * @param $str
@@ -306,9 +317,37 @@ function my(string $field) {
     return null;
 }
 
+function admin(): bool {
+    return my(EMAIL) == config()->get(ADMIN);
+}
 
 function debug_log($message, $data='') {
     $str = print_r($message, true);
     $str .= ' ' . print_r($data, true);
     file_put_contents(DEBUG_LOG_FILE_PATH, $str . "\n");
 }
+
+
+/**
+ *
+ * - widget_id 가 없으면, 설정을 하지 않는다. 즉, 설정없이 그냥 사용하는 것이다.
+ * - 최소 한번만 설정을 한다, 따라서, 설정을 매번 스크립트가 로드할 때마다 바꾸고 싶다면, $widgetId 를 변경해 주면 된다.
+ *
+ * @param string $path
+ * @param array $options
+ * @param string $widgetId
+ */
+$__widget_options = null;
+function get_widget_options() {
+    global $__widget_options;
+    return $__widget_options;
+}
+function widget(string $path, array $options=[], string $widgetId=null) {
+    global $__widget_options;
+    $__widget_options = $options;
+    if ( $widgetId ) entity('widget')->setMetaIfNotExists(0, $widgetId, $options );
+    $arr = explode('/', $path);
+    $_path = ROOT_DIR . "/widgets/$arr[0]/$arr[1]/$arr[1].php";
+    return $_path;
+}
+

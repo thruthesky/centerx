@@ -47,10 +47,6 @@ function db() {
  */
 $installedAt = config()->get('installation check');
 
-/**
- * 설치 확인이 끝났으면, 원래의 에러 핸들러를 사용한다.
- */
-restore_error_handler();
 
 
 
