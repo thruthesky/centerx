@@ -3,14 +3,14 @@
 
 
 
-
 ?>
 
-
+<h1>Home</h1>
 
 <?php if ( loggedIn() ) { ?>
     어서오세요, <?=my(NAME)?>님.
 <?php } else { ?>
+    Please, login first.
 <?php } ?>
     <div class="m-5">
         <a class="btn btn-primary" href="/?p=user.register">회원 가입</a>
@@ -23,7 +23,10 @@
         <?php } ?>
     </div>
 
+
 <?php
+
+
 
 d( login()->profile() );
 

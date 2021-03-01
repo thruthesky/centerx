@@ -36,6 +36,10 @@
 
 - Then, set the domain and SSL in `docker/etc/nginx.conf`
 
+- Then, try to access `local.itsuda50.com` and it should open local development site.
+
+- Then, open Emulator 
+
 
 
 ## 각종 설정

@@ -108,6 +108,8 @@ function live_reload_js()
 {
     /// API 콜 이라도, &reload=true 로 들어오면, live reload 한다.
     if ( in('route') && !in('reload') ) return;
+    /// Don't display this javascript code for Mobile Web and App.
+    if ( isMobile() ) return;
 
     if ( is_localhost() )
         echo <<<EOH
