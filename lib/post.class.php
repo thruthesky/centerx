@@ -36,7 +36,6 @@ class Post extends Entity {
 
         // @todo push notification
 
-
     }
 
     /**
