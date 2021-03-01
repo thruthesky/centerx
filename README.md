@@ -26,7 +26,8 @@
 
 ## Host setting
 
-- To work with real domain, add a fake domain on `hosts` file and add a domain that begins with `local.`.
+- To work with real domain(for example, `itsuda50.com`), add a fake domain like `local.itsuda50.com` on `hosts` file to develop with a real(fake) domain.
+  - So, when you access `www.itsuda50.com` it goes to real domain. And `local.itsuda50.com` goes local host.
 
 ```text
 127.0.0.1       local.itsuda50.com
@@ -51,37 +52,38 @@ define('DOMAIN_THEMES', [
 - Then, open Emulator and access `http://http://169.254.115.59/` and it should open the site.
   - You should find proper IP address to use from Emulator. If you are using Mac, `ifconfig | grep inet` command may help.
 
+- Now you are ready.
 
 
 
 ## 각종 설정
 
-- `emp` 폴더가 root 폴더가 된다.
-- `docker` 폴더에는 Docker 로 운영하기 위한 모든 설정들이 저장되어져 있다.
-  - `docker/etc` 폴더에는 nginx.conf 나 php.ini 와 같은 각종 설정 파일이 있으며,
-  - `docker/logs` 에는 각종 로그 파일이 저장된다.
-  - `docker/mysqldata` 에는 MariaDB 데이터베이스 파일들이 저장되는 폴더이다.
-  - `docker/docker-compose.yml` 이 Docker Compose 파일이다.
+- `centerx` - The project folder.
+- `docker` - All docker things are saved.
+  - `docker/etc` - Settings for Nginx, PHP and others.
+  - `docker/logs` - Log files of Nginx and other logs.
+  - `docker/mysqldata` - MariaDB database files are saved in this folder.
+  - `docker/docker-compose.yml` - Docker Compose file.
   
 # 폴더구조
 
-- `etc` 폴더는 각종(기타) 파일들이 저장된다.
-  - `etc/boot` 는 앱 부팅 과정에 필요한 코드/스크립트가 저장된다.
-  - `etc/install` 은 웹 설치에 필요한 코드들이 저장된다.
-  - `etc/phpMyAdmin` 은 phpMyAdmin 프로그램이 저장되어져 있다. 실제로 `https://www...com/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
-  - `etc/sql` 은 DB 에 필요한 SQL 파일이 저장되어져 있다.
+- `etc` - For etc files.
+  - `etc/boot` - has all boot related code and scripts.
+  - `etc/install` - for web installation.
+  - `etc/phpMyAdmin` - phpMyAdmin for managing database. Access `https://www...com/etc/phpMyAdmin/index.php`.
+  - `etc/sql` - has SQL schema for installation.
   
-- `lib` 폴더에는 시스템에 필요한 함수 파일과 클래스 파일이 저장된다.
-
+- `lib` has system library files like class files and function files.
+  
 - `routes` 폴더에는 각종 라우트가 저장된다.
 
-- `storage` 폴더에는 각종 업로드 파일이 저장된다.
+- `storage` is for all the uploaded files.
 
-- `themes` 폴더에는 웹사이트 테마가 저장된다.
-
-- `vendor` 폴더에는 composer 파일이 저장된다.
-
-- `widgets` 폴더에는 각종 위젯이 저장된다.
+- `themes` is theme folder for website.
+  
+- `vendor` is for compose files.
+  
+- `widgets` is for widgets.
 
 
 
