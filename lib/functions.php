@@ -317,11 +317,14 @@ function getProfileFromCookieSessionId() : array|bool {
 }
 
 /**
- * 입력된 sessionId 로 사용자를 로그인 시킨다.
+ * Let user login with sessionId.
+ *
  * @param string $sessionId
  * @return mixed
- * - sessionId 가 올바르면, password 필드가 없는 사용자 정보를 리턴한다.
- * - sessionId 가 올바르지 않으면 false 를 리턴한다.
+ * - false if `sessionId` is empty.
+ * - error_user_not_found if there is no user by that session_id.
+ * - error_wrong_session_id if the sessionId is wrong.
+ * - or user profile if there is no error.
  *
  * 예제) 세션 아이디를 입력받아 해당 사용자를 로그인 시킬 때,
  *  setUserAsLogin( getProfileFromSessionId( in(SESSION_ID) ) );
@@ -330,10 +333,13 @@ function getProfileFromSessionId(string|null $sessionId): mixed
 {
     if ( ! $sessionId ) return false;
     $arr = explode('-', $sessionId);
-    $profile = user($arr[0])->profile(unsetPassword: false);
+    $userIdx = $arr[0];
+    $record = user($userIdx)->get();
+    if ( ! $record ) return e()->user_not_found_by_that_session_id;
+    $profile = user($userIdx)->profile(unsetPassword: false);
 	if ( !$profile || !isset($profile[SESSION_ID]) ) return false;
     if ( $sessionId == $profile[SESSION_ID] ) return $profile;
-    else return false;
+    else return e()->wrong_session_id;
 }
 
 
@@ -454,3 +460,20 @@ function getRoute(string|null $routeName): mixed
     if ( isset($__routes[$routeName]) ) return $__routes[$routeName];
     return false;
 }
+
+
+/**
+ * @param $email
+ *
+ * @return bool
+ */
+function checkEmailFormat($email): bool
+{
+
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+

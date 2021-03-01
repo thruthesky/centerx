@@ -3,13 +3,22 @@
 class UserRoute {
 
     public function login($in) {
-        return user()->login($in[EMAIL], $in[PASSWORD]);
+        return user()->login($in);
+    }
+
+    public function register($in) {
+        return user()->register($in);
     }
 
     public function profile($in) {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        return login()->profile();
+        return user()->profile();
     }
+
+
+    public function update($in) {
+        return login()->update($in);
+    }
+
 }
 
 

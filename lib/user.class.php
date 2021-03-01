@@ -7,13 +7,11 @@
  */
 class User extends Entity {
 
-    public Config $meta;
     public bool $loggedIn = false;
 
-    public function __construct(public int $idx)
+    public function __construct(int $idx)
     {
         parent::__construct(USERS, $idx);
-        $this->_setUid($idx);
 
         global $__login_user_profile;
         if ( isset($__login_user_profile) && $__login_user_profile && isset($__login_user_profile[IDX]) ) {
@@ -41,15 +39,6 @@ class User extends Entity {
     }
 
     /**
-     * 현재 객체에 회원 정보를 지정한다.
-     * @param int $idx
-     */
-    private function _setUid(int $idx) {
-        $this->idx = $idx;
-        $this->meta = config(USER.'.'.$idx.'.');
-    }
-
-    /**
      * 현재 객체에 회원 idx 를 지정한다.
      * @param string $email
      * @return mixed
@@ -57,9 +46,9 @@ class User extends Entity {
      * - 에러가 없으면, (password 필드를 포함하는) 회원 프로필 레코드를 리턴한다.
      */
     private function _setUserByEmail(string $email): mixed {
-        $record = parent::get(EMAIL, $email);
+        $record = $this->get(EMAIL, $email);
         if ( !$record ) return e()->user_not_found_by_that_email;
-        $this->_setUid($record[IDX]);
+        $this->setIdx($record[IDX]);
         return $record;
     }
 
@@ -84,15 +73,42 @@ class User extends Entity {
 
 
     /**
-     * 회원 가입을 한다.
+     * Create a user account and return his profile.
+     *
      * @param array $in
-     * @return int|string
+     * @return string|array
      */
-    public function register(array $in) {
+    public function register(array $in): string|array {
+
+        if ( !in(EMAIL) ) return e()->email_is_empty;
+        if ( !checkEmailFormat(in(EMAIL)) ) return e()->malformed_email;
+        if ( !in(PASSWORD) ) return e()->password_is_empty;
+
+        $user = $this->get(EMAIL, $in[EMAIL]);
+        if ( $user ) return e()->email_exists;
+
         $in[PASSWORD] = encryptPassword($in[PASSWORD]);
+
         $idx = $this->create($in);
+
         if ( !$idx ) return e()->register_failed;
-        return $idx;
+        return user($idx)->profile();
+    }
+
+    /**
+     * @attention User must be logged and the entity idx must be set. Which means, it must be called with entity idx like below.
+     *   user(123)->update();
+     *   login()->update()
+     *
+     * @param array $in
+     * @return array|string
+     * - error_idx_not_set if current instance has not `idx`.
+     * - profile on success.
+     */
+    public function update(array $in): array|string {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        parent::update($in);
+        return $this->profile();
     }
 
     /**
@@ -104,29 +120,30 @@ class User extends Entity {
      * 예제)
      * d( user(48)->profile() );
      */
-    public function profile($unsetPassword=true) {
+    public function profile($unsetPassword=true): mixed {
         if ( ! $this->idx ) return e()->idx_not_set;
-        $profile = parent::get('idx', $this->idx);
-        if ( !$profile ) return e()->user_not_found_by_that_idx;
-        $profile[SESSION_ID] = getSessionId($profile);
-        if ( $unsetPassword ) unset($profile[PASSWORD]);
-        return $profile;
+        $record = $this->get('idx', $this->idx);
+        if ( !$record ) return e()->user_not_found_by_that_idx;
+        $record[SESSION_ID] = getSessionId($record);
+        if ( $unsetPassword ) unset($record[PASSWORD]);
+        return $record;
     }
 
     /**
-     * @param string $email
-     * @param string $password
+     *
      * @return mixed
      *
      * 예제)
      * d(user()->login(email: '...', password: '...');
      */
-    public function login(string $email, string $password):mixed {
-        if ( !$password ) return e()->empty_password;
-        $profile = $this->_setUserByEmail($email);
+    public function login(array $in):mixed {
+        if ( isset($in[EMAIL]) == false || !$in[EMAIL] ) return e()->email_is_empty;
+
+        if ( isset($in[PASSWORD]) == false || !$in[PASSWORD] ) return e()->empty_password;
+        $profile = $this->_setUserByEmail($in[EMAIL]);
         if ( isError($profile) ) return $profile;
 
-        if ( ! checkPassword($password, $profile[PASSWORD]) ) return e()->wrong_password;
+        if ( ! checkPassword($in[PASSWORD], $profile[PASSWORD]) ) return e()->wrong_password;
         return $this->profile();
     }
 
@@ -146,19 +163,21 @@ function user(int $idx=0): User
 }
 
 /**
- * 로그인한 사용자의 User 객체이다.
+ * Returns User class instance with the login user.
+ *
  * @return User
  *
- * 예제)
- *  d(user()->profile()); // 결과. error_idx_not_set
- *  d(login()->profile()); // 로그인을 했으면, 사용자 프로필. 로그인을 안했으면 error_idx_not_set 에러
+ * Example)
+ *  d(user()->profile()); // Result. error_idx_not_set
+ *  d(login()->profile()); // Result. it will return user profile if the user has logged in or erorr.
  *
- * 이 함수를 호출하기 전에, loggedIn() 함수를 호출해서, 로그인을 했는지 안했는지 볼 수 있다.
+ * You may check if user had logged in before calling this method.
  */
 function login(): User {
     global $__login_user_profile;
     return new User($__login_user_profile[IDX] ?? 0);
 }
+
 
 
 

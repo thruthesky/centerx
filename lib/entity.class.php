@@ -42,6 +42,16 @@ class Entity {
     }
 
 
+
+    /**
+     * Set (record) idx of current entity.
+     * @param int $idx
+     */
+    public function setIdx(int $idx) {
+        $this->idx = $idx;
+    }
+
+
     /**
      * entity 에 필드를 저장한다.
      *
@@ -64,14 +74,10 @@ class Entity {
         if ( ! $in ) return e()->empty_param;
         if ( isset($in['idx']) ) return e()->idx_must_not_set;
 
-
-        $user = $this->get(EMAIL, $in[EMAIL]);
-        if ( $user ) return e()->email_exists;
-
         $record = $this->getRecordFields($in);
         $record[CREATED_AT] = time();
         $record[UPDATED_AT] = time();
-        d($record);
+
         $idx = db()->insert( $this->getTable(), $record );
 
         if ( !$idx ) return e()->insert_failed;
@@ -97,7 +103,7 @@ class Entity {
      *  login()->update(in());
      *  d(login()->profile());
      */
-    public function update($in): array|string {
+    public function update(array $in): array|string {
         global $entities;
         if ( ! $in ) return e()->empty_param;
         if ( isset($in['idx']) ) return e()->idx_not_set;
@@ -105,9 +111,14 @@ class Entity {
         $up = $this->getRecordFields($in);
         $up[UPDATED_AT] = time();
 
+
+
+
         $re = db()->update($this->getTable(), $up, eq(IDX, $this->idx ));
         if ( !$re ) return e()->update_failed;
+
         $this->updateMetas($this->idx, $this->getMetaFields($in));
+
 
         $fv = "idx=" . $this->idx;
         unset($entities[ $this->taxonomy ][ $fv ]);
@@ -118,6 +129,8 @@ class Entity {
 
 
     /**
+     * Returns an entity(record) of a taxonomy(table).
+     *
      * 현재 Taxonomy 테이블 뿐만아니라, 그 meta 값들을 모두 같이 리턴한다.
      *
      * 참고로 사용자(게시글 등) 정보를 검색하는 경우 등을 위해서, $field 와 $value 로 값을 얻을 수 있다.
@@ -248,7 +261,7 @@ class Entity {
      */
     public function getMetaFields($in): array {
         $fields = entity(USERS)->getTableFieldNames();
-        $diffs = array_diff(array_keys($in), ['email', 'password', 'name', 'gender']);
+        $diffs = array_diff(array_keys($in), $fields);
         return array_filter( $in, fn($v, $k) => in_array($k, $diffs), ARRAY_FILTER_USE_BOTH );
     }
 

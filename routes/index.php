@@ -14,6 +14,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
 }
 
 
+if ( in(SESSION_ID) ) {
+    $profile = getProfileFromSessionId( in(SESSION_ID) );
+    if ( isError($profile) ) error($profile);
+    setUserAsLogin( $profile );
+}
+
+
 
 $route= in('route');
 if ( $func = getRoute($route) ) {
@@ -30,8 +37,7 @@ if ( $func = getRoute($route) ) {
 
     if (!method_exists($instance, $methodName)) error(e()->route_function_not_found);
 
-    setUserAsLogin( getProfileFromSessionId( in(SESSION_ID) ) );
-
     $response = $instance->$methodName(in());
 }
+if ( !$response ) error(e()->response_is_empty);
 success($response);

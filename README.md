@@ -108,13 +108,20 @@ define('DOMAIN_THEMES', [
 
 - Variables and Functions, Methods should in camel case.
 
-- 데이터 관리를 Taxonomy(데이터 그룹, 테이블), Entity(레코드) 형태로
-  - 데이터를 관리하는데 있어, entity()->create(), entity()->update(), entity()->get() 함수가 사실상 거의 전부이다.
-  - User 클래스가 Entity 클래스를 상속하므로, user()->create(), user()->update(), user()->get() 을 사용 할 수 있다.
-    - 이 처럼 모든 Taxonomy 클래스가 Entity 객체의 것을 그대로 사용 가능하다.
-    - 다만, user()->register() 와 같이 wrapping 해서, 비밀번호 암호화 등의 작업을 한다.
+- Taxonomy is like a table and Entity is like a record of the table.
   
-- meta 값은 serialize 와 unserilize 가 된다. 즉, 배열을 집어 넣어도 된다.
+- Entity class has methods for `create`, `update`, `delete`, `get`, `search` and more.
+  
+- Child class of Entity will have all the functionality of Entity.
+  - For instance, `User` class which extends `Entity` has functionality of
+  `$user->create()`, `$user->update()`, `$user->get()`, `$user->search()` and more of `Entity` class.
+  - For `User` class to create a user, it may need to encrypt password. So, it but `Entity's create` method has no functionality to encrypt password,
+    and that the where `User->register` method comes.
+    User class can have its own methods to check if the input from user is right and if email is already exists, then,
+    it can encrypt the password and call parent's create method to create an entity(record).
+
+- Meta data is saved through serialize/unserialze.
+
 
 ## 관리자 지정하기
 
@@ -188,9 +195,18 @@ routeAdd('app.version', function($in) {
 - To login, access like below
   Ex) `/?route=user.login&email=...&password=...`
   
+- To register
+```text
+https://local.itsuda50.com/?route=user.register&reload=true&email=user3@test.com&password=12345a
+```
 
-- Live reload test. If http input `reload=true` is set, then it will live reload on a browser.
-  Ex) /?route=user.login&email=...&password=...&reload=true
-  
+- To login
+```text
+https://local.itsuda50.com/?route=user.login&reload=true&email=user3@test.com&password=12345a
+```
+
+
 - To ge user profile
-  Ex) /?route=user.profile&sessionId=89-3a321efd6adf2e79673c7279d4189f2a
+```text
+https://local.itsuda50.com/?route=user.profile&reload=true&sessionId=3-50bb905fb31f8035f2cef8a2f273af74
+```

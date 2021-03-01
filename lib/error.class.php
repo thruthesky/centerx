@@ -12,12 +12,20 @@ class E {
     public string $insert_failed = 'error_insert_failed';
     public string $update_failed = 'error_update_failed';
     public string $email_exists = 'error_email_exists';
+    public string $email_is_empty = 'error_email_is_empty';
+    public string $password_is_empty = 'error_password_is_empty';
+    public string $malformed_email = 'error_malformed_email';
+    public string $wrong_session_id = 'error_wrong_session_id';
+    public string $user_not_found_by_that_session_id = 'error_user_not_found_by_that_session_id';
+
 
     public string $malformed_route = 'error_malformed_route';
     public string $route_file_not_found = 'error_route_file_not_found';
     public string $route_function_not_found = 'error_route_function_not_found';
     public string $not_logged_in = 'error_not_logged_in';
 
+
+    public string $response_is_empty = 'error_response_is_empty';
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)
