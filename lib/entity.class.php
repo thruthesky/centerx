@@ -91,7 +91,7 @@ class Entity {
         if ( !$idx ) return e()->insert_failed;
 
         $this->createMetas($idx, $this->getMetaFields($in));
-        return $this->get($idx);
+        return $this->get(IDX, $idx);
     }
 
 
@@ -187,6 +187,7 @@ class Entity {
         $fv = "$field=$value";
         if ( isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) return $entities[$this->taxonomy][$fv];
         $q = "SELECT * FROM {$this->getTable()} WHERE `$field`='$value'";
+        d($q);
 //        debug_log($q);
 
         $record = db()->get_row($q, ARRAY_A);
