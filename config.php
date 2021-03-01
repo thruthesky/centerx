@@ -4,8 +4,8 @@ define('DOMAIN_THEMES', [
     'philov' => 'sonub',
     'tellvi' => 'sonub',
     'sonub' => 'sonub',
-    'goldenage50' => 'itsuda',
-    'itsuda' => 'sonub',
+    'goldenage50' => 'itsuda50.com',
+    'itsuda' => 'itsuda50.com',
     '127.0.0.1' => 'itsuda50.com',
     'localhost' => 'itsuda50.com',
     '169.254.115.59' => 'itsuda50.com', // JaeHo Song's Emulator Access Point to Host OS.
