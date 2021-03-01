@@ -7,3 +7,5 @@ etc/phpMyAdmin/tmp
 docker/mysqldata
 
 .bash_history
+var
+

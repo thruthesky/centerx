@@ -5,7 +5,7 @@ define('DOMAIN_THEMES', [
     'tellvi' => 'sonub',
     'sonub' => 'sonub',
     'goldenage50' => 'itsuda',
-    'itsuda' => 'itsuda'
+    'itsuda' => 'sonub'
 ]);
 
 
