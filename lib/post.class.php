@@ -29,13 +29,27 @@ class Post extends Entity {
         // @todo check if too many post creation.
         // @todo check if too many comment creation.
 
-        return parent::create($in);
+        // Temporary path.
+        $in[PATH] = 'path-' . md5(my(IDX)) . md5(time());
+        $post = parent::create($in);
+        if ( isError($post) ) return $post;
+
+        // Set idx
+        $this->setIdx($post[IDX]);
+
+        // Update path
+        $path = $this->getPath($post);
+        $this->update([PATH => $path]);
+        $post = $this->get();
+
+
 
         // update `noOfPosts`
         // update `noOfComments`
 
         // @todo push notification
 
+        return $post;
     }
 
     /**
@@ -110,6 +124,115 @@ class Post extends Entity {
         // @todo add attached files if exists.
 
         return $posts;
+    }
+
+
+    /**
+     * Return a post based on current url.
+     *
+     * For instance, "https://local.domain.com/post-url-is-like-%ED%95%9C%EA%B8%80%EB%8F%84-%EB%90%okay",
+     *  then, it will decode the url and find it in path, and return the post.
+     *
+     * @return array
+     * - empty array([]) if post not exists.
+     * - or post record.
+     *
+     * @example
+     *   d(post()->getFromPath());
+     */
+    public function getFromPath(): array {
+        $path = $_SERVER['REQUEST_URI'];
+        $path = ltrim($path,'/');
+        if ( empty($path) ) return [];
+        $path = urldecode($path);
+        $post = post()->get(PATH, $path);
+        return $post;
+    }
+
+
+    /**
+     * @param $post
+     * @return string|string[]
+     */
+    private function getPath($post) {
+        $title = empty($post[TITLE]) ? $post[ID] : $post[TITLE];
+        $title = $this->seoFriendlyString($title);
+        $path = $title;
+        $count = 0;
+        while ( true ) {
+            $p = post()->get(PATH, $path, 'idx');
+            if ( $p ) {
+                $count ++;
+                $path = "$title-$count";
+            } else {
+                return $path;
+            }
+        }
+    }
+
+
+
+    /**
+     * Transform the $s into SEO freindly.
+     *
+     * Ex) 'Hotels in Buenos Aires' => 'hotels-in-buenos-aires'
+     *
+     *    - converts all alpha chars to lowercase
+     *    - not allow two "-" chars continued, converte them into only one single "-"
+     *
+     * @param string $s
+     * @return string
+     */
+    private function seoFriendlyString(string $s): string {
+
+        $s = trim($s);
+
+        $s = html_entity_decode($s);
+
+        $s = strip_tags($s);
+
+        $s = strtolower($s);
+
+        /// Remove special chars ( or replace with - )
+        $s = preg_replace('~-+~', '-', $s);
+
+        /// Make it only one space.
+
+        $s = preg_replace('/ +/', ' ', $s);
+        $s = str_replace(" ","-", strtolower($s));
+        $s = str_replace('`', '', $s);
+        $s = str_replace('~', ' ', $s);
+        $s = str_replace('!', ' ', $s);
+        $s = str_replace('@', '', $s);
+        $s = str_replace('#', ' ', $s);
+        $s = str_replace('$', '', $s);
+        $s = str_replace('%', '', $s);
+        $s = str_replace('^', '', $s);
+        $s = str_replace('&', ' ', $s);
+        $s = str_replace('*', '', $s);
+        $s = str_replace('(', '', $s);
+        $s = str_replace(')', '', $s);
+        $s = str_replace('_', '', $s);
+        $s = str_replace('=', ' ', $s);
+        $s = str_replace('\\', '', $s);
+        $s = str_replace('|', '', $s);
+        $s = str_replace('{', '', $s);
+        $s = str_replace('[', '', $s);
+        $s = str_replace(']', '', $s);
+        $s = str_replace('"', '', $s);
+        $s = str_replace("'", '', $s);
+        $s = str_replace(';', '', $s);
+        $s = str_replace(':', '', $s);
+        $s = str_replace('/', '', $s);
+        $s = str_replace('?', '', $s);
+        $s = str_replace('.', ' ', $s);
+        $s = str_replace('<', '', $s);
+        $s = str_replace('>', '', $s);
+        $s = str_replace(',', ' ', $s);
+
+        $s = trim($s, '- ');
+
+        return $s;
     }
 }
 

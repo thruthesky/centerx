@@ -13,6 +13,8 @@
   
 - subcategories of the category.
 - SQL injection block on `where` in search function.
+- Wordpress style, Friendly URL. There might be no title, so, posts may have url of numbers only.
+  - `this-is-title.`, `this-is-title-2`.
 
 
 # 설치

@@ -36,6 +36,8 @@ define('PROFILE_PHOTO_URL', 'profilePhotoUrl');
 
 define('TITLE', 'title');
 define('CONTENT', 'content');
+define('PATH', 'path');
+
 
 
 

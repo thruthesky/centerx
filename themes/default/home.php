@@ -27,6 +27,12 @@
 <?php
 
 
+d(post()->getFromPath());
+
+
+
+
+
 
 d( login()->profile() );
 
