@@ -2,5 +2,8 @@
     "require": {
         "ezsql/ezsql": "^5.1",
         "mobiledetect/mobiledetectlib": "^2.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
     }
 }
