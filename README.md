@@ -36,9 +36,20 @@
 
 - Then, set the domain and SSL in `docker/etc/nginx.conf`
 
+- Then, set the domain and theme in `config.php`.
+```php
+define('DOMAIN_THEMES', [
+    'itsuda' => 'itsuda50.com',
+    '127.0.0.1' => 'itsuda50.com',
+    'localhost' => 'itsuda50.com',
+    '169.254.115.59' => 'itsuda50.com', // JaeHo Song's Emulator Access Point to Host OS.
+]);
+```
+
 - Then, try to access `local.itsuda50.com` and it should open local development site.
 
-- Then, open Emulator 
+- Then, open Emulator and access `http://http://169.254.115.59/` and it should open the site.
+
 
 
 
