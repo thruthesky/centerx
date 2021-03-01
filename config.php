@@ -10,6 +10,7 @@ define('DOMAIN_THEMES', [
     'localhost' => 'itsuda50.com',
     '169.254.115.59' => 'itsuda50.com', // JaeHo Song's Emulator Access Point to Host OS.
     '192.168.100.6' => 'itsuda50.com', // Ace's Emulator Access Point to Host OS.
+    '192.168.100.17' => 'itsuda50.com', // Charles Ip address
 ]);
 
 
