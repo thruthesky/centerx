@@ -327,6 +327,7 @@ function getProfileFromSessionId(string $sessionId): mixed
     if ( ! $sessionId ) return false;
     $arr = explode('-', $sessionId);
     $profile = user($arr[0])->profile(unsetPassword: false);
+	if ( !$profile || !isset($profile[SESSION_ID]) ) return false;
     if ( $sessionId == $profile[SESSION_ID] ) return $profile;
     else return false;
 }
