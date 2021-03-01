@@ -24,6 +24,20 @@
 
 - `cd emp/docker` 를 하고 `docker-compose up` 명령을 하면, 사용 바로 웹서버로 접속 가능하며 개발 가능하다.
 
+## Host setting
+
+- To work with real domain, add a fake domain on `hosts` file and add a domain that begins with `local.`.
+
+```text
+127.0.0.1       local.itsuda50.com
+```
+
+- Then, get SSL. You may get it from `certbot`.
+
+- Then, set the domain and SSL in `docker/etc/nginx.conf`
+
+
+
 ## 각종 설정
 
 - `emp` 폴더가 root 폴더가 된다.
