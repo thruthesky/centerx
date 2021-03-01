@@ -6,10 +6,12 @@ define('CONFIG', 'config');
 define('METAS', 'metas');
 define('TAXONOMY', 'taxonomy');
 define('ENTITY', 'entity');
+define('CATEGORIES', 'categories');
 
 define('ADMIN', 'admin');
 
 define('IDX', 'idx');
+define('ID', 'id');
 define('USER', 'user');
 define('USERS', 'users');
 define('EMAIL', 'email');

@@ -211,3 +211,44 @@ https://local.itsuda50.com/?route=user.login&reload=true&email=user3@test.com&pa
 ```text
 https://local.itsuda50.com/?route=user.profile&reload=true&sessionId=3-50bb905fb31f8035f2cef8a2f273af74
 ```
+
+
+
+## Category Api
+
+- To create category, pass `id, title, description` into `category.create` route.
+
+```text
+https://local.itsuda50.com/?route=category.create&reload=true&id=appl3e&title=Apple%20category&description=I%20like%20Apple&noOfPosts=5
+```
+
+- To get category, you can pass `category.idx` or `category.id` as `idx` or `id` param.
+```text
+https://local.itsuda50.com/?route=category.get&reload=true&idx=1
+https://local.itsuda50.com/?route=category.get&reload=true&idx=apple
+https://local.itsuda50.com/?route=category.get&reload=true&id=apple
+```
+
+- To update category, pass idx on `idx` or id on `id` to `category.update`
+
+```text
+https://local.itsuda50.com/?route=category.update&reload=true&idx=1&title=t&description=d
+https://local.itsuda50.com/?route=category.update&reload=true&id=apple&title=t&description=d
+```
+
+- To delete a category, pass idx on `idx` to `category.delete`. For deletion, only `idx` is accepted.
+```text
+https://local.itsuda50.com/?route=category.delete&reload=true&idx=1
+```
+
+
+# Unit Testing
+
+- We use `phpunit`.
+- Install `phpunit` on your Host OS then, run it from project folder like below.
+
+```shell
+$ phpunit tests/AppTest.php
+```
+
+

@@ -89,10 +89,10 @@ class User extends Entity {
 
         $in[PASSWORD] = encryptPassword($in[PASSWORD]);
 
-        $idx = $this->create($in);
+        $record = $this->create($in);
 
-        if ( !$idx ) return e()->register_failed;
-        return user($idx)->profile();
+        if ( isError($record) ) return $record;
+        return user($record[IDX])->profile();
     }
 
     /**

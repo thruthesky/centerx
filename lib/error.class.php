@@ -11,6 +11,7 @@ class E {
     public string $idx_must_not_set = 'error_idx_must_not_set';
     public string $insert_failed = 'error_insert_failed';
     public string $update_failed = 'error_update_failed';
+    public string $delete_failed = 'error_delete_failed';
     public string $email_exists = 'error_email_exists';
     public string $email_is_empty = 'error_email_is_empty';
     public string $password_is_empty = 'error_password_is_empty';
@@ -24,8 +25,14 @@ class E {
     public string $route_function_not_found = 'error_route_function_not_found';
     public string $not_logged_in = 'error_not_logged_in';
 
+    public string $id_is_empty = 'error_id_is_empty';
+
+    public string $category_exists = 'error_category_exists';
+
 
     public string $response_is_empty = 'error_response_is_empty';
+    public string $entity_not_exists = 'error_entity_not_exists';
+
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)

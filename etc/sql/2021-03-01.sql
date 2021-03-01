@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: Mar 01, 2021 at 03:42 AM
+-- Generation Time: Mar 01, 2021 at 10:15 AM
 -- Server version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP Version: 8.0.2
 
@@ -20,6 +20,21 @@ SET time_zone = "+00:00";
 --
 -- Database: `mydatabase`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wc_categories`
+--
+
+CREATE TABLE `wc_categories` (
+                                 `idx` int(10) UNSIGNED NOT NULL,
+                                 `id` varchar(32) NOT NULL,
+                                 `title` varchar(255) NOT NULL DEFAULT '',
+                                 `description` text NOT NULL DEFAULT '',
+                                 `createdAt` int(10) UNSIGNED NOT NULL,
+                                 `updatedAt` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -61,6 +76,13 @@ CREATE TABLE `wc_users` (
 --
 
 --
+-- Indexes for table `wc_categories`
+--
+ALTER TABLE `wc_categories`
+    ADD PRIMARY KEY (`idx`),
+  ADD UNIQUE KEY `id` (`id`);
+
+--
 -- Indexes for table `wc_metas`
 --
 ALTER TABLE `wc_metas`
@@ -78,6 +100,12 @@ ALTER TABLE `wc_users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `wc_categories`
+--
+ALTER TABLE `wc_categories`
+    MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `wc_metas`

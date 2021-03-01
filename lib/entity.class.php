@@ -53,6 +53,9 @@ class Entity {
 
 
     /**
+     * Create a entity(record) with given $in.
+     *
+     *
      * entity 에 필드를 저장한다.
      *
      * 만약, Taxonomy 테이블에 존재하지 않는 필드가 입력되면, 자동으로 metas 테이블에 저장한다.
@@ -60,17 +63,22 @@ class Entity {
      * 주의: 필드명에 따라서 자동으로 저장할 값이 정해지므로, meta 테이블과 같이 필드가 code, value 인 경우에는 사용 할 수 없다.
      *
      * @param array $in
-     * @return int|false - 성공이면, 마지막으로 입력된 idx 를 리턴한다.
-     *      - 성공이면, 마지막으로 입력된 idx 를 리턴한다.
-     *      - 실패하면 false 가 리턴된다.
      *
+     *
+     * - error string on error.
+     * - entity record on success.
      *
      *
      * @note user is_success() to check if it was success()
      *
      * @see readme for detail.
+     *
+     * @example
+     * $idx = entity(CATEGORIES)->create($in);
+     * return entity(CATEGORIES, $idx)->get();
      */
-    public function create( array $in ): int|false|string {
+    public function create( array $in ): array|string {
+
         if ( ! $in ) return e()->empty_param;
         if ( isset($in['idx']) ) return e()->idx_must_not_set;
 
@@ -83,7 +91,7 @@ class Entity {
         if ( !$idx ) return e()->insert_failed;
 
         $this->createMetas($idx, $this->getMetaFields($in));
-        return $idx;
+        return $this->get($idx);
     }
 
 
@@ -94,6 +102,8 @@ class Entity {
      * @param $in
      *
      * @return array|string
+     * - error string on error.
+     * - or the entity record.
      *
      *
      * 예제)
@@ -106,12 +116,12 @@ class Entity {
     public function update(array $in): array|string {
         global $entities;
         if ( ! $in ) return e()->empty_param;
-        if ( isset($in['idx']) ) return e()->idx_not_set;
+
+        // commented out on 2021. 03. 01.
+//        if ( isset($in['idx']) ) return e()->idx_not_set;
 
         $up = $this->getRecordFields($in);
         $up[UPDATED_AT] = time();
-
-
 
 
         $re = db()->update($this->getTable(), $up, eq(IDX, $this->idx ));
@@ -126,6 +136,18 @@ class Entity {
         return $this->get();
     }
 
+    /**
+     * Delete entity(record).
+     *
+     * The entity `idx` must be set to delete.
+     */
+    public function delete() {
+        $record = $this->get();
+        if ( ! $record ) return e()->entity_not_exists;
+        $re = db()->delete($this->getTable(), eq(IDX, $this->idx));
+        if ( $re === false ) return e()->delete_failed;
+        return $record;
+    }
 
 
     /**
@@ -148,6 +170,9 @@ class Entity {
      * @param string $field
      * @param mixed $value
      * @return mixed
+     * - The return type is `mixed` due to the overridden methods returns different data types.
+     * - empty array if the entity does not exists.
+     * - or entity record as array.
      *
      * 예제)
      * user()->get('email', 'user10@gmail.com');
@@ -170,6 +195,21 @@ class Entity {
         $rets = array_merge($record, $meta);
         $entities[$this->taxonomy][$fv] = $rets;
         return $entities[$this->taxonomy][$fv];
+    }
+
+    /**
+     * Returns true if the entity exists. or false.
+     *
+     * The entity.idx must be set or it will return false.
+     *
+     * @return bool
+     */
+    public function exists(): bool {
+        if ( ! $this->idx ) return false;
+        $q = "SELECT " . IDX . " FROM " . $this->getTable() . " WHERE " . IDX . " = {$this->idx} ";
+        $re = db()->get_var($q);
+        if ( $re ) return true;
+        else return false;
     }
 
     /**
@@ -260,7 +300,7 @@ class Entity {
      *
      */
     public function getMetaFields($in): array {
-        $fields = entity(USERS)->getTableFieldNames();
+        $fields = entity($this->taxonomy)->getTableFieldNames();
         $diffs = array_diff(array_keys($in), $fields);
         return array_filter( $in, fn($v, $k) => in_array($k, $diffs), ARRAY_FILTER_USE_BOTH );
     }
@@ -279,7 +319,7 @@ class Entity {
      *  Array ( [email] => email@address.com [name] => name )
      */
     public function getRecordFields($in): array {
-        $fields = entity(USERS)->getTableFieldNames();
+        $fields = entity($this->taxonomy)->getTableFieldNames();
         $diffs = array_diff(array_keys($in), $fields);
         return array_filter( $in, fn($v, $k) => !in_array($k, $diffs), ARRAY_FILTER_USE_BOTH );
     }
