@@ -89,17 +89,24 @@ define('DOMAIN_THEMES', [
 
 
 
-# 설정
+# Configuration
 
-- 기본 설정은 root/config.php 에 저장되며, 각 테마에서 설정을 덮어 쓸 수 있다.
+- `config.php` on project folder is the default configuration, and it can be overwritten by theme configuration.
+  기본 설정은 root/config.php 에 저장되며, 각 테마에서 설정을 덮어 쓸 수 있다.
 
-## 테마별 설정
+## Theme Configuration
 
-- 각 테마별로 설정을 할 수 있다.
-- 설정은 root/config.php 의 모든 설정을 덮어 쓸 수 있다. 이 말은 DB 접속 자체를 다른 서버로 할 수 있다는 뜻이다.
-  이와 같이 모든 설정을 테마별로 다 변경 할 수 있다.
+- `themes/[theme-name]/[theme-name].config` will be included(and run) if it exists.
+  It will run even if it is API call. So, you can define any hooks or routes in configuration.
 
-# 개발자 팁
+- All the default configuration can be over-written by theme configuration.
+  That means, each theme can use different database settings.
+
+  
+
+# Developer Guideline
+
+- Variables and Functions, Methods should in camel case.
 
 - 데이터 관리를 Taxonomy(데이터 그룹, 테이블), Entity(레코드) 형태로
   - 데이터를 관리하는데 있어, entity()->create(), entity()->update(), entity()->get() 함수가 사실상 거의 전부이다.
@@ -161,10 +168,20 @@ d($result);
   For instance, if `/?route=app.version` is accessed, create `routes/app.route.php` and define `AppRoute` class, then add `version` method in it.
   
 - Second, simple define a function of anywhere.
-  For instance, if `/?route=app.version` is accessed, define a function replacing the dot(.) with underbar(_) like `app_version()`.
-  
+  For instance, if `/?route=app.version` is accessed, add a function to `routeAdd()` function like below.
+```php
+routeAdd('app.version', function($in) {
+    return ['version' => 'app version 12345 !!!'];
+});
+```  
 
-  
+- For defining routes to a specific theme, create `[theme-name].route.php` and define routes there, and include it in `[theme-name].config.php`.
+
+- For core routes, it is defined in `routes` folder.
+
+- If there are two route handlers for the same route, that comes from route class in `routes` folder and the other comes from `routeAdd()`,
+  Then, the function that is added to `routeAdd()` will be used. This means, you can overwrite the routes in `routes` folder.
+
 
 ## User Api
 

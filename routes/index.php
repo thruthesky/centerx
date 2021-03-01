@@ -15,11 +15,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
 
 
 
-$func = str_replace('.', '_', in('route'));
-if ( function_exists($func) ) {
+$route= in('route');
+if ( $func = getRoute($route) ) {
     $response = $func(in());
 } else {
-    $arr = explode('.', in('route'), 2);
+    $arr = explode('.', $route, 2);
     if (count($arr) != 2) error(e()->malformed_route);
     $className = $arr[0];
     $methodName = $arr[1];

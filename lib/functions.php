@@ -433,3 +433,24 @@ function success(mixed $data) {
     ]);
     exit;
 }
+
+/**
+ * $__routes holds routes functions.
+ */
+$__routes = [];
+function routeAdd($routeName, $func) {
+    global $__routes;
+    $__routes[ $routeName ] = $func;
+}
+
+/**
+ * Return route function or false.
+ * @param string|null $routeName
+ * @return mixed
+ */
+function getRoute(string|null $routeName): mixed
+{
+    global $__routes;
+    if ( isset($__routes[$routeName]) ) return $__routes[$routeName];
+    return false;
+}
