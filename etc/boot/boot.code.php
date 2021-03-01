@@ -1,5 +1,5 @@
 <?php
-
+define('API_CALL', in(ROUTE) != null);
 
 live_reload_js();
 
@@ -52,8 +52,9 @@ $installedAt = config()->get('installation check');
 
 debug_log('-- start -- boot.code.php: ', date('r'));
 
-
-setUserAsLogin(getProfileFromCookieSessionId());
+if ( API_CALL == false ) {
+    setUserAsLogin(getProfileFromCookieSessionId());
+}
 
 
 

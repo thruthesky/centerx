@@ -109,7 +109,7 @@ function isMobile() {
 function live_reload_js()
 {
     /// API 콜 이라도, &reload=true 로 들어오면, live reload 한다.
-    if ( in('route') && !in('reload') ) return;
+    if ( in(ROUTE) && !in('reload') ) return;
     /// Don't display this javascript code for Mobile Web and App.
     if ( isMobile() ) return;
 
@@ -375,6 +375,14 @@ function setUserAsLogin($profile): void {
     $__login_user_profile = $profile;
 }
 
+/**
+ * Returns login user record field.
+ *
+ * Note, that it does not only returns `wc_users` table, but also returns from `wc_metas` table.
+ *
+ * @param string $field
+ * @return mixed|null
+ */
 function my(string $field) {
     if ( loggedIn() ) {
         $profile = login()->profile();

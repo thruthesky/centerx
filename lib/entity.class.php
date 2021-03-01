@@ -96,6 +96,10 @@ class Entity {
 
 
     /**
+     * Update an entity.
+     *
+     * @attention entity.idx must be set.
+     *
      * Taxonomy 에 존재하지 않는 필드는 meta 에 자동 저장(추가 또는 업데이트)된다.
      *
      * 참고로, 'idx=123' 과 같이 'idx' 로 저장된, 캐시 정보를 삭제한다. 즉, 다음 사용 할 때, 다시 캐시를 한다.
@@ -117,8 +121,8 @@ class Entity {
         global $entities;
         if ( ! $in ) return e()->empty_param;
 
-        // commented out on 2021. 03. 01.
-//        if ( isset($in['idx']) ) return e()->idx_not_set;
+        //
+        if ( ! $this->idx ) return e()->idx_not_set;
 
         $up = $this->getRecordFields($in);
         $up[UPDATED_AT] = time();
@@ -146,6 +150,26 @@ class Entity {
         if ( ! $record ) return e()->entity_not_exists;
         $re = db()->delete($this->getTable(), eq(IDX, $this->idx));
         if ( $re === false ) return e()->delete_failed;
+        return $record;
+    }
+
+    /**
+     * It does not delete the record. It only updates deletedAt.
+     *
+     * You may empty the content of the record when that is deleted.
+     *
+     * @attention `idx` must be set.
+     *
+     * @return array|string
+     * - error string on error.
+     * - the deleted record on success.
+     *
+     */
+    public function markDelete(): array|string {
+        if ( ! $this->idx ) return e()->idx_not_set;
+        $record = $this->get();
+        if ( $record[DELETED_AT] ) return e()->entity_deleted_already;
+        $this->update([DELETED_AT => time()]);
         return $record;
     }
 
@@ -212,6 +236,26 @@ class Entity {
         else return false;
     }
 
+
+    /**
+     * Returns true if the entity is belong to the login user.
+     *
+     * @attention The entity(entity) idx must be set and the record must have `userIdx` field or false will be returned.
+     *
+     * @usage Use this method to check if the post or comment, file are belong to the login user.
+     *
+     * @return bool
+     */
+    public function isMine(): bool {
+        if ( notLoggedIn() ) return false;
+        if ( ! $this->idx ) return false;
+        $record = $this->get();
+        if ( ! $record ) return false;
+        if ( ! isset($record) ) return false;
+        if ( ! $record[USER_IDX] ) return false;
+        return $record[USER_IDX] == my(IDX);
+    }
+
     /**
      * 현재 Taxonomy 를 검색한다.
      *
@@ -224,8 +268,10 @@ class Entity {
      * @param string $order
      * @param string $by
      * @param string $select
+     * @param array $in
      * @return mixed
      * @throws Exception
+     *
      *
      * 예제)
      *  $users = user()->search();
@@ -239,10 +285,10 @@ class Entity {
      *
      */
     public function search(string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'): mixed {
-
         $table = $this->getTable();
         $from = ($page-1) * $limit;
-        $rows = db()->get_results(" SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ", ARRAY_A);
+        $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
+        $rows = db()->get_results($q, ARRAY_A);
         return $rows;
     }
 
@@ -399,6 +445,7 @@ class Entity {
      */
     public function setMeta(int $idx, string $code, mixed $data): mixed
     {
+        if ( in_array($code, META_CODE_EXCEPTIONS) ) return false;
         $table = entity(METAS)->getTable();
         return db()->insert($table, [
             TAXONOMY => $this->taxonomy,
@@ -443,6 +490,7 @@ class Entity {
      * @return bool|mixed
      */
     public function updateMeta(int $idx, string $code, mixed $data) {
+        if ( in_array($code, META_CODE_EXCEPTIONS) ) return false; // This may not be needed since it only updates and META_CODE_EXCEPTIONS are not saved at very first.
         $table = entity(METAS)->getTable();
         return db()->update(
             $table,

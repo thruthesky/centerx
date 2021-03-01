@@ -10,6 +10,10 @@
 
 - 훅시스템
   - entity()->create(), update(), delete(), get(), search() 등에서만 훅을 걸면 왠만한 것은 다 된다.
+  
+- subcategories of the category.
+- SQL injection block on `where` in search function.
+
 
 # 설치
 
@@ -124,6 +128,41 @@ define('DOMAIN_THEMES', [
 - Meta data is saved through serialize/unserialze.
 
 
+## Posts Taxonomy
+
+- The `posts` taxonomy can contain any kind of posts.
+  - A diary can be a post.
+  - A shopping mall item can be a post.
+  - A comment can be a post.
+  - And anything that has title, content, and needs to be managed like post, then it can be saved as a post.
+  - there is a `type` field and it shows the kind of the post. it can be `diary`, `shopping-mall-item`, `memo`, `comment`, `post`, etc.
+  
+- The `categoryIdx` is the `wc_categories.idx` indicating that the post belongs to which category.
+- The `category` and `subcategory` is child(sub) categories of the category.
+  In the the `category` settings page, admin can add categories and subcategories of the category like below.
+```text
+category1=subcsategory-1,subcategory-2, ...
+category2=subscateogry-2-1,subcategory-2-2, ...
+```
+
+
+- `rootIdx` is the post idx of comments.
+  For instance, a post.idx is 3. then the `rootIdx` of all the comments(children) of the post is 3.
+  For the post itself, it is 0. And if `rootIdx` is 0, it means, a post. Not a comment.
+  
+- `parentIdx` is to indicate who is the parent.
+  It is used to find the children of a post or a comment.
+  If a post.idx is 3, then the `parentIdx` of all the immediate(first depth) of children of the post is 3.
+  For the post itself, it is 0. And if `parentIdx` is 0, it means, it is a post. Not a children.
+  For a comment of another comment, the `parentIdx` of the comment will be the `idx` of the parent.
+  For instance,
+    - The post A's idx is 3, 
+      And the child of A is B. B has post.idx might be 10, and parentIdx must be 4, and rootIdx = 3.
+      Then, the child of B is C. B's post.idx might be 20, and parentIdx must be 10, and rootIdx = 3.
+
+
+
+
 ## 관리자 지정하기
 
 ```php
@@ -168,6 +207,8 @@ d($result);
   
 - To get app version, access like below
   Ex) `/?route=app.version`
+  
+- To live reload on web browser, add `/?reload=true`. But you must remove it when you don't need live reload.
   
 ## Writing route code
 
@@ -239,6 +280,38 @@ https://local.itsuda50.com/?route=category.update&reload=true&id=apple&title=t&d
 - To delete a category, pass idx on `idx` to `category.delete`. For deletion, only `idx` is accepted.
 ```text
 https://local.itsuda50.com/?route=category.delete&reload=true&idx=1
+```
+
+## Post Api
+
+- To create a post,
+  - Required fields are: `sessionId`, `category`.
+  - `title`, `content`, and other properties are optoinal.
+  - Since `Entity` class supports adding any meta data, you can add any data in `&key=value` format.
+  
+```text
+https://local.itsuda50.com/?route=post.create&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&category=apple&title=yo&content=content&a=apple&b=banana
+```
+
+- To update a post, add `sessionId` with `idx` and other `key/value` pair fields to update.
+````text
+https://local.itsuda50.com/?route=post.update&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&category=apple&title=updated-by-no.%204&content=content&a=apple&b=banana&idx=19
+````
+
+- To delete a post,
+```text
+https://local.itsuda50.com/?route=post.delete&sessionId=5-9b41c88bcd239de7ca6467d1975a44ca&idx=18
+```
+
+- To get a post, just give `posts.idx`. `sessionId` may not be needed.
+```text
+https://local.itsuda50.com/?route=post.get&reload=true&idx=19
+```
+
+- To list posts of a category.
+  - Most of the search options goes in value string of `where` param. You can put any SQL conditions on `where`.
+```text
+https://local.itsuda50.com/?route=post.search&reload=true&where=(categoryId=<apple> or categoryId=<banana>) and title like '%t%'&page=1&limit=3&order=idx&by=ASC
 ```
 
 

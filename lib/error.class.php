@@ -26,12 +26,22 @@ class E {
     public string $not_logged_in = 'error_not_logged_in';
 
     public string $id_is_empty = 'error_id_is_empty';
+    public string $idx_is_empty = 'error_idx_is_empty';
+
+    public string $post_not_exists = 'post_not_exists';
+    public string $not_your_post = 'not_your_post';
 
     public string $category_exists = 'error_category_exists';
+    public string $category_not_exists = 'error_category_not_exists';
 
 
     public string $response_is_empty = 'error_response_is_empty';
     public string $entity_not_exists = 'error_entity_not_exists';
+
+    public string $category_is_empty = 'error_category_is_empty';
+
+    public string $entity_deleted_already = 'error_entity_deleted_already';
+
 
 
     public bool $isError = false;

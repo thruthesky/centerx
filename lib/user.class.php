@@ -96,7 +96,7 @@ class User extends Entity {
     }
 
     /**
-     * @attention User must be logged and the entity idx must be set. Which means, it must be called with entity idx like below.
+     * @attention User must be logged and the entity.idx must be set. Which means, it must be called with entity idx like below.
      *   user(123)->update();
      *   login()->update()
      *

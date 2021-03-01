@@ -22,7 +22,7 @@ if ( in(SESSION_ID) ) {
 
 
 
-$route= in('route');
+$route= in(ROUTE);
 if ( $func = getRoute($route) ) {
     $response = $func(in());
 } else {
