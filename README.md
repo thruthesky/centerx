@@ -97,7 +97,8 @@ define('DOMAIN_THEMES', [
 ## Theme Configuration
 
 - `themes/[theme-name]/[theme-name].config` will be included(and run) if it exists.
-  It will run even if it is API call. So, you can define any hooks or routes in configuration.
+  It will run even if it is API call. (Just connect to api domain to proper theme.)
+  You can define any hooks or routes in configuration.
 
 - All the default configuration can be over-written by theme configuration.
   That means, each theme can use different database settings.
