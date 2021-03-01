@@ -49,6 +49,7 @@ define('DOMAIN_THEMES', [
 - Then, try to access `local.itsuda50.com` and it should open local development site.
 
 - Then, open Emulator and access `http://http://169.254.115.59/` and it should open the site.
+  - You should find proper IP address to use from Emulator. If you are using Mac, `ifconfig | grep inet` command may help.
 
 
 
