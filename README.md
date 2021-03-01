@@ -153,6 +153,18 @@ d($result);
   
 - To get app version, access like below
   Ex) `/?route=app.version`
+  
+## Writing route code
+
+- There are two ways of handling route.
+- First, you can create a route class under `routes` folder and add method.
+  For instance, if `/?route=app.version` is accessed, create `routes/app.route.php` and define `AppRoute` class, then add `version` method in it.
+  
+- Second, simple define a function of anywhere.
+  For instance, if `/?route=app.version` is accessed, define a function replacing the dot(.) with underbar(_) like `app_version()`.
+  
+
+  
 
 ## User Api
 

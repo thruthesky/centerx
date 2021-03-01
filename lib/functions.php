@@ -1,5 +1,7 @@
 <?php
 
+use JetBrains\PhpStorm\NoReturn;
+
 
 /**
  *
@@ -324,7 +326,7 @@ function getProfileFromCookieSessionId() : array|bool {
  * 예제) 세션 아이디를 입력받아 해당 사용자를 로그인 시킬 때,
  *  setUserAsLogin( getProfileFromSessionId( in(SESSION_ID) ) );
  */
-function getProfileFromSessionId(string $sessionId): mixed
+function getProfileFromSessionId(string|null $sessionId): mixed
 {
     if ( ! $sessionId ) return false;
     $arr = explode('-', $sessionId);
@@ -333,6 +335,8 @@ function getProfileFromSessionId(string $sessionId): mixed
     if ( $sessionId == $profile[SESSION_ID] ) return $profile;
     else return false;
 }
+
+
 
 
 /**
@@ -410,12 +414,19 @@ function widget(string $path, array $options=[], string $widgetId=null) {
 }
 
 
-
+/**
+ * @attention Use this function only for Api call.
+ * @param string $code
+ */
 function error(string $code) {
     success($code);
 }
 
-function success($data) {
+/**
+ * @attention Use this function only for Api call.
+ * @param mixed $data
+ */
+function success(mixed $data) {
     echo json_encode([
         'response' => $data,
         'request' => in(),

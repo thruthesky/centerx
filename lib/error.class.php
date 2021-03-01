@@ -15,7 +15,7 @@ class E {
 
     public string $malformed_route = 'error_malformed_route';
     public string $route_file_not_found = 'error_route_file_not_found';
-    public string $method_not_found = 'error_method_not_found';
+    public string $route_function_not_found = 'error_route_function_not_found';
     public string $not_logged_in = 'error_not_logged_in';
 
 

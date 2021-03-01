@@ -4,13 +4,13 @@ define('DOMAIN_THEMES', [
     'philov' => 'sonub',
     'tellvi' => 'sonub',
     'sonub' => 'sonub',
-    'goldenage50' => 'itsuda50.com',
-    'itsuda' => 'itsuda50.com',
-    '127.0.0.1' => 'itsuda50.com',
-    'localhost' => 'itsuda50.com',
-    '169.254.115.59' => 'itsuda50.com', // JaeHo Song's Emulator Access Point to Host OS.
-    '192.168.100.6' => 'itsuda50.com', // Ace's Emulator Access Point to Host OS.
-    '192.168.100.17' => 'itsuda50.com', // Charles Ip address
+    'goldenage50' => 'itsuda',
+    'itsuda' => 'itsuda',
+    '127.0.0.1' => 'itsuda',
+    'localhost' => 'itsuda',
+    '169.254.115.59' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
+    '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.
+    '192.168.100.17' => 'itsuda', // Charles Ip address
 ]);
 
 
