@@ -150,6 +150,16 @@ define('DOMAIN_THEMES', [
 - Meta data is saved through serialize/unserialze.
 
 
+## Entity and Taxonomy
+
+- When `idx` is set in entity instance, actions(methods) work on that record of `idx`.
+  - For instance, entity is set by `$token = token($in[TOKEN])`, then `$token->delete()` will delete that token.
+    But if an instance of entity is created without `idx` like `$token = token()`, then `$token->delete()` will fail.
+    There are some actions that works on both with `idx` and without `idx` like `entity()->get()`.
+    If `idx` is set, then `$entity->get()` will get the entity.
+    If `idx` is not set, you can still use `$entity->get(field, value)` to search and get an entity.
+    Some actions work only without `idx` like `$entity->create()`. Even if `idx` is set, it will be ignored with `create()`.
+
 ## Posts Taxonomy
 
 - The `posts` taxonomy can contain any kind of posts.
