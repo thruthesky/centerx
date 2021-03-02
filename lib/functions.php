@@ -485,3 +485,74 @@ function checkEmailFormat($email): bool
     }
 }
 
+
+
+
+function safeFilename(string $name) {
+    return seoFriendlyString($name);
+}
+
+/**
+ * Transform the $s into SEO friendly.
+ *
+ * It can be used to convert a filename into safe file name when uploading files.
+ *
+ * Ex) 'Hotels in Buenos Aires' => 'hotels-in-buenos-aires'
+ *
+ *    - converts all alpha chars to lowercase
+ *    - not allow two "-" chars continued, converte them into only one single "-"
+ *
+ * @param string $s
+ * @return string
+ */
+function seoFriendlyString(string $s): string {
+
+    $s = trim($s);
+
+    $s = html_entity_decode($s);
+
+    $s = strip_tags($s);
+
+    $s = strtolower($s);
+
+    /// Remove special chars ( or replace with - )
+    $s = preg_replace('~-+~', '-', $s);
+
+    /// Make it only one space.
+
+    $s = preg_replace('/ +/', ' ', $s);
+    $s = str_replace(" ","-", strtolower($s));
+    $s = str_replace('`', '', $s);
+    $s = str_replace('~', ' ', $s);
+    $s = str_replace('!', ' ', $s);
+    $s = str_replace('@', '', $s);
+    $s = str_replace('#', ' ', $s);
+    $s = str_replace('$', '', $s);
+    $s = str_replace('%', '', $s);
+    $s = str_replace('^', '', $s);
+    $s = str_replace('&', ' ', $s);
+    $s = str_replace('*', '', $s);
+    $s = str_replace('(', '', $s);
+    $s = str_replace(')', '', $s);
+    $s = str_replace('_', '', $s);
+    $s = str_replace('=', ' ', $s);
+    $s = str_replace('\\', '', $s);
+    $s = str_replace('|', '', $s);
+    $s = str_replace('{', '', $s);
+    $s = str_replace('[', '', $s);
+    $s = str_replace(']', '', $s);
+    $s = str_replace('"', '', $s);
+    $s = str_replace("'", '', $s);
+    $s = str_replace(';', '', $s);
+    $s = str_replace(':', '', $s);
+    $s = str_replace('/', '', $s);
+    $s = str_replace('?', '', $s);
+    $s = str_replace('.', ' ', $s);
+    $s = str_replace('<', '', $s);
+    $s = str_replace('>', '', $s);
+    $s = str_replace(',', ' ', $s);
+
+    $s = trim($s, '- ');
+
+    return $s;
+}

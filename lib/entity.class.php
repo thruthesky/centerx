@@ -73,9 +73,12 @@ class Entity {
      *
      * @see readme for detail.
      *
+     *
      * @example
      * $idx = entity(CATEGORIES)->create($in);
      * return entity(CATEGORIES, $idx)->get();
+     *
+     *
      */
     public function create( array $in ): array|string {
 
@@ -195,7 +198,7 @@ class Entity {
      * @param mixed $value
      * @return mixed
      * - The return type is `mixed` due to the overridden methods returns different data types.
-     * - empty array if the entity does not exists.
+     * - *empty array if the entity does not exists.*
      * - or entity record as array.
      *
      * 예제)
@@ -215,10 +218,22 @@ class Entity {
 
         $record = db()->get_row($q, ARRAY_A);
         if ( !$record ) return $record;
-        $meta = entity($this->taxonomy, $record['idx'])->getMetas();
-        $rets = array_merge($record, $meta);
-        $entities[$this->taxonomy][$fv] = $rets;
-        return $entities[$this->taxonomy][$fv];
+        /**
+         * If $select does not have `idx`, then it will not get meta tags.
+         */
+        if ( isset( $record['idx']) ) {
+            $meta = entity($this->taxonomy, $record['idx'])->getMetas();
+            $record = array_merge($record, $meta);
+        }
+        /**
+         * If $field is null, then don't cache.
+         */
+        if ( $field ) {
+            $entities[$this->taxonomy][$fv] = $record;
+            return $entities[$this->taxonomy][$fv];
+        } else {
+            return $record;
+        }
     }
 
     /**

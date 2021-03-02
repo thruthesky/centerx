@@ -13,10 +13,10 @@ class Post extends Entity {
      */
     public function create( array $in ): array|string {
         if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( !isset($in[CATEGORY]) ) return e()->category_is_empty;
-        $category = category($in[CATEGORY]);
+        if ( !isset($in[CATEGORY_ID]) ) return e()->category_id_is_empty;
+        $category = category($in[CATEGORY_ID]);
         if ( $category->exists() == false ) return e()->category_not_exists;
-        unset($in[CATEGORY]);
+        unset($in[CATEGORY_ID]);
 
         //
         $in[CATEGORY_IDX] = $category->idx;
@@ -117,13 +117,71 @@ class Post extends Entity {
             limit: $limit,
             order: $order,
             by: $by,
-            select: '*',
+            select: 'idx',
         );
 
-        // @todo add user(author) information
-        // @todo add attached files if exists.
+        $rets = [];
+        foreach( $posts as $post ) {
+            $idx = $post[IDX];
+            $rets[] = post($idx)->get();
+        }
 
-        return $posts;
+        return $rets;
+    }
+
+
+    /**
+     *
+     * @param string|null $field
+     * @param mixed|null $value
+     * @param string $select
+     * @return mixed
+     * - Empty array([]) if post not exists.
+     *
+     *
+    // @todo comment.
+    // @todo add user(author) information
+    // @todo add attached files if exists.
+     */
+    public function get(string $field=null, mixed $value=null, string $select='*'): mixed
+    {
+        global $__rets;
+        $post = parent::get($field, $value, $select);
+        if ( ! $post ) return [];
+        $post[COMMENTS] = [];
+        if ( isset($post[IDX]) ) {
+            $__rets = [];
+            $comments = $this->getComments($post[IDX]);
+            if ( $comments ) {
+                foreach($comments as $comment) {
+                    $got = comment($comment[IDX])->get();
+                    $got[DEPTH] = $comment[DEPTH];
+                    $post[COMMENTS][] = $got;
+                }
+            }
+        }
+        return $post;
+    }
+
+    /**
+     * Returns posts.idx, rootIdx, parentIdx, and its depth recursively.
+     *
+     * @attention $__rets must be reset for getting children of each post.
+     *
+     * @param int $parentIdx - The parent. It can be a post or a comment. If it's comment, it returns the children of the comments.
+     * @param int $depth
+     */
+    private array $__rets = [];
+    public function getComments(int $parentIdx, int $depth=1) {
+        global $__rets;
+        $q = "SELECT idx, rootIdx, parentIdx FROM " . $this->getTable() . " WHERE parentIdx=$parentIdx";
+        $rows = db()->get_results($q, ARRAY_A);
+        foreach($rows as $row) {
+            $row[DEPTH] = $depth;
+            $__rets[] = $row;
+            $this->getComments($row[IDX], $depth + 1);
+        }
+        return $__rets;
     }
 
 
@@ -145,22 +203,27 @@ class Post extends Entity {
         $path = ltrim($path,'/');
         if ( empty($path) ) return [];
         $path = urldecode($path);
-        $post = post()->get(PATH, $path);
+        $post = $this->get(PATH, $path);
         return $post;
     }
 
 
     /**
+     * Returns unique seo friendly url for the post.
+     *
+     * It returns empty string for comment.
+     *
      * @param $post
-     * @return string|string[]
+     * @return string
      */
-    private function getPath($post) {
+    private function getPath($post): string {
+        if ( $post[PARENT_IDX] ) return '';
         $title = empty($post[TITLE]) ? $post[ID] : $post[TITLE];
-        $title = $this->seoFriendlyString($title);
+        $title = seoFriendlyString($title);
         $path = $title;
         $count = 0;
         while ( true ) {
-            $p = post()->get(PATH, $path, 'idx');
+            $p = parent::get(PATH, $path, 'idx'); // Don't use post()->get() for the performance.
             if ( $p ) {
                 $count ++;
                 $path = "$title-$count";
@@ -171,69 +234,6 @@ class Post extends Entity {
     }
 
 
-
-    /**
-     * Transform the $s into SEO freindly.
-     *
-     * Ex) 'Hotels in Buenos Aires' => 'hotels-in-buenos-aires'
-     *
-     *    - converts all alpha chars to lowercase
-     *    - not allow two "-" chars continued, converte them into only one single "-"
-     *
-     * @param string $s
-     * @return string
-     */
-    private function seoFriendlyString(string $s): string {
-
-        $s = trim($s);
-
-        $s = html_entity_decode($s);
-
-        $s = strip_tags($s);
-
-        $s = strtolower($s);
-
-        /// Remove special chars ( or replace with - )
-        $s = preg_replace('~-+~', '-', $s);
-
-        /// Make it only one space.
-
-        $s = preg_replace('/ +/', ' ', $s);
-        $s = str_replace(" ","-", strtolower($s));
-        $s = str_replace('`', '', $s);
-        $s = str_replace('~', ' ', $s);
-        $s = str_replace('!', ' ', $s);
-        $s = str_replace('@', '', $s);
-        $s = str_replace('#', ' ', $s);
-        $s = str_replace('$', '', $s);
-        $s = str_replace('%', '', $s);
-        $s = str_replace('^', '', $s);
-        $s = str_replace('&', ' ', $s);
-        $s = str_replace('*', '', $s);
-        $s = str_replace('(', '', $s);
-        $s = str_replace(')', '', $s);
-        $s = str_replace('_', '', $s);
-        $s = str_replace('=', ' ', $s);
-        $s = str_replace('\\', '', $s);
-        $s = str_replace('|', '', $s);
-        $s = str_replace('{', '', $s);
-        $s = str_replace('[', '', $s);
-        $s = str_replace(']', '', $s);
-        $s = str_replace('"', '', $s);
-        $s = str_replace("'", '', $s);
-        $s = str_replace(';', '', $s);
-        $s = str_replace(':', '', $s);
-        $s = str_replace('/', '', $s);
-        $s = str_replace('?', '', $s);
-        $s = str_replace('.', ' ', $s);
-        $s = str_replace('<', '', $s);
-        $s = str_replace('>', '', $s);
-        $s = str_replace(',', ' ', $s);
-
-        $s = trim($s, '- ');
-
-        return $s;
-    }
 }
 
 

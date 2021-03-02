@@ -28,8 +28,11 @@ class E {
     public string $id_is_empty = 'error_id_is_empty';
     public string $idx_is_empty = 'error_idx_is_empty';
 
-    public string $post_not_exists = 'post_not_exists';
-    public string $not_your_post = 'not_your_post';
+    public string $post_not_exists = 'error_post_not_exists';
+    public string $comment_not_exists = 'error_comment_not_exists';
+    public string $not_your_post = 'error_not_your_post';
+
+    public string $not_your_comment = 'error_not_your_comment';
 
     public string $category_exists = 'error_category_exists';
     public string $category_not_exists = 'error_category_not_exists';
@@ -38,9 +41,13 @@ class E {
     public string $response_is_empty = 'error_response_is_empty';
     public string $entity_not_exists = 'error_entity_not_exists';
 
-    public string $category_is_empty = 'error_category_is_empty';
+    public string $category_id_is_empty = 'error_category_id_is_empty';
+    public string $root_idx_is_empty = 'error_root_idx_is_empty';
 
     public string $entity_deleted_already = 'error_entity_deleted_already';
+
+
+    public string $move_uploaded_file_failed = 'error_move_uploaded_file_failed';
 
 
 

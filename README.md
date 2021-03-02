@@ -16,6 +16,24 @@
 - Wordpress style, Friendly URL. There might be no title, so, posts may have url of numbers only.
   - `this-is-title.`, `this-is-title-2`.
 
+- posts 테이블에 countryCode 필드를 두어서, 교민 카페 만들 때, 국가별 검색 가능하도록.
+  - name, password, email, gender, address1, address2, zipcode, 등 기타 필드 다 생성.
+- phpunit 을 host os 에서 실행 할 수 있도록 할 것. https://hub.docker.com/r/phpunit/phpunit/ 에 host os 에서 실행하는 방법 설명.
+  
+- 코멘트 재귀 함수.
+
+- 관리자 페이지의 모든 기능은 위젯으로 빼고, 각 theme 에서 관리자 페이지 전체를 다 디자인 하도록 한다.
+  - 특히, 관리자 페이지는 index.php 페이지 하나로 다 하도록 해서, 메뉴만 표시 할 것. 그 외는 /?p=admin.index&widget=... 와 같이 위젯을 바로 로드 할 것.
+
+- .gitignore 에 기본적으로 widgets 폴더를 빼고, 원하는 위젯만 -f 로 넣을 것.
+  
+- git 에서 추가된 특정 폴더나 파일을 빼는 방법을 배울 것.
+
+- @todo when categoryIdx of post changes, categoryIdx of children must be changes.
+
+- meta 에 int, string, double(float) 은 serialize/unserialize 하지 말 것. 그래서 바로 검색이 되도록 한다.
+
+         
 
 # 설치
 
@@ -161,6 +179,8 @@ category2=subscateogry-2-1,subcategory-2-2, ...
     - The post A's idx is 3, 
       And the child of A is B. B has post.idx might be 10, and parentIdx must be 4, and rootIdx = 3.
       Then, the child of B is C. B's post.idx might be 20, and parentIdx must be 10, and rootIdx = 3.
+
+- If a comment has same value of `rootIdx` and `parentIdx`, then it's the first depth(immediate) child comment of the post.
 
 
 
@@ -315,6 +335,38 @@ https://local.itsuda50.com/?route=post.get&reload=true&idx=19
 ```text
 https://local.itsuda50.com/?route=post.search&reload=true&where=(categoryId=<apple> or categoryId=<banana>) and title like '%t%'&page=1&limit=3&order=idx&by=ASC
 ```
+
+
+## Comment Api
+
+
+- To create a post,
+  - Required fields are: `sessionId`, `rootIdx`, `parentIdx`.
+    - `rootIdx` is the post.idx and `parentIdx` is the parent idx. parent idx can be a post.idx or comment.idx.
+  - `content`, and other properties are optoinal.
+  - Since `Entity` class supports adding any meta data, you can add any data in `&key=value` format.
+
+```text
+https://local.itsuda50.com/?route=comment.create&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&content=A&rootIdx=159&parentIdx=159
+```
+
+- To update a post, add `sessionId` with `idx` and other `key/value` pair fields to update.
+````text
+https://local.itsuda50.com/?route=comment.update&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&content=B-A-Updated&idx=162
+````
+
+- To delete a post,
+```text
+https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&idx=162
+```
+
+- To get a post, just give `posts.idx`. `sessionId` may not be needed.
+```text
+https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
+```
+
+
+
 
 
 # Unit Testing

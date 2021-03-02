@@ -18,5 +18,7 @@
     include theme()->page();
 ?>
 
+
+<script src="<?=ROOT_URL?>etc/js/helper.js"></script>
 </body>
 </html>
