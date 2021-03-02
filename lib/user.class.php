@@ -80,9 +80,9 @@ class User extends Entity {
      */
     public function register(array $in): array|string {
 
-        if ( !in(EMAIL) ) return e()->email_is_empty;
-        if ( !checkEmailFormat(in(EMAIL)) ) return e()->malformed_email;
-        if ( !in(PASSWORD) ) return e()->password_is_empty;
+        if ( isset($in[EMAIL]) == false ) return e()->email_is_empty;
+        if ( !checkEmailFormat($in[EMAIL]) ) return e()->malformed_email;
+        if ( isset($in[PASSWORD]) == false ) return e()->password_is_empty;
 
         $user = $this->get(EMAIL, $in[EMAIL]);
         if ( $user ) return e()->email_exists;

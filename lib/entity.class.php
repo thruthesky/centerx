@@ -89,6 +89,7 @@ class Entity {
         $record[CREATED_AT] = time();
         $record[UPDATED_AT] = time();
 
+
         $idx = db()->insert( $this->getTable(), $record );
 
 //        debug_log("IDX", $idx);

@@ -74,3 +74,6 @@ function e(mixed $errcode=null): E {
 function isError($obj) {
     return e($obj)->isError;
 }
+function isSucess($obj) {
+    return isError($obj) === false;
+}

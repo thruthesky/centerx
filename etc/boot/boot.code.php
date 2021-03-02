@@ -26,8 +26,10 @@ EOE;
     d(debug_backtrace());
 }
 
-//set error handler
-set_error_handler("customErrorHandler");
+// set error handler
+if ( !API_CALL && !isCli()) {
+    set_error_handler("customErrorHandler");
+}
 
 use ezsql\Database;
 $__db = Database::initialize('mysqli', [DB_USER, DB_PASS, DB_NAME, DB_HOST]);

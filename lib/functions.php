@@ -68,7 +68,7 @@ function d($obj) {
 /**
  * @return bool
  */
-function is_cli(): bool
+function isCli(): bool
 {
     return php_sapi_name() == 'cli';
 }
@@ -81,7 +81,7 @@ function is_cli(): bool
 function is_localhost(): bool
 {
 
-    if (is_cli()) return false;
+    if (isCli()) return false;
     $localhost = false;
     $ip = $_SERVER['SERVER_ADDR'];
 //    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' || PHP_OS === 'Darwin') $localhost = true;

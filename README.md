@@ -399,11 +399,19 @@ https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
 
 # Unit Testing
 
-- We use `phpunit`.
-- Install `phpunit` on your Host OS then, run it from project folder like below.
+- 2021년 3월 기준, PHPUnit 이 PHP8 을 완벽히 지원하지 않는 것인지, 실행이 잘 안된다. 하지만, 에러가 나는 부분이 EzSQL 인 것을 감안하면, EzSQL 에 문제가 있지 싶다.
+  - 그래서, 테스트 로직을 직접 작성했다.
+  
+- 아래와 같이 실행하면, `tests/*.test.php` PHP 스크립트(파일)을 실행한다.
 
 ```shell
-$ phpunit tests/AppTest.php
+% chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php"
 ```
 
-
+- 원한다면, 아래와 같이 테스트 파일의 일부 문자열을 포함하는 파일만 실행 할 수 있다.
+  - 테스트 파일 이름에 "app" 또는 "user" 라는 문자열이 있으면 실행한다.
+  
+```shell
+% chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php app"
+% chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php user"
+```

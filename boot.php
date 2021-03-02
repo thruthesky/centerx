@@ -3,7 +3,7 @@ define('ROOT_DIR', __DIR__ . '/');
 require ROOT_DIR . 'vendor/autoload.php';
 require_once ROOT_DIR . 'lib/functions.php';
 
-define('ROOT_URL', get_current_root_url());
+
 
 
 require_once ROOT_DIR . 'lib/entity.class.php';

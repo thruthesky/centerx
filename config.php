@@ -66,6 +66,13 @@ define('DEBUG_LOG_FILE_PATH', ROOT_DIR . 'var/logs/debug.log');
 define('UPLOAD_DIR', ROOT_DIR . 'files/uploads/');
 define('THUMBNAILS_DIR', ROOT_DIR . 'files/thumbnails/');
 
+if ( isCli() ) {
+    define('ROOT_URL', UPLOAD_DIR);
+} else {
+    define('ROOT_URL', get_current_root_url());
+}
+
+
 define('UPLOAD_URL', ROOT_URL . 'files/uploads/');
 define('THUMBNAILS_URL', ROOT_URL . 'files/thumbnails/');
 
