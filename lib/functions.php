@@ -159,6 +159,15 @@ function get_domain_name(): string
     return get_host_name();
 }
 
+/**
+ * Returns the root url of current page(url) including ending slash(/).
+ * @return string
+ */
+function get_current_root_url(): string {
+    $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+    return $protocol . $_SERVER['HTTP_HOST'] . '/';
+}
+
 
 /**
  * 1차 도메인을 리턴한다.

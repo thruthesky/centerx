@@ -1,7 +1,11 @@
 <?php
+/**
+ * @file defines.php
+ */
 
-
-
+/**
+ * A taxonomy must be a table name.
+ */
 define('CONFIG', 'config');
 define('METAS', 'metas');
 define('TAXONOMY', 'taxonomy');
@@ -17,6 +21,8 @@ define('COMMENTS_TAXONOMY', 'posts');
 define('COMMENTS', 'comments');
 
 define('FILES', 'files');
+
+define('PUSH_NOTIFICATION_TOKENS', 'push_notification_tokens');
 
 
 
@@ -56,16 +62,13 @@ define('CONTENT', 'content');
 define('PATH', 'path');
 define('DEPTH', 'depth');
 
+define('TOKEN', 'token');
+
 
 
 define('USERFILE', 'userfile');
 
 
 
-define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'MAX_FILE_SIZE']);
+define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'MAX_FILE_SIZE', TOKEN]);
 
-/**
- * This can be an absolute or relative path.
- */
-define('UPLOAD_DIR', ROOT_DIR . 'files/uploads/');
-define('THUMBNAIL_DIR', ROOT_DIR . 'files/thumbnails/');

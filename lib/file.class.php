@@ -74,7 +74,7 @@ class File extends Entity {
         foreach( $arr as $idx ) {
             $got = parent::get(IDX, $idx, $select);
             if ( ! $got ) continue;
-            $got['url'] = ROOT_URL . 'files/' . $got[PATH];
+            $got['url'] = UPLOAD_URL . $got[PATH];
             $rets[] = $got;
         }
         return $rets;

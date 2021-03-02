@@ -57,3 +57,16 @@ if ( !defined('COOKIE_DOMAIN') ) {
 
 
 define('DEBUG_LOG_FILE_PATH', ROOT_DIR . 'var/logs/debug.log');
+
+
+
+/**
+ * This can be an absolute or relative path.
+ */
+define('UPLOAD_DIR', ROOT_DIR . 'files/uploads/');
+define('THUMBNAILS_DIR', ROOT_DIR . 'files/thumbnails/');
+
+define('UPLOAD_URL', ROOT_URL . 'files/uploads/');
+define('THUMBNAILS_URL', ROOT_URL . 'files/thumbnails/');
+
+

@@ -21,4 +21,8 @@ class AppRoute
     }
 
 
+    public function settings() {
+        return ['a' => 'apple'];
+    }
+
 }
