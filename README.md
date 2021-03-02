@@ -37,18 +37,17 @@
 
 - Generate thumbnails on the fly. 썸네일으 사진 업로드 할 때 하지 말고, files/thumbnails 폴더에 저장한다.
 
-# 설치
+# Installation
 
-- Docker 로 설치를 한다. Docker 설치가 제일 쉽다.
-  - 윈도우즈에서 Nginx(Apache)를 쓰지 않고, MariaDB 때신, SQLite 를 쓰고, PHP 만 설치해서, PHP Dev Webserver 만으로 실행을 한다고해도,
-    Docker 가 더 쉽다.
-    그냥 Docker 설치만 하면 된다.
-    
-- 먼저, Docker 를 설치한다.
+- Install docker.
+  - And, run docker.
+  
+- `git clone https://github.com/thruthesky/centerx`
 
-- 적절한 위치에 `git clone https://github.com/thruthesky/emp` 를 한다.
+- `cd centerx/docker`, then run `docker-compose up`.
 
-- `cd emp/docker` 를 하고 `docker-compose up` 명령을 하면, 사용 바로 웹서버로 접속 가능하며 개발 가능하다.
+- Give permission on `files` folder.
+
 
 ## Host setting
 
