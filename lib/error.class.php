@@ -30,6 +30,7 @@ class E {
 
     public string $post_not_exists = 'error_post_not_exists';
     public string $comment_not_exists = 'error_comment_not_exists';
+    public string $file_not_exists = 'error_file_not_exists';
     public string $not_your_post = 'error_not_your_post';
 
     public string $not_your_comment = 'error_not_your_comment';
@@ -48,6 +49,9 @@ class E {
 
 
     public string $move_uploaded_file_failed = 'error_move_uploaded_file_failed';
+
+    public string $not_your_file = 'error_not_your_file';
+    public string $file_delete_failed = 'error_file_delete_failed';
 
 
 

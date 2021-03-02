@@ -62,7 +62,9 @@ define('USERFILE', 'userfile');
 
 
 
-define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload']);
+define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'MAX_FILE_SIZE']);
 
-
+/**
+ * This can be an absolute or relative path.
+ */
 define('UPLOAD_DIR', ROOT_DIR . 'files/');

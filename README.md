@@ -33,6 +33,8 @@
 
 - meta 에 int, string, double(float) 은 serialize/unserialize 하지 말 것. 그래서 바로 검색이 되도록 한다.
 
+- file upload error handling. https://www.php.net/manual/en/features.file-upload.errors.php
+
          
 
 # 설치
@@ -366,6 +368,23 @@ https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
 ```
 
 
+## File Api
+
+- To create a file, there are two steps.
+  - First, upload file
+  - Second, add the file idx(es) to the taxonomy entity `files` field.
+  
+  - To upload file, call `file.upload` route with sessionId and `userfile` with file data.
+    
+  - Add files to post, comment, any other taxonomies.
+```text
+/?files=123,456,other=vars-to-save-to-the-taxonomies.
+```
+
+- To delete a file,
+```text
+/?route=file.delete&sessionId=...&idx=123
+```
 
 
 

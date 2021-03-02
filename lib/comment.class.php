@@ -82,6 +82,13 @@ class Comment extends Entity {
     public function get(string $field=null, mixed $value=null, string $select='*'): mixed
     {
         $comment = parent::get($field, $value, $select);
+
+        /**
+         * Get files only if $select includes 'files' field.
+         */
+        if ( isset($comment[FILES]) ) {
+            $comment[FILES] = files()->get($comment[FILES], select: 'idx,userIdx,path,name,size');
+        }
         return $comment;
     }
 

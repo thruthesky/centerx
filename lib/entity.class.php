@@ -83,7 +83,7 @@ class Entity {
     public function create( array $in ): array|string {
 
         if ( ! $in ) return e()->empty_param;
-        if ( isset($in['idx']) ) return e()->idx_must_not_set;
+        if ( isset($in[IDX]) ) return e()->idx_must_not_set;
 
         $record = $this->getRecordFields($in);
         $record[CREATED_AT] = time();
@@ -91,10 +91,13 @@ class Entity {
 
         $idx = db()->insert( $this->getTable(), $record );
 
+//        debug_log("IDX", $idx);
+
         if ( !$idx ) return e()->insert_failed;
 
         $this->createMetas($idx, $this->getMetaFields($in));
-        return $this->get(IDX, $idx);
+
+        return self::get(IDX, $idx);
     }
 
 
@@ -130,17 +133,15 @@ class Entity {
         $up = $this->getRecordFields($in);
         $up[UPDATED_AT] = time();
 
-
         $re = db()->update($this->getTable(), $up, eq(IDX, $this->idx ));
         if ( !$re ) return e()->update_failed;
 
         $this->updateMetas($this->idx, $this->getMetaFields($in));
 
-
         $fv = "idx=" . $this->idx;
         unset($entities[ $this->taxonomy ][ $fv ]);
 
-        return $this->get();
+        return self::get();
     }
 
     /**
@@ -149,7 +150,7 @@ class Entity {
      * The entity `idx` must be set to delete.
      */
     public function delete() {
-        $record = $this->get();
+        $record = self::get();
         if ( ! $record ) return e()->entity_not_exists;
         $re = db()->delete($this->getTable(), eq(IDX, $this->idx));
         if ( $re === false ) return e()->delete_failed;
@@ -170,9 +171,9 @@ class Entity {
      */
     public function markDelete(): array|string {
         if ( ! $this->idx ) return e()->idx_not_set;
-        $record = $this->get();
+        $record = self::get();
         if ( $record[DELETED_AT] ) return e()->entity_deleted_already;
-        $this->update([DELETED_AT => time()]);
+        self::update([DELETED_AT => time()]);
         return $record;
     }
 
@@ -206,6 +207,7 @@ class Entity {
      */
     private $entities = [];
     public function get(string $field=null, mixed $value=null, string $select='*'): mixed {
+
         global $entities;
         if ($field == null ) {
             $field = 'idx';
@@ -213,8 +215,11 @@ class Entity {
         }
         $fv = "$field=$value";
         if ( isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) return $entities[$this->taxonomy][$fv];
+
+
+
         $q = "SELECT $select FROM {$this->getTable()} WHERE `$field`='$value'";
-//        debug_log($q);
+        debug_log($q);
 
         $record = db()->get_row($q, ARRAY_A);
         if ( !$record ) return $record;
@@ -264,7 +269,7 @@ class Entity {
     public function isMine(): bool {
         if ( notLoggedIn() ) return false;
         if ( ! $this->idx ) return false;
-        $record = $this->get();
+        $record = self::get();
         if ( ! $record ) return false;
         if ( ! isset($record) ) return false;
         if ( ! $record[USER_IDX] ) return false;

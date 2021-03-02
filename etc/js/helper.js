@@ -1,19 +1,55 @@
 
 /**
+ * Add/delete newValue to/from orgValue(separated by comma)
+ *
+ *
+ * @param orgValue
+ * @param newValue
+ * @returns {*}
+ *
+ * @example
+ * var re = '111';
+ * re = addByComma(re, '555'); => 111,555
+ * re = addByComma(re, '666'); => 111,555,666
+ * re = addByComma(re, '777'); => 111,555,666,777
+ * re = deleteByComma(re, '123'); => 111,555,666,777
+ * re = deleteByComma(re, '666'); => 111,555,777
+ * re = deleteByComma(re, '888'); => 111,555,777 // no changes since 888 does not exists.
+ * re = addByComma(re, '777'); => 111,555,777 // already exists.
+ * re = addByComma(re, '777'); => 111,555,777 // already exists.
+ */
+function addByComma(orgValue, newValue) {
+    const arr = orgValue.split(',');
+    if ( arr.indexOf(newValue) >= 0 ) return orgValue; // already exists.
+    arr.push(newValue);
+    return arr.filter(function(v) { return !!v; }).join(',');
+}
+function deleteByComma(orgValue, val) {
+    const arr = orgValue.split(',');
+    const i = arr.indexOf(val);
+    if ( i >= 0 ) {
+        arr.splice(i, 1);
+    }
+    return arr.filter(function(v) { return !!v; }).join(',');
+}
+
+/**
  * Uploads files(images) to backend.
  *
  * @see README#File upload
  *
  * @param file
- * @param sessionId
+ * @param params
  * @param successCallback
  * @param errorCallback
  * @param progressCallback
  */
-function fileUpload(file, sessionId, successCallback, errorCallback, progressCallback) {
+function fileUpload(file, params, successCallback, errorCallback, progressCallback) {
     const form = new FormData();
     form.append('route', 'file.upload');
-    form.append('sessionId', sessionId);
+    for(const key of Object.keys(params) ) {
+        form.append(key, params[key]);
+    }
     form.append('userfile', file);
     const options = {
         onUploadProgress: function (progressEvent) {
@@ -37,14 +73,15 @@ function fileUpload(file, sessionId, successCallback, errorCallback, progressCal
  * @param errorCallback
  */
 function respondCallback(res, successCallback, errorCallback) {
-    console.log ( res.data );
-    if ( typeof res.data === 'string' && res.data.indexOf('error_') === 0 ) {
+    const data = res.data;
+    if ( typeof data.response === 'undefined' ) errorCallback('error_response_is_empty');
+    if ( typeof data.response === 'string' && data.response.indexOf('error_') === 0 ) {
         if ( typeof errorCallback === 'function' ) {
-            errorCallback(res.data);
+            errorCallback(data.response);
         }
     } else {
         if ( typeof successCallback === 'function') {
-            successCallback(res.data);
+            successCallback(data.response);
         }
     }
 }

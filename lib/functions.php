@@ -489,7 +489,15 @@ function checkEmailFormat($email): bool
 
 
 function safeFilename(string $name) {
-    return seoFriendlyString($name);
+    $pi = pathinfo($name);
+    if ( isset($pi['extension']) ) {
+        $name = $pi['filename'];
+    }
+    $name = seoFriendlyString($name);
+    if ( isset($pi['extension']) ) {
+        $name = $name . '.' . $pi['extension'];
+    }
+    return $name;
 }
 
 /**

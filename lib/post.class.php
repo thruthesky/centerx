@@ -160,6 +160,12 @@ class Post extends Entity {
                 }
             }
         }
+        /**
+         * Get files only if $select includes 'files' field.
+         */
+        if ( isset($post[FILES]) ) {
+            $post[FILES] = files()->get($post[FILES], select: 'idx,userIdx,path,name,size');
+        }
         return $post;
     }
 
@@ -218,7 +224,7 @@ class Post extends Entity {
      */
     private function getPath($post): string {
         if ( $post[PARENT_IDX] ) return '';
-        $title = empty($post[TITLE]) ? $post[ID] : $post[TITLE];
+        $title = empty($post[TITLE]) ? $post[IDX] : $post[TITLE];
         $title = seoFriendlyString($title);
         $path = $title;
         $count = 0;
