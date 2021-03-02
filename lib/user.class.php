@@ -76,9 +76,9 @@ class User extends Entity {
      * Create a user account and return his profile.
      *
      * @param array $in
-     * @return string|array
+     * @return array|string
      */
-    public function register(array $in): string|array {
+    public function register(array $in): array|string {
 
         if ( !in(EMAIL) ) return e()->email_is_empty;
         if ( !checkEmailFormat(in(EMAIL)) ) return e()->malformed_email;
@@ -93,6 +93,12 @@ class User extends Entity {
 
         if ( isError($record) ) return $record;
         return user($record[IDX])->profile();
+    }
+
+    public function loginOrRegister(array $in): array|string {
+        $re = $this->login($in);
+        if ( isError($re) == false ) return $re;
+        else return $this->register($in);
     }
 
     /**

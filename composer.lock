@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3469a4c8000ba0ad007d034b28ffd991",
+    "content-hash": "05f0867f583d14fc3946fe7abd5527bb",
     "packages": [
         {
             "name": "ezsql/ezsql",

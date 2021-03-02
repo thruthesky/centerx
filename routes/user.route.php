@@ -10,8 +10,12 @@ class UserRoute {
         return user()->register($in);
     }
 
+    public function loginOrRegister($in) {
+        return user()->loginOrRegister($in);
+    }
+
     public function profile($in) {
-        return user()->profile();
+        return login()->profile();
     }
 
 

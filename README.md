@@ -35,7 +35,7 @@
 
 - file upload error handling. https://www.php.net/manual/en/features.file-upload.errors.php
 
-         
+- Generate thumbnails on the fly. 썸네일으 사진 업로드 할 때 하지 말고, files/thumbnails 폴더에 저장한다.
 
 # 설치
 

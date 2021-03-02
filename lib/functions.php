@@ -441,6 +441,7 @@ function error(string $code) {
  * @param mixed $data
  */
 function success(mixed $data) {
+    header('Content-Type: application/json');
     echo json_encode([
         'response' => $data,
         'request' => in(),

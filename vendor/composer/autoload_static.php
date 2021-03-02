@@ -7,8 +7,8 @@ namespace Composer\Autoload;
 class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
 {
     public static $files = array (
-        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '8fa1aa8cac6a43024fcfc5386df20ced' => __DIR__ . '/..' . '/ezsql/ezsql/lib/Constants.php',
         'b8b48b5f3b620f647efc2110a0a0e913' => __DIR__ . '/..' . '/ezsql/ezsql/lib/ezFunctions.php',
@@ -48,8 +48,8 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
         'ezsql\\' => 
         array (

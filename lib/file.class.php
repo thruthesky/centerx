@@ -14,15 +14,8 @@ class File extends Entity {
      * @return array|string
      */
     public function upload($in) {
-//        debug_log($in);
-//        debug_log($_FILES);
-
 
         if ( notLoggedIn() ) return e()->not_logged_in;
-//        if ( !isset($in[TAXONOMY]) ) return e()->taxonomy_is_empty;
-//        if ( !isset($in[ENTITY]) ) return e()->entity_is_empty;
-
-
         $name = basename($_FILES[USERFILE]['name']);
         $path = $this->getPath($name);
 
@@ -109,10 +102,6 @@ class File extends Entity {
             }
         }
     }
-
-
-
-
 }
 
 
