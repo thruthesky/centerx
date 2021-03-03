@@ -12,6 +12,7 @@ require_once ROOT_DIR . 'lib/config.class.php';
 require_once ROOT_DIR . 'lib/user.class.php';
 require_once ROOT_DIR . 'lib/category.class.php';
 require_once ROOT_DIR . 'lib/post.class.php';
+require_once ROOT_DIR . 'lib/push-notification-tokens.class.php';
 require_once ROOT_DIR . 'lib/comment.class.php';
 require_once ROOT_DIR . 'lib/file.class.php';
 require_once ROOT_DIR . 'lib/error.class.php';

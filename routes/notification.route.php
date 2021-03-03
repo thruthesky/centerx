@@ -1,74 +1,66 @@
 <?php
 
+
+
 class NotificationRoute {
 
-//    /**
-//     * @throws \Kreait\Firebase\Exception\FirebaseException
-//     * @throws \Kreait\Firebase\Exception\MessagingException
-//     *
-//     * @example how to access
-//     *
-//     * http://local.wordpress.org/wordpress-api-v2/php/api.php?method=pushNotification.tokenUpdate&token=c36jia8q_4qMm05fRhQ0_r:APA91bGB0en7xx3h1QF8jGaGF84qalp1JDzbfI5Kt9Klx02y3BUfaEloP57sfyYOXXpuTTMU3Fw7DJ-kNsf5qkGnA2V1NqwhLH7vlLQCCpeJgz-kqfhYBauhycOwVkkEIx6Z8yVO7nWe&topic=abc
-//     *
-//     * @note expected result
-//     *
-//     * {"code":0,"data":{"token":"c36jia8q_4qMm05fRhQ0_r:APA91bGB0en7xx3h1QF8jGaGF84qalp1JDzbfI5Kt9Klx02y3BUfaEloP57sfyYOXXpuTTMU3Fw7DJ-kNsf5qkGnA2V1NqwhLH7vlLQCCpeJgz-kqfhYBauhycOwVkkEIx6Z8yVO7nWe","user_ID":"0","type":"","stamp":"1579611552"},"method":"pushNotification.tokenUpdate"}
-//     *
-//     */
-    public function updateToken($in)
+    /**
+     *
+     * @param $in
+     *
+     * @example how to access
+     *
+     * http://domain/index.php?route=notification.updateToken&token=ebyHPOGMSqmwEMeK2PE7jx%3AAPA91bEBTmyYTWxUXKdypgeC5jKxJ6nXL27EQN9NTe1U6GTSlchv2ZGKVXKfjk_yA6T-hfHh-vRxqJzFb_rrWVSxQJKB5ZNBHQ21kLd_Dt-4PAguVF1hh13HeH2NPGFyaaLwFAxYMh5v&topic
+     *
+     * @return array|string
+     *
+     * @note expected result
+     *
+     * {"response":{"idx":"1","userIdx":"0","token":"ebyHPOGMSqmwEMeK2PE7jx:APA91bEBTmyYTWxUXKdypgeC5jKxJ6nXL27EQN9NTe1U6GTSlchv2ZGKVXKfjk_yA6T-hfHh-vRxqJzFb_rrWVSxQJKB5ZNBHQ21kLd_Dt-4PAguVF1hh13HeH2NPGFyaaLwFAxYMh5v","domain":"192.168.100.17","createdAt":"1614768786","updatedAt":"1614771526"},"request":{"route":"notification.updateToken","token":"ebyHPOGMSqmwEMeK2PE7jx:APA91bEBTmyYTWxUXKdypgeC5jKxJ6nXL27EQN9NTe1U6GTSlchv2ZGKVXKfjk_yA6T-hfHh-vRxqJzFb_rrWVSxQJKB5ZNBHQ21kLd_Dt-4PAguVF1hh13HeH2NPGFyaaLwFAxYMh5v","topic":""}}
+     *
+     */
+    public function updateToken($in): array|string
     {
         if (!isset($in[TOKEN])) return e()->token_is_empty;
         return token($in[TOKEN])->update($in);
     }
 
-//    /**
-//     *
-//     * $in['tokens'] can be a string of a token or an array of tokens
-//     *
-//     * @return array|string
-//     * @throws \Kreait\Firebase\Exception\FirebaseException
-//     * @throws \Kreait\Firebase\Exception\MessagingException
-//     */
-//    public function sendMessageToTokens($in) {
-//        if ( !isset($in['tokens']) ) return ERROR_EMPTY_TOKENS;
-//        if ( !isset($in['title'])) $in['title'] = '';
-//        if ( !isset($in['body'])) $in['body'] = '';
-//        if ( !isset($in['click_action'])) $in['click_action'] = '/';
-//        if ( !isset($in['imageUrl'])) $in['imageUrl'] = '';
-//
-//        if ( !isset($in['data'])) $in['data'] = [];
-//        $in['data']['senderId'] = wp_get_current_user()->ID;
-//        return sendMessageToTokens($in['tokens'], $in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']);
-//    }
-//
-//    /**
-//     * @param $in
-//     * @return array|string
-//     * @throws \Kreait\Firebase\Exception\FirebaseException
-//     * @throws \Kreait\Firebase\Exception\MessagingException
-//     */
-//    public function sendMessageToTopic($in) {
-//        if ( !isset($in['topic']) ) return ERROR_EMPTY_TOPIC;
-//        if ( !isset($in['title'])) $in['title'] = '';
-//        if ( !isset($in['body'])) $in['body'] = '';
-//        if ( !isset($in['click_action'])) $in['click_action'] = '/';
-//        if ( !isset($in['imageUrl'])) $in['imageUrl'] = '';
-//
-//        if ( !isset($in['data'])) $in['data'] = [];
-//        $in['data']['senderId'] = wp_get_current_user()->ID;
-//        return sendMessageToTopic($in['topic'], $in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']);
-//    }
-//
-//
-//    /**
-//     * @param $in
-//     * @return \Kreait\Firebase\Messaging\MulticastSendReport
-//     * @throws \Kreait\Firebase\Exception\FirebaseException
-//     * @throws \Kreait\Firebase\Exception\MessagingException
-//     */
-//    public function sendMessageToUsers($in) {
-//        return send_message_to_users($in);
-//    }
+    /**
+     * @param $in
+     * $in['tokens'] can be a string of a token or an array of tokens
+     *
+     * @return array|string
+     */
+    public function sendMessageToTokens($in): array|string {
+        if ( !isset($in['tokens']) ) return e()->token_is_empty;
+        $in = sanitizedInput($in);
+        return sendMessageToTokens($in['tokens'], $in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']);
+    }
+
+
+
+
+    /**
+     * @param $in
+     * @return array|string
+     */
+    public function sendMessageToTopic($in): array|string {
+        if ( !isset($in['topic']) ) return e()->topic_is_empty;
+        $in = sanitizedInput($in);
+        return sendMessageToTopic($in['topic'], $in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']);
+    }
+
+
+    /**
+     * @param $in
+     * @return MulticastSendReport|string
+     */
+    public function sendMessageToUsers($in):MulticastSendReport|string {
+        return send_message_to_users($in);
+    }
+
+
+
 //
 //    /**
 //     * @param $in

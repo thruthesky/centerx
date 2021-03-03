@@ -64,7 +64,17 @@ define('PATH', 'path');
 define('DEPTH', 'depth');
 
 define('TOKEN', 'token');
+define('TOPIC', 'topic');
 define('DOMAIN', 'domain');
+
+/**
+ * For push notification topics and prefixes
+ */
+define('DEFAULT_TOPIC', 'defaultTopic');
+define('DEFAULT_NOTIFY_PREFIX', 'notify');
+define('NOTIFY_POST', DEFAULT_NOTIFY_PREFIX . 'Post_');
+define('NOTIFY_COMMENT', DEFAULT_NOTIFY_PREFIX . 'Comment_');
+define('SUBSCRIPTION', 'subscription');
 
 
 define('USERFILE', 'userfile');

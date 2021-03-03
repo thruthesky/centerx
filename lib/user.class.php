@@ -93,18 +93,6 @@ class User extends Entity {
 
         if ( isError($record) ) return $record;
 
-        /**
-         * If token is passed over, create one.
-         */
-        if ( isset($in[TOKEN]) ) {
-            if ( token($in[TOKEN])->exists() == false ) {
-                token()->create([
-                    USER_IDX => my(IDX),
-                    TOKEN => $in[TOKEN],
-                ]);
-            }
-        }
-
         return user($record[IDX])->profile();
     }
 

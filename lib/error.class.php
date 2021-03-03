@@ -55,6 +55,11 @@ class E {
 
 
     public string $token_is_empty = 'error_token_is_empty';
+    public string $topic_is_empty = 'error_topic_is_empty';
+    public string $topic_subscription = 'error_topic_subscription';
+    public string $users_is_empty = 'error_users_is_empty';
+    public string $title_is_not_exist = 'error_title_is_not_exist';
+    public string $body_is_not_exist = 'error_body_is_not_exist';
 
 
 
