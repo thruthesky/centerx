@@ -20,9 +20,11 @@ function isTrue($t, string $msg = '') {
     }
     else {
         $stacks = debug_backtrace();
-        $info = array_pop($stacks);
-        echo 'x';
-        echo "\n\n-----------------------------------------\n$msg >>> $info[file] at line: $info[line]\n-----------------------------------------\n\n";
+        echo "x($msg)";
+        echo "\n----------------------------------------------------------------------\n";
+        print_r($stacks);
+        echo "\n----------------------------------------------------------------------\n";
+//        echo "\n\n-----------------------------------------\n$msg >>> $info[file] at line: $info[line]\n-----------------------------------------\n\n";
         $errorCount ++;
     }
     $testCount ++;

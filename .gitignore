@@ -1,6 +1,7 @@
 .idea
 node_modules
 logs
+etc/keys
 etc/phpMyAdmin/tmp/twig/*.php
 etc/phpMyAdmin/tmp/**
 etc/phpMyAdmin/tmp
@@ -11,3 +12,5 @@ var
 files
 
 .DS_Store
+
+

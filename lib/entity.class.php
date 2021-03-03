@@ -457,10 +457,13 @@ class Entity {
      * Read the readme for details.
      *
      * @param string $code
-     * @return bool|int|mixed|null
+     * @return mixed
+     * - If record does not exists, it returns null.
+     * - Or meta value
      */
-    public function getMeta(string $code) {
+    public function getMeta(string $code): mixed {
         $q = "SELECT data FROM " . entity(METAS)->getTable() . " WHERE taxonomy='{$this->taxonomy}' AND entity={$this->idx} AND code='$code'";
+//        echo("Q: $q\n");
         $data = db()->get_var($q);
         return $this->_unserialize($data);
     }
@@ -473,6 +476,9 @@ class Entity {
      *      이 부분에서 실수를 할 수 있으므로 각별히 주의한다.
      *
      * - entity(taxonomy)->updateMeta() 와 같이 taxonomy 에 아무 값이나 주고, 바로 호출 할 수 있다. 실제 taxonomy 테이블은 존재하지 않아도 된다.
+     *
+     *
+     * @attention Don't save null.
      *
      * @param int $idx - taxonomy.idx 이다. 새로운 entity 가 생성될 때, 그 entity 로 연결하거나, 다른 entity 로 연결 할 수 있다.
      * @param string $code
@@ -496,6 +502,10 @@ class Entity {
     /**
      * Add(or set) a meta & value only if it does not exists. If the meta exists already, then it doesn't do anything.
      *
+     * Note, since `idx` is passed over parameter, entity.`idx` is ignored.
+     *
+     * @attention Don't save null.
+     *
      * @param int $idx
      * @param string $code
      * @param mixed $data
@@ -505,7 +515,7 @@ class Entity {
      */
     public function setMetaIfNotExists(int $idx, string $code, mixed $data): mixed {
         $re = entity($this->taxonomy, $idx)->getMeta($code);
-        if ( !$re ) {
+        if ( $re === null ) {
             return $this->setMeta($idx, $code, $data);
         }
         return false;
@@ -544,10 +554,10 @@ class Entity {
 
 
     /**
+     * Returns a meta value based on current taxonomy and entity.
+     * So, entity idx must be set.
+     * You may instantiate another object with entity.idx if you only have taxonomy.
      *
-     * 현재 테이블(taxonomy)의 현재 entity 에 연결된 meta 값 전체를 배열로 리턴한다.
-     *
-     * 함수는 Taxonomy 와 entity.idx 를 받지 않는다. 따라서 꼭 필요한 경우, 아래의 예제와 같이 Entity 객체를 한번 더 생성해야 한다.
      *
      * @return array
      *
