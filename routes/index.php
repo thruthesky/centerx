@@ -39,5 +39,5 @@ if ( $func = getRoute($route) ) {
 
     $response = $instance->$methodName(in());
 }
-if ( $response == null || $response == '' ) error(e()->response_is_empty);
+if ( is_array($response) == false && ($response == null || $response == '') ) error(e()->response_is_empty);
 success($response);
