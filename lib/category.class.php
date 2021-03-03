@@ -50,3 +50,10 @@ function category(int|string $idx = 0) {
 
     return new Category($idx);
 }
+
+/**
+ * Returns all the categories including their records and metas.
+ */
+function categories() {
+    return category()->search(select: '*');
+}

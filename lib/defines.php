@@ -59,6 +59,7 @@ define('PROFILE_PHOTO_URL', 'profilePhotoUrl');
 
 define('TITLE', 'title');
 define('CONTENT', 'content');
+define('DESCRIPTION', 'description');
 define('PATH', 'path');
 define('DEPTH', 'depth');
 
@@ -70,5 +71,5 @@ define('USERFILE', 'userfile');
 
 
 
-define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'MAX_FILE_SIZE', TOKEN]);
+define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'w', 'mode', 'MAX_FILE_SIZE', TOKEN]);
 

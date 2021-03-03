@@ -1,6 +1,6 @@
 <?php
 $page = in('page', 1) < 1 ? 1 : in('page', 1);
-$limit = 3;
+$limit = 15;
 $key = in('key');
 $where = '1';
 if ( $key ) {
@@ -15,7 +15,8 @@ $total = user()->count(where:  $where);
 <section class="mx-5">
 
     <form>
-        <input type="hidden" name="p" value="admin.user.list">
+        <input type="hidden" name="p" value="admin.index">
+        <input type="hidden" name="w" value="user/admin-user-list">
         <div class="form-row align-items-center">
             <div class="col-auto">
                 <input type="text" class="form-control mb-2" name='key' placeholder="사용자 메일 주소, 이름을 입력해주세요.">

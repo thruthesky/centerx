@@ -8,7 +8,7 @@ define('DOMAIN_THEMES', [
     'itsuda' => 'itsuda',
     '127.0.0.1' => 'itsuda',
     'localhost' => 'itsuda',
-    '169.254.115.59' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
+    '169.254.194.6' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
     '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.
     '192.168.100.17' => 'itsuda', // Charles Ip address
 ]);
@@ -77,3 +77,5 @@ define('UPLOAD_URL', ROOT_URL . 'files/uploads/');
 define('THUMBNAILS_URL', ROOT_URL . 'files/thumbnails/');
 
 
+
+define('ADMIN_EMAIL', 'thruthesky@gmail.com');

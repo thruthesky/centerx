@@ -2,6 +2,9 @@
 
 # 해야 할 일
 
+
+- docker 에서 php 설정, short_open_tag On 이 동작하지 않음.
+
 - backend 의 코드를 복사 할 것.
 - 기본 코어 말고, plugin 은 관리자 모드에서 설치 과정을 진행하도록 한다. 워드프레스와 동일하게 한다.
   - 이 때, plugins 폴더를 두고, 외부 개발자가 플러그인을 추가 할 수 있도록 한다.
@@ -21,9 +24,6 @@
 - phpunit 을 host os 에서 실행 할 수 있도록 할 것. https://hub.docker.com/r/phpunit/phpunit/ 에 host os 에서 실행하는 방법 설명.
   
 - 코멘트 재귀 함수.
-
-- 관리자 페이지의 모든 기능은 위젯으로 빼고, 각 theme 에서 관리자 페이지 전체를 다 디자인 하도록 한다.
-  - 특히, 관리자 페이지는 index.php 페이지 하나로 다 하도록 해서, 메뉴만 표시 할 것. 그 외는 /?p=admin.index&widget=... 와 같이 위젯을 바로 로드 할 것.
 
 - .gitignore 에 기본적으로 widgets 폴더를 빼고, 원하는 위젯만 -f 로 넣을 것.
   
@@ -393,6 +393,46 @@ https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
 - To delete a file,
 ```text
 /?route=file.delete&sessionId=...&idx=123
+```
+
+
+# Theme
+
+## Admin page design
+
+- It is recommended to write admin code as a widget.
+  And in admin page, there should be only button menus that load the widgets.
+
+- Admin page might look like below. It simply loads widgets depending on which button it was pressed.
+
+```html
+<h1>Admin Page</h1>
+<a href="/?p=admin.index&w=user/admin-user-list">User</a>
+<a href="/?p=admin.index&w=category/admin-category-list">Category</a>
+<a href="/?p=admin.index&w=category/admin-post-list">Posts</a>
+<a href="/?p=admin.user.list">Mall</a>
+<?php
+include widget(in('w') ?? 'user/admin-user-list');
+?>
+```
+
+- When you submit the form, the may code like below.
+  - Below are the category create sample.
+  - When the form is submitted, it reloads(redirect to the current page) and create the category.
+
+```html
+<?php
+if ( modeCreate() ) {
+    $re = category()->create([ID=>in('id')]);
+}
+?>
+<form>
+  <input type="hidden" name="p" value="admin.index">
+  <input type="hidden" name="w" value="category/admin-category-list">
+  <input type="hidden" name="mode" value="create">
+  <input type="text" name='id' placeholder="카테고리 아이디 입력">
+  <button type="submit">Create</button>
+</form>
 ```
 
 

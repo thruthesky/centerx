@@ -20,7 +20,7 @@
         <a class="btn btn-primary" href="/?p=forum.post.list&categoryId=qna">QnA</a>
 
         <?php if ( admin() ) { ?>
-            <a class="btn btn-primary" href="/?p=admin.user.list">Admin</a>
+            <a class="btn btn-primary" href="/?p=admin.index">Admin</a>
         <?php } ?>
     </div>
 

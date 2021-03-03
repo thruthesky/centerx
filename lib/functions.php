@@ -403,7 +403,8 @@ function my(string $field) {
 }
 
 function admin(): bool {
-    return my(EMAIL) == config()->get(ADMIN);
+    if ( my(EMAIL) === ADMIN_EMAIL ) return true;
+    return my(EMAIL) === config()->get(ADMIN);
 }
 
 function debug_log($message, $data='') {
@@ -432,7 +433,7 @@ function widget(string $path, array $options=[], string $widgetId=null) {
     $__widget_options = $options;
     if ( $widgetId ) entity('widget')->setMetaIfNotExists(0, $widgetId, $options );
     $arr = explode('/', $path);
-    $_path = ROOT_DIR . "/widgets/$arr[0]/$arr[1]/$arr[1].php";
+    $_path = ROOT_DIR . "widgets/$arr[0]/$arr[1]/$arr[1].php";
     return $_path;
 }
 
@@ -573,4 +574,20 @@ function seoFriendlyString(string $s): string {
     $s = trim($s, '- ');
 
     return $s;
+}
+
+
+/**
+ * Helper function to detect if form have submitted for creation
+ * @return bool
+ */
+function modeCreate(): bool {
+    return in('mode') == 'create';
+}
+/**
+ * Helper function to detect if form have submitted for update
+ * @return bool
+ */
+function modeUpdate(): bool {
+    return in('mode') == 'update';
 }
