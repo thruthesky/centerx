@@ -54,6 +54,9 @@ class E {
     public string $file_delete_failed = 'error_file_delete_failed';
 
 
+    public string $token_is_empty = 'error_token_is_empty';
+
+
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)
