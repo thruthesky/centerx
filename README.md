@@ -3,6 +3,11 @@
 # 해야 할 일
 
 
+- Generate thumbnails on the fly. 썸네일으 사진 업로드 할 때 하지 말고, files/thumbnails 폴더에 저장한다.
+  - /etc/image/thumbnail.php?source=...&width=..&height=.. 와 같이하는데, target 은 source 는 파일 경로 URL 이나, file.idx 일 수 있다.
+    
+
+
 - docker 에서 php 설정, short_open_tag On 이 동작하지 않음.
 
 - pass login
@@ -42,7 +47,6 @@
 
 - file upload error handling. https://www.php.net/manual/en/features.file-upload.errors.php
 
-- Generate thumbnails on the fly. 썸네일으 사진 업로드 할 때 하지 말고, files/thumbnails 폴더에 저장한다.
 
 # Installation
 
