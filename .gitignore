@@ -9,3 +9,5 @@ docker/mysqldata
 .bash_history
 var
 files
+
+.DS_Store

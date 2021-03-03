@@ -159,6 +159,12 @@ define('DOMAIN_THEMES', [
     If `idx` is not set, you can still use `$entity->get(field, value)` to search and get an entity.
     Some actions work only without `idx` like `$entity->create()`. Even if `idx` is set, it will be ignored with `create()`.
 
+- Mostly taxonomy is a table on the database. But it's not mandatory.
+  - Just like what `Config` class does.
+    The `Config` class simply defines itself as config taxonomy and its table does not exist.
+    So, when `Config` uses the functionality of `Entity`, it cannot do anything that is related with the table.
+    It can do such things like `entity->getMtea()`, set, update, delete, addifNotExists that are not related with the taxonomy table.
+
 ## Posts Taxonomy
 
 - The `posts` taxonomy can contain any kind of posts.
@@ -196,7 +202,13 @@ category2=subscateogry-2-1,subcategory-2-2, ...
 
 
 
-## 관리자 지정하기
+# Admin
+
+## How to set admin to manage the site.
+
+- Root admin, who has the full power, can be set to ADMIN_EMAIL constant in `config.php`.
+  After setting the email in config.php, you may regsiter(or login) with the email.
+  
 
 ```php
 config()->set('admin', 'thruthesky@gmail.com');
@@ -377,7 +389,7 @@ https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
 ```
 
 
-## File Api
+## Files and File Api
 
 - To create a file, there are two steps.
   - First, upload file
@@ -394,6 +406,11 @@ https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
 ```text
 /?route=file.delete&sessionId=...&idx=123
 ```
+
+
+- You can upload a file/image and save the idx (of uploaded file) in a different meta field of the taxonomy.
+  - You have to delete the taxonomy meta field after delte the file.
+
 
 
 # Theme
@@ -416,6 +433,25 @@ include widget(in('w') ?? 'user/admin-user-list');
 ?>
 ```
 
+- Recommended admin page(widget) layout. You can pass child widget path over `cw`.
+```html
+<div class="container">
+    <div class="row">
+      <div class="col-3">
+        <h3>title</h3>
+        ... left side menu...
+      </div>
+      <div class="col-9">
+        ... content ...
+        <?php
+          include widget( in('cw', 'shopping-mall/admin-shopping-mall-list') );
+        ?>
+      </div>
+    </div>
+</div>
+```
+
+
 - When you submit the form, the may code like below.
   - Below are the category create sample.
   - When the form is submitted, it reloads(redirect to the current page) and create the category.
@@ -433,6 +469,33 @@ if ( modeCreate() ) {
   <input type="text" name='id' placeholder="카테고리 아이디 입력">
   <button type="submit">Create</button>
 </form>
+```
+
+
+
+# Vue.js 3
+
+- Below is the basic sculpture of using Vue.js 3 is. Every page should include the Vue javascript and mount.
+
+```html
+<section id="app">
+  <input type="number" @keyup="onPriceChange" v-model="post.price">
+</section>
+<script src="<?=ROOT_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                post: {
+                    price: 1
+                }
+            }
+        },
+        created() {
+            console.log('created');
+        }
+    }).mount("#app");
+</script>
 ```
 
 

@@ -44,6 +44,7 @@ function category(int|string $idx = 0) {
     if ( $idx && !is_numeric($idx) ) {
         // If the input is string, then it is considered as category id. And returns Category instance with its idx.
         $record = entity(CATEGORIES)->get(ID, $idx);
+        if ( isError($record) ) return category();
         if ($record) return category($record[IDX]);
         return category();
     }

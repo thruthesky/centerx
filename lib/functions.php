@@ -591,3 +591,28 @@ function modeCreate(): bool {
 function modeUpdate(): bool {
     return in('mode') == 'update';
 }
+/**
+ * Helper function to detect if form have submitted for delete
+ * @return bool
+ */
+function modeDelete(): bool {
+    return in('mode') == 'delete' || in('button') == 'delete';
+}
+
+/**
+ * Helper function to detect if form have submitted
+ * @return bool
+ */
+function modeSubmit(): bool {
+    return in('mode') == 'submit';
+}
+
+/**
+ *
+ */
+function bsAlert($text) {
+   echo <<<EOH
+<div class="alert alert-secondary">$text</div>
+EOH;
+
+}

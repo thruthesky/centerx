@@ -69,6 +69,9 @@ class Post extends Entity {
         return parent::update($in);
     }
 
+    /**
+     * @return array|string
+     */
     public function markDelete(): array|string {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! $this->idx ) return e()->idx_is_empty;
@@ -94,11 +97,13 @@ class Post extends Entity {
      * @param string $order
      * @param string $by
      * @param string $select
+     * @param string $categoryId
      * @return mixed
      * @throws Exception
      */
-    public function search(string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'): mixed {
-
+    public function search(
+        string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'
+    ): mixed {
 
         // Parse category
         $count = preg_match_all("/<([^>]+)>/", $where, $ms);
@@ -127,6 +132,11 @@ class Post extends Entity {
         }
 
         return $rets;
+    }
+
+    // Helper class of search()
+    public function list(string $categoryId, int $page=1, int $limit=10) {
+        return $this->search(where: "categoryId=<$categoryId> AND deletedAt=0", page: $page, limit: $limit, select: '*');
     }
 
 
