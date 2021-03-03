@@ -5,11 +5,18 @@
 
 - docker 에서 php 설정, short_open_tag On 이 동작하지 않음.
 
+- pass login
+  
+- 쇼핑몰 옵션 페이지를 만들고, 배송비와 배송비 무료 제한 금액을 지정한다. mall.options 라우터도 수정한다.
+  
 - backend 의 코드를 복사 할 것.
 - 기본 코어 말고, plugin 은 관리자 모드에서 설치 과정을 진행하도록 한다. 워드프레스와 동일하게 한다.
   - 이 때, plugins 폴더를 두고, 외부 개발자가 플러그인을 추가 할 수 있도록 한다.
   
 - 설치 과정을 backend/model 에서 가져와서 그대로 사용 할 것.
+
+- 파일 업로드에서, 퍼미션이 없을 때, empty response 에러가 나온다. 올바른 에러가 표시되도록 할 것.
+
 
 - 훅시스템
   - entity()->create(), update(), delete(), get(), search() 등에서만 훅을 걸면 왠만한 것은 다 된다.
