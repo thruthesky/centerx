@@ -81,3 +81,22 @@ define('THUMBNAILS_URL', ROOT_URL . 'files/thumbnails/');
  * Set admin email address.
  */
 define('ADMIN_EMAIL', 'thruthesky@gmail.com');
+
+
+
+/**
+ * Firebase Admin Service Account Key, for firebase connection
+ */
+if ( ! defined('FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH') ) {
+    define("FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH", ROOT_DIR . "etc/keys/itsuda50-firebase-adminsdk.json");
+}
+if ( ! defined('FIREBASE_DATABASE_URI') ) {
+    define("FIREBASE_DATABASE_URI", "https://itsuda50-default-rtdb.firebaseio.com/");
+}
+
+
+
+
+
+
+

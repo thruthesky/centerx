@@ -64,6 +64,8 @@ define('PATH', 'path');
 define('DEPTH', 'depth');
 
 define('TOKEN', 'token');
+define('DOMAIN', 'domain');
+
 
 define('USERFILE', 'userfile');
 define('SHOPPING_MALL', 'shopping_mall');

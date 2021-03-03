@@ -16,17 +16,16 @@ class PushNotificationTokens extends Entity {
     public function update(array $in): array|string {
 
 
-        $userIdx = my(IDX) ?? 0;
+        $data = [
+            USER_IDX => my(IDX) ?? 0,
+            TOKEN => $in[TOKEN],
+            DOMAIN => get_domain_name(),
+        ];
+
         if ( $this->exists() == false ) {
-            $res = parent::create([
-                USER_IDX => $userIdx,
-                TOKEN => $in[TOKEN],
-            ]);
+            $res = parent::create($data);
         } else {
-            $res = parent::update([
-                USER_IDX => $userIdx,
-                TOKEN => $in[TOKEN],
-            ]);
+            $res = parent::update($data);
         }
 
         // @TODO add topic subscription
