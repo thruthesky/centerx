@@ -77,5 +77,7 @@ define('UPLOAD_URL', ROOT_URL . 'files/uploads/');
 define('THUMBNAILS_URL', ROOT_URL . 'files/thumbnails/');
 
 
-
+/**
+ * Set admin email address.
+ */
 define('ADMIN_EMAIL', 'thruthesky@gmail.com');

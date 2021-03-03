@@ -4,15 +4,16 @@ if ( modeCreate() ) {
     $re = category()->create([ID=>in('id')]);
 } else if ( modeUpdate() ) {
     $re = category(in('id'))->update(in());
+} else if ( modeDelete() ) {
+    category(in('id'))->delete();
 }
 
 ?>
 
-
 <div class="container">
     <div class="row">
         <div class="col-3">
-            <?php if ( in(ID) ) {
+            <?php if ( in(ID) && modeDelete() == false ) {
                 $cat = category(in(ID))->get();
                 ?>
                     <h3>Category Update</h3>
@@ -25,6 +26,7 @@ if ( modeCreate() ) {
                 <input type="text" class="form-control mb-2" name='<?=DESCRIPTION?>' value="<?=$cat[DESCRIPTION]?>" placeholder="설명 입력">
 
                 <button type="submit" class="btn btn-primary mb-2">Update</button>
+                <a href="/?p=admin.index&w=category/admin-category-list&mode=delete&id=<?=$cat[ID]?>" class="btn btn-danger mb-2" onclick="return confirm('Do you want to delete this category?');">Delete</a>
             </form>
             <?php } else { ?>
                 <h3>Category</h3>

@@ -30,7 +30,7 @@ class File extends Entity {
             debug_log("save: ", $save);
             $record = $this->create($save);
             debug_log("saved record: ", $record);
-            return $record;
+            return files($record)->get();
         } else {
             debug_log("move_uploaded_file() - Possible file upload attack!");
             return e()->move_uploaded_file_failed;
@@ -40,6 +40,8 @@ class File extends Entity {
     /**
      * @param $in
      * @return string
+     *
+     * @todo update `files` field on entity if exists.
      */
     public function remove($in) {
         $this->setIdx($in[IDX]);
@@ -57,7 +59,8 @@ class File extends Entity {
     }
 
     /**
-     * The $files is a string of file.idx(es) separated by comma(,)
+     * if `$files` is empty, then it returns the file information of $this->idx.
+     * Or the $files must be a string of file.idx(es) separated by comma(,)
      *
      * @param string|null $files
      * @param mixed|null $_
@@ -66,18 +69,25 @@ class File extends Entity {
      */
     public function get(string $files = null, mixed $_ = null, string $select = '*'): mixed
     {
-        $files = trim($files);
-        if ( empty($files) ) return [];
-        $arr = explode(',', $files);
-        if ( empty($arr) ) return [];
-        $rets = [];
-        foreach( $arr as $idx ) {
-            $got = parent::get(IDX, $idx, $select);
-            if ( ! $got ) continue;
+        if ( empty($files) && $this->idx ) {
+            $got = parent::get(IDX, $this->idx, $select);
+            if ( !$got ) return $got;
             $got['url'] = UPLOAD_URL . $got[PATH];
-            $rets[] = $got;
+            return $got;
+        } else {
+            $files = trim($files);
+            if ( empty($files) ) return [];
+            $arr = explode(',', $files);
+            if ( empty($arr) ) return [];
+            $rets = [];
+            foreach( $arr as $idx ) {
+                $got = parent::get(IDX, $idx, $select);
+                if ( ! $got ) continue;
+                $got['url'] = UPLOAD_URL . $got[PATH];
+                $rets[] = $got;
+            }
+            return $rets;
         }
-        return $rets;
     }
 
 

@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * @file config.class.php
+ */
+/**
+ * Class Config
+ *
+ * There is no `config` taxonomy. Read the readme.
+ */
 class Config extends Entity {
 
 

@@ -65,11 +65,8 @@ define('DEPTH', 'depth');
 
 define('TOKEN', 'token');
 
-
-
 define('USERFILE', 'userfile');
+define('SHOPPING_MALL', 'shopping_mall');
 
-
-
-define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'w', 'mode', 'MAX_FILE_SIZE', TOKEN]);
+define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'w', 'cw', 'mode', 'MAX_FILE_SIZE', TOKEN]);
 

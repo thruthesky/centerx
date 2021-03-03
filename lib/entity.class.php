@@ -83,7 +83,12 @@ class Entity {
     public function create( array $in ): array|string {
 
         if ( ! $in ) return e()->empty_param;
-        if ( isset($in[IDX]) ) return e()->idx_must_not_set;
+
+        /// If idx is set and has value, return error.
+        if ( isset($in[IDX]) ) {
+            if ( $in[IDX] ) return e()->idx_must_not_set;
+            else unset($in[IDX]);
+        }
 
         $record = $this->getRecordFields($in);
         $record[CREATED_AT] = time();
@@ -151,6 +156,7 @@ class Entity {
      * The entity `idx` must be set to delete.
      */
     public function delete() {
+        if ( ! $this->idx ) return e()->idx_not_set;
         $record = self::get();
         if ( ! $record ) return e()->entity_not_exists;
         $re = db()->delete($this->getTable(), eq(IDX, $this->idx));
@@ -202,6 +208,7 @@ class Entity {
      * - The return type is `mixed` due to the overridden methods returns different data types.
      * - *empty array if the entity does not exists.*
      * - or entity record as array.
+     * - It does not return error string or any error.
      *
      * 예제)
      * user()->get('email', 'user10@gmail.com');
@@ -257,6 +264,11 @@ class Entity {
         else return false;
     }
 
+    /// Helper function of eixsts()
+    public function notExists(): bool {
+        return !$this->exists();
+    }
+
 
     /**
      * Returns true if the entity is belong to the login user.
@@ -305,7 +317,9 @@ class Entity {
      *   }
      *
      */
-    public function search(string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'): mixed {
+    public function search(
+        string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'
+    ): mixed {
         $table = $this->getTable();
         $from = ($page-1) * $limit;
         $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
@@ -437,9 +451,10 @@ class Entity {
 
 
     /**
-     * 현재 테이블의 taxonomy 와 entity idx 와 연결되는 meta 값 1개를 리턴한다.
+     * Returns a meta value of the taxonomy and entity.
      *
-     * - entity(taxonomy)->updateMeta() 와 같이 taxonomy 에 아무 값이나 주고, 바로 호출 할 수 있다. 실제 taxonomy 테이블은 존재하지 않아도 된다.
+     * Note that, it works without the real taxonomy table. That means, you can use this method even if the taxonomy table does not exist.
+     * Read the readme for details.
      *
      * @param string $code
      * @return bool|int|mixed|null
@@ -479,15 +494,14 @@ class Entity {
     }
 
     /**
-     * 해당 메타가 존재하지 않을 때만, 생성을 한다. 이미 존재한다면, 덮어쓰지 않는다.
-     *
-     * - entity(taxonomy)->updateMeta() 와 같이 taxonomy 에 아무 값이나 주고, 바로 호출 할 수 있다. 실제 taxonomy 테이블은 존재하지 않아도 된다.
+     * Add(or set) a meta & value only if it does not exists. If the meta exists already, then it doesn't do anything.
      *
      * @param int $idx
      * @param string $code
      * @param mixed $data
      * @return mixed
-     * - 추가되었으면 추가된 meta.idx
+     *  - false if the meta was not added.
+     *  - idx number if the meta was added.
      */
     public function setMetaIfNotExists(int $idx, string $code, mixed $data): mixed {
         $re = entity($this->taxonomy, $idx)->getMeta($code);
@@ -495,6 +509,10 @@ class Entity {
             return $this->setMeta($idx, $code, $data);
         }
         return false;
+    }
+    /// Alias of setMetaIfNotExists()
+    public function addMetaIfNotExists(int $idx, string $code, mixed $data): mixed {
+        return $this->setMetaIfNotExists($idx, $code, $data);
     }
 
     /**
