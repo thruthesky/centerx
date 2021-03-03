@@ -73,6 +73,7 @@ class File extends Entity {
             $got = parent::get(IDX, $this->idx, $select);
             if ( !$got ) return $got;
             $got['url'] = UPLOAD_URL . $got[PATH];
+            $got[PATH] = UPLOAD_DIR . $got[PATH];
             return $got;
         } else {
             $files = trim($files);
@@ -84,6 +85,7 @@ class File extends Entity {
                 $got = parent::get(IDX, $idx, $select);
                 if ( ! $got ) continue;
                 $got['url'] = UPLOAD_URL . $got[PATH];
+                $got[PATH] = UPLOAD_DIR . $got[PATH];
                 $rets[] = $got;
             }
             return $rets;

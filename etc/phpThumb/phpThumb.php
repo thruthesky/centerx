@@ -13,6 +13,12 @@
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
+if ( is_numeric($_GET['src']) ) {
+    require_once '../../boot.php';
+    $_GET['src'] = files($_GET['src'])->get()[PATH];
+}
+
+
 // check for magic quotes in PHP < 7.4.0 (when these functions became deprecated)
 if (version_compare(PHP_VERSION, '7.4.0', '<')) {
 	ini_set('magic_quotes_runtime', '0');

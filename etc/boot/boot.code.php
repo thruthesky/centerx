@@ -26,8 +26,9 @@ EOE;
     d(debug_backtrace());
 }
 
+
 // set error handler
-if ( !API_CALL && !isCli()) {
+if ( canHandleError() ) {
     set_error_handler("customErrorHandler");
 }
 

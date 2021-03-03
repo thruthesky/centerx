@@ -113,7 +113,7 @@ function live_reload_js()
     /// Don't display this javascript code for Mobile Web and App.
     if ( isMobile() ) return;
 
-    if ( is_localhost() )
+    if ( canLiveReload() )
         echo <<<EOH
    <script src="https://main.philov.com:12345/socket.io/socket.io.js"></script>
    <script>
@@ -683,4 +683,24 @@ function is_serialized( $data, $strict = true ): bool {
             return (bool) preg_match( "/^{$token}:[0-9.E+-]+;$end/", $data );
     }
     return false;
+}
+
+/**
+ * Returns true if the access is for generating/reading images through phpThumb.
+ * @return bool
+ */
+function isPhpThumb() : bool {
+    $_phpThumb = false;
+    if ( isset($_SERVER['PHP_SELF']) ) {
+        if ( strpos($_SERVER['PHP_SELF'], 'phpThumb.php') !== false ) $_phpThumb = true;
+    }
+    return $_phpThumb;
+}
+
+function canHandleError(): bool {
+    return !API_CALL && !isCli() && !isPhpThumb();
+}
+
+function canLiveReload(): bool {
+    return !API_CALL && !isCli() && !isPhpThumb();
 }

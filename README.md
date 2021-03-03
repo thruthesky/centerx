@@ -423,6 +423,27 @@ https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
   - You have to delete the taxonomy meta field after delte the file.
 
 
+### Displaying images
+
+- It uses `phpThumb` for reading images and thumbnail generating.
+
+- By default, images are saved under `files/uploads` folder and the images can be directly displayed using image url.
+  But it cannot display images with `file.idx`.
+  
+- `phpThumb` does thumbnail generating and control expiration of image. And it even handles the `Last-Modified(Etag)`.
+  Chrome and other browsers do memory-cache.
+  Flutter can use a package to cache locally if file name is not modified.
+  So, caching wouldn't be a big matter but it handles caching machanism.
+
+- It can use image path or `file.idx`. `phpThumb` also supports remote image by specifying image url.
+  It would be worthy to make a handy helper function to create this thumbnail generating url on each client.
+
+```html
+<img src="http://local.itsuda50.com/etc/phpThumb/phpThumb.php?src=67&wl=300&h=300&zc=1&f=jpeg&q=95">
+<img src="http://local.itsuda50.com/etc/phpThumb/phpThumb.php?src=/root/files/uploads/learn-24052061920-10.jpg&wl=300&h=300&zc=1&f=jpeg&q=95">
+```
+
+
 
 # Theme
 
