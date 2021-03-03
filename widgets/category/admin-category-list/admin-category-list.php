@@ -6,7 +6,6 @@ if ( modeCreate() ) {
     $re = category(in('id'))->update(in());
 }
 
-
 ?>
 
 
