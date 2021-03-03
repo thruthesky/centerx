@@ -462,7 +462,7 @@ class Entity {
     public function getMeta(string $code) {
         $q = "SELECT data FROM " . entity(METAS)->getTable() . " WHERE taxonomy='{$this->taxonomy}' AND entity={$this->idx} AND code='$code'";
         $data = db()->get_var($q);
-        return unserialize($data);
+        return $this->_unserialize($data);
     }
 
 
@@ -487,7 +487,7 @@ class Entity {
             TAXONOMY => $this->taxonomy,
             ENTITY => $idx,
             CODE => $code,
-            DATA => serialize($data),
+            DATA => $this->_serialize($data),
             CREATED_AT => time(),
             UPDATED_AT => time(),
         ]);
@@ -533,7 +533,7 @@ class Entity {
         $table = entity(METAS)->getTable();
         return db()->update(
             $table,
-            [DATA => serialize($data), UPDATED_AT => time()],
+            [DATA => $this->_serialize($data), UPDATED_AT => time()],
             db()->where(
                 eq(TAXONOMY, $this->taxonomy),
                 eq(ENTITY, $idx),
@@ -559,11 +559,23 @@ class Entity {
         $rows = db()->get_results($q, ARRAY_A);
         $rets = [];
         foreach($rows as $row) {
-            $rets[$row['code']] = unserialize($row['data']);
+            $rets[$row['code']] = $this->_unserialize($row['data']);
         }
         return $rets;
     }
 
+    /**
+     * Return serialzied string if the input $v is not an int, string, or double.
+     * @param $v
+     */
+    public function _serialize(mixed $v): mixed {
+        if ( is_int($v) || is_numeric($v) || is_float($v) || is_string($v) ) return $v;
+        else return serialize($v);
+    }
+    public function _unserialize(mixed $v): mixed {
+        if ( is_serialized($v) ) return unserialize($v);
+        else return $v;
+    }
 
 }
 
