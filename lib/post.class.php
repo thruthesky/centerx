@@ -64,7 +64,14 @@ class Post extends Entity {
         // update `noOfPosts`
         // update `noOfComments`
 
-        // @todo push notification
+
+        // NEW POST IS CREATED => Send notification to forum subscriber
+        $data = [
+            'senderIdx' => my(IDX),
+            'idx' => $post[IDX],
+            'type' => 'post'
+        ];
+        sendMessageToTopic(NOTIFY_POST . $category[ID], $in[TITLE], $in[CONTENT] ?? '', $post[PATH], $data);
 
         return $post;
     }
@@ -191,6 +198,7 @@ class Post extends Entity {
             if ( $comments ) {
                 foreach($comments as $comment) {
                     $got = comment($comment[IDX])->get();
+                    if ($got[DELETED_AT] != '0') continue;
                     $got[DEPTH] = $comment[DEPTH];
                     $post[COMMENTS][] = $got;
                 }

@@ -69,10 +69,30 @@ define('PATH', 'path');
 define('DEPTH', 'depth');
 
 define('TOKEN', 'token');
+define('TOKENS', 'tokens');
+define('TOPIC', 'topic');
 define('DOMAIN', 'domain');
 define('POINT', 'point');
 define('CHOICE', 'choice');
 
+
+
+define('OPTION', 'option');
+
+/**
+ * For push notification topics and prefixes
+ */
+define('DEFAULT_TOPIC', 'defaultTopic');
+define('DEFAULT_NOTIFY_PREFIX', 'notify');
+define('NOTIFY_POST', DEFAULT_NOTIFY_PREFIX . 'Post_');
+define('NOTIFY_COMMENT', DEFAULT_NOTIFY_PREFIX . 'Comment_');
+define('NEW_COMMENT_ON_MY_POST_OR_COMMENT', 'newCommentUserOption');
+
+define('SUBSCRIPTION', 'subscription');
+
+define('BODY', 'body');
+define('CLICK_ACTION', 'click_action');
+define('IMAGE_URL', 'imageUrl');
 
 
 define('USERFILE', 'userfile');

@@ -23,6 +23,10 @@ class UserRoute {
         return login()->update($in);
     }
 
+    public function updateOptionSetting($in) {
+        return login()->updateOptionSetting($in);
+    }
+
 }
 
 
