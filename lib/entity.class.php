@@ -296,7 +296,7 @@ class Entity {
     public function isMine(): bool {
         if ( notLoggedIn() ) return false;
         if ( ! $this->idx ) return false;
-        $record = self::get();
+        $record = self::get(cache: false);
         if ( ! $record ) return false;
         if ( ! isset($record) ) return false;
         if ( ! $record[USER_IDX] ) return false;

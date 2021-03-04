@@ -237,8 +237,16 @@ class Point {
             toUserPointApply: $applied,
         );
     }
+
+    /**
+     * @param array $profile
+     * @return int
+     */
     public function login(array $profile) {
+//        debug_log("POINT_LOING: ", config()->get(POINT_LOGIN));
         $applied = $this->addUserPoint($profile[IDX], config()->get(POINT_LOGIN));
+        debug_log('applied: ', $applied);
+        debug_log('my point: ', my(POINT));
         return $this->log(
             POINT_LOGIN,
             toUserIdx: $profile[IDX],
@@ -354,7 +362,7 @@ class Point {
 
             // 제한에 안 걸렸으면, 포인트 증/감.
             if ( $limit == false ) {
-                $fromUserPointApply = $this->addUserPoint(my(IDX), $Yn == 'Y' ? $this->getLikeDeduction() : $this->getDislikeDeduction());
+                $fromUserPointApply = $this->addUserPoint(login()->idx, $Yn == 'Y' ? $this->getLikeDeduction() : $this->getDislikeDeduction());
                 $toUserPointApply = $this->addUserPoint($post->value(USER_IDX), $Yn == 'Y' ? $this->getLike() : $this->getDislike() );
                 $myPoint = my(POINT);
                 $toUserIdx = $post->value(USER_IDX);

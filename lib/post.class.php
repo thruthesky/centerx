@@ -22,7 +22,8 @@ class Post extends Entity {
         $in[CATEGORY_IDX] = $category->idx;
 
         //
-        $in[USER_IDX] = my(IDX);
+        $in[USER_IDX] = login()->idx;
+
 
 
         // 제한에 걸렸으면, 에러 리턴.
@@ -54,6 +55,7 @@ class Post extends Entity {
         // Update path
         $path = $this->getPath($post);
         $this->update([PATH => $path]);
+
         $post = $this->get();
 
 
@@ -148,6 +150,7 @@ class Post extends Entity {
             }
         }
         $where = str_replace('categoryId', CATEGORY_IDX, $where);
+
 
         $posts = parent::search(
             where: $where,
@@ -329,7 +332,7 @@ class Post extends Entity {
             // 처음 추천하는 경우에만 포인트 지정.
             // 추천 기록 남김. 포인트 증/감 유무와 상관 없음.
             voteHistory()->create([
-                USER_IDX => my(IDX),
+                USER_IDX => login()->idx,
                 TAXONOMY => POSTS,
                 ENTITY => $this->idx,
                 CHOICE => $Yn

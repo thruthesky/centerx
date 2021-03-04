@@ -239,8 +239,12 @@ function testLikeHourlyLimit(): void {
 
     // 포인트 시간/수 제한 없음.
     user(B)->setPoint(10000);
+//    return;
+//    d(my(IDX));
     $posts = post()->search(where: "userIdx != " . my(IDX));
+//    d($posts);
     for($i=0; $i<10; $i++) {
+//        d($posts[$i][IDX]);
         $post = post($posts[$i][IDX])->vote('N');
     }
 
@@ -331,6 +335,7 @@ function clearTestPoint() {
     $post1 = post()->create([CATEGORY_ID => POINT, TITLE => TITLE, CONTENT => CONTENT]);
     $post2 = post()->create([CATEGORY_ID => POINT, TITLE => TITLE, CONTENT => CONTENT]);
     $post3 = post()->create([CATEGORY_ID => POINT, TITLE => TITLE, CONTENT => CONTENT]);
+
 
 
     user(A)->setPoint(0);

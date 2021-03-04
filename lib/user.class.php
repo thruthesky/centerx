@@ -132,9 +132,9 @@ class User extends Entity {
      * 예제)
      * d( user(48)->profile() );
      */
-    public function profile($unsetPassword=true): mixed {
+    public function profile(bool $unsetPassword=true, bool $cache=true): mixed {
         if ( ! $this->idx ) return e()->idx_not_set;
-        $record = $this->get('idx', $this->idx);
+        $record = $this->get('idx', $this->idx, cache: $cache);
         if ( !$record ) return e()->user_not_found_by_that_idx;
         $record[SESSION_ID] = getSessionId($record);
         if ( $unsetPassword ) unset($record[PASSWORD]);
@@ -169,7 +169,7 @@ class User extends Entity {
     }
     public function getPoint() {
         if ( $this->idx ) {
-            return $this->get(select: POINT)[POINT];
+            return $this->get(select: POINT, cache: false)[POINT];
         } else {
             return 0;
         }

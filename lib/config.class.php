@@ -42,12 +42,28 @@ class Config extends Entity {
     }
 }
 
+
 /**
- * Config 자체가 별거 없는 클래스라서 항상 새로 생성해서 리턴한다.
- * @return Config
+ * Returns Config instance or value of a code.
+ *
+ * The taxonomy of Config class does not exists.
+ * With, Config class, you can set/get meta data.
+ *
+ * @param string $code
+ * @param mixed|null $default_value
+ * @return Config|int|string|array|null
+ *
+ * @example
+ *  config(POINT_REGISTER, 0)
+ *  config()->get(POINT_REGISTER);
  */
-function config(): Config
+function config(string $code='', mixed $default_value=null): Config|int|string|array|null
 {
+    if ( $code ) {
+        $got = config()->get($code);
+        if ( $got === null ) return $default_value;
+        else return $got;
+    }
     return new Config();
 }
 

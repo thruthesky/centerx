@@ -305,7 +305,7 @@ function unsetLoginCookies() {
  * @return false|string|null
  */
 function getSessionId($profile) {
-    if ( !$profile ) return null;
+    if ( !$profile || !isset($profile[IDX]) ) return null;
     $str= $profile[IDX] . $profile[CREATED_AT] . $profile[PASSWORD];
     return $profile[IDX] . '-' . md5($str);
 }
@@ -321,11 +321,6 @@ function getSessionId($profile) {
 function getProfileFromCookieSessionId() : array|bool {
     if ( ! isset($_COOKIE[SESSION_ID]) ) return false;
     return getProfileFromSessionId($_COOKIE[SESSION_ID]);
-//
-//    $arr = explode('-', $_COOKIE[SESSION_ID]);
-//    $profile = user($arr[0])->profile(unsetPassword: false);
-//    if ( $_COOKIE[SESSION_ID] == getSessionId($profile) ) return $profile;
-//    else return false;
 }
 
 /**
@@ -391,7 +386,7 @@ global $__login_user_profile;
  */
 function setUserAsLogin(int|array $profile): User {
     global $__login_user_profile;
-    if ( is_int($profile) ) $profile = user($profile)->profile();
+    if ( is_int($profile) ) $profile = user($profile)->profile(cache: false);
     $__login_user_profile = $profile;
     return user($profile[IDX] ?? 0);
 }
@@ -410,7 +405,7 @@ function setLogin(int|array $profile): User {
  */
 function my(string $field) {
     if ( loggedIn() ) {
-        $profile = login()->profile();
+        $profile = login()->profile(cache: false);
         if ( isset($profile[$field]) ) {
             return $profile[$field];
         }
@@ -752,4 +747,32 @@ function enableTesting() {
 function disableTesting() {
     global $_testing;
     $_testing = true;
+}
+
+
+function ln($en, $ko)
+{
+    $bl = get_user_language();
+    if ( $bl == 'ko' ) return $ko;
+    else return $en;
+
+}
+
+function get_user_language() {
+    return browser_language();
+}
+function browser_language()
+{
+    if ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ) {
+        return substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    }
+    else {
+        return 'en';
+    }
+}
+
+
+
+function select_list_widgets($categoryIdx,  $widget_type, $default_widget) {
+    echo "Copy widget functionality from sonub";
 }
