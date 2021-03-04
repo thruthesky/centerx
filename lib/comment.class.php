@@ -193,7 +193,6 @@ function onCommentCreateSendNotification(array $commentRecord)
     /**
      * get user who subscribe to comment forum topic
      */
-
     $catArr = category($post->value(CATEGORY_IDX))->get();
     $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $catArr[ID]);
 
@@ -277,9 +276,9 @@ function getForumSubscribers(string $topic = ''): array
     $ids = [];
 
     // @TODO SEARCH ON META
-    $rows = user()->search(where: "code='$topic' AND data='Y'");
-    foreach ($rows as $user) {
-        $ids[] = $user[IDX];
-    }
+//    $rows = user()->search(where: "code='$topic' AND data='Y'");
+//    foreach ($rows as $user) {
+//        $ids[] = $user[IDX];
+//    }
     return $ids;
 }
