@@ -35,6 +35,10 @@ class E {
 
     public string $not_your_comment = 'error_not_your_comment';
 
+    public string $post_delete_not_supported = 'error_post_delete_not_supported';
+    public string $comment_delete_not_supported = 'error_comment_delete_not_supported';
+
+
     public string $category_exists = 'error_category_exists';
     public string $category_not_exists = 'error_category_not_exists';
 
@@ -55,6 +59,14 @@ class E {
 
 
     public string $token_is_empty = 'error_token_is_empty';
+
+    public string $empty_vote_choice = 'error_empty_vote_choice';
+    public string $empty_wrong_choice = 'error_empty_wrong_choice';
+
+    public string $hourly_limit = 'error_hourly_limit';
+    public string $daily_limit = 'error_daily_limit';
+
+    public string $lack_of_point = 'error_lack_of_point';
 
 
 

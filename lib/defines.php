@@ -23,6 +23,11 @@ define('COMMENTS', 'comments');
 define('FILES', 'files');
 
 define('PUSH_NOTIFICATION_TOKENS', 'push_notification_tokens');
+define('POINT_HISTORIES', 'point_histories');
+
+define('POST_VOTE_HISTORIES', 'post_vote_histories');
+
+
 
 
 
@@ -65,6 +70,9 @@ define('DEPTH', 'depth');
 
 define('TOKEN', 'token');
 define('DOMAIN', 'domain');
+define('POINT', 'point');
+define('CHOICE', 'choice');
+
 
 
 define('USERFILE', 'userfile');
