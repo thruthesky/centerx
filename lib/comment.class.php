@@ -7,6 +7,10 @@ class Comment extends Entity {
         parent::__construct(COMMENTS_TAXONOMY, $idx);
     }
 
+    /**
+     * @param array $in
+     * @return array|string
+     */
     public function create(array $in): array|string
     {
         if ( notLoggedIn() ) return e()->not_logged_in;

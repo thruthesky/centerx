@@ -93,7 +93,6 @@ class Point {
     }
 
     public function getCommentCreate(int|string $category) {
-        d("category: $category\n");
         return category($category)->get()[POINT_COMMENT_CREATE];
     }
 
@@ -135,6 +134,14 @@ class Point {
     }
     public function getCategoryDailyLimitCount(int|string $category) {
         return category($category)->get()[POINT_DAILY_LIMIT_COUNT];
+    }
+
+    public function enableCategoryBanOnLimit(int|string $category) {
+        category($category)->update([BAN_ON_LIMIT => 'Y']);
+    }
+
+    public function disableCategoryBanOnLimit(int|string $category) {
+        category($category)->update([BAN_ON_LIMIT => 'N']);
     }
 
 
@@ -206,7 +213,7 @@ class Point {
         int $categoryIdx = 0,
     ): int {
 
-        $record = pointHistory()->create([
+        $history = [
             FROM_USER_IDX => $fromUserIdx,
             TO_USER_IDX => $toUserIdx,
             REASON => $reason,
@@ -217,7 +224,8 @@ class Point {
             'fromUserPointAfter' => $fromUserIdx ? user($fromUserIdx)->getPoint() : 0,
             'toUserPointApply' => $toUserPointApply,
             'toUserPointAfter' => user($toUserIdx)->getPoint(),
-        ]);
+        ];
+        $record = pointHistory()->create($history);
         return $record[IDX];
     }
 
@@ -252,13 +260,17 @@ class Point {
 
         // 제한에 걸렸으면, 에러 코드 리턴
         $re = $this->checkCategoryLimit($categoryIdx);
-        if ( isError($re) ) return $re;
+        if ( isError($re) ) {
+            return $re;
+        }
 
         // 현재 REASON 에 대한 포인트를 얻는다.
         $point = $this->get($categoryIdx, $reason);
 
         // 포인트 추가하기
         $applied = $this->addUserPoint(my(IDX), $point );
+
+//        d("reason: $reason, toUserIdx: " . $entity->userIdx() . ", toUserPointApply: $applied, taxonomy: posts");
 
         // 포인트 기록 남기기
         return $this->log(

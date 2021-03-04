@@ -84,8 +84,73 @@ testLikeHourlyLimit();
 testLikeDailyLimit();
 testPostCreateDelete();
 testCommentCreateDelete();
+testPostCommentCreateHourlyLimit();
+testPostCommentCreateDailyLimit();
 
 
+function testPostCommentCreateDailyLimit(): void {
+    clearTestPoint();
+
+    // 하루에 3번 제한
+    point()->setCategoryDailyLimitCount(POINT, 3);
+
+    setLogin(A);
+    $post1 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 1']);
+    $post2 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 2']);
+    $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
+    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
+    isTrue(isSucess($post4), 'post 4 should success');
+
+
+    point()->enableCategoryBanOnLimit(POINT);
+    $post5 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 5']);
+    isTrue(isSucess($post5), 'post 5 must error');
+
+
+
+    point()->disableCategoryBanOnLimit(POINT);
+    $post6 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 6']);
+    isTrue(isSucess($post6), 'post 6 must success');
+
+
+    point()->enableCategoryBanOnLimit(POINT);
+    $cmt1 = comment()->create([ROOT_IDX=>$post6[IDX], PARENT_IDX=>$post6[IDX], CONTENT=>'yo']);
+    isTrue(isSucess($cmt1), 'cmt1 must fail');
+
+}
+
+
+
+
+
+function testPostCommentCreateHourlyLimit(): void {
+    clearTestPoint();
+
+    // 2시간에 3번 제한
+    point()->setCategoryHour(POINT, 2);
+    point()->setCategoryHourLimitCount(POINT, 3);
+
+    setLogin(A);
+    $post1 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 1']);
+    $post2 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 2']);
+    $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
+    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
+    isTrue(isSucess($post4), 'post 4 should success');
+
+    point()->enableCategoryBanOnLimit(POINT);
+    $post5 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 5']);
+    isTrue(isSucess($post5), 'post 5 must error');
+
+    point()->disableCategoryBanOnLimit(POINT);
+    $post6 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 6']);
+    isTrue(isSucess($post6), 'post 6 must success');
+
+
+    point()->enableCategoryBanOnLimit(POINT);
+    $cmt1 = comment()->create([ROOT_IDX=>$post6[IDX], PARENT_IDX=>$post6[IDX], CONTENT=>'yo']);
+    isTrue(isSucess($cmt1), 'cmt1 must fail');
+
+}
 
 
 function testCommentCreateDelete(): void {
@@ -97,15 +162,13 @@ function testCommentCreateDelete(): void {
     point()->setCommentDelete(POINT, -300);
 
 
-    comment()->create([ROOT_IDX => $post1[IDX], PARENT_IDX => $post1[IDX]]);
+    $cmt1 = comment()->create([ROOT_IDX => $post1[IDX], PARENT_IDX => $post1[IDX]]);
     isTrue(my(POINT) == 1200, 'A point must be 1200. But: ' . my(POINT));
 
+    /// 코멘트 삭제
+    comment($cmt1[IDX])->markDelete();
+    isTrue(my(POINT) == 900, 'A point must be 900. But: ' . my(POINT));
 
-//
-//    /// 코멘트 삭제
-//    $re = api_delete_comment(['comment_ID' => $re['comment_ID'] ]);
-//    self::assertTrue($re['comment_ID'] > 0, 'comment delete');
-//    self::assertTrue(get_user_point(A) == 900, 'A point must be 900: ' . get_user_point(A));
 }
 
 

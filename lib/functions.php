@@ -59,6 +59,7 @@ function get_JSON_input()
 
 
 function d($obj) {
+//    print_r(debug_backtrace());
     if ( isCli() || isTesting() ) echo "\nd(): ";
     else echo "<xmp>";
     print_r($obj);
