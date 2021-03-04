@@ -59,9 +59,11 @@ function get_JSON_input()
 
 
 function d($obj) {
-    echo "<xmp>";
+    if ( isCli() || isTesting() ) echo "\nd(): ";
+    else echo "<xmp>";
     print_r($obj);
-    echo "</xmp>";
+    if ( isCli() || isTesting() ) echo "\n";
+    else echo "</xmp>";
 }
 
 
@@ -735,4 +737,18 @@ function ids(array $users, string $field=IDX): array
         $ret[] = $u[$field];
     }
     return $ret;
+}
+
+$_testing = false;
+function isTesting(): bool {
+    global $_testing;
+    return $_testing;
+}
+function enableTesting() {
+    global $_testing;
+    $_testing = true;
+}
+function disableTesting() {
+    global $_testing;
+    $_testing = true;
 }

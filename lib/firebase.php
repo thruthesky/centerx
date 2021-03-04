@@ -75,7 +75,7 @@ function sendMessageToTokens($tokens, $title, $body, $click_action, $data = [], 
  */
 function sendMessageToTopic($topic, $title, $body, $click_action, $data = [], $imageUrl=""): array {
     /// If it's phpunit test mode, then don't send it.
-//    if ( get_phpunit_mode() ) return [];
+    if ( isTesting() ) return [];
     $message = CloudMessage::fromArray([
         'topic' => $topic,
         'notification' => getNotificationData($title, $body, $click_action, $data, $imageUrl),
@@ -93,7 +93,7 @@ function sendMessageToTopic($topic, $title, $body, $click_action, $data = [], $i
  * @return array
  */
 function subscribeTopic($topic, $tokens): array {
-//    if ( get_phpunit_mode() ) return [];
+    if ( isTesting() ) return [];
     return getMessaging()->subscribeToTopic($topic, $tokens);
 }
 /**
@@ -104,7 +104,7 @@ function subscribeTopic($topic, $tokens): array {
 // * @throws \Kreait\Firebase\Exception\MessagingException
  */
 function subscribeTopics($topics, $tokens): array {
-//    if ( get_phpunit_mode() ) return [];
+    if ( isTesting() ) return [];
     return getMessaging()->subscribeToTopics($topics, $tokens);
 }
 
@@ -115,7 +115,7 @@ function subscribeTopics($topics, $tokens): array {
 // * @throws \Kreait\Firebase\Exception\MessagingException
  */
 function unsubscribeFromAllTopics($tokens) {
-//    if ( get_phpunit_mode() ) return [];
+    if ( isTesting() ) return [];
     return getMessaging()->unsubscribeFromAllTopics($tokens);
 }
 
@@ -127,7 +127,7 @@ function unsubscribeFromAllTopics($tokens) {
 // * @throws \Kreait\Firebase\Exception\MessagingException
  */
 function unsubscribeTopic($topic, $tokens): array {
-//    if ( get_phpunit_mode() ) return [];
+    if ( isTesting() ) return [];
     return getMessaging()->unsubscribeFromTopic($topic, $tokens);
 }
 

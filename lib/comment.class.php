@@ -21,12 +21,12 @@ class Comment extends Entity {
         $re = parent::create($in);
 
 
-        $category = category(CATEGORY_IDX);
+        $category = category($re[CATEGORY_IDX]);
 
         // 제한에 걸렸으면, 에러 리턴.
         if ( $category->value(BAN_ON_LIMIT) ) {
-            $re = point()->checkCategoryLimit($category->idx);
-            if ( isError($re) ) return $re;
+            $limit = point()->checkCategoryLimit($category->idx);
+            if ( isError($limit) ) return $limit;
         }
 
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
@@ -41,7 +41,7 @@ class Comment extends Entity {
         /**
          * NEW COMMENT IS CREATED ==>  Send notification to forum comment subscriber
          */
-        onCommentCreateSendNotification($in);
+        onCommentCreateSendNotification($re);
         return $comment;
     }
 
@@ -143,7 +143,7 @@ function comment(array|int $idx=0): Comment
 }
 
 
-function onCommentCreateSendNotification(array $in)
+function onCommentCreateSendNotification(array $commentRecord)
 {
     /**
 
@@ -165,22 +165,22 @@ function onCommentCreateSendNotification(array $in)
      *
      */
 
-    $post = post($in[ROOT_IDX])->get();
+    $post = post($commentRecord[ROOT_IDX])->get();
     $usersIdx = [];
 
     /**
      * add post owner id if not mine
      */
-    if (post($in[ROOT_IDX])->isMine() == false) {
+    if (post($commentRecord[ROOT_IDX])->isMine() == false) {
         $usersIdx[] = $post[USER_IDX];
     }
 
     /**
      * get comment ancestors id
      */
-    $comment = comment($in[IDX])->get();
-    if ($comment && $comment[PARENT_IDX] > 0) {
-        $usersIdx = array_merge($usersIdx, getCommentAncestors($comment[IDX]));
+//    $comment = comment($commentRecord[IDX])->get();
+    if ($commentRecord[PARENT_IDX] > 0) {
+        $usersIdx = array_merge($usersIdx, getCommentAncestors($commentRecord[IDX]));
     }
 
     /**
@@ -191,8 +191,8 @@ function onCommentCreateSendNotification(array $in)
     /**
      * get user who subscribe to comment forum topic
      */
-    $slug = category($post[CATEGORY_IDX])->get();
-    $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $slug[ID]);
+    $cat = category($post[CATEGORY_IDX])->get();
+    $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $cat[ID]);
 
     /**
      * remove users_id that are registered to comment topic
@@ -209,7 +209,7 @@ function onCommentCreateSendNotification(array $in)
      * set the title and body, etc.
      */
     $title              = $post[TITLE];
-    $body               = $comment[CONTENT];
+    $body               = $commentRecord[CONTENT];
     $click_url          = $post[PATH];
     $data               = [
         'senderIdx' => my(IDX),
@@ -220,7 +220,7 @@ function onCommentCreateSendNotification(array $in)
     /**
      * send notification to users who subscribe to comment topic
      */
-    sendMessageToTopic(NOTIFY_COMMENT . $slug[ID], $title, $body, $click_url, $data);
+    sendMessageToTopic(NOTIFY_COMMENT . $cat[ID], $title, $body, $click_url, $data);
 
     /**
      * send notification to comment ancestors who enable reaction notification
@@ -246,7 +246,7 @@ function getCommentAncestors(int $idx): array
     $asc     = [];
 
     while (true) {
-        $comment = comment($comment[PARENT_IDX]);
+        $comment = comment($comment[PARENT_IDX])->get();
         if ($comment) {
             if ($comment[USER_IDX] == my(IDX)) {
                 continue;

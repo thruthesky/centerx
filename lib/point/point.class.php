@@ -77,7 +77,7 @@ class Point {
 
 
     public function get(int $categoryIdx, string $reason) {
-        return category($categoryIdx)->get(select: $reason, cache: false)[$reason];
+        return category($categoryIdx)->get()[$reason];
     }
 
     public function setPostCreate($category, $point) {
@@ -85,15 +85,16 @@ class Point {
     }
 
     public function getPostCreate($category) {
-        return category($category)->get(select: POINT_POST_CREATE, cache: false)[POINT_POST_CREATE];
+        return category($category)->get()[POINT_POST_CREATE];
     }
 
     public function setCommentCreate($category, $point) {
         category($category)->update([POINT_COMMENT_CREATE => $point]);
     }
 
-    public function getCommentCreate($category) {
-        return category($category)->get(select: POINT_COMMENT_CREATE, cache: false)[POINT_COMMENT_CREATE];
+    public function getCommentCreate(int|string $category) {
+        d("category: $category\n");
+        return category($category)->get()[POINT_COMMENT_CREATE];
     }
 
     public function setPostDelete($category, $point) {
@@ -101,7 +102,7 @@ class Point {
     }
 
     public function getPostDelete($category) {
-        return category($category)->get(select: POINT_POST_DELETE, cache: false)[POINT_POST_DELETE];
+        return category($category)->get()[POINT_POST_DELETE];
     }
 
     public function setCommentDelete($category, $point) {
@@ -109,7 +110,7 @@ class Point {
     }
 
     public function getCommentDelete($category) {
-        return category($category)->get(select: POINT_COMMENT_DELETE, cache: false)[POINT_COMMENT_DELETE];
+        return category($category)->get()[POINT_COMMENT_DELETE];
     }
 
     public function setCategoryHour($category, $hour) {
@@ -118,7 +119,7 @@ class Point {
 
 
     public function getCategoryHourLimit(int|string $category) {
-        return category($category)->get(select: POINT_HOUR_LIMIT, cache: false)[POINT_HOUR_LIMIT];
+        return category($category)->get()[POINT_HOUR_LIMIT];
     }
 
     public function setCategoryHourLimitCount($category, $count) {
@@ -126,14 +127,14 @@ class Point {
     }
 
     public function getCategoryHourLimitCount(int|string $category) {
-        return category($category)->get(select: POINT_HOUR_LIMIT_COUNT, cache: false)[POINT_HOUR_LIMIT_COUNT];
+        return category($category)->get()[POINT_HOUR_LIMIT_COUNT];
     }
 
     public function setCategoryDailyLimitCount($category, $count) {
         category($category)->update([POINT_DAILY_LIMIT_COUNT => $count]);
     }
     public function getCategoryDailyLimitCount(int|string $category) {
-        return category($category)->get(select: POINT_DAILY_LIMIT_COUNT, cache: false)[POINT_DAILY_LIMIT_COUNT];
+        return category($category)->get()[POINT_DAILY_LIMIT_COUNT];
     }
 
 
