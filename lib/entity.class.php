@@ -236,7 +236,7 @@ class Entity {
 
 
         $q = "SELECT $select FROM {$this->getTable()} WHERE `$field`='$value'";
-//        debug_log($q);
+        debug_log($q);
 //        d($q);
 
         $record = db()->get_row($q, ARRAY_A);

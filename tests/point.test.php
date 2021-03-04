@@ -99,16 +99,16 @@ function testCommentCreateDelete(): void {
     comment()->create([PARENT_IDX => $post1]);
 
     /// 코멘트 생성
-    $this->login(A, 1000);
-    $re = api_edit_comment(['comment_post_ID' => $this->post1['ID'], 'comment_content' => 'comment ' . time()]);
-    self::assertTrue($re['comment_ID'] > 0, 'comment create');
-    self::assertTrue(get_user_point(A) == 1200, 'A point must be 1200: ' . get_user_point(A));
-
-
-    /// 코멘트 삭제
-    $re = api_delete_comment(['comment_ID' => $re['comment_ID'] ]);
-    self::assertTrue($re['comment_ID'] > 0, 'comment delete');
-    self::assertTrue(get_user_point(A) == 900, 'A point must be 900: ' . get_user_point(A));
+//    $this->login(A, 1000);
+//    $re = api_edit_comment(['comment_post_ID' => $this->post1['ID'], 'comment_content' => 'comment ' . time()]);
+//    self::assertTrue($re['comment_ID'] > 0, 'comment create');
+//    self::assertTrue(get_user_point(A) == 1200, 'A point must be 1200: ' . get_user_point(A));
+//
+//
+//    /// 코멘트 삭제
+//    $re = api_delete_comment(['comment_ID' => $re['comment_ID'] ]);
+//    self::assertTrue($re['comment_ID'] > 0, 'comment delete');
+//    self::assertTrue(get_user_point(A) == 900, 'A point must be 900: ' . get_user_point(A));
 }
 
 
