@@ -93,7 +93,7 @@ class Point {
     }
 
     public function getCommentCreate($category) {
-        return category($category)->get(select: POINT_COMMENT_CREATE)[POINT_COMMENT_CREATE];
+        return category($category)->get(select: POINT_COMMENT_CREATE, cache: false)[POINT_COMMENT_CREATE];
     }
 
     public function setPostDelete($category, $point) {
@@ -101,7 +101,7 @@ class Point {
     }
 
     public function getPostDelete($category) {
-        return category($category)->get(select: POINT_POST_DELETE)[POINT_POST_DELETE];
+        return category($category)->get(select: POINT_POST_DELETE, cache: false)[POINT_POST_DELETE];
     }
 
     public function setCommentDelete($category, $point) {
@@ -109,7 +109,7 @@ class Point {
     }
 
     public function getCommentDelete($category) {
-        return category($category)->get(select: POINT_COMMENT_DELETE)[POINT_COMMENT_DELETE];
+        return category($category)->get(select: POINT_COMMENT_DELETE, cache: false)[POINT_COMMENT_DELETE];
     }
 
     public function setCategoryHour($category, $hour) {
@@ -118,7 +118,7 @@ class Point {
 
 
     public function getCategoryHourLimit(int|string $category) {
-        return category($category)->get(select: POINT_HOUR_LIMIT)[POINT_HOUR_LIMIT];
+        return category($category)->get(select: POINT_HOUR_LIMIT, cache: false)[POINT_HOUR_LIMIT];
     }
 
     public function setCategoryHourLimitCount($category, $count) {
@@ -126,14 +126,14 @@ class Point {
     }
 
     public function getCategoryHourLimitCount(int|string $category) {
-        return category($category)->get(select: POINT_HOUR_LIMIT_COUNT)[POINT_HOUR_LIMIT_COUNT];
+        return category($category)->get(select: POINT_HOUR_LIMIT_COUNT, cache: false)[POINT_HOUR_LIMIT_COUNT];
     }
 
     public function setCategoryDailyLimitCount($category, $count) {
-        return category($category)->update([POINT_DAILY_LIMIT_COUNT => $count]);
+        category($category)->update([POINT_DAILY_LIMIT_COUNT => $count]);
     }
     public function getCategoryDailyLimitCount(int|string $category) {
-        return category($category)->get(select: POINT_DAILY_LIMIT_COUNT)[POINT_DAILY_LIMIT_COUNT];
+        return category($category)->get(select: POINT_DAILY_LIMIT_COUNT, cache: false)[POINT_DAILY_LIMIT_COUNT];
     }
 
 

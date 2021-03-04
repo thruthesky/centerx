@@ -220,7 +220,7 @@ class Entity {
      * user()->get('email', 'user10@gmail.com');
      */
     private $entities = [];
-    public function get(string $field=null, mixed $value=null, string $select='*'): mixed {
+    public function get(string $field=null, mixed $value=null, string $select='*', $cache = true): mixed {
 
         global $entities;
         if ($field == null ) {
