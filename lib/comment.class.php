@@ -100,12 +100,12 @@ class Comment extends Entity {
     }
 
 
-
     /**
      *
      * @param string|null $field
      * @param mixed|null $value
      * @param string $select
+     * @param bool $cache
      * @return mixed
      * - Empty array([]) if post not exists.
      *
@@ -113,9 +113,9 @@ class Comment extends Entity {
      * @todo add user(author) information
      * @todo add attached files if exists.
      */
-    public function get(string $field=null, mixed $value=null, string $select='*'): mixed
+    public function get(string $field=null, mixed $value=null, string $select='*', bool $cache=true): mixed
     {
-        $comment = parent::get($field, $value, $select);
+        $comment = parent::get($field, $value, $select, $cache);
 
         /**
          * Get files only if $select includes 'files' field.

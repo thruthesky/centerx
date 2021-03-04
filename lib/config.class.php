@@ -26,7 +26,7 @@ class Config extends Entity {
      * @param null $_
      * @return mixed - 값이 없으면 null 이 리턴된다.
      */
-    public function get(string $code=null, $_=null, $__=''): mixed
+    public function get(string $code=null, mixed $_=null, string $__='', bool $____ = true): mixed
     {
        return $this->getMeta($code);
     }

@@ -65,12 +65,13 @@ class File extends Entity {
      * @param string|null $files
      * @param mixed|null $_
      * @param string $select
+     * @param bool $cache
      * @return mixed
      */
-    public function get(string $files = null, mixed $_ = null, string $select = '*'): mixed
+    public function get(string $files = null, mixed $_ = null, string $select = '*', bool $cache=true): mixed
     {
         if ( empty($files) && $this->idx ) {
-            $got = parent::get(IDX, $this->idx, $select);
+            $got = parent::get(IDX, $this->idx, $select, $cache);
             if ( !$got ) return $got;
             $got['url'] = UPLOAD_URL . $got[PATH];
             $got[PATH] = UPLOAD_DIR . $got[PATH];
@@ -82,7 +83,7 @@ class File extends Entity {
             if ( empty($arr) ) return [];
             $rets = [];
             foreach( $arr as $idx ) {
-                $got = parent::get(IDX, $idx, $select);
+                $got = parent::get(IDX, $idx, $select, $cache);
                 if ( ! $got ) continue;
                 $got['url'] = UPLOAD_URL . $got[PATH];
                 $got[PATH] = UPLOAD_DIR . $got[PATH];
