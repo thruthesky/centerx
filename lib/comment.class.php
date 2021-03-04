@@ -194,8 +194,8 @@ function onCommentCreateSendNotification(array $commentRecord)
      * get user who subscribe to comment forum topic
      */
 
-    $slug = category($post->value(CATEGORY_IDX))->get();
-    $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $slug[ID]);
+    $catArr = category($post->value(CATEGORY_IDX))->get();
+    $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $catArr[ID]);
 
     /**
      * remove users_id that are registered to comment topic
@@ -224,7 +224,7 @@ function onCommentCreateSendNotification(array $commentRecord)
     /**
      * send notification to users who subscribe to comment topic
      */
-    sendMessageToTopic(NOTIFY_COMMENT . $commentRecord[ID], $title, $body, $click_url, $data);
+    sendMessageToTopic(NOTIFY_COMMENT . $catArr[ID], $title, $body, $click_url, $data);
 
     /**
      * send notification to comment ancestors who enable reaction notification
