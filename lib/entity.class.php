@@ -220,7 +220,7 @@ class Entity {
      * user()->get('email', 'user10@gmail.com');
      */
     private $entities = [];
-    public function get(string $field=null, mixed $value=null, string $select='*'): mixed {
+    public function get(string $field=null, mixed $value=null, string $select='*', bool $cache = true): mixed {
 
         global $entities;
         if ($field == null ) {
@@ -228,7 +228,7 @@ class Entity {
             $value = $this->idx;
         }
         $fv = "$field=$value";
-        if ( isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) {
+        if ( $cache && isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) {
 //            debug_log("cached: $fv");
             return $entities[$this->taxonomy][$fv];
         }
@@ -236,7 +236,7 @@ class Entity {
 
 
         $q = "SELECT $select FROM {$this->getTable()} WHERE `$field`='$value'";
-//        debug_log($q);
+        debug_log($q);
 //        d($q);
 
         $record = db()->get_row($q, ARRAY_A);

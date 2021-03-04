@@ -71,7 +71,7 @@ class Post extends Entity {
             'idx' => $post[IDX],
             'type' => 'post'
         ];
-        sendMessageToTopic(NOTIFY_POST . $category->value(ID), $in[TITLE], $in[CONTENT] ?? '', $post[PATH], $data);
+        sendMessageToTopic(NOTIFY_POST . $category->value(ID), $in[TITLE] ?? '', $in[CONTENT] ?? '', $post[PATH], $data);
 
         return $post;
     }
@@ -186,10 +186,10 @@ class Post extends Entity {
     // @todo add user(author) information
     // @todo add attached files if exists.
      */
-    public function get(string $field=null, mixed $value=null, string $select='*'): mixed
+    public function get(string $field=null, mixed $value=null, string $select='*', bool $cache=true): mixed
     {
         global $__rets;
-        $post = parent::get($field, $value, $select);
+        $post = parent::get($field, $value, $select, $cache);
         if ( ! $post ) return [];
         $post[COMMENTS] = [];
         if ( isset($post[IDX]) ) {
