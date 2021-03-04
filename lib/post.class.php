@@ -64,7 +64,14 @@ class Post extends Entity {
         // update `noOfPosts`
         // update `noOfComments`
 
-        // @todo push notification
+
+        // NEW POST IS CREATED => Send notification to forum subscriber
+        $data = [
+            'senderIdx' => my(IDX),
+            'idx' => $post[IDX],
+            'type' => 'post'
+        ];
+        sendMessageToTopic(NOTIFY_POST . $category[ID], $in[TITLE], $in[CONTENT] ?? '', $post[PATH], $data);
 
         return $post;
     }

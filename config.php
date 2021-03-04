@@ -95,6 +95,14 @@ if ( ! defined('FIREBASE_DATABASE_URI') ) {
 }
 
 
+/**
+ * If this is set to true, the user who registers will subscribe for 'new comments' under his post or comment.
+ * If this is set to false, the registering user will not subscribe to 'new comments'.
+ * The user can change this option on settings.
+ * By default it is set to 'true'
+ */
+define('SUBSCRIBE_NEW_COMMENT_ON_REGISTRATION', true);
+
 
 
 

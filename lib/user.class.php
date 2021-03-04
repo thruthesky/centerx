@@ -94,18 +94,6 @@ class User extends Entity {
 
         if ( isError($record) ) return $record;
 
-        /**
-         * If token is passed over, create one.
-         */
-        if ( isset($in[TOKEN]) ) {
-            if ( token($in[TOKEN])->exists() == false ) {
-                token()->create([
-                    USER_IDX => my(IDX),
-                    TOKEN => $in[TOKEN],
-                ]);
-            }
-        }
-
         $profile = user($record[IDX])->profile();
 
         point()->register($profile);
@@ -202,6 +190,26 @@ class User extends Entity {
         $row = parent::get(EMAIL, $uid);
         if ( $row ) return user($row[IDX]);
         return user();
+    }
+
+    /**
+     * Update User Option Setting - to set userMeta[OPTION] to Y or N
+     * if $in[OPTION] is null or 'Y' then change it to N
+     * if $in[OPTION] is 'N' then change it to Y
+     *
+     * @param $in
+     * @return array|string
+     */
+    public function updateOptionSetting(array $in): array|string
+    {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return e()->option_is_empty;
+        if ( my($in[OPTION]) == null  || my($in[OPTION]) == "Y" ) {
+            parent::update( [ $in[OPTION] => 'N' ]);
+        } else {
+            parent::update( [ $in[OPTION] => 'Y' ]);
+        }
+        return $this->profile();
     }
 
 
