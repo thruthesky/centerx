@@ -155,7 +155,9 @@ class User extends Entity {
     }
 
     /**
-     * Update User Option Setting
+     * Update User Option Setting - to set userMeta[OPTION] to Y or N
+     * if $in[OPTION] is null or 'Y' then change it to N
+     * if $in[OPTION] is 'N' then change it to Y
      *
      * @param $in
      * @return array|string
@@ -164,7 +166,7 @@ class User extends Entity {
     {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return e()->option_is_empty;
-        if ( my($in[OPTION]) == "Y" ) {
+        if ( my($in[OPTION]) == null  || my($in[OPTION]) == "Y" ) {
             parent::update( [ $in[OPTION] => 'N' ]);
         } else {
             parent::update( [ $in[OPTION] => 'Y' ]);

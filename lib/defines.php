@@ -78,6 +78,8 @@ define('DEFAULT_TOPIC', 'defaultTopic');
 define('DEFAULT_NOTIFY_PREFIX', 'notify');
 define('NOTIFY_POST', DEFAULT_NOTIFY_PREFIX . 'Post_');
 define('NOTIFY_COMMENT', DEFAULT_NOTIFY_PREFIX . 'Comment_');
+define('NEW_COMMENT_ON_MY_POST_OR_COMMENT', 'newCommentUserOption');
+
 define('SUBSCRIPTION', 'subscription');
 
 define('BODY', 'body');

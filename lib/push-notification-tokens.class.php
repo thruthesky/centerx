@@ -74,7 +74,7 @@ function sanitizedInput($in): array {
     if ( !isset($in['click_action'])) $in['click_action'] = '/';
     if ( !isset($in['imageUrl'])) $in['imageUrl'] = '';
     if ( !isset($in['data'])) $in['data'] = [];
-    $in['data']['senderId'] = my(IDX);
+    $in['data']['senderIdx'] = my(IDX);
     return $in;
 }
 
@@ -102,8 +102,8 @@ function send_message_to_users($in): array|string
     }
     foreach ($users as $userIdx) {
         if ( isset($in[SUBSCRIPTION]) ) {
-            $re = user($userIdx)->get( $in['subscription'], true);
-            if ( $re == 'N' ) continue;
+            $re = user($userIdx)->get();
+            if ( $re[$in[SUBSCRIPTION]] == 'N' ) continue;
         }
         $tokens = token()->get_tokens($userIdx);
         $all_tokens = array_merge($all_tokens, $tokens);
@@ -117,3 +117,33 @@ function send_message_to_users($in): array|string
         'tokens' => $all_tokens
     ];
 }
+
+
+/**
+ * @param array $idxs
+ * @param null $filter 'notifyComment' || 'notifyPost'
+ * @return array
+ */
+function getTokensFromUserIDs($idxs = [], $filter = null): array
+{
+    $tokens = [];
+    foreach ($idxs as $idx) {
+        $rows = token()->get_tokens($idx);
+        if ($filter) {
+            $user = user($idx)->get();
+            if ($user[$filter] == 'N') {
+            } else {
+                foreach ($rows as $token) {
+                    $tokens[] = $token;
+                }
+            }
+        } else {
+            foreach ($rows as $token) {
+                $tokens[] = $token;
+            }
+        }
+    }
+    return $tokens;
+}
+
+
