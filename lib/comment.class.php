@@ -165,14 +165,14 @@ function onCommentCreateSendNotification(array $in)
      *
      */
 
-    $post = post($in[ROOT_IDX])->get();
+    $post = post($in[ROOT_IDX]);
     $usersIdx = [];
 
     /**
      * add post owner id if not mine
      */
-    if (post($in[ROOT_IDX])->isMine() == false) {
-        $usersIdx[] = $post[USER_IDX];
+    if ($post->isMine() == false) {
+        $usersIdx[] = $post->value(USER_IDX);
     }
 
     /**
@@ -191,7 +191,7 @@ function onCommentCreateSendNotification(array $in)
     /**
      * get user who subscribe to comment forum topic
      */
-    $slug = category($post[CATEGORY_IDX])->get();
+    $slug = category($post->value(CATEGORY_IDX))->get();
     $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $slug[ID]);
 
     /**
@@ -208,13 +208,13 @@ function onCommentCreateSendNotification(array $in)
     /**
      * set the title and body, etc.
      */
-    $title              = $post[TITLE];
+    $title              = $post->value(TITLE);
     $body               = $comment[CONTENT];
-    $click_url          = $post[PATH];
+    $click_url          = $post->value(PATH);
     $data               = [
         'senderIdx' => my(IDX),
         'type' => 'post',
-        'idx'=> $post[IDX]
+        'idx'=> $post->value(IDX)
     ];
 
     /**
