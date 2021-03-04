@@ -71,7 +71,7 @@ class Post extends Entity {
             'idx' => $post[IDX],
             'type' => 'post'
         ];
-        sendMessageToTopic(NOTIFY_POST . $category[ID], $in[TITLE], $in[CONTENT] ?? '', $post[PATH], $data);
+        sendMessageToTopic(NOTIFY_POST . $category->value(ID), $in[TITLE], $in[CONTENT] ?? '', $post[PATH], $data);
 
         return $post;
     }
