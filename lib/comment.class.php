@@ -33,12 +33,8 @@ class Comment extends Entity {
             if ( my(POINT) < abs( $pointToCreate ) ) return e()->lack_of_point;
         }
 
-
         $comment = parent::create($in);
-
-
         point()->forum(POINT_COMMENT_CREATE, $comment[IDX]);
-
 
         return $comment;
     }
@@ -90,6 +86,10 @@ class Comment extends Entity {
         $record = parent::markDelete();
         if ( isError($record) ) return $record;
         $this->update([TITLE => '', CONTENT => '']);
+
+
+        point()->forum(POINT_COMMENT_DELETE, $this->idx);
+
         return $this->get();
     }
 
