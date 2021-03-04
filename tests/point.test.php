@@ -1,10 +1,11 @@
 <?php
-$rows = user()->search(limit: 4);
+$rows = user()->search(limit: 5);
 
 define('A', $rows[0][IDX]);
 define('B', $rows[1][IDX]);
 define('C', $rows[2][IDX]);
 define('D', $rows[3][IDX]);
+define('E', $rows[4][IDX]);
 
 $post1 = [];
 $post2 = [];
@@ -44,11 +45,15 @@ point()->setLikeDeduction(-20);
 point()->setDislike(-50);
 point()->setDislikeDeduction(-30);
 
+//print("D point: " . user(D)->getPoint() . "\n");
+
+
 // B 포인트가 0 인데, -20 만큼 감소를 해도, 0 이하로 저장되지 않으므로 0 이다.
 setLogin(B);
 $post = post($post1[IDX])->vote('Y');
 isTrue($post[IDX] == $post1[IDX]);
 isTrue(my(POINT) == 0, 'B point: -20 vs : ' . my(POINT));
+
 
 // 주의: 이미 같은 글에 두번 추천. 포인트 변화 없음
 user(B)->setPoint(30);
@@ -61,7 +66,7 @@ $post = post($post2[IDX])->vote('Y');
 isTrue(my(POINT) == 10, 'B point should be 10. but: ' . my(POINT));
 
 // D 는 두번 추천 받았으므로, 포인트 200
-isTrue(user(D)->getPoint() == 200, 'D point 200');
+isTrue(user(D)->getPoint() == 200, 'D point must be 200. but: ' . user(D)->getPoint());
 
 
 
@@ -70,7 +75,8 @@ isTrue(user(D)->getPoint() == 200, 'D point 200');
 // D 는 -50 감소해서 150 남음
 post($post3[IDX])->vote('N');
 isTrue(user(B)->getPoint() == 0, 'B point 0');
-isTrue(user(D)->getPoint() == 150, 'D point 150');
+isTrue(user(D)->getPoint() == 150, 'D point must be 150. but ' . user(D)->getPoint());
+
 
 
 
@@ -94,28 +100,19 @@ function testPostCreateDelete(): void {
 
     setLogin(A);
 
-    post()->create([CATEGORY_ID => POINT]);
-    isTrue(my(POINT) == 1000, 'A point must be 1000. but ' . my(POINT));
+    // 게시글 생성
 
-//
-//
-//    /// 게시글 생성
-//    $this->login(A);
-//    $post1 = api_create_post(['category' => $this->category, 'post_title' => 'post 1']);
-//    self::assertTrue(get_user_point(A) == 1000, 'A point must be 1000: ' . get_user_point(A));
-//
-//    $post2 = api_create_post(['category' => $this->category, 'post_title' => 'post 2']);
-//    self::assertTrue(get_user_point(A) == 2000, 'A point must be 2000: ' . get_user_point(A));
-//
-//
-//    // 게시글 삭제
-//    $re = api_delete_post([ 'ID' => $post2['ID'], 'session_id' => get_session_id() ]);
-//    self::assertTrue($re['ID'] > 0, 'post delete');
-//    self::assertTrue(get_user_point(A) == 800, 'A point must be 800: ' . get_user_point(A));
-//
-//    $re = api_delete_post([ 'ID' => $post1['ID'], 'session_id' => get_session_id() ]);
-//    self::assertTrue($re['ID'] > 0, 'post delete');
-//    self::assertTrue(get_user_point(A) == 0, 'A point must be 0: ' . get_user_point(A));
+    $post1 = post()->create([CATEGORY_ID => POINT]);
+    isTrue(my(POINT) == 1000, 'A point must be 1000. but ' . my(POINT));
+    $post2 = post()->create([CATEGORY_ID => POINT]);
+    isTrue(my(POINT) == 2000, 'A point must be 2000. but ' . my(POINT));
+
+    // 게시글 삭제
+    $re = post($post1[IDX])->markDelete();
+    isTrue(my(POINT) == 800, 'A point must be 800. but ' . my(POINT));
+    $re = post($post2[IDX])->markDelete();
+    isTrue(my(POINT) == 0, 'A point must be 0. but ' . my(POINT));
+
 }
 
 
@@ -217,12 +214,6 @@ function clearTestPoint() {
 
     db()->query('truncate ' . pointHistory()->getTable());
     db()->query('truncate ' . voteHistory()->getTable());
-    user(A)->setPoint(0);
-    user(B)->setPoint(0);
-    user(C)->setPoint(0);
-    user(D)->setPoint(0);
-
-
 
 
 
@@ -253,5 +244,13 @@ function clearTestPoint() {
     $post1 = post()->create([CATEGORY_ID => POINT, TITLE => TITLE, CONTENT => CONTENT]);
     $post2 = post()->create([CATEGORY_ID => POINT, TITLE => TITLE, CONTENT => CONTENT]);
     $post3 = post()->create([CATEGORY_ID => POINT, TITLE => TITLE, CONTENT => CONTENT]);
+
+
+    user(A)->setPoint(0);
+    user(B)->setPoint(0);
+    user(C)->setPoint(0);
+    user(D)->setPoint(0);
+
+
 
 }

@@ -228,7 +228,11 @@ class Entity {
             $value = $this->idx;
         }
         $fv = "$field=$value";
-        if ( isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) return $entities[$this->taxonomy][$fv];
+        if ( isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) {
+//            debug_log("cached: $fv");
+            return $entities[$this->taxonomy][$fv];
+        }
+
 
 
         $q = "SELECT $select FROM {$this->getTable()} WHERE `$field`='$value'";
@@ -251,6 +255,7 @@ class Entity {
          * If $field is null, then don't cache.
          */
         if ( $field ) {
+            if ( ! isset($entities[$this->taxonomy]) ) $entities[$this->taxonomy] = [];
             $entities[$this->taxonomy][$fv] = $record;
             return $entities[$this->taxonomy][$fv];
         } else {

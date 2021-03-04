@@ -125,11 +125,9 @@ class Point {
         return category($category)->update([POINT_HOUR_LIMIT_COUNT => $count]);
     }
 
-
     public function getCategoryHourLimitCount(int|string $category) {
         return category($category)->get(select: POINT_HOUR_LIMIT_COUNT)[POINT_HOUR_LIMIT_COUNT];
     }
-
 
     public function setCategoryDailyLimitCount($category, $count) {
         return category($category)->update([POINT_DAILY_LIMIT_COUNT => $count]);
@@ -248,7 +246,7 @@ class Point {
      */
     public function forum(string $reason, int $idx): int|string {
         $entity = entity(POSTS, $idx);
-        if ( $entity->isMine() ) return 0;
+        if ( $entity->isMine() == false ) return 0; // 내 글에만 추천
         $categoryIdx = $entity->value(CATEGORY_IDX);
 
         // 제한에 걸렸으면, 에러 코드 리턴
@@ -346,7 +344,8 @@ class Point {
                 $fromUserPointApply = $this->addUserPoint(my(IDX), $Yn == 'Y' ? $this->getLikeDeduction() : $this->getDislikeDeduction());
                 $toUserPointApply = $this->addUserPoint($post->value(USER_IDX), $Yn == 'Y' ? $this->getLike() : $this->getDislike() );
                 $myPoint = my(POINT);
-//                d("{$post->idx} : $Yn, userIdx: " . $post->value(USER_IDX) . ", myIdx: " . my(IDX) . ", myPoint: $myPoint, fromuserPointApply: $fromUserPointApply, toUserPointApply: $toUserPointApply\n");
+                $toUserIdx = $post->value(USER_IDX);
+//                d("{$post->idx} : $Yn, toUserIdx: $toUserIdx, userIdx: " . $post->value(USER_IDX) . ", myIdx: " . my(IDX) . ", myPoint: $myPoint, fromuserPointApply: $fromUserPointApply, toUserPointApply: $toUserPointApply\n");
                 $this->log(
                     $Yn== 'Y' ? POINT_LIKE : POINT_DISLIKE,
                     toUserIdx: $post->value(USER_IDX),

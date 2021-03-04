@@ -255,6 +255,14 @@ class Post extends Entity {
      *
      * It returns empty string for comment.
      *
+     * @logic
+     *   - 먼저, 동일한 path 가 있는지 검사하고 있다면, count 를 1 증가하고, rand(count, count * 10) 의 값을 구해 count 에 저장한다.
+     *   - path 가 없는 값이 나올 때 까지 계속해서 계속해서 반복한다.
+     *   - 즉, 첫번째 루프에서는 rand(1, 10) 사이의 값을 구한다.
+     *     두번째 루프에서는 rand(11, 110) 사이의 값을 구한다.
+     *     세번재 루프에서는 rand(111, 1110) 사이의 값을 구한다.
+     *     네번째 루프에서는 rand(1111, 11110) 사이 중 하나의 count 값을 구한다. 그래서, 동일한 제목이 여러번 쓰여져도, 빠르게 찾는다.
+     *
      * @param $post
      * @return string
      */
@@ -268,12 +276,19 @@ class Post extends Entity {
             $p = parent::get(PATH, $path, 'idx'); // Don't use post()->get() for the performance.
             if ( $p ) {
                 $count ++;
+                $count = rand($count, $count * 10);
                 $path = "$title-$count";
             } else {
                 return $path;
             }
         }
     }
+
+
+
+
+
+
 
     /**
      *
