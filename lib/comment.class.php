@@ -165,14 +165,16 @@ function onCommentCreateSendNotification(array $commentRecord)
      *
      */
 
-    $post = post($commentRecord[ROOT_IDX])->get();
+
+    $post = post($commentRecord[ROOT_IDX]);
     $usersIdx = [];
 
     /**
      * add post owner id if not mine
      */
-    if (post($commentRecord[ROOT_IDX])->isMine() == false) {
-        $usersIdx[] = $post[USER_IDX];
+
+    if ($post->isMine() == false) {
+        $usersIdx[] = $post->value(USER_IDX);
     }
 
     /**
@@ -191,8 +193,9 @@ function onCommentCreateSendNotification(array $commentRecord)
     /**
      * get user who subscribe to comment forum topic
      */
-    $cat = category($post[CATEGORY_IDX])->get();
-    $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $cat[ID]);
+
+    $slug = category($post->value(CATEGORY_IDX))->get();
+    $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $slug[ID]);
 
     /**
      * remove users_id that are registered to comment topic
@@ -208,19 +211,20 @@ function onCommentCreateSendNotification(array $commentRecord)
     /**
      * set the title and body, etc.
      */
-    $title              = $post[TITLE];
+
+    $title              = $post->value(TITLE);
     $body               = $commentRecord[CONTENT];
-    $click_url          = $post[PATH];
+    $click_url          = $post->value(PATH);
     $data               = [
         'senderIdx' => my(IDX),
         'type' => 'post',
-        'idx'=> $post[IDX]
+        'idx'=> $post->value(IDX)
     ];
 
     /**
      * send notification to users who subscribe to comment topic
      */
-    sendMessageToTopic(NOTIFY_COMMENT . $cat[ID], $title, $body, $click_url, $data);
+    sendMessageToTopic(NOTIFY_COMMENT . $commentRecord[ID], $title, $body, $click_url, $data);
 
     /**
      * send notification to comment ancestors who enable reaction notification
