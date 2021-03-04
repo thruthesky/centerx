@@ -228,7 +228,7 @@ class Entity {
             $value = $this->idx;
         }
         $fv = "$field=$value";
-        if ( isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) {
+        if ( $cache && isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) {
 //            debug_log("cached: $fv");
             return $entities[$this->taxonomy][$fv];
         }
