@@ -25,11 +25,25 @@ class Post extends Entity {
         $in[USER_IDX] = my(IDX);
 
 
+        // 제한에 걸렸으면, 에러 리턴.
+        if ( $category->value(BAN_ON_LIMIT) ) {
+            $re = point()->checkCategoryLimit($category->idx);
+            if ( isError($re) ) return $re;
+        }
+
+        // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
+        $pointToCreate = point()->getPostCreate($category->idx);
+        if ( $pointToCreate < 0 ) {
+            if ( my(POINT) < abs( $pointToCreate ) ) return e()->lack_of_point;
+        }
+
+
+
         // @todo check if user has permission
         // @todo check if too many post creation.
         // @todo check if too many comment creation.
 
-        // Temporary path.
+        // Temporary path since path must be unique.
         $in[PATH] = 'path-' . md5(my(IDX)) . md5(time());
         $post = parent::create($in);
         if ( isError($post) ) return $post;
@@ -41,6 +55,9 @@ class Post extends Entity {
         $path = $this->getPath($post);
         $this->update([PATH => $path]);
         $post = $this->get();
+
+
+        point()->forum(POINT_POST_CREATE, $post[IDX]);
 
 
 
@@ -69,6 +86,12 @@ class Post extends Entity {
         return parent::update($in);
     }
 
+
+    public function delete()
+    {
+        return e()->post_delete_not_supported;
+    }
+
     /**
      * @return array|string
      */
@@ -78,10 +101,13 @@ class Post extends Entity {
         if ( $this->exists() == false ) return e()->post_not_exists;
         if ( $this->isMine() == false ) return e()->not_your_post;
 
-
         $record = parent::markDelete();
         if ( isError($record) ) return $record;
         $this->update([TITLE => '', CONTENT => '']);
+
+
+        point()->forum(POINT_POST_DELETE, $this->idx);
+
         return $this->get();
     }
 

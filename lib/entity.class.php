@@ -610,6 +610,15 @@ class Entity {
         else return null;
     }
 
+    /**
+     * 현재 entity 의 taxonomy 가 users 라면, 그냥 $this->idx 를 써야 한다. 그렇지 않으면 entity 의 userIdx 필드를 리턴한다.
+     * @return int
+     */
+    public function userIdx(): int {
+        if ( $this->taxonomy == USERS ) return $this->idx;
+        else return $this->value(USER_IDX);
+    }
+
 }
 
 

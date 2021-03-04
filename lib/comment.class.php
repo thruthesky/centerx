@@ -19,7 +19,28 @@ class Comment extends Entity {
         $root = post($in[ROOT_IDX])->get(select: CATEGORY_IDX);
         $in[CATEGORY_IDX] = $root[CATEGORY_IDX];
 
-        return parent::create($in);
+        $category = category(CATEGORY_IDX);
+
+        // 제한에 걸렸으면, 에러 리턴.
+        if ( $category->value(BAN_ON_LIMIT) ) {
+            $re = point()->checkCategoryLimit($category->idx);
+            if ( isError($re) ) return $re;
+        }
+
+        // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
+        $pointToCreate = point()->getCommentCreate($category->idx);
+        if ( $pointToCreate < 0 ) {
+            if ( my(POINT) < abs( $pointToCreate ) ) return e()->lack_of_point;
+        }
+
+
+        $comment = parent::create($in);
+
+
+        point()->forum(POINT_COMMENT_CREATE, $comment[IDX]);
+
+
+        return $comment;
     }
 
     /**
@@ -49,6 +70,13 @@ class Comment extends Entity {
 
         //
         return parent::update($in);
+    }
+
+
+
+    public function delete()
+    {
+        return e()->comment_delete_not_supported;
     }
 
 
