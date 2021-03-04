@@ -154,6 +154,24 @@ class User extends Entity {
         return $this->profile();
     }
 
+    /**
+     * Update User Option Setting
+     *
+     * @param $in
+     * @return array|string
+     */
+    public function updateOptionSetting(array $in): array|string
+    {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return e()->option_is_empty;
+        if ( my($in[OPTION]) == "Y" ) {
+            parent::update( [ $in[OPTION] => 'N' ]);
+        } else {
+            parent::update( [ $in[OPTION] => 'Y' ]);
+        }
+        return $this->profile();
+    }
+
 
 }
 

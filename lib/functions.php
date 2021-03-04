@@ -616,3 +616,23 @@ function bsAlert($text) {
 EOH;
 
 }
+
+
+/**
+ * Gets user_ID ( or any field ) from two dimensional array.
+ *
+ * @param $users
+ * @param string $field
+ * @return array
+ *
+ * @example
+ *  ids([ ['idx'=>1, ...], [], ... ])
+ */
+function ids(array $users, string $field=IDX): array
+{
+    $ret = [];
+    foreach ($users as $u) {
+        $ret[] = $u[$field];
+    }
+    return $ret;
+}

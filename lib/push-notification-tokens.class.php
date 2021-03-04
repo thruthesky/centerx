@@ -41,6 +41,18 @@ class PushNotificationTokens extends Entity {
 
         return $res;
     }
+
+    /**
+     * Returns tokens of login user in an array
+     * @param string $userIdx
+     * @return array
+     * @throws Exception
+     */
+    function get_tokens(string $userIdx) :array
+    {
+        $rows = parent::search(where: "userIdx='$userIdx'", select: 'token');
+        return ids($rows, 'token');
+    }
 }
 
 
@@ -48,7 +60,8 @@ class PushNotificationTokens extends Entity {
  * @param int|string $idx
  * @return PushNotificationTokens
  */
-function token(int|string $idx=0) {
+function token(int|string $idx=0): PushNotificationTokens
+{
     if ( is_numeric($idx) ) return new PushNotificationTokens($idx);
     $record = entity(PUSH_NOTIFICATION_TOKENS, 0)->get(TOKEN, $idx);
     if ( ! $record ) return new PushNotificationTokens(0);
@@ -72,9 +85,10 @@ function sanitizedInput($in): array {
  *  - $in['users'] is an array of user id.
  *
  *
- * @return MulticastSendReport|string
+ * @return array|string
+ * @throws Exception
  */
-function send_message_to_users($in): MulticastSendReport|string
+function send_message_to_users($in): array|string
 {
     if (!isset($in['users'])) return e()->users_is_empty;
     if (!isset($in['title'])) return e()->title_is_not_exist;
@@ -86,40 +100,20 @@ function send_message_to_users($in): MulticastSendReport|string
     } else {
         $users = explode(',', $in[USERS]);
     }
-        foreach ($users as $IDX) {
-            if ( isset($in[SUBSCRIPTION]) ) {
-                $re = user($IDX)->get( $in['subscription'], true);
-                if ( $re == 'N' ) continue;
-            }
-            $tokens = get_user_tokens($IDX);
-            $all_tokens = array_merge($all_tokens, $tokens);
+    foreach ($users as $userIdx) {
+        if ( isset($in[SUBSCRIPTION]) ) {
+            $re = user($userIdx)->get( $in['subscription'], true);
+            if ( $re == 'N' ) continue;
         }
-        /// If there are no tokens to send, then it will return empty array.
-        if (empty($all_tokens)) return e()->token_is_empty;
-        if (!isset($in['imageUrl'])) $in['imageUrl'] = '';
+        $tokens = token()->get_tokens($userIdx);
+        $all_tokens = array_merge($all_tokens, $tokens);
+    }
+    /// If there are no tokens to send, then it will return empty array.
+    if (empty($all_tokens)) return e()->token_is_empty;
+    $in = sanitizedInput($in);
+    $re = sendMessageToTokens($all_tokens, $in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']);
 
-        if ( !isset($in['data'])) $in['data'] = [];
-        if ( !isset($in['click_action'])) $in['click_action'] = '/';
-        $in['data']['senderId'] =  my(IDX);
-        $re = sendMessageToTokens($all_tokens, $in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']);
-//    print_r($re);
-        return [
-            'tokens' => $all_tokens
-        ];
-}
-
-/**
- * Returns tokens of login user in an array
- * @return array|object|null
- *
- */
-function get_user_tokens($IDX = null) :array|object|null
-{
-    global $wpdb;
-    if ($IDX) $user_ID = $IDX;
-    else $user_ID = my(IDX);
-
-//    $rows = $wpdb->get_results("SELECT * FROM " . PUSH_TOKENS_TABLE .  " WHERE user_ID='$user_ID'", ARRAY_A);
-    $rows = token()->search();
-    return ids($rows, 'token');
+    return [
+        'tokens' => $all_tokens
+    ];
 }
