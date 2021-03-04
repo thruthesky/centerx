@@ -165,6 +165,7 @@ class Post extends Entity {
             if ( $comments ) {
                 foreach($comments as $comment) {
                     $got = comment($comment[IDX])->get();
+                    if ($got[DELETED_AT] != '0') continue;
                     $got[DEPTH] = $comment[DEPTH];
                     $post[COMMENTS][] = $got;
                 }
