@@ -77,7 +77,7 @@ class Point {
 
 
     public function get(int $categoryIdx, string $reason) {
-        return category($categoryIdx)->get(select: $reason)[$reason];
+        return category($categoryIdx)->get(select: $reason, cache: false)[$reason];
     }
 
     public function setPostCreate($category, $point) {
@@ -85,7 +85,7 @@ class Point {
     }
 
     public function getPostCreate($category) {
-        return category($category)->get(select: POINT_POST_CREATE)[POINT_POST_CREATE];
+        return category($category)->get(select: POINT_POST_CREATE, cache: false)[POINT_POST_CREATE];
     }
 
     public function setCommentCreate($category, $point) {
