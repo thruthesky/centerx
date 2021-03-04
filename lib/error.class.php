@@ -56,6 +56,8 @@ class E {
 
     public string $token_is_empty = 'error_token_is_empty';
 
+    public string $empty_vote_choice = 'error_empty_vote_choice';
+    public string $empty_wrong_choice = 'error_empty_wrong_choice';
 
 
     public bool $isError = false;

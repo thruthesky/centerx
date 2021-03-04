@@ -13,6 +13,7 @@ class User extends Entity {
     {
         parent::__construct(USERS, $idx);
 
+        // 로그인을 했는지 안했는지만 설정한다. 로그인을 시키거나 로그인 변수를 변경하지 않는다.
         global $__login_user_profile;
         if ( isset($__login_user_profile) && $__login_user_profile && isset($__login_user_profile[IDX]) ) {
             $this->loggedIn = true;
@@ -105,7 +106,11 @@ class User extends Entity {
             }
         }
 
-        return user($record[IDX])->profile();
+        $profile = user($record[IDX])->profile();
+
+        point()->register($profile);
+
+        return $profile;
     }
 
     public function loginOrRegister(array $in): array|string {
@@ -163,7 +168,40 @@ class User extends Entity {
         if ( isError($profile) ) return $profile;
 
         if ( ! checkPassword($in[PASSWORD], $profile[PASSWORD]) ) return e()->wrong_password;
-        return $this->profile();
+        $profile = $this->profile();
+        point()->login($profile);
+        return $profile;
+    }
+
+
+
+
+    public function setPoint($p) {
+        $this->update([POINT => $p]);
+    }
+    public function getPoint() {
+        if ( $this->idx ) {
+            return $this->get(select: POINT)[POINT];
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Returns User instance by idx or email.
+     * @param int|string $uid
+     * @return User
+     *
+     *  - If there is no user by email, then it returns User(0).
+     *
+     * @example
+     *      user()->by($email)->setPoint(0);
+     */
+    public function by(int|string $uid): User {
+        if ( is_int($uid) ) return user($uid);
+        $row = parent::get(EMAIL, $uid);
+        if ( $row ) return user($row[IDX]);
+        return user();
     }
 
 

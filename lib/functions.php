@@ -376,12 +376,25 @@ function notLoggedIn(): bool {
  * 이 변수를 직접 사용하지 말고, 사용자 로그인을 시킬 때에는 setUserAsLogin() 을 쓰고, 사용 할 때에는 login() 을 사용하면 된다.
  */
 global $__login_user_profile;
+
+
 /**
- * @param $profile
+ * Set the user of $profile as logged into the system.
+ *
+ * @attention, it does not save login information into cookies. It only set the user login in current session.
+ *
+ * @param int|array $profile
+ * @return User
  */
-function setUserAsLogin($profile): void {
+function setUserAsLogin(int|array $profile): User {
     global $__login_user_profile;
+    if ( is_int($profile) ) $profile = user($profile)->profile();
     $__login_user_profile = $profile;
+    return user($profile[IDX] ?? 0);
+}
+// Alias of setUserAsLogin
+function setLogin(int|array $profile): User {
+    return setUserAsLogin($profile);
 }
 
 /**

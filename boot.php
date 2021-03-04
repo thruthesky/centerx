@@ -15,6 +15,10 @@ require_once ROOT_DIR . 'lib/post.class.php';
 require_once ROOT_DIR . 'lib/comment.class.php';
 require_once ROOT_DIR . 'lib/file.class.php';
 require_once ROOT_DIR . 'lib/error.class.php';
+require_once ROOT_DIR . 'lib/point/point-defines.php';
+require_once ROOT_DIR . 'lib/point/point.class.php';
+require_once ROOT_DIR . 'lib/point/point-history.class.php';
+require_once ROOT_DIR . 'lib/vote-history.class.php';
 require_once ROOT_DIR . 'lib/firebase.php';
 require_once ROOT_DIR . 'config.php';
 require_once ROOT_DIR . 'lib/defines.php'; // depending on config.php
