@@ -1,5 +1,6 @@
 <?php
 
+use function JmesPath\search;
 
 class Category extends Entity {
 
@@ -57,4 +58,20 @@ function category(int|string $idx = 0) {
  */
 function categories() {
     return category()->search(select: '*');
+}
+
+/**
+ * Returns all the existing category ids.
+ */
+function search_categories() {
+    $categories = category()->search(select: 'id');
+
+    $cats = '';
+    if ( ! empty($categories) ) {
+        foreach ($categories as $category) {
+            if ( $cats != '' ) $cats = $cats . ',';
+            $cats = $cats . $category[ID];
+        }
+    }
+    return $cats;
 }

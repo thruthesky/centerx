@@ -21,8 +21,9 @@ class AppRoute
     }
 
 
-    public function settings() {
+    public function settings()
+    {
         return ['a' => 'apple'];
+        // return ['search_categories' => search_categories()];
     }
-
 }
