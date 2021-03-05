@@ -235,47 +235,15 @@ function onCommentCreateSendNotification(array $commentRecord)
     if (!empty($tokens)) sendMessageToTokens( $tokens, $title, $body, $click_url, $data);
 }
 
-/**
- * Returns an array of user ids that are in the path(tree) of comment hierarchy.
- *
- * @note it does not include the login user and it does not have duplicated user id.
- *
- * @param $idx - comment idx
- *
- * @return array - array of user ids
- *
- *
- */
-function getCommentAncestors(int $idx): array
-{
-
-    $comment = comment($idx)->get();
-    $asc     = [];
-
-    while (true) {
-        $comment = comment($comment[PARENT_IDX])->get();
-        if ($comment) {
-            if ($comment[USER_IDX] == my(IDX)) {
-                continue;
-            }
-            $asc[] = $comment[USER_IDX];
-        } else {
-            break;
-        }
-    }
-
-    $asc = array_unique($asc);
-
-    return $asc;
-}
 
 
 /**
- * @param $topic - topic as string
+ * @param $topic - topic as string.
+ *  It likes like `notificationPost_qna`.
  * @return array - array of user ids
  * @throws Exception
  */
-function getForumSubscribers(string $topic = ''): array
+function getForumSubscribers(string $topic): array
 {
     $ids = [];
 
@@ -286,3 +254,4 @@ function getForumSubscribers(string $topic = ''): array
 //    }
     return $ids;
 }
+
