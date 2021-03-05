@@ -8,6 +8,7 @@ class E {
     public string $wrong_password = 'error_wrong_password';
     public string $empty_password = 'error_empty_password';
     public string $empty_param = 'error_empty_param';
+    public string $wrong_params = 'error_wrong_params';
     public string $idx_must_not_set = 'error_idx_must_not_set';
     public string $insert_failed = 'error_insert_failed';
     public string $update_failed = 'error_update_failed';

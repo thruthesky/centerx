@@ -394,6 +394,12 @@ function setUserAsLogin(int|array $profile): User {
 function setLogin(int|array $profile): User {
     return setUserAsLogin($profile);
 }
+// Login any user. It could be root user. Use it only for test.
+function setLoginAny(): User {
+
+    $users = user()->search(limit: 1);
+    return setLogin($users[0][IDX]);
+}
 
 /**
  * Returns login user record field.
@@ -754,9 +760,10 @@ function disableTesting() {
 
 /**
  * To indicating debugging range.
-enableDebugging();
-post($post3[IDX])->vote('Y');
-disableDebugging();
+ * @example
+        enableDebugging();
+        post($post3[IDX])->vote('Y');
+        disableDebugging();
  */
 $_debugging = false;
 function isDebugging(): bool {
