@@ -624,6 +624,25 @@ class Entity {
         else return $this->value(USER_IDX);
     }
 
+    /**
+     * Returns login user's records in array.
+     *
+     * Helper class for search().
+     * It does very much the same as search(), but returns login user's record only.
+     *
+     *
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @param string $by
+     * @param string $select
+     * @return array
+     * @throws Exception
+     */
+    public function my(int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='*'): array {
+        return $this->search("userIdx=" . login()->idx, $page, $limit, $order, $by, $select);
+    }
+
 }
 
 

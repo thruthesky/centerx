@@ -75,6 +75,9 @@ class E {
     public string $lack_of_point = 'error_lack_of_point';
 
 
+    public string $order_not_exists = 'error_order_not_exists';
+    public string $not_your_order = 'error_not_your_order';
+    public string $order_confirmed = 'error_order_confirmed';
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)

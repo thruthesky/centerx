@@ -33,6 +33,7 @@ if ( $func = getRoute($route) ) {
     $filePath = ROOT_DIR . "routes/{$className}.route.php";
     if ( ! file_exists($filePath) ) error(e()->route_file_not_found);
     include $filePath;
+    $className = str_replace('-', '', $className);
     $instance = new ($className . 'Route')();
 
     if (!method_exists($instance, $methodName)) error(e()->route_function_not_found);

@@ -800,3 +800,24 @@ function browser_language()
 function select_list_widgets($categoryIdx,  $widget_type, $default_widget) {
     echo "Copy widget functionality from sonub";
 }
+
+
+
+
+/// 상품 주문 했을 때, 추가한 포인트를 뺀다.
+function itemOrderPointRestore($idx) {
+    $order = shoppingMallOrder($idx);
+    $info = json_decode($order->value('info'), true);
+    $userIdx = $order->value(USER_IDX);
+    $point = $info['pointToUse'];
+    point()->addUserPoint($userIdx, $point);
+    point()->log(
+        POINT_ITEM_RESTORE,
+        toUserIdx: $userIdx,
+        toUserPointApply: $point,
+        taxonomy: SHOPPING_MALL_ORDERS,
+        entity: $idx,
+    );
+}
+
+

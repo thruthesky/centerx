@@ -26,6 +26,7 @@ define('PUSH_NOTIFICATION_TOKENS', 'push_notification_tokens');
 define('POINT_HISTORIES', 'point_histories');
 
 define('POST_VOTE_HISTORIES', 'post_vote_histories');
+define('SHOPPING_MALL_ORDERS', 'shopping_mall_orders');
 
 
 
