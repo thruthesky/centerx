@@ -47,6 +47,11 @@
 
 - file upload error handling. https://www.php.net/manual/en/features.file-upload.errors.php
 
+## 해야 할 일. 다음 버전.
+
+- CRUD 함수 (예: getXxx(), setXxx(), update(), create(), delete(), exists() 등등) 외에는 모두 현재 객체를 리턴할 것.
+  그래서, user()->by(email)->exists() 와 같이 호출 할 수 있도록 할 것.
+  단, 옵션으로 user()->by(email, returnFormat: ARRAY_A) 와 같이 배열로 받을 수 있도록 한다.
 
 # Installation
 
@@ -444,6 +449,10 @@ https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
 ```
 
 
+# Vote
+
+- 추천 기능은 게시글 뿐만아니라, 사용자 프로필에도 할 수 있도록 vote_histories table 에 taxonomy 와 entity 를 추가해 놓았다.
+
 
 # Theme
 
@@ -549,4 +558,5 @@ if ( modeCreate() ) {
 ```shell
 % chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php app"
 % chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php user"
+% chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php point"
 ```

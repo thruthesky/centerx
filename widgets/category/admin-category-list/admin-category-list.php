@@ -12,31 +12,22 @@ if ( modeCreate() ) {
 
 <div class="container">
     <div class="row">
-        <div class="col-3">
+        <div class="col-6">
             <?php if ( in(ID) && modeDelete() == false ) {
                 $cat = category(in(ID))->get();
                 ?>
                     <h3>Category Update</h3>
-            <form>
-                <input type="hidden" name="p" value="admin.index">
-                <input type="hidden" name="w" value="category/admin-category-list">
-                <input type="hidden" name="mode" value="update">
-                <input type="hidden" name="<?=ID?>" value="<?=in(ID)?>">
-                <input type="text" class="form-control mb-2" name='<?=TITLE?>' value="<?=$cat[TITLE]?>" placeholder="제목 입력">
-                <input type="text" class="form-control mb-2" name='<?=DESCRIPTION?>' value="<?=$cat[DESCRIPTION]?>" placeholder="설명 입력">
-
-                <button type="submit" class="btn btn-primary mb-2">Update</button>
-                <a href="/?p=admin.index&w=category/admin-category-list&mode=delete&id=<?=$cat[ID]?>" class="btn btn-danger mb-2" onclick="return confirm('Do you want to delete this category?');">Delete</a>
-            </form>
+                <?php
+                include 'sidebar.php';
+                ?>
             <?php } else { ?>
                 <h3>Category</h3>
             <?php } ?>
-
             <ul>
                 <li>Click id to update.</li>
             </ul>
         </div>
-        <div class="col-9">
+        <div class="col-6">
             <section class="mx-5">
                 <form>
                     <input type="hidden" name="p" value="admin.index">

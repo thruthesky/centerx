@@ -1,4 +1,5 @@
 <?php
+use Kreait\Firebase\Messaging\MulticastSendReport;
 
 class PushNotificationTokens extends Entity {
     public function __construct(int $idx)
@@ -15,10 +16,10 @@ class PushNotificationTokens extends Entity {
      */
     public function update(array $in): array|string {
 
-
+        $token = $in[TOKEN];
         $data = [
             USER_IDX => my(IDX) ?? 0,
-            TOKEN => $in[TOKEN],
+            TOKEN => $token,
             DOMAIN => get_domain_name(),
         ];
 
@@ -28,9 +29,29 @@ class PushNotificationTokens extends Entity {
             $res = parent::update($data);
         }
 
-        // @TODO add topic subscription
+        if (isset($in[TOPIC]) && !empty($in[TOPIC])) {
+            $re = subscribeTopic($in[TOPIC], $token);
+        } else {
+            $re = subscribeTopic(DEFAULT_TOPIC, $token);
+        }
+
+        if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
+            return e()->topic_subscription;
+        }
 
         return $res;
+    }
+
+    /**
+     * Returns tokens of login user in an array
+     * @param string $userIdx
+     * @return array
+     * @throws Exception
+     */
+    function get_tokens(string $userIdx) :array
+    {
+        $rows = parent::search(where: "userIdx='$userIdx'", select: 'token');
+        return ids($rows, 'token');
     }
 }
 
@@ -39,9 +60,90 @@ class PushNotificationTokens extends Entity {
  * @param int|string $idx
  * @return PushNotificationTokens
  */
-function token(int|string $idx=0) {
+function token(int|string $idx=0): PushNotificationTokens
+{
     if ( is_numeric($idx) ) return new PushNotificationTokens($idx);
     $record = entity(PUSH_NOTIFICATION_TOKENS, 0)->get(TOKEN, $idx);
     if ( ! $record ) return new PushNotificationTokens(0);
     return new PushNotificationTokens($record[IDX]);
 }
+
+function sanitizedInput($in): array {
+    if ( !isset($in['title'])) $in['title'] = '';
+    if ( !isset($in['body'])) $in['body'] = '';
+    if ( !isset($in['click_action'])) $in['click_action'] = '/';
+    if ( !isset($in['imageUrl'])) $in['imageUrl'] = '';
+    if ( !isset($in['data'])) $in['data'] = [];
+    $in['data']['senderIdx'] = my(IDX);
+    return $in;
+}
+
+/**
+ * Send messages to all users in $in['users']
+ *
+ * @param $in
+ *  - $in['users'] is an array of user id.
+ *
+ *
+ * @return array|string
+ * @throws Exception
+ */
+function send_message_to_users($in): array|string
+{
+    if (!isset($in['users'])) return e()->users_is_empty;
+    if (!isset($in['title'])) return e()->title_is_not_exist;
+    if (!isset($in['body'])) return e()->body_is_not_exist;
+    $all_tokens = [];
+
+    if (gettype($in[USERS]) == 'array') {
+        $users = $in[USERS];
+    } else {
+        $users = explode(',', $in[USERS]);
+    }
+    foreach ($users as $userIdx) {
+        if ( isset($in[SUBSCRIPTION]) ) {
+            $re = user($userIdx)->get();
+            if ( $re[$in[SUBSCRIPTION]] == 'N' ) continue;
+        }
+        $tokens = token()->get_tokens($userIdx);
+        $all_tokens = array_merge($all_tokens, $tokens);
+    }
+    /// If there are no tokens to send, then it will return empty array.
+    if (empty($all_tokens)) return e()->token_is_empty;
+    $in = sanitizedInput($in);
+    $re = sendMessageToTokens($all_tokens, $in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']);
+
+    return [
+        'tokens' => $all_tokens
+    ];
+}
+
+
+/**
+ * @param array $idxs
+ * @param null $filter 'notifyComment' || 'notifyPost'
+ * @return array
+ */
+function getTokensFromUserIDs($idxs = [], $filter = null): array
+{
+    $tokens = [];
+    foreach ($idxs as $idx) {
+        $rows = token()->get_tokens($idx);
+        if ($filter) {
+            $user = user($idx)->get();
+            if (isset($user[$filter]) && $user[$filter] == 'N') {
+            } else {
+                foreach ($rows as $token) {
+                    $tokens[] = $token;
+                }
+            }
+        } else {
+            foreach ($rows as $token) {
+                $tokens[] = $token;
+            }
+        }
+    }
+    return $tokens;
+}
+
+

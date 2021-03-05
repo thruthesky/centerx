@@ -13,6 +13,7 @@ class User extends Entity {
     {
         parent::__construct(USERS, $idx);
 
+        // 로그인을 했는지 안했는지만 설정한다. 로그인을 시키거나 로그인 변수를 변경하지 않는다.
         global $__login_user_profile;
         if ( isset($__login_user_profile) && $__login_user_profile && isset($__login_user_profile[IDX]) ) {
             $this->loggedIn = true;
@@ -93,19 +94,11 @@ class User extends Entity {
 
         if ( isError($record) ) return $record;
 
-        /**
-         * If token is passed over, create one.
-         */
-        if ( isset($in[TOKEN]) ) {
-            if ( token($in[TOKEN])->exists() == false ) {
-                token()->create([
-                    USER_IDX => my(IDX),
-                    TOKEN => $in[TOKEN],
-                ]);
-            }
-        }
+        $profile = user($record[IDX])->profile();
 
-        return user($record[IDX])->profile();
+        point()->register($profile);
+
+        return $profile;
     }
 
     public function loginOrRegister(array $in): array|string {
@@ -139,9 +132,9 @@ class User extends Entity {
      * 예제)
      * d( user(48)->profile() );
      */
-    public function profile($unsetPassword=true): mixed {
+    public function profile(bool $unsetPassword=true, bool $cache=true): mixed {
         if ( ! $this->idx ) return e()->idx_not_set;
-        $record = $this->get('idx', $this->idx);
+        $record = $this->get('idx', $this->idx, cache: $cache);
         if ( !$record ) return e()->user_not_found_by_that_idx;
         $record[SESSION_ID] = getSessionId($record);
         if ( $unsetPassword ) unset($record[PASSWORD]);
@@ -163,6 +156,59 @@ class User extends Entity {
         if ( isError($profile) ) return $profile;
 
         if ( ! checkPassword($in[PASSWORD], $profile[PASSWORD]) ) return e()->wrong_password;
+        $profile = $this->profile();
+        point()->login($profile);
+        return $profile;
+    }
+
+
+
+
+    public function setPoint($p) {
+        $this->update([POINT => $p]);
+    }
+    public function getPoint() {
+        if ( $this->idx ) {
+            return $this->get(select: POINT, cache: false)[POINT];
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Returns User instance by idx or email.
+     * @param int|string $uid
+     * @return User
+     *
+     *  - If there is no user by email, then it returns User(0).
+     *
+     * @example
+     *      user()->by($email)->setPoint(0);
+     */
+    public function by(int|string $uid): User {
+        if ( is_int($uid) ) return user($uid);
+        $row = parent::get(EMAIL, $uid);
+        if ( $row ) return user($row[IDX]);
+        return user();
+    }
+
+    /**
+     * Update User Option Setting - to set userMeta[OPTION] to Y or N
+     * if $in[OPTION] is null or 'Y' then change it to N
+     * if $in[OPTION] is 'N' then change it to Y
+     *
+     * @param $in
+     * @return array|string
+     */
+    public function updateOptionSetting(array $in): array|string
+    {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return e()->option_is_empty;
+        if ( my($in[OPTION]) == null  || my($in[OPTION]) == "Y" ) {
+            parent::update( [ $in[OPTION] => 'N' ]);
+        } else {
+            parent::update( [ $in[OPTION] => 'Y' ]);
+        }
         return $this->profile();
     }
 

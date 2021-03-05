@@ -35,6 +35,10 @@ class E {
 
     public string $not_your_comment = 'error_not_your_comment';
 
+    public string $post_delete_not_supported = 'error_post_delete_not_supported';
+    public string $comment_delete_not_supported = 'error_comment_delete_not_supported';
+
+
     public string $category_exists = 'error_category_exists';
     public string $category_not_exists = 'error_category_not_exists';
 
@@ -53,10 +57,27 @@ class E {
     public string $not_your_file = 'error_not_your_file';
     public string $file_delete_failed = 'error_file_delete_failed';
 
-
+    public string $option_is_empty = 'error_option_is_empty';
     public string $token_is_empty = 'error_token_is_empty';
+    public string $tokens_is_empty = 'error_tokens_is_empty';
+    public string $topic_is_empty = 'error_topic_is_empty';
+    public string $topic_subscription = 'error_topic_subscription';
+    public string $users_is_empty = 'error_users_is_empty';
+    public string $title_is_not_exist = 'error_title_is_not_exist';
+    public string $body_is_not_exist = 'error_body_is_not_exist';
+
+    public string $empty_vote_choice = 'error_empty_vote_choice';
+    public string $empty_wrong_choice = 'error_empty_wrong_choice';
+
+    public string $hourly_limit = 'error_hourly_limit';
+    public string $daily_limit = 'error_daily_limit';
+
+    public string $lack_of_point = 'error_lack_of_point';
 
 
+    public string $order_not_exists = 'error_order_not_exists';
+    public string $not_your_order = 'error_not_your_order';
+    public string $order_confirmed = 'error_order_confirmed';
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)

@@ -139,15 +139,21 @@ class Entity {
         $up = $this->getRecordFields($in);
         $up[UPDATED_AT] = time();
 
+
         $re = db()->update($this->getTable(), $up, eq(IDX, $this->idx ));
-        if ( !$re ) return e()->update_failed;
+
+        if ( $re === false ) return e()->update_failed;
+
 
         $this->updateMetas($this->idx, $this->getMetaFields($in));
 
         $fv = "idx=" . $this->idx;
         unset($entities[ $this->taxonomy ][ $fv ]);
 
-        return self::get();
+        $got = self::get();
+
+
+        return $got;
     }
 
     /**
@@ -214,7 +220,7 @@ class Entity {
      * user()->get('email', 'user10@gmail.com');
      */
     private $entities = [];
-    public function get(string $field=null, mixed $value=null, string $select='*'): mixed {
+    public function get(string $field=null, mixed $value=null, string $select='*', bool $cache = true): mixed {
 
         global $entities;
         if ($field == null ) {
@@ -222,15 +228,22 @@ class Entity {
             $value = $this->idx;
         }
         $fv = "$field=$value";
-        if ( isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) return $entities[$this->taxonomy][$fv];
+        if ( $cache && isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) {
+//            debug_log("cached: $fv");
+            return $entities[$this->taxonomy][$fv];
+        }
 
 
 
         $q = "SELECT $select FROM {$this->getTable()} WHERE `$field`='$value'";
         debug_log($q);
+//        d($q);
 
         $record = db()->get_row($q, ARRAY_A);
-        if ( !$record ) return $record;
+        if ( !$record ) {
+//            debug_log("record is false:");
+            return [];
+        }
         /**
          * If $select does not have `idx`, then it will not get meta tags.
          */
@@ -242,6 +255,7 @@ class Entity {
          * If $field is null, then don't cache.
          */
         if ( $field ) {
+            if ( ! isset($entities[$this->taxonomy]) ) $entities[$this->taxonomy] = [];
             $entities[$this->taxonomy][$fv] = $record;
             return $entities[$this->taxonomy][$fv];
         } else {
@@ -282,7 +296,7 @@ class Entity {
     public function isMine(): bool {
         if ( notLoggedIn() ) return false;
         if ( ! $this->idx ) return false;
-        $record = self::get();
+        $record = self::get(cache: false);
         if ( ! $record ) return false;
         if ( ! isset($record) ) return false;
         if ( ! $record[USER_IDX] ) return false;
@@ -465,7 +479,8 @@ class Entity {
         $q = "SELECT data FROM " . entity(METAS)->getTable() . " WHERE taxonomy='{$this->taxonomy}' AND entity={$this->idx} AND code='$code'";
 //        echo("Q: $q\n");
         $data = db()->get_var($q);
-        return $this->_unserialize($data);
+        $un = $this->_unserialize($data);
+        return $un;
     }
 
 
@@ -585,6 +600,47 @@ class Entity {
     public function _unserialize(mixed $v): mixed {
         if ( is_serialized($v) ) return unserialize($v);
         else return $v;
+    }
+
+
+    /**
+     * Returns a value of a field or meta field.
+     * @return mixed
+     * - null if field not exist in taxonomy or meta.
+     * - or value.
+     */
+    public function value($field): mixed {
+        $got = self::get();
+        if ( isset($got[$field]) ) return $got[$field];
+        else return null;
+    }
+
+    /**
+     * 현재 entity 의 taxonomy 가 users 라면, 그냥 $this->idx 를 써야 한다. 그렇지 않으면 entity 의 userIdx 필드를 리턴한다.
+     * @return int
+     */
+    public function userIdx(): int {
+        if ( $this->taxonomy == USERS ) return $this->idx;
+        else return $this->value(USER_IDX);
+    }
+
+    /**
+     * Returns login user's records in array.
+     *
+     * Helper class for search().
+     * It does very much the same as search(), but returns login user's record only.
+     *
+     *
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @param string $by
+     * @param string $select
+     * @return array
+     * @throws Exception
+     */
+    public function my(int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='*'): array {
+        return $this->search("userIdx=" . login()->idx, $page, $limit, $order, $by, $select);
     }
 
 }

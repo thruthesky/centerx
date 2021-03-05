@@ -54,7 +54,7 @@ function getDatabase() {
  * @return \Kreait\Firebase\Messaging\MulticastSendReport
  */
 function sendMessageToTokens($tokens, $title, $body, $click_action, $data = [], $imageUrl="") {
-    if ( get_phpunit_mode() ) return null;
+//    if ( get_phpunit_mode() ) return null;
     $message = CloudMessage::fromArray([
         'notification' => getNotificationData($title, $body, $click_action, $data, $imageUrl),
         'webpush' => getWebPushData($title, $body, $click_action, $data, $imageUrl),
@@ -73,9 +73,9 @@ function sendMessageToTokens($tokens, $title, $body, $click_action, $data = [], 
  * @param string $imageUrl
  * @return array
  */
-function sendMessageToTopic($topic, $title, $body, $click_action, $data = [], $imageUrl="") {
+function sendMessageToTopic($topic, $title, $body, $click_action, $data = [], $imageUrl=""): array {
     /// If it's phpunit test mode, then don't send it.
-    if ( get_phpunit_mode() ) return [];
+    if ( isTesting() ) return [];
     $message = CloudMessage::fromArray([
         'topic' => $topic,
         'notification' => getNotificationData($title, $body, $click_action, $data, $imageUrl),
@@ -91,33 +91,31 @@ function sendMessageToTopic($topic, $title, $body, $click_action, $data = [], $i
  * @param $topic
  * @param $tokens - a token or an array of tokens
  * @return array
- * @throws \Kreait\Firebase\Exception\FirebaseException
- * @throws \Kreait\Firebase\Exception\MessagingException
  */
-function subscribeTopic($topic, $tokens) {
-    if ( get_phpunit_mode() ) return [];
+function subscribeTopic($topic, $tokens): array {
+    if ( isTesting() ) return [];
     return getMessaging()->subscribeToTopic($topic, $tokens);
 }
 /**
  * @param $topics - array of topics
  * @param $tokens - a token or an array of tokens
  * @return array
- * @throws \Kreait\Firebase\Exception\FirebaseException
- * @throws \Kreait\Firebase\Exception\MessagingException
+// * @throws \Kreait\Firebase\Exception\FirebaseException
+// * @throws \Kreait\Firebase\Exception\MessagingException
  */
-function subscribeTopics($topics, $tokens) {
-    if ( get_phpunit_mode() ) return [];
+function subscribeTopics($topics, $tokens): array {
+    if ( isTesting() ) return [];
     return getMessaging()->subscribeToTopics($topics, $tokens);
 }
 
 /**
  * @param $tokens - a token or an array of tokens
  * @return array
- * @throws \Kreait\Firebase\Exception\FirebaseException
- * @throws \Kreait\Firebase\Exception\MessagingException
+// * @throws \Kreait\Firebase\Exception\FirebaseException
+// * @throws \Kreait\Firebase\Exception\MessagingException
  */
 function unsubscribeFromAllTopics($tokens) {
-    if ( get_phpunit_mode() ) return [];
+    if ( isTesting() ) return [];
     return getMessaging()->unsubscribeFromAllTopics($tokens);
 }
 
@@ -125,11 +123,11 @@ function unsubscribeFromAllTopics($tokens) {
  * @param $topic
  * @param $tokens - a token or an array of tokens
  * @return array
- * @throws \Kreait\Firebase\Exception\FirebaseException
- * @throws \Kreait\Firebase\Exception\MessagingException
+// * @throws \Kreait\Firebase\Exception\FirebaseException
+// * @throws \Kreait\Firebase\Exception\MessagingException
  */
-function unsubscribeTopic($topic, $tokens) {
-    if ( get_phpunit_mode() ) return [];
+function unsubscribeTopic($topic, $tokens): array {
+    if ( isTesting() ) return [];
     return getMessaging()->unsubscribeFromTopic($topic, $tokens);
 }
 

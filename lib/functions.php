@@ -59,9 +59,12 @@ function get_JSON_input()
 
 
 function d($obj) {
-    echo "<xmp>";
+//    print_r(debug_backtrace());
+    if ( isCli() || isTesting() ) echo "\nd(): ";
+    else echo "<xmp>";
     print_r($obj);
-    echo "</xmp>";
+    if ( isCli() || isTesting() ) echo "\n";
+    else echo "</xmp>";
 }
 
 
@@ -302,7 +305,7 @@ function unsetLoginCookies() {
  * @return false|string|null
  */
 function getSessionId($profile) {
-    if ( !$profile ) return null;
+    if ( !$profile || !isset($profile[IDX]) ) return null;
     $str= $profile[IDX] . $profile[CREATED_AT] . $profile[PASSWORD];
     return $profile[IDX] . '-' . md5($str);
 }
@@ -318,11 +321,6 @@ function getSessionId($profile) {
 function getProfileFromCookieSessionId() : array|bool {
     if ( ! isset($_COOKIE[SESSION_ID]) ) return false;
     return getProfileFromSessionId($_COOKIE[SESSION_ID]);
-//
-//    $arr = explode('-', $_COOKIE[SESSION_ID]);
-//    $profile = user($arr[0])->profile(unsetPassword: false);
-//    if ( $_COOKIE[SESSION_ID] == getSessionId($profile) ) return $profile;
-//    else return false;
 }
 
 /**
@@ -376,12 +374,25 @@ function notLoggedIn(): bool {
  * 이 변수를 직접 사용하지 말고, 사용자 로그인을 시킬 때에는 setUserAsLogin() 을 쓰고, 사용 할 때에는 login() 을 사용하면 된다.
  */
 global $__login_user_profile;
+
+
 /**
- * @param $profile
+ * Set the user of $profile as logged into the system.
+ *
+ * @attention, it does not save login information into cookies. It only set the user login in current session.
+ *
+ * @param int|array $profile
+ * @return User
  */
-function setUserAsLogin($profile): void {
+function setUserAsLogin(int|array $profile): User {
     global $__login_user_profile;
+    if ( is_int($profile) ) $profile = user($profile)->profile(cache: false);
     $__login_user_profile = $profile;
+    return user($profile[IDX] ?? 0);
+}
+// Alias of setUserAsLogin
+function setLogin(int|array $profile): User {
+    return setUserAsLogin($profile);
 }
 
 /**
@@ -394,7 +405,7 @@ function setUserAsLogin($profile): void {
  */
 function my(string $field) {
     if ( loggedIn() ) {
-        $profile = login()->profile();
+        $profile = login()->profile(cache: false);
         if ( isset($profile[$field]) ) {
             return $profile[$field];
         }
@@ -704,3 +715,109 @@ function canHandleError(): bool {
 function canLiveReload(): bool {
     return !API_CALL && !isCli() && !isPhpThumb();
 }
+
+/**
+ * Gets userIdx ( or any field ) from two dimensional array.
+ *
+ * @param $users
+ * @param string $field
+ * @return array
+ *
+ * @example
+ *  ids([ ['idx'=>1, ...], [], ... ])
+ */
+function ids(array $users, string $field=IDX): array
+{
+    $ret = [];
+    foreach ($users as $u) {
+        $ret[] = $u[$field];
+    }
+    return $ret;
+}
+
+/**
+ * To indicating testing.
+ */
+$_testing = false;
+function isTesting(): bool {
+    global $_testing;
+    return $_testing;
+}
+function enableTesting() {
+    global $_testing;
+    $_testing = true;
+}
+function disableTesting() {
+    global $_testing;
+    $_testing = true;
+}
+
+/**
+ * To indicating debugging range.
+enableDebugging();
+post($post3[IDX])->vote('Y');
+disableDebugging();
+ */
+$_debugging = false;
+function isDebugging(): bool {
+    global $_debugging;
+    return $_debugging;
+}
+function enableDebugging() {
+    global $_debugging;
+    $_debugging = true;
+}
+function disableDebugging() {
+    global $_debugging;
+    $_debugging = true;
+}
+
+
+
+function ln($en, $ko)
+{
+    $bl = get_user_language();
+    if ( $bl == 'ko' ) return $ko;
+    else return $en;
+
+}
+
+function get_user_language() {
+    return browser_language();
+}
+function browser_language()
+{
+    if ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ) {
+        return substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    }
+    else {
+        return 'en';
+    }
+}
+
+
+
+function select_list_widgets($categoryIdx,  $widget_type, $default_widget) {
+    echo "Copy widget functionality from sonub";
+}
+
+
+
+
+/// 상품 주문 했을 때, 추가한 포인트를 뺀다.
+function itemOrderPointRestore($idx) {
+    $order = shoppingMallOrder($idx);
+    $info = json_decode($order->value('info'), true);
+    $userIdx = $order->value(USER_IDX);
+    $point = $info['pointToUse'];
+    point()->addUserPoint($userIdx, $point);
+    point()->log(
+        POINT_ITEM_RESTORE,
+        toUserIdx: $userIdx,
+        toUserPointApply: $point,
+        taxonomy: SHOPPING_MALL_ORDERS,
+        entity: $idx,
+    );
+}
+
+
