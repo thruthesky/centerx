@@ -70,12 +70,10 @@ class NotificationRoute {
      */
     public function subscribeTopic($in): array|string
     {
-        $tokens = $this->subscriptionOrUnsubscribeTopicTokens($in);
-        if ( empty($tokens) ) return e()->token_is_empty;
-        $res = subscribeTopic($in[TOPIC], $tokens);
-        //d($res);
-        return login()->update( [ $in[TOPIC] => 'Y' ]);
+        return pushNotification()->subscribeTopic($in);
     }
+
+
 
 
     /**
@@ -87,27 +85,7 @@ class NotificationRoute {
      */
     public function unsubscribeTopic($in): array|string
     {
-        $tokens = $this->subscriptionOrUnsubscribeTopicTokens($in);
-        if ( empty($tokens) ) return e()->token_is_empty;
-        $res = unsubscribeTopic($in[TOPIC], $tokens);
-        //d($res);
-        return login()->update( [ $in[TOPIC] => 'N' ]);
-
-    }
-
-    /**
-     * @param $in
-     * @return array|string
-     * @throws Exception
-     */
-    private function subscriptionOrUnsubscribeTopicTokens($in): array|string
-    {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( ! isset($in[TOPIC]) && empty($in[TOPIC]) ) return e()->topic_is_empty;
-        if ( isset($in[TOKENS] ) ) return $in[TOKENS];
-        else {
-            return token()->get_tokens(my(IDX));
-        }
+        return pushNotification()->unsubscribeTopic($in);
     }
 
 

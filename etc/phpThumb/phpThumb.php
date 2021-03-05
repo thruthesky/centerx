@@ -12,10 +12,20 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
-
+/**
+ * 아래는 직접 패치한 것으로, src 에 숫자가 들어오면 file 테이블 idx 로 인식하여, 해당 이미지를 썸네일 한다.
+ */
 if ( is_numeric($_GET['src']) ) {
     require_once '../../boot.php';
-    $_GET['src'] = files($_GET['src'])->get()[PATH];
+    $_GET['src']  = files($_GET['src'])->get()[PATH];
+}
+/**
+ * 썸네일하려는 이미지가 GIF 이면, 썸네일하지 않는다.
+ */
+if ( str_ends_with(strtolower($_GET['src']), '.gif') ) {
+    header('Content-Type: image/gif');
+    readfile($_GET['src'] );
+    exit;
 }
 
 

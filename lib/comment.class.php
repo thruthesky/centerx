@@ -39,14 +39,14 @@ class Comment extends Entity {
             if ( my(POINT) < abs( $pointToCreate ) ) return e()->lack_of_point;
         }
 
-        $comment = parent::create($in);
-        point()->forum(POINT_COMMENT_CREATE, $comment[IDX]);
+        // $comment = parent::create($in);
+        point()->forum(POINT_COMMENT_CREATE, $re[IDX]);
 
         /**
          * NEW COMMENT IS CREATED ==>  Send notification to forum comment subscriber
          */
         onCommentCreateSendNotification($re);
-        return $comment;
+        return $re;
     }
 
     /**
@@ -128,6 +128,45 @@ class Comment extends Entity {
             $comment[FILES] = files()->get($comment[FILES], select: 'idx,userIdx,path,name,size');
         }
         return $comment;
+    }
+
+
+    /**
+     * Returns posts after search and add meta datas.
+     *
+     * @attention Categories can be passed like  "categoryId=<apple> or categoryId='<banana>'" and it wil be converted
+     * as "categoryIdx=1 or categoryIdx='2'"
+     *
+     * @param string $where
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @param string $by
+     * @param string $select
+     * @param string $categoryId
+     * @return mixed
+     * @throws Exception
+     */
+    public function search(
+        string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'
+    ): mixed {
+
+        $posts = parent::search(
+            where: $where,
+            page: $page,
+            limit: $limit,
+            order: $order,
+            by: $by,
+            select: $select,
+        );
+
+        $rets = [];
+        foreach( $posts as $post ) {
+            $idx = $post[IDX];
+            $rets[] = comment($idx)->get();
+        }
+
+        return $rets;
     }
 
 
@@ -235,47 +274,15 @@ function onCommentCreateSendNotification(array $commentRecord)
     if (!empty($tokens)) sendMessageToTokens( $tokens, $title, $body, $click_url, $data);
 }
 
-/**
- * Returns an array of user ids that are in the path(tree) of comment hierarchy.
- *
- * @note it does not include the login user and it does not have duplicated user id.
- *
- * @param $idx - comment idx
- *
- * @return array - array of user ids
- *
- *
- */
-function getCommentAncestors(int $idx): array
-{
-
-    $comment = comment($idx)->get();
-    $asc     = [];
-
-    while (true) {
-        $comment = comment($comment[PARENT_IDX])->get();
-        if ($comment) {
-            if ($comment[USER_IDX] == my(IDX)) {
-                continue;
-            }
-            $asc[] = $comment[USER_IDX];
-        } else {
-            break;
-        }
-    }
-
-    $asc = array_unique($asc);
-
-    return $asc;
-}
 
 
 /**
- * @param $topic - topic as string
+ * @param $topic - topic as string.
+ *  It likes like `notificationPost_qna`.
  * @return array - array of user ids
  * @throws Exception
  */
-function getForumSubscribers(string $topic = ''): array
+function getForumSubscribers(string $topic): array
 {
     $ids = [];
 
@@ -286,3 +293,4 @@ function getForumSubscribers(string $topic = ''): array
 //    }
     return $ids;
 }
+

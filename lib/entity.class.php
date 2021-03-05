@@ -71,12 +71,13 @@ class Entity {
      *
      * @note user is_success() to check if it was success()
      *
-     * @see readme for detail.
-     *
-     *
+     * @return array|string
      * @example
      * $idx = entity(CATEGORIES)->create($in);
      * return entity(CATEGORIES, $idx)->get();
+     *
+     *
+     * @see readme for detail.
      *
      *
      */

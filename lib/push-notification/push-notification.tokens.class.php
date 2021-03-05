@@ -48,10 +48,18 @@ class PushNotificationTokens extends Entity {
      * @return array
      * @throws Exception
      */
-    function get_tokens(string $userIdx) :array
+    function getTokens(string $userIdx) :array
     {
-        $rows = parent::search(where: "userIdx='$userIdx'", select: 'token');
+        $rows = parent::search(where: "userIdx=$userIdx", select: 'token');
         return ids($rows, 'token');
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    function myTokens(): array {
+        return $this->getTokens(my(IDX));
     }
 }
 
@@ -105,7 +113,7 @@ function send_message_to_users($in): array|string
             $re = user($userIdx)->get();
             if ( $re[$in[SUBSCRIPTION]] == 'N' ) continue;
         }
-        $tokens = token()->get_tokens($userIdx);
+        $tokens = token()->getTokens($userIdx);
         $all_tokens = array_merge($all_tokens, $tokens);
     }
     /// If there are no tokens to send, then it will return empty array.
@@ -128,7 +136,7 @@ function getTokensFromUserIDs($idxs = [], $filter = null): array
 {
     $tokens = [];
     foreach ($idxs as $idx) {
-        $rows = token()->get_tokens($idx);
+        $rows = token()->getTokens($idx);
         if ($filter) {
             $user = user($idx)->get();
             if (isset($user[$filter]) && $user[$filter] == 'N') {
