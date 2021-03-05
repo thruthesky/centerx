@@ -341,7 +341,8 @@ class Point {
             if ( $re = point()->countOver(
                 [ POINT_LIKE, POINT_DISLIKE ], // 추천/비추천을
                 point()->getLikeHourLimit() * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
-                point()->getLikeHourLimitCount() // count 회 수 이상 했으면,
+                point()->getLikeHourLimitCount(), // count 회 수 이상 했으면,
+                fromUserIdx: login()->idx,
             ) ) {
                 // 제한에 걸렸다.
                 // 추천/비추천에서는 에러를 리턴 할 필요 없이 그냥 계속 한다.
@@ -354,6 +355,7 @@ class Point {
                 [ POINT_LIKE, POINT_DISLIKE ], // 추천/비추천을
                 24 * 60 * 60, // 하루에
                 point()->getLikeDailyLimitCount(), // count 회 수 이상 했으면,
+                login()->idx,
             ) ) {
                 // 제한에 걸렸다.
                 // 무시하고 계속
@@ -379,7 +381,6 @@ class Point {
     }
 
 
-
     /**
      * 포인트 기록 테이블에서 $stamp 시간 내에 $reason 들을 찾아 그 수가 $count 보다 많으면 true 를 리턴한다.
      *
@@ -390,21 +391,21 @@ class Point {
      * @param array $reasons
      * @param int $stamp
      * @param int $count
+     * @param int $fromUserIdx
      * @return bool
      *
      * @example
      *
-    // 추천/비추천 시간/수 제한
-    if ( $re = count_over(
-    [ POINT_LIKE, POINT_DISLIKE ], // 추천/비추천을
-    get_like_hour_limit() * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
-    get_like_hour_limit_count() // count 회 수 이상 했으면,
-    ) ) return ERROR_HOURLY_LIMIT; // 에러 리턴
-     *
+     * // 추천/비추천 시간/수 제한
+     * if ( $re = count_over(
+     * [ POINT_LIKE, POINT_DISLIKE ], // 추천/비추천을
+     * get_like_hour_limit() * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
+     * get_like_hour_limit_count() // count 회 수 이상 했으면,
+     * ) ) return ERROR_HOURLY_LIMIT; // 에러 리턴
      */
-    function countOver(array $reasons, int $stamp, int $count): bool {
+    function countOver(array $reasons, int $stamp, int $count, $fromUserIdx=0): bool {
         if ( $count ) {
-            $total = $this->countMyReasons( $stamp, $reasons );
+            $total = $this->countMyReasons( $stamp, $reasons, $fromUserIdx );
             if ( $total >= $count ) {
                 return true;
             }
@@ -415,19 +416,31 @@ class Point {
 
     /**
      * 포인트 기록 테이블에서, $stamp 시간 내의 입력된 $actions 의 레코드를 수를 찾아 리턴한다.
+     *
+     * 주의, 추천/비추천과 같이 행동을 하는(포인트를 주는) 주체가 나 인경우, fromUser 에서 제한한다.
+     * 그 외(가입, 로그인 글 쓰기)는 toUser 에서 제한한다.
+     * 이 때에는 $fromUserIdx 에 값이 들어와야 한다.
+     *
      * @param $stamp
      * @param array $reasons
+     *
      * @return int|string|null
      */
-    function countMyReasons($stamp, $reasons) {
+    function countMyReasons($stamp, $reasons, int $fromeUserIdx=0) {
         if ( ! $stamp ) return 0;
         $_reasons = [];
         foreach( $reasons as $r ) {
             $_reasons[] = REASON . "='$r'";
         }
         $reason_ors = "(" . implode(" OR ", $_reasons) . ")";
-        $myIdx = my(IDX);
-        $q = "SELECT COUNT(*) FROM ".entity(POINT_HISTORIES)->getTable()." WHERE createdAt > $stamp AND fromUserIdx=$myIdx AND $reason_ors";
+        $last_stamp = time() - $stamp;
+        if ( $fromeUserIdx ) {
+            $user = "fromUserIdx=$fromeUserIdx";
+        } else {
+            $user = "toUserIdx=" . my(IDX);
+        }
+        $q = "SELECT COUNT(*) FROM ".entity(POINT_HISTORIES)->getTable()." WHERE createdAt > $last_stamp AND $user AND $reason_ors";
+        if ( isDebugging() ) d( $q );
         return db()->get_var($q);
     }
 

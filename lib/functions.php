@@ -735,6 +735,9 @@ function ids(array $users, string $field=IDX): array
     return $ret;
 }
 
+/**
+ * To indicating testing.
+ */
 $_testing = false;
 function isTesting(): bool {
     global $_testing;
@@ -748,6 +751,27 @@ function disableTesting() {
     global $_testing;
     $_testing = true;
 }
+
+/**
+ * To indicating debugging range.
+enableDebugging();
+post($post3[IDX])->vote('Y');
+disableDebugging();
+ */
+$_debugging = false;
+function isDebugging(): bool {
+    global $_debugging;
+    return $_debugging;
+}
+function enableDebugging() {
+    global $_debugging;
+    $_debugging = true;
+}
+function disableDebugging() {
+    global $_debugging;
+    $_debugging = true;
+}
+
 
 
 function ln($en, $ko)

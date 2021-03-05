@@ -558,4 +558,5 @@ if ( modeCreate() ) {
 ```shell
 % chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php app"
 % chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php user"
+% chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php point"
 ```

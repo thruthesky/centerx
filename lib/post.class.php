@@ -25,7 +25,6 @@ class Post extends Entity {
         $in[USER_IDX] = login()->idx;
 
 
-
         // 제한에 걸렸으면, 에러 리턴.
         if ( $category->value(BAN_ON_LIMIT) ) {
             $re = point()->checkCategoryLimit($category->idx);

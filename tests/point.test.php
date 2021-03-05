@@ -206,6 +206,7 @@ function testPostCreateDelete(): void {
 
 function testLikeDailyLimit(): void {
     global $post1, $post2, $post3;
+
     clearTestPoint();
     point()->setLike(200);
     point()->setLikeDeduction(-100);
@@ -220,8 +221,7 @@ function testLikeDailyLimit(): void {
     post($post2[IDX])->vote('Y');
     post($post3[IDX])->vote('Y');
 
-    isTrue(my(POINT) == 800, 'B point should be 700. but ' . my(POINT));
-
+    isTrue(my(POINT) == 800, 'B point should be 800. but ' . my(POINT));
 }
 
 
@@ -288,7 +288,7 @@ function testLikeHourlyLimit(): void {
 
     // 마지막 1번은 안됨. 그래서 1천 포인트가 남아야 함.
     user(B)->setPoint(10000);
-    for($i=0; $i<10; $i++) {
+    for($i=0; $i<9; $i++) {
         $post = post($posts[$i][IDX])->vote('N');
     }
     isTrue(user(B)->getPoint() == 1000, '(2/9) B point should be 1000. but ' . user(B)->getPoint());
