@@ -47,7 +47,7 @@ class ShoppingMallRoute
             point()->log(
                 POINT_ITEM_ORDER,
                 toUserIdx: my(IDX),
-                toUserPointApply: $point,
+                toUserPointApply: -$point,
                 taxonomy: SHOPPING_MALL_ORDERS,
                 entity: $record[IDX],
             );
