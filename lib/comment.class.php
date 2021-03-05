@@ -131,6 +131,45 @@ class Comment extends Entity {
     }
 
 
+    /**
+     * Returns posts after search and add meta datas.
+     *
+     * @attention Categories can be passed like  "categoryId=<apple> or categoryId='<banana>'" and it wil be converted
+     * as "categoryIdx=1 or categoryIdx='2'"
+     *
+     * @param string $where
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @param string $by
+     * @param string $select
+     * @param string $categoryId
+     * @return mixed
+     * @throws Exception
+     */
+    public function search(
+        string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'
+    ): mixed {
+
+        $posts = parent::search(
+            where: $where,
+            page: $page,
+            limit: $limit,
+            order: $order,
+            by: $by,
+            select: $select,
+        );
+
+        $rets = [];
+        foreach( $posts as $post ) {
+            $idx = $post[IDX];
+            $rets[] = comment($idx)->get();
+        }
+
+        return $rets;
+    }
+
+
 }
 
 

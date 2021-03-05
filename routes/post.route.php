@@ -24,7 +24,7 @@ class PostRoute {
             limit: $in['limit'] ?? 10,
             order: $in['order'] ?? IDX,
             by: $in['by'] ?? 'DESC',
-            select: '*',
+            select: $in['select'] ?? '*',
         );
     }
 }

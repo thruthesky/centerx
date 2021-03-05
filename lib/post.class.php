@@ -163,7 +163,7 @@ class Post extends Entity {
             limit: $limit,
             order: $order,
             by: $by,
-            select: 'idx',
+            select: $select,
         );
 
         $rets = [];
