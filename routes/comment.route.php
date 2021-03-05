@@ -16,4 +16,14 @@ class CommentRoute {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
         return comment($in[IDX])->get();
     }
+    public function search($in) {
+        return comment()->search(
+            where: $in['where'] ?? '1',
+            page: $in['page'] ?? 1,
+            limit: $in['limit'] ?? 10,
+            order: $in['order'] ?? IDX,
+            by: $in['by'] ?? 'DESC',
+            select: $in['select'] ?? '*',
+        );
+    }
 }

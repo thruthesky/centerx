@@ -27,6 +27,21 @@ class UserRoute {
         return login()->updateOptionSetting($in);
     }
 
+
+
+    /**
+     * Returns user point history.
+     *
+     * Note that, it returns point histories of both that the login user made action or received point.
+     *
+     * @param $in
+     * @return mixed
+     * @throws Exception
+     */
+    public function point($in) {
+        $myIdx = my(IDX);
+        return pointHistory()->search(where: "fromUserIdx=$myIdx OR toUserIdx=$myIdx", limit: 200, select: '*');
+    }
 }
 
 

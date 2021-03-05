@@ -152,7 +152,7 @@ if ( modeDelete() ) {
 
 
 
-
+<?php /*
         <div class="form-group mb-3">
             <label for="deliveryFee">배송비</label>
             <input type="number" class="form-control" id="deliveryFee" name="deliveryFee" value="<?=$post['deliveryFee']??''?>">
@@ -160,7 +160,7 @@ if ( modeDelete() ) {
                 배송비를 입력하세요.
             </div>
         </div>
-
+*/ ?>
 
         <div class="form-group mb-3">
             <label for="storageMethod">보관방법</label>
@@ -278,6 +278,7 @@ if ( modeDelete() ) {
     const app = Vue.createApp({
         data() {
             return {
+                discountedPrice: 0,
                 post: <?=json_encode($post)?>,
             }
         },
