@@ -67,12 +67,18 @@ class Post extends Entity {
 
 
         // NEW POST IS CREATED => Send notification to forum subscriber
+        $title = $in[TITLE] ?? '';
+        if (empty($title)) {
+            if (isset($in[FILES]) && !empty($in[FILES])) {
+                $title = "New photo was uploaded";
+            }
+        }
         $data = [
             'senderIdx' => my(IDX),
             'idx' => $post[IDX],
             'type' => 'post'
         ];
-        sendMessageToTopic(NOTIFY_POST . $category->value(ID), $in[TITLE] ?? '', $in[CONTENT] ?? '', $post[PATH], $data);
+        sendMessageToTopic(NOTIFY_POST . $category->value(ID), $title, $in[CONTENT] ?? '', $post[PATH], $data);
 
         return $post;
     }
