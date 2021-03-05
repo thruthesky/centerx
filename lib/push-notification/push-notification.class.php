@@ -13,7 +13,7 @@ class PushNotification {
     public function subscribeTopic($in) {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! isset($in[TOPIC]) && empty($in[TOPIC]) ) return e()->topic_is_empty;
-        if ( ! isset($in[TOKENS]) && !empty($in[TOKENS]) ) $in[TOKENS] = token()->myTokens();
+        if ( ! isset($in[TOKENS])) $in[TOKENS] = token()->myTokens();
 
         $res = subscribeTopic($in[TOPIC], $in[TOKENS]);
         return login()->update( [ $in[TOPIC] => 'Y' ]);
@@ -22,7 +22,7 @@ class PushNotification {
     public function unsubscribeTopic($in) {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! isset($in[TOPIC]) && empty($in[TOPIC]) ) return e()->topic_is_empty;
-        if ( ! isset($in[TOKENS]) && !empty($in[TOKENS]) ) $in[TOKENS] = token()->myTokens();
+        if ( ! isset($in[TOKENS])) $in[TOKENS] = token()->myTokens();
 
         $res = unsubscribeTopic($in[TOPIC], $in[TOKENS]);
         return login()->update( [ $in[TOPIC] => 'N' ]);

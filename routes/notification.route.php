@@ -60,7 +60,6 @@ class NotificationRoute {
         return send_message_to_users($in);
     }
 
-
     /**
      * @param $in
      *  $in['tokens'] can be a string of tokens or an array of tokens.
@@ -72,9 +71,6 @@ class NotificationRoute {
     {
         return pushNotification()->subscribeTopic($in);
     }
-
-
-
 
     /**
      * @param $in
@@ -96,9 +92,7 @@ class NotificationRoute {
      */
     public function topicSubscription(array $in): array|string
     {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( ! isset($in[TOPIC]) && empty($in[TOPIC]) ) return e()->topic_is_empty;
-        if ( my($in[TOPIC]) == "Y") {
+        if (my($in[TOPIC]) == "Y") {
             return $this->unsubscribeTopic($in);
         } else {
             return $this->subscribeTopic($in);
