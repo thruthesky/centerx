@@ -228,9 +228,14 @@ function user(int $idx=0): User
 }
 
 /**
- * Returns User class instance with the login user.
+ * Returns User class instance with the login user. Or optionally, meta value of user field.
  *
- * @return User
+ * Note, that it does not only returns `wc_users` table, but also returns from `wc_metas` table.
+ * Use `$cache` to get critical information. Like getting user point before updating it.
+ *
+ * @param string|null $field
+ * @param bool $cache
+ * @return User|int|string|array|null
  *
  * Example)
  *  d(user()->profile()); // Result. error_idx_not_set
@@ -238,9 +243,27 @@ function user(int $idx=0): User
  *
  * You may check if user had logged in before calling this method.
  */
-function login(): User {
+function login(string $field=null, bool $cache=true): User|int|string|array|null {
     global $__login_user_profile;
-    return new User($__login_user_profile[IDX] ?? 0);
+    if ( $field ) {             // Want to get only 1 field?
+        if (loggedIn()) {       // Logged in?
+            if ($cache) {       // Want cached value?
+                return $__login_user_profile[$field];
+            } else {            // Real value from database.
+                $profile = login()->profile(cache: false);
+                if ( isset($profile[$field]) ) { // Has field?
+                    return $profile[$field];
+                } else {
+                    return null; // No field.
+                }
+            }
+        } else {
+            return null;        // Not logged in to get a field.
+        }
+    } else {
+        return new User($__login_user_profile[IDX] ?? 0);
+    }
+
 }
 
 

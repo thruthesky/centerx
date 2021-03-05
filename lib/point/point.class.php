@@ -366,7 +366,7 @@ class Point {
             if ( $limit == false ) {
                 $fromUserPointApply = $this->addUserPoint(login()->idx, $Yn == 'Y' ? $this->getLikeDeduction() : $this->getDislikeDeduction());
                 $toUserPointApply = $this->addUserPoint($post->value(USER_IDX), $Yn == 'Y' ? $this->getLike() : $this->getDislike() );
-                $myPoint = my(POINT);
+                $myPoint = my(POINT, false);
                 $toUserIdx = $post->value(USER_IDX);
 //                d("{$post->idx} : $Yn, toUserIdx: $toUserIdx, userIdx: " . $post->value(USER_IDX) . ", myIdx: " . my(IDX) . ", myPoint: $myPoint, fromuserPointApply: $fromUserPointApply, toUserPointApply: $toUserPointApply\n");
                 $this->log(

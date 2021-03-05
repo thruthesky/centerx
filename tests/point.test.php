@@ -52,18 +52,18 @@ point()->setDislikeDeduction(-30);
 setLogin(B);
 $post = post($post1[IDX])->vote('Y');
 isTrue($post[IDX] == $post1[IDX]);
-isTrue(my(POINT) == 0, 'B point: -20 vs : ' . my(POINT));
+isTrue(my(POINT, false) == 0, 'B point shuld be 0, but ' . my(POINT, false));
 
 
 // 주의: 이미 같은 글에 두번 추천. 포인트 변화 없음
 user(B)->setPoint(30);
 $post = post($post1[IDX])->vote('Y');
-isTrue(my(POINT) == 30, 'B point should be 10. but: ' . my(POINT));
+isTrue(my(POINT, false) == 30, 'B point should be 30. but: ' . my(POINT, false));
 
 // 다른 글에 추천. 포인트를 30 으로 지정. 추천 하면 -20 감소되므로, 10이 됨.
 user(B)->setPoint(30);
 $post = post($post2[IDX])->vote('Y');
-isTrue(my(POINT) == 10, 'B point should be 10. but: ' . my(POINT));
+isTrue(my(POINT, false) == 10, 'B point should be 10. but: ' . my(POINT, false));
 
 // D 는 두번 추천 받았으므로, 포인트 200
 isTrue(user(D)->getPoint() == 200, 'D point must be 200. but: ' . user(D)->getPoint());
@@ -163,11 +163,11 @@ function testCommentCreateDelete(): void {
 
 
     $cmt1 = comment()->create([ROOT_IDX => $post1[IDX], PARENT_IDX => $post1[IDX]]);
-    isTrue(my(POINT) == 1200, 'A point must be 1200. But: ' . my(POINT));
+    isTrue(my(POINT, false) == 1200, 'A point must be 1200. But: ' . my(POINT, false));
 
     /// 코멘트 삭제
     comment($cmt1[IDX])->markDelete();
-    isTrue(my(POINT) == 900, 'A point must be 900. But: ' . my(POINT));
+    isTrue(my(POINT, false) == 900, 'A point must be 900. But: ' . my(POINT, false));
 
 }
 
@@ -190,15 +190,15 @@ function testPostCreateDelete(): void {
     // 게시글 생성
 
     $post1 = post()->create([CATEGORY_ID => POINT]);
-    isTrue(my(POINT) == 1000, 'A point must be 1000. but ' . my(POINT));
+    isTrue(my(POINT, false) == 1000, 'A point must be 1000. but ' . my(POINT, false));
     $post2 = post()->create([CATEGORY_ID => POINT]);
-    isTrue(my(POINT) == 2000, 'A point must be 2000. but ' . my(POINT));
+    isTrue(my(POINT, false) == 2000, 'A point must be 2000. but ' . my(POINT, false));
 
     // 게시글 삭제
     $re = post($post1[IDX])->markDelete();
-    isTrue(my(POINT) == 800, 'A point must be 800. but ' . my(POINT));
+    isTrue(my(POINT, false) == 800, 'A point must be 800. but ' . my(POINT, false));
     $re = post($post2[IDX])->markDelete();
-    isTrue(my(POINT) == 0, 'A point must be 0. but ' . my(POINT));
+    isTrue(my(POINT, false) == 0, 'A point must be 0. but ' . my(POINT, false));
 
 }
 
@@ -221,7 +221,7 @@ function testLikeDailyLimit(): void {
     post($post2[IDX])->vote('Y');
     post($post3[IDX])->vote('Y');
 
-    isTrue(my(POINT) == 800, 'B point should be 800. but ' . my(POINT));
+    isTrue(my(POINT, false) == 800, 'B point should be 800. but ' . my(POINT, false));
 }
 
 

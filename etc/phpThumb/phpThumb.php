@@ -29,7 +29,7 @@ if ( str_ends_with(strtolower($_GET['src']), '.gif') ) {
 }
 
 /**
- * thumbnail = N 이면, 썸네일을 하지 않고 그냥 리턴.
+ * original = Y 이면, 썸네일을 하지 않고 그냥 리턴.
  * `src` 가 숫자로 입력된 경우, DB 에서 이미지 경로를 추출해서, 해당 이미지를 썸네일하지 않고 표시.
  */
 if ( isset($_GET['original']) && $_GET['original'] == 'Y' ) {

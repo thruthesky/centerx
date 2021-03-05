@@ -402,21 +402,16 @@ function setLoginAny(): User {
 }
 
 /**
+ * An alias of login()
+ *
  * Returns login user record field.
- *
- * Note, that it does not only returns `wc_users` table, but also returns from `wc_metas` table.
- *
+ * @see login() for more details
  * @param string $field
+ * @param bool $cache
  * @return mixed|null
  */
-function my(string $field) {
-    if ( loggedIn() ) {
-        $profile = login()->profile(cache: false);
-        if ( isset($profile[$field]) ) {
-            return $profile[$field];
-        }
-    }
-    return null;
+function my(string $field, bool $cache=true) {
+    return login($field, $cache);
 }
 
 function admin(): bool {
@@ -808,25 +803,6 @@ function browser_language()
 
 function select_list_widgets($categoryIdx,  $widget_type, $default_widget) {
     echo "Copy widget functionality from sonub";
-}
-
-
-
-
-/// 상품 주문 했을 때, 추가한 포인트를 뺀다.
-function itemOrderPointRestore($idx) {
-    $order = shoppingMallOrder($idx);
-    $info = json_decode($order->value('info'), true);
-    $userIdx = $order->value(USER_IDX);
-    $point = $info['pointToUse'];
-    point()->addUserPoint($userIdx, $point);
-    point()->log(
-        POINT_ITEM_RESTORE,
-        toUserIdx: $userIdx,
-        toUserPointApply: $point,
-        taxonomy: SHOPPING_MALL_ORDERS,
-        entity: $idx,
-    );
 }
 
 

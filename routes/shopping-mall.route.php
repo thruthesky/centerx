@@ -84,7 +84,7 @@ class ShoppingMallRoute
         if ( $order->exists() === false ) return e()->order_not_exists;
         if ( $order->isMine() === false ) return e()->not_your_order;
         if ( $order->value('confirmedAt') ) return e()->order_confirmed;
-        itemOrderPointRestore($in[IDX]);
+        $order->pointRestore();
         $record = $order->get();
         $order->delete();
         return $record;

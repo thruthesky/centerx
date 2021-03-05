@@ -41,4 +41,6 @@ if ( $func = getRoute($route) ) {
     $response = $instance->$methodName(in());
 }
 if ( is_array($response) == false && ($response == null || $response == '') ) error(e()->response_is_empty);
+
+//debug_log($route, $response);
 success($response);

@@ -4,22 +4,27 @@
  */
 
 global $wpdb;
-if ( in('mode') == 'delete' ) {
+if ( in('mode') == 'deleteAllItems' ) {
     $wpdb->query("TRUNCATE api_order_history");
-} else if ( in('mode') == 'delete-item' ) {
-    api_item_order_point_restore(in('id'));
-    $wpdb->query("DELETE FROM api_order_history WHERE ID=" . in('id'));
-} else if ( in('mode') == 'order-confirm' ) {
-    $order = $wpdb->get_row("SELECT * FROM api_order_history WHERE ID=" . in('id'), ARRAY_A);
-    if ( $order['confirmed'] ) {
-        jsBack('이미 구매확정되었습니다.');
+} else if ( modeDelete() ) {
+    $order = shoppingMallOrder(in(IDX));
+    if ( $order->exists() ) {
+        $order->pointRestore()->delete();
     }
-    $info = decode_order_info($order);
-    $wpdb->update('api_order_history', ['confirmed' => time()], ['ID' => in('id')]);
-    $applied = add_user_point($order['user_ID'], $info['pointToSave']);
-    add_point_history(POINT_ORDER_CONFIRM, 0, $applied, $order['ID'], 0);
+} else if ( in('mode') == 'order-confirm' ) {
+    $order = shoppingMallOrder(in(IDX));
+    if ( $order->confirmed() ) {
+        jsBack('이미 구매확정되었습니다.');
+    } else {
+        $order->confirm();
+    }
+
 }
-$rows = $wpdb->get_results("SELECT * FROM api_order_history ORDER BY stamp DESC", ARRAY_A);
+
+$orders = shoppingMallOrder()->search(limit: 1000);
+
+
+
 ?>
 <h1>주문관리</h1>
 <div class="d-flex justify-content-end">
@@ -35,23 +40,26 @@ $rows = $wpdb->get_results("SELECT * FROM api_order_history ORDER BY stamp DESC"
     </tr>
     </thead>
     <tbody>
-    <?php foreach($rows as $row ) {
-        $user = profile($row['user_ID']);
-        $info = decode_order_info($row);
+    <?php foreach(ids($orders) as $idx ) {
+        $order = shoppingMallOrder($idx)->get();
+        $user = user($order[USER_IDX])->get();
+        $info = json_decode($order['info'], true);
+        if ( ! isset($info['paymentAmount']) ) continue; // 테스트 등에서 잘못된 정보 입력.
+        if ( ! isset($info['pointToSave']) ) $info['pointToSave'] = 0; // 에러 핸들링
         ?>
         <tr>
-            <th scope="row"><?=$row['ID']?></th>
-            <td><?=$user['name']??$user['phoneNo']??$user['user_email']?>
+            <th scope="row"><?=$order[IDX]?></th>
+            <td><?=$user['name']??$user['phoneNo']??$user['email']??''?>
 
             </td>
             <td nowrap>
                 <?=number_format($info['paymentAmount'])?>
 
-                <?php if ( $row['confirmed'] ) { ?>
+                <?php if ( $order['confirmedAt'] ) { ?>
                     <div>구매확정됨</div>
                 <?php } else { ?>
-                    <a class="d-block mb-1 btn btn-warning btn-sm" href="/?page=admin.shopping-mall.order-list&mode=delete-item&id=<?=$row['ID']?>" onclick="return confirm('주문을 삭제하시겠습니까?');">주문삭제</a>
-                    <a class="btn btn-info btn-sm" href="/?page=admin.shopping-mall.order-list&mode=order-confirm&id=<?=$row['ID']?>" onclick="return confirm('환불이 되지 않는 단계인 구매 확정을 하고 회원에게 적립금을 지급하시겠습니까?');">구매확정</a>
+                    <a class="d-block mb-1 btn btn-warning btn-sm" href="/?p=admin.index&w=<?=in('w')?>&s=<?=in('s')?>&mode=delete&idx=<?=$order[IDX]?>" onclick="return confirm('주문을 삭제하시겠습니까?');">주문삭제</a>
+                    <a class="btn btn-info btn-sm" href="/?p=admin.index&&w=<?=in('w')?>&s=<?=in('s')?>&mode=order-confirm&idx=<?=$order[IDX]?>" onclick="return confirm('환불이 되지 않는 단계인 구매 확정을 하고 회원에게 적립금을 지급하시겠습니까?');">구매확정</a>
                 <?php } ?>
             </td>
             <td>
@@ -60,13 +68,17 @@ $rows = $wpdb->get_results("SELECT * FROM api_order_history ORDER BY stamp DESC"
                     ?>
                     <div class="bg-lighter p-3  border-radius-md mb-2">
                         <div>번호: <?=$item['postId']?></div>
-                        <div>제목: <?=$item['postTitle']?></div>
+                        <div>제목: <?=$item['title']?></div>
                         <?php if ( $item['optionItemPrice'] ) { ?>
-                            <?php foreach( $item['selectedOptions'] as $name => $option ) { ?>
+                            <?php foreach( $item['selectedOptions'] as $name => $option ) {
+                                ?>
                                 <div class="bg-secondary mb-2 p-2 white border-radius-md">
                                     가격: <?=$name?>
                                     <?php
-                                    list($name, $price) = explode('=', $name);
+                                    // 옵션에 상품가격지정의 경우, 반드시 옵션 이름에 가격이 있어야하는데, 테스트 등에서 잘못된 정보가 들어오는 경우를 위해서 에러 핸들링.
+                                    $arr = explode('=', $name);
+                                    $name = $arr[0];
+                                    $price = isset($arr[1]) ? $arr[1] : 0;
                                     $discounted_price = $price - $price * $option['discountRate'] / 100;
                                     ?>
                                     (할인된 가격: <?=number_format($discounted_price)?>)
@@ -103,7 +115,7 @@ $rows = $wpdb->get_results("SELECT * FROM api_order_history ORDER BY stamp DESC"
                 <div class="bg-lighter p-3 border-radius-md">
                     배송정보<br>
                     이름: <?=$info['name']?><br>
-                    주소: <?=$info['address1']?> <?=$info['address2']?><br>
+                    주소: <?=$info['address1'] ?? ''?> <?=$info['address2'] ?? ''?><br>
                     전화번호: <?=$info['phoneNo']?><br>
                     메모: <?=$info['memo']?><br>
                 </div>
