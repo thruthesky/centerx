@@ -505,7 +505,7 @@ include widget(in('w') ?? 'user/admin-user-list');
 ?>
 ```
 
-- Recommended admin page(widget) layout. You can pass child widget path over `cw`.
+- Recommended admin page(widget) layout. You can pass child widget path over `cw` to include a child widget inside.
 ```html
 <div class="container">
     <div class="row">
@@ -521,6 +521,14 @@ include widget(in('w') ?? 'user/admin-user-list');
       </div>
     </div>
 </div>
+```
+
+- If you don't simply need to refer a script inside the widget folder, use `s` instead.
+```php
+<?php
+include in('s', 'list') . '.php';
+?>
+
 ```
 
 

@@ -23,9 +23,9 @@ if ( in('mode') == 'deleteAllItems' ) {
             </ul>
         </div>
         <div class="col-9">
-            <?php
-            include in('s', 'list') . '.php';
-            ?>
+<?php
+include in('s', 'list') . '.php';
+?>
         </div>
     </div>
 

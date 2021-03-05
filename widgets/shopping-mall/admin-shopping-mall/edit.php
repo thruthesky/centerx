@@ -31,7 +31,7 @@ if ( modeDelete() ) {
 
         <input type="hidden" name="p" value="<?=in('p')?>">
         <input type="hidden" name="w" value="<?=in('w')?>">
-        <input type="hidden" name="cw" value="<?=in('cw')?>">
+        <input type="hidden" name="s" value="<?=in('s')?>">
         <input type="hidden" name="idx" value="<?=$post[IDX] ?? '0'?>">
         <input type="hidden" name="mode" value="submit">
 
