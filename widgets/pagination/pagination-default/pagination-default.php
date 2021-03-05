@@ -1,6 +1,7 @@
 <?php
 /**
  * @file pagination
+ * @name Default Pagination
  */
 /**
  * $options['limit'] is the no of items to display in a list page.

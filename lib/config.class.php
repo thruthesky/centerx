@@ -22,13 +22,16 @@ class Config extends Entity {
     /**
      * 설정을 읽는다. 설정은 metas 테이블에 저장되며, taxonomy=config, entity=0 이 된다.
      *
-     * @param string $code
+     * @param string|null $field
      * @param null $_
+     * @param string $__
+     * @param bool $____
+     * @param bool $cache
      * @return mixed - 값이 없으면 null 이 리턴된다.
      */
-    public function get(string $code=null, mixed $_=null, string $__='', bool $____ = true): mixed
+    public function get(string $field=null, mixed $_=null, string $__='', bool $____ = true, bool $cache = true): mixed
     {
-       return $this->getMeta($code);
+       return $this->getMeta($field);
     }
 
     /**

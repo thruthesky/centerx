@@ -42,13 +42,29 @@ class Entity {
     }
 
 
-
     /**
      * Set (record) idx of current entity.
+     *
+     * 현재 instance 에 `idx` 지정이 안되어 있어 지정하거나 변경을 할 수 있다.
+     *
      * @param int $idx
+     *
+     * @return static
+     *  - 현재 instance(자식 클래스 instance)를 리턴한다.
+     *
+     * 예제)
+     *      $tt = new TaxonomyTest(123);
+     *      isTrue(get_class($tt) == 'TaxonomyTest');
+     *      $child = $tt->setIdx(456);
+     *      isTrue(get_class($child) == 'TaxonomyTest');
+     *
+     * 예제)
+     *  files()->setIdx(1)->delete();
      */
-    public function setIdx(int $idx) {
+    public function setIdx(int $idx): static
+    {
         $this->idx = $idx;
+        return $this;
     }
 
 
@@ -131,7 +147,7 @@ class Entity {
      *  d(login()->profile());
      */
     public function update(array $in): array|string {
-        global $entities;
+        global $__entities;
         if ( ! $in ) return e()->empty_param;
 
         //
@@ -149,7 +165,7 @@ class Entity {
         $this->updateMetas($this->idx, $this->getMetaFields($in));
 
         $fv = "idx=" . $this->idx;
-        unset($entities[ $this->taxonomy ][ $fv ]);
+        unset($__entities[ $this->taxonomy ][ $fv ]);
 
         $got = self::get();
 
@@ -193,21 +209,20 @@ class Entity {
 
 
     /**
-     * Returns an entity(record) of a taxonomy(table).
+     * Returns an entity(record) of a taxonomy(table) and its meta data.
      *
-     * 현재 Taxonomy 테이블 뿐만아니라, 그 meta 값들을 모두 같이 리턴한다.
+     * If $field and $value are set, then it will return a record and its meta based on that $field and value.
+     * If $field and $value are not set, then it wil return the record and its meta based on current `idx`.
+     * If a field of entity exists in meta table, then the value of meta table will be used.
      *
-     * 참고로 사용자(게시글 등) 정보를 검색하는 경우 등을 위해서, $field 와 $value 로 값을 얻을 수 있다.
-     * 다만, $field, $value 값이 지정되지 않으면, 현재 taxonomy 의 entity 정보를 리턴한다.
+     * @attention It does memory cache. It is important if SQL server is far away from PHP application server.
+     *      Each query needs to connect to SQL server even if SQL server does some internal query.
+     *      It caches based on `$field=$value` pattern.
+     *      That means,
+     *          `user(77)->profile();` will cache with `idx=77` as `$field=$value` pair.
+     *          `user()->get('email', 'user10@gmail.com');` will cache with `email=user10@gmail.com` pair.
      *
-     * @attension 주의해야 할 것은
-     *  - Taxonomy 테이블 필드 이름과 meta code(이름)이 겹치면, Taxonomy 필드명을 사용한다.
-     *  - 메모리 캐시를 한다. MariaDB 자체적으로 동일한 쿼리를 캐시하지만, DB 서버가 원격에 있다면, 접속하는 것 자체만으로 시간이 많이 걸리므로 캐시하는 것이 맞다.
-     *      캐시는 $field=$value 가 맞아야 한다.
-     *      예를 들어, 아래의 두 코드에서 동일한 사용자라고 해도, 서로 다르게 캐시된다.
-    user(77)->profile(); // idx=77 로 캐시
-    user()->get('email', 'user10@gmail.com'); email=user10@gmail.com 으로 캐시
-     *
+     *      If $this->update() is being called, caches of `idx=..` pattern only will be deleted from cache.
      *
      * @param string $field
      * @param mixed $value
@@ -220,18 +235,18 @@ class Entity {
      * 예제)
      * user()->get('email', 'user10@gmail.com');
      */
-    private $entities = [];
+    private $__entities = [];
     public function get(string $field=null, mixed $value=null, string $select='*', bool $cache = true): mixed {
 
-        global $entities;
+        global $__entities;
         if ($field == null ) {
             $field = 'idx';
             $value = $this->idx;
         }
         $fv = "$field=$value";
-        if ( $cache && isset($entities[$this->taxonomy]) && isset($entities[$this->taxonomy][$fv]) ) {
+        if ( $cache && isset($__entities[$this->taxonomy]) && isset($__entities[$this->taxonomy][$fv]) ) {
 //            debug_log("cached: $fv");
-            return $entities[$this->taxonomy][$fv];
+            return $__entities[$this->taxonomy][$fv];
         }
 
 
@@ -256,9 +271,9 @@ class Entity {
          * If $field is null, then don't cache.
          */
         if ( $field ) {
-            if ( ! isset($entities[$this->taxonomy]) ) $entities[$this->taxonomy] = [];
-            $entities[$this->taxonomy][$fv] = $record;
-            return $entities[$this->taxonomy][$fv];
+            if ( ! isset($__entities[$this->taxonomy]) ) $__entities[$this->taxonomy] = [];
+            $__entities[$this->taxonomy][$fv] = $record;
+            return $__entities[$this->taxonomy][$fv];
         } else {
             return $record;
         }
@@ -607,19 +622,40 @@ class Entity {
 
 
     /**
-     * Returns a value of a field or meta field.
+     * Returns a value of a field (of entity table) or meta field(of metas table).
+     *
+     *
+     *
+     * @param string $field
+     * @param mixed|null $default_value
+     *  - default value to be returned if field not exists.
+     * @param bool $cache
+     *  - to use cached data if exists in cache.
      * @return mixed
      * - null if field not exist in taxonomy or meta.
      * - or value.
      */
-    public function value($field): mixed {
-        $got = self::get();
+    public function value(string $field, mixed $default_value = null, bool $cache = true): mixed {
+        $got = self::get(cache: $cache);
         if ( isset($got[$field]) ) return $got[$field];
-        else return null;
+        else return $default_value;
     }
 
     /**
-     * 현재 entity 의 taxonomy 가 users 라면, 그냥 $this->idx 를 써야 한다. 그렇지 않으면 entity 의 userIdx 필드를 리턴한다.
+     * Short for $this->value();
+     * @param string $field
+     * @param mixed|null $default_value
+     * @param bool $cache
+     * @return mixed
+     */
+    public function v(string $field, mixed $default_value = null, bool $cache = true): mixed {
+        return $this->value($field, $default_value, $cache);
+    }
+
+
+    /**
+     * 현재 entity 의 taxonomy 가 users 라면, 그냥 $this->idx 를 리턴하고,
+     * 그렇지 않으면 entity 의 userIdx 필드를 리턴한다.
      * @return int
      */
     public function userIdx(): int {

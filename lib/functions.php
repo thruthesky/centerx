@@ -801,8 +801,68 @@ function browser_language()
 
 
 
-function select_list_widgets($categoryIdx,  $widget_type, $default_widget) {
-    echo "Copy widget functionality from sonub";
+function select_list_widgets($categoryIdx,  $widget_type, $setting_name) {
+
+    $default_selected = category($categoryIdx)->value($setting_name, $widget_type . '-default');
+
+
+    echo "<select name='$setting_name' class='w-100'>";
+    select_list_widgets_option($widget_type, $default_selected);
+    echo "</select>";
+
+}
+
+function select_list_widgets_option($type, $default_selected) {
+    foreach( glob(ROOT_DIR . "/widgets/$type/**/*.php") as $file ) {
+
+        $info = parseDocBlock(file_get_contents($file));
+        if ( isset($info['type']) && $info['type'] == 'admin' ) continue;
+        $arr = explode('/', $file);
+        array_pop($arr);
+        $widget_folder_name = array_pop($arr);
+
+        $description = isset($info['name']) ? $info['name'] : $widget_folder_name;
+
+
+        $value = "$type/$widget_folder_name";
+        if ( $default_selected == $value ) $selected = "selected";
+        else $selected = "";
+
+        echo "<option value='$value' $selected>$description</option>";
+    }
+}
+
+
+/**
+ * Parses docblock. It's not perfect but useful.
+ *
+ * You can add some information/annotation in php comments.
+ * It is used for reading widget information.
+ *
+ * @param $str
+ * @return array|null
+ *
+ * @example
+ *
+ *
+$str = '
+ * @param  Okay. @ comes after space and *
+@return Okay. @ comes after space
+ * - @note Nope. @ is after -
+ Some content
+ @this This still works. As long as it comes after space or white.
+ / **
+ * @then This works.
+ * /
+';
+d(parseDocBlock($str));
+*/
+function parseDocBlock($str) {
+    if (preg_match_all('/^[\s\*]*@(\w+)\s+(.*)\r?\n/m', $str, $matches)) {
+        $result = array_combine($matches[1], $matches[2]);
+        return $result;
+    }
+    return null;
 }
 
 

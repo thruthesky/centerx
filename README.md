@@ -47,11 +47,14 @@
 
 - file upload error handling. https://www.php.net/manual/en/features.file-upload.errors.php
 
-## 해야 할 일. 다음 버전.
+## 점진적으로 해야 할 일.
 
-- CRUD 함수 (예: getXxx(), setXxx(), update(), create(), delete(), exists() 등등) 외에는 모두 현재 객체를 리턴할 것.
+- CRUD 함수 (예: getXxx(), setXxx(), update(), create(), delete(), exists() 등등) 외에는 모두 현재 instance(객체)를 리턴할 것.
   그래서, user()->by(email)->exists() 와 같이 호출 할 수 있도록 할 것.
   단, 옵션으로 user()->by(email, returnFormat: ARRAY_A) 와 같이 배열로 받을 수 있도록 한다.
+  Entity 클래스가 하는 일이 기본적인 CRUD 이다. 그래서 Entity 클래스의 대부분의 메소드는 현재 instance 를 리턴하지 않는다.
+  
+  
 
 # Installation
 
@@ -269,6 +272,33 @@ d(config()->get('admin'));
 $result = db()->select('wc_users', 'idx', eq('idx', 77));
 d($result);
 ```
+
+# Widget System
+
+- A widget is a reusable code block like login, latest post list, and more.
+
+- Widgets are saved under `widgets` folder. The folder names right under `widgets` folder are the widget types.
+
+- Each widget must have a php script file that has same name of its folder name.
+  For instance, if folder name is `widgets/abc`, then script name must be `widgets/abc/abc.php`.
+  
+- Each widget can declare some information as comment annotation like below.
+
+```php
+/**
+ * @name Abc
+ * @desc Description of Abc
+ * @type ...
+ */
+```
+
+- If `@type` is set to `admin`, then it will be used in admin page only. So, the widget will not appear in widget selection.
+
+- For forum widget settings in admin page, widget name ends with `-default` will be used if there is no selected widget.
+
+- And even for the categories(forums) that has no widget settings, the widgets ending with `-default` will be used.
+
+
 
 
 

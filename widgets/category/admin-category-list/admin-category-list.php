@@ -57,7 +57,7 @@ if ( modeCreate() ) {
                 <?php foreach( categories() as $cat ) { ?>
 
                     <tr>
-                        <th scope="row"><?=$cat[IDX]?></th>
+                        <th scope="row"><a href="/?p=forum.post.list&categoryId=<?=$cat[ID]?>" target="_blank"><?=$cat[IDX]?></a></th>
                         <td><a href="/?p=admin.index&w=category/admin-category-list&id=<?=$cat[ID]?>"><?=$cat[ID]?></a></td>
                         <td><?=$cat[TITLE]?></td>
                         <td><?=$cat[DESCRIPTION]?></td>

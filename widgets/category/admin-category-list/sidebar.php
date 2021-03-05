@@ -1,5 +1,6 @@
 <?php
     $cat = category(in(ID))->get(cache: false);
+
 ?>
 <form>
     <input type="hidden" name="p" value="admin.index">
@@ -86,15 +87,15 @@
         <tr>
             <td><?=ln('Hour/Count Limit', '시간/수 제한')?></td>
             <td>
-                <input class="w-64px" type="number" name="<?=POINT_HOUR_LIMIT?>" value="<?=$cat[POINT_HOUR_LIMIT]?>">
+                <input class="w-25" type="number" name="<?=POINT_HOUR_LIMIT?>" value="<?=$cat[POINT_HOUR_LIMIT]?>">
                 /
-                <input class="w-64px" type="number" name="<?=POINT_HOUR_LIMIT_COUNT?>" value="<?=$cat[POINT_HOUR_LIMIT_COUNT]?>">
+                <input class="w-25" type="number" name="<?=POINT_HOUR_LIMIT_COUNT?>" value="<?=$cat[POINT_HOUR_LIMIT_COUNT]?>">
             </td>
         </tr>
         <tr>
             <td><?=ln('Day/Count Limit', '일/수 제한')?></td>
             <td>
-                <input class="w-64px" type="number" name="<?=POINT_DAILY_LIMIT_COUNT?>" value="<?=$cat[POINT_DAILY_LIMIT_COUNT]?>">
+                <input class="w-25" type="number" name="<?=POINT_DAILY_LIMIT_COUNT?>" value="<?=$cat[POINT_DAILY_LIMIT_COUNT]?>">
             </td>
         </tr>
 
@@ -131,7 +132,7 @@
         <tr>
             <td><?=ln('Post Edit Widget', '글 수정 위젯')?></td>
             <td>
-                <?php select_list_widgets($cat[ID], 'forum-edit', 'forum_edit_widget'); ?>
+                <?php select_list_widgets($cat[ID], 'post-edit', 'postEditWidget'); ?>
             </td>
         </tr>
 
@@ -141,7 +142,7 @@
         <tr>
             <td><?=ln('Post View Widget', '글 읽기 위젯')?></td>
             <td>
-                <?php select_list_widgets($cat[ID], 'forum-view', 'forum_view_widget'); ?>
+                <?php select_list_widgets($cat[ID], 'post-view', 'postViewWidget'); ?>
             </td>
         </tr>
 
@@ -151,7 +152,7 @@
         <tr>
             <td><?=ln('Forum List Header', '글 목록 헤더 위젯')?></td>
             <td>
-                <?php select_list_widgets($cat[ID], 'forum-list-header', 'forum_list_header_widget'); ?>
+                <?php select_list_widgets($cat[ID], 'post-list-header', 'postListHeaderWidget'); ?>
             </td>
         </tr>
 
@@ -160,7 +161,7 @@
         <tr>
             <td><?=ln('Forum List Widget', '글 목록 위젯')?></td>
             <td>
-                <?php select_list_widgets($cat[ID], 'forum-list', 'forum_list_widget'); ?>
+                <?php select_list_widgets($cat[ID], 'post-list', 'postListWidget'); ?>
             </td>
         </tr>
 
@@ -169,7 +170,7 @@
             <td><?=ln('Forum List Pagination Widget', '네비게이션 위젯')?></td>
             <td>
                 <?php
-                select_list_widgets($cat[ID], 'pagination', 'pagination_widget');
+                select_list_widgets($cat[ID], 'pagination', 'paginationWidget');
                 ?>
             </td>
         </tr>
@@ -185,17 +186,17 @@
                 <label>
                     <input
                         type="radio"
-                        name="list_on_view"
+                        name="listOnView"
                         value="Y"
-                        <?php if ($cat['list_on_view'] == 'Y' ) echo 'checked' ?>> 예,
+                        <?php if ($cat['listOnView'] == 'Y' ) echo 'checked' ?>> 예,
                 </label>
                 &nbsp;
                 <label>
                     <input
                         type="radio"
-                        name="list_on_view"
+                        name="listOnView"
                         value="N"
-                        <?php if ($cat['list_on_view'] != 'Y' ) echo 'checked' ?>> 아니오
+                        <?php if ($cat['listOnView'] != 'Y' ) echo 'checked' ?>> 아니오
                 </label>
             </td>
         </tr>
@@ -203,18 +204,18 @@
             <td><?=ln('No of posts per page', '페이지 글 수')?></td>
             <td>
                 <input
-                    name="no_of_posts_per_page"
+                    name="noOfPostsPerPage"
                     type="text"
-                    value="<?=$cat['no_of_posts_per_page']?>">
+                    value="<?=$cat['noOfPostsPerPage']?>">
             </td>
         </tr>
         <tr>
             <td nowrap><?=ln('No of pages on navigator', '네이게이션 페이지 수')?></td>
             <td>
                 <input
-                    name="no_of_pages_on_nav"
+                    name="noOfPagesOnNav"
                     type="text"
-                    value="<?=$cat['no_of_pages_on_nav']?>">
+                    value="<?=$cat['noOfPagesOnNav']?>">
             </td>
         </tr>
 
@@ -229,24 +230,24 @@
                 <label class="">
                     <input
                         type="radio"
-                        name="mobile_forum_list_widget"
+                        name="mobilePostListWidget"
                         value="text"
-                        <?php if ($cat['mobile_forum_list_widget'] == 'text' ) echo 'checked' ?>> <?=ln('Text', '텍스트')?>
+                        <?php if ($cat['mobilePostListWidget'] == 'text' ) echo 'checked' ?>> <?=ln('Text', '텍스트')?>
                 </label>
                 <label class="ps-2">
                     <input
                         type="radio"
-                        name="mobile_forum_list_widget"
+                        name="mobilePostListWidget"
                         value="gallery"
-                        <?php if ($cat['mobile_forum_list_widget'] == 'gallery' ) echo 'checked' ?>> <?=ln('Gallery', '갤러리')?>
+                        <?php if ($cat['mobilePostListWidget'] == 'gallery' ) echo 'checked' ?>> <?=ln('Gallery', '갤러리')?>
                 </label>
 
                 <label class="ps-2">
                     <input
                         type="radio"
-                        name="mobile_forum_list_widget"
+                        name="mobilePostListWidget"
                         value="thumbnail"
-                        <?php if ($cat['mobile_forum_list_widget'] == 'thumbnail' ) echo 'checked' ?>> <?=ln('Thumbnail', '썸네일')?>
+                        <?php if ($cat['mobilePostListWidget'] == 'thumbnail' ) echo 'checked' ?>> <?=ln('Thumbnail', '썸네일')?>
                 </label>
 
             </td>
@@ -258,16 +259,16 @@
                 <label class="">
                     <input
                         type="radio"
-                        name="mobile_forum_view_widget"
+                        name="mobilePostViewWidget"
                         value="default"
-                        <?php if ($cat['mobile_forum_view_widget'] == 'default' ) echo 'checked' ?>> <?=ln('Default', '기본')?>
+                        <?php if ($cat['mobilePostViewWidget'] == 'default' ) echo 'checked' ?>> <?=ln('Default', '기본')?>
                 </label>
                 <label class="ps-2">
                     <input
                         type="radio"
-                        name="mobile_forum_view_widget"
+                        name="mobilePostViewWidget"
                         value="slide"
-                        <?php if ($cat['mobile_forum_view_widget'] == 'slide' ) echo 'checked' ?>> <?=ln('Slide', '슬라이드')?>
+                        <?php if ($cat['mobilePostViewWidget'] == 'slide' ) echo 'checked' ?>> <?=ln('Slide', '슬라이드')?>
                 </label>
 
             </td>
