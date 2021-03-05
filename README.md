@@ -165,6 +165,8 @@ define('DOMAIN_THEMES', [
 - Meta data is saved through serialize/unserialze.
 
 
+
+
 ## Entity and Taxonomy
 
 - When `idx` is set in entity instance, actions(methods) work on that record of `idx`.
@@ -180,6 +182,15 @@ define('DOMAIN_THEMES', [
     The `Config` class simply defines itself as config taxonomy and its table does not exist.
     So, when `Config` uses the functionality of `Entity`, it cannot do anything that is related with the table.
     It can do such things like `entity->getMtea()`, set, update, delete, addifNotExists that are not related with the taxonomy table.
+
+## Taxonomy helper classes
+
+Each taxonomy may have its own customised methods.
+Here are some recommendations on creating helper methods on each taxonomies.
+
+- `by()` returns an instance of the taxonomy by the input.
+- `first()`, and `last()` return instances of the first or last instance of the taxnomies by the input.
+
 
 ## Posts Taxonomy
 
@@ -448,6 +459,26 @@ https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
 <img src="http://local.itsuda50.com/etc/phpThumb/phpThumb.php?src=/root/files/uploads/learn-24052061920-10.jpg&wl=300&h=300&zc=1&f=jpeg&q=95">
 ```
 
+# Meta
+
+You can search meta table directly by using `meta()`.
+
+When you are saving extra data into user taxonomy, the extra data, which does not exists as users table record, goes into meta table.
+You can search directly by `code` as the name of the data. Or with the combination of taxonomy.
+
+If it's user extra data, then the taxonomy is `users`. If it's post(or comment) extra data, then the taxonomy is `posts`.
+
+
+```php
+$meta = meta()->get('code', 'topic_qna');
+$metas = meta()->search("taxonomy='users' AND code='topic_qna' AND data='Y'", select: 'entity', limit: 10000);
+```
+
+The above code is identical as below
+```php
+$meta = entity(METAS)->get('code', 'topic_qna');
+$metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='Y'", select: 'entity', limit: 10000);
+```
 
 # Vote
 
@@ -556,7 +587,8 @@ if ( modeCreate() ) {
   - 테스트 파일 이름에 "app" 또는 "user" 라는 문자열이 있으면 실행한다.
   
 ```shell
-% chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php app"
-% chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php user"
-% chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php point"
+chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php app"
+chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php user"
+chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php point"
+chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php shopping-mall"
 ```

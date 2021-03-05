@@ -394,6 +394,12 @@ function setUserAsLogin(int|array $profile): User {
 function setLogin(int|array $profile): User {
     return setUserAsLogin($profile);
 }
+// Login any user. It could be root user. Use it only for test.
+function setLoginAny(): User {
+
+    $users = user()->search(limit: 1);
+    return setLogin($users[0][IDX]);
+}
 
 /**
  * Returns login user record field.
@@ -717,7 +723,9 @@ function canLiveReload(): bool {
 }
 
 /**
- * Gets userIdx ( or any field ) from two dimensional array.
+ * Gets userIdx from two dimensional array and returns it in an array.
+ *
+ * Note that, it can collect not only `userIdx` but also any field by by specifying $field.
  *
  * @param $users
  * @param string $field
@@ -754,9 +762,10 @@ function disableTesting() {
 
 /**
  * To indicating debugging range.
-enableDebugging();
-post($post3[IDX])->vote('Y');
-disableDebugging();
+ * @example
+        enableDebugging();
+        post($post3[IDX])->vote('Y');
+        disableDebugging();
  */
 $_debugging = false;
 function isDebugging(): bool {
@@ -820,4 +829,32 @@ function itemOrderPointRestore($idx) {
     );
 }
 
+
+
+
+
+/**
+ * Returns an array of user ids that are in the path(tree) of comment hierarchy.
+ *
+ * @note it does not include the login user and it does not have duplicated user id.
+ *
+ * @param $idx - comment idx
+ *
+ * @return array - array of user ids
+ *
+ *
+ */
+function getCommentAncestors(int $idx): array
+{
+    $comment = comment($idx)->get();
+    $asc     = [];
+    while (true) {
+        $comment = comment($comment[PARENT_IDX])->get();
+        if ( empty($comment) ) break;
+        if ($comment[USER_IDX] == my(IDX)) continue;
+        $asc[] = $comment[USER_IDX];
+    }
+    $asc = array_unique($asc);
+    return $asc;
+}
 

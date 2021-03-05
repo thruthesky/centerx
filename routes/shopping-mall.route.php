@@ -17,18 +17,19 @@ class ShoppingMallRoute
      * @return mixed
      */
     public function order($in) {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        if ( ! isset($in['info']) ) return e()->wrong_params;
+
         $data = [
             USER_IDX => login()->idx,
             'info' => $in['info'],
         ];
 
-        debug_log('data: ', $data);
 
         $info = json_decode($data['info'], ARRAY_A);
 
         $point = $info['pointToUse'];
 
-        debug_log("point: $point");
 
         /// 상품 주문을 할 때, 회원 포인트를 사용한다면,
         if ( $point ) {
@@ -47,7 +48,7 @@ class ShoppingMallRoute
                 POINT_ITEM_ORDER,
                 toUserIdx: my(IDX),
                 toUserPointApply: $point,
-                taxonomy: SHOPPING_MALL,
+                taxonomy: SHOPPING_MALL_ORDERS,
                 entity: $record[IDX],
             );
         }
@@ -78,7 +79,7 @@ class ShoppingMallRoute
      * @return array|object|string|void|null
      */
     public function cancelOrder($in) {
-
+        if ( ! isset($in[IDX]) ) return e()->idx_not_set;
         $order = shoppingMallOrder($in[IDX]);
         if ( $order->exists() === false ) return e()->order_not_exists;
         if ( $order->isMine() === false ) return e()->not_your_order;

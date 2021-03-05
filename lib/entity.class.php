@@ -71,12 +71,13 @@ class Entity {
      *
      * @note user is_success() to check if it was success()
      *
-     * @see readme for detail.
-     *
-     *
+     * @return array|string
      * @example
      * $idx = entity(CATEGORIES)->create($in);
      * return entity(CATEGORIES, $idx)->get();
+     *
+     *
+     * @see readme for detail.
      *
      *
      */
@@ -317,6 +318,7 @@ class Entity {
      * @param string $select
      * @param array $in
      * @return mixed
+     *  - empty array([]), If there is no record found.
      * @throws Exception
      *
      *
@@ -337,6 +339,7 @@ class Entity {
         $table = $this->getTable();
         $from = ($page-1) * $limit;
         $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
+        if ( isDebugging() ) d($q);
         $rows = db()->get_results($q, ARRAY_A);
         return $rows;
     }
