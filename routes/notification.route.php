@@ -116,7 +116,7 @@ class NotificationRoute {
      * @return array|string
      * @throws Exception
      */
-    public function topicSubscription($in): array|string
+    public function topicSubscription(array $in): array|string
     {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! isset($in[TOPIC]) && empty($in[TOPIC]) ) return e()->topic_is_empty;
