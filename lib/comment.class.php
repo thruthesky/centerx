@@ -39,14 +39,14 @@ class Comment extends Entity {
             if ( my(POINT) < abs( $pointToCreate ) ) return e()->lack_of_point;
         }
 
-        $comment = parent::create($in);
-        point()->forum(POINT_COMMENT_CREATE, $comment[IDX]);
+        // $comment = parent::create($in);
+        point()->forum(POINT_COMMENT_CREATE, $re[IDX]);
 
         /**
          * NEW COMMENT IS CREATED ==>  Send notification to forum comment subscriber
          */
         onCommentCreateSendNotification($re);
-        return $comment;
+        return $re;
     }
 
     /**
