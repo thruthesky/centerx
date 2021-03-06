@@ -1,9 +1,9 @@
 <?php
 define('ROOT_DIR', __DIR__ . '/');
 require ROOT_DIR . 'vendor/autoload.php';
+
+
 require_once ROOT_DIR . 'lib/functions.php';
-
-
 
 
 require_once ROOT_DIR . 'lib/entity.class.php';
@@ -25,8 +25,9 @@ require_once ROOT_DIR . 'lib/shopping-mall-order.class.php';
 require_once ROOT_DIR . 'lib/meta.class.php';
 require_once ROOT_DIR . 'lib/translation.class.php';
 require_once ROOT_DIR . 'lib/firebase.php';
+require_once ROOT_DIR . 'lib/defines.php';
+
+
+
 require_once ROOT_DIR . 'config.php';
-require_once ROOT_DIR . 'lib/defines.php'; // depending on config.php
-
-
 require_once ROOT_DIR . 'etc/boot/boot.code.php';

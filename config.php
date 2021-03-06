@@ -15,6 +15,18 @@ define('DOMAIN_THEMES', [
 
 
 /**
+ * Local hosts
+ *
+ * 현재 컴퓨터에서 테스트하는 도메인을 기록. 이 도메인으로 접속하면, 실제 서버가 아닌 현재 컴퓨터로 접속을 하며, 테스트를 위한 것이다.
+ * 특히, 이 도메인으로 접속하면, isLocalhost() 에서 참을 리턴한다.
+ *
+ * 참고, 테마 설정 파일에서 isLocalhost() 를 사용 할 수 있으므로, 테마 설정이 로드되기 전에 정의되어야 한다.
+ */
+define('LOCAL_HOSTS', ['localhost', 'local.itsuda50.com']);
+
+
+
+/**
  * 각 테마별 설정 파일이 있으면 그 설정 파일을 사용한다.
  *
  * 참고로, 각 설정 파일에서 아래에서 정의되는 상수들을 미리 정의해서, 본 설정 파일에서 정의되는 값을 덮어 쓸 수 있다.
@@ -156,11 +168,3 @@ if ( !defined('NAVER_CLIENT_SECRET') ) define('NAVER_CLIENT_SECRET', 'JzWh7zPeJF
 if ( !defined('NAVER_CALLBACK_URL') ) define('NAVER_CALLBACK_URL', urlencode('https://main.philov.com/wp-content/themes/sonub/callbacks/naver-login.callback.php'));
 if ( !defined('NAVER_API_URL') ) define('NAVER_API_URL', "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=".NAVER_CLIENT_ID."&redirect_uri=".NAVER_CALLBACK_URL."&state=1");
 
-
-/**
- * Local hosts
- *
- * 현재 컴퓨터에서 테스트하는 도메인을 기록. 이 도메인으로 접속하면, 실제 서버가 아닌 현재 컴퓨터로 접속을 하며, 테스트를 위한 것이다.
- * 특히, 이 도메인으로 접속하면, isLocalhost() 에서 참을 리턴한다.
- */
-define('LOCAL_HOSTS', ['localhost', 'local.itsuda50.com']);
