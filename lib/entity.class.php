@@ -689,7 +689,7 @@ class Entity {
      */
     public function value(string $field, mixed $default_value = null, bool $cache = true): mixed {
         $got = self::get(cache: $cache);
-        if ( isset($got[$field]) ) return $got[$field];
+        if ( isset($got[$field]) && $got[$field] ) return $got[$field];
         else return $default_value;
     }
 
@@ -703,7 +703,6 @@ class Entity {
     public function v(string $field, mixed $default_value = null, bool $cache = true): mixed {
         return $this->value($field, $default_value, $cache);
     }
-
 
     /**
      * 현재 entity 의 taxonomy 가 users 라면, 그냥 $this->idx 를 리턴하고,

@@ -1056,3 +1056,9 @@ function passLoginUrl($state = '')
 {
     return "https://id.passlogin.com/oauth2/authorize?client_id=" . PASS_LOGIN_CLIENT_ID . "&redirect_uri=" . urlencode(PASS_LOGIN_CALLBACK_URL) . "&response_type=code&state=$state&prompt=select_account";
 }
+
+
+function inHome() {
+    $p = in('p');
+    return empty($p);
+}

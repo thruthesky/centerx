@@ -8,11 +8,13 @@ include_once widget( $category->v('postListHeaderWidget', 'post-list-header/post
 include_once widget( $category->v('postListWidget', 'post-list/post-list-default') );
 
 
+
+
 include_once widget( $category->v('paginationWidget', 'pagination/pagination-default'), [
-    'page_no' => in('page_no', 1),
+    'page' => in('page', 1),
     'blocks' => 3,
     'arrow' => true,
-    'total_no_of_posts' => $category->v('noOfPosts'),
+    'total_no_of_posts' => $category->v('noOfPostsPerPage'),
     'no_of_posts_per_page' => $category->v('noOfPagesOnNav'),
     'url' => '/?p=forum.post.list&categoryId=' . in(CATEGORY_ID) . '&page={page}',
 ]);

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- 생성 시간: 21-03-06 15:18
+-- 생성 시간: 21-03-06 15:32
 -- 서버 버전: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP 버전: 8.0.3
 
@@ -236,6 +236,7 @@ CREATE TABLE `wc_users` (
                             `point` int(10) UNSIGNED NOT NULL DEFAULT 0,
                             `phoneNo` varchar(32) NOT NULL DEFAULT '',
                             `gender` char(1) NOT NULL DEFAULT '',
+                            `birthdate` int(10) UNSIGNED NOT NULL,
                             `countryCode` char(2) NOT NULL DEFAULT '',
                             `province` varchar(32) NOT NULL DEFAULT '',
                             `city` varchar(32) NOT NULL DEFAULT '',
@@ -339,7 +340,11 @@ ALTER TABLE `wc_translations`
 ALTER TABLE `wc_users`
     ADD PRIMARY KEY (`idx`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `point` (`point`);
+  ADD KEY `point` (`point`),
+  ADD KEY `birthdate` (`birthdate`),
+  ADD KEY `name` (`name`),
+  ADD KEY `phoneNo` (`phoneNo`),
+  ADD KEY `countryCode` (`countryCode`);
 
 --
 -- 덤프된 테이블의 AUTO_INCREMENT
