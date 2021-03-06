@@ -41,9 +41,9 @@ define('APP_NAME', 'Center Backend');
 
 
 
-define('DB_USER', 'myuser');
-define('DB_PASS', 'mypass');
-define('DB_NAME', 'mydatabase');
+define('DB_USER', 'centerx');
+define('DB_PASS', 'Wc~Cx7');
+define('DB_NAME', 'centerx');
 define('DB_HOST', 'mariadb');
 
 
@@ -67,7 +67,9 @@ if ( !defined('COOKIE_DOMAIN') ) {
 }
 
 
-
+/**
+ * 디버그를 기록할 로그 파일 경로
+ */
 define('DEBUG_LOG_FILE_PATH', ROOT_DIR . 'var/logs/debug.log');
 
 

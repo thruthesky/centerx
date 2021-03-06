@@ -15,11 +15,12 @@ testEntityCrud();
 
 
 function testBasics() {
-    $created = entity('test')->create(['name' => 'yo']);
-    $obj = entity('test', $created[IDX]);
-    isTrue( $obj->exists(), 'exists!');
-    isTrue($obj->v('name') == 'yo');
-    isTrue(entity('test')->v('name') == null, 'must be null');
+    return;
+//    $created = entity('test')->create(['name' => 'yo']);
+//    $obj = entity('test', $created[IDX]);
+//    isTrue( $obj->exists(), 'exists!');
+//    isTrue($obj->v('name') == 'yo');
+//    isTrue(entity('test')->v('name') == null, 'must be null');
 }
 function testEntitySetidx() {
     $entity = entity('abc');

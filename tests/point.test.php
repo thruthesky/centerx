@@ -29,6 +29,7 @@ $profile = user()->register([EMAIL => $email, PASSWORD => $pw]);
 isTrue( user($profile[IDX])->getPoint() == point()->getRegister(), "user's point: " . user($profile[IDX])->getPoint());
 
 
+
 // 로그인 포인트 테스트
 clearTestPoint();
 user()->by($email)->setPoint(0);
@@ -100,12 +101,14 @@ function testPostCommentCreateDailyLimit(): void {
     $post2 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 2']);
     $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
     $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
+    // 제한 없으므로 성공
     isTrue(isSucess($post4), 'post 4 should success');
 
 
+    // 제한 하므로 실패.
     point()->enableCategoryBanOnLimit(POINT);
     $post5 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 5']);
-    isTrue(isSucess($post5), 'post 5 must error');
+    isTrue(isError($post5), 'post 5 must error');
 
 
 
@@ -114,13 +117,13 @@ function testPostCommentCreateDailyLimit(): void {
     isTrue(isSucess($post6), 'post 6 must success');
 
 
+
+    // 제한 하므로 다시 실패.
     point()->enableCategoryBanOnLimit(POINT);
     $cmt1 = comment()->create([ROOT_IDX=>$post6[IDX], PARENT_IDX=>$post6[IDX], CONTENT=>'yo']);
-    isTrue(isSucess($cmt1), 'cmt1 must fail');
+    isTrue(isError($cmt1), 'cmt1 must fail');
 
 }
-
-
 
 
 
@@ -132,24 +135,31 @@ function testPostCommentCreateHourlyLimit(): void {
     point()->setCategoryHourLimitCount(POINT, 3);
 
     setLogin(A);
+    point()->disableCategoryBanOnLimit(POINT);
     $post1 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 1']);
     $post2 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 2']);
     $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
-    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
-    isTrue(isSucess($post4), 'post 4 should success');
 
+    // 제한을 하지 않았으므로 성공!
+    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
+    isTrue(isSucess($post4), 'post 4 should success. but got: ' . is_array($post4) ? '' : $post4);
+
+    // 제한을 한다. 에러가 발생해야 함.
     point()->enableCategoryBanOnLimit(POINT);
     $post5 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 5']);
-    isTrue(isSucess($post5), 'post 5 must error');
-
+    isTrue(isError($post5), 'post 5 must error');
     point()->disableCategoryBanOnLimit(POINT);
+
+    // 제한을 해제 했다. 에러가 발생하지 않아야 함.
     $post6 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 6']);
     isTrue(isSucess($post6), 'post 6 must success');
 
 
+    // 다시 제한 한다. 에러가 발생해야 함.
     point()->enableCategoryBanOnLimit(POINT);
     $cmt1 = comment()->create([ROOT_IDX=>$post6[IDX], PARENT_IDX=>$post6[IDX], CONTENT=>'yo']);
-    isTrue(isSucess($cmt1), 'cmt1 must fail');
+    isTrue(isError($cmt1), 'cmt1 must fail');
+    point()->disableCategoryBanOnLimit(POINT);
 
 }
 

@@ -15,3 +15,4 @@ isTrue( isSucess($record), 'Expect: password is empty.');
 $user = user($record[IDX]);
 
 print_r($user->get());
+

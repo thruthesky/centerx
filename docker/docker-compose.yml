@@ -34,10 +34,10 @@ services:
   mariadb:
     image: mariadb:latest
     environment:
-      - MYSQL_DATABASE=mydatabase # 처음 이미지 생성 후, 컨테이너 실행시, DB 를 준비한다. 덮어쓰지 않음.
-      - MYSQL_USER=myuser # 컨테이너 실행시, 사용자를 지정한다.
-      - MYSQL_PASSWORD=mypass
-      - MYSQL_ROOT_PASSWORD=7777 # 컨테이너 실행시, 관리자 비밀번호.
+      - MYSQL_DATABASE=centerx # 처음 이미지 생성 후, 컨테이너 실행시, DB 를 준비한다. 덮어쓰지 않음.
+      - MYSQL_USER=centerx # 컨테이너 실행시, 사용자를 지정한다.
+      - MYSQL_PASSWORD=Wc~Cx7
+      - MYSQL_ROOT_PASSWORD=Wc~Cx7 # 컨테이너 실행시, 관리자 비밀번호.
     volumes:
 #      - ./etc:/etc/mysql # mysql 설정을 ./etc 에 지정한다. 굳이 mysql 설정은 안해도 된다. 기본 설정이 충분하다.
 
