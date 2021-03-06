@@ -157,5 +157,10 @@ if ( !defined('NAVER_CALLBACK_URL') ) define('NAVER_CALLBACK_URL', urlencode('ht
 if ( !defined('NAVER_API_URL') ) define('NAVER_API_URL', "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=".NAVER_CLIENT_ID."&redirect_uri=".NAVER_CALLBACK_URL."&state=1");
 
 
-
-
+/**
+ * Local hosts
+ *
+ * 현재 컴퓨터에서 테스트하는 도메인을 기록. 이 도메인으로 접속하면, 실제 서버가 아닌 현재 컴퓨터로 접속을 하며, 테스트를 위한 것이다.
+ * 특히, 이 도메인으로 접속하면, isLocalhost() 에서 참을 리턴한다.
+ */
+define('LOCAL_HOSTS', ['localhost', 'local.itsuda50.com']);

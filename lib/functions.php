@@ -81,21 +81,13 @@ function isCli(): bool
  * Returns true if the web is running on localhost (or developers computer).
  * @return bool
  */
-function is_localhost(): bool
+function isLocalhost(): bool
 {
-
     if (isCli()) return false;
-    $localhost = false;
-    $ip = $_SERVER['SERVER_ADDR'];
-//    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' || PHP_OS === 'Darwin') $localhost = true;
-//    else {
-
-        if (strpos($ip, '127.0.') !== false) $localhost = true;
-        else if (strpos($ip, '192.168.') !== false) $localhost = true;
-        else if ( strpos($ip, '172.') !== false ) $localhost = true;
-//    }
-    return $localhost;
+    if ( in_array(get_domain_name(), LOCAL_HOSTS) ) return true;
+    return false;
 }
+
 
 /**
  * 모바일이면 참을 리턴한다.
