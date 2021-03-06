@@ -23,7 +23,6 @@ class AppRoute
 
     public function settings()
     {
-        return ['a' => 'apple'];
-        // return ['search_categories' => search_categories()];
+        return config(ADMIN_SETTINGS)->getMetas();
     }
 }

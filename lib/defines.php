@@ -28,6 +28,8 @@ define('POINT_HISTORIES', 'point_histories');
 define('POST_VOTE_HISTORIES', 'post_vote_histories');
 define('SHOPPING_MALL_ORDERS', 'shopping_mall_orders');
 
+define('TRANSLATIONS', 'translations');
+
 
 
 
@@ -99,5 +101,19 @@ define('IMAGE_URL', 'imageUrl');
 define('USERFILE', 'userfile');
 define('SHOPPING_MALL', 'shopping_mall');
 
+/**
+ * Meta 에 저장되지 말아야 할 키 목록
+ *
+ * ROUTE - route
+ * SESSION_ID - user serssion id
+ * p - page
+ * w - widget
+ * cw - child widget
+ * mode - form submit mode
+ * MAX_FILE_SIZE - form file size limit
+ * TOKEN - the push token
+ */
 define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'w', 'cw', 'mode', 'MAX_FILE_SIZE', TOKEN]);
 
+
+define('ADMIN_SETTINGS', 1);

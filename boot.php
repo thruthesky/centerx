@@ -23,6 +23,7 @@ require_once ROOT_DIR . 'lib/point/point.history.class.php';
 require_once ROOT_DIR . 'lib/vote-history.class.php';
 require_once ROOT_DIR . 'lib/shopping-mall-order.class.php';
 require_once ROOT_DIR . 'lib/meta.class.php';
+require_once ROOT_DIR . 'lib/translation.class.php';
 require_once ROOT_DIR . 'lib/firebase.php';
 require_once ROOT_DIR . 'config.php';
 require_once ROOT_DIR . 'lib/defines.php'; // depending on config.php

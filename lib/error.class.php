@@ -80,6 +80,10 @@ class E {
     public string $not_your_order = 'error_not_your_order';
     public string $order_confirmed = 'error_order_confirmed';
 
+    public string $empty_code = 'error_empty_code';
+    public string $code_exists = 'error_code_exists';
+
+
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)
     {

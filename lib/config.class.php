@@ -14,9 +14,9 @@ class Config extends Entity {
      *
      * Config constructor.
      */
-    public function __construct()
+    public function __construct(int $idx = 0)
     {
-        parent::__construct(CONFIG, 0);
+        parent::__construct(CONFIG, $idx);
     }
 
     /**
@@ -49,26 +49,33 @@ class Config extends Entity {
 /**
  * Returns Config instance or value of a code.
  *
- * The taxonomy of Config class does not exists.
- * With, Config class, you can set/get meta data.
+ * The taxonomy of Config class does not exists. @see readme.md for detals.
  *
- * @param string $code
+ * @param int|string $code
+ *  - if $code is string, it returns the value of the config meta.
+ *  - if $code is int, then it returns the config instance with the idx of the value in $code.
  * @param mixed|null $default_value
  * @return Config|int|string|array|null
  *
  * @example
  *  config(POINT_REGISTER, 0)
  *  config()->get(POINT_REGISTER);
+ *  d( config(3)->getMetas() );
  */
-function config(string $code='', mixed $default_value=null): Config|int|string|array|null
+function config(int|string $code='', mixed $default_value=null): Config|int|string|array|null
 {
     if ( $code ) {
-        $got = config()->get($code);
-        if ( $got === null ) return $default_value;
-        else return $got;
+        if ( is_numeric($code) ) {
+            return new Config($code);
+        } else {
+            $got = config()->get($code);
+            if ( $got === null ) return $default_value;
+            else return $got;
+        }
     }
     return new Config();
 }
+
 
 
 

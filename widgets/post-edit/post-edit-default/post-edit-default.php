@@ -3,27 +3,48 @@
  * @name Default Post Edit
  */
 
+
+$p = post(in(IDX, 0));
+
+
+if ( in(CATEGORY_ID) ) {
+    $category = category( in(CATEGORY_ID) );
+} else if (in(IDX)) {
+    $category = category( $p->v(CATEGORY_IDX) );
+} else {
+    jsBack('잘못된 접속입니다.');
+}
+
 ?>
 
 <div id="app" class="p-5">
     <form enctype="multipart/form-data" action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
-        <input type="text" name="files" v-model="files">
-        <div>
-            categoryId:
-            <input type="text" name="<?=CATEGORY_ID?>" value="<?=in(CATEGORY_ID)?>">
-        </div>
+        <input type="hidden" name="files" v-model="files">
+        <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
+        <input type="hidden" name="<?=IDX?>" value="<?=$p->idx?>">
+
         <div>
             title:
-            <input type="text" name="<?=TITLE?>" value="<?=in(TITLE)?>">
+            <input type="text" name="<?=TITLE?>" value="<?=$p->v(TITLE)?>">
         </div>
         <div>
             content:
-            <input type="text" name="<?=CONTENT?>" value="<?=in(CONTENT)?>">
+            <input type="text" name="<?=CONTENT?>" value="<?=$p->v(CONTENT)?>">
         </div>
         <div>
             <input name="<?=USERFILE?>" type="file" @change="onFileChange($event)" />
+        </div>
+        <div class="container photos">
+            <div class="row">
+                <div class="col-3 col-sm-2 photo" v-for="file in uploadedFiles" :key="file['idx']">
+                    <div clas="position-relative">
+                        <img class="w-100" :src="file['url']">
+                        <div class="position-absolute top left font-weight-bold" @click="onFileDelete(file['idx'])">[X]</div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div>
             <button type="submit">Submit</button>
@@ -37,8 +58,8 @@
         data() {
             return {
                 percent: 0,
-                files: '',
-                uploadedFiles: [],
+                files: '<?=$p->v('files')?>',
+                uploadedFiles: <?=json_encode($p->get()['files'] ?? [], true)?>,
             }
         },
         methods: {
@@ -65,24 +86,26 @@
                     }
                 );
             },
+            onFileDelete(idx) {
+                const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
+                if ( re === false ) return;
+                axios.post('/index.php', {
+                    sessionId: '<?=my(SESSION_ID)?>',
+                    route: 'file.delete',
+                    idx: idx,
+                })
+                    .then(function (res) {
+                        checkCallback(res, function(res) {
+                            console.log('delete success: ', res);
+                            app.uploadedFiles = app.uploadedFiles.filter(function(v, i, ar) {
+                                return v.idx !== res.idx;
+                            });
+                            app.files = deleteByComma(app.files, res.idx);
+                        }, alert);
+                    })
+                    .catch(alert);
+            }
         }
     }).mount("#app");
 </script>
 
-<script>
-    function onFileDelete(idx) {
-        const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
-        if ( re === false ) return;
-        axios.post('/index.php', {
-            sessionId: '<?=my(SESSION_ID)?>',
-            route: 'file.delete',
-            idx: idx,
-        })
-            .then(function (res) {
-                respondCallback(res, function(res) {
-                    console.log('delete success: ', res);
-                }, alert);
-            })
-            .catch(alert);
-    }
-</script>

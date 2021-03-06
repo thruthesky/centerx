@@ -9,11 +9,18 @@ class TaxonomyTest extends Entity {
 }
 
 
-
+testBasics();
 testEntitySetIdx();
 testEntityCrud();
 
 
+function testBasics() {
+    $created = entity('test')->create(['name' => 'yo']);
+    $obj = entity('test', $created[IDX]);
+    isTrue( $obj->exists(), 'exists!');
+    isTrue($obj->v('name') == 'yo');
+    isTrue(entity('test')->v('name') == null, 'must be null');
+}
 function testEntitySetidx() {
     $entity = entity('abc');
     isTrue(get_class($entity), 'Entity');
@@ -46,5 +53,7 @@ function testEntityCrud() {
     isTrue($entity->exists() === false);
 
 }
+
+
 
 

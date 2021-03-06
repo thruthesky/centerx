@@ -33,6 +33,7 @@ isTrue( user($profile[IDX])->getPoint() == point()->getRegister(), "user's point
 clearTestPoint();
 user()->by($email)->setPoint(0);
 point()->setLogin(333);
+
 $profile = user()->login([EMAIL => $email, PASSWORD => $pw]);
 isTrue( user($profile[IDX])->getPoint() == point()->getLogin(), "user's point: " . user($profile[IDX])->getPoint());
 

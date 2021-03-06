@@ -18,12 +18,12 @@
     <div class="content">
         <?=$post[CONTENT]?>
     </div>
+    <section class="buttons">
+        <a class="btn btn-sm btn-secondary" href="/?p=forum.post.edit&idx=<?=$post[IDX]?>">Edit</a>
+    </section>
     <div class="files">
         <?php foreach( $post[FILES] as $file ) { ?>
-            <div class="position-relative">
-                <img class="w-100" src="<?=$file['url']?>">
-                <div class="position-absolute" style="top: 0; color: white; background-color: black;" onclick="onFileDelete(<?=$file[IDX]?>);">[ X ]</div>
-            </div>
+            <img class="w-100" src="<?=$file['url']?>">
         <?php } ?>
     </div>
     <div>

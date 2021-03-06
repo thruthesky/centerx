@@ -1,6 +1,6 @@
 <?php
 /**
- * @file firebase
+ * @file firebase.php
  */
 
 use Kreait\Firebase\Database;
@@ -23,7 +23,7 @@ function getFirebase() {
 
 
 /**
- * @return \Kreait\Firebase\Messaging
+ * @return \Kreait\Firebase\Contract\Messaging
  *
  * @example
  *  $messaging = getMessaging()
@@ -35,9 +35,9 @@ function getMessaging() {
 /**
  * Returns Firebase Realtime Database instance.
  *
- * @return Database
+ * @return \Kreait\Firebase\Contract\Database
  */
-function getDatabase() {
+function getRealtimeDatabase() {
     return getFirebase()->createDatabase();
 }
 
@@ -190,6 +190,24 @@ function getAndroidPushData() {
     ]);
 }
 
+
+/**
+ * Update the document under 'notification' in Firebase RealTime Database.
+ *
+ * @attention $documentPath must begin with `/`.
+ *
+ * @param string $documentPath database document path. ie) notifications/translations
+ * @param mixed $data data to set
+ * @throws \Kreait\Firebase\Exception\DatabaseException
+ *
+ *
+ */
+function setRealtimeDatabaseDocument($documentPath, $data) {
+    if ( isTesting() ) return;
+    $db = getRealtimeDatabase();
+    $reference = $db->getReference($documentPath);
+    $reference->set($data);
+}
 
 
 

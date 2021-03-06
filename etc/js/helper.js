@@ -64,18 +64,19 @@ function fileUpload(file, params, successCallback, errorCallback, progressCallba
     };
     axios.post('/index.php', form, options)
         .then(function (res) {
-            respondCallback(res, successCallback, errorCallback);
+            checkCallback(res, successCallback, errorCallback);
         })
         .catch(errorCallback);
 }
 
 /**
+ * Detect if the axios reponse is success or failure.
  * Calls `successCallback` if the `res` is success response. Otherwise `errorCallback` with error string will be called.
  * @param res
  * @param successCallback
  * @param errorCallback
  */
-function respondCallback(res, successCallback, errorCallback) {
+function checkCallback(res, successCallback, errorCallback) {
     const data = res.data;
     if ( typeof data.response === 'undefined' ) errorCallback('error_response_is_empty');
     if ( typeof data.response === 'string' && data.response.indexOf('error_') === 0 ) {

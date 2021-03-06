@@ -120,8 +120,12 @@ class Entity {
 
         $this->createMetas($idx, $this->getMetaFields($in));
 
+
+
+        $this->__entities = [];
         return self::get(IDX, $idx);
     }
+
 
 
     /**
@@ -147,7 +151,7 @@ class Entity {
      *  d(login()->profile());
      */
     public function update(array $in): array|string {
-        global $__entities;
+
         if ( ! $in ) return e()->empty_param;
 
         //
@@ -165,7 +169,9 @@ class Entity {
         $this->updateMetas($this->idx, $this->getMetaFields($in));
 
         $fv = "idx=" . $this->idx;
-        unset($__entities[ $this->taxonomy ][ $fv ]);
+
+
+        $this->__entities = [];
 
         $got = self::get();
 
@@ -184,6 +190,11 @@ class Entity {
         if ( ! $record ) return e()->entity_not_exists;
         $re = db()->delete($this->getTable(), eq(IDX, $this->idx));
         if ( $re === false ) return e()->delete_failed;
+
+
+
+        $this->__entities = [];
+
         return $record;
     }
 
@@ -215,14 +226,19 @@ class Entity {
      * If $field and $value are not set, then it wil return the record and its meta based on current `idx`.
      * If a field of entity exists in meta table, then the value of meta table will be used.
      *
-     * @attention It does memory cache. It is important if SQL server is far away from PHP application server.
-     *      Each query needs to connect to SQL server even if SQL server does some internal query.
-     *      It caches based on `$field=$value` pattern.
-     *      That means,
-     *          `user(77)->profile();` will cache with `idx=77` as `$field=$value` pair.
-     *          `user()->get('email', 'user10@gmail.com');` will cache with `email=user10@gmail.com` pair.
+     * @attention It does memory cache.
+     *  It is important to memory cache if SQL server is far away from PHP application server.
+     *  Each query needs to connect to SQL server even if SQL server does some internal query.
+     *  It caches based on `$field=$value` pattern.
+     *  That means,
+     *  `user(77)->profile();` will cache with `idx=77` as `$field=$value` pair.
+     *  `user()->get('email', 'user10@gmail.com');` will cache with `email=user10@gmail.com` pair.
      *
-     *      If $this->update() is being called, caches of `idx=..` pattern only will be deleted from cache.
+     *  Note that, this is only for reading performance improvement. And if there is any data changes on any entity,
+     *  Then, it will volatilize and re-cache again. For instance, [user-entity][idx=1] is cached, and
+     *  [file-entity][idx] is updated, then all the caches include all other entities will be volatilized..
+     *
+     * @attention even though the record does not exists, it caches with empty array record.
      *
      * @param string $field
      * @param mixed $value
@@ -236,44 +252,45 @@ class Entity {
      * user()->get('email', 'user10@gmail.com');
      */
     private $__entities = [];
+//    private $cnt = 0;
     public function get(string $field=null, mixed $value=null, string $select='*', bool $cache = true): mixed {
 
-        global $__entities;
+
         if ($field == null ) {
             $field = 'idx';
             $value = $this->idx;
         }
         $fv = "$field=$value";
-        if ( $cache && isset($__entities[$this->taxonomy]) && isset($__entities[$this->taxonomy][$fv]) ) {
+        if ( $cache && isset($this->__entities[$this->taxonomy]) && isset($this->__entities[$this->taxonomy][$fv]) ) {
 //            debug_log("cached: $fv");
-            return $__entities[$this->taxonomy][$fv];
+//            $this->cnt ++; echo " (cached count: {$this->cnt}) ";
+
+            return $this->__entities[$this->taxonomy][$fv];
         }
-
-
 
         $q = "SELECT $select FROM {$this->getTable()} WHERE `$field`='$value'";
         debug_log($q);
 //        d($q);
 
         $record = db()->get_row($q, ARRAY_A);
-        if ( !$record ) {
-//            debug_log("record is false:");
-            return [];
-        }
-        /**
-         * If $select does not have `idx`, then it will not get meta tags.
-         */
-        if ( isset( $record['idx']) ) {
-            $meta = entity($this->taxonomy, $record['idx'])->getMetas();
-            $record = array_merge($record, $meta);
+        if ( $record ) {
+            /**
+             * If $select does not have `idx`, then it will not get meta tags.
+             */
+            if (isset($record['idx'])) {
+                $meta = entity($this->taxonomy, $record['idx'])->getMetas();
+                $record = array_merge($record, $meta);
+            }
+        } else {
+            $record = [];
         }
         /**
          * If $field is null, then don't cache.
          */
         if ( $field ) {
-            if ( ! isset($__entities[$this->taxonomy]) ) $__entities[$this->taxonomy] = [];
-            $__entities[$this->taxonomy][$fv] = $record;
-            return $__entities[$this->taxonomy][$fv];
+            if ( ! isset($this->__entities[$this->taxonomy]) ) $this->__entities[$this->taxonomy] = [];
+            $this->__entities[$this->taxonomy][$fv] = $record;
+            return $this->__entities[$this->taxonomy][$fv];
         } else {
             return $record;
         }

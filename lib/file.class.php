@@ -43,7 +43,7 @@ class File extends Entity {
      *
      * @todo update `files` field on entity if exists.
      */
-    public function remove($in): string
+    public function remove($in): string|array
     {
         $this->setIdx($in[IDX]);
         if ( $this->exists() === false ) return e()->file_not_exists;

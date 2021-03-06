@@ -63,6 +63,12 @@
   Entity 클래스가 하는 일이 기본적인 CRUD 이다. 그래서 Entity 클래스의 대부분의 메소드는 현재 instance 를 리턴하지 않는다.
   
   
+# Primary Conception
+
+- It does not use `__get()`, `__set()` magic methods to avoid ambiguety. Instead, use
+  - `post(1)->get()` to get whole record.
+  - `post(1)->value(...)` to get a field value. Or `post(1)->v(...)` for short.
+
 
 # Installation
 
@@ -225,6 +231,8 @@ define('DOMAIN_THEMES', [
     So, when `Config` uses the functionality of `Entity`, it cannot do anything that is related with the table.
     It can do such things like `entity->getMtea()`, set, update, delete, addifNotExists that are not related with the taxonomy table.
 
+
+
 ## Taxonomy helper classes
 
 Each taxonomy may have its own customised methods.
@@ -269,6 +277,25 @@ category2=subscateogry-2-1,subcategory-2-2, ...
 - If a comment has same value of `rootIdx` and `parentIdx`, then it's the first depth(immediate) child comment of the post.
 
 
+## Config taxonomy class
+
+- Config taxonomy class is a fake taxonomy class. There is no such taxonomy table as `config`.
+  So, it does not do any `CRUD` on the taxonomy. Instead, it deals only with meta data.
+  The primary goal of `Cofnig` class is to save config data. 
+- By default, all config has `idx` as 0.
+- Settings in admin page is also saved as config, but the `idx` is 1.
+- To save(or update) multiple config meta, you can use `updateMetas()` method.
+
+```php
+config()->updateMetas(0, in());
+config()->updateMetas(ADMIN_SETTINGS, in()); // ADMIN_SETTINGS is defined as 1.
+```
+
+- To get mutilple meta value,
+
+```php
+d( config(3)->getMetas() );
+```
 
 
 # Admin
@@ -546,6 +573,15 @@ https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
 <img src="http://local.itsuda50.com/etc/phpThumb/phpThumb.php?src=/root/files/uploads/learn-24052061920-10.jpg&wl=300&h=300&zc=1&f=jpeg&q=95">
 ```
 
+- You can get the original image by putting `&orignal=Y`.
+  - When you get the original image,
+    - It does not resize the image by giving width and height.
+    - It does not cache.
+  - Good benefit of getting original image is that, you want to get the original image, but you don't know the page of the image. Then, you can get it with file.idx.
+```html
+<img src="http://local.itsuda50.com/etc/phpThumb/phpThumb.php?src=67&original=Y">
+```
+
 # Meta
 
 You can search meta table directly by using `meta()`.
@@ -570,6 +606,45 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 # Vote
 
 - 추천 기능은 게시글 뿐만아니라, 사용자 프로필에도 할 수 있도록 vote_histories table 에 taxonomy 와 entity 를 추가해 놓았다.
+
+# Translation
+
+- When app starts, app listens for update of the timestamp property in /notifications/translation document of Firebase realtime database.
+- Admin can add translation in admin page.
+- When translation is updated, it will update the timestamp property in /notifications/translation document of Firebase realtime database.
+- Then, app updates the changed text on the screen.
+- Translation is being used not only in app but also web.
+
+- In web, you can use like below;
+```php
+d(ln('code', 'default value'));
+ln(['en' => 'User Agreements', 'ko' => '이용자 약관', 'ch' => '...', ]); // This may be better to reduce database access and to translate inside the page.
+```
+
+- User can use their languages by;
+```html
+<form action="/">
+  <input type="hidden" name="p" value="setting.language.submit">
+  <select name="language" onchange="this.form.submit()">
+    <option value="">Choose language</option>
+    <?php foreach( SUPPORTED_LANGUAGES as $ln ) { ?>
+    <option value="<?=$ln?>"><?=ln($ln, $ln)?></option>
+    <?php } ?>
+  </select>
+</form>
+```
+
+
+- If `FIX_LANGAUGE` is set, then user language is ignored, and this applies only on web.
+
+
+# Settings
+
+- Setting update goes pretty much the same as Translation.
+
+
+
+
 
 
 # Theme
@@ -686,4 +761,5 @@ chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php app"
 chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php user"
 chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php point"
 chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php shopping-mall"
+chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php getter"
 ```

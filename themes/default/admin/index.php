@@ -36,6 +36,7 @@ if ( admin() == false ) jsBack('You are not admin');
         <a href="/?p=admin.index&w=point/admin-point-setting">Point Setting</a>
         <a href="/?p=admin.index&w=shopping-mall/admin-shopping-mall">Mall</a>
         <a href="/?p=admin.index&w=setting/admin-setting">Settings</a>
+        <a href="/?p=admin.index&w=setting/admin-translation">Translations</a>
     </div>
 
     <div class="content">

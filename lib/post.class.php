@@ -245,7 +245,9 @@ class Post extends Entity {
 
 
     /**
-     * Return a post based on current url.
+     * Return the post of current page.
+     *
+     * It returns the post based on current url.
      *
      * For instance, "https://local.domain.com/post-url-is-like-%ED%95%9C%EA%B8%80%EB%8F%84-%EB%90%okay",
      *  then, it will decode the url and find it in path, and return the post.
@@ -360,6 +362,12 @@ class Post extends Entity {
         return $record;
     }
 
+    function categoryIdx(): int {
+        return $this->v(CATEGORY_IDX);
+    }
+    function categoryId(): string {
+        return category($this->v(CATEGORY_IDX))->v(ID);
+    }
 }
 
 

@@ -285,9 +285,14 @@ function setLoginCookies(mixed $profile) {
     if ( is_numeric($profile) ) {
         $profile = user($profile)->profile();
     }
-    setcookie ( SESSION_ID , $profile[SESSION_ID], time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
-    if ( isset($profile[NICKNAME]) ) setcookie ( NICKNAME , $profile[NICKNAME] , time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
-    if ( isset($profile[PROFILE_PHOTO_URL]) ) setcookie ( PROFILE_PHOTO_URL , $profile[PROFILE_PHOTO_URL] , time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
+
+    setAppCookie(SESSION_ID , $profile[SESSION_ID]);
+    if ( isset($profile[NICKNAME]) ) setAppCookie ( NICKNAME , $profile[NICKNAME] );
+    if ( isset($profile[PROFILE_PHOTO_URL]) ) setAppCookie ( PROFILE_PHOTO_URL , $profile[PROFILE_PHOTO_URL] );
+
+//    setcookie ( SESSION_ID , $profile[SESSION_ID], time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
+//    if ( isset($profile[NICKNAME]) ) setcookie ( NICKNAME , $profile[NICKNAME] , time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
+//    if ( isset($profile[PROFILE_PHOTO_URL]) ) setcookie ( PROFILE_PHOTO_URL , $profile[PROFILE_PHOTO_URL] , time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
 }
 
 /**
@@ -297,10 +302,30 @@ function setLoginCookies(mixed $profile) {
  * @param $profile
  */
 function unsetLoginCookies() {
-    setcookie(SESSION_ID, "", time()-3600, '/', COOKIE_DOMAIN);
-    setcookie(NICKNAME, "", time()-3600, '/', COOKIE_DOMAIN);
-    setcookie(PROFILE_PHOTO_URL, "", time()-3600, '/', COOKIE_DOMAIN);
+    deleteAppCookie(SESSION_ID);
+    deleteAppCookie(NICKNAME);
+    deleteAppCookie(PROFILE_PHOTO_URL);
+//    setcookie(SESSION_ID, "", time()-3600, '/', COOKIE_DOMAIN);
+//    setcookie(NICKNAME, "", time()-3600, '/', COOKIE_DOMAIN);
+//    setcookie(PROFILE_PHOTO_URL, "", time()-3600, '/', COOKIE_DOMAIN);
 }
+
+function setAppCookie($name, $value) {
+    $name = md5($name);
+    setcookie ( $name , $value, time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
+}
+
+function deleteAppCookie($name) {
+    $name = md5($name);
+    setcookie($name, "", time()-3600, '/', COOKIE_DOMAIN);
+}
+
+function getAppCookie($name) {
+    $name = md5($name);
+    if ( !isset($_COOKIE[$name]) ) return null;
+    else return $_COOKIE[$name];
+}
+
 
 
 /**
@@ -324,8 +349,9 @@ function getSessionId($profile) {
  *  setUserAsLogin(getProfileFromCookieSessionId());
  */
 function getProfileFromCookieSessionId() : array|bool {
-    if ( ! isset($_COOKIE[SESSION_ID]) ) return false;
-    return getProfileFromSessionId($_COOKIE[SESSION_ID]);
+    $sid = getAppCookie(SESSION_ID);
+    if ( empty($sid) ) return false;
+    return getProfileFromSessionId($sid);
 }
 
 /**
@@ -782,16 +808,34 @@ function disableDebugging() {
 }
 
 
-
-function ln($en, $ko)
+/**
+ * If $default_value is empty, then $code will be returned when the text of $code is empty.
+ * @param array|string $code
+ * @param mixed $default_value
+ * @return string
+ *
+ * @example
+ *  d(ln('code')); // will return the text of the code. if code not exist, then the `code` itself will be returned.
+ *  d(ln('code', 'default value')); // if text of the code not exists, `default value` will be returned.
+ *  ln(['en' => 'English', 'ko' => 'Korean', 'ch' => '...', ... ]); // If the input is array, then the value of the array for that language will be returned.
+ */
+function ln(array|string $code, mixed $default_value=''): string
 {
-    $bl = get_user_language();
-    if ( $bl == 'ko' ) return $ko;
-    else return $en;
-
+    if ( FIX_LANGUAGE ) $language = FIX_LANGUAGE;
+    else $language = get_user_language();
+    if ( is_string($code) ) {
+        $re = translation()->text($language, $code);
+    } else {
+        $re = $code[ $language ] ?? null;
+    }
+    if ( $re ) return $re;
+    else if ( $default_value ) return $default_value;
+    else return $code;
 }
 
 function get_user_language() {
+    $language = getAppCookie('language');
+    if ( $language ) return $language;
     return browser_language();
 }
 function browser_language()

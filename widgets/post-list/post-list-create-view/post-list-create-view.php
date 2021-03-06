@@ -33,7 +33,7 @@
             idx: idx,
         })
             .then(function (res) {
-                respondCallback(res, function(res) {
+                checkCallback(res, function(res) {
                     console.log('delete success: ', res);
                 }, alert);
             })
