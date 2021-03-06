@@ -26,7 +26,8 @@ class Post extends Entity {
 
 
         // 제한에 걸렸으면, 에러 리턴.
-        if ( $category->value(BAN_ON_LIMIT) ) {
+
+        if ( $category->v(BAN_ON_LIMIT) == 'Y' ) {
             $re = point()->checkCategoryLimit($category->idx);
             if ( isError($re) ) return $re;
         }

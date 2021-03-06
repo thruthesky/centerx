@@ -106,19 +106,23 @@ function isMobile() {
     return $mobileDetect->isMobile() || $mobileDetect->isTablet();
 }
 
+
 /**
  *
  */
-function live_reload_js()
+function live_reload()
 {
+
     /// API 콜 이라도, &reload=true 로 들어오면, live reload 한다.
     if ( in(ROUTE) && !in('reload') ) return;
     /// Don't display this javascript code for Mobile Web and App.
     if ( isMobile() ) return;
 
-    if ( canLiveReload() )
+    if ( canLiveReload() ) {
+        $host = LIVE_RELOAD_HOST;
+        $port = LIVE_RELOAD_PORT;
         echo <<<EOH
-   <script src="https://main.philov.com:12345/socket.io/socket.io.js"></script>
+   <script src="https://$host:$port/socket.io/socket.io.js"></script>
    <script>
        var socket = io('https://main.philov.com:12345');
        socket.on('reload', function (data) {
@@ -128,6 +132,7 @@ function live_reload_js()
        });
    </script>
 EOH;
+    }
 }
 
 

@@ -109,6 +109,10 @@ define('DEFAULT_DELIVERY_FEE_PRICE', 2500);
 
 
 
+define('LIVE_RELOAD_HOST', 'main.philov.com');
+define('LIVE_RELOAD_PORT', '12345');
+
+
 
 
 

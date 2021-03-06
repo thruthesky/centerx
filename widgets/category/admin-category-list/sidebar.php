@@ -102,7 +102,7 @@
 
 
         <tr>
-            <td><?=ln('Limit on Post/Commet Creation', '글/코멘트에 제한')?></td>
+            <td><?=ln('Ban on Creation', '글/코멘트에 제한')?></td>
             <td>
                 <label>
                     <input

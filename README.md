@@ -47,6 +47,14 @@
 
 - file upload error handling. https://www.php.net/manual/en/features.file-upload.errors.php
 
+- search(): where 에 SQL Inject 검사를 하도록 한다.
+  drop, select, replace, insert, update 와 같은 단어를 넣지 못한다.
+  하지만, in 은 그 자체로 조건식에 들어가야하므로, 가능하다.
+  
+- search() 함수의 where: 에 메타 검색을 같이 지원한다.
+  where: "a='apple' or (b='banana' and meta.c='cherry') or meta.d=1"
+  SQL query 에 `meta.` 이라는 것이 들어가면 무조건 meta 검색으로 인식한다. 따라서 검색 조건에 `meta.` 라는 단어가 들어가면 안된다.
+
 ## 점진적으로 해야 할 일.
 
 - CRUD 함수 (예: getXxx(), setXxx(), update(), create(), delete(), exists() 등등) 외에는 모두 현재 instance(객체)를 리턴할 것.
@@ -109,6 +117,37 @@ define('DOMAIN_THEMES', [
   - `docker/mysqldata` - MariaDB database files are saved in this folder.
   - `docker/docker-compose.yml` - Docker Compose file.
   
+
+## Hot reload
+
+- Node.js version 10.23.0 이상에서 동작한다.
+- Host 와 Port 를 config.php 에 적어주면 된다.
+  - LIVE_RELAOD_HOST 의 domain 은 현재 개발중인 host 일 필요 없으며, 접속 가능한 host 이면 된다.
+    예를 들어, 개발중인 사이트의 도메인은 abc.com 인데, 전혀 상관없는 도메인인 def.com 을 적어도 된다.
+  - Port 는 12345 로 그냥 고정한다.
+  
+- 만약, SSL 로 서비스(개발)하는 경우, `live-reload.js` 에서 SSL 을 LIVE_RELOAD_HOST 에 맞는 것으로 지정해 주어야한다.
+  
+- 동작 방식
+  - 먼저 `node live-reload.js` 와 같이 socket.io 서버를 실행.
+  - etc/boot.code.php 에서 live_reload() 함수 호출
+  - lib/functions.php::live_reload() 함수에서 live-reload.js 서버로 접속해서, 변경 이벤트가 있으면 reload
+  
+
+# Component
+
+
+  
+- [EzSQL](https://github.com/ezSQL/ezsql)
+  For database connection
+  
+- Firebase
+
+- [MobileDetect](https://github.com/serbanghita/Mobile-Detect)
+  To detect the device is mobile
+  
+
+
 # 폴더구조
 
 - `etc` - For etc files.
@@ -298,6 +337,24 @@ d($result);
 
 - And even for the categories(forums) that has no widget settings, the widgets ending with `-default` will be used.
 
+
+
+# Debugging
+
+- debug log file is saved under `var/log/debug.log`.
+
+- You can enable debugging by calling `enableDebugging()` and disable debugging by calling `disableDebugging()`.
+
+
+
+# Post Crud
+
+- To view or link to post list page, use `/?p=forum.post.list&categoryId=...` format.
+- To view or link to create or update page,
+  - use `/?p=forum.post.edit&categoryId=...` for creation
+  - use `/?p=forum.post.edit&idx=...` for update.
+  
+- After filling up on post create/update form, send the form to `/?p=forum.post.edit.submit` and it will redirect to the list page.
 
 
 

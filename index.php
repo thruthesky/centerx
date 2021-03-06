@@ -5,4 +5,3 @@ ob_start();
 include theme()->file('index');
 $html = ob_get_clean();
 echo $html;
-

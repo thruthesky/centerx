@@ -1,7 +1,7 @@
 <?php
 define('API_CALL', in(ROUTE) != null);
 
-live_reload_js();
+live_reload();
 
 /**
  * @param $errno

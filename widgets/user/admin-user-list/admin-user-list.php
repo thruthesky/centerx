@@ -60,5 +60,5 @@ include widget('pagination/pagination-default', [
         'total' => $total,
     'page' => $page,
     'limit' => $limit,
-    'url' => "/?p=admin.user.list&page={page}&key=$key"
+    'url' => "/?p=admin.index&w=user/admin-user-list&page={page}&key=$key"
 ]);
