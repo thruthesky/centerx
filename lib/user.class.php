@@ -156,6 +156,10 @@ class User extends Entity {
         if ( isError($profile) ) return $profile;
 
         if ( ! checkPassword($in[PASSWORD], $profile[PASSWORD]) ) return e()->wrong_password;
+
+        // 메타 정보 업데이트
+        $this->update($in);
+
         $profile = $this->profile();
         point()->login($profile);
         return $profile;

@@ -83,6 +83,8 @@ class E {
     public string $empty_code = 'error_empty_code';
     public string $code_exists = 'error_code_exists';
 
+    public string $passlogin_faield = 'error_passlogin_faield';
+
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)

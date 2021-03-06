@@ -279,9 +279,10 @@ function checkPassword( $plain_text_password, $encrypted_password ) {
  * 입력된 $profile 정보로 해당 사용자를 로그인 시킨다.
  *
  * When user login, the session_id must be saved in cookie. And it is shared with Javascript.
- * @param $profile
+ * @param array|int $profile
+ *   - 숫자이면, 회원 번호로 인식해서 회원 정보를 가져온다.
  */
-function setLoginCookies(mixed $profile) {
+function setLoginCookies(array|int $profile): void {
     if ( is_numeric($profile) ) {
         $profile = user($profile)->profile();
     }
@@ -1054,4 +1055,12 @@ function getForumSubscribers(string $topic): array
 }
 
 
-
+/**
+ * 패스로그인 관련 라이브러리는 etc/callbacks/pass-login.lib.php 에 있다.
+ * @param string $state
+ * @return string
+ */
+function passLoginUrl($state = '')
+{
+    return "https://id.passlogin.com/oauth2/authorize?client_id=" . PASS_LOGIN_CLIENT_ID . "&redirect_uri=" . urlencode(PASS_LOGIN_CALLBACK_URL) . "&response_type=code&state=$state&prompt=select_account";
+}

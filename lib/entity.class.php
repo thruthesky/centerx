@@ -500,7 +500,9 @@ class Entity {
 
 
     /**
+     * 현재 taxonomy 에서 meta 값을 리턴한다.
      * Returns a meta value of the taxonomy and entity.
+     *
      *
      * Note that, it works without the real taxonomy table. That means, you can use this method even if the taxonomy table does not exist.
      * Read the readme for details.
@@ -509,14 +511,47 @@ class Entity {
      * @return mixed
      * - If record does not exists, it returns null.
      * - Or meta value
+     *
+     * @todo 더 많은 테스트 코드를 작성 할 것.
      */
-    public function getMeta(string $code): mixed {
+    public function getMeta(string $code, mixed $data = null): mixed {
+
         $q = "SELECT data FROM " . entity(METAS)->getTable() . " WHERE taxonomy='{$this->taxonomy}' AND entity={$this->idx} AND code='$code'";
-//        echo("Q: $q\n");
+
+//          echo("Q: $q\n");
         $data = db()->get_var($q);
         $un = $this->_unserialize($data);
         return $un;
     }
+
+
+    /**
+     * 현재 taxonomy 에서 code=$code AND data=$data 와 같이 비교해서, data 값이 맞으면 entity 를 리턴한다.
+     * 이 때에는 현재 idx 는 사용하지 않는다(무시된다).
+     * 현재 idx 값을 모르고, taxonomy 와 code, 그리고 data 를 알고 있는데, entity(userIdx 등)을 몰라서 찾고자 하는 경우 사용 할 수 있다.
+     *
+     * @attention 주의 할 점은, 맨 마지막 정보의 entity 값을 리턴한다.
+     *
+     * @param string $code
+     * @param mixed $data
+     *
+     * @return int
+     *
+     * @example
+     *  user()->getMetaEntity('plid', $user['plid']);
+     *
+     * @todo $data 에 따옴표가 들어 갈 때, 에러가 나는지 확인 할 것.
+     */
+    public function getMetaEntity(string $code, mixed $data ): int {
+        $q = "SELECT entity FROM " . entity(METAS)->getTable() . " WHERE taxonomy='{$this->taxonomy}' AND code='$code' AND data='$data' ORDER BY idx DESC LIMIT 1";
+//          echo("Q: $q\n");
+        return db()->get_var($q) ?? 0;
+    }
+
+
+
+
+
 
 
     /**
