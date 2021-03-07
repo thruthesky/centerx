@@ -4,12 +4,14 @@
  */
 
 
+$categoryId = in(CATEGORY_ID);
+
 ?>
 
 <a class="btn btn-primary" href="/?p=forum.post.edit&categoryId=<?=in(CATEGORY_ID)?>">Create</a>
 
 <?php
-    $posts = post()->search(where: 'parentIdx=0');
+    $posts = post()->search(where: "parentIdx=0 AND categoryId=<$categoryId>");
 ?>
 
 <?php foreach( $posts as $post ) {

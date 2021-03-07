@@ -1,4 +1,5 @@
 body {
+    font-size: 16px;
     font-family: -apple-system,BlinkMacSystemFont,"Malgun Gothic","맑은 고딕",helvetica,"Apple SD Gothic Neo",sans-serif;
 }
 a {
@@ -40,6 +41,13 @@ a {
 .h-48px {
     height: 48px;
 }
+.w-100px {
+    width: 100px;
+}
+.w-80px {
+    width: 80px;
+}
+
 
 .mh-1024px {
     min-height: 1024px;
@@ -67,8 +75,28 @@ a {
     right: 0;
 }
 
-.input-focus:focus {
+
+.box {
+    padding: .5rem;
+    border-radius: 8px;
+    background-color: #eff3fa;
+}
+.box h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.2rem;
+    font-weight: 100;
+}
+.box hr {
+    margin: .5rem 0 0;
+    padding: 0;
+    border-color: #dedede;
+}
+input.underline {
+    border: 0;
+    border-bottom: 1px solid grey;
+    background-color: transparent;
+}
+input.focus-none:focus {
     outline: none !important;
-    border:1px solid #bebebe;
-    box-shadow: 0 0 10px #c4cac7;
 }

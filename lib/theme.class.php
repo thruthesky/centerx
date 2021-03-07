@@ -4,6 +4,7 @@ class Theme
 {
 
     public string $folderName;
+    public string $folder;
 
     public function __construct()
     {
@@ -75,10 +76,25 @@ class Theme
 
     /**
      * 현재 페이지 경로를 리턴한다.
+     *
+     * 현재 페이지 경로는 /?p=abc.def 와 같이 들어오거나, `p=` 를 생략하고, /?abc.def.ghi 와 같이 들어올 수 있다. 점은 1개에서 3개 사이로 있어야 한다.
+     *
      * @return string
      */
     public function page(): string {
-        return $this->file(in('p', 'home'));
+        $p = in('p');
+        if ( empty($p) ) {
+            $uri = $_SERVER['REQUEST_URI'];
+            if ( strpos($uri, '/?') == 0 ) { // `/?` 으로 시작하고,
+                $uri = str_replace('/?', '', $uri);
+                $arr = explode('.', $uri);
+                if ( count($arr) >= 2 && count($arr) <= 4 ) { // 점(.) 이 1개에서 3개까지이면,
+                    $p = $uri;
+                }
+            }
+        }
+        if ( empty($p) ) $p = 'home';
+        return $this->file($p);
     }
 
     /**
@@ -95,6 +111,7 @@ class Theme
                 break;
             }
         }
+        $this->folder = ROOT_DIR . 'themes/' . $this->folderName . '/';
     }
 }
 

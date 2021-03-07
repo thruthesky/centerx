@@ -1062,3 +1062,17 @@ function inHome() {
     $p = in('p');
     return empty($p);
 }
+function displayWarning($msg) {
+    $root_domain = get_root_domain();
+    echo <<<EOH
+<div style="padding: 1em; border-radius: 16px; background-color: #ffc9c9;">
+<div class="d-flex justify-content-between">
+<div>알림</div>
+<div>$root_domain</div>
+</div>
+<hr>
+$msg
+</div>
+EOH;
+
+}

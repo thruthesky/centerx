@@ -182,15 +182,19 @@ define('DOMAIN_THEMES', [
 
 - `config.php` on project folder is the default configuration, and it can be overwritten by theme configuration.
   기본 설정은 root/config.php 에 저장되며, 각 테마에서 설정을 덮어 쓸 수 있다.
+  
 
 ## Theme Configuration
 
 - `themes/[theme-name]/[theme-name].config` will be included(and run) if it exists.
   It will run even if it is API call. (Just connect to api domain to proper theme.)
-  You can define any hooks or routes in configuration.
 
 - All the default configuration can be over-written by theme configuration.
   That means, each theme can use different database settings.
+
+- You can define hooks, routes, or any code for the theme inside the config.
+  If config.php gets bigger, it's a good idea to split it into different php scripts like
+  `functions.php`, `hooks.php`, `routes.php`, etc...
 
   
 
@@ -602,6 +606,10 @@ The above code is identical as below
 $meta = entity(METAS)->get('code', 'topic_qna');
 $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='Y'", select: 'entity', limit: 10000);
 ```
+
+# Firebase
+
+- Firebase admin key may be kept in each theme folder if you develop many themes at one time.
 
 # Vote
 
