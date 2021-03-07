@@ -1,7 +1,7 @@
 <?php
 
 
-$email = 'register.' . time() . '@email.com';
+$email = 'test-register.' . time() . '@email.com';
 $data = ['email' => $email];
 
 $re = user()->register($data);
@@ -12,7 +12,6 @@ $record = user()->register([EMAIL=>$email, PASSWORD=>'12345a']);
 isTrue( isSucess($record), 'Expect: password is empty.');
 
 
-$user = user($record[IDX]);
+//$user = user($record[IDX]);
 
-print_r($user->get());
 

@@ -3,8 +3,13 @@
 <div class="d-flex justify-content-between l-content fs-sm bg-light border-radius-bottom-sm">
     <div class="d-flex">
         <a class="p-2 pl-3" href="/">홈</a>
-        <a class="p-2" href="/?user.login">로그인</a>
-        <a class="p-2" href="/?user.login">가입</a>
+        <?php if ( loggedIn() ) { ?>
+            <a class="p-2" href="/?user.profile">회원 정보</a>
+            <a class="p-2" href="/?user.logout.submit">로그아웃</a>
+        <?php } else { ?>
+            <a class="p-2" href="/?user.login">로그인</a>
+            <a class="p-2" href="/?p=user.login&mode=register">가입</a>
+        <?php } ?>
         <a class="p-2" href="/?p=forum.post.list&categoryId=discussion">자유게시판</a>
         <a class="p-2" href="/?p=forum.post.list&categoryId=qna">질문게시판</a>
     </div>
@@ -20,10 +25,10 @@
         </div>
     </div>
     <div class="mt-3" style="width: 400px;">
-        <div class="d-flex justify-content-center align-items-center mb-2">
-            <img class="h-48px" src="/themes/sonub/img/philov-logo.png">
-            <div class="ml-3 fs-xl">필러브</div>
-        </div>
+        <a class="d-flex justify-content-center align-items-center mb-2" href="/">
+                <img class="h-48px" src="/themes/sonub/img/philov-logo.png">
+                <div class="ml-3 fs-xl">필러브</div>
+        </a>
         <form>
             <div class="position-relative">
                 <input class="focus-none pl-3 pr-5 py-1 fs-lg w-100 border-radius-md border-grey">

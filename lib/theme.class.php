@@ -77,7 +77,10 @@ class Theme
     /**
      * 현재 페이지 경로를 리턴한다.
      *
-     * 현재 페이지 경로는 /?p=abc.def 와 같이 들어오거나, `p=` 를 생략하고, /?abc.def.ghi 와 같이 들어올 수 있다. 점은 1개에서 3개 사이로 있어야 한다.
+     * 현재 페이지 경로는 /?p=abc.def 와 같이 들어오거나, `p=` 를 생략하고, /?abc.def.ghi 와 같이 들어올 수 있다.
+     * 점은 1개에서 3개 사이로 있어야 한다.
+     *
+     * 글 페이지 `p` 값이 없고, `/?` 으로 들어오지 않고, uri 에 값이 있으면, 글 페이지로 인식한다.
      *
      * @return string
      */
@@ -85,15 +88,17 @@ class Theme
         $p = in('p');
         if ( empty($p) ) {
             $uri = $_SERVER['REQUEST_URI'];
-            if ( strpos($uri, '/?') == 0 ) { // `/?` 으로 시작하고,
+            if (str_starts_with($uri, '/?')) { // `/?` 으로 시작하고,
                 $uri = str_replace('/?', '', $uri);
                 $arr = explode('.', $uri);
                 if ( count($arr) >= 2 && count($arr) <= 4 ) { // 점(.) 이 1개에서 3개까지이면,
                     $p = $uri;
                 }
+            } else {                                // `/?` 으로 시작하지 않고,
+                if ( $uri == '/' ) $p = 'home';     // uri 가 `/` 만 있으면, home
+                else $p = 'forum.post.view';        // 아니면, 글 페이지
             }
         }
-        if ( empty($p) ) $p = 'home';
         return $this->file($p);
     }
 

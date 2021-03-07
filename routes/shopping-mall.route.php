@@ -30,13 +30,13 @@ class ShoppingMallRoute
 
         $point = $info['pointToUse'];
 
-
         /// 상품 주문을 할 때, 회원 포인트를 사용한다면,
         if ( $point ) {
-            if ( my(POINT) < $point ) { // 포인트가 모자라면, 주문을 하지 못하도록 한다.
+            if ( my(POINT, false) < $point ) { // 포인트가 모자라면, 주문을 하지 못하도록 한다.
                 return e()->lack_of_point;
             }
         }
+
 
         $record = shoppingMallOrder()->create($data);
 

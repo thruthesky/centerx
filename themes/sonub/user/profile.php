@@ -2,20 +2,24 @@
     <form action="./">
         <input type="hidden" name="p" value="user.profile.submit">
         <div class="form-group">
-            <label>Email address</label>
-            <div><?=my(EMAIL)?></div>
-        </div>
-        <div class="form-group">
             <label>Name</label>
-            <input type="text" class="form-control" name="name" value="<?=my(NAME)?>">
+            <div>
+                <?php if ( login()->provider == 'passlogin' ) { ?>
+                    <?=login()->name?>
+                <?php } else { ?>
+                    본인 인증을 하지 않아 이름을 알 수 없습니다.
+                <?php } ?>
+            </div>
         </div>
         <div class="form-group">
             <label>Phone No</label>
-            <input type="text" class="form-control" name="<?=PHONE_NO?>" value="<?=my(PHONE_NO)?>">
-        </div>
-        <div class="form-group">
-            <label>Your favorite color</label>
-            <input type="text" class="form-control" name="color" value="<?=my('color')?>">
+            <div>
+                <?php if ( login()->provider == 'passlogin' ) { ?>
+                    <?=login()->phoneNo?>
+                <?php } else { ?>
+                    본인 인증을 하지 않아 전화번호를 알 수 없습니다.
+                <?php } ?>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary">Profile Update</button>
     </form>

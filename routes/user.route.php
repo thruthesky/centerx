@@ -20,6 +20,7 @@ class UserRoute {
 
 
     public function update($in) {
+        if ( notLoggedIn() ) return e()->not_logged_in;
         return login()->update($in);
     }
 

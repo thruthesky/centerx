@@ -1,11 +1,83 @@
 <?php
 
-
 class Post extends Entity {
+    public string $rootIdx;
+    public string $parentIdx;
+    public string $categoryIdx;
+    public string $userIdx;
+    public string $title;
+    public string $path;
+    public string $content;
+    public string $url;
+    public string $y;
+    public string $n;
+    public string $countryCode;
+    public string $province;
+    public string $city;
+    public string $address;
+    public string $zipcode;
+    public string $createdAt;
+    public string $updatedAt;
+    public string $deletedAt;
+
+    private array $data = [];
+
     public function __construct(int $idx)
     {
         parent::__construct(POSTS, $idx);
+        $this->init();
     }
+    private function init() {
+        $p = $this->get();
+        if ( ! $p ) return;
+        $this->data = $p;
+
+
+        $this->rootIdx = $p[ROOT_IDX];
+        $this->parentIdx = $p[PARENT_IDX];
+        $this->categoryIdx = $p[CATEGORY_IDX];
+        $this->userIdx = $p[USER_IDX];
+        $this->title = $p[TITLE];
+        $this->path = $p['path'];
+        $this->content = $p[CONTENT];
+        $this->url = $p['url'];
+        $this->y = $p['Y'];
+        $this->n = $p['N'];
+        $this->countryCode = $p['countryCode'];
+        $this->province = $p['province'];
+        $this->city = $p['city'];
+        $this->address = $p['address'];
+        $this->zipcode = $p['zipcode'];
+        $this->createdAt = $p[CREATED_AT];
+        $this->updatedAt = $p[UPDATED_AT];
+        $this->deletedAt = $p[DELETED_AT];
+    }
+    /**
+     * 필드를 가져오는 magic getter
+     *
+     * posts 테이블과 meta 테이블에서 데이터를 가져오고, 레코드가 없으면 null 를 리턴한다.
+     * @attention 주의 할 것은,
+     *  1. 객체 초기화를 할 때, init() 함수에서
+     *  2. posts 테이블의 필드는 멤버 변수로 설정하고,
+     *  3. 그리고 posts 테이블과 meta 테이블의 모든 값은 $data 에 저장한다.
+     *  4. magic getter 로 값을 읽을 때, 새로 DB 에서 가져오는 것이 아니라, (멤버 변수로 설정되지 않았다면, 즉, meta 의 경우,) $data 에서 가져온다.
+     *     (참고로, 멤버 변수는 magic getter 호출에 사용되지 않는다.)
+     *  5 $this->update() 를 하면, 다시 init() 을 호출 한다.
+     *
+     *
+     * @param $name
+     * @return mixed
+     *
+     * @example
+     *  $post->update(['eat' => 'apple pie']);
+     *  isTrue($post->eat == 'apple pie', 'Must eat apple pie');
+     */
+    public function __get($name) {
+        $data = $this->data;
+        if ( $data && isset($data[$name]) ) return $data[$name];
+        else return null;
+    }
+
 
     /**
      * @param array $in
@@ -89,6 +161,7 @@ class Post extends Entity {
      *
      * @param array $in
      * @return array|string
+     * - `post()->get()` 에 대한 결과를 리턴한다. 즉, url 등의 값이 들어가 있다.
      */
     public function update(array $in): array|string {
         if ( notLoggedIn() ) return e()->not_logged_in;
@@ -98,7 +171,10 @@ class Post extends Entity {
 
 
         //
-        return parent::update($in);
+        $up = parent::update($in);
+        $this->init();
+        return $this->get();
+//        return post($up[IDX])->get();
     }
 
 
@@ -176,6 +252,25 @@ class Post extends Entity {
         return $rets;
     }
 
+    /**
+     * 최신 글을 추출 할 때 유용하다. 글만 추출. 코멘트는 추출하지 않음.
+     * @param string|null $categoryId
+     * @param int $page
+     * @param int $limit
+     * @return mixed
+     * @throws Exception
+     *
+     * @example
+     *  $posts = post()->latest();
+     */
+    public function latest(string $categoryId=null, int $page=1, int $limit=10) {
+        return $this->search(
+            where: $categoryId ? "parentIdx=0 AND categoryId=<$categoryId>" : "parentIdx=0",
+            page: $page,
+            limit: $limit,
+        );
+    }
+
     // Helper class of search()
     public function list(string $categoryId, int $page=1, int $limit=10) {
         return $this->search(where: "categoryId=<$categoryId> AND deletedAt=0", page: $page, limit: $limit, select: '*');
@@ -200,6 +295,7 @@ class Post extends Entity {
         global $__rets;
         $post = parent::get($field, $value, $select, $cache);
         if ( ! $post ) return [];
+        if ( isset($post['path']) ) $post['url'] = '//' . get_domain() . '/' . $post['path'];
         $post[COMMENTS] = [];
         if ( isset($post[IDX]) ) {
             $__rets = [];
@@ -268,6 +364,9 @@ class Post extends Entity {
         return $post;
     }
 
+    public function current(): array {
+        return $this->getFromPath();
+    }
 
     /**
      * Returns unique seo friendly url for the post.
@@ -355,9 +454,7 @@ class Post extends Entity {
         $N = voteHistory()->count(TAXONOMY . "='" . POSTS. "' AND " . ENTITY . "=" . $this->idx . " AND " . CHOICE . "='N'");
 
         $data = ['Y' => $Y, 'N' => $N];
-
         $record = entity(POSTS, $this->idx)->update($data);
-
 
         return $record;
     }

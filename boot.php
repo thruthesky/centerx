@@ -25,6 +25,7 @@ require_once ROOT_DIR . 'lib/shopping-mall-order.class.php';
 require_once ROOT_DIR . 'lib/meta.class.php';
 require_once ROOT_DIR . 'lib/translation.class.php';
 require_once ROOT_DIR . 'lib/firebase.php';
+require_once ROOT_DIR . 'lib/data.php';
 require_once ROOT_DIR . 'lib/defines.php';
 
 

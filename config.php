@@ -37,7 +37,7 @@ if ( file_exists($_path) ) {
 }
 
 
-define('APP_NAME', 'Center Backend');
+define('APP_NAME', 'CenterX');
 
 
 

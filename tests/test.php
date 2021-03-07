@@ -1,7 +1,6 @@
 <?php
 require_once '/root/boot.php';
 
-
 enableTesting();
 
 $testCount = 0;

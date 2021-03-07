@@ -45,7 +45,7 @@ class Comment extends Entity {
         /**
          * NEW COMMENT IS CREATED ==>  Send notification to forum comment subscriber
          */
-        onCommentCreateSendNotification($re);
+        onCommentCreateSendNotification($re); //
         return $re;
     }
 

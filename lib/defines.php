@@ -113,7 +113,9 @@ define('SHOPPING_MALL', 'shopping_mall');
  * MAX_FILE_SIZE - form file size limit
  * TOKEN - the push token
  */
-define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'w', 'cw', 'mode', 'MAX_FILE_SIZE', TOKEN]);
+define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'w', 'cw', 'mode', 'MAX_FILE_SIZE', TOKEN,
+    'returnTo', // to return where after form submit.
+]);
 
 
 define('ADMIN_SETTINGS', 1);

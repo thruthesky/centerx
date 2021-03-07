@@ -62,7 +62,38 @@
   단, 옵션으로 user()->by(email, returnFormat: ARRAY_A) 와 같이 배열로 받을 수 있도록 한다.
   Entity 클래스가 하는 일이 기본적인 CRUD 이다. 그래서 Entity 클래스의 대부분의 메소드는 현재 instance 를 리턴하지 않는다.
   
+## 다음 버전
+
+- `next` branch 를 만들 것.
   
+- 모든 것을 객체로 사용.
+  create() 엮시 생성한 결과를 리턴한다.
+  예를 들면, post()->create()->url 와 같이 할 수 있도록 한다.
+  
+- getter/setter
+  PHP getter 와 setter 는 값을 private 으로 저장하고, getVarname(), setVarname() 으로 하는 것이 getter/setter 이다.
+  반드시 이렇게 사용한다.
+  
+- magic getter
+  post(...) 와 같이 생성자를 호출 할 때, 기본 멤버 변수 및 DB 레코드들을 모두 magic getter 로 사용 할 수 있도록 한다.
+  magic setter 는 사용하지 않는다.
+  
+```php
+class T {
+    private $a;
+    private $recordAndMeta = [];
+    function getA() { return $this->a; } // getter
+    function setA($v) { $this->a = $v; } // setter
+    function __get($name) { /* ... 오직 $recordAndMeta 의 값만 리턴한다. */ }
+    function __set($name, $value) { /* 오직 $recordAndMeta 의 값만 업데이트한다. */ }
+}
+```
+
+- magic getter/setter 가 아닌 일반 setter 의 경우, 객체를 리턴한다.
+
+- 반드시, 결과가 scalar(숫자, 문자열, 불린)가 아닌 경우, 모든 리턴은 객체로 한다. 그래서,
+  `user()->create()->update(...)->setPhoneNo()->name` 와 같이 쓸 수 있도록 한다.
+
 # Primary Conception
 
 - It does not use `__get()`, `__set()` magic methods to avoid ambiguety. Instead, use
@@ -722,6 +753,15 @@ if ( modeCreate() ) {
 ```
 
 
+## FORM
+
+- FORM 은 가능한 post method 로 전송한다.
+  
+- 글 작성과 같은 데이터 생성 페이지는 `<input type="hidden" name="p" value="forum.comment.edit.submit">` 처럼 `p` 값의 끝을 `.sumit` 으로 한다.
+  그러면, 테마를 실행하지 않고, 바로 그 스크립트를 실행한다. 즉, 화면에 번쩍임이 사라지게 된다.
+  
+- 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="returnTo" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
+
 
 # Vue.js 3
 
@@ -749,6 +789,15 @@ if ( modeCreate() ) {
 ```
 
 
+# Markdown
+
+```php
+<?php
+$md = file_get_contents(theme()->folder . 'README.md');
+include_once ROOT_DIR . 'etc/markdown/markdown.php';
+echo Markdown::render ($md);
+?>
+```
 
 # Unit Testing
 

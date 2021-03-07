@@ -169,6 +169,7 @@ d($user);
         /// 처음 로그인 또는 자동 로그인이 아닌 경우,
         $user['email'] = PASS_LOGIN_MOBILE_PREFIX . "$user[phoneNo]@passlogin.com";
         $user['password'] = md5(LOGIN_PASSWORD_SALT . PASS_LOGIN_CLIENT_ID . $user['phoneNo']);
+        $user['provider'] = 'passlogin';
         d($user);
         $profile = user()->loginOrRegister($user);
     } else {

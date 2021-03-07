@@ -7,36 +7,90 @@
  */
 class User extends Entity {
 
-    public bool $loggedIn = false;
+    public string $email;
+    public string $name;
+    public string $nickname;
+    public string $point;
+    public string $phoneNo;
+    public string $gender;
+    public string $birthdate;
+    public string $countryCode;
+    public string $province;
+    public string $city;
+    public string $address;
+    public string $zipcode;
+    public string $createdAt;
+    public string $updatedAt;
+    public string $provider; // social login
+    public string $plid; // pass login
+    public string $ci; // pass login
+
+    private array $profile = [];
 
     public function __construct(int $idx)
     {
         parent::__construct(USERS, $idx);
-
-        // 로그인을 했는지 안했는지만 설정한다. 로그인을 시키거나 로그인 변수를 변경하지 않는다.
-        global $__login_user_profile;
-        if ( isset($__login_user_profile) && $__login_user_profile && isset($__login_user_profile[IDX]) ) {
-            $this->loggedIn = true;
-        }
+        $this->init();
     }
 
+    private function init() {
+        $u = $this->profile();
+        if ( isError($u) || empty($u) ) return;
+
+        $this->profile = $u;
+
+
+        $this->email = $u[EMAIL];
+        $this->name = $u[NAME];
+        $this->nickname = $u[NICKNAME];
+        $this->point = $u['point'];
+        $this->phoneNo = $u['phoneNo'];
+        $this->gender = $u['gender'];
+        $this->birthdate = $u['birthdate'];
+        $this->countryCode = $u['countryCode'];
+        $this->province = $u['province'];
+        $this->city = $u['city'];
+        $this->address = $u['address'];
+        $this->zipcode = $u['zipcode'];
+
+        $this->createdAt = $u[CREATED_AT];
+        $this->updatedAt = $u[UPDATED_AT];
+
+        $this->provider = $u['provider'] ?? '';
+        $this->plid = $u['plid'] ?? '';
+        $this->ci = $u['ci'] ?? '';
+
+
+    }
 
     /**
-     * 사용자 필드를 가져오는 getter
+     * 사용자 필드를 가져오는 magic getter
      *
-     * 레코드가 없거나 값이 없으면 null 를 리턴한다.
-     * 권장되지는 않는데, defines 에 정의되지 않은 필드(레코드)를 가져 올 때, 사용 가능하다.
+     * users 테이블과 meta 테이블에서 데이터를 가져온고, 레코드가 없으면 null 를 리턴한다.
+     * @attention 주의 할 것은,
+     *  1. 객체 초기화를 할 때, init() 함수에서
+     *  2. users 테이블은 멤버 변수로 설정하고,
+     *  3. 그리고 users 테이블과 meta 테이블의 모든 값은 $profile 에 저장한다.
+     *  4. magic getter 로 값을 읽을 때, 새로 DB 에서 가져오는 것이 아니라, (멤버 변수로 설정되지 않았다면, 즉, meta 의 경우,) $profile 에서 가져온다.
+     *  5 $this->update() 를 하면, 다시 init() 을 호출 한다.
      *
      *
      * @param $name
      * @return mixed
      *
-     * 예)
+     * @example
      *  d( user(49)->password );
      *  d( user(49)->oooo === null ? 'is null' : 'is not null' );
+     *  $user = user($u[IDX]);
+     *  isTrue($u[EMAIL] == $user->email, "same email");
+     *  $updated = $user->update(['what' => 'blue']);
+     *  isTrue($user->v('what') == 'blue', 'should be blue. but ' . $user->v('color'));
+     *  isTrue($user->what == 'blue', 'should be blue. but ' . $user->what);
      */
     public function __get($name) {
-        return $this->data($name);
+        $u = $this->profile;
+        if ( $u && isset($u[$name]) ) return $u[$name];
+        else return null;
     }
 
     /**
@@ -103,23 +157,35 @@ class User extends Entity {
 
     public function loginOrRegister(array $in): array|string {
         $re = $this->login($in);
-        if ( isError($re) == false ) return $re;
-        else return $this->register($in);
+        if ( $re == e()->user_not_found_by_that_email ) {
+            return $this->register($in);
+        } else {
+            return $re;
+        }
+//        d($re);
+//        if ( isError($re) == false ) return $re;
+//        else return $this->register($in);
     }
 
     /**
-     * @attention User must be logged and the entity.idx must be set. Which means, it must be called with entity idx like below.
-     *   user(123)->update();
-     *   login()->update()
+     *
+     * @attention User may not be logged in. So, login check must be done before calling this method like in route.
+     *  But $this->idx must be set.
+     *
      *
      * @param array $in
      * @return array|string
      * - error_idx_not_set if current instance has not `idx`.
      * - profile on success.
+     *
+     * @example
+     *  user(123)->update();
+     *  login()->update()
      */
     public function update(array $in): array|string {
-        if ( notLoggedIn() ) return e()->not_logged_in;
+        if ( ! $this->idx ) return e()->idx_not_set;
         parent::update($in);
+        $this->init();
         return $this->profile();
     }
 
@@ -157,7 +223,8 @@ class User extends Entity {
 
         if ( ! checkPassword($in[PASSWORD], $profile[PASSWORD]) ) return e()->wrong_password;
 
-        // 메타 정보 업데이트
+        // 회원 정보 및 메타 정보 업데이트
+        unset($in[PASSWORD]);
         $this->update($in);
 
         $profile = $this->profile();
@@ -246,13 +313,17 @@ function user(int $idx=0): User
  *  d(login()->profile()); // Result. it will return user profile if the user has logged in or erorr.
  *
  * You may check if user had logged in before calling this method.
+ *
+ * @example
+ *  login('color', false); // returns color meta.
+ *  login()->color; // returns color meta also.
  */
 function login(string $field=null, bool $cache=true): User|int|string|array|null {
     global $__login_user_profile;
     if ( $field ) {             // Want to get only 1 field?
         if (loggedIn()) {       // Logged in?
             if ($cache) {       // Want cached value?
-                return $__login_user_profile[$field];
+                return $__login_user_profile[$field] ?? null;
             } else {            // Real value from database.
                 $profile = login()->profile(cache: false);
                 if ( isset($profile[$field]) ) { // Has field?

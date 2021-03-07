@@ -377,6 +377,7 @@ function getProfileFromSessionId(string|null $sessionId): mixed
 
 
 /**
+ * 로그인을 했는지 안했는지만 확인한다.
  * @return bool
  *
  * 예제)
@@ -384,7 +385,11 @@ function getProfileFromSessionId(string|null $sessionId): mixed
  *      d(login()->profile());
  */
 function loggedIn(): bool {
-    return login()->loggedIn;
+    global $__login_user_profile;
+    if ( isset($__login_user_profile) && $__login_user_profile && isset($__login_user_profile[IDX]) ) {
+        return true;
+    }
+    return false;
 }
 function notLoggedIn(): bool {
     return ! loggedIn();
@@ -418,9 +423,12 @@ function setUserAsLogin(int|array $profile): User {
 function setLogin(int|array $profile): User {
     return setUserAsLogin($profile);
 }
+function setLogout() {
+    global $__login_user_profile;
+    $__login_user_profile = [];
+}
 // Login any user. It could be root user. Use it only for test.
 function setLoginAny(): User {
-
     $users = user()->search(limit: 1);
     return setLogin($users[0][IDX]);
 }
@@ -433,6 +441,9 @@ function setLoginAny(): User {
  * @param string $field
  * @param bool $cache
  * @return mixed|null
+ *
+ * @example
+ *  my('color')
  */
 function my(string $field, bool $cache=true) {
     return login($field, $cache);
@@ -458,6 +469,9 @@ function debug_log($message, $data='') {
  * @param string $path
  * @param array $options
  * @param string $widgetId
+ *
+ * @example
+ *  include widget('post-latest/post-latest-default')
  */
 $__widget_options = null;
 function get_widget_options() {
@@ -1062,7 +1076,9 @@ function inHome() {
     $p = in('p');
     return empty($p);
 }
-function displayWarning($msg) {
+
+
+function displayWarning($msg): mixed {
     $root_domain = get_root_domain();
     echo <<<EOH
 <div style="padding: 1em; border-radius: 16px; background-color: #ffc9c9;">
@@ -1074,5 +1090,7 @@ function displayWarning($msg) {
 $msg
 </div>
 EOH;
+
+    return '';
 
 }

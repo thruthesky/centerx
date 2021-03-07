@@ -28,7 +28,7 @@
     ?>
 <table class="l-content" width="<?=L_CONTENT?>" cellpadding="0" cellspacing="0">
     <tr valign="top">
-        <td width="<?=L_LEFT?>"><section class="l-left bg-blue mh-1024px"><?php include theme()->file('left'); ?></section></td>
+        <td width="<?=L_LEFT?>"><section class="l-left mh-1024px"><?php include theme()->file('left'); ?></section></td>
         <td width="<?=L_CENTER?>"><section class="l-center <?=inHome() ? 'mx-3' : 'ml-3'?>"><?php include theme()->page(); ?></section></td>
         <?php if ( inHome() ) { ?>
             <td width="<?=L_RIGHT?>"><section class="l-right mh-1024px"><?php include theme()->file('right'); ?></section></td>

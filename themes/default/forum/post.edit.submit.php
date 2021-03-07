@@ -9,4 +9,13 @@ else {
 }
 
 if ( isError($post) ) jsBack($post);
-jsGo("/?p=forum.post.list&categoryId=" . in(CATEGORY_ID) );
+
+
+if ( in('returnTo') == 'post' ) {
+    jsGo($post['url']);
+} else {
+    jsGo("/?p=forum.post.list&categoryId=" . in(CATEGORY_ID) );
+}
+
+
+
