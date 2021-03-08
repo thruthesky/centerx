@@ -46,6 +46,8 @@
 - meta 에 int, string, double(float) 은 serialize/unserialize 하지 말 것. 그래서 바로 검색이 되도록 한다.
 
 - file upload error handling. https://www.php.net/manual/en/features.file-upload.errors.php
+- 파일에 taxonomy 와 entity 추가
+
 
 - search(): where 에 SQL Inject 검사를 하도록 한다.
   drop, select, replace, insert, update 와 같은 단어를 넣지 못한다.
@@ -57,42 +59,15 @@
 
 ## 점진적으로 해야 할 일.
 
+- 전체 속성을 magic getter 와 magic setter 로는 어렵다. 가급적, 각 클래스 별로 멤버 변수를 만들고 아니면, 각 클래스별로 magic getter/setter 를 두어서 사용한다.
+  예) 게시판, 사용자 클래스
+
 - CRUD 함수 (예: getXxx(), setXxx(), update(), create(), delete(), exists() 등등) 외에는 모두 현재 instance(객체)를 리턴할 것.
   그래서, user()->by(email)->exists() 와 같이 호출 할 수 있도록 할 것.
   단, 옵션으로 user()->by(email, returnFormat: ARRAY_A) 와 같이 배열로 받을 수 있도록 한다.
   Entity 클래스가 하는 일이 기본적인 CRUD 이다. 그래서 Entity 클래스의 대부분의 메소드는 현재 instance 를 리턴하지 않는다.
   
-## 다음 버전
 
-- `next` branch 를 만들 것.
-  
-- 모든 것을 객체로 사용.
-  create() 엮시 생성한 결과를 리턴한다.
-  예를 들면, post()->create()->url 와 같이 할 수 있도록 한다.
-  
-- getter/setter
-  PHP getter 와 setter 는 값을 private 으로 저장하고, getVarname(), setVarname() 으로 하는 것이 getter/setter 이다.
-  반드시 이렇게 사용한다.
-  
-- magic getter
-  post(...) 와 같이 생성자를 호출 할 때, 기본 멤버 변수 및 DB 레코드들을 모두 magic getter 로 사용 할 수 있도록 한다.
-  magic setter 는 사용하지 않는다.
-  
-```php
-class T {
-    private $a;
-    private $recordAndMeta = [];
-    function getA() { return $this->a; } // getter
-    function setA($v) { $this->a = $v; } // setter
-    function __get($name) { /* ... 오직 $recordAndMeta 의 값만 리턴한다. */ }
-    function __set($name, $value) { /* 오직 $recordAndMeta 의 값만 업데이트한다. */ }
-}
-```
-
-- magic getter/setter 가 아닌 일반 setter 의 경우, 객체를 리턴한다.
-
-- 반드시, 결과가 scalar(숫자, 문자열, 불린)가 아닌 경우, 모든 리턴은 객체로 한다. 그래서,
-  `user()->create()->update(...)->setPhoneNo()->name` 와 같이 쓸 수 있도록 한다.
 
 # Primary Conception
 
@@ -788,6 +763,180 @@ if ( modeCreate() ) {
 </script>
 ```
 
+
+
+# Hook System
+
+* entity CRUD 에 대해서, 훅을 발생시킨다.
+
+* 예를 들어, `posts_before_create` 이나 `posts_after_create` 훅은 posts enitty 생성 직전과 직후에 발생한다.
+  글/코멘트가 posts entity 이며, 쇼핑몰이나 기타 여러가지 기능을 posts entity 로 사용 할 수 있다.
+  이러한 모든 것들에 대해서 생성을 하고자 할 때, hook 을 통해서 원하는 작업을 할 수 있다. 만약, 작업이 올바르지 않으면 에러를 내서, entity 생성을 못하게 할 수도 있다.
+
+## Entity Create 훅
+
+- 대표적인 것으로 `posts_before_create` 와 `posts_after_create` 가 있다.
+  `posts_before_create` 훅 함수로 전달되는 값은 생성 직전의 record 와 전에 입력 값이다.
+  `posts_after_create` 훅 함수로 전달되는 값은 생선된 entity 값과 전에 입력 값이다.
+  
+
+```php
+hook()->add('posts_before_create', function($record, $in) {
+    debug_log("-------------- 1st hook of posts_before_create ");
+    if ( !isset($record[ROOT_IDX]) || empty($record[ROOT_IDX]) ) { // 글 작성
+        debug_log("글작성;", $record);
+    }
+    else if ( isset($record[ROOT_IDX]) && $record[ROOT_IDX] ) { // 코멘트 작성
+        if ( $record[ROOT_IDX] == $record[PARENT_IDX] ) { // 첫번째 depth 코멘트. 즉, 글의 첫번째 자식 글. 자손의 글이 아님.
+            debug_log("첫번째 depth 코멘트 작성;", $record);
+        } else { // 첫번째 depth 가 아닌 코멘트. 단계가 2단계 이하인 코멘트. 즉, 코멘트의 코멘트.
+            debug_log("코멘트의 코멘트 작성;", $record);
+        }
+    }
+    return 'error_reject_on_create'; // 에러를 리턴하면, 글 쓰기 중지.
+});
+
+hook()->add('posts_before_create', function($record, $in) {
+    debug_log("-------------- 두번째 훅: hook of posts_before_create", $in);
+});
+```
+
+
+* Hook 함수는 각 테마 별로 config.php 에서 정의하면 되고, hook 코드가 커지면 `[theme-name].hooks.php` 로 따로 모으면 된다.
+* 동일한 hook 이름에 여러개 훅을 지정 할 수 있다.
+* 훅 함수에는 변수를 얼마든지 마음데로 지정 할 수 있으며 모두 reference 로 전달된다.
+* `posts_before_create` 훅 함수가 에러 문자열을 리턴하면 다른 훅은 모두 실행이 안되고, 글/코멘트 생성이 중지된다.
+
+* 모든 훅 함수는 값을 리턴하거나 파라메타로 받은 레퍼런스 변수를 수정하는 것이 원칙이다.
+  * 가능한, 어떤 값을 화면으로 출력하지 않도록 해야하지만,
+  * 글 쓰기에서 권한이 없는 경우, 미리 체크를 해야하지만, 그렇지 못한 경우 훅에서 검사해서
+    Javascript 로 goBack() 하고 exit 할 수 있다.
+    이 처럼 꼭 필요한 경우에는 직접 HTML 출력을 한다.
+
+* 훅의 목적은 가능한 기본 코드를 재 사용하되, 원하는 기능 또는 UI/UX 로 적용하기 위한 것이다.
+  * 예를 들면, 게시판 목록의 기본 widget 을 사용하되, 사용자 화면에 보이거나, 알림 등의 재 활용 할 수 있도록 하는 것이다.
+
+
+
+## 훅 목록과 설명
+
+### 전체 훅 목록
+
+* html_head
+
+* html_title
+
+* site_name - HTML 에 사이트 이름을 출력 할 때
+
+* `favicon` - 파비콘을 변경 할 수 있는 훅
+
+예제) 훅에서 값을 리턴하면 그 값을 경로로 사용. 아니면, favicon.ico 를 사용.
+
+```html
+<link rel="shortcut icon" href="<?= ($_ = run_hook('favicon')) ? $_ : 'favicon.ico'?>">
+```
+
+* posts_before_search
+  글 가져오는 옵션을 변경 할 수 있는 훅. 예) 국가별 카테고리에서, 카테고리 지정이 없으면, 국가 카테고리로 기본 지정한다.
+
+* posts_after_search
+  
+* forum_list_header_top - 게시판 목록 최 상단에 표시
+* forum_list_header_bottom - 게시판 목록의 헤더의 맨 아래 부분에 표시.
+
+* forum_category - 포럼의 전체 영역(카테고리 목록이나 글 쓰기 등)에서 해당 게시판의 category 정보를 변경 할 수 있다.
+  이를 통해 cat_name 등을 변경 하여 게시판 이름을 다르게 출력 할 수 있다.
+
+* `widgets/posts/latest option` - 최근 글 위젯에서 글을 가져오기 전에 옵션을 수정 할 수 있는 훅
+  `widgets/**/**` 에 기본적으로 모든 위젯의 훅이 들어있도록 한다.
+
+
+* `widget/config.category_name categories`
+  다이나믹 위젯 설정에서 카테고리를 재 지정 할 수 있다.
+  전달되는 변수는 get_categories() 의 결과인데,
+  변경을 하려면 배열에 category term object 를 넣어주거나
+  [stdClass(slug ='', cat_name=>'')] 과 같이 slug 와 cat_name 을 가지는 stdClass 를 넣어줘도 된다.
+
+  특히, 교민 포털 카테고리에서는 게시판 카테고리가 존재하지 않을 수도 있으므로, stdClass 로 만들어 넣어줘야한다.
+
+* `widget/config.category_name default_option`
+  카테고리 선택에서, 선택된 값이 없을 경우, 기본적으로 보여 줄 옵션이다. 보통은 빈 값에, "카테고리 선택" 을 표시하면 된다.
+  하지만, 카페에서는 카테고리 선택이 되지 않은 경우, 국가별 카테고리로 검색을 제한해야 한다.
+
+
+### 게시판 설정 훅
+
+
+### 훅으로 HTML TITLE 변경하기
+
+* 먼저 아래와 같이 HTML 페이지의 제목에서, `html_title` 훅을 통해서, 리턴 값이 있으면 그 리턴 문자열을 HTML TITLE 로 사용하게 한다.
+
+````html
+<TITLE><?= ($_ = hook()->run('html_title'))? $_ : ($settings['site_name'] ?? '') ?></TITLE>
+````
+
+* 그리고 `theme.functions.php` 아래와 같이 적절한 값을 리턴하면 된다.
+
+````php
+hook()->add('html_title', function() {
+    if ( is_in_cafe() ) {
+        $co = cafe_option();
+        return $co['name'];
+    }
+});
+````
+
+### 훅으로 CSS 지정하기
+
+* CSS 를 훅으로 지정해야하는 이유 중 하나는,
+  * 페이지 스크립트에 `<style>` 을 추가하면 맨 HTML 에서 맨 밑에 추가되어 body background 를 지정하는 경우,
+    먼저 추가된 css 의 body background 가 보이기 때문에 화면이 번쩍인다.
+    그래서 아래와 같이 css 을 head 에 추가해서, 먼저 적용이 되도록 할 수 있다.
+
+```php
+<?php
+add_hook('html_head', function() {
+    return <<<EOS
+<style>
+    body {
+        background-color: #5c705f !important;
+        color: white !important;
+    }
+    header {
+        margin-top: 1em;
+        border-radius: 25px;
+        background-color: white;
+        color: black;
+    }
+    header a {
+        display: inline-block;
+        padding: 1em;
+    }
+    footer {
+        margin-top: 1em;
+        padding: 1em;
+        border-radius: 25px;
+        background-color: white;
+        color: black;
+    }
+    .l-sidebar {
+        margin-right: 1em;
+        padding: 1em;
+        border-radius: 25px;
+        background-color: white;
+        color: black;
+    }
+    .l-body-middle {
+        border-radius: 25px;
+        min-height: 1024px;
+        background-color: white;
+        color: black;
+    }
+</style>
+EOS;
+
+});
+```
 
 # Markdown
 

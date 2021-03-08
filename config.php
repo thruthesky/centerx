@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * 디버그를 기록할 로그 파일 경로
+ */
+define('DEBUG_LOG_FILE_PATH', ROOT_DIR . 'var/logs/debug.log');
+
+
 define('DOMAIN_THEMES', [
     'philov' => 'sonub',
     'tellvi' => 'sonub',
@@ -66,11 +72,6 @@ if ( !defined('COOKIE_DOMAIN') ) {
     define('COOKIE_DOMAIN', '.' . get_root_domain());
 }
 
-
-/**
- * 디버그를 기록할 로그 파일 경로
- */
-define('DEBUG_LOG_FILE_PATH', ROOT_DIR . 'var/logs/debug.log');
 
 
 

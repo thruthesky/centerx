@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- 생성 시간: 21-03-08 01:09
+-- 생성 시간: 21-03-08 06:43
 -- 서버 버전: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP 버전: 8.0.3
 

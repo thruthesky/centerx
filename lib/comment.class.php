@@ -25,8 +25,6 @@ class Comment extends Entity {
         $re = parent::create($in);
         if ( isError($re) ) return $re;
 
-
-
         $category = category($re[CATEGORY_IDX]);
 
         // 제한에 걸렸으면, 에러 리턴.
@@ -129,6 +127,10 @@ class Comment extends Entity {
          */
         if ( isset($comment[FILES]) ) {
             $comment[FILES] = files()->get($comment[FILES], select: 'idx,userIdx,path,name,size');
+        }
+
+        if ( $comment[USER_IDX] ) {
+            $comment['user'] = user($comment[USER_IDX])->postProfile();
         }
         return $comment;
     }

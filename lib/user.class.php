@@ -10,6 +10,7 @@ class User extends Entity {
     public string $email;
     public string $name;
     public string $nickname;
+    public string $photoIdx;
     public string $point;
     public string $phoneNo;
     public string $gender;
@@ -43,7 +44,8 @@ class User extends Entity {
 
         $this->email = $u[EMAIL];
         $this->name = $u[NAME];
-        $this->nickname = $u[NICKNAME]  ?? '';
+        $this->nickname = $u[NICKNAME] ?? '';
+        $this->photoIdx = $u['photoIdx'] ?? 0;
         $this->point = $u['point'];
         $this->phoneNo = $u['phoneNo'];
         $this->gender = $u['gender'];
@@ -206,6 +208,19 @@ class User extends Entity {
         $record[SESSION_ID] = getSessionId($record);
         if ( $unsetPassword ) unset($record[PASSWORD]);
         return $record;
+    }
+
+    /**
+     * 글/코멘트 용으로 전달할(보여줄) 간단한 프로필 정보를 리턴한다.
+     */
+    public function postProfile() {
+        return [
+            'idx' => $this->idx,
+            'name' => $this->name,
+            'nickname' => $this->nickname,
+            'gender' => $this->gender,
+            'photoIdx' => $this->photoIdx,
+        ];
     }
 
     /**

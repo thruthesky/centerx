@@ -112,6 +112,11 @@ class Entity {
         $record[UPDATED_AT] = time();
 
 
+        // Entity 생성 전 훅
+        $re = hook()->run("{$this->taxonomy}_before_create", $record, $in);
+        debug_log("훅 리턴 값:", $re);
+        if ( isError($re) ) return $re;
+
         $idx = db()->insert( $this->getTable(), $record );
 
 //        debug_log("IDX", $idx);
@@ -121,9 +126,15 @@ class Entity {
         $this->createMetas($idx, $this->getMetaFields($in));
 
 
+        $created = self::get(IDX, $idx);
+
+        // Entity 생성 후 훅
+        $re = hook()->run("{$this->taxonomy}_after_create", $created, $in);
+        if ( isError($re) ) return $re;
+
 
         $this->__entities = [];
-        return self::get(IDX, $idx);
+        return $created;
     }
 
 

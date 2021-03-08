@@ -93,6 +93,8 @@ class Theme
                 $arr = explode('.', $uri);
                 if ( count($arr) >= 2 && count($arr) <= 4 ) { // 점(.) 이 1개에서 3개까지이면,
                     $p = $uri;
+                } else {
+                    $p = 'home'; // `/?` 으로 시작하는데, 점이 없으면 그냥 홈
                 }
             } else {                                // `/?` 으로 시작하지 않고,
                 if ( $uri == '/' ) $p = 'home';     // uri 가 `/` 만 있으면, home
@@ -107,7 +109,6 @@ class Theme
      */
     private function parseDomainTheme(): void
     {
-
         $_host = get_host_name();
         $this->folderName = 'default';
         foreach (DOMAIN_THEMES as $_domain => $_theme) {

@@ -13,12 +13,17 @@ define('PASS_LOGIN_CALLBACK_URL', isLocalhost() ?
 
 
 
+include 'itsuda.hooks.php';
+
+
 
 
 
 routeAdd('app.version', function($in) {
     return ['version' => 'app version 12345 !!!'];
 });
+
+
 
 
 
