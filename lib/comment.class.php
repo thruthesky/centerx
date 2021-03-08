@@ -20,8 +20,10 @@ class Comment extends Entity {
         /**
          * @todo when categoryIdx of post changes, categoryIdx of children must be changes.
          */
-        $root = post($in[ROOT_IDX])->get(select: CATEGORY_IDX);
-        $in[CATEGORY_IDX] = $root[CATEGORY_IDX];
+        $categoryIdx = postCategoryIdx($in[ROOT_IDX]); // post($in[ROOT_IDX])->get(select: CATEGORY_IDX);
+
+
+        $in[CATEGORY_IDX] = $categoryIdx;
         $re = parent::create($in);
         if ( isError($re) ) return $re;
 
@@ -128,6 +130,7 @@ class Comment extends Entity {
         if ( isset($comment[FILES]) ) {
             $comment[FILES] = files()->get($comment[FILES], select: 'idx,userIdx,path,name,size');
         }
+
 
         if ( $comment[USER_IDX] ) {
             $comment['user'] = user($comment[USER_IDX])->postProfile();

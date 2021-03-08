@@ -22,16 +22,20 @@ class Post extends Entity {
 
     private array $data = [];
 
+    /// 글 초기화 할 때, 입력된 idx 는 현재 글에 대한 정보만 초기화 한다. 코멘트나 파일 정보는 초기화하지 않는다.
+    /// new Post(123) 과 같이 자주 호출하는데, 이 때 매번, 코멘트와 파일 정보를 초기화하면, DB 접속을 너무 많이 하기 때문이다.
+    private bool $inInit = false;
+
     public function __construct(int $idx)
     {
         parent::__construct(POSTS, $idx);
         $this->init();
     }
     private function init() {
+        $this->inInit = true;
         $p = $this->get();
         if ( ! $p ) return;
         $this->data = $p;
-
 
         $this->rootIdx = $p[ROOT_IDX];
         $this->parentIdx = $p[PARENT_IDX];
@@ -51,6 +55,9 @@ class Post extends Entity {
         $this->createdAt = $p[CREATED_AT];
         $this->updatedAt = $p[UPDATED_AT];
         $this->deletedAt = $p[DELETED_AT];
+
+
+        $this->inInit = false;
     }
     /**
      * 필드를 가져오는 magic getter
@@ -296,24 +303,28 @@ class Post extends Entity {
         $post = parent::get($field, $value, $select, $cache);
         if ( ! $post ) return [];
         if ( isset($post['path']) ) $post['url'] = '//' . get_domain() . '/' . $post['path'];
-        $post[COMMENTS] = [];
-        if ( isset($post[IDX]) ) {
-            $__rets = [];
-            $comments = $this->getComments($post[IDX]);
-            if ( $comments ) {
-                foreach($comments as $comment) {
-                    $got = comment($comment[IDX])->get();
-                    if ($got[DELETED_AT] != '0') continue;
-                    $got[DEPTH] = $comment[DEPTH];
-                    $post[COMMENTS][] = $got;
+
+        /// 글 초기화 하는 과정에서는 comments, files 데이터를 가져오지 않는다.
+        if ( $this->inInit == false ) {
+            $post[COMMENTS] = [];
+            if ( isset($post[IDX]) ) {
+                $__rets = [];
+                $comments = $this->getComments($post[IDX]);
+                if ( $comments ) {
+                    foreach($comments as $comment) {
+                        $got = comment($comment[IDX])->get();
+                        if ($got[DELETED_AT] != '0') continue;
+                        $got[DEPTH] = $comment[DEPTH];
+                        $post[COMMENTS][] = $got;
+                    }
                 }
             }
-        }
-        /**
-         * Get files only if $select includes 'files' field.
-         */
-        if ( isset($post[FILES]) ) {
-            $post[FILES] = files()->get($post[FILES], select: 'idx,userIdx,path,name,size');
+            /**
+             * Get files only if $select includes 'files' field.
+             */
+            if ( isset($post[FILES]) ) {
+                $post[FILES] = files()->get($post[FILES], select: 'idx,userIdx,path,name,size');
+            }
         }
         return $post;
     }
@@ -483,4 +494,9 @@ function post(int $idx=0): Post
 }
 
 
+
+function postCategoryIdx(int $idx) {
+    $post = entity(POSTS, $idx)->get();
+    return $post[CATEGORY_IDX];
+}
 

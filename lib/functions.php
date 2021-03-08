@@ -934,6 +934,7 @@ function parseDocBlock($str) {
  *
  * @return array - array of user ids
  *
+ * @attention  It will recursively read database records. Make it minimal.
  *
  */
 function getCommentAncestors(int $idx): array
@@ -941,7 +942,7 @@ function getCommentAncestors(int $idx): array
     $comment = comment($idx)->get();
     $asc     = [];
     while (true) {
-        $comment = comment($comment[PARENT_IDX])->get();
+        $comment = comment($comment[PARENT_IDX])->get('idx, rootIdx, parentIdx, userIdx');
         if ( empty($comment) ) break;
         if ($comment[USER_IDX] == my(IDX)) continue;
         $asc[] = $comment[USER_IDX];
