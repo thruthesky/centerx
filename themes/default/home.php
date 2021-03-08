@@ -37,15 +37,6 @@
 
 <?php
 
-d(ln('code', 'default value'));
-
-
-
-d($_COOKIE);
-
-
-
-d( login()->profile() );
 
 
 

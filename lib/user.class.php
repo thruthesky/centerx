@@ -39,7 +39,7 @@ class User extends Entity {
 
         $this->profile = $u;
 
-d($u);
+
 
         $this->email = $u[EMAIL];
         $this->name = $u[NAME];
