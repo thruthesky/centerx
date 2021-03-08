@@ -17,6 +17,10 @@ class PostRoute {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
         return post($in[IDX])->get();
     }
+    public function vote($in) {
+        if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
+        return post($in[IDX])->vote($in[CHOICE]);
+    }
     public function search($in) {
         return post()->search(
             where: $in['where'] ?? '1',
