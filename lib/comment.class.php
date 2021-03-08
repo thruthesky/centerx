@@ -78,6 +78,7 @@ class Comment extends Entity {
 
 
         $updated = parent::update($in);
+        if ( isError($updated) ) return $updated;
         return comment($updated[IDX])->get();
     }
 
