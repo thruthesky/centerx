@@ -39,10 +39,11 @@ class User extends Entity {
 
         $this->profile = $u;
 
+d($u);
 
         $this->email = $u[EMAIL];
         $this->name = $u[NAME];
-        $this->nickname = $u[NICKNAME];
+        $this->nickname = $u[NICKNAME]  ?? '';
         $this->point = $u['point'];
         $this->phoneNo = $u['phoneNo'];
         $this->gender = $u['gender'];
