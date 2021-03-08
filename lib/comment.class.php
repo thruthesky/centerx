@@ -78,6 +78,7 @@ class Comment extends Entity {
 
 
         $updated = parent::update($in);
+        if ( isError($updated) ) return $updated;
         return comment($updated[IDX])->get();
     }
 
@@ -124,10 +125,11 @@ class Comment extends Entity {
     {
         $comment = parent::get($field, $value, $select, $cache);
 
-/// @todo why is it getting empty comment? why empty comment happens?
-if ( empty($comment) ) {
-	return [];
-}
+        /// @todo why is it getting empty comment? why empty comment happens?
+        if ( empty($comment) ) {
+            return [];
+        }
+
         /**
          * Get files only if $select includes 'files' field.
          */
