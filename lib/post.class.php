@@ -325,6 +325,10 @@ class Post extends Entity {
             if ( isset($post[FILES]) ) {
                 $post[FILES] = files()->get($post[FILES], select: 'idx,userIdx,path,name,size');
             }
+
+            if ( $post[USER_IDX] ) {
+                $post['user'] = user($post[USER_IDX])->postProfile();
+            }
         }
         return $post;
     }
