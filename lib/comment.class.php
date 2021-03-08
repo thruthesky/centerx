@@ -77,8 +77,8 @@ class Comment extends Entity {
         if ( $this->isMine() == false ) return e()->not_your_comment;
 
 
-        //
-        return parent::update($in);
+        $updated = parent::update($in);
+        return comment($updated[IDX])->get();
     }
 
 
