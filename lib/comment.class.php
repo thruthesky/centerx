@@ -23,6 +23,8 @@ class Comment extends Entity {
         $root = post($in[ROOT_IDX])->get(select: CATEGORY_IDX);
         $in[CATEGORY_IDX] = $root[CATEGORY_IDX];
         $re = parent::create($in);
+        if ( isError($re) ) return $re;
+
 
 
         $category = category($re[CATEGORY_IDX]);
@@ -46,7 +48,8 @@ class Comment extends Entity {
          * NEW COMMENT IS CREATED ==>  Send notification to forum comment subscriber
          */
         onCommentCreateSendNotification($re); //
-        return $re;
+
+        return comment($re[IDX])->get();
     }
 
     /**
