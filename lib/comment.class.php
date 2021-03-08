@@ -114,7 +114,7 @@ class Comment extends Entity {
      * @param string $select
      * @param bool $cache
      * @return mixed
-     * - Empty array([]) if post not exists.
+     * - Empty array([]) if comment not exists.
      *
      *
      * @todo add user(author) information
@@ -124,6 +124,10 @@ class Comment extends Entity {
     {
         $comment = parent::get($field, $value, $select, $cache);
 
+/// @todo why is it getting empty comment? why empty comment happens?
+if ( empty($comment) ) {
+	return [];
+}
         /**
          * Get files only if $select includes 'files' field.
          */
@@ -135,6 +139,7 @@ class Comment extends Entity {
         if ( $comment[USER_IDX] ) {
             $comment['user'] = user($comment[USER_IDX])->postProfile();
         }
+
         return $comment;
     }
 

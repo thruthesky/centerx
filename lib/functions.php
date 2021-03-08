@@ -1,6 +1,5 @@
 <?php
 
-use JetBrains\PhpStorm\NoReturn;
 
 
 /**
@@ -942,7 +941,7 @@ function getCommentAncestors(int $idx): array
     $comment = comment($idx)->get();
     $asc     = [];
     while (true) {
-        $comment = comment($comment[PARENT_IDX])->get('idx, rootIdx, parentIdx, userIdx');
+        $comment = comment($comment[PARENT_IDX])->get(select: 'idx, rootIdx, parentIdx, userIdx');
         if ( empty($comment) ) break;
         if ($comment[USER_IDX] == my(IDX)) continue;
         $asc[] = $comment[USER_IDX];
