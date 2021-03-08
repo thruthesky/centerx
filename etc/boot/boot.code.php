@@ -55,6 +55,7 @@ $installedAt = config()->get('installation check');
 
 
 debug_log('-- start -- boot.code.php: ', date('r'));
+debug_log('in();', in());
 
 if ( API_CALL == false ) {
     setUserAsLogin(getProfileFromCookieSessionId());
