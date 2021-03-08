@@ -12,7 +12,6 @@ hook()->add('posts_before_create', function($record, $in) {
             debug_log("코멘트의 코멘트 작성;", $record);
         }
     }
-    return 'error_reject_on_create'; // 에러를 리턴하면, 글 쓰기 중지.
 });
 
 hook()->add('posts_before_create', function($record, $in) {
