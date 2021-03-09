@@ -57,17 +57,31 @@
   where: "a='apple' or (b='banana' and meta.c='cherry') or meta.d=1"
   SQL query 에 `meta.` 이라는 것이 들어가면 무조건 meta 검색으로 인식한다. 따라서 검색 조건에 `meta.` 라는 단어가 들어가면 안된다.
 
-## 점진적으로 해야 할 일.
+## 점진적으로 해야 할 일
 
-- 전체 속성을 magic getter 와 magic setter 로는 어렵다. 가급적, 각 클래스 별로 멤버 변수를 만들고 아니면, 각 클래스별로 magic getter/setter 를 두어서 사용한다.
-  예) 게시판, 사용자 클래스
+- `next` branch 에서 작업한다.
 
-- CRUD 함수 (예: getXxx(), setXxx(), update(), create(), delete(), exists() 등등) 외에는 모두 현재 instance(객체)를 리턴할 것.
-  그래서, user()->by(email)->exists() 와 같이 호출 할 수 있도록 할 것.
-  단, 옵션으로 user()->by(email, returnFormat: ARRAY_A) 와 같이 배열로 받을 수 있도록 한다.
-  Entity 클래스가 하는 일이 기본적인 CRUD 이다. 그래서 Entity 클래스의 대부분의 메소드는 현재 instance 를 리턴하지 않는다.
+- 100% getter/setter 를 사용한다.
+  변수 x 가 있다면, 아래와 같이 getter/setter 를 사용한다.
+```php
+    private int $x;
+    public function getX() { ... }
+    public function setX() { ... }
+```
+
+- 데이터베이스 레코드에 대해서는 magic getter/setter 를 사용한다.
+
+- instantiate 를 할 때, constructor 에서 해당 entity 레코드와 meta 에 대한 모든 값들을 불러와 메모리에 저장한다.
+  즉, entity()->get() 에서 더 이상 메모리 캐시를 할 필요 없다.
+  이 때, 자식(코멘트) entity 는 로드하지 않는다.
+
+- 각종 entity() 클래스와 게시판에서 get() 함수를 없애고, read() 로 변경한다.
+
+- 글을 클라이언트로 보낼 때에는 post()->create(...)->response() 를 할 수 있도록 한다.
+  이 response() 함수에서 코멘트 정보를 다 읽고 파싱한다.
   
-
+- 참/거짓, 숫자, 문자열을 리턴하는 함수 외에는 모두 객체를 리턴한다.
+  단, 옵션으로 user()->by(email, returnFormat: ARRAY_A) 와 같이 배열로 받을 수 있도록 한다.
 
 # Primary Conception
 

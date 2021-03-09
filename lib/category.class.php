@@ -16,6 +16,22 @@ class Category extends Entity {
         return parent::create($in);
     }
 
+    public function get(string $field = null, mixed $value = null, string $select = '*', bool $cache = true): mixed
+    {
+        $cate = parent::get($field, $value, $select, $cache);
+
+        $subs = $cate['subcategories'];
+        $cate['subcategories'] = [];
+        if ( $subs ) {
+            $subs = explode(",", $subs);
+            $cate['subcategories'] = [];
+            foreach( $subs as $sub ) {
+                $cate['subcategories'][] = trim($sub);
+            }
+        }
+        return $cate;
+    }
+
     /**
      * @attention To update, entity.idx must be set properly.
      *

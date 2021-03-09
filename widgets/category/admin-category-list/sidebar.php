@@ -2,7 +2,7 @@
     $cat = category(in(ID))->get(cache: false);
 
 ?>
-<form>
+<form action="/" method="post">
     <input type="hidden" name="p" value="admin.index">
     <input type="hidden" name="w" value="category/admin-category-list">
     <input type="hidden" name="mode" value="update">
@@ -34,6 +34,27 @@
                 <input name="<?=DESCRIPTION?>" value="<?= $cat[DESCRIPTION] ?>">
             </td>
         </tr>
+
+
+        <tr class="table-dark">
+            <td colspan="2">카테고리 설정</td>
+        </tr>
+        <tr class="table-light">
+            <td colspan="2">
+                <div class="hint">
+                    콤마로 여러개의 카테고리를 입력할 수 있습니다.
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td><?=ln('Description', '설명')?></td>
+            <td>
+                <input name="subcategories" value="<?= implode(',', $cat['subcategories']) ?>">
+            </td>
+        </tr>
+
+
 
         <tr class="table-dark">
             <td colspan="2">포인트 설정</td>
