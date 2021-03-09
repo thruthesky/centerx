@@ -26,4 +26,9 @@ class CommentRoute {
             select: $in['select'] ?? '*',
         );
     }
+
+    public function vote($in) {
+        if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
+        return postTaxonomy($in[IDX])->vote($in[CHOICE]);
+    }
 }

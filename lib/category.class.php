@@ -40,6 +40,8 @@ class Category extends Entity {
 /**
  * @param int|string $idx
  * @return Category
+ *
+ * @attention admin permission check must be done before calling this method.
  */
 function category(int|string $idx = 0) {
     if ( $idx && !is_numeric($idx) ) {
