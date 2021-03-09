@@ -30,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'dc70358366b27b19ebc7cafa5bade25590e1fb1e',
+    'reference' => '46e50b7a8c02f854579b212bb1fae458f5d94ae0',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'dc70358366b27b19ebc7cafa5bade25590e1fb1e',
+      'reference' => '46e50b7a8c02f854579b212bb1fae458f5d94ae0',
     ),
     'doctrine/instantiator' => 
     array (
@@ -145,12 +145,12 @@ private static $installed = array (
     ),
     'guzzlehttp/promises' => 
     array (
-      'pretty_version' => '1.4.0',
-      'version' => '1.4.0.0',
+      'pretty_version' => '1.4.1',
+      'version' => '1.4.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '60d379c243457e073cff02bc323a2a86cb355631',
+      'reference' => '8e7d04f1f6450fef59366c399cfad4b9383aa30d',
     ),
     'guzzlehttp/psr7' => 
     array (
@@ -172,12 +172,12 @@ private static $installed = array (
     ),
     'kreait/firebase-php' => 
     array (
-      'pretty_version' => '5.15.0',
-      'version' => '5.15.0.0',
+      'pretty_version' => '5.16.0',
+      'version' => '5.16.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2732040f6a28b9964d3629743d694afd84d3030c',
+      'reference' => 'f94113dc4c6f2a4b7226aba973900c7f4346975b',
     ),
     'kreait/firebase-tokens' => 
     array (

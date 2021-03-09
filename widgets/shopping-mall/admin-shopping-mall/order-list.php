@@ -67,7 +67,7 @@ $orders = shoppingMallOrder()->search(limit: 1000);
                 foreach( $info['items'] as $item ) {
                     ?>
                     <div class="bg-lighter p-3  border-radius-md mb-2">
-                        <div>번호: <?=$item['postId']?></div>
+                        <div>번호: <?=$item['postIdx']?></div>
                         <div>제목: <?=$item['title']?></div>
                         <?php if ( $item['optionItemPrice'] ) { ?>
                             <?php foreach( $item['selectedOptions'] as $name => $option ) {

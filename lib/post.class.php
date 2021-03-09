@@ -284,7 +284,7 @@ class Post extends PostTaxonomy {
 
     // Helper class of search()
     public function list(string $categoryId, int $page=1, int $limit=10) {
-        return $this->search(where: "categoryId=<$categoryId> AND deletedAt=0", page: $page, limit: $limit, select: '*');
+        return $this->search(where: "categoryId=<$categoryId> AND parentIdx=0 AND deletedAt=0", page: $page, limit: $limit, select: '*');
     }
 
 
