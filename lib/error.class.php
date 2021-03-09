@@ -79,6 +79,8 @@ class E {
     public string $order_not_exists = 'error_order_not_exists';
     public string $not_your_order = 'error_not_your_order';
     public string $order_confirmed = 'error_order_confirmed';
+    public string $order_not_confirmed = 'error_order_not_confirmed';
+    public string $already_reviewed = 'error_already_reviewed';
 
     public string $empty_code = 'error_empty_code';
     public string $code_exists = 'error_code_exists';

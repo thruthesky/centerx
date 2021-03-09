@@ -114,7 +114,7 @@ class Entity {
 
         // Entity 생성 전 훅
         $re = hook()->run("{$this->taxonomy}_before_create", $record, $in);
-        debug_log("훅 리턴 값:", $re);
+//        debug_log("훅 리턴 값:", $re);
         if ( isError($re) ) return $re;
 
         $idx = db()->insert( $this->getTable(), $record );
