@@ -39,9 +39,14 @@ $history = pointHistory()->last(SHOPPING_MALL_ORDERS, $orderRecord[IDX]);
 isTrue(my(IDX) === $history->value('toUserIdx'), "My idx: " . my(IDX) . " vs userIdx: " . $history->value('toUserIdx'));
 isTrue($history->value('toUserPointApply') == -3000, 'toUserPointApply: 3000');
 
+// 취소
 $deletedRecord = $route->cancelOrder([IDX=>$orderRecord[IDX]]);
 
 isTrue($orderRecord[IDX] == $deletedRecord[IDX]);
 isTrue($user->getPoint() == 5000, 'point should be 5000');
 
 
+// 상품 등록.
+// 상품 구매.
+// 구매한 상품 후기 등록.
+// 확정된 구매만 후기 등록 가능.

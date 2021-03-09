@@ -1,10 +1,10 @@
 <?php
 
-class Comment extends Entity {
+class Comment extends PostTaxonomy {
 
     public function __construct(int $idx)
     {
-        parent::__construct(COMMENTS_TAXONOMY, $idx);
+        parent::__construct($idx);
     }
 
     /**

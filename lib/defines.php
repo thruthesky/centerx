@@ -17,7 +17,7 @@ define('USERS', 'users');
  * The `comments` is the same taxonomy as `posts`.
  */
 define('POSTS', 'posts');
-define('COMMENTS_TAXONOMY', 'posts');
+
 define('COMMENTS', 'comments');
 
 define('FILES', 'files');
