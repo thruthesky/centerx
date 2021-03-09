@@ -4,23 +4,6 @@
  */
 use function ezsql\functions\{
     eq,
-    neq,
-    ne,
-    lt,
-    lte,
-    gt,
-    gte,
-    isNull,
-    isNotNull,
-    like,
-    in,
-    notLike,
-    notIn,
-    between,
-    notBetween,
-
-    orderBy,
-    limit,
 };
 
 /**
@@ -43,6 +26,7 @@ class Entity {
 
 
     /**
+     * @deprecated
      * Set (record) idx of current entity.
      *
      * 현재 instance 에 `idx` 지정이 안되어 있어 지정하거나 변경을 할 수 있다.
@@ -229,8 +213,32 @@ class Entity {
         return $record;
     }
 
+    /**
+     * 글을 읽는다.
+     * @param bool $cache
+     * @return array|string
+     */
+    public function read(bool $cache = true): array | string {
+        $q = "SELECT * FROM {$this->getTable()} WHERE idx={$this->idx}";
+        $record = db()->get_row($q, ARRAY_A);
+        if ( $record ) {
+            $meta = entity($this->taxonomy, $record['idx'])->getMetas();
+            $this->record = array_merge($record, $meta);
+        } else {
+            $this->record = [];
+        }
+        return $this;
+    }
+
 
     /**
+     * @deprecated
+     * @var array
+     */
+    private $__entities = [];
+
+    /**
+     * @deprecated use read()
      * Returns an entity(record) of a taxonomy(table) and its meta data.
      *
      * If $field and $value are set, then it will return a record and its meta based on that $field and value.
@@ -262,8 +270,6 @@ class Entity {
      * 예제)
      * user()->get('email', 'user10@gmail.com');
      */
-    private $__entities = [];
-//    private $cnt = 0;
     public function get(string $field=null, mixed $value=null, string $select='*', bool $cache = true): mixed {
 
 

@@ -38,10 +38,7 @@
 <?php
 
 
-
-
-
-
+d($_COOKIE);
 
 d(login()->profile());
 

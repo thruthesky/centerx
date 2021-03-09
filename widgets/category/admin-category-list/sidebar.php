@@ -9,8 +9,6 @@
     <input type="hidden" name="<?=ID?>" value="<?=in(ID)?>">
 
 
-
-
     <table class="table">
         <thead>
         <tr>
@@ -20,6 +18,13 @@
         </thead>
         <tbody>
 
+
+        <tr>
+            <td><?=ln(['en' => 'Category ID', 'ko' => '카테고리 ID'])?></td>
+            <td>
+                <?= $cat[ID] ?>
+            </td>
+        </tr>
 
         <tr>
             <td><?=ln('Title', '게시판 제목')?></td>
@@ -246,21 +251,21 @@
         </tr>
 
         <tr>
-            <td><?=ln('Post List Widget', '글 목록 위젯')?></td>
+            <td><?=ln(['en' => 'Post List Widget', 'ko' => '글 목록 위젯'])?></td>
             <td>
                 <label class="">
                     <input
                         type="radio"
                         name="mobilePostListWidget"
                         value="text"
-                        <?php if ($cat['mobilePostListWidget'] == 'text' ) echo 'checked' ?>> <?=ln('Text', '텍스트')?>
+                        <?php if ($cat['mobilePostListWidget'] == 'text' ) echo 'checked' ?>> <?=ln(['en' => 'Text', 'ko' => '텍스트'])?>
                 </label>
                 <label class="ps-2">
                     <input
                         type="radio"
                         name="mobilePostListWidget"
                         value="gallery"
-                        <?php if ($cat['mobilePostListWidget'] == 'gallery' ) echo 'checked' ?>> <?=ln('Gallery', '갤러리')?>
+                        <?php if ($cat['mobilePostListWidget'] == 'gallery' ) echo 'checked' ?>> <?=ln(['en' => 'Gallery',  'ko' => '갤러리'])?>
                 </label>
 
                 <label class="ps-2">
@@ -268,28 +273,28 @@
                         type="radio"
                         name="mobilePostListWidget"
                         value="thumbnail"
-                        <?php if ($cat['mobilePostListWidget'] == 'thumbnail' ) echo 'checked' ?>> <?=ln('Thumbnail', '썸네일')?>
+                        <?php if ($cat['mobilePostListWidget'] == 'thumbnail' ) echo 'checked' ?>> <?=ln(['en' => 'Thumbnail',  'ko' => '썸네일'])?>
                 </label>
 
             </td>
         </tr>
 
         <tr>
-            <td><?=ln('Post View Widget', '글 읽기 위젯')?></td>
+            <td><?=ln(['en' => 'Post View Widget', 'ko' => '글 읽기 위젯'])?></td>
             <td>
                 <label class="">
                     <input
                         type="radio"
                         name="mobilePostViewWidget"
                         value="default"
-                        <?php if ($cat['mobilePostViewWidget'] == 'default' ) echo 'checked' ?>> <?=ln('Default', '기본')?>
+                        <?php if ($cat['mobilePostViewWidget'] == 'default' ) echo 'checked' ?>> <?=ln(['en' => 'Default', 'ko' => '기본'])?>
                 </label>
                 <label class="ps-2">
                     <input
                         type="radio"
                         name="mobilePostViewWidget"
                         value="slide"
-                        <?php if ($cat['mobilePostViewWidget'] == 'slide' ) echo 'checked' ?>> <?=ln('Slide', '슬라이드')?>
+                        <?php if ($cat['mobilePostViewWidget'] == 'slide' ) echo 'checked' ?>> <?=ln(['en' => 'Slide', 'ko' => '슬라이드'])?>
                 </label>
 
             </td>

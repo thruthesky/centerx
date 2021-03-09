@@ -1,6 +1,5 @@
 <?php
 
-use function JmesPath\search;
 
 class Category extends Entity {
 
@@ -18,9 +17,10 @@ class Category extends Entity {
 
     public function get(string $field = null, mixed $value = null, string $select = '*', bool $cache = true): mixed
     {
-        $cate = parent::get($field, $value, $select, $cache);
+        $cate = parent::get(select: '*', cache: false);
+        if ( ! $cate ) return $cate;
 
-        $subs = $cate['subcategories'];
+        $subs = $cate['subcategories'] ?? '';
         $cate['subcategories'] = [];
         if ( $subs ) {
             $subs = explode(",", $subs);
