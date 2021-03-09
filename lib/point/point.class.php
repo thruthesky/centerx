@@ -8,7 +8,7 @@ class Point {
     }
 
     public function getLike() {
-        return config()->get(POINT_LIKE);
+        return config()->get(POINT_LIKE) ?? 0;
     }
 
     public function setDislike($no) {
@@ -16,14 +16,14 @@ class Point {
     }
 
     public function getDislike() {
-        return config()->get(POINT_DISLIKE);
+        return config()->get(POINT_DISLIKE) ?? 0;
     }
 
     public function setLikeDeduction($no) {
         config()->set(POINT_LIKE_DEDUCTION, $no);
     }
     public function getLikeDeduction() {
-        return config()->get(POINT_LIKE_DEDUCTION);
+        return config()->get(POINT_LIKE_DEDUCTION) ?? 0;
     }
 
     public function setDislikeDeduction($no) {
@@ -31,7 +31,7 @@ class Point {
     }
 
     public function getDislikeDeduction() {
-        return config()->get(POINT_DISLIKE_DEDUCTION);
+        return config()->get(POINT_DISLIKE_DEDUCTION) ?? 0;
     }
 
     public function setRegister($no) {
@@ -39,7 +39,7 @@ class Point {
     }
 
     public function getRegister() {
-        return config()->get(POINT_REGISTER);
+        return config()->get(POINT_REGISTER) ?? 0;
     }
 
     public function setLogin($no) {
@@ -47,7 +47,7 @@ class Point {
     }
 
     public function getLogin() {
-        return config()->get(POINT_LOGIN);
+        return config()->get(POINT_LOGIN) ?? 0;
     }
 
     public function setLikeHourLimit($hour) {
@@ -55,7 +55,7 @@ class Point {
     }
 
     public function getLikeHourLimit() {
-        return config()->get(POINT_LIKE_HOUR_LIMIT);
+        return config()->get(POINT_LIKE_HOUR_LIMIT) ?? 0;
     }
 
     public function setLikeHourLimitCount($count) {
@@ -63,7 +63,7 @@ class Point {
     }
 
     public function getLikeHourLimitCount() {
-        return config()->get(POINT_LIKE_HOUR_LIMIT_COUNT);
+        return config()->get(POINT_LIKE_HOUR_LIMIT_COUNT) ?? 0;
     }
 
     public function setLikeDailyLimitCount($count) {
@@ -71,7 +71,7 @@ class Point {
     }
 
     public function getLikeDailyLimitCount() {
-        return config()->get(POINT_LIKE_DAILY_LIMIT_COUNT);
+        return config()->get(POINT_LIKE_DAILY_LIMIT_COUNT) ?? 0;
     }
 
 
