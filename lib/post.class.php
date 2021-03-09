@@ -94,7 +94,7 @@ class Post extends PostTaxonomy {
      * @param array $in
      * @return array|string
      */
-    public function create( array $in ): array|string {
+    public function create( array $in ): self|string {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( !isset($in[CATEGORY_ID]) ) return e()->category_id_is_empty;
         $category = category($in[CATEGORY_ID]);
@@ -174,7 +174,7 @@ class Post extends PostTaxonomy {
      * @return array|string
      * - `post()->get()` 에 대한 결과를 리턴한다. 즉, url 등의 값이 들어가 있다.
      */
-    public function update(array $in): array|string {
+    public function update(array $in): self|string {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! $this->idx ) return e()->idx_is_empty;
         if ( $this->exists() == false ) return e()->post_not_exists;
@@ -197,7 +197,7 @@ class Post extends PostTaxonomy {
     /**
      * @return array|string
      */
-    public function markDelete(): array|string {
+    public function markDelete(): self|string {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! $this->idx ) return e()->idx_is_empty;
         if ( $this->exists() == false ) return e()->post_not_exists;

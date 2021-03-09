@@ -11,7 +11,7 @@ class Comment extends PostTaxonomy {
      * @param array $in
      * @return array|string
      */
-    public function create(array $in): array|string
+    public function create(array $in): self|string
     {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( !isset($in[ROOT_IDX]) ) return e()->root_idx_is_empty;
@@ -70,7 +70,7 @@ class Comment extends PostTaxonomy {
      * @param array $in
      * @return array|string
      */
-    public function update(array $in): array|string {
+    public function update(array $in): self|string {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! $this->idx ) return e()->idx_is_empty;
         if ( $this->exists() == false ) return e()->post_not_exists;
@@ -90,7 +90,8 @@ class Comment extends PostTaxonomy {
     }
 
 
-    public function markDelete(): array|string {
+
+    public function markDelete(): self|string {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! $this->idx ) return e()->idx_is_empty;
         if ( $this->exists() == false ) return e()->post_not_exists;

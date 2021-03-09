@@ -177,7 +177,7 @@ class User extends Entity {
      *
      *
      * @param array $in
-     * @return array|string
+     * @return self|string
      * - error_idx_not_set if current instance has not `idx`.
      * - profile on success.
      *
@@ -185,7 +185,7 @@ class User extends Entity {
      *  user(123)->update();
      *  login()->update()
      */
-    public function update(array $in): array|string {
+    public function update(array $in): self|string {
         if ( ! $this->idx ) return e()->idx_not_set;
         parent::update($in);
         $this->init();

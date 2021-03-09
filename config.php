@@ -55,6 +55,9 @@ define('DB_HOST', 'mariadb');
 
 define('DB_PREFIX', 'wc_');
 
+// @todo 안보이는데로 이동 시킬 것.
+define('META_TABLE', DB_PREFIX . 'metas');
+
 
 
 /**

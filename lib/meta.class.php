@@ -16,7 +16,7 @@ class Meta extends Entity {
      * @param array $in
      * @return array|string
      */
-    public function create(array $in): array|string
+    public function create(array $in): self|string
     {
         return [];
     }
@@ -27,7 +27,7 @@ class Meta extends Entity {
      * @param array $in
      * @return array|string
      */
-    public function update(array $in): array|string
+    public function update(array $in): self|string
     {
         return [];
     }

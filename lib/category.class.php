@@ -8,7 +8,7 @@ class Category extends Entity {
         parent::__construct(CATEGORIES, $idx);
     }
 
-    public function create( array $in ): array|string {
+    public function create( array $in ): self|string {
         if ( isset($in[ID]) == false ) return e()->id_is_empty;
         $cat = category($in[ID]);
         if ( $cat->exists() ) return e()->category_exists;
@@ -38,7 +38,7 @@ class Category extends Entity {
      * @param array $in
      * @return array|string
      */
-    public function update(array $in): array|string {
+    public function update(array $in): self|string {
         return parent::update($in);
     }
     /**

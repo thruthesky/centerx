@@ -57,9 +57,12 @@
   where: "a='apple' or (b='banana' and meta.c='cherry') or meta.d=1"
   SQL query 에 `meta.` 이라는 것이 들어가면 무조건 meta 검색으로 인식한다. 따라서 검색 조건에 `meta.` 라는 단어가 들어가면 안된다.
 
-## 점진적으로 해야 할 일
+## next branch 에서 해야 할 것
 
-- `next` branch 에서 작업한다.
+- `next.***.test.php` 로 테스트 코드를 작성하고 있다.
+- crud 함수에서 self 를 리턴한다.
+- meta 관련 함수를 meta.functions.php 로 떼어 낸다.
+- Enitity 클래스에서 contructor 에서 $idx 값이 들어오면, 현제 객체에 값을 저장한다. 이 때, 재귀함수가 무한적으로 호출되는데, 해결 할 것.
 
 - 100% getter/setter 를 사용한다.
   변수 x 가 있다면, 아래와 같이 getter/setter 를 사용한다.
@@ -88,6 +91,9 @@
 - It does not use `__get()`, `__set()` magic methods to avoid ambiguety. Instead, use
   - `post(1)->get()` to get whole record.
   - `post(1)->value(...)` to get a field value. Or `post(1)->v(...)` for short.
+
+
+- @next 회원 인증은 Route 에서 해야한다. 그외 입력값 검사는 각 함수에서 한다.
 
 
 # Installation

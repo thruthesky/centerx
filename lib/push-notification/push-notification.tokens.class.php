@@ -14,7 +14,7 @@ class PushNotificationTokens extends Entity {
      * @param array $in
      * @return array|string
      */
-    public function update(array $in): array|string {
+    public function update(array $in): self|string {
 
         $token = $in[TOKEN];
         $data = [
