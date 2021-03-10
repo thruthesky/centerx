@@ -20,7 +20,7 @@ class Category extends Entity {
     {
         $cate = parent::get($field, $value, $select, $cache);
 
-        $subs = $cate['subcategories'];
+        $subs = $cate['subcategories'] ?? '';
         $cate['subcategories'] = [];
         if ( $subs ) {
             $subs = explode(",", $subs);
