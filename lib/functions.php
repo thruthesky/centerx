@@ -126,8 +126,6 @@ EOH;
     }
 }
 
-
-
 /**
  * 도메인을 리턴한다.
  * 예) www.abc.com, second.host.abc.com
@@ -1094,3 +1092,17 @@ EOH;
     return '';
 
 }
+
+function short_date_time($stamp)
+{
+    $Y = date('Y', $stamp);
+    $m = date('m', $stamp);
+    $d = date('d', $stamp);
+    if ($Y == date('Y') && $m == date('m') && $d == date('d')) {
+        $dt = date("h:i a", $stamp);
+    } else {
+        $dt = "$Y-$m-$d";
+    }
+    return $dt;
+}
+
