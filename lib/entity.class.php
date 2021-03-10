@@ -247,10 +247,25 @@ class Entity {
     }
 
     /**
-     * Entity 를 읽어 현재 객체에 보관한다.
+     * 현재 Taxonomy 를 유지한 채, entity 만 바꾸고자 할 때 사용.
+     * 사실 이것은 read(123) 와 같은 것이다.
+     * @param int $idx
+     * @return $this
+     */
+    public function reset(int $idx): self {
+        return $this->read($idx);
+    }
+
+
+    /**
+     * Entity(레코드와 메타)를 DB 로 부터 읽어 현재 객체에 보관한다.
      *
      * $idx 가 주어지면, 해당 $idx 를 읽어, 현재 객체에 보관하고, $this->idx = $idx 와 같이 entity idx 도 업데이트 한다.
      * 에러가 있으면 문자열을 리턴하고 그렇지 않으면 현재 객체를 리턴한다.
+     *
+     * @usage 처음 객체 생성시, read() 를 한번 호출하지만,
+     *  그 후에 $idx 를 바꾸거나 할 때,
+     *  또는 데이터베이스로 부터 새로 정보를 읽고자 할 때 사용한다.
      *
      * @param int $idx
      * @return self
@@ -263,6 +278,7 @@ class Entity {
         if ( ! $idx ) return $this->error(e()->idx_not_set);
 
         $q = "SELECT * FROM {$this->getTable()} WHERE idx=$idx";
+        if ( isDebugging() ) d("read() q: $q");
         $record = db()->get_row($q, ARRAY_A);
         if ( $record ) {
             $meta = getMeta($this->taxonomy, $record['idx']);

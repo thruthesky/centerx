@@ -6,6 +6,8 @@ testEntityCreateWithMeta();
 testEntityErrorHandling();
 
 _testEntityCrud();
+_testEntityReadAndReset();
+_testEntityMeta();
 
 
 
@@ -107,4 +109,40 @@ function _testEntityCrud() {
     $deleted = entity(USERS)->create(['email' => $emailB, 'password' => $pw])->update([])->delete();
     isTrue(entity(USERS, $deleted->idx)->getData() === [], 'no more data for deleted user');
 
+}
+
+function _testEntityReadAndReset() {
+    $aEmail = 'a' . time() . '@read.com';
+    $bEmail = 'b' . time() . '@read.com';
+    $a = entity(USERS)->create(['email' => $aEmail, 'password' => '']);
+    $b = entity(USERS)->create(['email' => $bEmail, 'password' => '']);
+
+    $a->update(['eat' => 'apple']);
+    isTrue($a->eat === 'apple');
+
+    $b->update(['eat' => 'banana']);
+    isTrue($b->eat === 'banana');
+
+
+    // 주의: $a->reset(3) 을 하면, $a->idx 가 3 으로 변경된다.
+    $aIdx = $a->idx;
+    isTrue( $a->reset($b->idx)->eat === 'banana', 'reset b' );
+    $a->reset($aIdx);
+    isTrue( $a->reset($b->idx)->reset($aIdx)->eat === 'apple', 'reset a' );
+}
+
+function _testEntityMeta() {
+
+    $email = 'email' . time() . '@email.com';
+    $user = entity(USERS)->create(['email' => $email, 'password' => '']);
+    isTrue( $user->hasError === false, '_testEntityMeta() test user create');
+    $user->update(['eat' => 'apple']);
+    isTrue( $user->hasError === false, '_testEntityMeta() test user update');
+    isTrue( $user->email === $email, 'user email check');
+    isTrue( $user->name === '', 'user name check');
+    isTrue( $user->eat === 'apple', 'user eat apple');
+
+    isTrue($user->update(['eat' => 'banana'])->update(['name' => 'yo'])->hasError === false);
+    isTrue( $user->name === 'yo', 'user name check');
+    isTrue( $user->eat === 'banana', 'user eat apple');
 }
