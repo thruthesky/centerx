@@ -61,51 +61,52 @@
 
 - 여기에 기록하는 내용은 결국은 문서화되어야 한다.
 
-- @doc entity 는 실제 존재하는 taxonomy 에 대해서만 작업을 한다. 즉, table 이 존재하지 않으면 안된다.
-
-- @doc meta 는 실제 taxonomy 가 존재하지 않아도 된다.
-
-- @done entity 에서 meta 값 업데이트하는 테스트
-  
-- entity 에서 search(), my(), 테스트
-
-- entity hook test
-  
-- 1개의 값(문자열, 숫자, 불린, 배열)을 리턴하는 경우가 아니면, 모든 crud 함수 및 기타 함수에서 self 를 리턴한다.
-
-- 1개의 값을 리턴 하는 경우, 에러가 있으면 null 또는 빈 배열을 리턴한다.
-
-- 클라이언트로 전달하는 response() 함수는 에러가 있으면 에러 문자열을 리턴한다.
-- 클라이언트로 전달하는 경우가 아니면 `->hasError` 로 에러가 있는지 없는지 검사해야 한다.
+- User, Category, Post, Comment 등에서 1개의 값(문자열, 숫자, 불린, 배열)을 리턴하는 경우가 아니면, 모든 crud 함수 및 기타 함수에서 self 를 리턴한다.
 
 
 - `next.***.test.php` 로 테스트 코드를 작성하고 있다.
   - user, category, post, comment 순서로 테스트
   - user()->create()->response() 에서 에러가 있으면 response() 항상 에러 문자열을 리턴한다.
   
-- meta 관련 함수를 meta.functions.php 로 떼어 낸다.
-- Enitity 클래스에서 contructor 에서 $idx 값이 들어오면, 현제 객체에 값을 저장한다. 이 때, 재귀함수가 무한적으로 호출되는데, 해결 할 것.
+- 클라이언트로 전달하는 response() 함수는 에러가 있으면 에러 문자열을 리턴한다.
+- 클라이언트로 전달하는 경우가 아니면 `->hasError` 로 에러가 있는지 없는지 검사해야 한다.
+
+
+- meta 에 동일한 키를 여러개 입력 할 수 없지만, 배열이나 기타 여러 값을 저장하면, serialized 되어 저장된다.
+  이점을 활용해서,
+  기본 meta 함수명 addMeta(), getMeta(), updateMeta(), deleteMeta() 에,
+  addMetaDataSet(...) 을 하면, Type SET 형식으로 배열인데, 고유한 값을 유지하는 배열에 값을 추가하는 함수를 만든다.
+  deleteMetaDataSet(...) 을 하면 삭제를 한다.
+  addMetaDataAssoc($key, $value) 를 하면, 메타 데이터의 값이 연관 배열인데, 연관 배열의 값을 추가하다록 한다.
+  deleteMetaDataAssoc($key) 와 같이 하면 삭제를 한다.
+
+  getMeta() 에서 taxonomy 와 entity 까지만 입력하면, 배열로 해당 entity 에 속만 메타가 모두 리턴된다.
+
+
+
+
+- @doc entity 는 실제 존재하는 taxonomy 에 대해서만 작업을 한다. 즉, table 이 존재하지 않으면 안된다.
+
+- @doc meta 는 실제 taxonomy 가 존재하지 않아도 된다.
+
+- @done entity 에서 meta 값 업데이트하는 테스트
+  
+- @done entity 에서 search(), my(), 테스트
+
+- @doc 1개의 값을 리턴 하는 경우, 에러가 있으면 null 또는 빈 배열을 리턴한다.
+- @doc 객체를 리턴하는 경우, ->hasError 를 통해 에러가 있는지 없는지 봐야 한다.
+
+
+  
+- @doc meta 관련 함수를 meta.functions.php 로 떼어 낸다.
+
 
 - etc/configs 폴더에 각종 설정을 넣는다.
   db.config.php
   app.config.php
   와 같이 분리를 한다. 그리고 db.config.php 가 존재하지 않으면 설치가 안된 것으로 한다.
   
-- meta 에 동일한 키를 여러개 입력 할 수 있도록 한다.
-  meta 함수명은 addMeta(), getMeta(), updateMeta(), deleteMeta() 이다.
-  getMeta() 에서 taxonomy 와 entity 까지만 입력하면, 배열로 해당 entity 에 속만 메타가 모두 리턴된다.
-  
-
-  
-  즉, unique 키가 아니라, 그냥 index 이어야 한다. 이렇게하면 푸시 토큰도 저장 할 수 있고, 여러가지로 활용가능하다.
-  또한 domain 필드를 추가한다. 이 것은 인터넷 주소 도메인이 아니라, 데이터 그룹을 말한다.
-  getMultiMeta();
-  addMultiMeta();
-  updateMultiMeta() 와 같이 함수에 Multi 를 붙여서 만들도록 한다.
-
-- create()->update()->delete()->deleted 와 같이 하는 경우, create() 에서 에러가 발생하면 에러 문자열을 리턴한다.
-  이 때, update()->delete()->deleted 등 모든 하위 객체에서도 에러를 리턴하도록 한다.
-
+- @doc meta 테이블은 그 활용가 간단해서 taxonomy 와 entity 방식으로 사용하지 않는다. 하지만, 사용해도 무방하다. 실제로 테스트 코드에서는 사용을 한다.
 - 100% getter/setter 를 사용한다.
   변수 x 가 있다면, 아래와 같이 getter/setter 를 사용한다.
 ```php
@@ -124,9 +125,10 @@
 
 - 글을 클라이언트로 보낼 때에는 post()->create(...)->response() 를 할 수 있도록 한다.
   이 response() 함수에서 코멘트 정보를 다 읽고 파싱한다.
-  
-- 참/거짓, 숫자, 문자열을 리턴하는 함수 외에는 모두 객체를 리턴한다.
-  단, 옵션으로 user()->by(email, returnFormat: ARRAY_A) 와 같이 배열로 받을 수 있도록 한다.
+
+
+- entity hook test
+
 
 # Primary Conception
 

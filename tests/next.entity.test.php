@@ -11,6 +11,8 @@ _testEntityMeta();
 
 
 
+
+
 class TestTaxonomy extends PostTaxonomy {
     public function __construct(int $idx)
     {
@@ -97,6 +99,10 @@ function _testEntityCrud() {
     isTrue(entity(USERS)->create(['email' => $emailA, 'password' => '12345a'])->update(['color' => 'blue'])->color === 'blue', 'color must be blue');
 
     // 실패. 존재하는 메일 주소로 업데이트 시도
+    // @doc 아래 처럼
+    // ->create()->update()->getError()
+    // ->create()->update()->delete()->exists()
+    // 등과 같이 끝 없이 체이닝을 할 수 있다.
     isTrue(entity(USERS)->create(['email' => '2' . $emailA, 'password' => '12345a'])->update(['email' => $a->email])->getError() === e()->update_failed, 'update failed');
 
     db()->show_errors();

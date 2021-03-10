@@ -35,7 +35,7 @@ class User extends Entity {
     }
 
     private function init() {
-        $u = $this->profile();
+        $u = $this->getData();
         if ( isError($u) || empty($u) ) return;
 
         $this->profile = $u;

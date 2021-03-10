@@ -414,10 +414,11 @@ global $__login_user_profile;
  */
 function setUserAsLogin(int|array $profile): User {
     global $__login_user_profile;
-    if ( is_int($profile) ) $profile = user($profile)->profile(cache: false);
+    if ( is_int($profile) ) $profile = user($profile)->getData();
     $__login_user_profile = $profile;
     return user($profile[IDX] ?? 0);
 }
+
 // Alias of setUserAsLogin
 function setLogin(int|array $profile): User {
     return setUserAsLogin($profile);

@@ -342,10 +342,12 @@ class Entity {
     }
 
     /**
-     * 현재 Taxonomy 를 검색한다.
+     * 현재 Taxonomy 를 검색해서 idx 를 배열로 리턴한다.
      *
      * - $where 에 필요한 조건식을 다 만들어 넣는다.
      * - 만약, meta 데이터를 포함한 전체 값이 다 필요하다면, 이 함수를 통해서 'idx' 만 추출한 다음, user(idx)->get() 와 같이 한다.
+     * - 이 함수는 객체 배열이 아닌, 결과를 가지고 있는 레코드들의 idx 만 리턴한다.
+     * - 원한다면 select: '*' 와 같이 전체 레코드를 배열로 리턴 할 수 있다.
      *
      * @param string $where
      * @param int $page
@@ -353,20 +355,18 @@ class Entity {
      * @param string $order
      * @param string $by
      * @param string $select
-     * @param array $in
      * @return mixed
      *  - empty array([]), If there is no record found.
-     * @throws Exception
      *
      *
      * 예제)
-     *  $users = user()->search();
+     *  user()->search();
      *  user()->search(where:  "name LIKE '%a%' AND idx < 100", order: EMAIL, by: 'ASC', page: 2, limit: 3, select: 'idx, name');
      *
      * 예제) 사용자 idx 만 추출해서 전체 정보 출력
      *   $users = user()->search(where:  "name LIKE '%a%' AND idx < 100", order: EMAIL, by: 'ASC', page: 1, limit: 3);
      *   foreach( $users as $user) {
-     *      d( user( $user[IDX])->profile() );
+     *      d( user( $user[IDX] )->profile() );
      *   }
      *
      */
@@ -377,8 +377,7 @@ class Entity {
         $from = ($page-1) * $limit;
         $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
         if ( isDebugging() ) d($q);
-        $rows = db()->get_results($q, ARRAY_A);
-        return $rows;
+        return db()->get_results($q, ARRAY_A);
     }
 
 
@@ -396,7 +395,6 @@ class Entity {
      * @param string $by
      * @param string $select
      * @return array
-     * @throws Exception
      */
     public function my(int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='*'): array {
         return $this->search("userIdx=" . login()->idx, $page, $limit, $order, $by, $select);
