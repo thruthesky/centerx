@@ -189,9 +189,12 @@ class Post extends PostTaxonomy {
     }
 
 
-    public function delete()
+    /**
+     * @return $this
+     */
+    public function delete(): self
     {
-        return e()->post_delete_not_supported;
+        return $this->error(e()->post_delete_not_supported);
     }
 
     /**

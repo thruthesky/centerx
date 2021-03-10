@@ -84,10 +84,12 @@ class Comment extends PostTaxonomy {
     }
 
 
-
-    public function delete()
+    /**
+     * @return $this
+     */
+    public function delete(): self
     {
-        return e()->comment_delete_not_supported;
+        return $this->error(e()->comment_delete_not_supported);
     }
 
 

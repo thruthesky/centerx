@@ -45,9 +45,9 @@ class Category extends Entity {
     /**
      * @attention To delete, entity.idx must be set properly.
      *
-     * @return array|string
+     * @return Category
      */
-    public function delete(): array|string {
+    public function delete(): self {
         return parent::delete();
     }
 

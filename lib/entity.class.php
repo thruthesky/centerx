@@ -9,8 +9,10 @@ use function ezsql\functions\{
 /**
  * Class Entity
  *
- * Entity 는 하나의 레코드이다. Taxonomy 는 데이터의 종류로서 하나의 테이블이라 생각하면 된다.
- * Entity 를 생성 할 때, Taxonomy 는 필수이며, $idx 값이 입력되면, 해당 테이블의 해당 레코드 번호로 인식하여, 해당 레코드에 대한 작업을 한다.
+ * Taxonomy 는 데이터의 종류로서 하나의 테이블이라 생각하면 된다.
+ * Entity 는 하나의 레코드이다.
+ * Entity 를 객체화 할 때, $taxonomy 값(Taxonomy)은 필수이며, $idx (Entity 또는 레코드 번호) 값이 입력되면,
+ *   해당 테이블의 해당 레코드 및 연결된 메타 데이터를 읽어 $this->data 에 저장한다.
  */
 class Entity {
 
@@ -19,6 +21,9 @@ class Entity {
      */
     private array $data = [];
 
+    /**
+     * @var string 에러가 있으면 에러 메시지를 지정한다.
+     */
     private string $error = '';
     public bool $hasError = false;
 
@@ -30,10 +35,7 @@ class Entity {
     public function __construct(public string $taxonomy, public int $idx)
     {
         if ( $this->idx ) {
-//            d($this->idx);
-            // @todo
-//            $this->read($this->idx);
-
+            $this->read($this->idx);
         }
     }
 
@@ -211,23 +213,20 @@ class Entity {
     }
 
     /**
-     * Delete entity(record).
+     * 레코드 삭제
      *
-     * The entity `idx` must be set to delete.
+     * $this->data 는 빈 배열로 되지만, $this->idx 값은 유지한다.
+     *
+     * @return self
      */
-    public function delete() {
-        if ( ! $this->idx ) return e()->idx_not_set;
-        $record = self::get();
-        if ( ! $record ) return e()->entity_not_exists;
+    public function delete(): self {
+        if ( ! $this->idx ) return $this->error(e()->idx_not_set);
         $re = db()->delete($this->getTable(), eq(IDX, $this->idx));
-        if ( $re === false ) return e()->delete_failed;
-
-
-
-        $this->__entities = [];
-
-        return $record;
+        if ( $re === false ) return $this->error(e()->delete_failed);
+        $this->data = [];
+        return $this;
     }
+
 
     /**
      * It does not delete the record. It only updates deletedAt.
@@ -250,7 +249,7 @@ class Entity {
     /**
      * Entity 를 읽어 현재 객체에 보관한다.
      *
-     * $idx 가 주어지면, 해당 $idx 를 읽어, 현재 객체에 보관하고, $this->idx = $idx 와 같이 보관한다.
+     * $idx 가 주어지면, 해당 $idx 를 읽어, 현재 객체에 보관하고, $this->idx = $idx 와 같이 entity idx 도 업데이트 한다.
      * 에러가 있으면 문자열을 리턴하고 그렇지 않으면 현재 객체를 리턴한다.
      *
      * @param int $idx
@@ -268,10 +267,11 @@ class Entity {
         if ( $record ) {
             $meta = getMeta($this->taxonomy, $record['idx']);
             $this->data = array_merge($record, $meta);
+            $this->idx = $this->data['idx'];
         } else {
             $this->data = [];
         }
-        $this->idx = $this->data['idx'];
+
         return $this;
     }
 
@@ -279,31 +279,13 @@ class Entity {
 
 
 
-
     /**
-     * Returns login user's records in array.
-     *
-     * Helper class for search().
-     * It does very much the same as search(), but returns login user's record only.
-     *
-     *
-     * @param int $page
-     * @param int $limit
-     * @param string $order
-     * @param string $by
-     * @param string $select
-     * @return array
-     * @throws Exception
-     */
-    public function my(int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='*'): array {
-        return $this->search("userIdx=" . login()->idx, $page, $limit, $order, $by, $select);
-    }
-
-
-    /**
+     * DB 레코드에서 idx 를 읽어서 존재하는지 아닌지 검사한다.
      * Returns true if the entity exists. or false.
      *
-     * The entity.idx must be set or it will return false.
+     * 참고, DB 접속을 한번하므로, 원격 DB의 경우 시간이 걸릴 수 있다.
+     *
+     * $this->idx 가 설정되어야 한다. 아니면 false 리턴.
      *
      * @return bool
      */
@@ -383,10 +365,33 @@ class Entity {
         return $rows;
     }
 
+
+
+    /**
+     * Returns login user's records in array.
+     *
+     * Helper class for search().
+     * It does very much the same as search(), but returns login user's record only.
+     *
+     *
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @param string $by
+     * @param string $select
+     * @return array
+     * @throws Exception
+     */
+    public function my(int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='*'): array {
+        return $this->search("userIdx=" . login()->idx, $page, $limit, $order, $by, $select);
+    }
+
+
     /**
      * @param string $where
+     * @return int
      */
-    public function count(string $where) {
+    public function count(string $where): int {
         $table = $this->getTable();
         return db()->get_var(" SELECT COUNT(*) FROM $table WHERE $where");
     }
@@ -467,11 +472,23 @@ class Entity {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///
     ///
     /// 여기 아래는 버리는 함수
     ///
     ///
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
