@@ -9,12 +9,13 @@ class Comment extends PostTaxonomy {
 
     /**
      * @param array $in
-     * @return array|string
+     *
+     * @return Comment
      */
-    public function create(array $in): self|string
+    public function create(array $in): self
     {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( !isset($in[ROOT_IDX]) ) return e()->root_idx_is_empty;
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( !isset($in[ROOT_IDX]) ) return $this->error(e()->root_idx_is_empty);
         $in[USER_IDX] = my(IDX);
 
         /**
@@ -32,13 +33,13 @@ class Comment extends PostTaxonomy {
         // 제한에 걸렸으면, 에러 리턴.
         if ( $category->value(BAN_ON_LIMIT) ) {
             $limit = point()->checkCategoryLimit($category->idx);
-            if ( isError($limit) ) return $limit;
+            if ( isError($limit) ) return $this->error($limit);
         }
 
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
         $pointToCreate = point()->getCommentCreate($category->idx);
         if ( $pointToCreate < 0 ) {
-            if ( my(POINT) < abs( $pointToCreate ) ) return e()->lack_of_point;
+            if ( my(POINT) < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
         }
 
         // $comment = parent::create($in);
@@ -47,7 +48,7 @@ class Comment extends PostTaxonomy {
         /**
          * NEW COMMENT IS CREATED ==>  Send notification to forum comment subscriber
          */
-        onCommentCreateSendNotification($re); //
+        onCommentCreateSendNotification($re->getData()); //
 
         return comment($re[IDX])->get();
     }
@@ -63,18 +64,18 @@ class Comment extends PostTaxonomy {
     }
 
 
-
     /**
      * @attention The entity.idx must be set. That means, it can only be called with `post(123)->update()`.
      *
      * @param array $in
-     * @return array|string
+     *
+     * @return Comment
      */
-    public function update(array $in): self|string {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( ! $this->idx ) return e()->idx_is_empty;
-        if ( $this->exists() == false ) return e()->post_not_exists;
-        if ( $this->isMine() == false ) return e()->not_your_comment;
+    public function update(array $in): self {
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
+        if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
+        if ( $this->isMine() == false ) return $this->error(e()->not_your_comment);
 
 
         $updated = parent::update($in);

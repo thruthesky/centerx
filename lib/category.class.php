@@ -8,10 +8,10 @@ class Category extends Entity {
         parent::__construct(CATEGORIES, $idx);
     }
 
-    public function create( array $in ): self|string {
-        if ( isset($in[ID]) == false ) return e()->id_is_empty;
+    public function create( array $in ): self {
+        if ( isset($in[ID]) == false ) return $this->error(e()->id_is_empty);
         $cat = category($in[ID]);
-        if ( $cat->exists() ) return e()->category_exists;
+        if ( $cat->exists() ) return $this->error(e()->category_exists);
         return parent::create($in);
     }
 
@@ -36,11 +36,12 @@ class Category extends Entity {
      * @attention To update, entity.idx must be set properly.
      *
      * @param array $in
-     * @return array|string
+     * @return Category
      */
-    public function update(array $in): self|string {
+    public function update(array $in): self {
         return parent::update($in);
     }
+
     /**
      * @attention To delete, entity.idx must be set properly.
      *

@@ -185,8 +185,8 @@ class User extends Entity {
      *  user(123)->update();
      *  login()->update()
      */
-    public function update(array $in): self|string {
-        if ( ! $this->idx ) return e()->idx_not_set;
+    public function update(array $in): self {
+        if ( ! $this->idx ) return $this->error(e()->idx_not_set);
         parent::update($in);
         $this->init();
         return $this->profile();

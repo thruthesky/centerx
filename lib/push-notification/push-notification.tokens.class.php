@@ -12,9 +12,9 @@ class PushNotificationTokens extends Entity {
      * @attention To update, entity.idx must be set properly.
      *
      * @param array $in
-     * @return array|string
+     * @return PushNotificationTokens
      */
-    public function update(array $in): self|string {
+    public function update(array $in): self {
 
         $token = $in[TOKEN];
         $data = [
@@ -36,7 +36,7 @@ class PushNotificationTokens extends Entity {
         }
 
         if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
-            return e()->topic_subscription;
+            return $this->error(e()->topic_subscription);
         }
 
         return $res;

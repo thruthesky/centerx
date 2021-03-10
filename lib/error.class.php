@@ -87,6 +87,10 @@ class E {
 
     public string $passlogin_faield = 'error_passlogin_faield';
 
+    public string $meta_update_failed = 'error_meta_update_failed';
+    public string $meta_insert_failed = 'error_meta_insert_failed';
+
+
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)

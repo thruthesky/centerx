@@ -59,10 +59,41 @@
 
 ## next branch 에서 해야 할 것
 
+
+- 1개의 값(문자열, 숫자, 불린, 배열)을 리턴하는 경우가 아니면, 모든 crud 함수 및 기타 함수에서 self 를 리턴한다.
+
+- 1개의 값을 리턴 하는 경우, 에러가 있으면 null 또는 빈 배열을 리턴한다.
+
+- 클라이언트로 전달하는 response() 함수는 에러가 있으면 에러 문자열을 리턴한다.
+- 클라이언트로 전달하는 경우가 아니면 `->hasError` 로 에러가 있는지 없는지 검사해야 한다.
+
+
 - `next.***.test.php` 로 테스트 코드를 작성하고 있다.
-- crud 함수에서 self 를 리턴한다.
+  - user, category, post, comment 순서로 테스트
+  - user()->create()->response() 에서 에러가 있으면 response() 항상 에러 문자열을 리턴한다.
+  
 - meta 관련 함수를 meta.functions.php 로 떼어 낸다.
 - Enitity 클래스에서 contructor 에서 $idx 값이 들어오면, 현제 객체에 값을 저장한다. 이 때, 재귀함수가 무한적으로 호출되는데, 해결 할 것.
+
+- etc/configs 폴더에 각종 설정을 넣는다.
+  db.config.php
+  app.config.php
+  와 같이 분리를 한다. 그리고 db.config.php 가 존재하지 않으면 설치가 안된 것으로 한다.
+  
+- meta 에 동일한 키를 여러개 입력 할 수 있도록 한다.
+  meta 함수명은 addMeta(), getMeta(), updateMeta(), deleteMeta() 이다.
+  getMeta() 에서 taxonomy 와 entity 까지만 입력하면, 배열로 해당 entity 에 속만 메타가 모두 리턴된다.
+  
+
+  
+  즉, unique 키가 아니라, 그냥 index 이어야 한다. 이렇게하면 푸시 토큰도 저장 할 수 있고, 여러가지로 활용가능하다.
+  또한 domain 필드를 추가한다. 이 것은 인터넷 주소 도메인이 아니라, 데이터 그룹을 말한다.
+  getMultiMeta();
+  addMultiMeta();
+  updateMultiMeta() 와 같이 함수에 Multi 를 붙여서 만들도록 한다.
+
+- create()->update()->delete()->deleted 와 같이 하는 경우, create() 에서 에러가 발생하면 에러 문자열을 리턴한다.
+  이 때, update()->delete()->deleted 등 모든 하위 객체에서도 에러를 리턴하도록 한다.
 
 - 100% getter/setter 를 사용한다.
   변수 x 가 있다면, 아래와 같이 getter/setter 를 사용한다.

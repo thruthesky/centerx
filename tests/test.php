@@ -33,9 +33,7 @@ function isTrue($t, string $msg = '') {
 
 
 
-
-
-echo "\n=====================================> Begin Test at: " . date('r') . "\n\n";
+echo "\n\n=====================================> Begin Test at: " . date('r') . "\n\n";
 
 
 foreach(glob('/root/tests/*.test.php') as $path) {

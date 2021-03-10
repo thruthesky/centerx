@@ -7,32 +7,27 @@
  *
  * There is no `config` taxonomy. Read the readme.
  */
-class Config extends Entity {
+class Config {
 
 
     /**
      *
      * Config constructor.
      */
-    public function __construct(int $idx = 0)
+    public function __construct(public string $taxonomy, public int $idx = 0)
     {
-        parent::__construct(CONFIG, $idx);
     }
 
     /**
      * 설정을 읽는다. 설정은 metas 테이블에 저장되며, taxonomy=config, entity=0 이 된다.
      *
-     * @param string|null $field
-     * @param null $_
-     * @param string $__
-     * @param bool $____
-     * @param bool $cache
      * @return mixed - 값이 없으면 null 이 리턴된다.
      */
-    public function get(string $field=null, mixed $_=null, string $__='', bool $____ = true, bool $cache = true): mixed
+    public function get(string $code): mixed
     {
-       return $this->getMeta($field);
+        return getMeta($this->taxonomy, $this->idx, $code );
     }
+
 
     /**
      * 설정을 저장(또는 업데이트)한다. 설정은 metas 테이블에 저장되며, taxonomy=config, entity=0 이 된다.

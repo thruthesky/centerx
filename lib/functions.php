@@ -1094,3 +1094,9 @@ EOH;
     return '';
 
 }
+
+
+//////// next
+function table(string $taxonomy): string {
+    return DB_PREFIX . $taxonomy;
+}

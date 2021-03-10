@@ -92,13 +92,13 @@ class Post extends PostTaxonomy {
 
     /**
      * @param array $in
-     * @return array|string
+     * @return Post
      */
-    public function create( array $in ): self|string {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( !isset($in[CATEGORY_ID]) ) return e()->category_id_is_empty;
+    public function create( array $in ): self {
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( !isset($in[CATEGORY_ID]) ) return $this->error(e()->category_id_is_empty);
         $category = category($in[CATEGORY_ID]);
-        if ( $category->exists() == false ) return e()->category_not_exists;
+        if ( $category->exists() == false ) return $this->error(e()->category_not_exists);
         unset($in[CATEGORY_ID]);
 
         //
@@ -112,13 +112,13 @@ class Post extends PostTaxonomy {
 
         if ( $category->v(BAN_ON_LIMIT) == 'Y' ) {
             $re = point()->checkCategoryLimit($category->idx);
-            if ( isError($re) ) return $re;
+            if ( isError($re) ) return $this->error($re);
         }
 
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
         $pointToCreate = point()->getPostCreate($category->idx);
         if ( $pointToCreate < 0 ) {
-            if ( my(POINT) < abs( $pointToCreate ) ) return e()->lack_of_point;
+            if ( my(POINT) < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
         }
 
 
@@ -171,14 +171,14 @@ class Post extends PostTaxonomy {
      * @attention The entity.idx must be set. That means, it can only be called with `post(123)->update()`.
      *
      * @param array $in
-     * @return array|string
+     * @return Post - `post()->get()` 에 대한 결과를 리턴한다. 즉, url 등의 값이 들어가 있다.
      * - `post()->get()` 에 대한 결과를 리턴한다. 즉, url 등의 값이 들어가 있다.
      */
-    public function update(array $in): self|string {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( ! $this->idx ) return e()->idx_is_empty;
-        if ( $this->exists() == false ) return e()->post_not_exists;
-        if ( $this->isMine() == false ) return e()->not_your_post;
+    public function update(array $in): self {
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
+        if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
+        if ( $this->isMine() == false ) return $this->error(e()->not_your_post);
 
 
         //
