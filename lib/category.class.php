@@ -19,7 +19,7 @@ class Category extends Entity {
     public function get(string $field = null, mixed $value = null, string $select = '*', bool $cache = true): mixed
     {
         $cate = parent::get($field, $value, $select, $cache);
-
+        if ( ! $cate ) return [];
         $subs = $cate['subcategories'] ?? '';
         $cate['subcategories'] = [];
         if ( $subs ) {
