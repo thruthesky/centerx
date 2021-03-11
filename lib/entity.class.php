@@ -439,7 +439,8 @@ class Entity {
      * @param string $conj - 'AND' 또는 'OR' 등의 연결 expression
      * @return string
      */
-    private function sqlCondition(array $conds, string $conj = 'AND') {
+    private function sqlCondition(array $conds, string $conj = 'AND'): string
+    {
         $arc = [];
         foreach($conds as $k => $v )
         {
