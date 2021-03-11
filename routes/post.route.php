@@ -23,7 +23,9 @@ class PostRoute {
 
     $rets = [];
     foreach( $idxes as $idx ) {
-        $rets[] = post($idx)->get();
+	if ( post($idx)->exists == false ) continue;
+        $post = post($idx)->get();
+	$rets[] = $post;
     }
     return $rets;
 }
