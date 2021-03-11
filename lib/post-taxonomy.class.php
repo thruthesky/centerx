@@ -56,6 +56,11 @@ class PostTaxonomy extends Entity {
         $data = ['Y' => $Y, 'N' => $N];
         $record = entity(POSTS, $this->idx)->update($data);
 
+        
+        if ( isset($record[FILES]) ) {
+            $record[FILES] = files()->get($record[FILES], select: 'idx,userIdx,path,name,size');
+        }
+
         return $record;
     }
 
