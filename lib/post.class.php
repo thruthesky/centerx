@@ -330,11 +330,15 @@ class Post extends PostTaxonomy {
                 $post[FILES] = files()->get($post[FILES], select: 'idx,userIdx,path,name,size');
             }
 
-            if ( $post[USER_IDX] ) {
-                $post['user'] = user($post[USER_IDX])->postProfile();
-            }
-
+            
             $post['short_date_time'] = short_date_time($post['createdAt']);
+
+                if ( $post[USER_IDX] && user($post[USER_IDX])->exists() ) {
+                    $post['user'] = user($post[USER_IDX])->postProfile();
+                } else {
+                    $post['user'] = [];
+                }
+
         }
         return $post;
     }
