@@ -7,12 +7,24 @@
  *
  * @property-read string title
  * @property-read string content
+ * @property-read int createdAt
+ * @property-read int deletedAt
  */
 class Comment extends PostTaxonomy {
 
     public function __construct(int $idx)
     {
         parent::__construct($idx);
+
+        if ( $idx ) {
+            /// 코멘트 초기화
+            /// 현재 코멘트에 대해서만 초기화를 한다.
+            /// 현재 코멘트의 글 쓴이 정보나 파일(첨부 사진) 등을 로드하지 않는다.
+            if ( $this->notFound == false ) {
+                // $this->updateData('key', 'value');
+            }
+        }
+
     }
 
     /**
@@ -75,7 +87,9 @@ class Comment extends PostTaxonomy {
 
 
     /**
-     * @attention The entity.idx must be set. That means, it can only be called with `post(123)->update()`.
+     * Update comment
+     *
+     * The `$this->idx` must be set. That means, it can only be called with current entity(comment).
      *
      * @param array $in
      *
@@ -84,13 +98,9 @@ class Comment extends PostTaxonomy {
     public function update(array $in): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
-        if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
         if ( $this->isMine() == false ) return $this->error(e()->not_your_comment);
 
-
-        $updated = parent::update($in);
-        if ( isError($updated) ) return $updated;
-        return comment($updated[IDX])->get();
+        return parent::update($in);
     }
 
 
@@ -107,7 +117,6 @@ class Comment extends PostTaxonomy {
     public function markDelete(): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
-        if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
         if ( $this->isMine() == false ) return $this->error(e()->not_your_comment);
 
         parent::markDelete();
@@ -118,8 +127,11 @@ class Comment extends PostTaxonomy {
         return $this;
     }
 
-    public function response() {
-        if ( $this->hasError ) return $this;
+    /**
+     * @return array|string
+     */
+    public function response(): array|string {
+        if ( $this->hasError ) return $this->getError();
 
         $comment = $this->getData();
 
@@ -127,7 +139,7 @@ class Comment extends PostTaxonomy {
          * Get files only if $select includes 'files' field.
          */
         if ( isset($comment[FILES]) ) {
-            $comment[FILES] = files()->get($comment[FILES], select: 'idx,userIdx,path,name,size');
+            $comment[FILES] = files()->responseFromIdxes($comment[FILES]);
         }
 
 
@@ -139,7 +151,7 @@ class Comment extends PostTaxonomy {
     }
 
     /**
-     *
+     * @deprecated
      * @param string|null $field
      * @param mixed|null $value
      * @param string $select

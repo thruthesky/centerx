@@ -344,10 +344,19 @@ class Entity {
     /**
      * 현재 Taxonomy 를 유지한 채, entity 만 바꾸고자 할 때 사용.
      * 사실 이것은 read(123) 와 같은 것이다.
+     *
+     * 주의, 기존 에러 설정을 없앤다. 즉, 기존에 에러가 있었던 객체에 reset() 을 하면 에러가 사라지고,
+     * 입력된 $idx 로 초기화 된다.
+     *
      * @param int $idx
      * @return $this
+     *
+     * @example 삭제 실패한 코멘트를 다시 삭제 표시만 하기
+     *  isTrue($comment->delete()->getError() == e()->comment_delete_not_supported);
+     *  isTrue($comment->reset($comment->idx)->markDelete()->deletedAt > 0);
      */
     public function reset(int $idx): self {
+        $this->setError('');
         return $this->read($idx);
     }
 

@@ -73,6 +73,12 @@
   
 - Comment test
 
+- File entity test
+
+- Translation entity test
+
+- VoteHistory entity test
+
 
 - `next.***.test.php` 로 테스트 코드를 작성하고 있다.
   - user, category, post, comment 순서로 테스트

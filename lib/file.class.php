@@ -59,7 +59,30 @@ class File extends Entity {
         return $this->delete();
     }
 
+
     /**
+     * @return array|string
+     */
+    public function response(): array|string {
+        if ( $this->hasError ) return $this->getError();
+        $data = $this->getData();
+        $data['url'] = UPLOAD_URL . $data[PATH];
+        return $data;
+    }
+
+    public function responseFromIdxes(string $idxes) {
+        $arr = separateByComma($idxes);
+        $rets = [];
+        foreach( $arr as $idx ) {
+            $rets = files($idx)->response();
+        }
+        return $rets;
+
+    }
+
+    /**
+     * @deprecated
+     *
      * if `$files` is empty, then it returns the file information of $this->idx.
      * Or the $files must be a string of file.idx(es) separated by comma(,)
      *

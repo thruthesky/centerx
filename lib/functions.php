@@ -164,7 +164,6 @@ function get_domain_name(): string
  * @return string
  */
 function get_current_root_url(): string {
-    if ( defined('HOME_URL') ) return HOME_URL;
     if ( ! isset($_SERVER['HTTP_HOST']) ) return DEFAULT_HOME_URL;
     $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
     return $protocol . $_SERVER['HTTP_HOST'] . '/';
@@ -1108,10 +1107,11 @@ function table(string $taxonomy): string {
 
 function separateByComma($str) {
     $rets = [];
+    $str = trim($str);
     if ( $str ) {
-        $subs = explode(",", $str);
-        foreach( $subs as $sub ) {
-            $rets[] = trim($sub);
+        $parts = explode(",", $str);
+        foreach( $parts as $part ) {
+            $rets[] = trim($part);
         }
     }
     return $rets;

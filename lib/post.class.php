@@ -33,7 +33,8 @@ class Post extends PostTaxonomy {
         /// User 클래스 처럼 read() 함수를 Override 할 수도 있고, 간단하게 부모클래 에서 read() 가 호출 된 다음, 필요한 코드를 작성 할 수 있다.
         if ( $idx ) {
             /// 글 초기화
-            /// 현재 글에 대해서만 초기화를 한다. 자식 글(코멘트) 또는 파일(첨부 사진) 등을 로드하지 않는다.
+            /// 현재 글에 대해서만 초기화를 한다.
+            /// 현재 글의 글 쓴이 정보나, 자식 글(코멘트) 또는 파일(첨부 사진) 등을 로드하지 않는다.
             if ( $this->notFound == false ) {
                 if ( $this->path ) {
                     $url = get_current_root_url() . $this->path;
@@ -168,7 +169,7 @@ class Post extends PostTaxonomy {
      * - 아니면, 클라이언트에 전달할 글 내용
      */
     public function response(): array|string {
-        if ( $this->hasError ) return $this;
+        if ( $this->hasError ) return $this->getError();
         $post = $this->getData();
 
         // reset global comments container.
@@ -189,7 +190,7 @@ class Post extends PostTaxonomy {
          * Get files only if $select includes 'files' field.
          */
         if ( isset($post[FILES]) ) {
-            $post[FILES] = files()->get($post[FILES], select: 'idx,userIdx,path,name,size');
+            $post[FILES] = files()->responseFromIdxes($post[FILES]);
         }
 
         if ( $post[USER_IDX] ) {
