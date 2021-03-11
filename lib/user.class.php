@@ -35,6 +35,8 @@ class User extends Entity {
      * 회원 정보를 읽어서 data 에 보관한다.
      *
      * 회원 정보를 읽을 때, password 를 없애고, sessionId 를 추가한다.
+     * 참고, 현재 객체에 read() 메소드를 정의하면, 부모 클래스의 read() 메소드를 overridden 한다. 그래서 부모 함수를 호출해야한다.
+     * read() 메소드를 정의하지 않고, Post 클래스 처럼 그냥 생성자 안에서 처리를 해도 된다.
      *
      * @param int $idx
      * @return self
@@ -53,16 +55,20 @@ class User extends Entity {
     /**
      * Create a user account and return his profile.
      *
+     * 주의: 이 함수는 기존의 에러를 없애고, 이 함수에서 발생하는 에러를 저장한다.
+     *
      * @param array $in
      * @return User
      */
     public function register(array $in): self {
-
+        $this->resetError();
         if ( isset($in[EMAIL]) == false ) return $this->error(e()->email_is_empty);
         if ( !checkEmailFormat($in[EMAIL]) ) return $this->error(e()->malformed_email);
         if ( isset($in[PASSWORD]) == false ) return $this->error(e()->password_is_empty);
 
+
         $found = $this->exists([EMAIL=>$in[EMAIL]]);
+
         if ( $found ) return $this->error(e()->email_exists);
 
         $in[PASSWORD] = encryptPassword($in[PASSWORD]);
@@ -71,70 +77,64 @@ class User extends Entity {
     }
 
 
+
+
     /**
+     * 이 메일이 존재하면 true, 아니면 false 를 리턴한다.
+     * @param $email
+     * @return bool
+     */
+    public function emailExists($email): bool {
+        return count($this->search(conds: [EMAIL => $email])) == 1;
+    }
+
+    /**
+     * 회원 로그인
+     *
+     * 회원 로그인 성공하면, 현재 객체를 로그인한 사용자 것으로 변경한다.
      *
      * @param array $in
-     * @return mixed
+     * @return self
      *
      * 예제)
      * d(user()->login(email: '...', password: '...');
      */
-    public function login(array $in):mixed {
-        if ( isset($in[EMAIL]) == false || !$in[EMAIL] ) return e()->email_is_empty;
-        if ( isset($in[PASSWORD]) == false || !$in[PASSWORD] ) return e()->empty_password;
+    public function login(array $in): self {
+        if ( isset($in[EMAIL]) == false || !$in[EMAIL] ) return $this->error(e()->email_is_empty);
+        if ( isset($in[PASSWORD]) == false || !$in[PASSWORD] ) return $this->error(e()->empty_password);
 
-        $users = $this->search(select: PASSWORD, conds: [EMAIL => $in[EMAIL]]);
+        $users = $this->search(select: 'idx, password', conds: [EMAIL => $in[EMAIL]]);
         if ( !$users ) return $this->error(e()->user_not_found_by_that_email);
         $password = $users[0][PASSWORD];
 
         if ( ! checkPassword($in[PASSWORD], $password) ) return $this->error(e()->wrong_password);
 
         // 회원 정보 및 메타 정보 업데이트
+        // 로그인을 할 때, 추가 정보를 저장한다. 이 때, 비밀번호는 저장되지 않게 한다.
         unset($in[PASSWORD]);
 
-        // 로그인을 할 때, 추가 정보를 저장한다.
+        // 회원 로그인 성공하면, 현재 객체를 로그인한 사용자 것으로 변경한다.
+        $this->idx = $users[0][IDX];
         $this->update($in);
 
-        $profile = $this->profile();
-        point()->login($profile);
-        return $profile;
+        point()->login($this->profile());
+        return $this;
     }
 
 
 
-
-    public function loginOrRegister(array $in): array|string {
+    /**
+     *
+     * @param array $in
+     * @return self
+     */
+    public function loginOrRegister(array $in): self {
         $re = $this->login($in);
-        if ( $re == e()->user_not_found_by_that_email ) {
+        if ( $re->getError() == e()->user_not_found_by_that_email ) {
             return $this->register($in);
         } else {
             return $re;
         }
-//        d($re);
-//        if ( isError($re) == false ) return $re;
-//        else return $this->register($in);
-    }
-
-    /**
-     *
-     * @attention User may not be logged in. So, login check must be done before calling this method like in route.
-     *  But $this->idx must be set.
-     *
-     *
-     * @param array $in
-     * @return self|string
-     * - error_idx_not_set if current instance has not `idx`.
-     * - profile on success.
-     *
-     * @example
-     *  user(123)->update();
-     *  login()->update()
-     */
-    public function update(array $in): self {
-        if ( ! $this->idx ) return $this->error(e()->idx_not_set);
-        parent::update($in);
-        $this->init();
-        return $this->profile();
     }
 
 
@@ -151,6 +151,8 @@ class User extends Entity {
     }
 
     /**
+     * Alias of response()
+     *
      * @return array|string
      * 예제)
      * d( user(48)->profile() );
@@ -161,8 +163,9 @@ class User extends Entity {
 
     /**
      * 글/코멘트 용으로 전달할(보여줄) 간단한 프로필 정보를 리턴한다.
+     * @return array
      */
-    public function postProfile() {
+    public function postProfile(): array {
         return [
             'idx' => $this->idx,
             'name' => $this->name,
@@ -174,36 +177,50 @@ class User extends Entity {
 
 
 
-
+    /**
+     * @param $p
+     */
     public function setPoint($p) {
         $this->update([POINT => $p]);
     }
-    public function getPoint() {
+
+
+
+    /**
+     * @return int
+     */
+    public function getPoint(): int {
         if ( $this->idx ) {
-            return $this->get(select: POINT, cache: false)[POINT];
+            return $this->point;
         } else {
             return 0;
         }
     }
 
+
+
+
+
     /**
      * Returns User instance by idx or email.
-     * @param int|string $uid
+     * @param int|string $uid user idx or email
      * @return User
      *
-     *  - If there is no user by email, then it returns User(0).
+     *  - If there is no user by email, then error will be set.
      *
      * @example
      *      user()->by($email)->setPoint(0);
      */
     public function by(int|string $uid): User {
         if ( is_int($uid) ) return user($uid);
-        $row = parent::get(EMAIL, $uid);
-        if ( $row ) return user($row[IDX]);
-        return user();
+        return $this->find([EMAIL => $uid]);
     }
 
+
     /**
+     * @todo This is a optional switching (on/off) function. Make it generic like `entity()->on(OPTION)`, `entity()->off(OPTION)
+     * @todo Move the function to route.
+     *
      * Update User Option Setting - to set userMeta[OPTION] to Y or N
      * if $in[OPTION] is null or 'Y' then change it to N
      * if $in[OPTION] is 'N' then change it to Y
@@ -224,6 +241,32 @@ class User extends Entity {
     }
 
 
+
+
+    /**
+     *
+     * @deprecated 이 함수 굳이 필요 없음
+     * @attention User may not be logged in. So, login check must be done before calling this method like in route.
+     *  But $this->idx must be set.
+     *
+     *
+     * @param array $in
+     * @return self|string
+     * - error_idx_not_set if current instance has not `idx`.
+     * - profile on success.
+     *
+     * @example
+     *  user(123)->update();
+     *  login()->update()
+     */
+//    public function update(array $in): self {
+//        if ( ! $this->idx ) return $this->error(e()->idx_not_set);
+//        parent::update($in);
+//        return $this->profile();
+//    }
+
+
+
 }
 
 /**
@@ -239,18 +282,16 @@ function user(int $idx=0): User
 }
 
 /**
- * Returns User class instance with the login user. Or optionally, meta value of user field.
+ * Returns User class instance of the login user. Or optionally, returns meta value of user field.
  *
- * Note, that it does not only returns `wc_users` table, but also returns from `wc_metas` table.
- * Use `$cache` to get critical information. Like getting user point before updating it.
+ * Note, that it returns Not Only user's field, but also user's meta field.
  *
  * @param string|null $field
- * @param bool $cache
  * @return User|int|string|array|null
  *
  * Example)
  *  d(user()->profile()); // Result. error_idx_not_set
- *  d(login()->profile()); // Result. it will return user profile if the user has logged in or erorr.
+ *  d(login()->profile()); // Result. it will return user profile if the user has logged in or error.
  *
  * You may check if user had logged in before calling this method.
  *
@@ -258,19 +299,14 @@ function user(int $idx=0): User
  *  login('color', false); // returns color meta.
  *  login()->color; // returns color meta also.
  */
-function login(string $field=null, bool $cache=true): User|int|string|array|null {
+function login(string $field=null): User|int|string|array|null {
     global $__login_user_profile;
     if ( $field ) {             // Want to get only 1 field?
         if (loggedIn()) {       // Logged in?
-            if ($cache) {       // Want cached value?
-                return $__login_user_profile[$field] ?? null;
-            } else {            // Real value from database.
-                $profile = login()->profile();
-                if ( isset($profile[$field]) ) { // Has field?
-                    return $profile[$field];
-                } else {
-                    return null; // No field.
-                }
+            if ( isset($profile[$field]) ) { // Has field?
+                return $profile[$field];
+            } else {
+                return null; // No field.
             }
         } else {
             return null;        // Not logged in to get a field.

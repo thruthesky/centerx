@@ -61,7 +61,17 @@
 
 - 여기에 기록하는 내용은 결국은 문서화되어야 한다.
 
-- User, Category, Post, Comment 등에서 1개의 값(문자열, 숫자, 불린, 배열)을 리턴하는 경우가 아니면, 모든 crud 함수 및 기타 함수에서 self 를 리턴한다.
+- 업데이트 계획
+  - 플러터와 CenterX 모두 main branch 는 놔 두고,
+  - 플러터에서도 next 브랜치를 만들고, CenterX next branch 로 바로 접속 하도록 한다.
+
+- @done User test,
+  
+- @done Category,
+  
+- @done Post
+  
+- Comment 등에서 1개의 값(문자열, 숫자, 불린, 배열)을 리턴하는 경우가 아니면, 모든 crud 함수 및 기타 함수에서 self 를 리턴한다.
 
 
 - `next.***.test.php` 로 테스트 코드를 작성하고 있다.
@@ -288,6 +298,10 @@ define('DOMAIN_THEMES', [
 
 - Meta data is saved through serialize/unserialze.
 
+
+- user()->profile() 또는 user()->response() 의 결과는 배열이다. 그리고 profile 이라 부르는 데이터는 사용자 정보를 배열로 담은 것을 말한다.
+  - 사용자 로그인 정보를 profile 로 글로벌 변수 $__login_user_profile 에 저장한다. 즉, 로그인 한 사용자 정보를 배열로 보관하는 것이다.
+  - 클라이언트 엔드에서 API 호출을 하는 경우에도 이 profile 정보를 가져오는 것이다.
 
 
 

@@ -174,3 +174,14 @@ if ( !defined('NAVER_CLIENT_SECRET') ) define('NAVER_CLIENT_SECRET', 'JzWh7zPeJF
 if ( !defined('NAVER_CALLBACK_URL') ) define('NAVER_CALLBACK_URL', urlencode('https://main.philov.com/wp-content/themes/sonub/callbacks/naver-login.callback.php'));
 if ( !defined('NAVER_API_URL') ) define('NAVER_API_URL', "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=".NAVER_CLIENT_ID."&redirect_uri=".NAVER_CALLBACK_URL."&state=1");
 
+
+/**
+ * 현재 홈페이지 URL 을 강제로 지정한다.
+ *
+ * 만약, HOME_URL 에 강제 지정을 하지 않으면, 현재 접속 URL 이 홈 URL 로 된다.
+ * 특히, CLI 로 작업을 하거나 테스트를 하는 경우, 현재 접속 URL 값을 찾을 수 없으며, HOME_URL 이 안되어져 있는 경우, 기본 값인 DEFAULT_HOME_URL 상수가 사용된다.
+ * 주의, URL 이 슬래시(/)로 끝나야 한다.
+ */
+//if ( !defined('HOME_URL') ) define('HOME_URL', 'https://centerx.com/');
+
+

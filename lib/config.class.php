@@ -68,7 +68,7 @@ function config(int|string $code='', mixed $default_value=null): Config|int|stri
             else return $got;
         }
     }
-    return new Config();
+    return new Config('config');
 }
 
 

@@ -94,23 +94,39 @@ class Comment extends PostTaxonomy {
 
 
 
-    public function markDelete(): self|string {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( ! $this->idx ) return e()->idx_is_empty;
-        if ( $this->exists() == false ) return e()->post_not_exists;
-        if ( $this->isMine() == false ) return e()->not_your_comment;
+    public function markDelete(): self {
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
+        if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
+        if ( $this->isMine() == false ) return $this->error(e()->not_your_comment);
 
-
-        $record = parent::markDelete();
-        if ( isError($record) ) return $record;
-        $this->update([TITLE => '', CONTENT => '']);
-
+        parent::markDelete();
+        parent::update([TITLE => '', CONTENT => '']);
 
         point()->forum(POINT_COMMENT_DELETE, $this->idx);
 
-        return $this->get();
+        return $this;
     }
 
+    public function response() {
+        if ( $this->hasError ) return $this;
+
+        $comment = $this->getData();
+
+        /**
+         * Get files only if $select includes 'files' field.
+         */
+        if ( isset($comment[FILES]) ) {
+            $comment[FILES] = files()->get($comment[FILES], select: 'idx,userIdx,path,name,size');
+        }
+
+
+        if ( $comment[USER_IDX] ) {
+            $comment['user'] = user($comment[USER_IDX])->postProfile();
+        }
+
+        return $comment;
+    }
 
     /**
      *

@@ -77,7 +77,7 @@ class Point {
 
 
     public function get(int $categoryIdx, string $reason) {
-        return category($categoryIdx)->get()[$reason];
+        return category($categoryIdx)->getAttribute($reason);
     }
 
     public function setPostCreate($category, $point) {
@@ -85,7 +85,7 @@ class Point {
     }
 
     public function getPostCreate($category) {
-        return category($category)->get()[POINT_POST_CREATE];
+        return category($category)->POINT_POST_CREATE;
     }
 
     public function setCommentCreate($category, $point) {
@@ -93,7 +93,7 @@ class Point {
     }
 
     public function getCommentCreate(int|string $category) {
-        return category($category)->get()[POINT_COMMENT_CREATE];
+        return category($category)->POINT_COMMENT_CREATE;
     }
 
     public function setPostDelete($category, $point) {
@@ -101,7 +101,7 @@ class Point {
     }
 
     public function getPostDelete($category) {
-        return category($category)->get()[POINT_POST_DELETE];
+        return category($category)->POINT_POST_DELETE;
     }
 
     public function setCommentDelete($category, $point) {
@@ -109,7 +109,7 @@ class Point {
     }
 
     public function getCommentDelete($category) {
-        return category($category)->get()[POINT_COMMENT_DELETE];
+        return category($category)->POINT_COMMENT_DELETE;
     }
 
     public function setCategoryHour($category, $hour) {
@@ -118,7 +118,7 @@ class Point {
 
 
     public function getCategoryHourLimit(int|string $category) {
-        return category($category)->get()[POINT_HOUR_LIMIT];
+        return category($category)->POINT_HOUR_LIMIT;
     }
 
     public function setCategoryHourLimitCount($category, $count) {
@@ -126,14 +126,14 @@ class Point {
     }
 
     public function getCategoryHourLimitCount(int|string $category) {
-        return category($category)->get()[POINT_HOUR_LIMIT_COUNT];
+        return category($category)->POINT_HOUR_LIMIT_COUNT;
     }
 
     public function setCategoryDailyLimitCount($category, $count) {
         category($category)->update([POINT_DAILY_LIMIT_COUNT => $count]);
     }
     public function getCategoryDailyLimitCount(int|string $category) {
-        return category($category)->get()[POINT_DAILY_LIMIT_COUNT];
+        return category($category)->POINT_DAILY_LIMIT_COUNT;
     }
 
     public function enableCategoryBanOnLimit(int|string $category) {
@@ -226,7 +226,7 @@ class Point {
             'toUserPointAfter' => user($toUserIdx)->getPoint(),
         ];
         $record = pointHistory()->create($history);
-        return $record[IDX];
+        return $record->idx;
     }
 
     public function register(array $profile) {
@@ -257,14 +257,18 @@ class Point {
 
     /**
      * 글 뿐만아니라, 코멘트나 기타 posts 테이블을 사용하는 모든 것이 된다.
-     * 추천이 아니라, 쓰기/삭제이기 때문에, 상대방이 없이 나에게만 적용이 된다. 그래서 toUserIdx 와 toUserPointApply 만 업데이트 된다.
+     * 추천이 아니라, 쓰기/삭제이기 때문에, 내가 내 자신에게만 적용한다. 그래서 다른 사람의 글이면 그냥 리턴한다.
+     * 그리고 toUserIdx 와 toUserPointApply 만 업데이트 된다.
+     *
      * @param string $reason
      * @param int|string $idx
+     * @return int|string
      */
     public function forum(string $reason, int $idx): int|string {
-        $entity = entity(POSTS, $idx);
-        if ( $entity->isMine() == false ) return 0; // 내 글에만 추천
-        $categoryIdx = $entity->value(CATEGORY_IDX);
+
+        $post = post($idx);
+        if ( $post->isMine() == false ) return 0;
+        $categoryIdx = $post->categoryIdx;
 
         // 제한에 걸렸으면, 에러 코드 리턴
         $re = $this->checkCategoryLimit($categoryIdx);
@@ -276,17 +280,17 @@ class Point {
         $point = $this->get($categoryIdx, $reason);
 
         // 포인트 추가하기
-        $applied = $this->addUserPoint(my(IDX), $point );
+        $applied = $this->addUserPoint(login()->idx, $point );
 
 //        d("reason: $reason, toUserIdx: " . $entity->userIdx() . ", toUserPointApply: $applied, taxonomy: posts");
 
         // 포인트 기록 남기기
         return $this->log(
             reason: $reason,
-            toUserIdx: $entity->userIdx(),
+            toUserIdx: $post->userIdx,
             toUserPointApply: $applied,
             taxonomy: POSTS,
-            entity: $entity->idx,
+            entity: $post->idx,
             categoryIdx: $categoryIdx,
         );
     }

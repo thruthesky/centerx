@@ -10,12 +10,18 @@ use function ezsql\functions\{
  * Class Entity
  *
  * @property-read bool hasError 에러가 있으면 true
+ * @property-read int userIdx 테이블에 userIdx 가 있는 경우만 사용.
+ * @property-read bool notFound 처음 객체를 초기화 할 때, $this->idx 에 지정된 레코드가 없으면 참을 리턴한다.
  *
  * Taxonomy 는 데이터의 종류로서 하나의 테이블이라 생각하면 된다.
  * Entity 는 하나의 레코드이다.
  * Entity 를 객체화 할 때, $taxonomy 값(Taxonomy)은 필수이며, $idx (Entity 또는 레코드 번호) 값이 입력되면,
  *  해당 테이블의 해당 레코드 및 연결된 메타 데이터를 읽어 $this->data 에 저장한다.
- *  만약, $idx 에 해당하는 entity 를 찾을 수 없다면, entity_not_found 에러가 설정된다.
+ *  만약, $idx 에 해당하는 entity 를 찾을 수 없다면, entity_not_found 에러가 설정된다. 그리고 이는 entity(123)->notFound 와 같이 해서 확인 할 수 있다.
+ *  즉, category(123), user(123) 과 같이 했을 때, 해당 $idx 에 맞는 레코드가 없으면 에러가 바로 설정이 된다.
+ *  따라서, category(123)->exists() == false 와 같이 할 필요 없고, category(123)->hasError 와 같이 하면 된다.
+ *  그런데, 카테고리가 존재하는지 안하는지를 확인하기 위해서 category(123) 과 같이 초기화하면, 레코드 전체를 읽으므로 쿼리가 느릴 수 있다.
+ *  따라서, 존재하는지 안하는지 확인은 category()->exists([IDX => 123]) 이 낳다.
  */
 class Entity {
 
@@ -65,18 +71,49 @@ class Entity {
     public function getError(): string {
         return $this->error;
     }
+    public function resetError(): self {
+        $this->error = '';
+        return $this;
+    }
 
     /**
      * 주의: 에러가 있으면 빈 배열이 리턴된다.
+     * 따라서, 한번 에러가 발생하면, 더 이상 현재 객체를 사용하지 못한다. 그래서 같은 idx 로 새로운 객체를 만들어 다시 작업을 해야 한다.
+     * 에러가 있는 상태에서, entity 삭제시, not your entity 등의 에러가 날 수 있다.
+     * 이 부분에 실수 할 수 있으니 유의한다.
+     *
      * @return array
      */
-    public function getData() {
+    public function getData(): array
+    {
         if ( $this->hasError ) return [];
         return $this->data;
     }
+
+    public function getAttribute($attr) {
+        if ( $this->hasError ) return null;
+        if ( isset($this->data[$attr]) ) return isset($this->data[$attr]);
+        else return null;
+    }
+
+
     public function setData(array $data) {
         $this->data = $data;
     }
+
+    /**
+     * $this->data 배열을 업데이트한다. 키가 존재하지 않으면 추가한다.
+     * @param $k
+     * @param $v
+     *
+     * @example
+     * category(123)->updateData('subcategories', separateByComma($this->subcategories));
+     */
+    public function updateData($k, $v) {
+        $this->data[$k] = $v;
+    }
+
+
 
 
 
@@ -107,6 +144,10 @@ class Entity {
         if ( $name == 'hasError' ) {
             return $this->error !== '';
         }
+        /// 처음 객체를 초기화 했을 때, 지정된 idx 에 해당하는 레코드를 찾지 못하면 곧 바로 entity_not_found 가 설정되는데, $this->notFound 가 참을 리턴한다.
+        if ( $name == 'notFound' ) {
+            return $this->getError() == e()->entity_not_found;
+        }
 
         /// 필드 값을 가져오려고 할 때, 현재 객체에 에러가 있으면, null 을 리턴.
         if ( $this->hasError ) return null;
@@ -117,6 +158,15 @@ class Entity {
     }
 
 
+    /**
+     * 주의: $this->data 배열 이 외의 것은 이 함수로 호출되지 않는다. 실제 존재하는 멤버 변수는 이 함수로 호출되지 않는다.
+     * @param $name
+     * @return bool
+     */
+    public function __isset($name): bool
+    {
+        return isset($this->data[$name]);
+    }
 
 
 
@@ -135,6 +185,8 @@ class Entity {
      *
      * 주의: $in 배열 변수의 키와 레코드 필드 명이 동일해야합니다.
      * 참고: 만약, 레코드 필드명에 존재하지 않는 키가 있으면, meta 테이블의 code, value 에 키/값이 저장된다.
+     *
+     * 생성 후, 현재 객체에 보관한다. $this->idx 도 현재 생성된 객체로 변경된다.
      *
      * @param array $in
      *
@@ -186,6 +238,7 @@ class Entity {
 
         addMeta($this->taxonomy, $idx, $this->getMetaFields($in));
 
+
         /// 현재 객체에 정보 저장.
         $this->read($idx);
 
@@ -201,15 +254,16 @@ class Entity {
 
     /**
      * Update an entity.
-     *
      * @attention entity.idx must be set.
      *
-     * `idx` 가 지정되어야 한다.
-     * $in 이 빈 값으로 들어 올 수 있다. 그러면 updatedAt 만 업데이트를 한다.
+     * 업데이트를 하기 위해서는 `$this->idx` 가 지정되어야 하며, $in 에 업데이트 할 값을 지정하면 된다.
+     * 참고, $in 이 빈 값으로 들어 올 수 있다. 그러면 updatedAt 만 업데이트를 한다.
      *
      * Taxonomy 에 존재하지 않는 필드는 meta 에 자동 저장(추가 또는 업데이트)된다.
      *
-     * 참고로, 'idx=123' 과 같이 'idx' 로 저장된, 캐시 정보를 삭제한다. 즉, 다음 사용 할 때, 다시 캐시를 한다.
+     * 참고, 업데이트 후 $this->read() 를 통해서 현재 객체의 $this->data 에 DB 로 부터 새로 데이터를 다시 읽는다.
+     * 참고, 이전에 에러가 있었으면 그냥 현재 객체를 리턴한다.
+     *
      * @param $in
      *
      * @return self
@@ -223,6 +277,10 @@ class Entity {
      * 예제) 로그인 한 사용자의 프로필 정보를 FORM 으로 입력 받아 수정
      *  login()->update(in());
      *  d(login()->profile());
+     *
+     * 예제)
+     *  $this->idx = 123;
+     *  $this->update(['color' => 'blue']);
      *
      * @todo 훅 처리
      */
@@ -246,36 +304,40 @@ class Entity {
     /**
      * 레코드 삭제
      *
-     * $this->data 는 빈 배열로 되지만, $this->idx 값은 유지한다.
+     * 참고, 이전에 에러가 발생했으면, 삭제하지 않고, 그냥 현재 객체를 리턴한다.
+     * 참고, 삭제 후, $this->data 는 빈 배열로 되지만, $this->idx 값은 유지한다.
+     * 참고, 에러가 있으면 에러가 설정된다.
      *
      * @return self
+     *
+     * @todo entity 레코드 뿐만아니라, 메타 데이터도 삭제를 해야한다. 그리고 첨부 파일도 같이 삭제를 해야 한다.
      */
     public function delete(): self {
         if ( $this->hasError ) return $this;
         if ( ! $this->idx ) return $this->error(e()->idx_not_set);
         $re = db()->delete($this->getTable(), eq(IDX, $this->idx));
         if ( $re === false ) return $this->error(e()->delete_failed);
-        $this->data = [];
+        $this->setData([]);
         return $this;
     }
 
 
     /**
-     * It does not delete the record. It only updates deletedAt.
+     * It does not delete the record. But mark it as deleted by updating deletedAt.
      *
      * You may empty the content of the record when that is deleted.
      *
      * @attention `idx` must be set.
      *
-     * @return array|string
+     * @return self
      * - error string on error.
      * - the deleted record on success.
      *
      */
-    public function markDelete(): self|string {
+    public function markDelete(): self {
         if ( $this->hasError ) return $this;
-        if ( ! $this->idx ) return e()->idx_not_set;
-        if ( $this->deletedAt > 0 ) return e()->entity_deleted_already;
+        if ( ! $this->idx ) return $this->error(e()->idx_not_set);
+        if ( $this->deletedAt > 0 ) return $this->error(e()->entity_deleted_already);
         return self::update([DELETED_AT => time()]);
     }
 
@@ -298,6 +360,9 @@ class Entity {
      *
      * $idx 가 주어졌는데, 레코드를 찾을 수 없다면, entity_not_found 에러를 저장한다.
      *
+     * 주의: 이 함수 호출 이전에 에러가 있었으면, 그대로 리턴한다. 즉, 에러가 있으면 이 함수를 사용 할 수가 없다.
+     * 따라서, login(), register() 등의 함수에서 필요한 작업을 하기 전에 미리 이전 에러를 초기화 해 줄 필요가 있다.
+     *
      * @usage 처음 객체 생성시, read() 를 한번 호출한다.
      *  그 후에 $idx 를 주어서 $entity->read(123) 과 같이 호출 하면, entity.idx 와 data 를 바꾼다.
      *  또는 데이터베이스로 부터 새로 정보를 읽고자 할 때 사용한다.
@@ -316,11 +381,11 @@ class Entity {
         $record = db()->get_row($q, ARRAY_A);
         if ( $record ) {
             $meta = getMeta($this->taxonomy, $record['idx']);
-            $this->data = array_merge($record, $meta);
+            $this->setData(array_merge($record, $meta));
             $this->idx = $this->data['idx'];
         } else {
             $this->error( e()->entity_not_found );
-            $this->data = [];
+            $this->setData([]);
         }
 
         return $this;
@@ -338,6 +403,12 @@ class Entity {
      *
      * $this->idx 가 설정되어야 한다. 아니면 false 리턴.
      *
+     *
+     * 참고, 카테고리가 존재하는지 안하는지를 확인하기 위해서 category(123) 과 같이 초기화하면, 레코드 전체를 읽으므로 쿼리가 느릴 수 있다.
+     * 따라서, 존재하는지 안하는지 확인은 category()->exists([IDX => 123]) 이 낳다.
+     * 예) 카테고리 존재하면 에러
+     *  if ( category()->exists([ ID=>$in[ID] ]) ) return $this->error(e()->category_exists);
+     *
      * @param array $conds
      * @param string $conj
      * @return bool
@@ -347,7 +418,7 @@ class Entity {
      */
     public function exists(array $conds = [], string $conj = 'AND'): bool {
         if ( $conds ) {
-            $arr = $this->search(conds: $conds, conj: $conj);
+            $arr = self::search(conds: $conds, conj: $conj);
             return count($arr) > 0;
         }
         if ( ! $this->idx ) return false;
@@ -362,6 +433,30 @@ class Entity {
         return !$this->exists();
     }
 
+    /**
+     * 특정 레코드를 1개 찾아 현재 객체로 넣어 리턴한다.
+     *
+     * $this->exits() 와 다른 점은 exists() 는 주어진 조건에 맞는 레코드가 존재하는지 확인하여 boolean 을 리턴한다.
+     *  만약, 주어진 조건이 없으면 현재 $this->idx 의 레코드가 존재하는지 확인해서 boolean 을 리턴한다.
+     *
+     * $this->find() 는 주어진 조건에 맞는 레코드 들 중 1개를 현재 객체에 넣어, 현재 객체를 리턴한다.
+     *  이 때, 현재 객체 $this->idx 는 무시된다.
+     *  만약, 주어진 조건에 레코드를 찾지 못하면 에러가 설정된다.
+     *
+     * @param array $conds
+     * @param string $conj
+     * @return $this
+     *
+     * @example
+     *  $user = user()->find([EMAIL => $uid]); // Find user by email
+     */
+    public function find(array $conds, string $conj = 'AND'): self {
+        $arr = $this->search(conds: $conds, conj: $conj);
+        if ( ! $arr ) return $this->error(e()->entity_not_found);
+        $idx = $arr[0][IDX];
+        return $this->read($idx);
+    }
+
 
 
 
@@ -370,6 +465,7 @@ class Entity {
      * Returns true if the entity is belong to the login user.
      *
      * @attention The entity(entity) idx must be set and the record must have `userIdx` field or false will be returned.
+     *   So, login()->isMine() will not work since user record has no `userIdx` field.
      *
      * @usage Use this method to check if the post or comment, file are belong to the login user.
      *
@@ -378,12 +474,12 @@ class Entity {
     public function isMine(): bool {
         if ( notLoggedIn() ) return false;
         if ( ! $this->idx ) return false;
-        $record = self::get(cache: false);
-        if ( ! $record ) return false;
-        if ( ! isset($record) ) return false;
-        if ( ! $record[USER_IDX] ) return false;
-        return $record[USER_IDX] == my(IDX);
+
+        if ( $this->userIdx == null ) return false;
+
+        return $this->userIdx == login()->idx;
     }
+
 
     /**
      * 현재 Taxonomy 를 검색해서 idx 를 배열로 리턴한다.
@@ -738,15 +834,15 @@ class Entity {
     }
 
     /**
-     * @deprecated
+     * @deprecated - use $this->userIdx
      * 현재 entity 의 taxonomy 가 users 라면, 그냥 $this->idx 를 리턴하고,
      * 그렇지 않으면 entity 의 userIdx 필드를 리턴한다.
      * @return int
      */
-    public function userIdx(): int {
-        if ( $this->taxonomy == USERS ) return $this->idx;
-        else return $this->value(USER_IDX);
-    }
+//    public function userIdx(): int {
+//        if ( $this->taxonomy == USERS ) return $this->idx;
+//        else return $this->value(USER_IDX);
+//    }
 
 }
 

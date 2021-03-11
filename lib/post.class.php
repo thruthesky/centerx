@@ -1,94 +1,47 @@
 <?php
 
+
+/**
+ * Class Post
+ *
+ * @property-read string $rootIdx;
+ * @property-read string $parentIdx;
+ * @property-read string $categoryIdx;
+ * @property-read string $userIdx;
+ * @property-read string $title;
+ * @property-read string $path;
+ * @property-read string $content;
+ * @property-read string $url;
+ * @property-read string $y;
+ * @property-read string $n;
+ * @property-read string $countryCode;
+ * @property-read string $province;
+ * @property-read string $city;
+ * @property-read string $address;
+ * @property-read string $zipcode;
+ * @property-read string $createdAt;
+ * @property-read string $updatedAt;
+ * @property-read string $deletedAt;
+ */
 class Post extends PostTaxonomy {
-    public string $rootIdx;
-    public string $parentIdx;
-    public string $categoryIdx;
-    public string $userIdx;
-    public string $title;
-    public string $path;
-    public string $content;
-    public string $url;
-    public string $y;
-    public string $n;
-    public string $countryCode;
-    public string $province;
-    public string $city;
-    public string $address;
-    public string $zipcode;
-    public string $createdAt;
-    public string $updatedAt;
-    public string $deletedAt;
-
-    private array $data = [];
-
-
-    /// 글 초기화 할 때, 입력된 idx 는 현재 글에 대한 정보만 초기화 한다. 코멘트나 파일 정보는 초기화하지 않는다.
-    /// new Post(123) 과 같이 자주 호출하는데, 이 때 매번, 코멘트와 파일 정보를 초기화하면, DB 접속을 너무 많이 하기 때문이다.
-    private bool $inInit = false;
 
     public function __construct(int $idx)
     {
         parent::__construct($idx);
-        $this->init();
+
+        /// read() 함수로 초기화 된 후 설정.
+        /// User 클래스 처럼 read() 함수를 Override 할 수도 있고, 간단하게 부모클래 에서 read() 가 호출 된 다음, 필요한 코드를 작성 할 수 있다.
+        if ( $idx ) {
+            /// 글 초기화
+            /// 현재 글에 대해서만 초기화를 한다. 자식 글(코멘트) 또는 파일(첨부 사진) 등을 로드하지 않는다.
+            if ( $this->notFound == false ) {
+                if ( $this->path ) {
+                    $url = get_current_root_url() . $this->path;
+                    $this->updateData('url', $url);
+                }
+            }
+        }
     }
-    private function init() {
-
-        //
-        $this->inInit = true;
-        $p = $this->get();
-        if ( ! $p ) return;
-
-        $this->data = $p;
-
-        $this->rootIdx = $p[ROOT_IDX];
-        $this->parentIdx = $p[PARENT_IDX];
-        $this->categoryIdx = $p[CATEGORY_IDX];
-        $this->userIdx = $p[USER_IDX];
-        $this->title = $p[TITLE];
-        $this->path = $p['path'];
-        $this->content = $p[CONTENT];
-        $this->url = $p['url'];
-        $this->y = $p['Y'];
-        $this->n = $p['N'];
-        $this->countryCode = $p['countryCode'];
-        $this->province = $p['province'];
-        $this->city = $p['city'];
-        $this->address = $p['address'];
-        $this->zipcode = $p['zipcode'];
-        $this->createdAt = $p[CREATED_AT];
-        $this->updatedAt = $p[UPDATED_AT];
-        $this->deletedAt = $p[DELETED_AT];
-
-
-        $this->inInit = false;
-    }
-    /**
-     * 부모 getter 를 사용한다.
-     * 필드를 가져오는 magic getter
-     *
-     * posts 테이블과 meta 테이블에서 데이터를 가져오고, 레코드가 없으면 null 를 리턴한다.
-     * @attention 주의 할 것은,
-     *  1. 객체 초기화를 할 때, init() 함수에서
-     *  2. posts 테이블의 필드는 멤버 변수로 설정하고,
-     *  3. 그리고 posts 테이블과 meta 테이블의 모든 값은 $data 에 저장한다.
-     *  4. magic getter 로 값을 읽을 때, 새로 DB 에서 가져오는 것이 아니라, (멤버 변수로 설정되지 않았다면, 즉, meta 의 경우,) $data 에서 가져온다.
-     *     (참고로, 멤버 변수는 magic getter 호출에 사용되지 않는다.)
-     *  5 $this->update() 를 하면, 다시 init() 을 호출 한다.
-     *
-     *
-     * @param $name
-     * @return mixed
-     *
-     * @example
-     *  $post->update(['eat' => 'apple pie']);
-     *  isTrue($post->eat == 'apple pie', 'Must eat apple pie');
-     */
-//    public function __get($name) {
-//        $data = $this->data;
-//        if ( $data && isset($data[$name]) ) return $data[$name];
-//        else return null;
-//    }
 
 
     /**
@@ -99,19 +52,20 @@ class Post extends PostTaxonomy {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( !isset($in[CATEGORY_ID]) ) return $this->error(e()->category_id_is_empty);
         $category = category($in[CATEGORY_ID]);
-        if ( $category->exists() == false ) return $this->error(e()->category_not_exists);
+        if ( $category->notFound ) return $this->error(e()->category_not_exists);
+
+        // Category ID 는 저장하지 않는다.
         unset($in[CATEGORY_ID]);
 
-        //
+        // 대신, Category idx 를 저장한다.
         $in[CATEGORY_IDX] = $category->idx;
 
-        //
+        // 회원 번호
         $in[USER_IDX] = login()->idx;
 
 
         // 제한에 걸렸으면, 에러 리턴.
-
-        if ( $category->v(BAN_ON_LIMIT) == 'Y' ) {
+        if ( $category->BAN_ON_LIMIT == 'Y' ) {
             $re = point()->checkCategoryLimit($category->idx);
             if ( isError($re) ) return $this->error($re);
         }
@@ -119,9 +73,8 @@ class Post extends PostTaxonomy {
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
         $pointToCreate = point()->getPostCreate($category->idx);
         if ( $pointToCreate < 0 ) {
-            if ( my(POINT) < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
+            if ( login()->point < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
         }
-
 
 
         // @todo check if user has permission
@@ -129,21 +82,15 @@ class Post extends PostTaxonomy {
         // @todo check if too many comment creation.
 
         // Temporary path since path must be unique.
-        $in[PATH] = 'path-' . md5(my(IDX)) . md5(time());
-        $post = parent::create($in);
-        if ( isError($post) ) return $post;
-
-        // Set idx
-        $this->setIdx($post[IDX]);
+        $in[PATH] = 'path-' . md5(login()->idx) . md5(time());
+        parent::create($in);
+        if ( $this->hasError ) return $this;
 
         // Update path
-        $path = $this->getPath($post);
-        $this->update([PATH => $path]);
+        $path = $this->getPath();
+        parent::update([PATH => $path]);
 
-        $post = $this->get();
-
-
-        point()->forum(POINT_POST_CREATE, $post[IDX]);
+        point()->forum(POINT_POST_CREATE, $this->idx);
 
 
 
@@ -159,13 +106,13 @@ class Post extends PostTaxonomy {
             }
         }
         $data = [
-            'senderIdx' => my(IDX),
-            'idx' => $post[IDX],
+            'senderIdx' => login()->idx,
+            'idx' => $this->idx,
             'type' => 'post'
         ];
-        sendMessageToTopic(NOTIFY_POST . $category->value(ID), $title, $in[CONTENT] ?? '', $post[PATH], $data);
+        sendMessageToTopic(NOTIFY_POST . $category->id, $title, $in[CONTENT] ?? '', $this->url, $data);
 
-        return $post;
+        return $this;
     }
 
     /**
@@ -181,12 +128,7 @@ class Post extends PostTaxonomy {
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
         if ( $this->isMine() == false ) return $this->error(e()->not_your_post);
 
-
-        //
-        $up = parent::update($in);
-        $this->init();
-        return $this->get();
-//        return post($up[IDX])->get();
+        return parent::update($in);
     }
 
 
@@ -199,22 +141,62 @@ class Post extends PostTaxonomy {
     }
 
     /**
-     * @return array|string
+     * @return self
      */
-    public function markDelete(): self|string {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( ! $this->idx ) return e()->idx_is_empty;
-        if ( $this->exists() == false ) return e()->post_not_exists;
-        if ( $this->isMine() == false ) return e()->not_your_post;
+    public function markDelete(): self {
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
+//        if ( $this->exists() == false ) return $this->error(e()->post_not_exists); // unnecessary error handling
 
-        $record = parent::markDelete();
-        if ( isError($record) ) return $record;
-        $this->update([TITLE => '', CONTENT => '']);
 
+        if ( $this->isMine() == false ) return $this->error(e()->not_your_post);
+
+        parent::markDelete();
+        parent::update([TITLE => '', CONTENT => '']);
 
         point()->forum(POINT_POST_DELETE, $this->idx);
 
-        return $this->get();
+        return $this;
+    }
+
+    /**
+     * - 코멘트가 없으면 'comments' 에 빈 배열이 지정됨.
+     * - 첨부 파일이 없으면 'files' 에 빈 배열이 지정됨.
+     *
+     * @return array|string
+     * - 에러가 있으면 에러 문자열.
+     * - 아니면, 클라이언트에 전달할 글 내용
+     */
+    public function response(): array|string {
+        if ( $this->hasError ) return $this;
+        $post = $this->getData();
+
+        // reset global comments container.
+        global $__rets;
+        $__rets = [];
+
+        // get all comments.
+        $comments = $this->getComments($this->idx);
+        if ( $comments ) {
+            foreach($comments as $comment) {
+                $got = comment($comment[IDX])->response();
+                $got[DEPTH] = $comment[DEPTH];
+                $comments[] = $got;
+            }
+        }
+        $post['comments'] = $comments;
+        /**
+         * Get files only if $select includes 'files' field.
+         */
+        if ( isset($post[FILES]) ) {
+            $post[FILES] = files()->get($post[FILES], select: 'idx,userIdx,path,name,size');
+        }
+
+        if ( $post[USER_IDX] ) {
+            $post['user'] = user($post[USER_IDX])->postProfile();
+        }
+
+        return $post;
     }
 
     /**
@@ -301,7 +283,7 @@ class Post extends PostTaxonomy {
 
 
     /**
-     *
+     * @deprecated
      * @param string|null $field
      * @param mixed|null $value
      * @param string $select
@@ -350,9 +332,9 @@ class Post extends PostTaxonomy {
     }
 
     /**
-     * Returns posts.idx, rootIdx, parentIdx, and its depth recursively.
+     * Returns only idx, rootIdx, parentIdx, and its depth of all the child posts(comments) in recursive tree.
      *
-     * @attention $__rets must be reset for getting children of each post.
+     * @attention $__rets must be reset for getting children of each post since it is added it there.
      *
      * @param int $parentIdx - The parent. It can be a post or a comment. If it's comment, it returns the children of the comments.
      * @param int $depth
@@ -386,13 +368,12 @@ class Post extends PostTaxonomy {
      * @example
      *   d(post()->getFromPath());
      */
-    public function getFromPath(): array {
+    public function getFromPath(): Post {
         $path = $_SERVER['REQUEST_URI'];
         $path = ltrim($path,'/');
         if ( empty($path) ) return [];
         $path = urldecode($path);
-        $post = $this->get(PATH, $path);
-        return $post;
+        return $this->find([PATH => $path]);
     }
 
     public function current(): array {
@@ -415,15 +396,15 @@ class Post extends PostTaxonomy {
      * @param $post
      * @return string
      */
-    private function getPath($post): string {
-        if ( $post[PARENT_IDX] ) return '';
-        $title = empty($post[TITLE]) ? $post[IDX] : $post[TITLE];
+    private function getPath(): string {
+        if ( $this->parentIdx ) return '';
+        $title = empty($this->title) ? $this->idx : $this->title;
+
         $title = seoFriendlyString($title);
         $path = $title;
         $count = 0;
         while ( true ) {
-            $p = parent::get(PATH, $path, 'idx'); // Don't use post()->get() for the performance.
-            if ( $p ) {
+            if ( post()->exists([PATH => $path]) ) {
                 $count ++;
                 $count = rand($count, $count * 10);
                 $path = "$title-$count";
@@ -434,16 +415,20 @@ class Post extends PostTaxonomy {
     }
 
 
-
-
-
-
-
+    /**
+     * @deprecated - use $this->categoryIdx
+     * @return int
+     */
     function categoryIdx(): int {
-        return $this->v(CATEGORY_IDX);
+        return $this->categoryIdx;
     }
+
+    /**
+     * @deprecated - use $this->categoryId
+     * @return string
+     */
     function categoryId(): string {
-        return category($this->v(CATEGORY_IDX))->v(ID);
+        return category($this->categoryIdx)->id;
     }
 }
 

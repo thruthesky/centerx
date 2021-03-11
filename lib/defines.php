@@ -119,3 +119,8 @@ define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'w', 'cw', 'mo
 
 
 define('ADMIN_SETTINGS', 1);
+
+
+/// HOME_URL 이 설정되지 않고, 접속 URL 이 없는 경우, 사용될 기본 URL. 예를 들어 CLI 작업이나 테스팅하는 경우,
+/// 주의, URL 이 슬래시(/)로 끝나야 한다.
+define('DEFAULT_HOME_URL', 'http://default.home.url/');

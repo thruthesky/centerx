@@ -160,9 +160,12 @@ function get_domain_name(): string
 
 /**
  * Returns the root url of current page(url) including ending slash(/).
+ * If HOME_URL is set, then it will use HOME_URL as its root url.
  * @return string
  */
 function get_current_root_url(): string {
+    if ( defined('HOME_URL') ) return HOME_URL;
+    if ( ! isset($_SERVER['HTTP_HOST']) ) return DEFAULT_HOME_URL;
     $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
     return $protocol . $_SERVER['HTTP_HOST'] . '/';
 }
@@ -403,7 +406,6 @@ function notLoggedIn(): bool {
  */
 global $__login_user_profile;
 
-
 /**
  * Set the user of $profile as logged into the system.
  *
@@ -434,7 +436,7 @@ function setLoginAny(): User {
 }
 
 /**
- * An alias of login()
+ * @deprecated login() 을 사용할 것. 그러면 auto intelligence 가 된다.
  *
  * Returns login user record field.
  * @see login() for more details
@@ -446,7 +448,7 @@ function setLoginAny(): User {
  *  my('color')
  */
 function my(string $field, bool $cache=true) {
-    return login($field, $cache);
+    return login($field);
 }
 
 function admin(): bool {
@@ -1100,4 +1102,15 @@ EOH;
 //////// next
 function table(string $taxonomy): string {
     return DB_PREFIX . $taxonomy;
+}
+
+function separateByComma($str) {
+    $rets = [];
+    if ( $str ) {
+        $subs = explode(",", $str);
+        foreach( $subs as $sub ) {
+            $rets[] = trim($sub);
+        }
+    }
+    return $rets;
 }
