@@ -17,6 +17,16 @@ class PostRoute {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
         return post($in[IDX])->get();
     }
+    public function gets($in) {
+    if ( ! isset($in['idxes']) ) return e()->idx_is_empty;
+    $idxes = explode(',', $in['idxes']);
+
+    $rets = [];
+    foreach( $idxes as $idx ) {
+        $rets[] = post($idx)->get();
+    }
+    return $rets;
+}
     public function search($in) {
         return post()->search(
             where: $in['where'] ?? '1',
