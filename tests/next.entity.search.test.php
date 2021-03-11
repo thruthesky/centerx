@@ -15,11 +15,11 @@ function _testEntitySearch() {
     $re = entity(POSTS)->search('userIdx=12345');
     isTrue(count($re) >= 4);
 
-
-    $arr = entity(POSTS)->search(conds: ['title' => 'here']);
+    $arr = entity(POSTS)->search(conds: ['title' => $title]);
     isTrue(count($arr) == 1);
     $idx = $arr[0]['idx'];
-    isTrue(entity(POSTS, $idx)->title == 'here');
+
+    isTrue(entity(POSTS, $idx)->title == $title);
 
 }
 

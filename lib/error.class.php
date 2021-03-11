@@ -46,6 +46,7 @@ class E {
 
     public string $response_is_empty = 'error_response_is_empty';
     public string $entity_not_exists = 'error_entity_not_exists';
+    public string $entity_not_found = 'error_entity_not_found';
 
     public string $category_id_is_empty = 'error_category_id_is_empty';
     public string $root_idx_is_empty = 'error_root_idx_is_empty';

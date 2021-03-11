@@ -19,6 +19,7 @@ function testUserRegisterResponse() {
     $email = 'user-response' . time() . '@test.com';
     $pw = '12345a';
     $response = user()->register([EMAIL=>$email, PASSWORD=>$pw])->response();
-    d($response);
-
+    isTrue(is_array($response) && $response[CREATED_AT] > 0, 'create->response');
+    $arr = explode('-', $response[SESSION_ID]);
+    isTrue(count($arr) == 2 , 'sessionId');
 }

@@ -14,7 +14,8 @@ use function ezsql\functions\{
  * Taxonomy 는 데이터의 종류로서 하나의 테이블이라 생각하면 된다.
  * Entity 는 하나의 레코드이다.
  * Entity 를 객체화 할 때, $taxonomy 값(Taxonomy)은 필수이며, $idx (Entity 또는 레코드 번호) 값이 입력되면,
- *   해당 테이블의 해당 레코드 및 연결된 메타 데이터를 읽어 $this->data 에 저장한다.
+ *  해당 테이블의 해당 레코드 및 연결된 메타 데이터를 읽어 $this->data 에 저장한다.
+ *  만약, $idx 에 해당하는 entity 를 찾을 수 없다면, entity_not_found 에러가 설정된다.
  */
 class Entity {
 
@@ -35,6 +36,9 @@ class Entity {
      */
     public function __construct(public string $taxonomy, public int $idx)
     {
+        /**
+         * 객체 초기화. 현재 $this->idx 에 해당하는 entity 를 읽어 $this->data 에 저장.
+         */
         if ( $this->idx ) {
             $this->read($this->idx);
         }
@@ -292,7 +296,7 @@ class Entity {
      * $idx 가 주어지면, 해당 $idx 를 읽어, 현재 객체의 $data 에 보관하고, $this->idx = $idx 와 같이 entity idx 도 업데이트 한다.
      * $idx 가 주어지지 않았거나, 객체를 생성 할 때, $idx 가 주어지지 않았다면, 빈 배열을 보관한다.
      *
-     * $idx 가 주어졌는데, 레코드를 찾을 수 없다면, 에러를 저장한다.
+     * $idx 가 주어졌는데, 레코드를 찾을 수 없다면, entity_not_found 에러를 저장한다.
      *
      * @usage 처음 객체 생성시, read() 를 한번 호출한다.
      *  그 후에 $idx 를 주어서 $entity->read(123) 과 같이 호출 하면, entity.idx 와 data 를 바꾼다.
@@ -302,6 +306,7 @@ class Entity {
      * @return self
      */
     public function read(int $idx = 0): self {
+
         if ( $this->hasError ) return $this;
 
         if ( ! $idx ) $idx = $this->idx;
@@ -314,14 +319,12 @@ class Entity {
             $this->data = array_merge($record, $meta);
             $this->idx = $this->data['idx'];
         } else {
+            $this->error( e()->entity_not_found );
             $this->data = [];
         }
 
         return $this;
     }
-
-
-
 
 
     /**
@@ -335,7 +338,12 @@ class Entity {
      *
      * $this->idx 가 설정되어야 한다. 아니면 false 리턴.
      *
+     * @param array $conds
+     * @param string $conj
      * @return bool
+     *
+     * @example
+     *  $found = $this->exists([EMAIL=>$in[EMAIL]]);
      */
     public function exists(array $conds = [], string $conj = 'AND'): bool {
         if ( $conds ) {
@@ -383,7 +391,8 @@ class Entity {
      * - $where 에 필요한 조건식을 다 만들어 넣는다.
      * - 만약, meta 데이터를 포함한 전체 값이 다 필요하다면, 이 함수를 통해서 'idx' 만 추출한 다음, user(idx)->get() 와 같이 한다.
      * - 이 함수는 객체 배열이 아닌, 결과를 가지고 있는 레코드들의 idx 만 리턴한다.
-     * - 원한다면 select: '*' 와 같이 전체 레코드를 배열로 리턴 할 수 있다.
+     * - 원한다면 select: 'name' 또는 select: '*' 와 같이 특정 레코드 또는 전체 레코드를 배열로 리턴 할 수 있다.
+     * - 하나의 레코드 또는 하나의 필드를 가져오고자 할 때 사용 할 수 있다.
      *
      * @param string $where
      * @param int $page
@@ -396,7 +405,12 @@ class Entity {
      * @return array
      *  - empty array([]), If there is no record found.
      *
-     * @example tests/next.entity.search.test.php
+     * @example tests/next.entity.search.test.php 에 많은 예제가 있다.
+     *
+     * 예제) 로그인 시, 특장 사용자의 비밀번호를 찾아 비교하기 위해서, 비밀번호 가져오기.
+     *  $users = $this->search(select: PASSWORD, conds: [EMAIL => $in[EMAIL]]);
+     *  if ( !$users ) return $this->error(e()->user_not_found_by_that_email);
+     *  $password = $users[0][PASSWORD];
      *
      * 예제)
      *  user()->search();

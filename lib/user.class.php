@@ -4,131 +4,50 @@
  */
 /**
  * Class User
+ * @property-read string $email;
+ * @property-read string $name;
+ * @property-read string $nickname;
+ * @property-read int $photoIdx;
+ * @property-read int $point;
+ * @property-read string $phoneNo;
+ * @property-read string $gender;
+ * @property-read int $birthdate;
+ * @property-read string $countryCode;
+ * @property-read string $province;
+ * @property-read string $city;
+ * @property-read string $address;
+ * @property-read string $zipcode;
+ * @property-read string $createdAt;
+ * @property-read string $updatedAt;
+ * @property-read string $provider; // social login
+ * @property-read string $plid; // pass login
+ * @property-read string $ci; // pass login
  */
 class User extends Entity {
 
-//    public string $email;
-//    public string $name;
-//    public string $nickname;
-//    public string $photoIdx;
-//    public string $point;
-//    public string $phoneNo;
-//    public string $gender;
-//    public string $birthdate;
-//    public string $countryCode;
-//    public string $province;
-//    public string $city;
-//    public string $address;
-//    public string $zipcode;
-//    public string $createdAt;
-//    public string $updatedAt;
-//    public string $provider; // social login
-//    public string $plid; // pass login
-//    public string $ci; // pass login
-
-//    private array $profile = [];
 
     public function __construct(int $idx)
     {
         parent::__construct(USERS, $idx);
-//        $this->init();
     }
 
-//    private function init() {
-//        $u = $this->getData();
-//        if ( isError($u) || empty($u) ) return;
-//
-//        $this->profile = $u;
-//
-//
-//
-//        $this->email = $u[EMAIL];
-//        $this->name = $u[NAME];
-//        $this->nickname = $u[NICKNAME] ?? '';
-//        $this->photoIdx = $u['photoIdx'] ?? 0;
-//        $this->point = $u['point'];
-//        $this->phoneNo = $u['phoneNo'];
-//        $this->gender = $u['gender'];
-//        $this->birthdate = $u['birthdate'];
-//        $this->countryCode = $u['countryCode'];
-//        $this->province = $u['province'];
-//        $this->city = $u['city'];
-//        $this->address = $u['address'];
-//        $this->zipcode = $u['zipcode'];
-//
-//        $this->createdAt = $u[CREATED_AT];
-//        $this->updatedAt = $u[UPDATED_AT];
-//
-//        $this->provider = $u['provider'] ?? '';
-//        $this->plid = $u['plid'] ?? '';
-//        $this->ci = $u['ci'] ?? '';
-//
-//
-//    }
-
     /**
-     * @todo 부모 getter 를 사용한다.
-     * 사용자 필드를 가져오는 magic getter
+     * 회원 정보를 읽어서 data 에 보관한다.
      *
-     * users 테이블과 meta 테이블에서 데이터를 가져온고, 레코드가 없으면 null 를 리턴한다.
-     * @attention 주의 할 것은,
-     *  1. 객체 초기화를 할 때, init() 함수에서
-     *  2. users 테이블은 멤버 변수로 설정하고,
-     *  3. 그리고 users 테이블과 meta 테이블의 모든 값은 $profile 에 저장한다.
-     *  4. magic getter 로 값을 읽을 때, 새로 DB 에서 가져오는 것이 아니라, (멤버 변수로 설정되지 않았다면, 즉, meta 의 경우,) $profile 에서 가져온다.
-     *  5 $this->update() 를 하면, 다시 init() 을 호출 한다.
+     * 회원 정보를 읽을 때, password 를 없애고, sessionId 를 추가한다.
      *
-     *
-     * @param $name
-     * @return mixed
-     *
-     * @example
-     *  d( user(49)->password );
-     *  d( user(49)->oooo === null ? 'is null' : 'is not null' );
-     *  $user = user($u[IDX]);
-     *  isTrue($u[EMAIL] == $user->email, "same email");
-     *  $updated = $user->update(['what' => 'blue']);
-     *  isTrue($user->v('what') == 'blue', 'should be blue. but ' . $user->v('color'));
-     *  isTrue($user->what == 'blue', 'should be blue. but ' . $user->what);
+     * @param int $idx
+     * @return self
      */
-//    public function __get($name): mixed {
-//        $u = $this->profile;
-//        if ( $u && isset($u[$name]) ) return $u[$name];
-//        else return null;
-//    }
-
-    /**
-     * 현재 객체에 회원 idx 를 지정한다.
-     * @param string $email
-     * @return mixed
-     * - 에러가 있으면 에러 코드를 리턴한다.
-     * - 에러가 없으면, (password 필드를 포함하는) 회원 프로필 레코드를 리턴한다.
-     */
-//    private function _setUserByEmail(string $email): mixed {
-//        $record = $this->get(EMAIL, $email);
-//        if ( !$record ) return e()->user_not_found_by_that_email;
-//        $this->setIdx($record[IDX]);
-//        return $record;
-//    }
-
-    /**
-     * 현재 사용자의 users 테이블 또는 meta(config) 테이블에서, field 의 값을 가져온다.
-     *
-     * @param string $field
-     * @param mixed|null $_
-     * @return mixed
-     * - 에러이면, 에러 코드를 리턴한다.
-     * - 필드가 존재하지 않으면 null 을 리턴한다.
-     * - 그 외, 필드 값을 리턴한다.
-     *
-     * 예제)
-     *  d( user(48)->get(PASSWORD) );
-     */
-//    public function data(string $field): mixed {
-//        $record = $this->profile(unsetPassword: false);
-//        if ( e($record)->isError ) return $record;
-//        return isset($record[$field]) ? $record[$field] : null;
-//    }
+    public function read(int $idx = 0): self
+    {
+        parent::read($idx);
+        $data = $this->getData();
+        unset($data[PASSWORD]);
+        $data[SESSION_ID] = getSessionId($this->getData());
+        $this->setData($data);
+        return $this;
+    }
 
 
     /**
@@ -150,6 +69,38 @@ class User extends Entity {
 
         return $this->create($in);
     }
+
+
+    /**
+     *
+     * @param array $in
+     * @return mixed
+     *
+     * 예제)
+     * d(user()->login(email: '...', password: '...');
+     */
+    public function login(array $in):mixed {
+        if ( isset($in[EMAIL]) == false || !$in[EMAIL] ) return e()->email_is_empty;
+        if ( isset($in[PASSWORD]) == false || !$in[PASSWORD] ) return e()->empty_password;
+
+        $users = $this->search(select: PASSWORD, conds: [EMAIL => $in[EMAIL]]);
+        if ( !$users ) return $this->error(e()->user_not_found_by_that_email);
+        $password = $users[0][PASSWORD];
+
+        if ( ! checkPassword($in[PASSWORD], $password) ) return $this->error(e()->wrong_password);
+
+        // 회원 정보 및 메타 정보 업데이트
+        unset($in[PASSWORD]);
+
+        // 로그인을 할 때, 추가 정보를 저장한다.
+        $this->update($in);
+
+        $profile = $this->profile();
+        point()->login($profile);
+        return $profile;
+    }
+
+
 
 
     public function loginOrRegister(array $in): array|string {
@@ -186,44 +137,26 @@ class User extends Entity {
         return $this->profile();
     }
 
-    public function read(int $idx = 0): Entity
-    {
-        print('user::read()');
-        parent::read($idx);
-        $data = $this->getData();
-        unset($data[PASSWORD]);
-        $data[SESSION_ID] = 's';
-        $this->setData($data);
-    }
 
     /**
      * 회원 정보를 클라이언트로 전달하기 위한 값을 리턴한다.
-     * @return $this
-     */
-    public function response() {
-        if ( $this->hasError ) return $this;
-
-
-    }
-    /**
-     * @deprecated
-     * 회원 정보를 가공하여 사용 할 수 있도록 한다.
-     * meta(config) 에 설정된 값들도 같이 리턴한다.
-     * @param bool $unsetPassword - false 이면, 비밀번호를 같이 리턴한다.
-     * @return mixed
      *
+     * 에러가 있으면, 에러 문자열. 아니면, 사용자 레코드와 메타를 배열로 리턴한다.
+     *
+     * @return array|string
+     */
+    public function response(): array|string {
+        if ( $this->hasError ) return $this->getError();
+        return $this->getData();
+    }
+
+    /**
+     * @return array|string
      * 예제)
      * d( user(48)->profile() );
      */
-    public function profile(): mixed {
-        if ( $this->hasError ) return $this;
-        if ( ! $this->idx ) return e()->idx_not_set;
-        return $this->getData();
-//        $record = $this->get('idx', $this->idx, cache: $cache);
-//        if ( !$record ) return e()->user_not_found_by_that_idx;
-//        $record[SESSION_ID] = getSessionId($record);
-//        if ( $unsetPassword ) unset($record[PASSWORD]);
-//        return $record;
+    public function profile(): array|string {
+        return $this->response();
     }
 
     /**
@@ -237,31 +170,6 @@ class User extends Entity {
             'gender' => $this->gender,
             'photoIdx' => $this->photoIdx,
         ];
-    }
-
-    /**
-     *
-     * @return mixed
-     *
-     * 예제)
-     * d(user()->login(email: '...', password: '...');
-     */
-    public function login(array $in):mixed {
-        if ( isset($in[EMAIL]) == false || !$in[EMAIL] ) return e()->email_is_empty;
-
-        if ( isset($in[PASSWORD]) == false || !$in[PASSWORD] ) return e()->empty_password;
-        $profile = $this->_setUserByEmail($in[EMAIL]);
-        if ( isError($profile) ) return $profile;
-
-        if ( ! checkPassword($in[PASSWORD], $profile[PASSWORD]) ) return e()->wrong_password;
-
-        // 회원 정보 및 메타 정보 업데이트
-        unset($in[PASSWORD]);
-        $this->update($in);
-
-        $profile = $this->profile();
-        point()->login($profile);
-        return $profile;
     }
 
 

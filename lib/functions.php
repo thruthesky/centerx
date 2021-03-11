@@ -366,7 +366,7 @@ function getProfileFromSessionId(string|null $sessionId): mixed
     $userIdx = $arr[0];
     $record = user($userIdx)->get();
     if ( ! $record ) return e()->user_not_found_by_that_session_id;
-    $profile = user($userIdx)->profile(unsetPassword: false);
+    $profile = user($userIdx)->profile();
 	if ( !$profile || !isset($profile[SESSION_ID]) ) return false;
     if ( $sessionId == $profile[SESSION_ID] ) return $profile;
     else return e()->wrong_session_id;
