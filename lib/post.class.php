@@ -64,6 +64,7 @@ class Post extends PostTaxonomy {
         $this->inInit = false;
     }
     /**
+     * 부모 getter 를 사용한다.
      * 필드를 가져오는 magic getter
      *
      * posts 테이블과 meta 테이블에서 데이터를 가져오고, 레코드가 없으면 null 를 리턴한다.
@@ -83,11 +84,11 @@ class Post extends PostTaxonomy {
      *  $post->update(['eat' => 'apple pie']);
      *  isTrue($post->eat == 'apple pie', 'Must eat apple pie');
      */
-    public function __get($name) {
-        $data = $this->data;
-        if ( $data && isset($data[$name]) ) return $data[$name];
-        else return null;
-    }
+//    public function __get($name) {
+//        $data = $this->data;
+//        if ( $data && isset($data[$name]) ) return $data[$name];
+//        else return null;
+//    }
 
 
     /**
@@ -228,13 +229,21 @@ class Post extends PostTaxonomy {
      * @param string $order
      * @param string $by
      * @param string $select
-     * @param string $categoryId
-     * @return mixed
-     * @throws Exception
+     * @param array $conds
+     * @param string $conj
+     * @return array
      */
     public function search(
-        string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'
-    ): mixed {
+        string $where='1',
+        int $page=1,
+        int $limit=10,
+        string $order='idx',
+        string $by='DESC',
+        string $select='idx',
+        array $conds=[],
+        string $conj = 'AND',
+    ): array
+    {
 
         // Parse category
         $count = preg_match_all("/<([^>]+)>/", $where, $ms);

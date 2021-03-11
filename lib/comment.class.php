@@ -162,13 +162,21 @@ class Comment extends PostTaxonomy {
      * @param string $order
      * @param string $by
      * @param string $select
-     * @param string $categoryId
+     * @param array $conds
+     * @param string $conj
      * @return mixed
-     * @throws Exception
      */
+
     public function search(
-        string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'
-    ): mixed {
+        string $where='1',
+        int $page=1,
+        int $limit=10,
+        string $order='idx',
+        string $by='DESC',
+        string $select='idx',
+        array $conds=[],
+        string $conj = 'AND',
+    ): array {
 
         $posts = parent::search(
             where: $where,

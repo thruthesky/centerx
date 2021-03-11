@@ -152,3 +152,4 @@ function _testEntityMeta() {
     isTrue( $user->name === 'yo', 'user name check');
     isTrue( $user->eat === 'banana', 'user eat apple');
 }
+

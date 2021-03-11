@@ -9,6 +9,8 @@ use function ezsql\functions\{
 /**
  * Class Entity
  *
+ * @property-read bool hasError 에러가 있으면 true
+ *
  * Taxonomy 는 데이터의 종류로서 하나의 테이블이라 생각하면 된다.
  * Entity 는 하나의 레코드이다.
  * Entity 를 객체화 할 때, $taxonomy 값(Taxonomy)은 필수이며, $idx (Entity 또는 레코드 번호) 값이 입력되면,
@@ -25,7 +27,6 @@ class Entity {
      * @var string 에러가 있으면 에러 메시지를 지정한다.
      */
     private string $error = '';
-    public bool $hasError = false;
 
     /**
      * Entity constructor.
@@ -39,9 +40,22 @@ class Entity {
         }
     }
 
+    /**
+     * Alias of setError(). 짧게 쓰기 위해서, error() 로 쓴다.
+     * @param string $code
+     * @return $this
+     */
     public function error(string $code): self {
+        return $this->setError($code);
+    }
+
+    /**
+     * 에러 문자열을 설정한다. 즉, 에러가 있음을 표시하는 것이다.
+     * @param string $code
+     * @return $this
+     */
+    private function setError(string $code): self {
         $this->error = $code;
-        $this->hasError = true;
         return $this;
     }
     public function getError(): string {
@@ -55,6 +69,9 @@ class Entity {
     public function getData() {
         if ( $this->hasError ) return [];
         return $this->data;
+    }
+    public function setData(array $data) {
+        $this->data = $data;
     }
 
 
@@ -80,14 +97,23 @@ class Entity {
      *  $post->update(['eat' => 'apple pie']);
      *  isTrue($post->eat == 'apple pie', 'Must eat apple pie');
      */
-    public function __get($name) {
-//        if ( $name == 'hasError' ) {
-//            return $this->error !== '';
-//        }
+    public function __get($name): mixed
+    {
+        /// `$this->hasError` 에러가 있으면 true 를 리턴
+        if ( $name == 'hasError' ) {
+            return $this->error !== '';
+        }
+
+        /// 필드 값을 가져오려고 할 때, 현재 객체에 에러가 있으면, null 을 리턴.
         if ( $this->hasError ) return null;
+
+        /// 에러가 없으면 값을 리턴. 값이 없으면 null 리턴.
         if ( $this->data && isset($this->data[$name]) ) return $this->data[$name];
         else return null;
     }
+
+
+
 
 
 
@@ -132,9 +158,10 @@ class Entity {
         /// If idx is set and has value, return error.
         if ( isset($in[IDX]) ) {
             if ( $in[IDX] ) return $this->error(e()->idx_must_not_set);
-            else unset($in[IDX]);
+            else unset($in[IDX]); /// isset() 인데, falsy 이면, unset.
         }
 
+        //
         $record = $this->getRecordFields($in);
         $record[CREATED_AT] = time();
         $record[UPDATED_AT] = time();
@@ -220,6 +247,7 @@ class Entity {
      * @return self
      */
     public function delete(): self {
+        if ( $this->hasError ) return $this;
         if ( ! $this->idx ) return $this->error(e()->idx_not_set);
         $re = db()->delete($this->getTable(), eq(IDX, $this->idx));
         if ( $re === false ) return $this->error(e()->delete_failed);
@@ -241,6 +269,7 @@ class Entity {
      *
      */
     public function markDelete(): self|string {
+        if ( $this->hasError ) return $this;
         if ( ! $this->idx ) return e()->idx_not_set;
         if ( $this->deletedAt > 0 ) return e()->entity_deleted_already;
         return self::update([DELETED_AT => time()]);
@@ -260,11 +289,13 @@ class Entity {
     /**
      * Entity(레코드와 메타)를 DB 로 부터 읽어 현재 객체에 보관한다.
      *
-     * $idx 가 주어지면, 해당 $idx 를 읽어, 현재 객체에 보관하고, $this->idx = $idx 와 같이 entity idx 도 업데이트 한다.
-     * 에러가 있으면 문자열을 리턴하고 그렇지 않으면 현재 객체를 리턴한다.
+     * $idx 가 주어지면, 해당 $idx 를 읽어, 현재 객체의 $data 에 보관하고, $this->idx = $idx 와 같이 entity idx 도 업데이트 한다.
+     * $idx 가 주어지지 않았거나, 객체를 생성 할 때, $idx 가 주어지지 않았다면, 빈 배열을 보관한다.
      *
-     * @usage 처음 객체 생성시, read() 를 한번 호출하지만,
-     *  그 후에 $idx 를 바꾸거나 할 때,
+     * $idx 가 주어졌는데, 레코드를 찾을 수 없다면, 에러를 저장한다.
+     *
+     * @usage 처음 객체 생성시, read() 를 한번 호출한다.
+     *  그 후에 $idx 를 주어서 $entity->read(123) 과 같이 호출 하면, entity.idx 와 data 를 바꾼다.
      *  또는 데이터베이스로 부터 새로 정보를 읽고자 할 때 사용한다.
      *
      * @param int $idx
@@ -274,8 +305,6 @@ class Entity {
         if ( $this->hasError ) return $this;
 
         if ( ! $idx ) $idx = $this->idx;
-
-        if ( ! $idx ) return $this->error(e()->idx_not_set);
 
         $q = "SELECT * FROM {$this->getTable()} WHERE idx=$idx";
         if ( isDebugging() ) d("read() q: $q");
@@ -297,15 +326,22 @@ class Entity {
 
     /**
      * DB 레코드에서 idx 를 읽어서 존재하는지 아닌지 검사한다.
-     * Returns true if the entity exists. or false.
      *
-     * 참고, DB 접속을 한번하므로, 원격 DB의 경우 시간이 걸릴 수 있다.
+     * 참고, $conds 에 값이 넘어오면, 해당 조건에 존재하는 레코드가 있는지 확인한다.
+     * 이 때, search() 함수를 사용하는데, search() 함수의 특성에 따라 $conds 조건에 맞는 여러개의 레코드가 존재 할 수 있다.
+     * 하지만, $this->idx 로 검사하는 경우, 오직 현재 레코드가 존재하는지만 검사한다.
+     *
+     * 참고, DB 접속을 매번하므로, 원격 DB의 경우 connection 시간이 걸릴 수 있다.
      *
      * $this->idx 가 설정되어야 한다. 아니면 false 리턴.
      *
      * @return bool
      */
-    public function exists(): bool {
+    public function exists(array $conds = [], string $conj = 'AND'): bool {
+        if ( $conds ) {
+            $arr = $this->search(conds: $conds, conj: $conj);
+            return count($arr) > 0;
+        }
         if ( ! $this->idx ) return false;
         $q = "SELECT " . IDX . " FROM " . $this->getTable() . " WHERE " . IDX . " = {$this->idx} ";
         $re = db()->get_var($q);
@@ -355,9 +391,12 @@ class Entity {
      * @param string $order
      * @param string $by
      * @param string $select
-     * @return mixed
+     * @param array $conds - 키/값 조건문.
+     * @param string $conj - $conds 의 키/값을 연결할 조건식. 기본 AND.
+     * @return array
      *  - empty array([]), If there is no record found.
      *
+     * @example tests/next.entity.search.test.php
      *
      * 예제)
      *  user()->search();
@@ -369,18 +408,45 @@ class Entity {
      *      d( user( $user[IDX] )->profile() );
      *   }
      *
+     * @todo SQL injection
+     * @todo $where 에 따옴표 처리.
      */
     public function search(
-        string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'
-    ): mixed {
+        string $where='1',
+        int $page=1,
+        int $limit=10,
+        string $order='idx',
+        string $by='DESC',
+        string $select='idx',
+        array $conds=[],
+        string $conj = 'AND',
+    ): array {
         $table = $this->getTable();
         $from = ($page-1) * $limit;
+        if ( $conds ) $where = $this->sqlCondition($conds, $conj);
         $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
         if ( isDebugging() ) d($q);
         return db()->get_results($q, ARRAY_A);
     }
 
 
+    /**
+     * 키/값 배열을 입력 받아 SQL WHERE 조건문에 사용 할 문자열을 리턴한다.
+     *
+     * 예) [a => apple, b => banana] 로 입력되면, "a=apple AND b=banana" 로 리턴.
+     *
+     * @param array $conds - 키/값을 가지는 배열
+     * @param string $conj - 'AND' 또는 'OR' 등의 연결 expression
+     * @return string
+     */
+    private function sqlCondition(array $conds, string $conj = 'AND') {
+        $arc = [];
+        foreach($conds as $k => $v )
+        {
+            $arc[] = "`$k`='$v'";
+        }
+        return implode(" $conj ", $arc);
+    }
 
     /**
      * Returns login user's records in array.
@@ -446,6 +512,8 @@ class Entity {
      * Array ( [0] => idx [1] => email [2] => password [3] => name [4] => createdAt [5] => updatedAt )
      *
      * @note 메모리 캐시를 한다.
+     *
+     * @todo EzSQL 의 col_info 를 사용해서, 다른 DB 도 지원 할 수 있도록 한다.
      */
     private $fields = [];
     public function getTableFieldNames(): array {
@@ -453,6 +521,7 @@ class Entity {
         if ( isset($this->fields[$table]) ) return $this->fields[$table];
         $q = "SELECT column_name FROM information_schema.columns WHERE table_schema = '".DB_NAME."' AND table_name = '$table'";
         $rows = db()->get_results($q, ARRAY_A);
+        $names = [];
         foreach($rows as $row) {
             $names[] = $row['column_name'];
         }

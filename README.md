@@ -126,9 +126,11 @@
 - 글을 클라이언트로 보낼 때에는 post()->create(...)->response() 를 할 수 있도록 한다.
   이 response() 함수에서 코멘트 정보를 다 읽고 파싱한다.
 
+- SQLite3 지원. 그러면 그냥 php dev web server 로 SSL 없이, localhost 로 바로 실행가능하리라 생각한다.
 
 - entity hook test
 
+- main 브랜치의 readme.md 파일을 병합.
 
 # Primary Conception
 
@@ -1047,7 +1049,7 @@ echo Markdown::render ($md);
 - 아래와 같이 실행하면, `tests/*.test.php` PHP 스크립트(파일)을 실행한다.
 
 ```shell
-% chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php"
+chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php"
 ```
 
 - 원한다면, 아래와 같이 테스트 파일의 일부 문자열을 포함하는 파일만 실행 할 수 있다.

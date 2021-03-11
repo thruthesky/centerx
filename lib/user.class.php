@@ -7,66 +7,67 @@
  */
 class User extends Entity {
 
-    public string $email;
-    public string $name;
-    public string $nickname;
-    public string $photoIdx;
-    public string $point;
-    public string $phoneNo;
-    public string $gender;
-    public string $birthdate;
-    public string $countryCode;
-    public string $province;
-    public string $city;
-    public string $address;
-    public string $zipcode;
-    public string $createdAt;
-    public string $updatedAt;
-    public string $provider; // social login
-    public string $plid; // pass login
-    public string $ci; // pass login
+//    public string $email;
+//    public string $name;
+//    public string $nickname;
+//    public string $photoIdx;
+//    public string $point;
+//    public string $phoneNo;
+//    public string $gender;
+//    public string $birthdate;
+//    public string $countryCode;
+//    public string $province;
+//    public string $city;
+//    public string $address;
+//    public string $zipcode;
+//    public string $createdAt;
+//    public string $updatedAt;
+//    public string $provider; // social login
+//    public string $plid; // pass login
+//    public string $ci; // pass login
 
-    private array $profile = [];
+//    private array $profile = [];
 
     public function __construct(int $idx)
     {
         parent::__construct(USERS, $idx);
-        $this->init();
+//        $this->init();
     }
 
-    private function init() {
-        $u = $this->getData();
-        if ( isError($u) || empty($u) ) return;
-
-        $this->profile = $u;
-
-
-
-        $this->email = $u[EMAIL];
-        $this->name = $u[NAME];
-        $this->nickname = $u[NICKNAME] ?? '';
-        $this->photoIdx = $u['photoIdx'] ?? 0;
-        $this->point = $u['point'];
-        $this->phoneNo = $u['phoneNo'];
-        $this->gender = $u['gender'];
-        $this->birthdate = $u['birthdate'];
-        $this->countryCode = $u['countryCode'];
-        $this->province = $u['province'];
-        $this->city = $u['city'];
-        $this->address = $u['address'];
-        $this->zipcode = $u['zipcode'];
-
-        $this->createdAt = $u[CREATED_AT];
-        $this->updatedAt = $u[UPDATED_AT];
-
-        $this->provider = $u['provider'] ?? '';
-        $this->plid = $u['plid'] ?? '';
-        $this->ci = $u['ci'] ?? '';
-
-
-    }
+//    private function init() {
+//        $u = $this->getData();
+//        if ( isError($u) || empty($u) ) return;
+//
+//        $this->profile = $u;
+//
+//
+//
+//        $this->email = $u[EMAIL];
+//        $this->name = $u[NAME];
+//        $this->nickname = $u[NICKNAME] ?? '';
+//        $this->photoIdx = $u['photoIdx'] ?? 0;
+//        $this->point = $u['point'];
+//        $this->phoneNo = $u['phoneNo'];
+//        $this->gender = $u['gender'];
+//        $this->birthdate = $u['birthdate'];
+//        $this->countryCode = $u['countryCode'];
+//        $this->province = $u['province'];
+//        $this->city = $u['city'];
+//        $this->address = $u['address'];
+//        $this->zipcode = $u['zipcode'];
+//
+//        $this->createdAt = $u[CREATED_AT];
+//        $this->updatedAt = $u[UPDATED_AT];
+//
+//        $this->provider = $u['provider'] ?? '';
+//        $this->plid = $u['plid'] ?? '';
+//        $this->ci = $u['ci'] ?? '';
+//
+//
+//    }
 
     /**
+     * @todo 부모 getter 를 사용한다.
      * 사용자 필드를 가져오는 magic getter
      *
      * users 테이블과 meta 테이블에서 데이터를 가져온고, 레코드가 없으면 null 를 리턴한다.
@@ -90,11 +91,11 @@ class User extends Entity {
      *  isTrue($user->v('what') == 'blue', 'should be blue. but ' . $user->v('color'));
      *  isTrue($user->what == 'blue', 'should be blue. but ' . $user->what);
      */
-    public function __get($name) {
-        $u = $this->profile;
-        if ( $u && isset($u[$name]) ) return $u[$name];
-        else return null;
-    }
+//    public function __get($name): mixed {
+//        $u = $this->profile;
+//        if ( $u && isset($u[$name]) ) return $u[$name];
+//        else return null;
+//    }
 
     /**
      * 현재 객체에 회원 idx 를 지정한다.
@@ -103,12 +104,12 @@ class User extends Entity {
      * - 에러가 있으면 에러 코드를 리턴한다.
      * - 에러가 없으면, (password 필드를 포함하는) 회원 프로필 레코드를 리턴한다.
      */
-    private function _setUserByEmail(string $email): mixed {
-        $record = $this->get(EMAIL, $email);
-        if ( !$record ) return e()->user_not_found_by_that_email;
-        $this->setIdx($record[IDX]);
-        return $record;
-    }
+//    private function _setUserByEmail(string $email): mixed {
+//        $record = $this->get(EMAIL, $email);
+//        if ( !$record ) return e()->user_not_found_by_that_email;
+//        $this->setIdx($record[IDX]);
+//        return $record;
+//    }
 
     /**
      * 현재 사용자의 users 테이블 또는 meta(config) 테이블에서, field 의 값을 가져온다.
@@ -123,40 +124,33 @@ class User extends Entity {
      * 예제)
      *  d( user(48)->get(PASSWORD) );
      */
-    public function data(string $field): mixed {
-        $record = $this->profile(unsetPassword: false);
-        if ( e($record)->isError ) return $record;
-        return isset($record[$field]) ? $record[$field] : null;
-    }
+//    public function data(string $field): mixed {
+//        $record = $this->profile(unsetPassword: false);
+//        if ( e($record)->isError ) return $record;
+//        return isset($record[$field]) ? $record[$field] : null;
+//    }
 
 
     /**
      * Create a user account and return his profile.
      *
      * @param array $in
-     * @return array|string
+     * @return User
      */
-    public function register(array $in): array|string {
+    public function register(array $in): self {
 
-        if ( isset($in[EMAIL]) == false ) return e()->email_is_empty;
-        if ( !checkEmailFormat($in[EMAIL]) ) return e()->malformed_email;
-        if ( isset($in[PASSWORD]) == false ) return e()->password_is_empty;
+        if ( isset($in[EMAIL]) == false ) return $this->error(e()->email_is_empty);
+        if ( !checkEmailFormat($in[EMAIL]) ) return $this->error(e()->malformed_email);
+        if ( isset($in[PASSWORD]) == false ) return $this->error(e()->password_is_empty);
 
-        $user = $this->get(EMAIL, $in[EMAIL]);
-        if ( $user ) return e()->email_exists;
+        $found = $this->exists([EMAIL=>$in[EMAIL]]);
+        if ( $found ) return $this->error(e()->email_exists);
 
         $in[PASSWORD] = encryptPassword($in[PASSWORD]);
 
-        $record = $this->create($in);
-
-        if ( isError($record) ) return $record;
-
-        $profile = user($record[IDX])->profile();
-
-        point()->register($profile);
-
-        return $profile;
+        return $this->create($in);
     }
+
 
     public function loginOrRegister(array $in): array|string {
         $re = $this->login($in);
@@ -192,8 +186,28 @@ class User extends Entity {
         return $this->profile();
     }
 
+    public function read(int $idx = 0): Entity
+    {
+        print('user::read()');
+        parent::read($idx);
+        $data = $this->getData();
+        unset($data[PASSWORD]);
+        $data[SESSION_ID] = 's';
+        $this->setData($data);
+    }
+
     /**
-     * 회원 정보를 리턴한다.
+     * 회원 정보를 클라이언트로 전달하기 위한 값을 리턴한다.
+     * @return $this
+     */
+    public function response() {
+        if ( $this->hasError ) return $this;
+
+
+    }
+    /**
+     * @deprecated
+     * 회원 정보를 가공하여 사용 할 수 있도록 한다.
      * meta(config) 에 설정된 값들도 같이 리턴한다.
      * @param bool $unsetPassword - false 이면, 비밀번호를 같이 리턴한다.
      * @return mixed
@@ -201,13 +215,15 @@ class User extends Entity {
      * 예제)
      * d( user(48)->profile() );
      */
-    public function profile(bool $unsetPassword=true, bool $cache=true): mixed {
+    public function profile(): mixed {
+        if ( $this->hasError ) return $this;
         if ( ! $this->idx ) return e()->idx_not_set;
-        $record = $this->get('idx', $this->idx, cache: $cache);
-        if ( !$record ) return e()->user_not_found_by_that_idx;
-        $record[SESSION_ID] = getSessionId($record);
-        if ( $unsetPassword ) unset($record[PASSWORD]);
-        return $record;
+        return $this->getData();
+//        $record = $this->get('idx', $this->idx, cache: $cache);
+//        if ( !$record ) return e()->user_not_found_by_that_idx;
+//        $record[SESSION_ID] = getSessionId($record);
+//        if ( $unsetPassword ) unset($record[PASSWORD]);
+//        return $record;
     }
 
     /**
@@ -341,7 +357,7 @@ function login(string $field=null, bool $cache=true): User|int|string|array|null
             if ($cache) {       // Want cached value?
                 return $__login_user_profile[$field] ?? null;
             } else {            // Real value from database.
-                $profile = login()->profile(cache: false);
+                $profile = login()->profile();
                 if ( isset($profile[$field]) ) { // Has field?
                     return $profile[$field];
                 } else {
