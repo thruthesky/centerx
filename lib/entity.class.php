@@ -445,12 +445,12 @@ class Entity {
      *
      * @param array $conds
      * @param string $conj
-     * @return $this
+     * @return self
      *
      * @example
      *  $user = user()->find([EMAIL => $uid]); // Find user by email
      */
-    public function find(array $conds, string $conj = 'AND'): self {
+    public function findOne(array $conds, string $conj = 'AND'): self {
         $arr = $this->search(conds: $conds, conj: $conj);
         if ( ! $arr ) return $this->error(e()->entity_not_found);
         $idx = $arr[0][IDX];
@@ -458,6 +458,22 @@ class Entity {
     }
 
 
+    /**
+     * 현재 Taxonomy 에서 1개의 레코드를 검색해서, 1개의 필드 값을 리턴한다.
+     *
+     * @param string $select
+     * @param array $conds
+     * @param string $conj
+     * @return mixed
+     *
+     * 예제)
+     *  post()->getVar(CATEGORY_IDX, [IDX => $rootIdx]);
+     */
+    public function getVar(string $select, array $conds, string $conj='AND'): mixed {
+        $arr = self::search(select: $select, limit: 1, conds: $conds, conj: $conj);
+        if ( ! $arr ) return $this->error(e()->entity_not_found);
+        return $arr[0][$select];
+    }
 
 
 
@@ -522,42 +538,24 @@ class Entity {
      * @todo $where 에 따옴표 처리.
      */
     public function search(
+        string $select='idx',
         string $where='1',
-        int $page=1,
-        int $limit=10,
         string $order='idx',
         string $by='DESC',
-        string $select='idx',
+        int $page=1,
+        int $limit=10,
         array $conds=[],
         string $conj = 'AND',
     ): array {
         $table = $this->getTable();
         $from = ($page-1) * $limit;
-        if ( $conds ) $where = $this->sqlCondition($conds, $conj);
+        if ( $conds ) $where = sqlCondition($conds, $conj);
         $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
         if ( isDebugging() ) d($q);
         return db()->get_results($q, ARRAY_A);
     }
 
 
-    /**
-     * 키/값 배열을 입력 받아 SQL WHERE 조건문에 사용 할 문자열을 리턴한다.
-     *
-     * 예) [a => apple, b => banana] 로 입력되면, "a=apple AND b=banana" 로 리턴.
-     *
-     * @param array $conds - 키/값을 가지는 배열
-     * @param string $conj - 'AND' 또는 'OR' 등의 연결 expression
-     * @return string
-     */
-    private function sqlCondition(array $conds, string $conj = 'AND'): string
-    {
-        $arc = [];
-        foreach($conds as $k => $v )
-        {
-            $arc[] = "`$k`='$v'";
-        }
-        return implode(" $conj ", $arc);
-    }
 
     /**
      * Returns login user's records in array.
@@ -573,8 +571,8 @@ class Entity {
      * @param string $select
      * @return array
      */
-    public function my(int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='*'): array {
-        return $this->search("userIdx=" . login()->idx, $page, $limit, $order, $by, $select);
+    public function my($select='*', int $page=1, string $order='idx', string $by='DESC', int $limit=10 ): array {
+        return $this->search($select, "userIdx=" . login()->idx, $order, $by, $page, $limit);
     }
 
 

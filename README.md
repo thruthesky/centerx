@@ -67,11 +67,11 @@
 
 - @done User test,
   
-- @done Category,
+- @done Category test,
   
-- @done Post
+- @done Post test
   
-- Comment 등에서 1개의 값(문자열, 숫자, 불린, 배열)을 리턴하는 경우가 아니면, 모든 crud 함수 및 기타 함수에서 self 를 리턴한다.
+- Comment test
 
 
 - `next.***.test.php` 로 테스트 코드를 작성하고 있다.
@@ -82,7 +82,7 @@
 - 클라이언트로 전달하는 경우가 아니면 `->hasError` 로 에러가 있는지 없는지 검사해야 한다.
 
 
-- meta 에 동일한 키를 여러개 입력 할 수 없지만, 배열이나 기타 여러 값을 저장하면, serialized 되어 저장된다.
+- @later meta 에 동일한 키를 여러개 입력 할 수 없지만, 배열이나 기타 여러 값을 저장하면, serialized 되어 저장된다.
   이점을 활용해서,
   기본 meta 함수명 addMeta(), getMeta(), updateMeta(), deleteMeta() 에,
   addMetaDataSet(...) 을 하면, Type SET 형식으로 배열인데, 고유한 값을 유지하는 배열에 값을 추가하는 함수를 만든다.
@@ -111,7 +111,7 @@
 - @doc meta 관련 함수를 meta.functions.php 로 떼어 낸다.
 
 
-- etc/configs 폴더에 각종 설정을 넣는다.
+- @later etc/configs 폴더에 각종 설정을 넣는다.
   db.config.php
   app.config.php
   와 같이 분리를 한다. 그리고 db.config.php 가 존재하지 않으면 설치가 안된 것으로 한다.

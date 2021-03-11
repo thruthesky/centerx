@@ -216,12 +216,12 @@ class Post extends PostTaxonomy {
      * @return array
      */
     public function search(
+        string $select='idx',
         string $where='1',
-        int $page=1,
-        int $limit=10,
         string $order='idx',
         string $by='DESC',
-        string $select='idx',
+        int $page=1,
+        int $limit=10,
         array $conds=[],
         string $conj = 'AND',
     ): array
@@ -240,18 +240,18 @@ class Post extends PostTaxonomy {
 
 
         $posts = parent::search(
+            select: $select,
             where: $where,
-            page: $page,
-            limit: $limit,
             order: $order,
             by: $by,
-            select: $select,
+            page: $page,
+            limit: $limit,
         );
 
         $rets = [];
         foreach( $posts as $post ) {
             $idx = $post[IDX];
-            $rets[] = post($idx)->get();
+            $rets[] = post($idx)->response();
         }
 
         return $rets;
@@ -373,7 +373,7 @@ class Post extends PostTaxonomy {
         $path = ltrim($path,'/');
         if ( empty($path) ) return [];
         $path = urldecode($path);
-        return $this->find([PATH => $path]);
+        return $this->findOne([PATH => $path]);
     }
 
     public function current(): array {
@@ -419,9 +419,9 @@ class Post extends PostTaxonomy {
      * @deprecated - use $this->categoryIdx
      * @return int
      */
-    function categoryIdx(): int {
-        return $this->categoryIdx;
-    }
+//    function categoryIdx(): int {
+//        return $this->categoryIdx;
+//    }
 
     /**
      * @deprecated - use $this->categoryId
@@ -445,12 +445,5 @@ class Post extends PostTaxonomy {
 function post(int $idx=0): Post
 {
     return new Post($idx);
-}
-
-
-
-function postCategoryIdx(int $idx) {
-    $post = entity(POSTS, $idx)->get();
-    return $post[CATEGORY_IDX];
 }
 

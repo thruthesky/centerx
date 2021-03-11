@@ -48,7 +48,7 @@ function getMeta(string $taxonomy, int $entity, string $code = null): mixed {
 
 
 /**
- * 값을 비교해서, entity 를 얻는다.
+ * 값을 비교해서, entity(taxonomy record idx) 1개를 얻는다.
  *
  * 현재 taxonomy 에서 code=$code AND data=$data 와 같이 비교해서, data 값이 맞으면 entity 를 리턴한다.
  * 이 때에는 현재 idx 는 사용하지 않는다(무시된다).
@@ -67,10 +67,24 @@ function getMeta(string $taxonomy, int $entity, string $code = null): mixed {
  * @todo $data 에 따옴표가 들어 갈 때, 에러가 나는지 확인 할 것.
  */
 function getMetaEntity(string $taxonomy, string $code, mixed $data ): int {
-    $q = "SELECT entity FROM " . entity(METAS)->getTable() . " WHERE taxonomy='$taxonomy' AND code='$code' AND data='$data' ORDER BY idx DESC LIMIT 1";
+    $q = "SELECT entity FROM " . entity(METAS)->getTable() . " WHERE taxonomy='$taxonomy' AND code='$code' AND data='$data' DESC LIMIT 1";
 //          echo("Q: $q\n");
     return db()->get_var($q) ?? 0;
 }
+
+/**
+ * 검색 조건을 입력 받아, 일치하는 레코드에서 entity (레코드 번호) 값을 리턴한다.
+ *
+ * @return array
+ */
+function getMetaEntities(array $conds, string $conj='AND', int $limit=1000 ): array {
+    $where = sqlCondition($conds, $conj);
+    $q = "SELECT entity FROM " . entity(METAS)->getTable() . " WHERE $where LIMIT $limit";
+    $arr = db()->get_results($q);
+    if ( ! $arr ) return [];
+    else return ids($arr, 'entity');
+}
+
 
 
 /**

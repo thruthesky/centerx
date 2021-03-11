@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * @file comment.class.php
+ */
+/**
+ * Class Comment
+ *
+ * @property-read string title
+ * @property-read string content
+ */
 class Comment extends PostTaxonomy {
 
     public function __construct(int $idx)
@@ -16,22 +24,22 @@ class Comment extends PostTaxonomy {
     {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( !isset($in[ROOT_IDX]) ) return $this->error(e()->root_idx_is_empty);
-        $in[USER_IDX] = my(IDX);
+        $in[USER_IDX] = login()->idx;
 
         /**
          * @todo when categoryIdx of post changes, categoryIdx of children must be changes.
          */
-        $categoryIdx = postCategoryIdx($in[ROOT_IDX]); // post($in[ROOT_IDX])->get(select: CATEGORY_IDX);
-
+        $categoryIdx = postCategoryIdx($in[ROOT_IDX]);
 
         $in[CATEGORY_IDX] = $categoryIdx;
-        $re = parent::create($in);
-        if ( isError($re) ) return $re;
+        parent::create($in);
+        if ( $this->hasError ) return $this;
 
-        $category = category($re[CATEGORY_IDX]);
+
+        $category = category($categoryIdx);
 
         // 제한에 걸렸으면, 에러 리턴.
-        if ( $category->value(BAN_ON_LIMIT) ) {
+        if ( $category->BAN_ON_LIMIT ) {
             $limit = point()->checkCategoryLimit($category->idx);
             if ( isError($limit) ) return $this->error($limit);
         }
@@ -39,18 +47,19 @@ class Comment extends PostTaxonomy {
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
         $pointToCreate = point()->getCommentCreate($category->idx);
         if ( $pointToCreate < 0 ) {
-            if ( my(POINT) < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
+            if ( login(POINT) < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
         }
 
         // $comment = parent::create($in);
-        point()->forum(POINT_COMMENT_CREATE, $re[IDX]);
+        point()->forum(POINT_COMMENT_CREATE, $this->idx);
 
         /**
          * NEW COMMENT IS CREATED ==>  Send notification to forum comment subscriber
          */
-        onCommentCreateSendNotification($re->getData()); //
+        onCommentCreateSendNotification($this); //
 
-        return comment($re[IDX])->get();
+        return $this;
+
     }
 
     /**
@@ -62,6 +71,7 @@ class Comment extends PostTaxonomy {
         $category = category($record[CATEGORY_IDX])->get(select: ID);
         return $category[ID];
     }
+
 
 
     /**
@@ -184,23 +194,23 @@ class Comment extends PostTaxonomy {
      */
 
     public function search(
+        string $select='idx',
         string $where='1',
-        int $page=1,
-        int $limit=10,
         string $order='idx',
         string $by='DESC',
-        string $select='idx',
+        int $page=1,
+        int $limit=10,
         array $conds=[],
         string $conj = 'AND',
     ): array {
 
         $posts = parent::search(
+            select: $select,
             where: $where,
-            page: $page,
-            limit: $limit,
             order: $order,
             by: $by,
-            select: $select,
+            page: $page,
+            limit: $limit,
         );
 
         $rets = [];
@@ -219,13 +229,12 @@ class Comment extends PostTaxonomy {
 /**
  * Returns Comment instance.
  *
- * @param array|int $idx - The `posts.idx` which is considered as comment idx. Or an array of the comment record.
+ * @param int $idx - The `idx` is the field of `posts` table. Comment uses the same table of posts.
  * @return Comment
  */
-function comment(array|int $idx=0): Comment
+function comment(int $idx=0): Comment
 {
-    if ( is_array($idx) ) return new Comment($idx[IDX]);
-    else return new Comment($idx);
+    return new Comment($idx);
 }
 
 

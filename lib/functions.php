@@ -968,28 +968,29 @@ function getCommentAncestors(int $idx): array
  *  remove users of 'topic subscribers' from 'token users'. - with array_diff($array1, $array2) return the array1 that has no match from array2
  *  get the tokens of the users_id and filtering those who want to get comment notification
  *
- * @param array $commentRecord
+ *
+ * @param Comment|Post $p
  * @throws Exception
  */
-function onCommentCreateSendNotification(array $commentRecord)
+function onCommentCreateSendNotification(Comment|Post $p)
 {
 
-    $post = post($commentRecord[ROOT_IDX]);
+//    $post = post($commentRecord[ROOT_IDX]);
     $usersIdx = [];
 
     /**
      * add post owner id if not mine
      */
 
-    if ($post->isMine() == false) {
-        $usersIdx[] = $post->value(USER_IDX);
+    if ($p->isMine() == false) {
+        $usersIdx[] = $p->userIdx;
     }
 
     /**
      * get comment ancestors id
      */
-    if ($commentRecord[PARENT_IDX] > 0) {
-        $usersIdx = array_merge($usersIdx, getCommentAncestors($commentRecord[IDX]));
+    if ($p->parentIdx > 0) {
+        $usersIdx = array_merge($usersIdx, getCommentAncestors($p->idx));
     }
 
     /**
@@ -1000,8 +1001,8 @@ function onCommentCreateSendNotification(array $commentRecord)
     /**
      * get user who subscribe to comment forum topic
      */
-    $catArr = category($post->value(CATEGORY_IDX))->get();
-    $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $catArr[ID]);
+    $cat = category($p->categoryIdx);
+    $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $cat->id);
 
     /**
      * remove users_id that are registered to comment topic
@@ -1019,25 +1020,25 @@ function onCommentCreateSendNotification(array $commentRecord)
      */
 
 
-    $title = $post->value(TITLE) ?? '';
+    $title = $p->title;
     if (empty($title)) {
         if (isset($in[FILES]) && !empty($in[FILES])) {
             $title = "New photo was uploaded";
         }
     }
 
-    $body               = $commentRecord[CONTENT];
-    $click_url          = $post->value(PATH);
+    $body               = $p->content;
+    $click_url          = $p->path;
     $data               = [
-        'senderIdx' => my(IDX),
+        'senderIdx' => login()->idx,
         'type' => 'post',
-        'idx'=> $post->value(IDX)
+        'idx'=> $p->idx,
     ];
 
     /**
      * send notification to users who subscribe to comment topic
      */
-    sendMessageToTopic(NOTIFY_COMMENT . $catArr[ID], $title, $body, $click_url, $data);
+    sendMessageToTopic(NOTIFY_COMMENT . $cat->id, $title, $body, $click_url, $data);
 
     /**
      * send notification to comment ancestors who enable reaction notification
@@ -1055,12 +1056,13 @@ function onCommentCreateSendNotification(array $commentRecord)
  */
 function getForumSubscribers(string $topic): array
 {
-    $ids = [];
-    $rows = meta()->search(where: "taxonomy='users' AND code='$topic' AND data='Y'", limit: 10000, select: ENTITY);
-    foreach ($rows as $user) {
-        $ids[] = $user[ENTITY];
-    }
-    return $ids;
+    return getMetaEntities([CODE => $topic, DATA => 'Y'], limit: 10000);
+//    $ids = [];
+//    $rows = meta()->search(where: "taxonomy='users' AND code='$topic' AND data='Y'", limit: 10000, select: ENTITY);
+//    foreach ($rows as $user) {
+//        $ids[] = $user[ENTITY];
+//    }
+//    return $ids;
 }
 
 
@@ -1113,4 +1115,34 @@ function separateByComma($str) {
         }
     }
     return $rets;
+}
+
+/**
+ * 현재 글 idx 는 알고 있지만, 그 categoryIdx 는 모를 때 사용하는 함수이다.
+ * @param $rootIdx
+ * @return int
+ */
+function postCategoryIdx($rootIdx): int {
+    return post()->getVar(CATEGORY_IDX, [IDX => $rootIdx]);
+}
+
+
+
+/**
+ * 키/값 배열을 입력 받아 SQL WHERE 조건문에 사용 할 문자열을 리턴한다.
+ *
+ * 예) [a => apple, b => banana] 로 입력되면, "a=apple AND b=banana" 로 리턴.
+ *
+ * @param array $conds - 키/값을 가지는 배열
+ * @param string $conj - 'AND' 또는 'OR' 등의 연결 expression
+ * @return string
+ */
+function sqlCondition(array $conds, string $conj = 'AND'): string
+{
+    $arc = [];
+    foreach($conds as $k => $v )
+    {
+        $arc[] = "`$k`='$v'";
+    }
+    return implode(" $conj ", $arc);
 }

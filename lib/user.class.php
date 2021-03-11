@@ -213,7 +213,7 @@ class User extends Entity {
      */
     public function by(int|string $uid): User {
         if ( is_int($uid) ) return user($uid);
-        return $this->find([EMAIL => $uid]);
+        return $this->findOne([EMAIL => $uid]);
     }
 
 

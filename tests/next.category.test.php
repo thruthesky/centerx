@@ -13,7 +13,7 @@ function testCategory() {
 
 function testCategoryCreate() {
     $id = 'category-create' . time();
-    isTrue(category()->create([ID=>$id])->find([ID => $id])->read()->id = $id, "Expect ID: $id, but : ...");
+    isTrue(category()->create([ID=>$id])->findOne([ID => $id])->read()->id == $id, "Expect ID: $id, but : ...");
 }
 
 function testCategoryUpdate() {
@@ -26,6 +26,6 @@ function testCategoryDelete() {
     $id = 'category-delete' . time();
     $cat = category()->create([ID=>$id, 'no' => '123']);
     isTrue( $cat->delete()->getData() == [], 'deleted');
-    $find = category()->find([ID=>$id]);
+    $find = category()->findOne([ID=>$id]);
     isTrue( $find->getError() == e()->entity_not_found, 'not found after delete');
 }
