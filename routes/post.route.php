@@ -24,6 +24,7 @@ class PostRoute {
 
         $rets = [];
         foreach( $idxes as $idx ) {
+            /// 데이터가 존재하지 않으면, 리턴되지 않는다.
             if ( post($idx)->exists() == false ) continue;
             $post = post($idx)->get();
             $rets[] = $post;
