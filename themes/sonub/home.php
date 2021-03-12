@@ -8,7 +8,7 @@
 
 <hr>
 <?php if ( loggedIn() ) { ?>
-    어서오세요, <?=my(NAME)?>님.
+    어서오세요, <?=login()->name?>님.
 <?php } else { ?>
     Please, login first.
 <?php } ?>

@@ -8,7 +8,9 @@ class PostRoute {
     }
     public function update($in) {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
-        return post($in[IDX])->update($in)->response();
+        $post = post($in[IDX]);
+        if ( $post->isMine() == false ) return  e()->not_your_post;
+        return $post->update($in)->response();
     }
     public function delete($in) {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;

@@ -109,7 +109,7 @@ class Entity {
     }
 
     public function v(string $field, mixed $default_value=null) {
-        return $this->getData();
+        return $this->getData($field, $default_value);
     }
 
 
@@ -303,6 +303,7 @@ class Entity {
      *
      * 참고, 업데이트 후 $this->read() 를 통해서 현재 객체의 $this->data 에 DB 로 부터 새로 데이터를 다시 읽는다.
      * 참고, 이전에 에러가 있었으면 그냥 현재 객체를 리턴한다.
+     * 참고, 에러, 퍼미션 점검은 이 함수를 호출하기 전에 미리 해야 한다.
      *
      * @param $in
      *
@@ -569,6 +570,7 @@ class Entity {
      * @return array
      *  - empty array([]), If there is no record found.
      *
+     *
      * @example tests/next.entity.search.test.php 에 많은 예제가 있다.
      *
      * 예제) 로그인 시, 특장 사용자의 비밀번호를 찾아 비교하기 위해서, 비밀번호 가져오기.
@@ -606,6 +608,7 @@ class Entity {
         if ( isDebugging() ) d($q);
         return db()->get_results($q, ARRAY_A);
     }
+
 
 
 

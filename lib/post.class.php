@@ -9,6 +9,7 @@
  * @property-read string $categoryIdx;
  * @property-read string $userIdx;
  * @property-read string $title;
+ * @property-read string $files;
  * @property-read string $path;
  * @property-read string $content;
  * @property-read string $url;
@@ -119,6 +120,9 @@ class Post extends PostTaxonomy {
     /**
      * @attention The entity.idx must be set. That means, it can only be called with `post(123)->update()`.
      *
+     * 참고, 프로그램적으로 타인의 글을 업데이트 할 수 있다. 예를 들어, 추천을 할 때, 추천 수를 증가시켜야 한다.
+     * 단, Api 호출에서는 못하게 한다. 즉, 미리 Api 호출에서 검사를 해야 한다.
+     *
      * @param array $in
      * @return Post - `post()->get()` 에 대한 결과를 리턴한다. 즉, url 등의 값이 들어가 있다.
      * - `post()->get()` 에 대한 결과를 리턴한다. 즉, url 등의 값이 들어가 있다.
@@ -127,7 +131,6 @@ class Post extends PostTaxonomy {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
-        if ( $this->isMine() == false ) return $this->error(e()->not_your_post);
 
         return parent::update($in);
     }
@@ -177,21 +180,24 @@ class Post extends PostTaxonomy {
         $__rets = [];
 
         // get all comments.
-        $comments = $this->getComments($this->idx);
-        if ( $comments ) {
-            foreach($comments as $comment) {
-                $got = comment($comment[IDX])->response();
-                $got[DEPTH] = $comment[DEPTH];
-                $comments[] = $got;
-            }
-        }
-        $post['comments'] = $comments;
+//        $comments = $this->getComments($this->idx);
+//        if ( $comments ) {
+//            foreach($comments as $comment) {
+//                $got = comment($comment[IDX])->response();
+//                $got[DEPTH] = $comment[DEPTH];
+//                $comments[] = $got;
+//            }
+//        }
+//        $post['comments'] = $comments;
+
+        $post['comments'] = $this->comments(false);
         /**
          * Get files only if $select includes 'files' field.
          */
         if ( isset($post[FILES]) ) {
-            $post[FILES] = files()->responseFromIdxes($post[FILES]);
+            $post[FILES] = files()->fromIdxes($post[FILES], ARRAY_A);
         }
+
 
         if ( $post[USER_IDX] ) {
             $post['user'] = user($post[USER_IDX])->postProfile();
@@ -206,6 +212,16 @@ class Post extends PostTaxonomy {
      * @attention Categories can be passed like  "categoryId=<apple> or categoryId='<banana>'" and it wil be converted
      * as "categoryIdx=1 or categoryIdx='2'"
      *
+     *
+     * Post 객체를 배열로 리턴한다. 그래서 아래와 같이 코딩을 할 수 있다.
+     *
+     * ```
+     * $posts = post()->search(where: "userIdx != " . login()->idx);
+     * foreach( $posts as $post ) {
+     *   $post->vote('N');
+     * }
+     * ```
+     *
      * @param string $where
      * @param int $page
      * @param int $limit
@@ -214,7 +230,9 @@ class Post extends PostTaxonomy {
      * @param string $select
      * @param array $conds
      * @param string $conj
-     * @return array
+     * @return Post[]
+     *
+     *
      */
     public function search(
         string $select='idx',
@@ -252,7 +270,7 @@ class Post extends PostTaxonomy {
         $rets = [];
         foreach( $posts as $post ) {
             $idx = $post[IDX];
-            $rets[] = post($idx)->response();
+            $rets[] = post($idx);
         }
 
         return $rets;
@@ -282,58 +300,9 @@ class Post extends PostTaxonomy {
         return $this->search(where: "categoryId=<$categoryId> AND parentIdx=0 AND deletedAt=0", page: $page, limit: $limit, select: '*');
     }
 
-
-    /**
-     * @deprecated
-     * @param string|null $field
-     * @param mixed|null $value
-     * @param string $select
-     * @return mixed
-     * - Empty array([]) if post not exists.
-     *
-     *
-    // @todo comment.
-    // @todo add user(author) information
-    // @todo add attached files if exists.
-     */
-    public function get(string $field=null, mixed $value=null, string $select='*', bool $cache=true): mixed
-    {
-        global $__rets;
-        $post = parent::get($field, $value, $select, $cache);
-        if ( ! $post ) return [];
-        if ( isset($post['path']) ) $post['url'] = '//' . get_domain() . '/' . $post['path'];
-
-        /// 글 초기화 하는 과정에서는 comments, files 데이터를 가져오지 않는다.
-        if ( $this->inInit == false ) {
-            $post[COMMENTS] = [];
-            if ( isset($post[IDX]) ) {
-                $__rets = [];
-                $comments = $this->getComments($post[IDX]);
-                if ( $comments ) {
-                    foreach($comments as $comment) {
-                        $got = comment($comment[IDX])->get();
-                        if ($got[DELETED_AT] != '0') continue;
-                        $got[DEPTH] = $comment[DEPTH];
-                        $post[COMMENTS][] = $got;
-                    }
-                }
-            }
-            /**
-             * Get files only if $select includes 'files' field.
-             */
-            if ( isset($post[FILES]) ) {
-                $post[FILES] = files()->get($post[FILES], select: 'idx,userIdx,path,name,size');
-            }
-
-            if ( $post[USER_IDX] ) {
-                $post['user'] = user($post[USER_IDX])->postProfile();
-            }
-        }
-        return $post;
-    }
-
     /**
      * Returns only idx, rootIdx, parentIdx, and its depth of all the child posts(comments) in recursive tree.
+     * 하위 코멘트를 tree 구조로 리턴한다. 최종 리턴되는 배열에는 idx, rootIdx, parentIdx, depth 의 값이 들어가 있다.
      *
      * @attention $__rets must be reset for getting children of each post since it is added it there.
      *
@@ -417,14 +386,48 @@ class Post extends PostTaxonomy {
         }
     }
 
+    /**
+     * 현재 글에 연결된 첨부 파일 객체를 배열로 리턴한다.
+     *
+     * ```
+     * foreach( $post->files() as $file ) { ... }
+     * ```
+     *
+     * @return File[]
+     */
+    function files(): array {
+        return files()->fromIdxes($this->files);
+    }
+
 
     /**
-     * @deprecated - use $this->categoryIdx
-     * @return int
+     * 현재 글에 연결된 코멘트 객체를 배열로 리턴한다.
+     *
+     * 참고: getComments() 는 하위 코멘트의 구조만 담고 있다.
+     *
+     * @param bool $object - true 이면 객체로 리턴. false 이면 배열로 리턴.
+     * @return Comment[]
      */
-//    function categoryIdx(): int {
-//        return $this->categoryIdx;
-//    }
+    function comments(bool $object = true): array {
+        // get all comments.
+        $comments = $this->getComments($this->idx);
+
+        $rets = [];
+        if ( $comments ) {
+            foreach($comments as $comment) {
+                if ( $object ) {
+                    $cmt = comment($comment[IDX]);
+                    $cmt->depth = $comment[DEPTH];
+                } else {
+                    $cmt = comment($comment[IDX])->response();
+                    $cmt[DEPTH] = $comment[DEPTH];
+                }
+                $rets[] = $cmt;
+            }
+        }
+
+        return $rets;
+    }
 
     /**
      * @deprecated - use $this->categoryId

@@ -65,6 +65,7 @@ class PostTaxonomy extends Entity {
                 CHOICE => $Yn
             ]);
 //            d("$Yn");
+
             point()->vote($this, $Yn);
         }
 

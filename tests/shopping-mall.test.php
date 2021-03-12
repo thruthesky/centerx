@@ -36,7 +36,7 @@ isTrue($user->getPoint() == 2000, 'point should be 2000');
 $history = pointHistory()->last(SHOPPING_MALL_ORDERS, $orderRecord[IDX]);
 
 
-isTrue(my(IDX) === $history->value('toUserIdx'), "My idx: " . my(IDX) . " vs userIdx: " . $history->value('toUserIdx'));
+isTrue( login()->idx === $history->value('toUserIdx'), "My idx: " . login()->idx . " vs userIdx: " . $history->value('toUserIdx'));
 isTrue($history->value('toUserPointApply') == -3000, 'toUserPointApply: 3000');
 
 // 취소

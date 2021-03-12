@@ -9,12 +9,19 @@
  * @property-read int $parentIdx
  * @property-read string $title
  * @property-read string $content
+ * @property-read string $files
  * @property-read string $Y
  * @property-read string $N
  * @property-read int $createdAt
  * @property-read int $deletedAt
  */
 class Comment extends PostTaxonomy {
+
+    /**
+     * depth 는 재귀적 함수 호출에 의해서 결정되므로, DB 에 없는 필드이다. 따라서 재귀적 함수 호출 후에 설정을 해 주어야 한다.
+     * @var int
+     */
+    public int $depth = 0;
 
     public function __construct(int $idx)
     {
@@ -30,6 +37,7 @@ class Comment extends PostTaxonomy {
         }
 
     }
+
 
     /**
      * @param array $in
@@ -83,10 +91,9 @@ class Comment extends PostTaxonomy {
      * @return string
      */
     public function categoryId(): string {
-        $record = $this->get(select: CATEGORY_IDX);
-        $category = category($record[CATEGORY_IDX])->get(select: ID);
-        return $category[ID];
+        return postCategoryId($this->rootIdx);
     }
+
 
 
 
@@ -150,46 +157,7 @@ class Comment extends PostTaxonomy {
          * Get files only if $select includes 'files' field.
          */
         if ( isset($comment[FILES]) ) {
-            $comment[FILES] = files()->responseFromIdxes($comment[FILES]);
-        }
-
-
-        if ( $comment[USER_IDX] ) {
-            $comment['user'] = user($comment[USER_IDX])->postProfile();
-        }
-
-        return $comment;
-    }
-
-
-
-    /**
-     * @deprecated
-     * @param string|null $field
-     * @param mixed|null $value
-     * @param string $select
-     * @param bool $cache
-     * @return mixed
-     * - Empty array([]) if comment not exists.
-     *
-     *
-     * @todo add user(author) information
-     * @todo add attached files if exists.
-     */
-    public function get(string $field=null, mixed $value=null, string $select='*', bool $cache=true): mixed
-    {
-        $comment = parent::get($field, $value, $select, $cache);
-
-        /// @todo why is it getting empty comment? why empty comment happens?
-        if ( empty($comment) ) {
-            return [];
-        }
-
-        /**
-         * Get files only if $select includes 'files' field.
-         */
-        if ( isset($comment[FILES]) ) {
-            $comment[FILES] = files()->get($comment[FILES], select: 'idx,userIdx,path,name,size');
+            $comment[FILES] = files()->fromIdxes($comment[FILES]);
         }
 
 
@@ -215,7 +183,7 @@ class Comment extends PostTaxonomy {
      * @param string $select
      * @param array $conds
      * @param string $conj
-     * @return mixed
+     * @return Comment[]
      */
 
     public function search(
@@ -241,11 +209,28 @@ class Comment extends PostTaxonomy {
         $rets = [];
         foreach( $posts as $post ) {
             $idx = $post[IDX];
-            $rets[] = comment($idx)->get();
+            $rets[] = comment($idx);
         }
 
         return $rets;
     }
+
+
+
+    /**
+     * 현재 글에 연결된 첨부 파일 객체를 배열로 리턴한다.
+     *
+     * ```
+     * foreach( $post->files() as $file ) { ... }
+     * ```
+     *
+     * @return File[]
+     */
+    function files(): array {
+        return files()->fromIdxes($this->files);
+    }
+
+
 
 
 }

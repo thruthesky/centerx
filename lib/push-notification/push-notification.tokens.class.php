@@ -18,7 +18,7 @@ class PushNotificationTokens extends Entity {
 
         $token = $in[TOKEN];
         $data = [
-            USER_IDX => my(IDX) ?? 0,
+            USER_IDX => login()->idx,
             TOKEN => $token,
             DOMAIN => get_domain_name(),
         ];
@@ -59,7 +59,7 @@ class PushNotificationTokens extends Entity {
      * @throws Exception
      */
     function myTokens(): array {
-        return $this->getTokens(my(IDX));
+        return $this->getTokens( login()->idx );
     }
 }
 
@@ -82,7 +82,7 @@ function sanitizedInput($in): array {
     if ( !isset($in['click_action'])) $in['click_action'] = '/';
     if ( !isset($in['imageUrl'])) $in['imageUrl'] = '';
     if ( !isset($in['data'])) $in['data'] = [];
-    $in['data']['senderIdx'] = my(IDX);
+    $in['data']['senderIdx'] = login()->idx;
     return $in;
 }
 

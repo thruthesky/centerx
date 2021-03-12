@@ -5,6 +5,7 @@
 /**
  * Class User
  * @property-read string $email;
+ * @property-read string $sessionId;
  * @property-read string $name;
  * @property-read string $nickname;
  * @property-read int $photoIdx;
@@ -305,6 +306,8 @@ function user(int $idx=0): User
  * Returns User class instance of the login user. Or optionally, returns meta value of user field.
  *
  * Note, that it returns Not Only user's field, but also user's meta field.
+ *
+ * 만약, 로그인이 안된 상태에서 이 함수를 호출하면, login()->idx 의 값은 0 이 된다.
  *
  * @param string|null $field
  * @return User|int|string|array|null

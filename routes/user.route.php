@@ -40,7 +40,7 @@ class UserRoute {
      * @throws Exception
      */
     public function point($in) {
-        $myIdx = my(IDX);
+        $myIdx = login()->idx;
         return pointHistory()->search(where: "fromUserIdx=$myIdx OR toUserIdx=$myIdx", limit: 200, select: '*');
     }
 }

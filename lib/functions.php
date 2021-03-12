@@ -449,9 +449,9 @@ function setLoginAny(): User {
  * @example
  *  my('color')
  */
-//function my(string $field, bool $cache=true) {
+function my(string $field, bool $cache=true) {
 //    return login($field);
-//}
+}
 
 function admin(): bool {
     if ( login()->email === ADMIN_EMAIL ) return true;
@@ -474,22 +474,17 @@ function debug_log($message, $data='') {
  * @param array $options
  * @param string $widgetId
  *
+ * @return string
  * @example
  *  include widget('post-latest/post-latest-default')
  */
-$__widget_options = null;
-function get_widget_options() {
-    global $__widget_options;
-    return $__widget_options;
-}
-function widget(string $path, array $options=[], string $widgetId=null) {
-    global $__widget_options;
-    $__widget_options = $options;
-    if ( $widgetId ) entity('widget')->setMetaIfNotExists(0, $widgetId, $options );
+function widget(string $path, array $options=[], string $widgetId='') {
+    if ( $widgetId && $options ) addMetaIfNotExists('widget', 0, $widgetId, $options);
     $arr = explode('/', $path);
-    $_path = ROOT_DIR . "widgets/$arr[0]/$arr[1]/$arr[1].php";
-    return $_path;
+    $path = ROOT_DIR . "widgets/$arr[0]/$arr[1]/$arr[1].php";
+    return $path;
 }
+
 
 
 /**
@@ -1131,6 +1126,14 @@ function separateByComma($str) {
  */
 function postCategoryIdx($rootIdx): int {
     return post()->getVar(CATEGORY_IDX, [IDX => $rootIdx]);
+}
+/**
+ * 현재 글 idx 는 알고 있지만, 그 categoryId 는 모를 때 사용하는 함수이다.
+ * @param $rootIdx
+ * @return int
+ */
+function postCategoryId($rootIdx): int {
+    return post()->getVar(CATEGORY_ID, [IDX => $rootIdx]);
 }
 
 

@@ -3,8 +3,8 @@
  * @name Default Post List Style
  */
 
-
 $categoryId = in(CATEGORY_ID);
+
 
 ?>
 

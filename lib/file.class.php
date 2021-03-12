@@ -4,6 +4,7 @@
  * Class File
  *
  * @property-read string path - file path
+ * @property-read string url
  */
 class File extends Entity {
 
@@ -77,15 +78,19 @@ class File extends Entity {
     }
 
     /**
-     * '1,2,3' 과 같이 idx 들을 문자열로 입력 받아, 여러개의 file response 를 배열에 담아 리턴한다.
+     * '1,2,3' 과 같이 idx 들을 문자열로 입력 받아, 해당하는 File 객체를 배열에 담아 리턴한다.
+     *
+     * 참고로, 글의 첨부 파일은 1,2,3 과 같이 저장되어져 있다.
      * @param string $idxes
-     * @return array
+     * @param bool $object - true 이면 객체로 리턴하고, false 이면 배열로 리턴한다.
+     * @return File[]
      */
-    public function responseFromIdxes(string $idxes): array {
+    public function fromIdxes(string $idxes, bool $object = true): array {
         $arr = separateByComma($idxes);
         $rets = [];
         foreach( $arr as $idx ) {
-            $rets = files($idx)->response();
+            if ( $object ) $rets[] = files($idx);
+            else $rets[] = files($idx)->response();
         }
         return $rets;
 

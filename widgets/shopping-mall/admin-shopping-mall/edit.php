@@ -239,7 +239,7 @@ if ( modeDelete() ) {
         fileUpload(
             file,
             {
-                sessionId: '<?=my(SESSION_ID)?>',
+                sessionId: '<?=login()->sessionId?>',
             },
             function (res) {
                 console.log("success: res.path: ", res, res.path);
@@ -259,7 +259,7 @@ if ( modeDelete() ) {
         const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
         if ( re === false ) return;
         axios.post('/index.php', {
-            sessionId: '<?=my(SESSION_ID)?>',
+            sessionId: '<?=login()->sessionId?>',
             route: 'file.delete',
             idx: idx,
         })

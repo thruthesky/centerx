@@ -270,16 +270,12 @@ function testLikeHourlyLimit(): void
 
     // 포인트 시간/수 제한 없음.
     user(B)->setPoint(10000);
-//    return;
-//    d(my(IDX));
-//    enableDebugging();
+
     $posts = post()->search(where: "userIdx != " . login()->idx);
-//    disableDebugging();
-//    d($posts);
-    for ($i = 0; $i < 10; $i++) {
-//        d($posts[$i][IDX]);
-        post($posts[$i][IDX])->vote('N');
+    foreach( $posts as $post ) {
+        $post->vote('N');
     }
+
 
     isTrue(user(B)->getPoint() == 0, '(no limit) B point should be 0. but ' . user(B)->getPoint());
 
@@ -287,6 +283,8 @@ function testLikeHourlyLimit(): void
     // 시간/수 = 2시간에 11번.
     clearTestPoint();
     setLogin(B);
+
+
 
     point()->setLike(1000);
     point()->setLikeDeduction(-1000);
@@ -299,9 +297,15 @@ function testLikeHourlyLimit(): void
     // 충분함.
     user(B)->setPoint(10000);
 
-    for ($i = 0; $i < 10; $i++) {
-        $post = post($posts[$i][IDX])->vote('N');
+//    for ($i = 0; $i < 10; $i++) {
+//        $post = post($posts[$i][IDX])->vote('N');
+//    }
+
+
+    foreach( $posts as $post ) {
+        $post->vote('N');
     }
+
     isTrue(user(B)->getPoint() == 0, '(2/11) B point should be 0. but ' . user(B)->getPoint());
 
 
@@ -319,8 +323,9 @@ function testLikeHourlyLimit(): void
 
     // 마지막 1번은 안됨. 그래서 1천 포인트가 남아야 함.
     user(B)->setPoint(10000);
-    for ($i = 0; $i < 9; $i++) {
-        $post = post($posts[$i][IDX])->vote('N');
+
+    foreach( $posts as $post ) {
+        $post->vote('N');
     }
     isTrue(user(B)->getPoint() == 1000, '(2/9) B point should be 1000. but ' . user(B)->getPoint());
 

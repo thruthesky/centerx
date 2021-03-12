@@ -44,6 +44,19 @@ function getMeta(string $taxonomy, int $entity, string $code = null): mixed {
 }
 
 
+/**
+ * meta 가 존재하면 true 아니면, false 를 리턴한다.
+ *
+ * @param string $taxonomy
+ * @param int $entity
+ * @param string $code
+ * @return bool
+ */
+function metaExists(string $taxonomy, int $entity, string $code) {
+    $idx = db()->get_var("SELECT idx FROM " . META_TABLE . " WHERE taxonomy='$taxonomy' AND entity=$entity AND code='$code'");
+    return $idx > 0;
+}
+
 
 
 
@@ -90,6 +103,7 @@ function getMetaEntities(array $conds, string $conj='AND', int $limit=1000 ): ar
 /**
  * taxonomy 의 $entity 에 연결되는 meta code/data 를 추가 또는 업데이트한다.
  *
+ *
  * 참고, taxonomy 는 존재하지 않는 어떤 값이라도 상관 없다.
  * 참고, 1개의 값을 추가/업데이트 할 수 있고, 배열로 여러개의 값을 추가/업데이트 할 수 있다.
  *
@@ -107,14 +121,14 @@ function updateMeta(string $taxonomy, int $entity, mixed $code, mixed $data=null
 
     $table = META_TABLE;
 
-
     if ( is_string($code) ) $in = [$code => $data];
     else $in = $code;
 
     foreach( $in as $k=>$v) {
         // 기존 meta 가 존재하면,
-        $idx = db()->get_var("SELECT idx FROM " . META_TABLE . " WHERE taxonomy='$taxonomy' AND entity=$entity AND code='$k'");
-        if ( $idx ) { // 업데이트
+//        $idx = db()->get_var("SELECT idx FROM " . META_TABLE . " WHERE taxonomy='$taxonomy' AND entity=$entity AND code='$k'");
+        $re = metaExists($taxonomy, $entity, $k);
+        if ( $re ) { // 업데이트
             $re = db()->update( $table, [DATA => _serialize($v), UPDATED_AT => time()], db()->where( eq(TAXONOMY, $taxonomy), eq(ENTITY, $entity), eq(CODE, $k) ) );
             if ( $re === false ) return e()->meta_update_failed;
         } else { // 아니면, 생성
@@ -132,7 +146,6 @@ function updateMeta(string $taxonomy, int $entity, mixed $code, mixed $data=null
     }
 
     return '';
-
 
 }
 
@@ -162,6 +175,19 @@ function updateMeta(string $taxonomy, int $entity, mixed $code, mixed $data=null
  */
 function addMeta(string $taxonomy, int $entity, mixed $code, mixed $data=null): string
 {
+    return updateMeta($taxonomy, $entity, $code, $data);
+}
+
+/**
+ * 메타 레코드가 존재하지 않으면, 새로운 메타를 추가한다.
+ * @param string $taxonomy
+ * @param int $entity
+ * @param mixed $code
+ * @param mixed|null $data
+ * @return string
+ */
+function addMetaIfNotExists(string $taxonomy, int $entity, mixed $code, mixed $data=null) {
+    if ( metaExists($taxonomy, $entity, $code) ) return '';
     return updateMeta($taxonomy, $entity, $code, $data);
 }
 

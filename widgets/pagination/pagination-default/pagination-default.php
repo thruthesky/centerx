@@ -14,7 +14,8 @@
  */
 
 
-$options = get_widget_options();
+$options = [];
+
 
 $page = $options['page'] ?? 1;
 $blocks = $options['blocks'] ?? 7;
