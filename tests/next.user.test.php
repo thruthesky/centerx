@@ -13,7 +13,7 @@ function testUserRegister() {
     $email = 'user-create' . time() . '@test.com';
     $pw = '12345a';
     $user = user()->register([EMAIL=>$email, PASSWORD=>$pw]);
-    isTrue($user->hasError == false, 'no error on create user');
+    isTrue($user->ok, 'no error on create user');
 
     $user = user()->register([EMAIL=>$email, PASSWORD=>$pw]);
     isTrue($user->hasError == true, 'error on same email');

@@ -9,7 +9,7 @@ isTrue($re === e()->password_is_empty, 'Expect: password is empty.');
 
 
 $record = user()->register([EMAIL=>$email, PASSWORD=>'12345a']);
-isTrue( isSucess($record), 'Expect: password is empty.');
+isTrue( $record->ok, 'Expect: register success');
 
 
 //$user = user($record[IDX]);

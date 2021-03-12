@@ -8,7 +8,6 @@
  * @property-read string $name;
  * @property-read string $nickname;
  * @property-read int $photoIdx;
- * @property-read int $point;
  * @property-read string $phoneNo;
  * @property-read string $gender;
  * @property-read int $birthdate;
@@ -25,11 +24,18 @@
  */
 class User extends Entity {
 
+    /**
+     * @deprecated 이 변수를 사용하면 안된다. getPoint() 를 사용해야 한다.
+     * @var int
+     */
+    public int $point;
 
     public function __construct(int $idx)
     {
         parent::__construct(USERS, $idx);
     }
+
+
 
     /**
      * 회원 정보를 읽어서 data 에 보관한다.
@@ -73,7 +79,11 @@ class User extends Entity {
 
         $in[PASSWORD] = encryptPassword($in[PASSWORD]);
 
-        return $this->create($in);
+        $this->create($in);
+
+        point()->register($this->profile());
+
+        return $this;
     }
 
 
@@ -153,6 +163,8 @@ class User extends Entity {
     /**
      * Alias of response()
      *
+     * 단순히, $this->data() 를 배열로 리턴한다.
+     *
      * @return array|string
      * 예제)
      * d( user(48)->profile() );
@@ -176,24 +188,30 @@ class User extends Entity {
     }
 
 
-
     /**
      * @param $p
+     * @return User
      */
-    public function setPoint($p) {
-        $this->update([POINT => $p]);
+    public function setPoint($p): self {
+        return $this->update([POINT => $p]);
     }
 
 
-
     /**
+     * 사용자 포인트를 리턴한다.
+     *
+     * 포인트는 캐시된 값을 쓰면 안되고, DB 에서 값을 가져와야하는 경우가 많으므로, `$this->point` 는 쓰지 못한다.
+     * `$this->point` 를 쓰려고 한다면, `User::$point must not be accessed before initialization` 에러를 만날 것이다.
+     *
+     * @param bool $cache - 이 값이 true 이면, DB 에서 읽지 않고, 이미 읽은 데이터를 사용한다. 기본 값 false.
      * @return int
      */
-    public function getPoint(): int {
-        if ( $this->idx ) {
-            return $this->point;
+    public function getPoint(bool $cache=false): int {
+        if ( notLoggedIn() ) return 0;
+        if ( $cache ) {
+            return $this->getData()['point'];
         } else {
-            return 0;
+            return $this->getVar(POINT, [IDX => $this->idx]);
         }
     }
 

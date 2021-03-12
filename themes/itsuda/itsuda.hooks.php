@@ -1,7 +1,7 @@
 <?php
 
-hook()->add('posts_before_create', function($record, $in) {
-    debug_log("-------------- 1st hook of posts_before_create ", $record);
+hook()->add('posts-before-create', function($record, $in) {
+    debug_log("-------------- 1st hook of posts-before-create ", $record);
 
     if ( !isset($record[ROOT_IDX]) || empty($record[ROOT_IDX]) ) { // 글 작성
 //        debug_log("글작성;", $record);
@@ -48,6 +48,6 @@ hook()->add('posts_before_create', function($record, $in) {
     }
 });
 
-hook()->add('posts_before_create', function($record, $in) {
-//    debug_log("-------------- 두번째 훅: hook of posts_before_create", $in);
+hook()->add('posts-before-create', function($record, $in) {
+//    debug_log("-------------- 두번째 훅: hook of posts-before-create", $in);
 });

@@ -61,13 +61,14 @@
 
 - README 에 최소한의 정보만 두고, 모두 phpDocument 화 한다.
   
-- 업데이트 계획
-  - 플러터와 CenterX 모두 main branch 는 놔 두고,
-  - 플러터에서도 next 브랜치를 만들고, CenterX next branch 로 바로 접속 하도록 한다.
+- next 를 main 에 merge 또는 이동 계획
+  - 먼저, next 브랜치로 작업이 잘 되는지, 확인을 한다.
+    - 플러터와 CenterX 모두 main branch 는 놔 두고,
+    - 플러터에서도 next 브랜치를 만들고, CenterX next branch 로 바로 접속 하도록 한다.
+  - 작업이 잘 되면, main 을 0.2 로 백업하고, next 를 main 으로 바꾼다.
+    - 먼저, 그동안 변경된 사항을, https://github.com/thruthesky/centerx/commits/main 에서 확인해서, 변경된 내용을 적용한다.
+    - branch 이름 변경하기 참고: https://docs.google.com/document/d/1OV1FYLwBBloQU_H8wUkZLnzCLtFdVLiRtXPZXNa5Bkw/edit#heading=h.fbs4ukt4a7lj
 
-- 관리자 페이지 변경.
-- File entity test - 실제로 웹/앱으로 파일 업로드 하면서 테스트를 해야 할 것 같다.
-  
 - @done User test,
   
 - @done Category test,
@@ -76,18 +77,31 @@
   
 - @done Comment test
 
+- @done VoteHistory entity test
 
-- VoteHistory entity test
+- @done Entity hook test
 
 - Point test
 
+- entity::get() 함수 삭제
+- my() 함수 삭제. login() 으로 대체
+- isSucess() 함수 삭제. 테스트에서 별 소용 없는 함수.
 
-- `next.***.test.php` 로 테스트 코드를 작성하고 있다.
+- 관리자 페이지 변경.
+- File entity test - 실제로 웹/앱으로 파일 업로드 하면서 테스트를 해야 할 것 같다.
+
+- 플러터에서 next 브랜치 테스트
+
+- next 브랜치를 main 으로 변경
+
+
+- @doc `next.***.test.php` 로 테스트 코드를 작성하고 있다.
   - user, category, post, comment 순서로 테스트
   - user()->create()->response() 에서 에러가 있으면 response() 항상 에러 문자열을 리턴한다.
   
-- 클라이언트로 전달하는 response() 함수는 에러가 있으면 에러 문자열을 리턴한다.
-- 클라이언트로 전달하는 경우가 아니면 `->hasError` 로 에러가 있는지 없는지 검사해야 한다.
+- @doc 클라이언트로 전달하는 response() 함수는 에러가 있으면 에러 문자열을 리턴한다.
+- @doc 클라이언트로 전달하는 경우가 아니면 `->hasError` 로 에러가 있는지 없는지 검사해야 한다.
+
 
 
 - @later meta 에 동일한 키를 여러개 입력 할 수 없지만, 배열이나 기타 여러 값을 저장하면, serialized 되어 저장된다.
@@ -125,7 +139,7 @@
   와 같이 분리를 한다. 그리고 db.config.php 가 존재하지 않으면 설치가 안된 것으로 한다.
   
 - @doc meta 테이블은 그 활용가 간단해서 taxonomy 와 entity 방식으로 사용하지 않는다. 하지만, 사용해도 무방하다. 실제로 테스트 코드에서는 사용을 한다.
-- 100% getter/setter 를 사용한다.
+- @doc 100% getter/setter 를 사용한다.
   변수 x 가 있다면, 아래와 같이 getter/setter 를 사용한다.
 ```php
     private int $x;
@@ -133,22 +147,19 @@
     public function setX() { ... }
 ```
 
-- 데이터베이스 레코드에 대해서는 magic getter/setter 를 사용한다.
+- @doc 데이터베이스 레코드에 대해서는 magic getter/setter 를 사용한다.
 
-- instantiate 를 할 때, constructor 에서 해당 entity 레코드와 meta 에 대한 모든 값들을 불러와 메모리에 저장한다.
+- @doc instantiate 를 할 때, constructor 에서 해당 entity 레코드와 meta 에 대한 모든 값들을 불러와 메모리에 저장한다.
   즉, entity()->get() 에서 더 이상 메모리 캐시를 할 필요 없다.
   이 때, 자식(코멘트) entity 는 로드하지 않는다.
 
-- 각종 entity() 클래스와 게시판에서 get() 함수를 없애고, read() 로 변경한다.
+- @doc 각종 entity() 클래스와 게시판에서 get() 함수를 없애고, read() 로 변경한다.
 
-- 글을 클라이언트로 보낼 때에는 post()->create(...)->response() 를 할 수 있도록 한다.
+- @doc 글을 클라이언트로 보낼 때에는 post()->create(...)->response() 를 할 수 있도록 한다.
   이 response() 함수에서 코멘트 정보를 다 읽고 파싱한다.
 
-- SQLite3 지원. 그러면 그냥 php dev web server 로 SSL 없이, localhost 로 바로 실행가능하리라 생각한다.
+- @later SQLite3 지원. 그러면 그냥 php dev web server 로 SSL 없이, localhost 로 바로 실행가능하리라 생각한다.
 
-- entity hook test
-
-- main 브랜치의 readme.md 파일을 병합.
 
 # Primary Conception
 

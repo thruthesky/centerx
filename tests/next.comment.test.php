@@ -24,7 +24,7 @@ function testCommentCrud() {
 
     // 글 생성
     $p = post()->create(['categoryId' => $cat->id, 'title' => 'comment create']);
-    isTrue($p->hasError == false, 'must have no error');
+    isTrue($p->ok, 'must have no error');
 
 //    enableDebugging();
     $comment = comment()->create([ ROOT_IDX => $p->idx, CONTENT => 'comment content' ]);

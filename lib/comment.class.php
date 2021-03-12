@@ -5,10 +5,14 @@
 /**
  * Class Comment
  *
- * @property-read string title
- * @property-read string content
- * @property-read int createdAt
- * @property-read int deletedAt
+ * @property-read int $rootIdx
+ * @property-read int $parentIdx
+ * @property-read string $title
+ * @property-read string $content
+ * @property-read string $Y
+ * @property-read string $N
+ * @property-read int $createdAt
+ * @property-read int $deletedAt
  */
 class Comment extends PostTaxonomy {
 

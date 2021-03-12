@@ -27,7 +27,7 @@ function testPostCreate() {
 
 
     $p = post()->create(['categoryId' => $cat->id]);
-    isTrue($p->hasError == false, 'no error');
+    isTrue($p->ok, 'no error');
     isTrue($p->categoryIdx == post($p->idx)->categoryIdx, 'category idx match');
 }
 function testPostRead() {

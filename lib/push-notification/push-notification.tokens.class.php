@@ -138,7 +138,7 @@ function getTokensFromUserIDs($idxs = [], $filter = null): array
     foreach ($idxs as $idx) {
         $rows = token()->getTokens($idx);
         if ($filter) {
-            $user = user($idx)->get();
+            $user = user($idx)->getData();
             if (isset($user[$filter]) && $user[$filter] == 'N') {
             } else {
                 foreach ($rows as $token) {

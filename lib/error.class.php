@@ -112,6 +112,12 @@ function e(mixed $errcode=null): E {
 function isError($obj) {
     return e($obj)->isError;
 }
+
+/**
+ * @deprecated
+ * @param $obj
+ * @return bool
+ */
 function isSucess($obj) {
     return isError($obj) === false;
 }

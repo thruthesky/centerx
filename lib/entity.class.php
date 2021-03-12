@@ -24,8 +24,9 @@ use function ezsql\functions\{
  *   따라서, 존재하는지 안하는지 확인은 category()->exists([IDX => 123]) 이 낳다.
  *
  * @property-read bool $hasError 현재 객체(Entity instance)에 에러가 있으면 true 값을 가진다.
+ * @property-read bool $ok $this->error 에 에러가 설정되지 않았으면, 즉, 아무 이상이 없으면 참을 리턴한다.
  * @property-read int $userIdx 테이블에 userIdx 가 있는 경우만 사용.
- * @property-read bool $notFound 처음 객체를 초기화 할 때, $this->idx 에 지정된 레코드가 없으면 참을 리턴한다.
+ * @property-read bool $notFound 처음 객체를 초기화 할 때, $this->idx 가 0 이거나 해당하는 레코드가 없으면 참을 리턴한다.
  *
  */
 
@@ -83,23 +84,36 @@ class Entity {
     }
 
     /**
-     * 주의: 에러가 있으면 빈 배열이 리턴된다.
+     * 주의: 에러가 있으면 빈 배열 또는 null 이 리턴된다.
      * 따라서, 한번 에러가 발생하면, 더 이상 현재 객체를 사용하지 못한다. 그래서 같은 idx 로 새로운 객체를 만들어 다시 작업을 해야 한다.
      * 에러가 있는 상태에서, entity 삭제시, not your entity 등의 에러가 날 수 있다.
      * 이 부분에 실수 할 수 있으니 유의한다.
      *
-     * @return array
+     * @param string|null $field - 값이 주어지면, 특정 필드의 값 1개만 리턴한다.
+     * @return array|int|float|string|null
      */
-    public function getData(): array
+    public function getData(string $field=null): array|int|float|string|null
     {
-        if ( $this->hasError ) return [];
-        return $this->data;
+        if ( $field ) {
+            if ( $this->hasError ) return null;
+            else return $this->data[$field] ?? null;
+        } else {
+            if ( $this->hasError ) return [];
+            return $this->data;
+        }
     }
 
-    public function getAttribute($attr) {
-        if ( $this->hasError ) return null;
-        if ( isset($this->data[$attr]) ) return isset($this->data[$attr]);
-        else return null;
+    /**
+     * @param $attr
+     * @return float|array|bool|int|string|null
+     * @deprecated Use getData($field)
+     */
+    public function getAttribute($attr): float|array|bool|int|string|null
+    {
+        return $this->getData($attr);
+//        if ( $this->hasError ) return null;
+//        if ( isset($this->data[$attr]) ) return isset($this->data[$attr]);
+//        else return null;
     }
 
 
@@ -150,9 +164,19 @@ class Entity {
         if ( $name == 'hasError' ) {
             return $this->error !== '';
         }
-        /// 처음 객체를 초기화 했을 때, 지정된 idx 에 해당하는 레코드를 찾지 못하면 곧 바로 entity_not_found 가 설정되는데, $this->notFound 가 참을 리턴한다.
+        /// $this->error 에 에러가 설정되지 않았으면, 즉, 아무 이상이 없으면 참을 리턴한다.
+        if ( $name == 'ok' ) {
+            return ! $this->hasError;
+        }
+
+        /// 처음 객체를 초기화 했을 때,
+        /// - $this->idx 가 0 이거나,
+        /// - $this->idx 에 해당하는 레코드를 찾지 못하면
+        /// 곧 바로 entity_not_found 가 설정되는데, $this->notFound 가 참을 리턴한다.
         if ( $name == 'notFound' ) {
-            return $this->getError() == e()->entity_not_found;
+            if ( $this->idx == 0 ) return true;
+            else if ( $this->getError() == e()->entity_not_found ) return true;
+            else return false;
         }
 
         /// 필드 값을 가져오려고 할 때, 현재 객체에 에러가 있으면, null 을 리턴.
@@ -230,7 +254,7 @@ class Entity {
 
 
         // Entity 생성 전 훅
-        $re = hook()->run("{$this->taxonomy}_before_create", $record, $in);
+        $re = hook()->run("{$this->taxonomy}-before-create", $record, $in);
 //        debug_log("훅 리턴 값:", $re);
         if ( isError($re) ) return $this->error($re);
 
@@ -249,7 +273,7 @@ class Entity {
         $this->read($idx);
 
         // Entity 생성 후 훅
-        $re = hook()->run("{$this->taxonomy}_after_create", $this, $in);
+        $re = hook()->run("{$this->taxonomy}-after-create", $record, $in);
         if ( isError($re) ) return $this->error($re);
 
         return $this;
@@ -476,13 +500,16 @@ class Entity {
     /**
      * 현재 Taxonomy 에서 1개의 레코드를 검색해서, 1개의 필드 값을 리턴한다.
      *
-     * @param string $select
+     * @param string $select - 1개의 필드만 입력해야 한다. 그 필드의 값을 리턴한다.
      * @param array $conds
      * @param string $conj
      * @return mixed
      *
-     * 예제)
+     * 예제) 현재 글(코멘트)의 루트 글의 카테고리 값 얻기
      *  post()->getVar(CATEGORY_IDX, [IDX => $rootIdx]);
+     *
+     * 예제) 현재 객체(예: 사용자 entity)의 point 필드의 값 얻기. 사용자의 포인트 값을 얻을 때 사용.
+     *  $this->getVar(POINT, [IDX => $this->idx]);
      */
     public function getVar(string $select, array $conds, string $conj='AND'): mixed {
         $arr = self::search(select: $select, limit: 1, conds: $conds, conj: $conj);

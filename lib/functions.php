@@ -818,7 +818,7 @@ function enableDebugging() {
 }
 function disableDebugging() {
     global $_debugging;
-    $_debugging = true;
+    $_debugging = false;
 }
 
 
@@ -943,16 +943,17 @@ function parseDocBlock($str) {
  *
  * @attention  It will recursively read database records. Make it minimal.
  *
+ * @todo move this method to `PostTaxonomy`
  */
 function getCommentAncestors(int $idx): array
 {
-    $comment = comment($idx)->get();
+    $comment = comment($idx);
     $asc     = [];
     while (true) {
-        $comment = comment($comment[PARENT_IDX])->get(select: 'idx, rootIdx, parentIdx, userIdx');
-        if ( empty($comment) ) break;
-        if ($comment[USER_IDX] == my(IDX)) continue;
-        $asc[] = $comment[USER_IDX];
+        $comment = comment($comment->parentIdx);
+        if ( $comment->notFound ) break;
+        if ($comment->userIdx == login()->idx) continue;
+        $asc[] = $comment->userIdx;
     }
     $asc = array_unique($asc);
     return $asc;
@@ -974,10 +975,10 @@ function getCommentAncestors(int $idx): array
  *  get the tokens of the users_id and filtering those who want to get comment notification
  *
  *
- * @param Comment|Post $p
+ * @param Comment|Post $cp
  * @throws Exception
  */
-function onCommentCreateSendNotification(Comment|Post $p)
+function onCommentCreateSendNotification(Comment|Post $cp)
 {
 
 //    $post = post($commentRecord[ROOT_IDX]);
@@ -987,15 +988,15 @@ function onCommentCreateSendNotification(Comment|Post $p)
      * add post owner id if not mine
      */
 
-    if ($p->isMine() == false) {
-        $usersIdx[] = $p->userIdx;
+    if ($cp->isMine() == false) {
+        $usersIdx[] = $cp->userIdx;
     }
 
     /**
      * get comment ancestors id
      */
-    if ($p->parentIdx > 0) {
-        $usersIdx = array_merge($usersIdx, getCommentAncestors($p->idx));
+    if ($cp->parentIdx > 0) {
+        $usersIdx = array_merge($usersIdx, getCommentAncestors($cp->idx));
     }
 
     /**
@@ -1006,7 +1007,7 @@ function onCommentCreateSendNotification(Comment|Post $p)
     /**
      * get user who subscribe to comment forum topic
      */
-    $cat = category($p->categoryIdx);
+    $cat = category($cp->categoryIdx);
     $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $cat->id);
 
     /**
@@ -1025,19 +1026,19 @@ function onCommentCreateSendNotification(Comment|Post $p)
      */
 
 
-    $title = $p->title;
+    $title = $cp->title;
     if (empty($title)) {
         if (isset($in[FILES]) && !empty($in[FILES])) {
             $title = "New photo was uploaded";
         }
     }
 
-    $body               = $p->content;
-    $click_url          = $p->path;
+    $body               = $cp->content;
+    $click_url          = $cp->path;
     $data               = [
         'senderIdx' => login()->idx,
         'type' => 'post',
-        'idx'=> $p->idx,
+        'idx'=> $cp->idx,
     ];
 
     /**
@@ -1133,7 +1134,6 @@ function postCategoryIdx($rootIdx): int {
 }
 
 
-
 /**
  * 키/값 배열을 입력 받아 SQL WHERE 조건문에 사용 할 문자열을 리턴한다.
  *
@@ -1141,14 +1141,20 @@ function postCategoryIdx($rootIdx): int {
  *
  * @param array $conds - 키/값을 가지는 배열
  * @param string $conj - 'AND' 또는 'OR' 등의 연결 expression
+ * @param string $field
  * @return string
+ *
+ * @example
+ *  sqlCondition([a => apple, b => banana], $conj); // returns `a='apple' AND b='banana'`
+ *  sqlCondition(['apple', 'banana'], 'OR', REASON); // returns `reason='apple' OR reason='banana'`
  */
-function sqlCondition(array $conds, string $conj = 'AND'): string
+function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): string
 {
     $arc = [];
-    foreach($conds as $k => $v )
-    {
-        $arc[] = "`$k`='$v'";
+    if ( $field ) {
+        foreach( $conds as $v ) $arc[] = "$field='$v'";
+    } else {
+        foreach($conds as $k => $v )  $arc[] = "`$k`='$v'";
     }
     return implode(" $conj ", $arc);
 }

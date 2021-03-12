@@ -33,10 +33,10 @@ class Config {
      * 설정을 저장(또는 업데이트)한다. 설정은 metas 테이블에 저장되며, taxonomy=config, entity=0 이 된다.
      * @param string $code
      * @param $value
-     * @return mixed
+     * @return string
      */
-    public function set(string $code, $value) {
-        return $this->updateMetas($this->idx, [$code => $value]);
+    public function set(string $code, $value): string {
+        return updateMeta($this->taxonomy, $this->idx, [ $code => $value ]);
     }
 }
 
