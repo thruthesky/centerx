@@ -65,6 +65,9 @@
   - 플러터와 CenterX 모두 main branch 는 놔 두고,
   - 플러터에서도 next 브랜치를 만들고, CenterX next branch 로 바로 접속 하도록 한다.
 
+- 관리자 페이지 변경.
+- File entity test - 실제로 웹/앱으로 파일 업로드 하면서 테스트를 해야 할 것 같다.
+  
 - @done User test,
   
 - @done Category test,
@@ -72,8 +75,6 @@
 - @done Post test
   
 - Comment test
-
-- File entity test
 
 - Translation entity test
 
