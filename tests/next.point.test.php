@@ -172,7 +172,7 @@ function testPostCommentCreateHourlyLimit(): void
     // 제한을 해제 했다. 에러가 발생하지 않아야 함.
     $post6 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 6']);
     isTrue($post6->ok, 'post 6 must success');
-    
+
     // 다시 제한 한다. 에러가 발생해야 함.
     point()->enableCategoryBanOnLimit(POINT);
     $cmt1 = comment()->create([ROOT_IDX => $post6->idx, PARENT_IDX => $post6->idx, CONTENT => 'yo']);
