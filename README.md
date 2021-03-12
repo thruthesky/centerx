@@ -59,8 +59,8 @@
 
 ## next branch 에서 해야 할 것
 
-- 여기에 기록하는 내용은 결국은 문서화되어야 한다.
-
+- README 에 최소한의 정보만 두고, 모두 phpDocument 화 한다.
+  
 - 업데이트 계획
   - 플러터와 CenterX 모두 main branch 는 놔 두고,
   - 플러터에서도 next 브랜치를 만들고, CenterX next branch 로 바로 접속 하도록 한다.
@@ -74,11 +74,12 @@
   
 - @done Post test
   
-- Comment test
+- @done Comment test
 
-- Translation entity test
 
 - VoteHistory entity test
+
+- Point test
 
 
 - `next.***.test.php` 로 테스트 코드를 작성하고 있다.
@@ -163,6 +164,7 @@
 
 - phpDocumentor 에 맞춰서 문서화를 했다. 다만, 기본적으로 문서가 생성되어져 있지않다. 문서화를 하는 방법은 아래와 같이 실행을 하면된다.
 
+
 ```shell
 cd etc/phpdoc
 ./phpDocumentor
@@ -170,7 +172,7 @@ cd etc/phpdoc
 
 - 작성된 문서를 보기 위해서는 `http://your-domain.com/etc/phpdoc/index.html` 와 같이 접속을 하면 된다.
 
-
+- 참고로 phpDocumentor 의 태그는 https://docs.phpdoc.org/3.0/guide/references/phpdoc/tags/index.html 에 나와 있으며 Markdown 을 사용 할 수 있다.
 
 # Installation
 

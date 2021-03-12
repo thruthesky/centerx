@@ -113,7 +113,9 @@ class Comment extends PostTaxonomy {
     }
 
 
-
+    /**
+     * @return $this
+     */
     public function markDelete(): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
@@ -127,8 +129,13 @@ class Comment extends PostTaxonomy {
         return $this;
     }
 
+
     /**
+     * 클라이언트로 보낼 정보
+     *
      * @return array|string
+     * - 에러가 있으면 에러 문자열
+     * - 아니면, 배열
      */
     public function response(): array|string {
         if ( $this->hasError ) return $this->getError();
@@ -149,6 +156,8 @@ class Comment extends PostTaxonomy {
 
         return $comment;
     }
+
+
 
     /**
      * @deprecated

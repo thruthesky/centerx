@@ -2,27 +2,33 @@
 /**
  * @file entity.class.php
  */
+
+
 use function ezsql\functions\{
     eq,
 };
 
+
 /**
  * Class Entity
  *
- * @property-read bool hasError 에러가 있으면 true
- * @property-read int userIdx 테이블에 userIdx 가 있는 경우만 사용.
- * @property-read bool notFound 처음 객체를 초기화 할 때, $this->idx 에 지정된 레코드가 없으면 참을 리턴한다.
  *
- * Taxonomy 는 데이터의 종류로서 하나의 테이블이라 생각하면 된다.
- * Entity 는 하나의 레코드이다.
- * Entity 를 객체화 할 때, $taxonomy 값(Taxonomy)은 필수이며, $idx (Entity 또는 레코드 번호) 값이 입력되면,
- *  해당 테이블의 해당 레코드 및 연결된 메타 데이터를 읽어 $this->data 에 저장한다.
- *  만약, $idx 에 해당하는 entity 를 찾을 수 없다면, entity_not_found 에러가 설정된다. 그리고 이는 entity(123)->notFound 와 같이 해서 확인 할 수 있다.
- *  즉, category(123), user(123) 과 같이 했을 때, 해당 $idx 에 맞는 레코드가 없으면 에러가 바로 설정이 된다.
- *  따라서, category(123)->exists() == false 와 같이 할 필요 없고, category(123)->hasError 와 같이 하면 된다.
- *  그런데, 카테고리가 존재하는지 안하는지를 확인하기 위해서 category(123) 과 같이 초기화하면, 레코드 전체를 읽으므로 쿼리가 느릴 수 있다.
- *  따라서, 존재하는지 안하는지 확인은 category()->exists([IDX => 123]) 이 낳다.
+ * - Taxonomy 는 데이터의 종류로서 하나의 테이블이라 생각하면 된다.
+ * - Entity 는 하나의 레코드이다.
+ * - Entity 를 객체화 할 때, $taxonomy 값(Taxonomy)은 필수이며, $idx (Entity 또는 레코드 번호) 값이 입력되면,
+ *   해당 테이블의 해당 레코드 및 연결된 메타 데이터를 읽어 $this->data 에 저장한다.
+ *   만약, $idx 에 해당하는 entity 를 찾을 수 없다면, entity_not_found 에러가 설정된다. 그리고 이는 entity(123)->notFound 와 같이 해서 확인 할 수 있다.
+ *   즉, category(123), user(123) 과 같이 했을 때, 해당 $idx 에 맞는 레코드가 없으면 에러가 바로 설정이 된다.
+ *   따라서, category(123)->exists() == false 와 같이 할 필요 없고, category(123)->hasError 와 같이 하면 된다.
+ *   그런데, 카테고리가 존재하는지 안하는지를 확인하기 위해서 category(123) 과 같이 초기화하면, 레코드 전체를 읽으므로 쿼리가 느릴 수 있다.
+ *   따라서, 존재하는지 안하는지 확인은 category()->exists([IDX => 123]) 이 낳다.
+ *
+ * @property-read bool $hasError 현재 객체(Entity instance)에 에러가 있으면 true 값을 가진다.
+ * @property-read int $userIdx 테이블에 userIdx 가 있는 경우만 사용.
+ * @property-read bool $notFound 처음 객체를 초기화 할 때, $this->idx 에 지정된 레코드가 없으면 참을 리턴한다.
+ *
  */
+
 class Entity {
 
     /**
@@ -587,10 +593,13 @@ class Entity {
 
     /**
      * @param string $where
+     * @param array $conds
+     * @param string $conj
      * @return int
      */
-    public function count(string $where): int {
+    public function count(string $where='1', array $conds=[], string $conj = 'AND'): int {
         $table = $this->getTable();
+        if ( $conds ) $where = sqlCondition($conds, $conj);
         return db()->get_var(" SELECT COUNT(*) FROM $table WHERE $where");
     }
 
