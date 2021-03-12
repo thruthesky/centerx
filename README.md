@@ -159,6 +159,19 @@
 - @next 회원 인증은 Route 에서 해야한다. 그외 입력값 검사는 각 함수에서 한다.
 
 
+# 문서화
+
+- phpDocumentor 에 맞춰서 문서화를 했다. 다만, 기본적으로 문서가 생성되어져 있지않다. 문서화를 하는 방법은 아래와 같이 실행을 하면된다.
+
+```shell
+cd etc/phpdoc
+./phpDocumentor
+```
+
+- 작성된 문서를 보기 위해서는 `http://your-domain.com/etc/phpdoc/index.html` 와 같이 접속을 하면 된다.
+
+
+
 # Installation
 
 - Install docker.
@@ -710,34 +723,7 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 # Translation
 
-- When app starts, app listens for update of the timestamp property in /notifications/translation document of Firebase realtime database.
-- Admin can add translation in admin page.
-- When translation is updated, it will update the timestamp property in /notifications/translation document of Firebase realtime database.
-- Then, app updates the changed text on the screen.
-- Translation is being used not only in app but also web.
-
-- In web, you can use like below;
-```php
-d(ln('code', 'default value'));
-ln(['en' => 'User Agreements', 'ko' => '이용자 약관', 'ch' => '...', ]); // This may be better to reduce database access and to translate inside the page.
-```
-
-- User can use their languages by;
-```html
-<form action="/">
-  <input type="hidden" name="p" value="setting.language.submit">
-  <select name="language" onchange="this.form.submit()">
-    <option value="">Choose language</option>
-    <?php foreach( SUPPORTED_LANGUAGES as $ln ) { ?>
-    <option value="<?=$ln?>"><?=ln($ln, $ln)?></option>
-    <?php } ?>
-  </select>
-</form>
-```
-
-
-- If `FIX_LANGAUGE` is set, then user language is ignored, and this applies only on web.
-
+- @see the phpdoc
 
 # Settings
 

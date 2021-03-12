@@ -3,7 +3,37 @@
 /**
  * Class Translation
  *
- * 언어화 코드는
+ * Translation class can be used on both functional(inside PHP) and restful(by API calling).
+ *
+ * - For client-end, the app should listen to the `/notifications/translation` document in Firebase realtime database.
+ *   And when the document is updated, the app would get the translated text from backend and re-render updated text on app.
+ *
+ * @example ../tests/next.translation.test.php
+ *
+ * 언어화 코드는 여러개의 레코드가 모여서 하나의 정보를 구성한다. 따라서, 일반적인 Entity 클래스의 사용 방식과 약간다르다.
+ *
+ * - For functional use, below is the code sample.
+ *
+ * ```php
+ * d(ln('code', 'default value'));
+ * ln(['en' => 'User Agreements', 'ko' => '이용자 약관', 'ch' => '...', ]); // This may be better to reduce database access and to translate inside the page.
+ * ```
+ *
+ * - User can use their languages by;
+ *
+ * ```html
+ * <form action="/">
+ *  <input type="hidden" name="p" value="setting.language.submit">
+ *  <select name="language" onchange="this.form.submit()">
+ *      <option value="">Choose language</option>
+ *      <?php foreach( SUPPORTED_LANGUAGES as $ln ) { ?>
+ *          <option value="<?=$ln?>"><?=ln($ln, $ln)?></option>
+ *      <?php } ?>
+ *  </select>
+ * </form>
+ * ```
+ *
+ * - If `FIX_LANGAUGE` is set, then user language is ignored, and this applies only on web.
  *
  */
 class Translation extends Entity
