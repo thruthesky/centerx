@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Class File
+ *
+ * @property-read string path - file path
+ */
 class File extends Entity {
 
 
@@ -11,51 +16,52 @@ class File extends Entity {
 
     /**
      * @param $in
-     * @return array|string
+     * @return self
      */
-    public function upload($in) {
+    public function upload($in): self {
 
-        if ( notLoggedIn() ) return e()->not_logged_in;
+        if ( $this->hasError ) return $this;
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         $name = basename($_FILES[USERFILE]['name']);
         $path = $this->getPath($name);
 
         if (move_uploaded_file($_FILES[USERFILE]['tmp_name'], $path)) {
             $save = [
-                USER_IDX => my(IDX),
+                USER_IDX => login()->idx,
                 PATH => basename($path), // path is the name of the file under `files` folder.
                 NAME => $_FILES[USERFILE][NAME],
                 SIZE => $_FILES[USERFILE][SIZE],
                 TYPE => $_FILES[USERFILE][TYPE],
             ];
             debug_log("save: ", $save);
-            $record = $this->create($save);
-            debug_log("saved record: ", $record);
-            return files($record)->get();
+            return $this->create($save);
         } else {
             debug_log("move_uploaded_file() - Possible file upload attack!");
-            return e()->move_uploaded_file_failed;
+            return $this->error(e()->move_uploaded_file_failed);
         }
     }
 
     /**
+     *
+     * 주의, 현재 $this->idx 에 대해서만 삭제를 한다.
+     * 주의, 현재 객체에 에러가 설정되어져 있으면 그냥 현재 객체 리턴.
+     *
      * @param $in
-     * @return string
+     * @return self
      *
      * @todo update `files` field on entity if exists.
      */
-    public function remove($in): string|array
+    public function remove($in): self
     {
-        $this->setIdx($in[IDX]);
-        if ( $this->exists() === false ) return e()->file_not_exists;
-        if ( $this->isMine() === false ) return e()->not_your_file;
+        if ( $this->hasError ) return $this;
+        if ( $this->exists() === false ) return $this->error(e()->file_not_exists);
+        if ( $this->isMine() === false ) return $this->error(e()->not_your_file);
 
-        $record = parent::get(IDX, $in[IDX]);
 
-        $path = UPLOAD_DIR . $record[PATH];
-        if ( file_exists($path) === false ) return e()->file_not_exists;
+        if ( file_exists($this->path) === false ) return $this->error(e()->file_not_exists);
 
-        $re = @unlink($path);
-        if ( $re === false ) return e()->file_delete_failed;
+        $re = @unlink($this->path);
+        if ( $re === false ) return $this->error(e()->file_delete_failed);
         return $this->delete();
     }
 
@@ -70,7 +76,12 @@ class File extends Entity {
         return $data;
     }
 
-    public function responseFromIdxes(string $idxes) {
+    /**
+     * '1,2,3' 과 같이 idx 들을 문자열로 입력 받아, 여러개의 file response 를 배열에 담아 리턴한다.
+     * @param string $idxes
+     * @return array
+     */
+    public function responseFromIdxes(string $idxes): array {
         $arr = separateByComma($idxes);
         $rets = [];
         foreach( $arr as $idx ) {
@@ -92,30 +103,30 @@ class File extends Entity {
      * @param bool $cache
      * @return mixed
      */
-    public function get(string $files = null, mixed $_ = null, string $select = '*', bool $cache=true): mixed
-    {
-        if ( empty($files) && $this->idx ) {
-            $got = parent::get(IDX, $this->idx, $select, $cache);
-            if ( !$got ) return $got;
-            $got['url'] = UPLOAD_URL . $got[PATH];
-            $got[PATH] = UPLOAD_DIR . $got[PATH];
-            return $got;
-        } else {
-            $files = trim($files);
-            if ( empty($files) ) return [];
-            $arr = explode(',', $files);
-            if ( empty($arr) ) return [];
-            $rets = [];
-            foreach( $arr as $idx ) {
-                $got = parent::get(IDX, $idx, $select, $cache);
-                if ( ! $got ) continue;
-                $got['url'] = UPLOAD_URL . $got[PATH];
-                $got[PATH] = UPLOAD_DIR . $got[PATH];
-                $rets[] = $got;
-            }
-            return $rets;
-        }
-    }
+//    public function get(string $files = null, mixed $_ = null, string $select = '*', bool $cache=true): mixed
+//    {
+//        if ( empty($files) && $this->idx ) {
+//            $got = parent::get(IDX, $this->idx, $select, $cache);
+//            if ( !$got ) return $got;
+//            $got['url'] = UPLOAD_URL . $got[PATH];
+//            $got[PATH] = UPLOAD_DIR . $got[PATH];
+//            return $got;
+//        } else {
+//            $files = trim($files);
+//            if ( empty($files) ) return [];
+//            $arr = explode(',', $files);
+//            if ( empty($arr) ) return [];
+//            $rets = [];
+//            foreach( $arr as $idx ) {
+//                $got = parent::get(IDX, $idx, $select, $cache);
+//                if ( ! $got ) continue;
+//                $got['url'] = UPLOAD_URL . $got[PATH];
+//                $got[PATH] = UPLOAD_DIR . $got[PATH];
+//                $rets[] = $got;
+//            }
+//            return $rets;
+//        }
+//    }
 
 
     /**
@@ -132,6 +143,7 @@ class File extends Entity {
         while ( true ) {
             if ( file_exists($path) ) {
                 $count ++;
+                $count = rand($count, $count * 10); // 동일한 파일이 존재하면, 0~9 사이에서 나온 수가 5이면 -5 파일이 있은면, 5~50에서 랜덤을 찾는다. 자세한 로직은 post()->getPath() 참고.
                 $pi = pathinfo($name);
                 $path = UPLOAD_DIR . "$pi[filename]-$count" . '.' . $pi['extension'];
             } else {

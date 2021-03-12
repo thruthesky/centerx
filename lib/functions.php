@@ -548,8 +548,11 @@ function checkEmailFormat($email): bool
 }
 
 
-
-
+/**
+ * Safe file name to write in HDD.
+ * @param string $name
+ * @return string
+ */
 function safeFilename(string $name) {
     $pi = pathinfo($name);
     if ( isset($pi['extension']) ) {
