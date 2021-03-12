@@ -153,6 +153,8 @@ class User extends Entity {
      *
      * 에러가 있으면, 에러 문자열. 아니면, 사용자 레코드와 메타를 배열로 리턴한다.
      *
+     * - sessionId 는 객체 생성시 이미 적용되어져 있다.
+     *
      * @return array|string
      */
     public function response(): array|string {

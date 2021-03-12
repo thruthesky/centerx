@@ -81,14 +81,15 @@
 
 - @done Entity hook test
 
-- Point test
+- @done Point test
 
-- entity::get() 함수 삭제
-- my() 함수 삭제. login() 으로 대체
-- isSucess() 함수 삭제. 테스트에서 별 소용 없는 함수.
+- @done entity::get() 함수 삭제
+- @done my() 함수 삭제. login() 으로 대체
+- @done isSucess() 함수 삭제. 테스트에서 별 소용 없는 함수.
+- @done entity 밑에 안쓰는 함수 삭제.
 
-- 관리자 페이지 변경.
-- File entity test - 실제로 웹/앱으로 파일 업로드 하면서 테스트를 해야 할 것 같다.
+- 관리자 페이지 작업.
+  - 상품 등록 페이지에서, File 업로드 테스트
 
 - 플러터에서 next 브랜치 테스트
 

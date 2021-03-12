@@ -369,9 +369,9 @@ function getProfileFromSessionId(string|null $sessionId): mixed
     if ( ! $sessionId ) return false;
     $arr = explode('-', $sessionId);
     $userIdx = $arr[0];
-    $record = user($userIdx)->get();
-    if ( ! $record ) return e()->user_not_found_by_that_session_id;
-    $profile = user($userIdx)->profile();
+    $user = user($userIdx);
+    if ( ! $user->notFound ) return e()->user_not_found_by_that_session_id;
+    $profile = $user->profile();
 	if ( !$profile || !isset($profile[SESSION_ID]) ) return false;
     if ( $sessionId == $profile[SESSION_ID] ) return $profile;
     else return e()->wrong_session_id;
@@ -449,13 +449,13 @@ function setLoginAny(): User {
  * @example
  *  my('color')
  */
-function my(string $field, bool $cache=true) {
-    return login($field);
-}
+//function my(string $field, bool $cache=true) {
+//    return login($field);
+//}
 
 function admin(): bool {
-    if ( my(EMAIL) === ADMIN_EMAIL ) return true;
-    return my(EMAIL) === config()->get(ADMIN);
+    if ( login()->email === ADMIN_EMAIL ) return true;
+    return login()->email === config()->get(ADMIN);
 }
 
 function debug_log($message, $data='') {

@@ -118,6 +118,6 @@ function isError($obj) {
  * @param $obj
  * @return bool
  */
-function isSucess($obj) {
-    return isError($obj) === false;
-}
+//function isSucess($obj) {
+//    return isError($obj) === false;
+//}

@@ -245,8 +245,8 @@ class Point {
     public function login(array $profile) {
 //        debug_log("POINT_LOING: ", config()->get(POINT_LOGIN));
         $applied = $this->addUserPoint($profile[IDX], config()->get(POINT_LOGIN));
-        debug_log('applied: ', $applied);
-        debug_log('my point: ', my(POINT));
+//        debug_log('applied: ', $applied);
+//        debug_log('my point: ', login()->getPoint());
         return $this->log(
             POINT_LOGIN,
             toUserIdx: $profile[IDX],

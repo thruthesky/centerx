@@ -84,24 +84,34 @@ class Entity {
     }
 
     /**
+     * 현재 entity 의 필드 값을 리턴한다.
+     *
      * 주의: 에러가 있으면 빈 배열 또는 null 이 리턴된다.
      * 따라서, 한번 에러가 발생하면, 더 이상 현재 객체를 사용하지 못한다. 그래서 같은 idx 로 새로운 객체를 만들어 다시 작업을 해야 한다.
      * 에러가 있는 상태에서, entity 삭제시, not your entity 등의 에러가 날 수 있다.
      * 이 부분에 실수 할 수 있으니 유의한다.
      *
      * @param string|null $field - 값이 주어지면, 특정 필드의 값 1개만 리턴한다.
+     * @param mixed|null $default_value
      * @return array|int|float|string|null
+     * - 에러가 있으면, $field 가 주어졌으면 null 아니면 빈 배열을 리턴한다. 단, $field 가 주어진 경우, 기본 리턴 값을 $default_value 에 지정 할 수 있다.
+     * - 아니면, $field 가 주어진 경우, $field 값. 아니면 전체 배열을 리턴한다.
      */
-    public function getData(string $field=null): array|int|float|string|null
+    public function getData(string $field=null, mixed $default_value=null): array|int|float|string|null
     {
         if ( $field ) {
             if ( $this->hasError ) return null;
-            else return $this->data[$field] ?? null;
+            else return $this->data[$field] ?? $default_value;
         } else {
             if ( $this->hasError ) return [];
             return $this->data;
         }
     }
+
+    public function v(string $field, mixed $default_value=null) {
+        return $this->getData();
+    }
+
 
     /**
      * @param $attr
@@ -631,6 +641,10 @@ class Entity {
     }
 
 
+    /**
+     * 현재 taxonomy 의 테이블 이름을 리턴한다.
+     * @return string
+     */
     public function getTable(): string {
         return DB_PREFIX . $this->taxonomy;
     }
@@ -704,188 +718,6 @@ class Entity {
         $diffs = array_diff(array_keys($in), $fields);
         return array_filter( $in, fn($v, $k) => in_array($k, $diffs), ARRAY_FILTER_USE_BOTH );
     }
-
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///
-    ///
-    /// 여기 아래는 버리는 함수
-    ///
-    ///
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-    /**
-     * @deprecated
-     * Set (record) idx of current entity.
-     *
-     * 현재 instance 에 `idx` 지정이 안되어 있어 지정하거나 변경을 할 수 있다.
-     *
-     * @param int $idx
-     *
-     * @return static
-     *  - 현재 instance(자식 클래스 instance)를 리턴한다.
-     *
-     * 예제)
-     *      $tt = new TaxonomyTest(123);
-     *      isTrue(get_class($tt) == 'TaxonomyTest');
-     *      $child = $tt->setIdx(456);
-     *      isTrue(get_class($child) == 'TaxonomyTest');
-     *
-     * 예제)
-     *  files()->setIdx(1)->delete();
-     */
-    public function setIdx(int $idx): static
-    {
-        $this->idx = $idx;
-        return $this;
-    }
-
-
-
-    /**
-     * @deprecated
-     * @var array
-     */
-    private $__entities = [];
-
-    /**
-     * @deprecated use read()
-     * Returns an entity(record) of a taxonomy(table) and its meta data.
-     *
-     * If $field and $value are set, then it will return a record and its meta based on that $field and value.
-     * If $field and $value are not set, then it wil return the record and its meta based on current `idx`.
-     * If a field of entity exists in meta table, then the value of meta table will be used.
-     *
-     * @attention It does memory cache.
-     *  It is important to memory cache if SQL server is far away from PHP application server.
-     *  Each query needs to connect to SQL server even if SQL server does some internal query.
-     *  It caches based on `$field=$value` pattern.
-     *  That means,
-     *  `user(77)->profile();` will cache with `idx=77` as `$field=$value` pair.
-     *  `user()->get('email', 'user10@gmail.com');` will cache with `email=user10@gmail.com` pair.
-     *
-     *  Note that, this is only for reading performance improvement. And if there is any data changes on any entity,
-     *  Then, it will volatilize and re-cache again. For instance, [user-entity][idx=1] is cached, and
-     *  [file-entity][idx] is updated, then all the caches include all other entities will be volatilized..
-     *
-     * @attention even though the record does not exists, it caches with empty array record.
-     *
-     * @param string $field
-     * @param mixed $value
-     * @return mixed
-     * - The return type is `mixed` due to the overridden methods returns different data types.
-     * - *empty array if the entity does not exists.*
-     * - or entity record as array.
-     * - It does not return error string or any error.
-     *
-     * 예제)
-     * user()->get('email', 'user10@gmail.com');
-     */
-    public function get(string $field=null, mixed $value=null, string $select='*', bool $cache = true): mixed {
-
-
-        if ($field == null ) {
-            $field = 'idx';
-            $value = $this->idx;
-        }
-        $fv = "$field=$value";
-        if ( $cache && isset($this->__entities[$this->taxonomy]) && isset($this->__entities[$this->taxonomy][$fv]) ) {
-//            debug_log("cached: $fv");
-//            $this->cnt ++; echo " (cached count: {$this->cnt}) ";
-
-            return $this->__entities[$this->taxonomy][$fv];
-        }
-
-        $q = "SELECT $select FROM {$this->getTable()} WHERE `$field`='$value'";
-        debug_log($q);
-//        d($q);
-
-        $record = db()->get_row($q, ARRAY_A);
-        if ( $record ) {
-            /**
-             * If $select does not have `idx`, then it will not get meta tags.
-             */
-            if (isset($record['idx'])) {
-                $meta = entity($this->taxonomy, $record['idx'])->getMetas();
-                $record = array_merge($record, $meta);
-            }
-        } else {
-            $record = [];
-        }
-        /**
-         * If $field is null, then don't cache.
-         */
-        if ( $field ) {
-            if ( ! isset($this->__entities[$this->taxonomy]) ) $this->__entities[$this->taxonomy] = [];
-            $this->__entities[$this->taxonomy][$fv] = $record;
-            return $this->__entities[$this->taxonomy][$fv];
-        } else {
-            return $record;
-        }
-    }
-
-
-    /**
-     * @deprecated
-     * Returns a value of a field (of entity table) or meta field(of metas table).
-     *
-     *
-     *
-     * @param string $field
-     * @param mixed|null $default_value
-     *  - default value to be returned if field not exists.
-     * @param bool $cache
-     *  - to use cached data if exists in cache.
-     * @return mixed
-     * - null if field not exist in taxonomy or meta.
-     * - or value.
-     */
-    public function value(string $field, mixed $default_value = null, bool $cache = true): mixed {
-        $got = self::get(cache: $cache);
-        if ( isset($got[$field]) && $got[$field] ) return $got[$field];
-        else return $default_value;
-    }
-
-    /**
-     * @deprecated
-     * Short for $this->value();
-     * @param string $field
-     * @param mixed|null $default_value
-     * @param bool $cache
-     * @return mixed
-     */
-    public function v(string $field, mixed $default_value = null, bool $cache = true): mixed {
-        return $this->value($field, $default_value, $cache);
-    }
-
-    /**
-     * @deprecated - use $this->userIdx
-     * 현재 entity 의 taxonomy 가 users 라면, 그냥 $this->idx 를 리턴하고,
-     * 그렇지 않으면 entity 의 userIdx 필드를 리턴한다.
-     * @return int
-     */
-//    public function userIdx(): int {
-//        if ( $this->taxonomy == USERS ) return $this->idx;
-//        else return $this->value(USER_IDX);
-//    }
 
 }
 
