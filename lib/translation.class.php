@@ -3,7 +3,7 @@
 /**
  * Class Translation
  *
- * 언어화 코드는 
+ * 언어화 코드는
  *
  */
 class Translation extends Entity

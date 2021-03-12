@@ -4,8 +4,9 @@
 /**
  * Class Category
  *
- * @property-read string id - category id
- * @property-read string title - category title
+ *
+ * @property-read string $id - id
+ * @property-read string $title - category title
  */
 class Category extends Entity {
 
