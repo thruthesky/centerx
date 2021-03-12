@@ -42,14 +42,13 @@ $total = user()->count(where:  $where);
     </thead>
     <tbody>
     <?php foreach( $users as $user) {
-        $u = user($user[IDX])->profile();
         ?>
 
         <tr>
-            <th scope="row"><?=$u[IDX]?></th>
-            <td><?=$u[EMAIL]?></td>
-            <td><?=$u[NAME]?></td>
-            <td><?=$u[PHONE_NO] ?? ''?></td>
+            <th scope="row"><?=$user->idx?></th>
+            <td><?=$user->email?></td>
+            <td><?=$user->name?></td>
+            <td><?=$user->phoneNo?></td>
         </tr>
     <?php } ?>
     </tbody>

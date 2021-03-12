@@ -355,7 +355,7 @@ function getProfileFromCookieSessionId() : array|bool {
  * Let user login with sessionId.
  *
  * @param string $sessionId
- * @return mixed
+ * @return array|bool
  * - false if `sessionId` is empty.
  * - error_user_not_found if there is no user by that session_id.
  * - error_wrong_session_id if the sessionId is wrong.
@@ -364,13 +364,13 @@ function getProfileFromCookieSessionId() : array|bool {
  * 예제) 세션 아이디를 입력받아 해당 사용자를 로그인 시킬 때,
  *  setUserAsLogin( getProfileFromSessionId( in(SESSION_ID) ) );
  */
-function getProfileFromSessionId(string|null $sessionId): mixed
+function getProfileFromSessionId(string $sessionId): array|bool
 {
     if ( ! $sessionId ) return false;
     $arr = explode('-', $sessionId);
     $userIdx = $arr[0];
     $user = user($userIdx);
-    if ( ! $user->notFound ) return e()->user_not_found_by_that_session_id;
+    if ( $user->notFound ) return e()->user_not_found_by_that_session_id;
     $profile = $user->profile();
 	if ( !$profile || !isset($profile[SESSION_ID]) ) return false;
     if ( $sessionId == $profile[SESSION_ID] ) return $profile;
@@ -389,11 +389,12 @@ function getProfileFromSessionId(string|null $sessionId): mixed
  *      d(login()->profile());
  */
 function loggedIn(): bool {
-    global $__login_user_profile;
-    if ( isset($__login_user_profile) && $__login_user_profile && isset($__login_user_profile[IDX]) ) {
-        return true;
-    }
-    return false;
+    return login(IDX) ? true: false;
+//    global $__login_user_profile;
+//    if ( isset($__login_user_profile) && $__login_user_profile && isset($__login_user_profile[IDX]) ) {
+//        return true;
+//    }
+//    return false;
 }
 function notLoggedIn(): bool {
     return ! loggedIn();

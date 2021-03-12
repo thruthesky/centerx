@@ -265,28 +265,47 @@ class User extends Entity {
 
 
     /**
+     * 사용자를 검색 후, User 객체를 배열로 리턴한다.
      *
-     * @deprecated 이 함수 굳이 필요 없음
-     * @attention User may not be logged in. So, login check must be done before calling this method like in route.
-     *  But $this->idx must be set.
-     *
-     *
-     * @param array $in
-     * @return self|string
-     * - error_idx_not_set if current instance has not `idx`.
-     * - profile on success.
-     *
-     * @example
-     *  user(123)->update();
-     *  login()->update()
+     * @param string $where
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @param string $by
+     * @param string $select
+     * @param array $conds
+     * @param string $conj
+     * @return User[]
      */
-//    public function update(array $in): self {
-//        if ( ! $this->idx ) return $this->error(e()->idx_not_set);
-//        parent::update($in);
-//        return $this->profile();
-//    }
+    public function search(
+        string $select='idx',
+        string $where='1',
+        string $order='idx',
+        string $by='DESC',
+        int $page=1,
+        int $limit=10,
+        array $conds=[],
+        string $conj = 'AND',
+    ): array
+    {
 
+        $users = parent::search(
+            select: $select,
+            where: $where,
+            order: $order,
+            by: $by,
+            page: $page,
+            limit: $limit,
+            conds: $conds,
+            conj: $conj
+        );
 
+        $rets = [];
+        foreach( ids($users) as $idx ) {
+            $rets[] = user($idx);
+        }
+        return $rets;
+    }
 
 }
 
@@ -324,8 +343,9 @@ function user(int $idx=0): User
  */
 function login(string $field=null): User|int|string|array|null {
     global $__login_user_profile;
+    $profile = $__login_user_profile;
     if ( $field ) {             // Want to get only 1 field?
-        if (loggedIn()) {       // Logged in?
+        if ( $profile ) {       // Logged in?
             if ( isset($profile[$field]) ) { // Has field?
                 return $profile[$field];
             } else {
@@ -335,7 +355,7 @@ function login(string $field=null): User|int|string|array|null {
             return null;        // Not logged in to get a field.
         }
     } else {
-        return new User($__login_user_profile[IDX] ?? 0);
+        return new User($profile[IDX] ?? 0);
     }
 
 }

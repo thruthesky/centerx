@@ -6,3 +6,4 @@ if (str_ends_with(in('p', ''), '.submit') ) include theme()->file(in('p'));
 else include theme()->file('index');
 $html = ob_get_clean();
 echo $html;
+

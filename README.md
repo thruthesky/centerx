@@ -89,6 +89,18 @@
 - @done entity 밑에 안쓰는 함수 삭제.
 
 - 관리자 페이지 작업.
+  - p() 함수를 두어서 &p=current.page 를 리턴하게 하고
+    w() 함수를 두어서 &w=widget.name 을 리턴하게 하고,
+    wc() 함수를 두어서 &wc=child.widget.name 을 리턴하게 한다.
+    widget_html_form_hidden_tags('mode', ['idx' => ...])
+    와 같이 함수를 두어서 widget html form hidden tags 를 한번에 호출한다.
+    p, w, wc, mode 는 기본적으로 들어가고, 그외 Hidden 값을 입력을 받을 수 있도록 한다.
+    그래서 관리자 페이지 링크를 좀 더 통일성있게 사용한다.
+    
+  - 카테고리 페이지 업데이트
+  - 게시글 페이지 업데이트
+  - 세팅 페이지 업데이트
+  - 언어화 페이지 업데이트
   - 상품 등록 페이지에서, File 업로드 테스트
 
 - 플러터에서 next 브랜치 테스트

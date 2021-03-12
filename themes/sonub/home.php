@@ -5,7 +5,7 @@
 
 ?>
 
-
+<h1>Sonub Theme</h1>
 <hr>
 <?php if ( loggedIn() ) { ?>
     어서오세요, <?=login()->name?>님.

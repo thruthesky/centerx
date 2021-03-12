@@ -175,29 +175,14 @@ class Post extends PostTaxonomy {
         if ( $this->hasError ) return $this->getError();
         $post = $this->getData();
 
-        // reset global comments container.
-        global $__rets;
-        $__rets = [];
-
-        // get all comments.
-//        $comments = $this->getComments($this->idx);
-//        if ( $comments ) {
-//            foreach($comments as $comment) {
-//                $got = comment($comment[IDX])->response();
-//                $got[DEPTH] = $comment[DEPTH];
-//                $comments[] = $got;
-//            }
-//        }
-//        $post['comments'] = $comments;
-
         $post['comments'] = $this->comments(false);
+
         /**
          * Get files only if $select includes 'files' field.
          */
         if ( isset($post[FILES]) ) {
-            $post[FILES] = files()->fromIdxes($post[FILES], ARRAY_A);
+            $post[FILES] = files()->fromIdxes($post[FILES], false);
         }
-
 
         if ( $post[USER_IDX] ) {
             $post['user'] = user($post[USER_IDX])->postProfile();
@@ -268,11 +253,9 @@ class Post extends PostTaxonomy {
         );
 
         $rets = [];
-        foreach( $posts as $post ) {
-            $idx = $post[IDX];
+        foreach( ids($posts) as $idx ) {
             $rets[] = post($idx);
         }
-
         return $rets;
     }
 
@@ -409,6 +392,12 @@ class Post extends PostTaxonomy {
      * @return Comment[]
      */
     function comments(bool $object = true): array {
+
+
+        // reset global comments container.
+        global $__rets;
+        $__rets = [];
+
         // get all comments.
         $comments = $this->getComments($this->idx);
 
