@@ -2,45 +2,10 @@
 /**
  * @name All In One: Create, List, View
  */
+
+$o = getWidgetOptions();
+$posts = $o['posts'];
 ?>
-
-<script>
-    function onFileChange(event, id) {
-        console.log(event);
-        const file = event.target.files[0];
-        fileUpload(
-            file,
-            {
-                sessionId: '<?=login()->sessionId?>',
-            },
-            function (res) {
-                console.log("success: res.path: ", res, res.path);
-                const $files = document.getElementById(id);
-                $files.value = addByComma($files.value, res.idx);
-            },
-            alert,
-            function (p) {
-                console.log("pregoress: ", p);
-            }
-        );
-    }
-    function onClickFileDelete(idx) {
-        const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
-        if ( re === false ) return;
-        axios.post('/index.php', {
-            sessionId: '<?=login()->sessionId?>',
-            route: 'file.delete',
-            idx: idx,
-        })
-            .then(function (res) {
-                checkCallback(res, function(res) {
-                    console.log('delete success: ', res);
-                }, alert);
-            })
-            .catch(alert);
-    }
-</script>
-
 <div class="p-5">
     <form enctype="multipart/form-data" action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
@@ -68,10 +33,6 @@
 </div>
 
 
-<?php
-    $posts = post()->search(where: 'parentIdx=0');
-?>
-
 <?php foreach( $posts as $post ) {
     ?>
     <h1>No. <?=$post->idx?> <?=$post->title?></h1>
@@ -87,18 +48,10 @@
         <?php } ?>
     </div>
     <div>
-        <form enctype="multipart/form-data" action="/" method="POST">
-            <input type="hidden" name="p" value="forum.comment.edit.submit">
-            <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
-            <input type="hidden" name="<?=ROOT_IDX?>" value="<?=$post->idx?>">
-            <input type="hidden" name="<?=PARENT_IDX?>" value="<?=$post->idx?>">
-            <input type="hidden" name="files" id="files<?=$post->idx?>" value="">
-            <input type="text" name="<?=CONTENT?>">
-            <div>
-                <input name="<?=USERFILE?>" type="file" onchange="onFileChange(event, 'files<?=$post->idx?>')" />
-            </div>
-            <button type="submit">Submit</button>
-        </form>
+        <?php include widget('comment-edit/comment-edit-default', [
+            'post' => $post,
+            'parent' => $post,
+        ]); ?>
     </div>
 
     <?php
@@ -117,17 +70,12 @@
                     <?php } ?>
                 </div>
                 <div>
-                    <form action="/">
-                        <input type="hidden" name="p" value="forum.comment.edit.submit">
-                        <input type="hidden" name="<?=ROOT_IDX?>" value="<?=$post->idx?>">
-                        <input type="hidden" name="<?=PARENT_IDX?>" value="<?=$comment->idx?>">
-                        <input type="hidden" name="files" id="files<?=$comment->idx?>" value="">
-                        <input type="text" name="<?=CONTENT?>" value="">
-                        <div>
-                            <input name="<?=USERFILE?>" type="file" onchange="onFileChange(event, 'files<?=$comment->idx?>')" />
-                        </div>
-                        <button type="submit">Submit</button>
-                    </form>
+
+                    <?php include widget('comment-edit/comment-edit-default', [
+                        'post' => $post,
+                        'parent' => $comment,
+                    ]); ?>
+
                 </div>
             </div>
         <?php } ?>

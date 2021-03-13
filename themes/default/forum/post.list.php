@@ -14,7 +14,11 @@ $total = post()->count($where);
 
 
 include_once widget( $category->v('postListHeaderWidget', 'post-list-header/post-list-header-default') );
-include_once widget( $category->v('postListWidget', 'post-list/post-list-default') );
+
+
+include_once widget( $category->v('postListWidget', 'post-list/post-list-default'), [
+    'posts' => $posts,
+] );
 
 include_once widget( $category->v('paginationWidget', 'pagination/pagination-default'), [
     'page' => in('page', 1),

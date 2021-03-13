@@ -97,6 +97,9 @@
 - @done isSucess() 함수 삭제. 테스트에서 별 소용 없는 함수.
 - @done entity 밑에 안쓰는 함수 삭제.
 
+- comment-edit-default 작업 중. 모든 코멘트 쓰기/수정/삭제/ 파일 업로드에 기본적으로 적용한다.
+
+
 - 관리자 페이지 작업.
   - p() 함수를 두어서 &p=current.page 를 리턴하게 하고
     w() 함수를 두어서 &w=widget.name 을 리턴하게 하고,

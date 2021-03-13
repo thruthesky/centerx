@@ -15,7 +15,7 @@ $parent = $o['parent'];
 /**
  * @var Comment $comment 수정 할 때만 필요. 즉, 이 값이 있으면 수정.
  */
-$comment = $o['comment'];
+$comment = $o['comment'] ?? null;
 
 
 ?>
@@ -33,3 +33,41 @@ $comment = $o['comment'];
     <button type="submit">Submit</button>
 </form>
 
+
+
+<script>
+    function onFileChange(event, id) {
+        console.log(event);
+        const file = event.target.files[0];
+        fileUpload(
+            file,
+            {
+                sessionId: '<?=login()->sessionId?>',
+            },
+            function (res) {
+                console.log("success: res.path: ", res, res.path);
+                const $files = document.getElementById(id);
+                $files.value = addByComma($files.value, res.idx);
+            },
+            alert,
+            function (p) {
+                console.log("pregoress: ", p);
+            }
+        );
+    }
+    function onClickFileDelete(idx) {
+        const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
+        if ( re === false ) return;
+        axios.post('/index.php', {
+            sessionId: '<?=login()->sessionId?>',
+            route: 'file.delete',
+            idx: idx,
+        })
+            .then(function (res) {
+                checkCallback(res, function(res) {
+                    console.log('delete success: ', res);
+                }, alert);
+            })
+            .catch(alert);
+    }
+</script>
