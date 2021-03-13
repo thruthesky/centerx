@@ -124,6 +124,7 @@ function updateMeta(string $taxonomy, int $entity, mixed $code, mixed $data=null
     if ( is_string($code) ) $in = [$code => $data];
     else $in = $code;
 
+    // 배열에 값이 있는 경우만 업데이트. 특히 $code 가 배열로 들어오는 경우, 배열에 값이 없으면 저장하지 않는다.
     foreach( $in as $k=>$v) {
         // 기존 meta 가 존재하면,
 //        $idx = db()->get_var("SELECT idx FROM " . META_TABLE . " WHERE taxonomy='$taxonomy' AND entity=$entity AND code='$k'");
