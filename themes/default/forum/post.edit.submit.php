@@ -1,20 +1,21 @@
 <?php
 if ( in(IDX) ) {
     $post = post(in(IDX))->update(in());
-    $categoryId = post(in(IDX))->categoryIdx();
+    $categoryId = postCategoryId($post->idx);
 }
 else {
     $post = post()->create(in());
     $categoryId = in(CATEGORY_ID);
 }
 
-if ( isError($post) ) jsBack($post);
+if ( $post->hasError ) jsBack($post->getError());
 
 
 if ( in('returnTo') == 'post' ) {
-    jsGo($post['url']);
+    d($post);
+//    jsGo($post->url);
 } else {
-    jsGo("/?p=forum.post.list&categoryId=" . in(CATEGORY_ID) );
+    jsGo("/?p=forum.post.list&categoryId=" . $categoryId );
 }
 
 

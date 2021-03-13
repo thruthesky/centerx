@@ -435,7 +435,7 @@ function setLogout() {
 // Login any user. It could be root user. Use it only for test.
 function setLoginAny(): User {
     $users = user()->search(limit: 1);
-    return setLogin($users[0][IDX]);
+    return setLogin($users[0]->idx);
 }
 
 /**
@@ -862,7 +862,7 @@ function browser_language()
 
 function select_list_widgets($categoryIdx,  $widget_type, $setting_name) {
 
-    $default_selected = category($categoryIdx)->value($setting_name, $widget_type . '-default');
+    $default_selected = category($categoryIdx)->v($setting_name, $widget_type . '-default');
 
 
     echo "<select name='$setting_name' class='w-100'>";

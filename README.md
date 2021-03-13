@@ -35,7 +35,8 @@
   - name, password, email, gender, address1, address2, zipcode, 등 기타 필드 다 생성.
 - phpunit 을 host os 에서 실행 할 수 있도록 할 것. https://hub.docker.com/r/phpunit/phpunit/ 에 host os 에서 실행하는 방법 설명.
   
-- 코멘트 재귀 함수.
+- https://domain.com/qna 와 같이 짧은 URL 을 지원 할 것.
+  기본적으로 모든 category 는 최 상위 슬래시(/) 다음에 기록 할 수 있도록 한다.
 
 - .gitignore 에 기본적으로 widgets 폴더를 빼고, 원하는 위젯만 -f 로 넣을 것.
   
@@ -780,6 +781,20 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 # Theme
 
+## 테마 페이지 로딩
+
+- 테마 페이지는 URL 변수 `p=...` 에 따라 각 `theme/theme-name` 에 있는 페이지를 연다.
+  이 때 만약 해당 페이지가 없으면 `theme/default` 에 있는 페이지를 연다.
+  
+- 테마 페이지를 열 때, 각 테마의 `theme/**/index.php` 가 먼저 로드된다.
+  그리고 각 테마의 index.php 에서 `include theme()->page()` 와 같이 호출해서 테마 페이지를 로드해야한다.
+  즉, 각 테마 페이지에서 적절한 디자인을 추가하거나 기본적인 HTML head 등을 화면에 출력 할 수 있다.
+  
+- URL 변수 `p=abc.submit` 과 같이 `.submit` 으로 끝나면, index.php 에 의해서 각 테마의 index.php 를 호출하지 않고, 바로 테마 페이지를 연다.
+  즉, 테마 디자인을 생략하고(화면에 출력하지 않고), 곧 바로 테마 스크립트만 실행하는 것이다.
+
+
+
 ## Admin page design
 
 - It is recommended to write admin code as a widget.
@@ -853,6 +868,14 @@ if ( modeCreate() ) {
   그러면, 테마를 실행하지 않고, 바로 그 스크립트를 실행한다. 즉, 화면에 번쩍임이 사라지게 된다.
   
 - 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="returnTo" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
+
+
+## 글 쓰기
+
+- 글 쓰기 기본 FORM 을 보고 새로운 디자인을 만들 수 있으며, 글 쓰기 FORM 이 데이터를 전송 할 때, 기본적으로 사용되는 `themes/default/post.edit.submit.php` 스크립트를 사용하면 된다.
+  물론 필요에 따라 적절히 수정을 할 수 있다.
+  참고로 수정을 할 때에는 다른 파일 이름으로 복사해서 사용 할 것을 권한다.
+
 
 
 # Vue.js 3

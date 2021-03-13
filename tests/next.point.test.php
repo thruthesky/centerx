@@ -3,11 +3,11 @@
 // 다섯명의 사용자 준비
 $rows = user()->search(limit: 5);
 
-define('A', $rows[0][IDX]);
-define('B', $rows[1][IDX]);
-define('C', $rows[2][IDX]);
-define('D', $rows[3][IDX]);
-define('E', $rows[4][IDX]);
+define('A', $rows[0]->idx);
+define('B', $rows[1]->idx);
+define('C', $rows[2]->idx);
+define('D', $rows[3]->idx);
+define('E', $rows[4]->idx);
 
 // 글 3개 준비
 $post1 = new Post(0);
@@ -298,7 +298,7 @@ function testLikeHourlyLimit(): void
     user(B)->setPoint(10000);
 
 //    for ($i = 0; $i < 10; $i++) {
-//        $post = post($posts[$i][IDX])->vote('N');
+//        $post = post($posts[$i]->idx)->vote('N');
 //    }
 
 

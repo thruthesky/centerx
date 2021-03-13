@@ -84,13 +84,17 @@ class Post extends PostTaxonomy {
         // @todo check if too many comment creation.
 
         // Temporary path since path must be unique.
-        $in[PATH] = 'path-' . md5(login()->idx) . md5(time());
+//        $in[PATH] = 'path-' . md5(login()->idx) . md5(time());
+
+        // Update path
+        $in[PATH] = $this->getPath($in['title'] ?? '');
+
         parent::create($in);
         if ( $this->hasError ) return $this;
 
         // Update path
-        $path = $this->getPath();
-        parent::update([PATH => $path]);
+//        $path = $this->getPath();
+//        parent::update([PATH => $path]);
 
         point()->forum(POINT_POST_CREATE, $this->idx);
 
@@ -348,12 +352,19 @@ class Post extends PostTaxonomy {
      *   - 이런식으로 동일한 제목이 수 천개 쓰여져도, 빠르게 찾는다.
      *
      *
-     * @param $post
+     * @param string $title - 제목.
+     *  제목이 입력되지 않으면, 현재 글의 제목을 사용한다. 제목이 없으면, 글 번호를 제목으로 사용한다.
+     *  제목이 입력되지 않은 경우, 코멘트의 경우는 그냥 빈 문자열이 리턴된다.
+     *
+     *  제목이 입력되면, 해당 제목을 바탕으로 path 값을 구한다.
+     *
      * @return string
      */
-    private function getPath(): string {
-        if ( $this->parentIdx ) return '';
-        $title = empty($this->title) ? $this->idx : $this->title;
+    private function getPath(string $title=''): string {
+        if ( empty($title) ) {
+            if ( $this->parentIdx ) return '';
+            $title = empty($this->title) ? $this->idx : $this->title;
+        }
 
         $title = seoFriendlyString($title);
         $path = $title;
@@ -379,7 +390,8 @@ class Post extends PostTaxonomy {
      * @return File[]
      */
     function files(): array {
-        return files()->fromIdxes($this->files);
+        /// 기본적으로 files 필드는 빈 문자열을 가지는데, 때로는 null 이 되는 경우가 있다.
+        return files()->fromIdxes($this->files ?? '');
     }
 
 

@@ -14,7 +14,6 @@ if ( modeCreate() ) {
     <div class="row">
         <div class="col-6">
             <?php if ( in(ID) && modeDelete() == false ) {
-                $cat = category(in(ID))->get();
                 ?>
                     <h3>Category Update</h3>
                 <?php
@@ -54,13 +53,13 @@ if ( modeCreate() ) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach( categories() as $cat ) { ?>
+                <?php foreach( category()->search( conds: in(ID) ? [ ID => in(ID) ] : [] ) as $category ) { ?>
 
                     <tr>
-                        <th scope="row"><a href="/?p=forum.post.list&categoryId=<?=$cat[ID]?>" target="_blank"><?=$cat[IDX]?></a></th>
-                        <td><a href="/?p=admin.index&w=category/admin-category-list&id=<?=$cat[ID]?>"><?=$cat[ID]?></a></td>
-                        <td><?=$cat[TITLE]?></td>
-                        <td><?=$cat[DESCRIPTION]?></td>
+                        <th scope="row"><a href="/?p=forum.post.list&categoryId=<?=$category->id?>" target="_blank"><?=$category->idx?></a></th>
+                        <td><a href="/?p=admin.index&w=category/admin-category-list&id=<?=$category->id?>"><?=$category->id?></a></td>
+                        <td><?=$category->title?></td>
+                        <td><?=$category->description?></td>
                     </tr>
                 <?php } ?>
                 </tbody>

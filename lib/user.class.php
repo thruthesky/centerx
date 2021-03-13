@@ -4,24 +4,25 @@
  */
 /**
  * Class User
- * @property-read string $email;
- * @property-read string $sessionId;
- * @property-read string $name;
- * @property-read string $nickname;
- * @property-read int $photoIdx;
- * @property-read string $phoneNo;
- * @property-read string $gender;
- * @property-read int $birthdate;
- * @property-read string $countryCode;
- * @property-read string $province;
- * @property-read string $city;
- * @property-read string $address;
- * @property-read string $zipcode;
- * @property-read string $createdAt;
- * @property-read string $updatedAt;
- * @property-read string $provider; // social login
- * @property-read string $plid; // pass login
- * @property-read string $ci; // pass login
+ * @property-read string $email
+ * @property-read string $password
+ * @property-read string $sessionId
+ * @property-read string $name
+ * @property-read string $nickname
+ * @property-read int $photoIdx
+ * @property-read string $phoneNo
+ * @property-read string $gender
+ * @property-read int $birthdate
+ * @property-read string $countryCode
+ * @property-read string $province
+ * @property-read string $city
+ * @property-read string $address
+ * @property-read string $zipcode
+ * @property-read string $createdAt
+ * @property-read string $updatedAt
+ * @property-read string $provider -  social login
+ * @property-read string $plid - pass login
+ * @property-read string $ci - pass login
  */
 class User extends Entity {
 
@@ -52,7 +53,6 @@ class User extends Entity {
     {
         parent::read($idx);
         $data = $this->getData();
-        unset($data[PASSWORD]);
         $data[SESSION_ID] = getSessionId($this->getData());
         $this->setData($data);
         return $this;
@@ -87,6 +87,20 @@ class User extends Entity {
         return $this;
     }
 
+    /**
+     * 비밀번호 변경
+     *
+     * @param string $newPassword
+     * @return User
+     *
+     * @example
+     *      user()->by('thruthesky@gmail.com')->changePassword('abc123d')
+     */
+    public function changePassword(string $newPassword): self {
+        return parent::update([PASSWORD => encryptPassword($newPassword)]);
+    }
+
+
 
 
 
@@ -116,21 +130,22 @@ class User extends Entity {
 
         $users = $this->search(select: 'idx, password', conds: [EMAIL => $in[EMAIL]]);
         if ( !$users ) return $this->error(e()->user_not_found_by_that_email);
-        $password = $users[0][PASSWORD];
+        $user = $users[0];
 
-        if ( ! checkPassword($in[PASSWORD], $password) ) return $this->error(e()->wrong_password);
+        if ( ! checkPassword($in[PASSWORD], $user->password) ) return $this->error(e()->wrong_password);
 
         // 회원 정보 및 메타 정보 업데이트
         // 로그인을 할 때, 추가 정보를 저장한다. 이 때, 비밀번호는 저장되지 않게 한다.
         unset($in[PASSWORD]);
 
         // 회원 로그인 성공하면, 현재 객체를 로그인한 사용자 것으로 변경한다.
-        $this->idx = $users[0][IDX];
+        $this->idx = $user->idx;
         $this->update($in);
 
         point()->login($this->profile());
         return $this;
     }
+
 
 
 
@@ -160,7 +175,9 @@ class User extends Entity {
      */
     public function response(): array|string {
         if ( $this->hasError ) return $this->getError();
-        return $this->getData();
+        $data = $this->getData();
+        unset($data[PASSWORD]);
+        return $data;
     }
 
     /**
@@ -224,13 +241,16 @@ class User extends Entity {
 
     /**
      * Returns User instance by idx or email.
-     * @param int|string $uid user idx or email
-     * @return User
      *
-     *  - If there is no user by email, then error will be set.
+     * Entity 클래스의 findOne() 설명을 참고한다.
      *
      * @example
      *      user()->by($email)->setPoint(0);
+     *
+     * @param int|string $uid user idx or email
+     * @return User
+     * - If there is no user by email, then error will be set.
+     *
      */
     public function by(int|string $uid): User {
         if ( is_int($uid) ) return user($uid);

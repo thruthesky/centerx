@@ -484,14 +484,23 @@ class Entity {
     }
 
     /**
-     * 특정 레코드를 1개 찾아 현재 객체로 넣어 리턴한다.
+     * 특정 레코드를 1개 찾아 현재 객체로 변경하여 리턴한다.
+     *
+     * 예를 들어, `user()->by('thruthesky@gmail.com')` 와 같이 호출하면, by() 가 리턴하는 값은
+     * thruthesky@gmail.com 사용자의 User 객체가되는 것이다.
      *
      * $this->exits() 와 다른 점은 exists() 는 주어진 조건에 맞는 레코드가 존재하는지 확인하여 boolean 을 리턴한다.
-     *  만약, 주어진 조건이 없으면 현재 $this->idx 의 레코드가 존재하는지 확인해서 boolean 을 리턴한다.
+     * 그리고 만약, 주어진 조건이 없으면 현재 $this->idx 의 레코드가 존재하는지 확인해서 boolean 을 리턴한다.
      *
-     * $this->find() 는 주어진 조건에 맞는 레코드 들 중 1개를 현재 객체에 넣어, 현재 객체를 리턴한다.
-     *  이 때, 현재 객체 $this->idx 는 무시된다.
-     *  만약, 주어진 조건에 레코드를 찾지 못하면 에러가 설정된다.
+     * 하지만, $this->find() 는 주어진 조건에 맞는 레코드 들 중 1개를 *현재 객체로 변경*하여 리턴한다.
+     *
+     * 예제) 아래의 코드에서 $user1 은 처음에는 1번 사용자였는데, by() 함수를 호출함에 따라 $user1 이 더이상 1번 사용자가 아니라 thruthesky@gmail.com 으로 변경이 된다.
+     *      $user1 = user(1);
+     *      $user1->by('thruthesky@gmail.com');
+     *      isTrue($user1->email == 'thruthesky@gmail.com');
+     *
+     *  by() 함수를 호출 할 때, $this->idx 가 설정되지 않아도 되며, 설정되어져 있어도 무시된다.
+     *  주어진 조건에 레코드를 찾지 못하면 에러가 설정된다.
      *
      * @param array $conds
      * @param string $conj
@@ -503,7 +512,7 @@ class Entity {
     public function findOne(array $conds, string $conj = 'AND'): self {
         $arr = $this->search(conds: $conds, conj: $conj);
         if ( ! $arr ) return $this->error(e()->entity_not_found);
-        $idx = $arr[0][IDX];
+        $idx = $arr[0]->idx;
         return $this->read($idx);
     }
 

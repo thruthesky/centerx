@@ -84,6 +84,7 @@ class File extends Entity {
      * @param string $idxes
      * @param bool $object - true 이면 객체로 리턴하고, false 이면 배열로 리턴한다.
      * @return File[]
+     * - 만약, 파일이 없으면 빈 배열이 리턴된다.
      */
     public function fromIdxes(string $idxes, bool $object = true): array {
         $arr = separateByComma($idxes);

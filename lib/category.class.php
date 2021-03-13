@@ -7,6 +7,27 @@
  *
  * @property-read string $id - id
  * @property-read string $title - category title
+ * @property-read string $description
+ * @property-read string $subcategories
+ * @property-read string POINT_POST_CREATE
+ * @property-read string POINT_POST_DELETE
+ * @property-read string POINT_COMMENT_CREATE
+ * @property-read string POINT_COMMENT_DELETE
+ * @property-read string POINT_HOUR_LIMIT
+ * @property-read string POINT_HOUR_LIMIT_COUNT
+ * @property-read string POINT_DAILY_LIMIT_COUNT
+ * @property-read string BAN_ON_LIMIT
+ * @property-read string postEditWidget
+ * @property-read string postViewWidget
+ * @property-read string postListHeaderWidget
+ * @property-read string postListWidget
+ * @property-read string paginationWidget
+ * @property-read string listOnView
+ * @property-read string noOfPostsPerPage
+ * @property-read string noOfPagesOnNav
+ * @property-read string mobilePostListWidget
+ * @property-read string mobilePostViewWidget
+ *
  */
 class Category extends Entity {
 
@@ -17,6 +38,8 @@ class Category extends Entity {
 
     /**
      * 카테고리 전처리
+     *
+     * subcategories 에 콤마로 구분된 카테고리 배열이 저장되는데, 이를 배열로 리턴한다.
      *
      * @param int $idx
      * @return self
@@ -42,31 +65,6 @@ class Category extends Entity {
 
 
     /**
-     * @deprecated
-     * @param string|null $field
-     * @param mixed|null $value
-     * @param string $select
-     * @param bool $cache
-     * @return mixed
-     */
-    public function get(string $field = null, mixed $value = null, string $select = '*', bool $cache = true): mixed
-    {
-        $cate = parent::get(select: '*', cache: false);
-        if ( ! $cate ) return $cate;
-
-        $subs = $cate['subcategories'] ?? '';
-        $cate['subcategories'] = [];
-        if ( $subs ) {
-            $subs = explode(",", $subs);
-            $cate['subcategories'] = [];
-            foreach( $subs as $sub ) {
-                $cate['subcategories'][] = trim($sub);
-            }
-        }
-        return $cate;
-    }
-
-    /**
      * @attention To update, entity.idx must be set properly.
      *
      * @param array $in
@@ -83,6 +81,51 @@ class Category extends Entity {
      */
     public function delete(): self {
         return parent::delete();
+    }
+
+
+
+    /**
+     * Category 를 검색 후, Category 객체를 배열로 리턴한다.
+     *
+     * @param string $where
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @param string $by
+     * @param string $select
+     * @param array $conds
+     * @param string $conj
+     * @return Category[]
+     */
+    public function search(
+        string $select='idx',
+        string $where='1',
+        string $order='idx',
+        string $by='DESC',
+        int $page=1,
+        int $limit=10,
+        array $conds=[],
+        string $conj = 'AND',
+    ): array
+    {
+
+        $categories = parent::search(
+            select: $select,
+            where: $where,
+            order: $order,
+            by: $by,
+            page: $page,
+            limit: $limit,
+            conds: $conds,
+            conj: $conj
+        );
+
+        $rets = [];
+        foreach( ids($categories) as $idx ) {
+            $rets[] = Category($idx);
+        }
+        return $rets;
     }
 
 }
@@ -105,10 +148,13 @@ function category(int|string $idx = 0): Category
 }
 
 /**
- * Returns all the categories including their records and metas.
+ * Returns category objects of all the categories including their records and metas.
+ *
+ * @return Category[]
  */
-function categories() {
-    return category()->search(select: '*');
+function categories(): array
+{
+    return category()->search();
 }
 
 /**
