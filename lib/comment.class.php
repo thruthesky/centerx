@@ -5,8 +5,11 @@
 /**
  * Class Comment
  *
+ * 코멘트는 Post 와 동일한 테이블을 사용한다. 따라서 Post 클래스와 비슷한 부분이 많다.
+ *
  * @property-read int $rootIdx
  * @property-read int $parentIdx
+ * @property-read int $categoryIdx
  * @property-read string $title
  * @property-read string $content
  * @property-read string $files
@@ -26,16 +29,6 @@ class Comment extends PostTaxonomy {
     public function __construct(int $idx)
     {
         parent::__construct($idx);
-
-        if ( $idx ) {
-            /// 코멘트 초기화
-            /// 현재 코멘트에 대해서만 초기화를 한다.
-            /// 현재 코멘트의 글 쓴이 정보나 파일(첨부 사진) 등을 로드하지 않는다.
-            if ( $this->notFound == false ) {
-                // $this->updateData('key', 'value');
-            }
-        }
-
     }
 
 
@@ -91,7 +84,7 @@ class Comment extends PostTaxonomy {
      * @return string
      */
     public function categoryId(): string {
-        return postCategoryId($this->rootIdx);
+        return postCategoryId($this->categoryIdx);
     }
 
 
@@ -215,24 +208,14 @@ class Comment extends PostTaxonomy {
         return $rets;
     }
 
-
-
     /**
-     * 현재 글에 연결된 첨부 파일 객체를 배열로 리턴한다.
+     * 현재 코멘트의 (최상위) 글을 객체로 리턴한다.
      *
-     * ```
-     * foreach( $post->files() as $file ) { ... }
-     * ```
-     *
-     * @return File[]
+     * @return Post
      */
-    function files(): array {
-        return files()->fromIdxes($this->files);
+    public function post(): Post {
+        return post($this->rootIdx);
     }
-
-
-
-
 }
 
 

@@ -8,13 +8,13 @@
  * $options['page'] is the current page no. It begins with no. 1.
  * $options['blocks'] is the no of pages to display on navigation bar(at bottom of the post list page)
  * $options['arrow'] to show or not the quick arrow button for very first page and very last page.
- * $option['total'] is the total no of items to display in all pages.
+ * $option['total'] is the total no of items(posts, users) in the database or search result.
  * $option['url'] is the url for the post list page. In the url, `{page}` will be replaced with page no.
  *   - For example, if url is "?page=post.list&category=qna&page={page}" then, it will be converted into "?page=post.list&category=qna&page=5" where '5' is the page.
  */
 
 
-$options = [];
+$options = getWidgetOptions();
 
 
 $page = $options['page'] ?? 1;
@@ -42,6 +42,7 @@ $total_no_of_pages = ceil($options['total'] / $limit);
 $second_last = $total_no_of_pages - 1;
 $previous_page = $page - $blocks;
 $counter_begin = 0;
+
 
 
 function _url($no) {

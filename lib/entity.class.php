@@ -101,7 +101,7 @@ class Entity {
     {
         if ( $field ) {
             if ( $this->hasError ) return null;
-            else return $this->data[$field] ?? $default_value;
+            else return isset($this->data[$field]) && $this->data[$field] ? $this->data[$field] : $default_value;
         } else {
             if ( $this->hasError ) return [];
             return $this->data;
@@ -510,9 +510,12 @@ class Entity {
      *  $user = user()->find([EMAIL => $uid]); // Find user by email
      */
     public function findOne(array $conds, string $conj = 'AND'): self {
-        $arr = $this->search(conds: $conds, conj: $conj);
+
+        $arr = self::search(conds: $conds, conj: $conj); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
+
         if ( ! $arr ) return $this->error(e()->entity_not_found);
-        $idx = $arr[0]->idx;
+        $idx = $arr[0][IDX];
+
         return $this->read($idx);
     }
 
@@ -612,7 +615,10 @@ class Entity {
     ): array {
         $table = $this->getTable();
         $from = ($page-1) * $limit;
-        if ( $conds ) $where = sqlCondition($conds, $conj);
+
+        if ( $conds ) {
+            $where = sqlCondition($conds, $conj);
+        }
         $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
         if ( isDebugging() ) d($q);
         return db()->get_results($q, ARRAY_A);

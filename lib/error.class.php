@@ -91,6 +91,9 @@ class E {
     public string $meta_update_failed = 'error_meta_update_failed';
     public string $meta_insert_failed = 'error_meta_insert_failed';
 
+    public string $post_path_is_empty = 'error_post_path_is_empty';
+
+
 
 
     public bool $isError = false;

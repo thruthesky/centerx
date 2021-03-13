@@ -4,6 +4,17 @@
 /**
  * Class Post
  *
+ * 글을 관리하는 Taxonomy 객체
+ *
+ * 글을 하나의 객체로 만들 때, new Post(123) 또는 post(123) 과 같이 할 수 있다. 이 때, 해당 글에 대해서만 데이터를 초기화 한다. 이 말은 post(1) 과
+ * 같이 할 때, 글이 저장된 레코드와 메타에는 url 정보가 존재하지 않는데, 처음 객체를 생성하거나 객체에 대한 변경 작업을 할 때, url 값을 초기화 한다.
+ * 하지만, 현재 글이 아닌 것, 예를 들면 글 쓴이 정보, 첨부 파일 정보, 코멘트 정보, 카테고리 정보 등등은 초기화를 하지 않는다.
+ * 따라서, 그러한 정보를 얻기 위해서는 $post->user(), $post->files(), $post->comments(), $post->category() 와 같은 함수를 호출해서 해당
+ * 정보를 사용 할 수 있다.
+ *
+ * 참고로, 현재 글의 카테고리 아이디를 얻기 위해서는 $this->category()->id 와 같이 할 수도 있고, postCategoryId($this->categoryIdx) 와 같이
+ * 할 수 있다. 전자는 레코드와 메타 데이터 전체를 다 읽고 필요한 초기화까지 한다. 후자는 필드 하나만 읽는다. 어느 함수를 쓸지는 적절히 결정해야 한다.
+ *
  * @property-read string $rootIdx;
  * @property-read string $parentIdx;
  * @property-read string $categoryIdx;
@@ -29,22 +40,32 @@ class Post extends PostTaxonomy {
     public function __construct(int $idx)
     {
         parent::__construct($idx);
-
-        /// read() 함수로 초기화 된 후 설정.
-        /// User 클래스 처럼 read() 함수를 Override 할 수도 있고, 간단하게 부모클래 에서 read() 가 호출 된 다음, 필요한 코드를 작성 할 수 있다.
-        if ( $idx ) {
-            /// 글 초기화
-            /// 현재 글에 대해서만 초기화를 한다.
-            /// 현재 글의 글 쓴이 정보나, 자식 글(코멘트) 또는 파일(첨부 사진) 등을 로드하지 않는다.
-            if ( $this->notFound == false ) {
-                if ( $this->path ) {
-                    $url = get_current_root_url() . $this->path;
-                    $this->updateData('url', $url);
-                }
-            }
-        }
     }
 
+
+    /**
+     * 게시글을 읽어서 적절한 패치를 한 후, data 에 보관한다.
+     *
+     * 예를 들면, URL 을 패치해서, $this->data 에 보관한다.
+     * 참고, 현재 객체에 read() 메소드를 정의하면, 부모 클래스의 read() 메소드를 overridden 한다. 그래서 부모 함수를 호출해야한다.
+     * read() 메소드를 정의하지 않고, 그냥 constructor 에서 정의 할 수 있는데, 그렇게하면 각종 상황에서 read() 가 호출되는데, 그 때 적절한 패치를 못할 수 있다.
+     * 예를 들어, create() 함수 호출 후, url 패치가 안되는 것이다.
+     *
+     * @param int $idx
+     * @return self
+     */
+    public function read(int $idx = 0): self
+    {
+        parent::read($idx);
+        if ( $this->notFound ) return $this;
+
+        if ( $this->path ) {
+            $url = get_current_root_url() . $this->path;
+            $this->updateData('url', $url);
+        }
+
+        return $this;
+    }
 
     /**
      * @param array $in
@@ -83,18 +104,11 @@ class Post extends PostTaxonomy {
         // @todo check if too many post creation.
         // @todo check if too many comment creation.
 
-        // Temporary path since path must be unique.
-//        $in[PATH] = 'path-' . md5(login()->idx) . md5(time());
-
         // Update path
         $in[PATH] = $this->getPath($in['title'] ?? '');
 
         parent::create($in);
         if ( $this->hasError ) return $this;
-
-        // Update path
-//        $path = $this->getPath();
-//        parent::update([PATH => $path]);
 
         point()->forum(POINT_POST_CREATE, $this->idx);
 
@@ -135,6 +149,7 @@ class Post extends PostTaxonomy {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
+
 
         return parent::update($in);
     }
@@ -236,15 +251,7 @@ class Post extends PostTaxonomy {
     {
 
         // Parse category
-        $count = preg_match_all("/<([^>]+)>/", $where, $ms);
-        if ( $count ) {
-            for( $i = 0; $i < $count; $i ++ ) {
-                $cat = $ms[1][$i];
-                $idx = category($cat)->idx;
-                $where = str_replace($ms[0][$i], $idx, $where);
-            }
-        }
-        $where = str_replace('categoryId', CATEGORY_IDX, $where);
+        $where = $this->parseCategory($where);
 
 
         $posts = parent::search(
@@ -262,6 +269,38 @@ class Post extends PostTaxonomy {
         }
         return $rets;
     }
+
+
+
+    /**
+     * @param string $where
+     * @param array $conds
+     * @param string $conj
+     * @return int
+     */
+    public function count(string $where='1', array $conds=[], string $conj = 'AND'): int {
+        $where = $this->parseCategory($where);
+        return parent::count($where, $conds, $conj);
+    }
+
+    /**
+     * @param string $where
+     * @return string
+     */
+    private function parseCategory(string $where): string {
+
+        $count = preg_match_all("/<([^>]+)>/", $where, $ms);
+        if ( $count ) {
+            for( $i = 0; $i < $count; $i ++ ) {
+                $cat = $ms[1][$i];
+                $idx = category($cat)->idx;
+                $where = str_replace($ms[0][$i], $idx, $where);
+            }
+        }
+        $where = str_replace('categoryId', CATEGORY_IDX, $where);
+        return $where;
+    }
+
 
     /**
      * 최신 글을 추출 할 때 유용하다. 글만 추출. 코멘트는 추출하지 않음.
@@ -318,22 +357,25 @@ class Post extends PostTaxonomy {
      * For instance, "https://local.domain.com/post-url-is-like-%ED%95%9C%EA%B8%80%EB%8F%84-%EB%90%okay",
      *  then, it will decode the url and find it in path, and return the post.
      *
-     * @return array
-     * - empty array([]) if post not exists.
-     * - or post record.
+     * @return Post
+     * - error will be set into $this if post not exists.
+     * - or post object
      *
      * @example
      *   d(post()->getFromPath());
      */
-    public function getFromPath(): Post {
+    public function getFromPath(): self {
         $path = $_SERVER['REQUEST_URI'];
         $path = ltrim($path,'/');
-        if ( empty($path) ) return [];
+        if ( empty($path) ) return $this->error(e()->post_path_is_empty);
         $path = urldecode($path);
         return $this->findOne([PATH => $path]);
     }
 
-    public function current(): array {
+    /**
+     * @return Post
+     */
+    public function current(): self {
         return $this->getFromPath();
     }
 
@@ -380,20 +422,6 @@ class Post extends PostTaxonomy {
         }
     }
 
-    /**
-     * 현재 글에 연결된 첨부 파일 객체를 배열로 리턴한다.
-     *
-     * ```
-     * foreach( $post->files() as $file ) { ... }
-     * ```
-     *
-     * @return File[]
-     */
-    function files(): array {
-        /// 기본적으로 files 필드는 빈 문자열을 가지는데, 때로는 null 이 되는 경우가 있다.
-        return files()->fromIdxes($this->files ?? '');
-    }
-
 
     /**
      * 현재 글에 연결된 코멘트 객체를 배열로 리턴한다.
@@ -403,7 +431,7 @@ class Post extends PostTaxonomy {
      * @param bool $object - true 이면 객체로 리턴. false 이면 배열로 리턴.
      * @return Comment[]
      */
-    function comments(bool $object = true): array {
+    public function comments(bool $object = true): array {
 
 
         // reset global comments container.
@@ -430,13 +458,6 @@ class Post extends PostTaxonomy {
         return $rets;
     }
 
-    /**
-     * @deprecated - use $this->categoryId
-     * @return string
-     */
-    function categoryId(): string {
-        return category($this->categoryIdx)->id;
-    }
 }
 
 

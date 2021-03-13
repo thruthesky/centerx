@@ -44,7 +44,7 @@ class User extends Entity {
      *
      * 회원 정보를 읽을 때, password 를 없애고, sessionId 를 추가한다.
      * 참고, 현재 객체에 read() 메소드를 정의하면, 부모 클래스의 read() 메소드를 overridden 한다. 그래서 부모 함수를 호출해야한다.
-     * read() 메소드를 정의하지 않고, Post 클래스 처럼 그냥 생성자 안에서 처리를 해도 된다.
+     * read() 메소드를 정의하지 않고, 그냥 constructor 에서 정의 할 수 있는데, 그렇게하면 각종 상황에서 read() 가 호출되는데, 그 때 적절한 패치를 못할 수 있다.
      *
      * @param int $idx
      * @return self

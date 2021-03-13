@@ -116,8 +116,14 @@ define('SHOPPING_MALL', 'shopping_mall');
  * MAX_FILE_SIZE - form file size limit
  * TOKEN - the push token
  */
-define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'w', 'cw', 'mode', 'MAX_FILE_SIZE', TOKEN,
+define('META_CODE_EXCEPTIONS', [
+    ROUTE,
+    SESSION_ID,
+    CATEGORY_ID, // 글 작성시 카테고리 아이디가 넘어 옴. 저장 할 필요 없음.
+    'reload', 'p', 'w', 'cw', 'mode', 'MAX_FILE_SIZE',
+    TOKEN,
     'returnTo', // to return where after form submit.
+    'userfile', // file upload form name.
 ]);
 
 

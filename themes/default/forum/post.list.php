@@ -4,18 +4,25 @@ $category = category(in(CATEGORY_ID));
 
 if ( $category->exists() == false ) jsBack("게시판 카테고리가 존재하지 않습니다.");
 
+
+
+$categoryId = in(CATEGORY_ID);
+$limit = 10;
+$where = "parentIdx=0 AND categoryId=<$categoryId>";
+$posts = post()->search(where: $where, page: in('page', 1), limit: $limit);
+$total = post()->count($where);
+
+
 include_once widget( $category->v('postListHeaderWidget', 'post-list-header/post-list-header-default') );
 include_once widget( $category->v('postListWidget', 'post-list/post-list-default') );
 
-
-
-
 include_once widget( $category->v('paginationWidget', 'pagination/pagination-default'), [
     'page' => in('page', 1),
+    'limit' => $limit,
     'blocks' => 3,
     'arrow' => true,
-    'total_no_of_posts' => $category->v('noOfPostsPerPage'),
-    'no_of_posts_per_page' => $category->v('noOfPagesOnNav'),
+    'total' => $total,
+    'no_of_posts_per_page' => $category->v('noOfPagesOnNav', 10),
     'url' => '/?p=forum.post.list&categoryId=' . in(CATEGORY_ID) . '&page={page}',
 ]);
 

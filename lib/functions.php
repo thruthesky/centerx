@@ -473,17 +473,28 @@ function debug_log($message, $data='') {
  *
  * @param string $path
  * @param array $options
- * @param string $widgetId
  *
  * @return string
  * @example
  *  include widget('post-latest/post-latest-default')
  */
-function widget(string $path, array $options=[], string $widgetId='') {
-    if ( $widgetId && $options ) addMetaIfNotExists('widget', 0, $widgetId, $options);
+function widget(string $path, array $options=[]) {
+//    if ( $widgetId && $options ) addMetaIfNotExists('widget', 0, $widgetId, $options);
+
+    setWidgetOptions($options);
     $arr = explode('/', $path);
     $path = ROOT_DIR . "widgets/$arr[0]/$arr[1]/$arr[1].php";
     return $path;
+}
+
+$__widget_options = [];
+function setWidgetOptions(array $options) {
+    global $__widget_options;
+    $__widget_options = $options;
+}
+function getWidgetOptions() {
+    global $__widget_options;
+    return $__widget_options;
 }
 
 
@@ -1020,8 +1031,6 @@ function onCommentCreateSendNotification(Comment|Post $cp)
     /**
      * set the title and body, etc.
      */
-
-
     $title = $cp->title;
     if (empty($title)) {
         if (isset($in[FILES]) && !empty($in[FILES])) {
@@ -1129,12 +1138,12 @@ function postCategoryIdx($rootIdx): int {
     return post()->getVar(CATEGORY_IDX, [IDX => $rootIdx]);
 }
 /**
- * 현재 글 idx 는 알고 있지만, 그 categoryId 는 모를 때 사용하는 함수이다.
- * @param $rootIdx
+ * category.idx 를 입력받아 category.id 를 리턴한다.
+ * @param int $categoryIdx
  * @return int
  */
-function postCategoryId($rootIdx): int {
-    return post()->getVar(CATEGORY_ID, [IDX => $rootIdx]);
+function postCategoryId(int $categoryIdx): string {
+    return category()->getVar(ID, [IDX => $categoryIdx]);
 }
 
 

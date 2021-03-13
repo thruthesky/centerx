@@ -12,6 +12,8 @@
  * 있다.
  *
  *
+ * @property-read int categoryIdx
+ * @property-read string files
  */
 class PostTaxonomy extends Entity {
 
@@ -79,6 +81,57 @@ class PostTaxonomy extends Entity {
 //        $record = entity(POSTS, $this->idx)->update($data);
 //        return $record;
     }
+
+
+
+    /**
+     * 카테고리 아이디를 리턴한다.
+     *
+     * $this->category()->id 를 하면, 카테고리 전체 레코드를 다 읽지만, postCategoryId() 는 categoryId 필드 하나만 읽는다.
+     *
+     * @return string
+     */
+    public function categoryId(): string {
+        return postCategoryId($this->categoryIdx);
+    }
+
+
+    /**
+     * 현재 글/코멘트에 연결된 첨부 파일 객체를 배열로 리턴한다.
+     *
+     * ```
+     * foreach( $post->files() as $file ) { ... }
+     * ```
+     *
+     * @return File[]
+     */
+    public function files(): array {
+        /// 기본적으로 files 필드는 빈 문자열을 가지는데, 때로는 null 이 되는 경우가 있다.
+        return files()->fromIdxes($this->files ?? '');
+    }
+
+
+    /**
+     * 글/코멘트를 쓴 사용자 객체를 리턴한다.
+     *
+     * 참고로 현재 글/코멘트 객체가 올바른지는 이 함수 호출 전에 검사를 해야 한다.
+     *
+     * @return User
+     */
+    public function user(): User {
+        return user($this->userIdx);
+    }
+
+    /**
+     * 현재 글/코멘트의 카테고리를 객체로 리턴한다.
+     *
+     * @return Category
+     */
+    public function category(): Category {
+        return category($this->categoryIdx);
+    }
+
+
 
 
 }

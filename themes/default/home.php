@@ -22,6 +22,8 @@
         <?php } ?>
 
         <a class="btn btn-primary" href="/?p=forum.post.list&categoryId=qna">QnA</a>
+        <a class="btn btn-primary" href="/?p=forum.post.list&categoryId=discussion">Discussion</a>
+        <a class="btn btn-primary" href="/?p=forum.post.list&categoryId=reminder">Reminder</a>
 
         <?php if ( admin() ) { ?>
             <a class="btn btn-primary" href="/?p=admin.index"><?=ln(['en' => 'Admin', 'ko' => '관리자'])?></a>
