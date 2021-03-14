@@ -3,25 +3,25 @@
 class UserRoute {
 
     public function login($in) {
-        return user()->login($in);
+        return user()->login($in)->response();
     }
 
     public function register($in) {
-        return user()->register($in);
+        return user()->register($in)->response();
     }
 
     public function loginOrRegister($in) {
-        return user()->loginOrRegister($in);
+        return user()->loginOrRegister($in)->response();
     }
 
     public function profile($in) {
-        return login()->profile();
+        return login()->response();
     }
 
 
     public function update($in) {
         if ( notLoggedIn() ) return e()->not_logged_in;
-        return login()->update($in);
+        return login()->update($in)->response();
     }
 
     public function updateOptionSetting($in) {

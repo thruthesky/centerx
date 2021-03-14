@@ -261,6 +261,7 @@ class User extends Entity {
 
     /**
      * @todo This is a optional switching (on/off) function. Make it generic like `entity()->on(OPTION)`, `entity()->off(OPTION)
+     * @todo Make it like `user(123)->on('chat_room_id')`, `user(123)->off(...)`
      * @todo Move the function to route.
      *
      * Update User Option Setting - to set userMeta[OPTION] to Y or N

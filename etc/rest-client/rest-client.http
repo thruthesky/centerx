@@ -1,2 +1,7 @@
 
 GET https://local.sonub.com/?route=app.version
+
+###
+
+GET https://local.itsuda50.com/?route=user.register&email=abc@email.com&password=12345a
+

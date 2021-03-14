@@ -276,8 +276,8 @@ class Entity {
 
         if ( !$idx ) return $this->error(e()->insert_failed);
 
-        addMeta($this->taxonomy, $idx, $this->getMetaFields($in));
-
+        $re = addMeta($this->taxonomy, $idx, $this->getMetaFields($in));
+        if ( isError($re) ) jsAlert($re);
 
         /// 현재 객체에 정보 저장.
         $this->read($idx);

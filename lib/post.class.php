@@ -106,7 +106,6 @@ class Post extends PostTaxonomy {
 
         // Update path
         $in[PATH] = $this->getPath($in['title'] ?? '');
-
         parent::create($in);
         if ( $this->hasError ) return $this;
 
@@ -322,9 +321,18 @@ class Post extends PostTaxonomy {
         );
     }
 
-    // Helper class of search()
-    public function list(string $categoryId, int $page=1, int $limit=10) {
-        return $this->search(where: "categoryId=<$categoryId> AND parentIdx=0 AND deletedAt=0", page: $page, limit: $limit, select: '*');
+
+    /**
+     * Helper class of search()
+     *
+     * @param string $categoryId
+     * @param int $page
+     * @param int $limit
+     * @return Post[]
+     */
+    public function list(string $categoryId, int $page=1, int $limit=10): array
+    {
+        return $this->search( where: "categoryId=<$categoryId> AND parentIdx=0 AND deletedAt=0", page: $page, limit: $limit);
     }
 
     /**

@@ -6,7 +6,6 @@
 
     $ms = adminSettings()->get();
 
-    d($ms);
 ?>
 <div class="container">
     <div class="row">

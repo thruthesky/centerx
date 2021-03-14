@@ -1186,3 +1186,43 @@ function includeVueOnce() {
 EOH;
 
 }
+
+
+/**
+ * HTML FORM 에서 input 태그 중 hidden 으로 지정되는 값들 보다 편하게 하기 위한 함수.
+ *
+ * @param array $in
+ *  이 값이 ['p', 'w'] 와 같이 입력되면, <input type=hidden name=p value=in('p')> 와 같이 각 요소를 name 으로 하고, in() 함수의 키로 값을 채운다.
+ * @param string $mode
+ *  <input type=hidden name=mode value=...> 와 같이 form submit mode 를 지정한다.
+ * @param array $kvs
+ *  추적으로 지정할 name 과 value 를 지정한다.
+ * @return string
+ *
+ * 호출 예)
+ *  hiddens(in: ['p', 'w', 's'], mode: 'submit', kvs: ['idx' => $post->idx])
+ *
+ * 리턴 값 예)
+ *  <input type='hidden' name='mode' value='submit'>
+ *  <input type='hidden' name='p' value='admin.index'>
+ *  <input type='hidden' name='w' value='shopping-mall/admin-shopping-mall'>
+ *  <input type='hidden' name='s' value='edit'>
+ *  <input type='hidden' name='idx' value='0'>
+ */
+function hiddens(array $in=[], string $mode='', array $kvs=[]): string {
+    $str = '';
+    if ( $mode ) {
+        $str .= "<input type='hidden' name='mode' value='$mode'>\n";
+    }
+    if ( $in ) {
+        foreach( $in as $k ) {
+            $str .= "<input type='hidden' name='$k' value='".in($k)."'>\n";
+        }
+    }
+    if ( $kvs ) {
+        foreach( $kvs as $k => $v ) {
+            $str .= "<input type='hidden' name='$k' value='$v'>\n";
+        }
+    }
+    return $str;
+}

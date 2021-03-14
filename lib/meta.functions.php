@@ -44,6 +44,7 @@ function getMeta(string $taxonomy, int $entity, string $code = null): mixed {
 }
 
 
+
 /**
  * meta 가 존재하면 true 아니면, false 를 리턴한다.
  *
@@ -53,7 +54,8 @@ function getMeta(string $taxonomy, int $entity, string $code = null): mixed {
  * @return bool
  */
 function metaExists(string $taxonomy, int $entity, string $code) {
-    $idx = db()->get_var("SELECT idx FROM " . META_TABLE . " WHERE taxonomy='$taxonomy' AND entity=$entity AND code='$code'");
+    $q = "SELECT * FROM " . META_TABLE . " WHERE taxonomy='$taxonomy' AND entity=$entity AND code='$code' LIMIT 1";
+    $idx = db()->get_var($q);
     return $idx > 0;
 }
 
@@ -145,7 +147,7 @@ function updateMeta(string $taxonomy, int $entity, array|string $code, mixed $da
                 UPDATED_AT => time(),
             ];
             $idx = db()->insert($table, $record);
-            return e()->meta_insert_failed;
+            if ( $idx === false ) return e()->meta_insert_failed;
         }
     }
 
@@ -196,11 +198,11 @@ function addMetaIfNotExists(string $taxonomy, int $entity, mixed $code, mixed $d
 }
 
 /**
- * Return serialzied string if the input $v is not an int, string, or double.
+ * Return serialized string if the input $v is not an int, string, or double, or any falsy value.
  * @param $v
  */
 function _serialize(mixed $v): mixed {
-    if ( is_int($v) || is_numeric($v) || is_float($v) || is_string($v) ) return $v;
+    if ( is_int($v) || is_numeric($v) || is_float($v) || is_string($v) || empty($v) ) return $v;
     else return serialize($v);
 }
 function _unserialize(mixed $v): mixed {
