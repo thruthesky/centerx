@@ -53,7 +53,7 @@ if ( in(CATEGORY_ID) ) {
     </form>
 </div>
 
-<script src="<?=ROOT_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
+<?php includeVueOnce(); ?>
 <script>
     const app = Vue.createApp({
         data() {

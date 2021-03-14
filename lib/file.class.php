@@ -66,6 +66,13 @@ class File extends Entity {
         return $this->delete();
     }
 
+    public function read(int $idx = 0): Entity
+    {
+        parent::read($idx);
+        $url = UPLOAD_URL . $this->v(PATH);// $data[PATH];
+        $this->updateData('url', $url);
+        return $this;
+    }
 
     /**
      * @return array|string
@@ -73,7 +80,7 @@ class File extends Entity {
     public function response(): array|string {
         if ( $this->hasError ) return $this->getError();
         $data = $this->getData();
-        $data['url'] = UPLOAD_URL . $data[PATH];
+
         return $data;
     }
 

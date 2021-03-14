@@ -4,18 +4,18 @@
 
 - Nuxt.js 로 SEO 와 PWA 를 하고,
 - Flutter 로 앱을 만들기 위해서 개발한 백엔드이다.
-- 즉, 관리자 페이지만 PHP 와 인라인 Vue.js 3 로 작업을 하면 된다.
-- 웹은 PHP 로 하지 않는다. PWA 로 하며 특히, 복잡한 기능(예: 사용자가 직접 위젯 옵션으로 디자인을 하는 그런 것)은 PWA 로만 하게 한다.
 
+- 관리자 페이지만 PHP 와 인라인 Vue.js 3 로 작업을 하면 되며,
+  PHP 로 작성하는 웹은 실험용 또는 테스트용으로만 한다.
+  이 경우, 사진 등록에서 복잡하게 Vue.js 로 업로드된 사진을 바로 보여줄 필요 없이 대충 업로드만 되면 된다.
+  
+- 즉, 웹은 PHP 로 하지 않는다. PWA 로 하며 특히, 복잡한 기능(예: 사용자가 직접 위젯 옵션으로 디자인을 하는 그런 것)은 PWA 로만 하게 한다.
 
 # 해야 할 일
 
-
 - Generate thumbnails on the fly. 썸네일으 사진 업로드 할 때 하지 말고, files/thumbnails 폴더에 저장한다.
   - /etc/image/thumbnail.php?source=...&width=..&height=.. 와 같이하는데, target 은 source 는 파일 경로 URL 이나, file.idx 일 수 있다.
-    
-
-
+  
 - docker 에서 php 설정, short_open_tag On 이 동작하지 않음.
 
 - pass login
@@ -101,6 +101,7 @@
 
 
 - 관리자 페이지 작업.
+  - 관리자만 관리자 페이지를 사용 할 수 있도록 한다.
   - p() 함수를 두어서 &p=current.page 를 리턴하게 하고
     w() 함수를 두어서 &w=widget.name 을 리턴하게 하고,
     wc() 함수를 두어서 &wc=child.widget.name 을 리턴하게 한다.

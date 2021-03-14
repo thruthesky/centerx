@@ -7,7 +7,7 @@
 foreach( post()->search() as $post ) {
 ?>
     <div>
-        <?=$post[TITLE]?>
+        <?=$post->title?>
     </div>
 <?php
 }

@@ -66,7 +66,7 @@ $posts = $o['posts'];
                 </div>
                 <div class="files">
                     <?php foreach( $comment->files() as $file ) { ?>
-                        <img class="w-100" src="<?=$file['url']?>">
+                        <img class="w-100" src="<?=$file->url?>">
                     <?php } ?>
                 </div>
                 <div>

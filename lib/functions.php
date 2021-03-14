@@ -1171,3 +1171,18 @@ function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): s
     }
     return implode(" $conj ", $arc);
 }
+
+
+$__include_vue_once = false;
+/**
+ * Vue.js 를 한번만 로드하게 한다.
+ */
+function includeVueOnce() {
+    global $__include_vue_once;
+    if ( $__include_vue_once ) return;
+    $__include_vue_once = true;
+    echo <<<EOH
+<script src="<?=ROOT_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
+EOH;
+
+}

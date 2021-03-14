@@ -37,7 +37,7 @@ if ( modeCreate() ) {
                             <input type="text" class="form-control mb-2" name='id' placeholder="카테고리 아이디 입력">
                         </div>
                         <div class="col-auto">
-                            <button type="submit" class="btn btn-primary mb-2">Create</button>
+                            <button type="submit" class="btn btn-primary mb-2">Create Or Update</button>
                         </div>
                     </div>
                 </form>
@@ -53,7 +53,7 @@ if ( modeCreate() ) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach( category()->search( conds: in(ID) ? [ ID => in(ID) ] : [] ) as $category ) { ?>
+                <?php foreach( category()->search(  ) as $category ) { ?>
 
                     <tr>
                         <th scope="row"><a href="/?p=forum.post.list&categoryId=<?=$category->id?>" target="_blank"><?=$category->idx?></a></th>

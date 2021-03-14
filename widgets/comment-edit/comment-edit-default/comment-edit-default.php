@@ -20,21 +20,26 @@ $comment = $o['comment'] ?? null;
 
 ?>
 
-<form enctype="multipart/form-data" action="/" method="POST">
-    <input type="hidden" name="p" value="forum.comment.edit.submit">
-    <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
-    <input type="hidden" name="<?=ROOT_IDX?>" value="<?=$post->idx?>">
-    <input type="hidden" name="<?=PARENT_IDX?>" value="<?=$parent->idx?>">
-    <input type="hidden" name="files" id="files<?=$post->idx?>" value="">
-    <input type="text" name="<?=CONTENT?>">
-    <div>
-        <input name="<?=USERFILE?>" type="file" onchange="onFileChange(event, 'files<?=$post->idx?>')" />
-    </div>
-    <button type="submit">Submit</button>
-</form>
+<div id="comment-form">
+    <form enctype="multipart/form-data" action="/" method="POST">
+        <input type="hidden" name="p" value="forum.comment.edit.submit">
+        <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
+        <input type="hidden" name="<?=ROOT_IDX?>" value="<?=$post->idx?>">
+        <input type="hidden" name="<?=PARENT_IDX?>" value="<?=$parent->idx?>">
+        <input type="hidden" name="files" id="files<?=$post->idx?>" value="">
+        <input type="text" name="<?=CONTENT?>">
+        <div>
+            <input name="<?=USERFILE?>" type="file" onchange="onFileChange(event, 'files<?=$post->idx?>')" />
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
 
 
-
+<?php
+if ( defined('COMMENT_EDIT_DEFAULT_JAVASCRIPT') ) return;
+define('COMMENT_EDIT_DEFAULT_JAVASCRIPT', true);
+?>
 <script>
     function onFileChange(event, id) {
         console.log(event);
