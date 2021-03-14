@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * Class PointHistory
+ *
+ * @property-read int $fromUserIdx
+ * @property-read int $toUserIdx
+ * @property-read string $reason
+ * @property-read string $taxonomy
+ * @property-read int $entity
+ * @property-read int categoryIdx
+ * @property-read int fromUserPointApply
+ * @property-read int fromUserPointAfter
+ * @property-read int toUserPointApply
+ * @property-read int toUserPointAfter
+ * @property-read int createdAt
+ * @property-read int updatedAt
+ */
 class PointHistory extends Entity {
 
     public function __construct(int $idx)

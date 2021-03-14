@@ -122,7 +122,7 @@ class Translation extends Entity
         foreach( ids($this->search(order: 'code', by: 'ASC', limit: 1234567)) as $idx ) {
             $tr = translation($idx);
             if ( ! isset($rets[ $tr->code ] ) ) $rets[ $tr->code ] = []; // init
-            $rets[ $tr['code'] ][ $tr->language ] = $tr->text;
+            $rets[ $tr->code ][ $tr->language ] = $tr->text;
         }
         return $rets;
     }

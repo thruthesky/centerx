@@ -164,14 +164,15 @@ class Post extends PostTaxonomy {
     }
 
     /**
+     *
+     * 참고, 글 삭제에 필요한 각종 검사를 이 함수에서 한다. 특히, 퍼미션이 있는지도 검사를 한다.
+     * 참고, 글과 내용을 없애고, 나머지 정보는 유지한다.
+     *
      * @return self
      */
     public function markDelete(): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
-//        if ( $this->exists() == false ) return $this->error(e()->post_not_exists); // unnecessary error handling
-
-
         if ( $this->isMine() == false ) return $this->error(e()->not_your_post);
 
         parent::markDelete();

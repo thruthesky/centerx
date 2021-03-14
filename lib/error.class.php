@@ -93,6 +93,8 @@ class E {
 
     public string $post_path_is_empty = 'error_post_path_is_empty';
 
+    public string $failed_to_add_register_point  ='error_failed_to_add_register_point';
+
 
 
 

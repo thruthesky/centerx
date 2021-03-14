@@ -229,13 +229,23 @@ class Point {
         return $record->idx;
     }
 
+    /**
+     * 에러가 있으면 에러 문자열, 아니면, idx 가 리턴된다.
+     * @param array $profile
+     * @return int
+     */
     public function register(array $profile) {
         $applied = $this->addUserPoint($profile[IDX], config()->get(POINT_REGISTER));
-        return $this->log(
+        $idx = $this->log(
             POINT_REGISTER,
             toUserIdx: $profile[IDX],
             toUserPointApply: $applied,
         );
+        if (pointHistory($idx)->toUserPointAfter == config()->get(POINT_REGISTER)) {
+            return $idx;
+        } else {
+            return e()->failed_to_add_register_point;
+        }
     }
 
     /**

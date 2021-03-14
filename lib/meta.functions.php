@@ -16,7 +16,7 @@ use function ezsql\functions\{
  *
  * @param string $taxonomy
  * @param int $entity
- * @param string|null $code - code 값이 있으면 1개의 값만 리턴한다.
+ * @param string|null $code - $code 값이 있으면 1개의 값만 리턴한다. 만약, $code 에 값이 주어지지 않으면, 현재 $taxonomy 와 $entity 의 모든 값을 연관 배열로 리턴한다.
  * @return mixed
  * - 값 1개를 리턴 할 때, 값이 없으면 null 을 리턴한다.
  * - 값 1개를 리턴 할 때, 값이 있으면, 값 1개를 리턴한다.
@@ -114,13 +114,13 @@ function getMetaEntities(array $conds, string $conj='AND', int $limit=1000 ): ar
  *
  * @param string $taxonomy
  * @param int $entity
- * @param string $code
+ * @param array|string $code - 문자열이면 1개의 값, 배열이면 여러개의 값을 저장한다.
  * @param mixed $data
  * @return string
  *  - 에러가 있으면 에러 문자열
  *  - 에러가 없으면 빈 문자열이 리턴된다.
  */
-function updateMeta(string $taxonomy, int $entity, mixed $code, mixed $data=null): string {
+function updateMeta(string $taxonomy, int $entity, array|string $code, mixed $data=null): string {
 
     $table = META_TABLE;
 
@@ -129,8 +129,8 @@ function updateMeta(string $taxonomy, int $entity, mixed $code, mixed $data=null
 
     // 배열에 값이 있는 경우만 업데이트. 특히 $code 가 배열로 들어오는 경우, 배열에 값이 없으면 저장하지 않는다.
     foreach( $in as $k=>$v) {
+        if ( in_array($k, META_CODE_EXCEPTIONS) ) continue; // 저장하지 않을 meta 키는 통과.
         // 기존 meta 가 존재하면,
-//        $idx = db()->get_var("SELECT idx FROM " . META_TABLE . " WHERE taxonomy='$taxonomy' AND entity=$entity AND code='$k'");
         $re = metaExists($taxonomy, $entity, $k);
         if ( $re ) { // 업데이트
             $re = db()->update( $table, [DATA => _serialize($v), UPDATED_AT => time()], db()->where( eq(TAXONOMY, $taxonomy), eq(ENTITY, $entity), eq(CODE, $k) ) );

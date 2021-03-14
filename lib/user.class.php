@@ -223,11 +223,12 @@ class User extends Entity {
      * 포인트는 캐시된 값을 쓰면 안되고, DB 에서 값을 가져와야하는 경우가 많으므로, `$this->point` 는 쓰지 못한다.
      * `$this->point` 를 쓰려고 한다면, `User::$point must not be accessed before initialization` 에러를 만날 것이다.
      *
+     * 주의, 로그인을 하지 않은 상태라도, 현재 User 객체의 $this->idx 값이 설정되어져 있으면, 그 entity 의 point 를 가져온다.
+     *
      * @param bool $cache - 이 값이 true 이면, DB 에서 읽지 않고, 이미 읽은 데이터를 사용한다. 기본 값 false.
      * @return int
      */
     public function getPoint(bool $cache=false): int {
-        if ( notLoggedIn() ) return 0;
         if ( $cache ) {
             return $this->getData()['point'];
         } else {

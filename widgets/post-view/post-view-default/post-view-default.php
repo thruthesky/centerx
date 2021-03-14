@@ -23,6 +23,7 @@ $post = post()->current();
 </div>
 <section class="buttons mt-3">
     <a class="btn btn-sm btn-secondary" href="/?p=forum.post.edit&idx=<?=$post->idx?>">Edit</a>
+    <a class="btn btn-sm btn-secondary" href="/?p=forum.post.delete.submit&idx=<?=$post->idx?>">Delete</a>
     <a class="btn btn-sm btn-secondary" href="/?p=forum.post.list&categoryId=<?=$post->categoryId()?>">List</a>
 </section>
 

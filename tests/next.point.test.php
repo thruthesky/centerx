@@ -26,6 +26,8 @@ $pw = '12345a';
 
 testPointbasics();
 
+testPointRegisterAndLogin();
+
 testLikeHourlyLimit();
 testLikeDailyLimit();
 testPostCreateDelete();
@@ -33,6 +35,19 @@ testCommentCreateDelete();
 testPostCommentCreateHourlyLimit();
 testPostCommentCreateDailyLimit();
 
+
+function testPointRegisterAndLogin() {
+    clearTestPoint();
+    point()->setRegister(1);
+    point()->setLogin(2);
+    $registered = user()->register(['email' => 'register' . time() . '@gmail.com', 'password' => '12345a']);
+    isTrue($registered->getPoint() == 1, 'register point 1');
+
+    user()->login(['email' => $registered->email, 'password' => '12345a']);
+    isTrue($registered->getPoint() == 3, 'register point 3');
+
+
+}
 
 function testPointBasics() {
 

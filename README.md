@@ -555,6 +555,8 @@ d($result);
 
 # API Protocol
 
+- API Protocol examples are written in ...
+
 - `route` is the route of the api call.
   Ex) `/?route=app.version`
   
