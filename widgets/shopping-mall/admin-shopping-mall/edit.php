@@ -101,8 +101,9 @@ $category = category(SHOPPING_MALL);
         </div>
 
 
-        <label for="point">운영 또는 일시 중단</label>
 
+        <?php /*
+        <label for="point">운영 또는 일시 중단</label>
         <div class="form-check">
             <div class="form-check">
                 <input class="form-check-input" type="radio" id="pauseY" name="pause" value="Y" <?= $post->pause == 'Y' ? 'checked' : '' ?>>
@@ -118,7 +119,7 @@ $category = category(SHOPPING_MALL);
             </div>
         </div>
         <div class="hint">본 상품을 사이트(앱)에 노출이 안되도록 일시 중지 할 수 있습니다.</div>
-
+ */?>
 
 
         <div class="form-group mb-3">
@@ -128,9 +129,6 @@ $category = category(SHOPPING_MALL);
                 상품의 크기나, 용량, 수량을 입력하세요.
             </div>
         </div>
-
-
-
 
         <div class="form-group mb-2">
             <label for="short_title"><a href="https://docs.google.com/document/d/1JnEIoytM1MgS35emOju90qeDoIH963VeMHLaqvOhA7o/edit#heading=h.inp7ewl4tmv3" target="_blank">옵션 [?]</a></label>

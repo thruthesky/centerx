@@ -35,9 +35,6 @@ define('TRANSLATIONS', 'translations');
 
 
 
-
-
-
 define('ROUTE', 'route');
 
 define('ADMIN', 'admin');
