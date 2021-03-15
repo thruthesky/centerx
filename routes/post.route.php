@@ -21,14 +21,19 @@ class PostRoute {
         return post($in[IDX])->response();
     }
     public function search($in) {
-        return post()->search(
-            select: $in['select'] ?? '*',
+        $posts = post()->search(
+            select: $in['select'] ?? 'idx',
             where: $in['where'] ?? '1',
             order: $in['order'] ?? IDX,
             by: $in['by'] ?? 'DESC',
             page: $in['page'] ?? 1,
             limit: $in['limit'] ?? 10,
         );
+        $res = [];
+        foreach($posts as $post) {
+            $res[] = $post->response();
+        }
+        return $res;
     }
 
 

@@ -2,7 +2,7 @@
 use Kreait\Firebase\Messaging\MulticastSendReport;
 
 class PushNotificationTokens extends Entity {
-    public function __construct(int $idx)
+    public function __construct(public int $idx = 0)
     {
         parent::__construct(PUSH_NOTIFICATION_TOKENS, $idx);
     }
@@ -24,9 +24,9 @@ class PushNotificationTokens extends Entity {
         ];
 
         if ( $this->exists() == false ) {
-            $res = parent::create($data);
+            parent::create($data);
         } else {
-            $res = parent::update($data);
+            parent::update($data);
         }
 
         if (isset($in[TOPIC]) && !empty($in[TOPIC])) {
@@ -39,7 +39,7 @@ class PushNotificationTokens extends Entity {
             return $this->error(e()->topic_subscription);
         }
 
-        return $res;
+        return $this;
     }
 
     /**
@@ -71,9 +71,11 @@ class PushNotificationTokens extends Entity {
 function token(int|string $idx=0): PushNotificationTokens
 {
     if ( is_numeric($idx) ) return new PushNotificationTokens($idx);
-    $record = entity(PUSH_NOTIFICATION_TOKENS, 0)->get(TOKEN, $idx);
-    if ( ! $record ) return new PushNotificationTokens(0);
-    return new PushNotificationTokens($record[IDX]);
+    return (new PushNotificationTokens())->findOne([TOKEN => $idx]);
+
+//    $record = entity(PUSH_NOTIFICATION_TOKENS, 0)->get(TOKEN, $idx);
+//    if ( ! $record ) return new PushNotificationTokens(0);
+//    return new PushNotificationTokens($record[IDX]);
 }
 
 function sanitizedInput($in): array {

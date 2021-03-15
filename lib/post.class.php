@@ -263,6 +263,7 @@ class Post extends PostTaxonomy {
             limit: $limit,
         );
 
+
         $rets = [];
         foreach( ids($posts) as $idx ) {
             $rets[] = post($idx);
@@ -307,13 +308,13 @@ class Post extends PostTaxonomy {
      * @param string|null $categoryId
      * @param int $page
      * @param int $limit
-     * @return mixed
+     * @return Post[]
      * @throws Exception
      *
      * @example
      *  $posts = post()->latest();
      */
-    public function latest(string $categoryId=null, int $page=1, int $limit=10) {
+    public function latest(string $categoryId=null, int $page=1, int $limit=10): array {
         return $this->search(
             where: $categoryId ? "parentIdx=0 AND categoryId=<$categoryId>" : "parentIdx=0",
             page: $page,

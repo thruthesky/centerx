@@ -275,11 +275,13 @@ class User extends Entity {
     {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return e()->option_is_empty;
-        if ( my($in[OPTION]) == null  || my($in[OPTION]) == "Y" ) {
+
+        if ( login()->v(OPTION) == 'Y' ) {
             parent::update( [ $in[OPTION] => 'N' ]);
         } else {
             parent::update( [ $in[OPTION] => 'Y' ]);
         }
+        
         return $this->profile();
     }
 

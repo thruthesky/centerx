@@ -22,7 +22,7 @@ class NotificationRoute {
     public function updateToken($in): array|string
     {
         if (!isset($in[TOKEN])) return e()->token_is_empty;
-        return token($in[TOKEN])->update($in);
+        return token($in[TOKEN])->update($in)->getData();
     }
 
     /**

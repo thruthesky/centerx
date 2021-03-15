@@ -47,12 +47,11 @@ class File extends Entity {
      * 주의, 현재 $this->idx 에 대해서만 삭제를 한다.
      * 주의, 현재 객체에 에러가 설정되어져 있으면 그냥 현재 객체 리턴.
      *
-     * @param $in
      * @return self
      *
      * @todo update `files` field on entity if exists.
      */
-    public function remove($in): self
+    public function delete(): self
     {
         if ( $this->hasError ) return $this;
         if ( $this->exists() === false ) return $this->error(e()->file_not_exists);
@@ -63,7 +62,7 @@ class File extends Entity {
 
         $re = @unlink($this->path);
         if ( $re === false ) return $this->error(e()->file_delete_failed);
-        return $this->delete();
+        return parent::delete();
     }
 
     public function read(int $idx = 0): Entity

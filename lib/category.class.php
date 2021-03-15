@@ -64,6 +64,7 @@ class Category extends Entity {
 
 
 
+
     /**
      * @attention To update, entity.idx must be set properly.
      *
@@ -126,6 +127,14 @@ class Category extends Entity {
             $rets[] = Category($idx);
         }
         return $rets;
+    }
+
+    /**
+     * @return array|string
+     */
+    public function response(): array|string {
+        if ( $this->hasError ) return $this->getError();
+        else return $this->getData();
     }
 
 }

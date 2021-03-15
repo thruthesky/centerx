@@ -17,7 +17,7 @@ class CommentRoute {
         return comment($in[IDX])->response();
     }
     public function search($in) {
-        return comment()->search(
+        $comments = comment()->search(
             select: $in['select'] ?? '*',
             where: $in['where'] ?? '1',
             order: $in['order'] ?? IDX,
@@ -25,6 +25,11 @@ class CommentRoute {
             page: $in['page'] ?? 1,
             limit: $in['limit'] ?? 10,
         );
+        $res = [];
+        foreach($comments as $comment) {
+            $res[] = $comment->response();
+        }
+        return $res;
     }
 
     public function vote($in): array|string {

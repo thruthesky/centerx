@@ -349,6 +349,10 @@ class Entity {
      * 참고, 삭제 후, $this->data 는 빈 배열로 되지만, $this->idx 값은 유지한다.
      * 참고, 에러가 있으면 에러가 설정된다.
      *
+     * @attention When it is deleted, the entity record had removed immediately from the table but the data still exists
+     * in memory. So to check if it is deleted, you may need to check if there was an error after delete.
+     * @attention You can still use deleted data since it is alive in $this->data variable.
+     *
      * @return self
      *
      * @todo entity 레코드 뿐만아니라, 메타 데이터도 삭제를 해야한다. 그리고 첨부 파일도 같이 삭제를 해야 한다.
@@ -358,7 +362,6 @@ class Entity {
         if ( ! $this->idx ) return $this->error(e()->idx_not_set);
         $re = db()->delete($this->getTable(), eq(IDX, $this->idx));
         if ( $re === false ) return $this->error(e()->delete_failed);
-        $this->setData([]);
         return $this;
     }
 
@@ -485,6 +488,8 @@ class Entity {
 
     /**
      * 특정 레코드를 1개 찾아 현재 객체로 변경하여 리턴한다.
+     *
+     * 주의: 현재 객체로 변환한다.
      *
      * 예를 들어, `user()->by('thruthesky@gmail.com')` 와 같이 호출하면, by() 가 리턴하는 값은
      * thruthesky@gmail.com 사용자의 User 객체가되는 것이다.

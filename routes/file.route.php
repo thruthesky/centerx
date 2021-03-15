@@ -6,8 +6,9 @@ class FileRoute {
         return files()->upload($in)->response();
     }
     public function delete($in) {
-        return files()->remove($in)->response();
+        return files($in)->delete()->response();
     }
 }
+
 
 

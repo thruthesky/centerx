@@ -355,7 +355,7 @@ function getProfileFromCookieSessionId() : array|bool {
  * Let user login with sessionId.
  *
  * @param string $sessionId
- * @return array|bool
+ * @return array|bool|string
  * - false if `sessionId` is empty.
  * - error_user_not_found if there is no user by that session_id.
  * - error_wrong_session_id if the sessionId is wrong.
@@ -364,7 +364,7 @@ function getProfileFromCookieSessionId() : array|bool {
  * 예제) 세션 아이디를 입력받아 해당 사용자를 로그인 시킬 때,
  *  setUserAsLogin( getProfileFromSessionId( in(SESSION_ID) ) );
  */
-function getProfileFromSessionId(string $sessionId): array|bool
+function getProfileFromSessionId(string $sessionId): array|bool|string
 {
     if ( ! $sessionId ) return false;
     $arr = explode('-', $sessionId);
@@ -373,8 +373,11 @@ function getProfileFromSessionId(string $sessionId): array|bool
     if ( $user->notFound ) return e()->user_not_found_by_that_session_id;
     $profile = $user->profile();
 	if ( !$profile || !isset($profile[SESSION_ID]) ) return false;
+
     if ( $sessionId == $profile[SESSION_ID] ) return $profile;
-    else return e()->wrong_session_id;
+    else {
+        return e()->wrong_session_id;
+    }
 }
 
 

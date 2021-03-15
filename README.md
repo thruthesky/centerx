@@ -587,12 +587,29 @@ routeAdd('app.version', function($in) {
   Then, the function that is added to `routeAdd()` will be used. This means, you can overwrite the routes in `routes` folder.
 
 
+## App Api
+
+- To get app version,
+
+```
+https://local.itsuda50.com/index.php?route=app.version
+```
+
+- To get app settings,
+
+```
+https://local.itsuda50.com/index.php?route=app.settings
+```
+
+
+
 ## User Api
 
 - To login, access like below
   Ex) `/?route=user.login&email=...&password=...`
   
-- To register
+- To register,
+
 ```text
 https://local.itsuda50.com/?route=user.register&reload=true&email=user3@test.com&password=12345a
 ```
@@ -645,7 +662,7 @@ https://local.itsuda50.com/?route=category.delete&reload=true&idx=1
   - Since `Entity` class supports adding any meta data, you can add any data in `&key=value` format.
   
 ```text
-https://local.itsuda50.com/?route=post.create&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&category=apple&title=yo&content=content&a=apple&b=banana
+https://local.itsuda50.com/?route=post.create&sessionId=5592-52f7119495484c1d56cf8629e9664001&categoryId=banana&title=yo&content=there&a=apple&b=banana&c=cherry
 ```
 
 - To update a post, add `sessionId` with `idx` and other `key/value` pair fields to update.
@@ -653,15 +670,17 @@ https://local.itsuda50.com/?route=post.create&reload=true&sessionId=4-d8023872c2
 https://local.itsuda50.com/?route=post.update&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&category=apple&title=updated-by-no.%204&content=content&a=apple&b=banana&idx=19
 ````
 
-- To delete a post,
-```text
-https://local.itsuda50.com/?route=post.delete&sessionId=5-9b41c88bcd239de7ca6467d1975a44ca&idx=18
-```
 
 - To get a post, just give `posts.idx`. `sessionId` may not be needed.
 ```text
 https://local.itsuda50.com/?route=post.get&reload=true&idx=19
 ```
+
+- To delete a post,
+```text
+https://local.itsuda50.com/?route=post.delete&sessionId=5-9b41c88bcd239de7ca6467d1975a44ca&idx=18
+```
+
 
 - To list posts of a category.
   - Most of the search options goes in value string of `where` param. You can put any SQL conditions on `where`.
@@ -673,7 +692,7 @@ https://local.itsuda50.com/?route=post.search&reload=true&where=(categoryId=<app
 ## Comment Api
 
 
-- To create a post,
+- To create a comment,
   - Required fields are: `sessionId`, `rootIdx`, `parentIdx`.
     - `rootIdx` is the post.idx and `parentIdx` is the parent idx. parent idx can be a post.idx or comment.idx.
   - `content`, and other properties are optoinal.
@@ -683,20 +702,22 @@ https://local.itsuda50.com/?route=post.search&reload=true&where=(categoryId=<app
 https://local.itsuda50.com/?route=comment.create&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&content=A&rootIdx=159&parentIdx=159
 ```
 
-- To update a post, add `sessionId` with `idx` and other `key/value` pair fields to update.
+- To update a comment, add `sessionId` with `idx` and other `key/value` pair fields to update.
 ````text
 https://local.itsuda50.com/?route=comment.update&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&content=B-A-Updated&idx=162
 ````
 
-- To delete a post,
+
+- To get a comment, just give `posts.idx`. `sessionId` may not be needed.
+```text
+https://local.itsuda50.com/?route=comment.get&idx=163
+```
+
+- To delete a comment,
 ```text
 https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&idx=162
 ```
 
-- To get a post, just give `posts.idx`. `sessionId` may not be needed.
-```text
-https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
-```
 
 
 ## Files and File Api

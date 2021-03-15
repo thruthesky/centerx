@@ -25,7 +25,9 @@ function testCategoryUpdate() {
 function testCategoryDelete() {
     $id = 'category-delete' . time();
     $cat = category()->create([ID=>$id, 'no' => '123']);
-    isTrue( $cat->delete()->getData() == [], 'deleted');
+    isTrue( $cat->delete()->hasError == false, 'deleted');
+    isTrue( $cat->idx > 0, 'deleted');
+    isTrue( $cat->id == $id, 'id will be remain only on memory.');
     $find = category()->findOne([ID=>$id]);
     isTrue( $find->getError() == e()->entity_not_found, 'not found after delete');
 }
