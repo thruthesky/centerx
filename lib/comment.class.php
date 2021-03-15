@@ -158,6 +158,10 @@ class Comment extends PostTaxonomy {
             $comment['user'] = user($comment[USER_IDX])->postProfile();
         }
 
+        
+        $comment['short_date_time'] = short_date_time($comment['createdAt']);
+
+
         return $comment;
     }
 
