@@ -276,7 +276,7 @@ class User extends Entity {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return $this->error(e()->option_is_empty);
 
-        if ( login()->v($in[OPTION]) == 'Y' ) {
+        if ( login()->v($in[OPTION]) != 'N' ) {
             parent::update( [ $in[OPTION] => 'N' ]);
         } else {
             parent::update( [ $in[OPTION] => 'Y' ]);
