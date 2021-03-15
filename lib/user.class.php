@@ -271,18 +271,18 @@ class User extends Entity {
      * @param $in
      * @return array|string
      */
-    public function updateOptionSetting(array $in): array|string
+    public function updateOptionSetting(array $in): self
     {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return e()->option_is_empty;
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return $this->error(e()->option_is_empty);
 
-        if ( login()->v(OPTION) == 'Y' ) {
+        if ( login()->v($in[OPTION]) == 'Y' ) {
             parent::update( [ $in[OPTION] => 'N' ]);
         } else {
             parent::update( [ $in[OPTION] => 'Y' ]);
         }
 
-        return $this->profile();
+        return $this;
     }
 
 

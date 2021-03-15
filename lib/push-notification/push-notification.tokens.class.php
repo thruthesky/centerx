@@ -122,10 +122,15 @@ function send_message_to_users($in): array|string
     if (empty($all_tokens)) return e()->token_is_empty;
     $in = sanitizedInput($in);
     $re = sendMessageToTokens($all_tokens, $in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']);
+    $res = [];
+    foreach($re->getItems() as $item) {
+        $res[] = $item->result();
+    }
 
-    return [
-        'tokens' => $all_tokens
-    ];
+    // @todo handle invalid/unknown tokends..
+    // @how to properly return response here.
+
+    return $res;
 }
 
 

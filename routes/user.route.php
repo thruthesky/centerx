@@ -25,7 +25,7 @@ class UserRoute {
     }
 
     public function updateOptionSetting($in) {
-        return login()->updateOptionSetting($in);
+        return login()->updateOptionSetting($in)->response();
     }
 
 
