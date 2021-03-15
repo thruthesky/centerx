@@ -53,7 +53,7 @@
         </tr>
 
         <tr>
-            <td><?=ln('Description', '설명')?></td>
+            <td><?=ln('Description', '카테고리')?></td>
             <td>
                 <input name="subcategories" value="<?= implode(',', $category->subcategories) ?>">
             </td>

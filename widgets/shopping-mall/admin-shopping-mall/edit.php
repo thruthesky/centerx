@@ -20,6 +20,8 @@ if ( modeDelete() ) {
     $post = post();
 }
 
+$category = category(SHOPPING_MALL);
+
 ?>
 <style>
     .hint { font-size: .8rem; color: #888888; }
@@ -30,6 +32,18 @@ if ( modeDelete() ) {
     <form method="post" action="/">
 
         <?=hiddens(in: ['p', 'w', 'cw'], mode: 'submit', kvs: ['idx' => $post->idx])?>
+
+
+        <div class="form-group mb-3">
+            <label for="post_title">카테고리</label>
+            <select name="subcategory" class="custom-select">
+                <option value="">카테고리 선택</option>
+                <?php foreach( $category->subcategories as $subcategory ) { ?>
+                    <option value="<?=$subcategory?>" <?php if ( $subcategory == ($post->subcategory ?? '') ) echo "selected"; ?>><?=$subcategory?></option>
+                <?php } ?>
+            </select>
+        </div>
+
 
         <div class="form-group mb-3">
             <label for="post_title">제목</label>
