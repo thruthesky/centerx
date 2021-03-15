@@ -281,7 +281,7 @@ class User extends Entity {
         } else {
             parent::update( [ $in[OPTION] => 'Y' ]);
         }
-        
+
         return $this->profile();
     }
 
