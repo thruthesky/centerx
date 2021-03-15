@@ -27,6 +27,7 @@ class PostRoute {
 
         $rets = [];
         foreach( $idxes as $idx ) {
+		if ( post($idx)->hasError ) continue;
             $rets[] = post($idx)->response();
         }
         return $rets;
