@@ -41,25 +41,25 @@ $orders = shoppingMallOrder()->search(limit: 1000);
     </thead>
     <tbody>
     <?php foreach(ids($orders) as $idx ) {
-        $order = shoppingMallOrder($idx)->get();
-        $user = user($order[USER_IDX])->get();
-        $info = json_decode($order['info'], true);
+        $order = shoppingMallOrder($idx);
+        $user = user($order->userIdx);
+        $info = json_decode($order->info, true);
         if ( ! isset($info['paymentAmount']) ) continue; // 테스트 등에서 잘못된 정보 입력.
         if ( ! isset($info['pointToSave']) ) $info['pointToSave'] = 0; // 에러 핸들링
         ?>
         <tr>
-            <th scope="row"><?=$order[IDX]?></th>
-            <td><?=$user['name']??$user['phoneNo']??$user['email']??''?>
+            <th scope="row"><?=$order->idx?></th>
+            <td><?=$user->name ?? $user->phoneNo?>
 
             </td>
             <td nowrap>
                 <?=number_format($info['paymentAmount'])?>
 
-                <?php if ( $order['confirmedAt'] ) { ?>
+                <?php if ( $order->confirmedAt ) { ?>
                     <div>구매확정됨</div>
                 <?php } else { ?>
-                    <a class="d-block mb-1 btn btn-warning btn-sm" href="/?p=admin.index&w=<?=in('w')?>&s=<?=in('s')?>&mode=delete&idx=<?=$order[IDX]?>" onclick="return confirm('주문을 삭제하시겠습니까?');">주문삭제</a>
-                    <a class="btn btn-info btn-sm" href="/?p=admin.index&&w=<?=in('w')?>&s=<?=in('s')?>&mode=order-confirm&idx=<?=$order[IDX]?>" onclick="return confirm('환불이 되지 않는 단계인 구매 확정을 하고 회원에게 적립금을 지급하시겠습니까?');">구매확정</a>
+                    <a class="d-block mb-1 btn btn-warning btn-sm" href="/?p=admin.index&w=<?=in('w')?>&cw=<?=in('cw')?>&mode=delete&idx=<?=$order->idx?>" onclick="return confirm('주문을 삭제하시겠습니까?');">주문삭제</a>
+                    <a class="btn btn-info btn-sm" href="/?p=admin.index&&w=<?=in('w')?>&cw=<?=in('cw')?>&mode=order-confirm&idx=<?=$order->idx?>" onclick="return confirm('환불이 되지 않는 단계인 구매 확정을 하고 회원에게 적립금을 지급하시겠습니까?');">구매확정</a>
                 <?php } ?>
             </td>
             <td>
