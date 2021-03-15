@@ -82,7 +82,7 @@ function metaExists(string $taxonomy, int $entity, string $code) {
  * @todo $data 에 따옴표가 들어 갈 때, 에러가 나는지 확인 할 것.
  */
 function getMetaEntity(string $taxonomy, string $code, mixed $data ): int {
-    $q = "SELECT entity FROM " . entity(METAS)->getTable() . " WHERE taxonomy='$taxonomy' AND code='$code' AND data='$data' DESC LIMIT 1";
+    $q = "SELECT entity FROM " . entity(METAS)->getTable() . " WHERE taxonomy='$taxonomy' AND code='$code' AND data='$data' LIMIT 1";
 //          echo("Q: $q\n");
     return db()->get_var($q) ?? 0;
 }

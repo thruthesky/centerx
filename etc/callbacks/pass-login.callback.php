@@ -44,7 +44,6 @@ if ( isError($profile) ) {
     echo "<h1>ERROR: $profile</h1>";
     exit;
 }
-
 /**
  * 여기까지 오면 로그인 성공
  */
