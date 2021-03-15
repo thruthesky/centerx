@@ -1,10 +1,10 @@
 <?php
 if ( modeDelete() ) {
-    $re = post(in(IDX))->markDelete();
-    if ( isSucess($re) ) {
-        jsGo("/?p=" . in('p') . "&w=" . in('w'));
-    } else {
+    $post = post(in(IDX))->markDelete();
+    if ( $post->hasError ) {
         bsAlert("삭제 실패: $re");
+    } else {
+        jsGo("/?p=" . in('p') . "&w=" . in('w'));
     }
 } else if ( modeSubmit() ) {
     $in = in();
