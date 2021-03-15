@@ -20,6 +20,19 @@ class PostRoute {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
         return post($in[IDX])->response();
     }
+
+    public function gets($in) {
+        if ( ! isset($in['idxes']) ) return e()->idx_is_empty;
+        $idxes = explode(',', $in['idxes']);
+
+        $rets = [];
+        foreach( $idxes as $idx ) {
+		if ( post($idx)->hasError ) continue;
+            $rets[] = post($idx)->response();
+        }
+        return $rets;
+    }
+
     public function search($in) {
         $posts = post()->search(
             select: $in['select'] ?? 'idx',
