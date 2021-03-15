@@ -58,9 +58,10 @@ class File extends Entity {
         if ( $this->isMine() === false ) return $this->error(e()->not_your_file);
 
 
-        if ( file_exists($this->path) === false ) return $this->error(e()->file_not_exists);
+	$file_path = UPLOAD_DIR . $this->path;
+        if ( file_exists($file_path) === false ) return $this->error(e()->file_not_exists);
 
-        $re = @unlink($this->path);
+        $re = @unlink($file_path);
         if ( $re === false ) return $this->error(e()->file_delete_failed);
         return parent::delete();
     }

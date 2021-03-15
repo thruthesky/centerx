@@ -30,8 +30,8 @@ hook()->add('posts-before-create', function($record, $in) {
                                 debug_log('--------- 내가 구매하고, 컨펀 된 제품!!');
 
                                 $userIdx = login()->idx;
-                                $comments = post()->search(" rootIdx={$record[ROOT_IDX]} AND userIdx=$userIdx ");
-                                debug_log('comments; ', $comments);
+                                $comments = entity(POSTS)->search(where: " rootIdx={$record[ROOT_IDX]} AND userIdx=$userIdx ");
+                                // debug_log('comments; ', $comments);
                                 if ( count($comments) ) return e()->already_reviewed;
                                 return;
                             }

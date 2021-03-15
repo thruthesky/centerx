@@ -38,7 +38,7 @@ class ShoppingMallRoute
         }
 
 
-        $record = shoppingMallOrder()->create($data);
+        $record = shoppingMallOrder()->create($data)->getData();
 
         if ( $point ) {
             // 포인트를 차감하고 기록을 남긴다.
@@ -53,7 +53,7 @@ class ShoppingMallRoute
             );
         }
 
-        $record['info'] = json_decode($record['info']);
+        $record['info'] = json_decode($record['info'], true);
         return $record;
     }
 
@@ -83,11 +83,11 @@ class ShoppingMallRoute
         $order = shoppingMallOrder($in[IDX]);
         if ( $order->exists() === false ) return e()->order_not_exists;
         if ( $order->isMine() === false ) return e()->not_your_order;
-        if ( $order->value('confirmedAt') ) return e()->order_confirmed;
+        if ( $order->confirmedAt ) return e()->order_confirmed;
         $order->pointRestore();
-        $record = $order->get();
         $order->delete();
-        return $record;
+	if ( $order->hasError ) return $order->getError();
+        return $order->getData();
     }
 
 

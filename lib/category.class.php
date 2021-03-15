@@ -8,7 +8,7 @@
  * @property-read string $id - id
  * @property-read string $title - category title
  * @property-read string $description
- * @property-read string $subcategories
+ * @property-read string[] $subcategories
  * @property-read string POINT_POST_CREATE
  * @property-read string POINT_POST_DELETE
  * @property-read string POINT_COMMENT_CREATE

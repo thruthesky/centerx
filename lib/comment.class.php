@@ -150,7 +150,7 @@ class Comment extends PostTaxonomy {
          * Get files only if $select includes 'files' field.
          */
         if ( isset($comment[FILES]) ) {
-            $comment[FILES] = files()->fromIdxes($comment[FILES]);
+            $comment[FILES] = files()->fromIdxes($comment[FILES], false);
         }
 
 

@@ -1,10 +1,10 @@
 <?php
 if ( modeDelete() ) {
-    $re = post(in(IDX))->markDelete();
-    if ( isSucess($re) ) {
-        jsGo("/?p=" . in('p') . "&w=" . in('w'));
-    } else {
+    $post = post(in(IDX))->markDelete();
+    if ( $post->hasError ) {
         bsAlert("삭제 실패: $re");
+    } else {
+        jsGo("/?p=" . in('p') . "&w=" . in('w'));
     }
 } else if ( modeSubmit() ) {
     $in = in();
@@ -20,6 +20,8 @@ if ( modeDelete() ) {
     $post = post();
 }
 
+$category = category(SHOPPING_MALL);
+
 ?>
 <style>
     .hint { font-size: .8rem; color: #888888; }
@@ -30,6 +32,18 @@ if ( modeDelete() ) {
     <form method="post" action="/">
 
         <?=hiddens(in: ['p', 'w', 'cw'], mode: 'submit', kvs: ['idx' => $post->idx])?>
+
+
+        <div class="form-group mb-3">
+            <label for="post_title">카테고리</label>
+            <select name="subcategory" class="custom-select">
+                <option value="">카테고리 선택</option>
+                <?php foreach( $category->subcategories as $subcategory ) { ?>
+                    <option value="<?=$subcategory?>" <?php if ( $subcategory == ($post->subcategory ?? '') ) echo "selected"; ?>><?=$subcategory?></option>
+                <?php } ?>
+            </select>
+        </div>
+
 
         <div class="form-group mb-3">
             <label for="post_title">제목</label>
@@ -87,8 +101,9 @@ if ( modeDelete() ) {
         </div>
 
 
-        <label for="point">운영 또는 일시 중단</label>
 
+        <?php /*
+        <label for="point">운영 또는 일시 중단</label>
         <div class="form-check">
             <div class="form-check">
                 <input class="form-check-input" type="radio" id="pauseY" name="pause" value="Y" <?= $post->pause == 'Y' ? 'checked' : '' ?>>
@@ -104,7 +119,7 @@ if ( modeDelete() ) {
             </div>
         </div>
         <div class="hint">본 상품을 사이트(앱)에 노출이 안되도록 일시 중지 할 수 있습니다.</div>
-
+ */?>
 
 
         <div class="form-group mb-3">
@@ -114,9 +129,6 @@ if ( modeDelete() ) {
                 상품의 크기나, 용량, 수량을 입력하세요.
             </div>
         </div>
-
-
-
 
         <div class="form-group mb-2">
             <label for="short_title"><a href="https://docs.google.com/document/d/1JnEIoytM1MgS35emOju90qeDoIH963VeMHLaqvOhA7o/edit#heading=h.inp7ewl4tmv3" target="_blank">옵션 [?]</a></label>
