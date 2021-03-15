@@ -10,10 +10,9 @@ $users = user()->search(where: $where, order: IDX, by: 'DESC', page: $page, limi
 $total = user()->count(where:  $where);
 
 ?>
-<h1>Admin User List</h1>
 
-<section class="mx-5">
 
+<section class="d-flex justify-content-end">
     <form>
         <input type="hidden" name="p" value="admin.index">
         <input type="hidden" name="w" value="user/admin-user-list">
@@ -29,7 +28,9 @@ $total = user()->count(where:  $where);
 </section>
 
 
-검색된 사용자: <?=$total?>
+<div class="mb-3">
+    검색된 사용자: <?=$total?>
+</div>
 
 <table class="table">
     <thead>

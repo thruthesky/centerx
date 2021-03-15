@@ -842,6 +842,7 @@ function disableDebugging() {
  *  d(ln('code')); // will return the text of the code. if code not exist, then the `code` itself will be returned.
  *  d(ln('code', 'default value')); // if text of the code not exists, `default value` will be returned.
  *  ln(['en' => 'English', 'ko' => 'Korean', 'ch' => '...', ... ]); // If the input is array, then the value of the array for that language will be returned.
+ *  ln('users', ln(['en' => 'Users', 'ko' => '사용자'])) // 이 처럼 기본 자체를 언어화 할 수 있다.
  */
 function ln(array|string $code, mixed $default_value=''): string
 {
