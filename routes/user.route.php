@@ -38,12 +38,6 @@ class UserRoute {
         return login()->switchOff($in[OPTION])->response();
     }
 
-//    public function updateOptionSetting($in) {
-//        return login()->updateOptionSetting($in)->response();
-//    }
-
-
-
     /**
      * Returns user point history.
      *
