@@ -47,9 +47,10 @@ function db() {
 
 
 /**
+ * @todo 아래의 코드를 사용하지 않고, 다른 방식으로 사용한다. 예를 들면, db.config.php 파일 존재 여부를 검사한다.
  * 아래의 코드는 config 테이블이 존재하는지 하지 않는지 확인을 하기 위한 것이다. 존재하지 않으면 customErrorHandlerHandler 에 의해서 설치 페이지로 넘어간다.
  */
-$installedAt = config()->get('installation check');
+//$installedAt = config()->get('installation check');
 
 
 

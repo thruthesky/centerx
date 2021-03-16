@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file functions.php
+ */
 
 
 
@@ -158,9 +161,11 @@ function get_domain_name(): string
 
 /**
  * Returns the root url of current page(url) including ending slash(/).
+ * If HOME_URL is set, then it will use HOME_URL as its root url.
  * @return string
  */
 function get_current_root_url(): string {
+    if ( ! isset($_SERVER['HTTP_HOST']) ) return DEFAULT_HOME_URL;
     $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
     return $protocol . $_SERVER['HTTP_HOST'] . '/';
 }
@@ -348,7 +353,7 @@ function getProfileFromCookieSessionId() : array|bool {
  * Let user login with sessionId.
  *
  * @param string $sessionId
- * @return mixed
+ * @return array|bool|string
  * - false if `sessionId` is empty.
  * - error_user_not_found if there is no user by that session_id.
  * - error_wrong_session_id if the sessionId is wrong.
@@ -357,17 +362,20 @@ function getProfileFromCookieSessionId() : array|bool {
  * 예제) 세션 아이디를 입력받아 해당 사용자를 로그인 시킬 때,
  *  setUserAsLogin( getProfileFromSessionId( in(SESSION_ID) ) );
  */
-function getProfileFromSessionId(string|null $sessionId): mixed
+function getProfileFromSessionId(string $sessionId): array|bool|string
 {
     if ( ! $sessionId ) return false;
     $arr = explode('-', $sessionId);
     $userIdx = $arr[0];
-    $record = user($userIdx)->get();
-    if ( ! $record ) return e()->user_not_found_by_that_session_id;
-    $profile = user($userIdx)->profile(unsetPassword: false);
+    $user = user($userIdx);
+    if ( $user->notFound ) return e()->user_not_found_by_that_session_id;
+    $profile = $user->profile();
 	if ( !$profile || !isset($profile[SESSION_ID]) ) return false;
+
     if ( $sessionId == $profile[SESSION_ID] ) return $profile;
-    else return e()->wrong_session_id;
+    else {
+        return e()->wrong_session_id;
+    }
 }
 
 
@@ -382,11 +390,12 @@ function getProfileFromSessionId(string|null $sessionId): mixed
  *      d(login()->profile());
  */
 function loggedIn(): bool {
-    global $__login_user_profile;
-    if ( isset($__login_user_profile) && $__login_user_profile && isset($__login_user_profile[IDX]) ) {
-        return true;
-    }
-    return false;
+    return login(IDX) ? true: false;
+//    global $__login_user_profile;
+//    if ( isset($__login_user_profile) && $__login_user_profile && isset($__login_user_profile[IDX]) ) {
+//        return true;
+//    }
+//    return false;
 }
 function notLoggedIn(): bool {
     return ! loggedIn();
@@ -401,7 +410,6 @@ function notLoggedIn(): bool {
  */
 global $__login_user_profile;
 
-
 /**
  * Set the user of $profile as logged into the system.
  *
@@ -412,10 +420,11 @@ global $__login_user_profile;
  */
 function setUserAsLogin(int|array $profile): User {
     global $__login_user_profile;
-    if ( is_int($profile) ) $profile = user($profile)->profile(cache: false);
+    if ( is_int($profile) ) $profile = user($profile)->getData();
     $__login_user_profile = $profile;
     return user($profile[IDX] ?? 0);
 }
+
 // Alias of setUserAsLogin
 function setLogin(int|array $profile): User {
     return setUserAsLogin($profile);
@@ -427,11 +436,11 @@ function setLogout() {
 // Login any user. It could be root user. Use it only for test.
 function setLoginAny(): User {
     $users = user()->search(limit: 1);
-    return setLogin($users[0][IDX]);
+    return setLogin($users[0]->idx);
 }
 
 /**
- * An alias of login()
+ * @deprecated login() 을 사용할 것. 그러면 auto intelligence 가 된다.
  *
  * Returns login user record field.
  * @see login() for more details
@@ -443,12 +452,12 @@ function setLoginAny(): User {
  *  my('color')
  */
 function my(string $field, bool $cache=true) {
-    return login($field, $cache);
+//    return login($field);
 }
 
 function admin(): bool {
-    if ( my(EMAIL) === ADMIN_EMAIL ) return true;
-    return my(EMAIL) === config()->get(ADMIN);
+    if ( login()->email === ADMIN_EMAIL ) return true;
+    return login()->email === config()->get(ADMIN);
 }
 
 function debug_log($message, $data='') {
@@ -465,24 +474,30 @@ function debug_log($message, $data='') {
  *
  * @param string $path
  * @param array $options
- * @param string $widgetId
  *
+ * @return string
  * @example
  *  include widget('post-latest/post-latest-default')
  */
-$__widget_options = null;
-function get_widget_options() {
+function widget(string $path, array $options=[]) {
+//    if ( $widgetId && $options ) addMetaIfNotExists('widget', 0, $widgetId, $options);
+
+    setWidgetOptions($options);
+    $arr = explode('/', $path);
+    $path = ROOT_DIR . "widgets/$arr[0]/$arr[1]/$arr[1].php";
+    return $path;
+}
+
+$__widget_options = [];
+function setWidgetOptions(array $options) {
+    global $__widget_options;
+    $__widget_options = $options;
+}
+function getWidgetOptions() {
     global $__widget_options;
     return $__widget_options;
 }
-function widget(string $path, array $options=[], string $widgetId=null) {
-    global $__widget_options;
-    $__widget_options = $options;
-    if ( $widgetId ) entity('widget')->setMetaIfNotExists(0, $widgetId, $options );
-    $arr = explode('/', $path);
-    $_path = ROOT_DIR . "widgets/$arr[0]/$arr[1]/$arr[1].php";
-    return $_path;
-}
+
 
 
 /**
@@ -544,8 +559,11 @@ function checkEmailFormat($email): bool
 }
 
 
-
-
+/**
+ * Safe file name to write in HDD.
+ * @param string $name
+ * @return string
+ */
 function safeFilename(string $name) {
     $pi = pathinfo($name);
     if ( isset($pi['extension']) ) {
@@ -808,7 +826,7 @@ function enableDebugging() {
 }
 function disableDebugging() {
     global $_debugging;
-    $_debugging = true;
+    $_debugging = false;
 }
 
 
@@ -822,6 +840,7 @@ function disableDebugging() {
  *  d(ln('code')); // will return the text of the code. if code not exist, then the `code` itself will be returned.
  *  d(ln('code', 'default value')); // if text of the code not exists, `default value` will be returned.
  *  ln(['en' => 'English', 'ko' => 'Korean', 'ch' => '...', ... ]); // If the input is array, then the value of the array for that language will be returned.
+ *  ln('users', ln(['en' => 'Users', 'ko' => '사용자'])) // 이 처럼 기본 자체를 언어화 할 수 있다.
  */
 function ln(array|string $code, mixed $default_value=''): string
 {
@@ -856,7 +875,7 @@ function browser_language()
 
 function select_list_widgets($categoryIdx,  $widget_type, $setting_name) {
 
-    $default_selected = category($categoryIdx)->value($setting_name, $widget_type . '-default');
+    $default_selected = category($categoryIdx)->v($setting_name, $widget_type . '-default');
 
 
     echo "<select name='$setting_name' class='w-100'>";
@@ -933,16 +952,17 @@ function parseDocBlock($str) {
  *
  * @attention  It will recursively read database records. Make it minimal.
  *
+ * @todo move this method to `PostTaxonomy`
  */
 function getCommentAncestors(int $idx): array
 {
-    $comment = comment($idx)->get();
+    $comment = comment($idx);
     $asc     = [];
     while (true) {
-        $comment = comment($comment[PARENT_IDX])->get(select: 'idx, rootIdx, parentIdx, userIdx');
-        if ( empty($comment) ) break;
-        if ($comment[USER_IDX] == my(IDX)) continue;
-        $asc[] = $comment[USER_IDX];
+        $comment = comment($comment->parentIdx);
+        if ( $comment->notFound ) break;
+        if ($comment->userIdx == login()->idx) continue;
+        $asc[] = $comment->userIdx;
     }
     $asc = array_unique($asc);
     return $asc;
@@ -963,28 +983,29 @@ function getCommentAncestors(int $idx): array
  *  remove users of 'topic subscribers' from 'token users'. - with array_diff($array1, $array2) return the array1 that has no match from array2
  *  get the tokens of the users_id and filtering those who want to get comment notification
  *
- * @param array $commentRecord
+ *
+ * @param Comment|Post $cp
  * @throws Exception
  */
-function onCommentCreateSendNotification(array $commentRecord)
+function onCommentCreateSendNotification(Comment|Post $cp)
 {
 
-    $post = post($commentRecord[ROOT_IDX]);
+//    $post = post($commentRecord[ROOT_IDX]);
     $usersIdx = [];
 
     /**
      * add post owner id if not mine
      */
 
-    if ($post->isMine() == false) {
-        $usersIdx[] = $post->value(USER_IDX);
+    if ($cp->isMine() == false) {
+        $usersIdx[] = $cp->userIdx;
     }
 
     /**
      * get comment ancestors id
      */
-    if ($commentRecord[PARENT_IDX] > 0) {
-        $usersIdx = array_merge($usersIdx, getCommentAncestors($commentRecord[IDX]));
+    if ($cp->parentIdx > 0) {
+        $usersIdx = array_merge($usersIdx, getCommentAncestors($cp->idx));
     }
 
     /**
@@ -995,8 +1016,8 @@ function onCommentCreateSendNotification(array $commentRecord)
     /**
      * get user who subscribe to comment forum topic
      */
-    $catArr = category($post->value(CATEGORY_IDX))->get();
-    $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $catArr[ID]);
+    $cat = category($cp->categoryIdx);
+    $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $cat->id);
 
     /**
      * remove users_id that are registered to comment topic
@@ -1012,27 +1033,25 @@ function onCommentCreateSendNotification(array $commentRecord)
     /**
      * set the title and body, etc.
      */
-
-
-    $title = $post->value(TITLE) ?? '';
+    $title = $cp->title;
     if (empty($title)) {
         if (isset($in[FILES]) && !empty($in[FILES])) {
             $title = "New photo was uploaded";
         }
     }
 
-    $body               = $commentRecord[CONTENT];
-    $click_url          = $post->value(PATH);
+    $body               = $cp->content;
+    $click_url          = $cp->path;
     $data               = [
-        'senderIdx' => my(IDX),
+        'senderIdx' => login()->idx,
         'type' => 'post',
-        'idx'=> $post->value(IDX)
+        'idx'=> $cp->idx,
     ];
 
     /**
      * send notification to users who subscribe to comment topic
      */
-    sendMessageToTopic(NOTIFY_COMMENT . $catArr[ID], $title, $body, $click_url, $data);
+    sendMessageToTopic(NOTIFY_COMMENT . $cat->id, $title, $body, $click_url, $data);
 
     /**
      * send notification to comment ancestors who enable reaction notification
@@ -1050,12 +1069,13 @@ function onCommentCreateSendNotification(array $commentRecord)
  */
 function getForumSubscribers(string $topic): array
 {
-    $ids = [];
-    $rows = meta()->search(where: "taxonomy='users' AND code='$topic' AND data='Y'", limit: 10000, select: ENTITY);
-    foreach ($rows as $user) {
-        $ids[] = $user[ENTITY];
-    }
-    return $ids;
+    return getMetaEntities([CODE => $topic, DATA => 'Y'], limit: 10000);
+//    $ids = [];
+//    $rows = meta()->search(where: "taxonomy='users' AND code='$topic' AND data='Y'", limit: 10000, select: ENTITY);
+//    foreach ($rows as $user) {
+//        $ids[] = $user[ENTITY];
+//    }
+//    return $ids;
 }
 
 
@@ -1093,6 +1113,123 @@ EOH;
 
 }
 
+
+//////// next
+function table(string $taxonomy): string {
+    return DB_PREFIX . $taxonomy;
+}
+
+function separateByComma($str) {
+    $rets = [];
+    $str = trim($str);
+    if ( $str ) {
+        $parts = explode(",", $str);
+        foreach( $parts as $part ) {
+            $rets[] = trim($part);
+        }
+    }
+    return $rets;
+}
+
+/**
+ * 현재 글 idx 는 알고 있지만, 그 categoryIdx 는 모를 때 사용하는 함수이다.
+ * @param $rootIdx
+ * @return int
+ */
+function postCategoryIdx($rootIdx): int {
+    return post()->getVar(CATEGORY_IDX, [IDX => $rootIdx]);
+}
+/**
+ * category.idx 를 입력받아 category.id 를 리턴한다.
+ * @param int $categoryIdx
+ * @return int
+ */
+function postCategoryId(int $categoryIdx): string {
+    return category()->getVar(ID, [IDX => $categoryIdx]);
+}
+
+
+/**
+ * 키/값 배열을 입력 받아 SQL WHERE 조건문에 사용 할 문자열을 리턴한다.
+ *
+ * 예) [a => apple, b => banana] 로 입력되면, "a=apple AND b=banana" 로 리턴.
+ *
+ * @param array $conds - 키/값을 가지는 배열
+ * @param string $conj - 'AND' 또는 'OR' 등의 연결 expression
+ * @param string $field
+ * @return string
+ *
+ * @example
+ *  sqlCondition([a => apple, b => banana], $conj); // returns `a='apple' AND b='banana'`
+ *  sqlCondition(['apple', 'banana'], 'OR', REASON); // returns `reason='apple' OR reason='banana'`
+ */
+function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): string
+{
+    $arc = [];
+    if ( $field ) {
+        foreach( $conds as $v ) $arc[] = "$field='$v'";
+    } else {
+        foreach($conds as $k => $v )  $arc[] = "`$k`='$v'";
+    }
+    return implode(" $conj ", $arc);
+}
+
+
+$__include_vue_once = false;
+/**
+ * Vue.js 를 한번만 로드하게 한다.
+ */
+function includeVueOnce() {
+    global $__include_vue_once;
+    if ( $__include_vue_once ) return;
+    $__include_vue_once = true;
+    echo <<<EOH
+<script src="<?=ROOT_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
+EOH;
+
+}
+
+
+/**
+ * HTML FORM 에서 input 태그 중 hidden 으로 지정되는 값들 보다 편하게 하기 위한 함수.
+ *
+ * @param array $in
+ *  이 값이 ['p', 'w'] 와 같이 입력되면, <input type=hidden name=p value=in('p')> 와 같이 각 요소를 name 으로 하고, in() 함수의 키로 값을 채운다.
+ * @param string $mode
+ *  <input type=hidden name=mode value=...> 와 같이 form submit mode 를 지정한다.
+ * @param array $kvs
+ *  추적으로 지정할 name 과 value 를 지정한다.
+ * @return string
+ *
+ * 호출 예)
+ *  hiddens(in: ['p', 'w', 's'], mode: 'submit', kvs: ['idx' => $post->idx])
+ *
+ * 리턴 값 예)
+ *  <input type='hidden' name='mode' value='submit'>
+ *  <input type='hidden' name='p' value='admin.index'>
+ *  <input type='hidden' name='w' value='shopping-mall/admin-shopping-mall'>
+ *  <input type='hidden' name='s' value='edit'>
+ *  <input type='hidden' name='idx' value='0'>
+ */
+function hiddens(array $in=[], string $mode='', array $kvs=[]): string {
+    $str = '';
+    if ( $mode ) {
+        $str .= "<input type='hidden' name='mode' value='$mode'>\n";
+    }
+    if ( $in ) {
+        foreach( $in as $k ) {
+            $str .= "<input type='hidden' name='$k' value='".in($k)."'>\n";
+        }
+    }
+    if ( $kvs ) {
+        foreach( $kvs as $k => $v ) {
+            $str .= "<input type='hidden' name='$k' value='$v'>\n";
+        }
+    }
+    return $str;
+}
+
+
 function short_date_time($stamp)
 {
     $Y = date('Y', $stamp);
@@ -1105,4 +1242,3 @@ function short_date_time($stamp)
     }
     return $dt;
 }
-

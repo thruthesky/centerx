@@ -3,28 +3,32 @@
  * @name Default Post View
  */
 
-$post = post()->getFromPath();
+
+$post = post()->current();
+
 
 ?>
 
 
 
 <div class="title">
-    <h1><?=$post[TITLE]?></h1>
+    <h1><?=$post->title?></h1>
 </div>
 <div class="meta">
-    No. <?=$post[IDX]?>
-    User. <?=user($post[USER_IDX])->v(NAME)?>
+    No. <?=$post->idx?>
+    User. <?=$post->user()->name?>
 </div>
 <div class="content box mt-3">
-    <?=$post[CONTENT]?>
+    <?=$post->content?>
 </div>
 <section class="buttons mt-3">
-    <a class="btn btn-sm btn-secondary" href="/?p=forum.post.edit&idx=<?=$post[IDX]?>">Edit</a>
+    <a class="btn btn-sm btn-secondary" href="/?p=forum.post.edit&idx=<?=$post->idx?>">Edit</a>
+    <a class="btn btn-sm btn-secondary" href="/?p=forum.post.delete.submit&idx=<?=$post->idx?>">Delete</a>
+    <a class="btn btn-sm btn-secondary" href="/?p=forum.post.list&categoryId=<?=$post->categoryId()?>">List</a>
 </section>
 
 <div class="files mt-3">
-    <?php foreach( $post[FILES] as $file ) { ?>
+    <?php foreach( $post->files() as $file ) { ?>
         <img class="w-100" src="<?=$file['url']?>">
     <?php } ?>
 </div>
@@ -34,39 +38,40 @@ $post = post()->getFromPath();
         <input type="hidden" name="p" value="forum.comment.edit.submit">
         <input type="hidden" name="returnTo" value="post">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
-        <input type="hidden" name="<?=ROOT_IDX?>" value="<?=$post[IDX]?>">
-        <input type="hidden" name="<?=PARENT_IDX?>" value="<?=$post[IDX]?>">
-        <input type="hidden" name="files" id="files<?=$post[IDX]?>" value="">
+        <input type="hidden" name="<?=ROOT_IDX?>" value="<?=$post->idx?>">
+        <input type="hidden" name="<?=PARENT_IDX?>" value="<?=$post->idx?>">
+        <input type="hidden" name="files" id="files<?=$post->idx?>" value="">
         <input type="text" name="<?=CONTENT?>">
         <div>
-            <input name="<?=USERFILE?>" type="file" onchange="onFileChange(event, 'files<?=$post[IDX]?>')" />
+            <input name="<?=USERFILE?>" type="file" onchange="onFileChange(event, 'files<?=$post->idx?>')" />
         </div>
         <button type="submit">Submit</button>
     </form>
 </div>
 
+
 <div class="comments">
-    <?php foreach( $post[COMMENTS] as $comment ) {  ?>
-        <div class="mb-2 p-3 text-white bg-secondary" style="margin-left: <?=$comment[DEPTH] * 16?>px;">
-            No.: <?=$comment[IDX]?>
+    <?php foreach( $post->comments() as $comment ) {  ?>
+        <div class="mb-2 p-3 text-white bg-secondary" style="margin-left: <?=$comment->depth * 16?>px;">
+            No.: <?=$comment->idx?>
             <div>
-                <?=$comment[CONTENT]?>
+                <?=$comment->content?>
             </div>
             <div class="files">
-                <?php foreach( $comment[FILES] as $file ) { ?>
-                    <img class="w-100" src="<?=$file['url']?>">
+                <?php foreach( $comment->files() as $file ) { ?>
+                    <img class="w-100" src="<?=$file->url?>">
                 <?php } ?>
             </div>
             <div>
                 <form action="/" method="POST">
                     <input type="hidden" name="p" value="forum.comment.edit.submit">
                     <input type="hidden" name="returnTo" value="post">
-                    <input type="hidden" name="<?=ROOT_IDX?>" value="<?=$post[IDX]?>">
-                    <input type="hidden" name="<?=PARENT_IDX?>" value="<?=$comment[IDX]?>">
-                    <input type="hidden" name="files" id="files<?=$comment[IDX]?>" value="">
+                    <input type="hidden" name="<?=ROOT_IDX?>" value="<?=$post->idx?>">
+                    <input type="hidden" name="<?=PARENT_IDX?>" value="<?=$comment->idx?>">
+                    <input type="hidden" name="files" id="files<?=$comment->idx?>" value="">
                     <input type="text" name="<?=CONTENT?>" value="">
                     <div>
-                        <input name="<?=USERFILE?>" type="file" onchange="onFileChange(event, 'files<?=$comment[IDX]?>')" />
+                        <input name="<?=USERFILE?>" type="file" onchange="onFileChange(event, 'files<?=$comment->idx?>')" />
                     </div>
                     <button type="submit">Submit</button>
                 </form>

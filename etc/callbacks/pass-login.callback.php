@@ -17,7 +17,7 @@ if ( isError($user) ) {
     pass_login_message($user);
     exit;
 }
-debug_log("pass-login-callback.php:: user", $user);
+//debug_log("pass-login-callback.php:: user", $user);/
 
 
 /**
@@ -40,11 +40,10 @@ debug_log("pass-login-callback.php:: user", $user);
 $profile = pass_login_or_register($user);
 
 if ( isError($profile) ) {
-    debug_log("pass-login-callback-php:: error code: $profile");
+//    debug_log("pass-login-callback-php:: error code: $profile");
     echo "<h1>ERROR: $profile</h1>";
     exit;
 }
-
 /**
  * 여기까지 오면 로그인 성공
  */
@@ -54,7 +53,7 @@ if ( isError($profile) ) {
  */
 if ( $_REQUEST['state'] === 'openHome' ) {
 
-    debug_log("pass-login-callback.php:: profile", $profile);
+//    debug_log("pass-login-callback.php:: profile", $profile);
     setLoginCookies( $profile );
     jsGo('/');
 }

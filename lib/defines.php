@@ -3,6 +3,9 @@
  * @file defines.php
  */
 
+
+
+
 /**
  * A taxonomy must be a table name.
  */
@@ -29,9 +32,6 @@ define('POST_VOTE_HISTORIES', 'post_vote_histories');
 define('SHOPPING_MALL_ORDERS', 'shopping_mall_orders');
 
 define('TRANSLATIONS', 'translations');
-
-
-
 
 
 
@@ -113,9 +113,21 @@ define('SHOPPING_MALL', 'shopping_mall');
  * MAX_FILE_SIZE - form file size limit
  * TOKEN - the push token
  */
-define('META_CODE_EXCEPTIONS', [ROUTE, SESSION_ID, 'reload', 'p', 'w', 'cw', 'mode', 'MAX_FILE_SIZE', TOKEN,
+define('META_CODE_EXCEPTIONS', [
+    ROUTE,
+    SESSION_ID,
+    CATEGORY_ID, // 글 작성시 카테고리 아이디가 넘어 옴. 저장 할 필요 없음.
+    'reload',
+    'p', 'w', 'cw', 'mode', 'MAX_FILE_SIZE',
+    TOKEN,
     'returnTo', // to return where after form submit.
+    'userfile', // file upload form name.
 ]);
 
 
 define('ADMIN_SETTINGS', 1);
+
+
+/// HOME_URL 이 설정되지 않고, 접속 URL 이 없는 경우, 사용될 기본 URL. 예를 들어 CLI 작업이나 테스팅하는 경우,
+/// 주의, URL 이 슬래시(/)로 끝나야 한다.
+define('DEFAULT_HOME_URL', 'http://default.home.url/');

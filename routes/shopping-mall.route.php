@@ -32,28 +32,28 @@ class ShoppingMallRoute
 
         /// 상품 주문을 할 때, 회원 포인트를 사용한다면,
         if ( $point ) {
-            if ( my(POINT, false) < $point ) { // 포인트가 모자라면, 주문을 하지 못하도록 한다.
+            if ( login()->getPoint() < $point ) { // 포인트가 모자라면, 주문을 하지 못하도록 한다.
                 return e()->lack_of_point;
             }
         }
 
 
-        $record = shoppingMallOrder()->create($data);
+        $record = shoppingMallOrder()->create($data)->getData();
 
         if ( $point ) {
             // 포인트를 차감하고 기록을 남긴다.
-            $applied = point()->addUserPoint(my(IDX), -$point);
+            $applied = point()->addUserPoint( login()->idx, -$point);
             debug_log("applied: $applied");
             point()->log(
                 POINT_ITEM_ORDER,
-                toUserIdx: my(IDX),
+                toUserIdx: login()->idx,
                 toUserPointApply: -$point,
                 taxonomy: SHOPPING_MALL_ORDERS,
                 entity: $record[IDX],
             );
         }
 
-        $record['info'] = json_decode($record['info']);
+        $record['info'] = json_decode($record['info'], true);
         return $record;
     }
 
@@ -83,11 +83,11 @@ class ShoppingMallRoute
         $order = shoppingMallOrder($in[IDX]);
         if ( $order->exists() === false ) return e()->order_not_exists;
         if ( $order->isMine() === false ) return e()->not_your_order;
-        if ( $order->value('confirmedAt') ) return e()->order_confirmed;
+        if ( $order->confirmedAt ) return e()->order_confirmed;
         $order->pointRestore();
-        $record = $order->get();
         $order->delete();
-        return $record;
+	if ( $order->hasError ) return $order->getError();
+        return $order->getData();
     }
 
 

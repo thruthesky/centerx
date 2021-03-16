@@ -3,11 +3,12 @@
 class FileRoute {
 
     public function upload($in) {
-        return files()->upload($in);
+        return files()->upload($in)->response();
     }
     public function delete($in) {
-        return files()->remove($in);
+        return files($in)->delete()->response();
     }
 }
+
 
 

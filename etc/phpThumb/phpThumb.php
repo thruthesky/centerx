@@ -17,7 +17,7 @@ ini_set('display_errors', '1');
  */
 if ( is_numeric($_GET['src']) ) {
     require_once '../../boot.php';
-    $_GET['src']  = files($_GET['src'])->get()[PATH];
+    $_GET['src']  = files($_GET['src'])->url;
 }
 /**
  * 썸네일하려는 이미지가 GIF 이면, 썸네일하지 않는다.

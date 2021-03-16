@@ -12,6 +12,8 @@ define('PASS_LOGIN_CALLBACK_URL', isLocalhost() ?
 );
 
 
+define('FIX_LANGUAGE', 'ko');
+
 
 include 'itsuda.hooks.php';
 

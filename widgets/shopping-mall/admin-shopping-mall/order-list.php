@@ -3,9 +3,9 @@
  * @file order-list.php
  */
 
-global $wpdb;
-if ( in('mode') == 'deleteAllItems' ) {
-    $wpdb->query("TRUNCATE api_order_history");
+
+if ( in('mode') == 'deleteAllOrders' ) {
+    db()->query("TRUNCATE " . entity(SHOPPING_MALL_ORDERS)->getTable());
 } else if ( modeDelete() ) {
     $order = shoppingMallOrder(in(IDX));
     if ( $order->exists() ) {
@@ -28,7 +28,7 @@ $orders = shoppingMallOrder()->search(limit: 1000);
 ?>
 <h1>주문관리</h1>
 <div class="d-flex justify-content-end">
-    <a class="btn btn-danger" href="/?page=admin.shopping-mall.order-list&mode=delete" onclick="return confirm('경고: 모든 주문 데이터가 삭제됩니다. 이것은 오직 개발자만 할 수 있는 명령입니다. 관리자는 이 버튼(메뉴) 자체를 보면 안됩니다. 이 버튼이 보이면, 개발자에게 얘기해주세요.');">전체 주문 삭제</a>
+    <a class="btn btn-danger" href="/?p=<?=in('p')?>&w=<?=in('w')?>&cw=<?=in('cw')?>&mode=deleteAllOrders" onclick="return confirm('경고: 모든 주문 데이터가 삭제됩니다. 이것은 오직 개발자만 할 수 있는 명령입니다. 관리자는 이 버튼(메뉴) 자체를 보면 안됩니다. 이 버튼이 보이면, 개발자에게 얘기해주세요.');">전체 주문 삭제</a>
 </div>
 <table class="table">
     <thead>
@@ -41,25 +41,25 @@ $orders = shoppingMallOrder()->search(limit: 1000);
     </thead>
     <tbody>
     <?php foreach(ids($orders) as $idx ) {
-        $order = shoppingMallOrder($idx)->get();
-        $user = user($order[USER_IDX])->get();
-        $info = json_decode($order['info'], true);
+        $order = shoppingMallOrder($idx);
+        $user = user($order->userIdx);
+        $info = json_decode($order->info, true);
         if ( ! isset($info['paymentAmount']) ) continue; // 테스트 등에서 잘못된 정보 입력.
         if ( ! isset($info['pointToSave']) ) $info['pointToSave'] = 0; // 에러 핸들링
         ?>
         <tr>
-            <th scope="row"><?=$order[IDX]?></th>
-            <td><?=$user['name']??$user['phoneNo']??$user['email']??''?>
+            <th scope="row"><?=$order->idx?></th>
+            <td><?=$user->name ?? $user->phoneNo?>
 
             </td>
             <td nowrap>
                 <?=number_format($info['paymentAmount'])?>
 
-                <?php if ( $order['confirmedAt'] ) { ?>
+                <?php if ( $order->confirmedAt ) { ?>
                     <div>구매확정됨</div>
                 <?php } else { ?>
-                    <a class="d-block mb-1 btn btn-warning btn-sm" href="/?p=admin.index&w=<?=in('w')?>&s=<?=in('s')?>&mode=delete&idx=<?=$order[IDX]?>" onclick="return confirm('주문을 삭제하시겠습니까?');">주문삭제</a>
-                    <a class="btn btn-info btn-sm" href="/?p=admin.index&&w=<?=in('w')?>&s=<?=in('s')?>&mode=order-confirm&idx=<?=$order[IDX]?>" onclick="return confirm('환불이 되지 않는 단계인 구매 확정을 하고 회원에게 적립금을 지급하시겠습니까?');">구매확정</a>
+                    <a class="d-block mb-1 btn btn-warning btn-sm" href="/?p=admin.index&w=<?=in('w')?>&cw=<?=in('cw')?>&mode=delete&idx=<?=$order->idx?>" onclick="return confirm('주문을 삭제하시겠습니까?');">주문삭제</a>
+                    <a class="btn btn-info btn-sm" href="/?p=admin.index&&w=<?=in('w')?>&cw=<?=in('cw')?>&mode=order-confirm&idx=<?=$order->idx?>" onclick="return confirm('환불이 되지 않는 단계인 구매 확정을 하고 회원에게 적립금을 지급하시겠습니까?');">구매확정</a>
                 <?php } ?>
             </td>
             <td>

@@ -2,35 +2,45 @@
 /**
  * @file entity.class.php
  */
+
+
 use function ezsql\functions\{
     eq,
-    neq,
-    ne,
-    lt,
-    lte,
-    gt,
-    gte,
-    isNull,
-    isNotNull,
-    like,
-    in,
-    notLike,
-    notIn,
-    between,
-    notBetween,
-
-    orderBy,
-    limit,
 };
+
 
 /**
  * Class Entity
  *
- * Entity 는 하나의 레코드이다. Taxonomy 는 데이터의 종류로서 하나의 테이블이라 생각하면 된다.
- * Entity 를 생성 할 때, Taxonomy 는 필수이며, $idx 값이 입력되면, 해당 테이블의 해당 레코드 번호로 인식하여, 해당 레코드에 대한 작업을 한다.
+ *
+ * - Taxonomy 는 데이터의 종류로서 하나의 테이블이라 생각하면 된다.
+ * - Entity 는 하나의 레코드이다.
+ * - Entity 를 객체화 할 때, $taxonomy 값(Taxonomy)은 필수이며, $idx (Entity 또는 레코드 번호) 값이 입력되면,
+ *   해당 테이블의 해당 레코드 및 연결된 메타 데이터를 읽어 $this->data 에 저장한다.
+ *   만약, $idx 에 해당하는 entity 를 찾을 수 없다면, entity_not_found 에러가 설정된다. 그리고 이는 entity(123)->notFound 와 같이 해서 확인 할 수 있다.
+ *   즉, category(123), user(123) 과 같이 했을 때, 해당 $idx 에 맞는 레코드가 없으면 에러가 바로 설정이 된다.
+ *   따라서, category(123)->exists() == false 와 같이 할 필요 없고, category(123)->hasError 와 같이 하면 된다.
+ *   그런데, 카테고리가 존재하는지 안하는지를 확인하기 위해서 category(123) 과 같이 초기화하면, 레코드 전체를 읽으므로 쿼리가 느릴 수 있다.
+ *   따라서, 존재하는지 안하는지 확인은 category()->exists([IDX => 123]) 이 낳다.
+ *
+ * @property-read bool $hasError 현재 객체(Entity instance)에 에러가 있으면 true 값을 가진다.
+ * @property-read bool $ok $this->error 에 에러가 설정되지 않았으면, 즉, 아무 이상이 없으면 참을 리턴한다.
+ * @property-read int $userIdx 테이블에 userIdx 가 있는 경우만 사용.
+ * @property-read bool $notFound 처음 객체를 초기화 할 때, $this->idx 가 0 이거나 해당하는 레코드가 없으면 참을 리턴한다.
+ *
  */
+
 class Entity {
 
+    /**
+     * @var array
+     */
+    private array $data = [];
+
+    /**
+     * @var string 에러가 있으면 에러 메시지를 지정한다.
+     */
+    private string $error = '';
 
     /**
      * Entity constructor.
@@ -39,33 +49,175 @@ class Entity {
      */
     public function __construct(public string $taxonomy, public int $idx)
     {
+        /**
+         * 객체 초기화. 현재 $this->idx 에 해당하는 entity 를 읽어 $this->data 에 저장.
+         */
+        if ( $this->idx ) {
+            $this->read($this->idx);
+        }
+    }
+
+    /**
+     * Alias of setError(). 짧게 쓰기 위해서, error() 로 쓴다.
+     * @param string $code
+     * @return $this
+     */
+    public function error(string $code): self {
+        return $this->setError($code);
+    }
+
+    /**
+     * 에러 문자열을 설정한다. 즉, 에러가 있음을 표시하는 것이다.
+     * @param string $code
+     * @return $this
+     */
+    private function setError(string $code): self {
+        $this->error = $code;
+        return $this;
+    }
+    public function getError(): string {
+        return $this->error;
+    }
+    public function resetError(): self {
+        $this->error = '';
+        return $this;
+    }
+
+    /**
+     * 현재 entity 의 필드 값을 리턴한다.
+     *
+     * 주의: 에러가 있으면 빈 배열 또는 null 이 리턴된다.
+     * 따라서, 한번 에러가 발생하면, 더 이상 현재 객체를 사용하지 못한다. 그래서 같은 idx 로 새로운 객체를 만들어 다시 작업을 해야 한다.
+     * 에러가 있는 상태에서, entity 삭제시, not your entity 등의 에러가 날 수 있다.
+     * 이 부분에 실수 할 수 있으니 유의한다.
+     *
+     * @attention When the $field exists in $this->data, it returns the value (Event if it's null or false, it returns the value).
+     *
+     * @param string|null $field - 값이 주어지면, 특정 필드의 값 1개만 리턴한다.
+     * @param mixed|null $default_value
+     * @return array|int|float|string|null
+     * - 에러가 있으면, $field 가 주어졌으면 null 아니면 빈 배열을 리턴한다.
+     *   단, $field 가 주어진 경우, 기본 리턴 값을 $default_value 에 지정 할 수 있다.
+     * - 아니면, $field 가 주어진 경우, $field 값. 아니면 전체 배열을 리턴한다.
+     *
+     *
+     */
+    public function getData(string $field=null, mixed $default_value=null): array|int|float|string|null
+    {
+        if ( $field ) {
+            if ( $this->hasError ) return null;
+            else return isset($this->data[$field]) ? $this->data[$field] : $default_value;
+        } else {
+            if ( $this->hasError ) return [];
+            return $this->data;
+        }
+    }
+
+    public function v(string $field, mixed $default_value=null) {
+        return $this->getData($field, $default_value);
     }
 
 
     /**
-     * Set (record) idx of current entity.
-     *
-     * 현재 instance 에 `idx` 지정이 안되어 있어 지정하거나 변경을 할 수 있다.
-     *
-     * @param int $idx
-     *
-     * @return static
-     *  - 현재 instance(자식 클래스 instance)를 리턴한다.
-     *
-     * 예제)
-     *      $tt = new TaxonomyTest(123);
-     *      isTrue(get_class($tt) == 'TaxonomyTest');
-     *      $child = $tt->setIdx(456);
-     *      isTrue(get_class($child) == 'TaxonomyTest');
-     *
-     * 예제)
-     *  files()->setIdx(1)->delete();
+     * @param $attr
+     * @return float|array|bool|int|string|null
+     * @deprecated Use getData($field)
      */
-    public function setIdx(int $idx): static
+    public function getAttribute($attr): float|array|bool|int|string|null
     {
-        $this->idx = $idx;
-        return $this;
+        return $this->getData($attr);
+//        if ( $this->hasError ) return null;
+//        if ( isset($this->data[$attr]) ) return isset($this->data[$attr]);
+//        else return null;
     }
+
+
+    public function setData(array $data) {
+        $this->data = $data;
+    }
+
+    /**
+     * $this->data 배열을 업데이트한다. 키가 존재하지 않으면 추가한다.
+     * @param $k
+     * @param $v
+     *
+     * @example
+     * category(123)->updateData('subcategories', separateByComma($this->subcategories));
+     */
+    public function updateData($k, $v) {
+        $this->data[$k] = $v;
+    }
+
+
+
+
+
+    /**
+     * 필드를 가져오는 magic getter
+     *
+     * posts 테이블과 meta 테이블에서 데이터를 가져오고, 레코드가 없으면 null 를 리턴한다.
+     * @attention 주의 할 것은,
+     *  1. 객체 초기화를 할 때, init() 함수에서
+     *  2. posts 테이블의 필드는 멤버 변수로 설정하고,
+     *  3. 그리고 posts 테이블과 meta 테이블의 모든 값은 $data 에 저장한다.
+     *  4. magic getter 로 값을 읽을 때, 새로 DB 에서 가져오는 것이 아니라, (멤버 변수로 설정되지 않았다면, 즉, meta 의 경우,) $data 에서 가져온다.
+     *     (참고로, 멤버 변수는 magic getter 호출에 사용되지 않는다.)
+     *  5 $this->update() 를 하면, 다시 init() 을 호출 한다.
+     *
+     * 주의: 에러가 있으면 null 이 리턴된다.
+     *
+     * @param $name
+     * @return mixed
+     *
+     * @example
+     *  $post->update(['eat' => 'apple pie']);
+     *  isTrue($post->eat == 'apple pie', 'Must eat apple pie');
+     */
+    public function __get($name): mixed
+    {
+        /// `$this->hasError` 에러가 있으면 true 를 리턴
+        if ( $name == 'hasError' ) {
+            return $this->error !== '';
+        }
+        /// $this->error 에 에러가 설정되지 않았으면, 즉, 아무 이상이 없으면 참을 리턴한다.
+        if ( $name == 'ok' ) {
+            return ! $this->hasError;
+        }
+
+        /// 처음 객체를 초기화 했을 때,
+        /// - $this->idx 가 0 이거나,
+        /// - $this->idx 에 해당하는 레코드를 찾지 못하면
+        /// 곧 바로 entity_not_found 가 설정되는데, $this->notFound 가 참을 리턴한다.
+        if ( $name == 'notFound' ) {
+            if ( $this->idx == 0 ) return true;
+            else if ( $this->getError() == e()->entity_not_found ) return true;
+            else return false;
+        }
+
+        /// 필드 값을 가져오려고 할 때, 현재 객체에 에러가 있으면, null 을 리턴.
+        if ( $this->hasError ) return null;
+
+        /// 에러가 없으면 값을 리턴. 값이 없으면 null 리턴.
+        if ( $this->data && isset($this->data[$name]) ) return $this->data[$name];
+        else return null;
+    }
+
+
+    /**
+     * 주의: $this->data 배열 이 외의 것은 이 함수로 호출되지 않는다. 실제 존재하는 멤버 변수는 이 함수로 호출되지 않는다.
+     * @param $name
+     * @return bool
+     */
+    public function __isset($name): bool
+    {
+        return isset($this->data[$name]);
+    }
+
+
+
+
+
+
 
 
     /**
@@ -76,7 +228,10 @@ class Entity {
      *
      * 만약, Taxonomy 테이블에 존재하지 않는 필드가 입력되면, 자동으로 metas 테이블에 저장한다.
      *
-     * 주의: 필드명에 따라서 자동으로 저장할 값이 정해지므로, meta 테이블과 같이 필드가 code, value 인 경우에는 사용 할 수 없다.
+     * 주의: $in 배열 변수의 키와 레코드 필드 명이 동일해야합니다.
+     * 참고: 만약, 레코드 필드명에 존재하지 않는 키가 있으면, meta 테이블의 code, value 에 키/값이 저장된다.
+     *
+     * 생성 후, 현재 객체에 보관한다. $this->idx 도 현재 생성된 객체로 변경된다.
      *
      * @param array $in
      *
@@ -87,7 +242,7 @@ class Entity {
      *
      * @note user is_success() to check if it was success()
      *
-     * @return array|string
+     *
      * @example
      * $idx = entity(CATEGORIES)->create($in);
      * return entity(CATEGORIES, $idx)->get();
@@ -97,59 +252,67 @@ class Entity {
      *
      *
      */
-    public function create( array $in ): array|string {
+    public function create( array $in ): self {
 
-        if ( ! $in ) return e()->empty_param;
+        if ( ! $in ) return $this->error(e()->empty_param);
 
         /// If idx is set and has value, return error.
         if ( isset($in[IDX]) ) {
-            if ( $in[IDX] ) return e()->idx_must_not_set;
-            else unset($in[IDX]);
+            if ( $in[IDX] ) return $this->error(e()->idx_must_not_set);
+            else unset($in[IDX]); /// isset() 인데, falsy 이면, unset.
         }
 
+        //
         $record = $this->getRecordFields($in);
         $record[CREATED_AT] = time();
         $record[UPDATED_AT] = time();
 
 
         // Entity 생성 전 훅
-        $re = hook()->run("{$this->taxonomy}_before_create", $record, $in);
+        $re = hook()->run("{$this->taxonomy}-before-create", $record, $in);
 //        debug_log("훅 리턴 값:", $re);
-        if ( isError($re) ) return $re;
+        if ( isError($re) ) return $this->error($re);
 
+        if ( isDebugging() ) db()->debugOn();
         $idx = db()->insert( $this->getTable(), $record );
+        if ( isDebugging() ) db()->debug();
 
 //        debug_log("IDX", $idx);
 
-        if ( !$idx ) return e()->insert_failed;
+        if ( !$idx ) return $this->error(e()->insert_failed);
 
-        $this->createMetas($idx, $this->getMetaFields($in));
+        $re = addMeta($this->taxonomy, $idx, $this->getMetaFields($in));
+        if ( isError($re) ) jsAlert($re);
 
-
-        $created = self::get(IDX, $idx);
+        /// 현재 객체에 정보 저장.
+        $this->read($idx);
 
         // Entity 생성 후 훅
-        $re = hook()->run("{$this->taxonomy}_after_create", $created, $in);
-        if ( isError($re) ) return $re;
+        $re = hook()->run("{$this->taxonomy}-after-create", $record, $in);
+        if ( isError($re) ) return $this->error($re);
 
-
-        $this->__entities = [];
-        return $created;
+        return $this;
     }
+
 
 
 
     /**
      * Update an entity.
-     *
      * @attention entity.idx must be set.
+     *
+     * 업데이트를 하기 위해서는 `$this->idx` 가 지정되어야 하며, $in 에 업데이트 할 값을 지정하면 된다.
+     * 참고, $in 이 빈 값으로 들어 올 수 있다. 그러면 updatedAt 만 업데이트를 한다.
      *
      * Taxonomy 에 존재하지 않는 필드는 meta 에 자동 저장(추가 또는 업데이트)된다.
      *
-     * 참고로, 'idx=123' 과 같이 'idx' 로 저장된, 캐시 정보를 삭제한다. 즉, 다음 사용 할 때, 다시 캐시를 한다.
+     * 참고, 업데이트 후 $this->read() 를 통해서 현재 객체의 $this->data 에 DB 로 부터 새로 데이터를 다시 읽는다.
+     * 참고, 이전에 에러가 있었으면 그냥 현재 객체를 리턴한다.
+     * 참고, 에러, 퍼미션 점검은 이 함수를 호출하기 전에 미리 해야 한다.
+     *
      * @param $in
      *
-     * @return array|string
+     * @return self
      * - error string on error.
      * - or the entity record.
      *
@@ -160,161 +323,203 @@ class Entity {
      * 예제) 로그인 한 사용자의 프로필 정보를 FORM 으로 입력 받아 수정
      *  login()->update(in());
      *  d(login()->profile());
+     *
+     * 예제)
+     *  $this->idx = 123;
+     *  $this->update(['color' => 'blue']);
+     *
+     * @todo 훅 처리
      */
-    public function update(array $in): array|string {
+    public function update(array $in): self {
+        if ( $this->hasError ) return $this;
 
-        if ( ! $in ) return e()->empty_param;
+        if ( ! $this->idx ) return $this->error(e()->idx_not_set);
 
-        //
-        if ( ! $this->idx ) return e()->idx_not_set;
-
+        // 레코드에 있는 필드들을 업데이트
         $up = $this->getRecordFields($in);
         $up[UPDATED_AT] = time();
-
-
         $re = db()->update($this->getTable(), $up, eq(IDX, $this->idx ));
+        if ( $re === false ) return $this->error(e()->update_failed);
 
-        if ( $re === false ) return e()->update_failed;
+        // 레코드에 없는 필드들은 메타에 업데이트
+        updateMeta($this->taxonomy, $this->idx, $this->getMetaFields($in));
 
-
-        $this->updateMetas($this->idx, $this->getMetaFields($in));
-
-        $fv = "idx=" . $this->idx;
-
-
-        $this->__entities = [];
-
-        $got = self::get();
-
-
-        return $got;
+        return $this->read();
     }
 
     /**
-     * Delete entity(record).
+     * 레코드 삭제
      *
-     * The entity `idx` must be set to delete.
+     * 참고, 이전에 에러가 발생했으면, 삭제하지 않고, 그냥 현재 객체를 리턴한다.
+     * 참고, 삭제 후, $this->data 는 빈 배열로 되지만, $this->idx 값은 유지한다.
+     * 참고, 에러가 있으면 에러가 설정된다.
+     *
+     * @attention When it is deleted, the entity record had removed immediately from the table but the data still exists
+     * in memory. So to check if it is deleted, you may need to check if there was an error after delete.
+     * @attention You can still use deleted data since it is alive in $this->data variable.
+     *
+     * @return self
+     *
+     * @todo entity 레코드 뿐만아니라, 메타 데이터도 삭제를 해야한다. 그리고 첨부 파일도 같이 삭제를 해야 한다.
      */
-    public function delete() {
-        if ( ! $this->idx ) return e()->idx_not_set;
-        $record = self::get();
-        if ( ! $record ) return e()->entity_not_exists;
+    public function delete(): self {
+        if ( $this->hasError ) return $this;
+        if ( ! $this->idx ) return $this->error(e()->idx_not_set);
         $re = db()->delete($this->getTable(), eq(IDX, $this->idx));
-        if ( $re === false ) return e()->delete_failed;
-
-
-
-        $this->__entities = [];
-
-        return $record;
+        if ( $re === false ) return $this->error(e()->delete_failed);
+        return $this;
     }
 
+
     /**
-     * It does not delete the record. It only updates deletedAt.
+     * It does not delete the record. But mark it as deleted by updating deletedAt.
      *
      * You may empty the content of the record when that is deleted.
      *
      * @attention `idx` must be set.
      *
-     * @return array|string
+     * @return self
      * - error string on error.
      * - the deleted record on success.
      *
      */
-    public function markDelete(): array|string {
-        if ( ! $this->idx ) return e()->idx_not_set;
-        $record = self::get();
-        if ( $record[DELETED_AT] ) return e()->entity_deleted_already;
-        self::update([DELETED_AT => time()]);
-        return $record;
+    public function markDelete(): self {
+        if ( $this->hasError ) return $this;
+        if ( ! $this->idx ) return $this->error(e()->idx_not_set);
+        if ( $this->deletedAt > 0 ) return $this->error(e()->entity_deleted_already);
+        return self::update([DELETED_AT => time()]);
+    }
+
+    /**
+     * 현재 Taxonomy 를 유지한 채, entity 만 바꾸고자 할 때 사용.
+     * 사실 이것은 read(123) 와 같은 것이다.
+     *
+     * 주의, 기존 에러 설정을 없앤다. 즉, 기존에 에러가 있었던 객체에 reset() 을 하면 에러가 사라지고,
+     * 입력된 $idx 로 초기화 된다.
+     *
+     * @param int $idx
+     * @return $this
+     *
+     * @example 삭제 실패한 코멘트를 다시 삭제 표시만 하기
+     *  isTrue($comment->delete()->getError() == e()->comment_delete_not_supported);
+     *  isTrue($comment->reset($comment->idx)->markDelete()->deletedAt > 0);
+     */
+    public function reset(int $idx): self {
+        $this->setError('');
+        return $this->read($idx);
     }
 
 
     /**
-     * Returns an entity(record) of a taxonomy(table) and its meta data.
+     * Entity(레코드와 메타)를 DB 로 부터 읽어 현재 객체에 보관한다.
      *
-     * If $field and $value are set, then it will return a record and its meta based on that $field and value.
-     * If $field and $value are not set, then it wil return the record and its meta based on current `idx`.
-     * If a field of entity exists in meta table, then the value of meta table will be used.
+     * $idx 가 주어지면, 해당 $idx 를 읽어, 현재 객체의 $data 에 보관하고, $this->idx = $idx 와 같이 entity idx 도 업데이트 한다.
+     * $idx 가 주어지지 않았거나, 객체를 생성 할 때, $idx 가 주어지지 않았다면, 빈 배열을 보관한다.
      *
-     * @attention It does memory cache.
-     *  It is important to memory cache if SQL server is far away from PHP application server.
-     *  Each query needs to connect to SQL server even if SQL server does some internal query.
-     *  It caches based on `$field=$value` pattern.
-     *  That means,
-     *  `user(77)->profile();` will cache with `idx=77` as `$field=$value` pair.
-     *  `user()->get('email', 'user10@gmail.com');` will cache with `email=user10@gmail.com` pair.
+     * $idx 가 주어졌는데, 레코드를 찾을 수 없다면, entity_not_found 에러를 저장한다.
      *
-     *  Note that, this is only for reading performance improvement. And if there is any data changes on any entity,
-     *  Then, it will volatilize and re-cache again. For instance, [user-entity][idx=1] is cached, and
-     *  [file-entity][idx] is updated, then all the caches include all other entities will be volatilized..
+     * 주의: 이 함수 호출 이전에 에러가 있었으면, 그대로 리턴한다. 즉, 에러가 있으면 이 함수를 사용 할 수가 없다.
+     * 따라서, login(), register() 등의 함수에서 필요한 작업을 하기 전에 미리 이전 에러를 초기화 해 줄 필요가 있다.
      *
-     * @attention even though the record does not exists, it caches with empty array record.
+     * @usage 처음 객체 생성시, read() 를 한번 호출한다.
+     *  그 후에 $idx 를 주어서 $entity->read(123) 과 같이 호출 하면, entity.idx 와 data 를 바꾼다.
+     *  또는 데이터베이스로 부터 새로 정보를 읽고자 할 때 사용한다.
      *
-     * @param string $field
-     * @param mixed $value
-     * @return mixed
-     * - The return type is `mixed` due to the overridden methods returns different data types.
-     * - *empty array if the entity does not exists.*
-     * - or entity record as array.
-     * - It does not return error string or any error.
-     *
-     * 예제)
-     * user()->get('email', 'user10@gmail.com');
+     * @param int $idx
+     * @return self
      */
-    private $__entities = [];
-//    private $cnt = 0;
-    public function get(string $field=null, mixed $value=null, string $select='*', bool $cache = true): mixed {
+    public function read(int $idx = 0): self {
 
+        if ( $this->hasError ) return $this;
 
-        if ($field == null ) {
-            $field = 'idx';
-            $value = $this->idx;
-        }
-        $fv = "$field=$value";
-        if ( $cache && isset($this->__entities[$this->taxonomy]) && isset($this->__entities[$this->taxonomy][$fv]) ) {
-//            debug_log("cached: $fv");
-//            $this->cnt ++; echo " (cached count: {$this->cnt}) ";
+        if ( ! $idx ) $idx = $this->idx;
 
-            return $this->__entities[$this->taxonomy][$fv];
-        }
-
-        $q = "SELECT $select FROM {$this->getTable()} WHERE `$field`='$value'";
-        debug_log($q);
-//        d($q);
-
+        $q = "SELECT * FROM {$this->getTable()} WHERE idx=$idx";
+        if ( isDebugging() ) d("read() q: $q");
         $record = db()->get_row($q, ARRAY_A);
         if ( $record ) {
-            /**
-             * If $select does not have `idx`, then it will not get meta tags.
-             */
-            if (isset($record['idx'])) {
-                $meta = entity($this->taxonomy, $record['idx'])->getMetas();
-                $record = array_merge($record, $meta);
-            }
+            $meta = getMeta($this->taxonomy, $record['idx']);
+            $this->setData(array_merge($record, $meta));
+            $this->idx = $this->data['idx'];
         } else {
-            $record = [];
+            $this->error( e()->entity_not_found );
+            $this->setData([]);
         }
-        /**
-         * If $field is null, then don't cache.
-         */
-        if ( $field ) {
-            if ( ! isset($this->__entities[$this->taxonomy]) ) $this->__entities[$this->taxonomy] = [];
-            $this->__entities[$this->taxonomy][$fv] = $record;
-            return $this->__entities[$this->taxonomy][$fv];
+
+        return $this;
+    }
+
+
+    /**
+     * Switch `on` or `off` on the $optionName.
+     *
+     * To know if it is `on` or `off`, just use `$this->v($optionName)`. If it returns null, then it never switched.
+     *
+     * @param string $optionName
+     * @return self
+     */
+    public function switch(string $optionName): self {
+        $v = $this->v($optionName);
+        if ( empty($v) || $v == 'off' ) {
+            $v = 'on';
         } else {
-            return $record;
+            $v = 'off';
         }
+        return $this->update([$optionName => $v]);
     }
 
     /**
-     * Returns true if the entity exists. or false.
+     * Switch On
      *
-     * The entity.idx must be set or it will return false.
-     *
-     * @return bool
+     * @param string $optionName
+     * @return $this
      */
-    public function exists(): bool {
+    public function switchOn(string $optionName): self {
+        return $this->update([$optionName => 'on']);
+    }
+
+    /**
+     * Switch Off
+     *
+     * @param string $optionName
+     * @return $this
+     */
+    public function switchOff(string $optionName): self {
+        return $this->update([$optionName => 'off']);
+    }
+
+
+
+
+    /**
+     * DB 레코드에서 idx 를 읽어서 존재하는지 아닌지 검사한다.
+     *
+     * 참고, $conds 에 값이 넘어오면, 해당 조건에 존재하는 레코드가 있는지 확인한다.
+     * 이 때, search() 함수를 사용하는데, search() 함수의 특성에 따라 $conds 조건에 맞는 여러개의 레코드가 존재 할 수 있다.
+     * 하지만, $this->idx 로 검사하는 경우, 오직 현재 레코드가 존재하는지만 검사한다.
+     *
+     * 참고, DB 접속을 매번하므로, 원격 DB의 경우 connection 시간이 걸릴 수 있다.
+     *
+     * $this->idx 가 설정되어야 한다. 아니면 false 리턴.
+     *
+     *
+     * 참고, 카테고리가 존재하는지 안하는지를 확인하기 위해서 category(123) 과 같이 초기화하면, 레코드 전체를 읽으므로 쿼리가 느릴 수 있다.
+     * 따라서, 존재하는지 안하는지 확인은 category()->exists([IDX => 123]) 이 낳다.
+     * 예) 카테고리 존재하면 에러
+     *  if ( category()->exists([ ID=>$in[ID] ]) ) return $this->error(e()->category_exists);
+     *
+     * @param array $conds
+     * @param string $conj
+     * @return bool
+     *
+     * @example
+     *  $found = $this->exists([EMAIL=>$in[EMAIL]]);
+     */
+    public function exists(array $conds = [], string $conj = 'AND'): bool {
+        if ( $conds ) {
+            $arr = self::search(conds: $conds, conj: $conj);
+            return count($arr) > 0;
+        }
         if ( ! $this->idx ) return false;
         $q = "SELECT " . IDX . " FROM " . $this->getTable() . " WHERE " . IDX . " = {$this->idx} ";
         $re = db()->get_var($q);
@@ -327,11 +532,72 @@ class Entity {
         return !$this->exists();
     }
 
+    /**
+     * 특정 레코드를 1개 찾아 현재 객체로 변경하여 리턴한다.
+     *
+     * 주의: 현재 객체로 변환한다.
+     *
+     * 예를 들어, `user()->by('thruthesky@gmail.com')` 와 같이 호출하면, by() 가 리턴하는 값은
+     * thruthesky@gmail.com 사용자의 User 객체가되는 것이다.
+     *
+     * $this->exits() 와 다른 점은 exists() 는 주어진 조건에 맞는 레코드가 존재하는지 확인하여 boolean 을 리턴한다.
+     * 그리고 만약, 주어진 조건이 없으면 현재 $this->idx 의 레코드가 존재하는지 확인해서 boolean 을 리턴한다.
+     *
+     * 하지만, $this->find() 는 주어진 조건에 맞는 레코드 들 중 1개를 *현재 객체로 변경*하여 리턴한다.
+     *
+     * 예제) 아래의 코드에서 $user1 은 처음에는 1번 사용자였는데, by() 함수를 호출함에 따라 $user1 이 더이상 1번 사용자가 아니라 thruthesky@gmail.com 으로 변경이 된다.
+     *      $user1 = user(1);
+     *      $user1->by('thruthesky@gmail.com');
+     *      isTrue($user1->email == 'thruthesky@gmail.com');
+     *
+     *  by() 함수를 호출 할 때, $this->idx 가 설정되지 않아도 되며, 설정되어져 있어도 무시된다.
+     *  주어진 조건에 레코드를 찾지 못하면 에러가 설정된다.
+     *
+     * @param array $conds
+     * @param string $conj
+     * @return self
+     *
+     * @example
+     *  $user = user()->find([EMAIL => $uid]); // Find user by email
+     */
+    public function findOne(array $conds, string $conj = 'AND'): self {
+
+        $arr = self::search(conds: $conds, conj: $conj); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
+
+        if ( ! $arr ) return $this->error(e()->entity_not_found);
+        $idx = $arr[0][IDX];
+
+        return $this->read($idx);
+    }
+
+
+    /**
+     * 현재 Taxonomy 에서 1개의 레코드를 검색해서, 1개의 필드 값을 리턴한다.
+     *
+     * @param string $select - 1개의 필드만 입력해야 한다. 그 필드의 값을 리턴한다.
+     * @param array $conds
+     * @param string $conj
+     * @return mixed
+     *
+     * 예제) 현재 글(코멘트)의 루트 글의 카테고리 값 얻기
+     *  post()->getVar(CATEGORY_IDX, [IDX => $rootIdx]);
+     *
+     * 예제) 현재 객체(예: 사용자 entity)의 point 필드의 값 얻기. 사용자의 포인트 값을 얻을 때 사용.
+     *  $this->getVar(POINT, [IDX => $this->idx]);
+     */
+    public function getVar(string $select, array $conds, string $conj='AND'): mixed {
+        $arr = self::search(select: $select, limit: 1, conds: $conds, conj: $conj);
+        if ( ! $arr ) return $this->error(e()->entity_not_found);
+        return $arr[0][$select];
+    }
+
+
 
     /**
      * Returns true if the entity is belong to the login user.
      *
      * @attention The entity(entity) idx must be set and the record must have `userIdx` field or false will be returned.
+     *   So, login()->isMine() will not work since user record has no `userIdx` field.
      *
      * @usage Use this method to check if the post or comment, file are belong to the login user.
      *
@@ -340,18 +606,21 @@ class Entity {
     public function isMine(): bool {
         if ( notLoggedIn() ) return false;
         if ( ! $this->idx ) return false;
-        $record = self::get(cache: false);
-        if ( ! $record ) return false;
-        if ( ! isset($record) ) return false;
-        if ( ! $record[USER_IDX] ) return false;
-        return $record[USER_IDX] == my(IDX);
+
+        if ( $this->userIdx == null ) return false;
+
+        return $this->userIdx == login()->idx;
     }
 
+
     /**
-     * 현재 Taxonomy 를 검색한다.
+     * 현재 Taxonomy 를 검색해서 idx 를 배열로 리턴한다.
      *
      * - $where 에 필요한 조건식을 다 만들어 넣는다.
      * - 만약, meta 데이터를 포함한 전체 값이 다 필요하다면, 이 함수를 통해서 'idx' 만 추출한 다음, user(idx)->get() 와 같이 한다.
+     * - 이 함수는 객체 배열이 아닌, 결과를 가지고 있는 레코드들의 idx 만 리턴한다.
+     * - 원한다면 select: 'name' 또는 select: '*' 와 같이 특정 레코드 또는 전체 레코드를 배열로 리턴 할 수 있다.
+     * - 하나의 레코드 또는 하나의 필드를 가져오고자 할 때 사용 할 수 있다.
      *
      * @param string $where
      * @param int $page
@@ -359,46 +628,116 @@ class Entity {
      * @param string $order
      * @param string $by
      * @param string $select
-     * @param array $in
-     * @return mixed
+     * @param array $conds - 키/값 조건문.
+     * @param string $conj - $conds 의 키/값을 연결할 조건식. 기본 AND.
+     * @return array
      *  - empty array([]), If there is no record found.
-     * @throws Exception
      *
+     *
+     * @example tests/next.entity.search.test.php 에 많은 예제가 있다.
+     *
+     * 예제) 로그인 시, 특장 사용자의 비밀번호를 찾아 비교하기 위해서, 비밀번호 가져오기.
+     *  $users = $this->search(select: PASSWORD, conds: [EMAIL => $in[EMAIL]]);
+     *  if ( !$users ) return $this->error(e()->user_not_found_by_that_email);
+     *  $password = $users[0][PASSWORD];
      *
      * 예제)
-     *  $users = user()->search();
+     *  user()->search();
      *  user()->search(where:  "name LIKE '%a%' AND idx < 100", order: EMAIL, by: 'ASC', page: 2, limit: 3, select: 'idx, name');
      *
      * 예제) 사용자 idx 만 추출해서 전체 정보 출력
      *   $users = user()->search(where:  "name LIKE '%a%' AND idx < 100", order: EMAIL, by: 'ASC', page: 1, limit: 3);
      *   foreach( $users as $user) {
-     *      d( user( $user[IDX])->profile() );
+     *      d( user( $user[IDX] )->profile() );
      *   }
      *
+     * @todo SQL injection
+     * @todo $where 에 따옴표 처리.
      */
     public function search(
-        string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'
-    ): mixed {
+        string $select='idx',
+        string $where='1',
+        string $order='idx',
+        string $by='DESC',
+        int $page=1,
+        int $limit=10,
+        array $conds=[],
+        string $conj = 'AND',
+    ): array {
         $table = $this->getTable();
         $from = ($page-1) * $limit;
+
+        if ( $conds ) {
+            $where = sqlCondition($conds, $conj);
+        }
         $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
         if ( isDebugging() ) d($q);
-        $rows = db()->get_results($q, ARRAY_A);
-        return $rows;
+        return db()->get_results($q, ARRAY_A);
     }
+
+
+
+
+    /**
+     * Returns login user's records in array.
+     *
+     * Helper class for search().
+     * It does very much the same as search(), but returns login user's record only.
+     *
+     *
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @param string $by
+     * @param string $select
+     * @return array
+     */
+    public function my($select='*', int $page=1, string $order='idx', string $by='DESC', int $limit=10 ): array {
+        return $this->search($select, "userIdx=" . login()->idx, $order, $by, $page, $limit);
+    }
+
 
     /**
      * @param string $where
+     * @param array $conds
+     * @param string $conj
+     * @return int
      */
-    public function count(string $where) {
+    public function count(string $where='1', array $conds=[], string $conj = 'AND'): int {
         $table = $this->getTable();
+        if ( $conds ) $where = sqlCondition($conds, $conj);
         return db()->get_var(" SELECT COUNT(*) FROM $table WHERE $where");
     }
 
 
+    /**
+     * 현재 taxonomy 의 테이블 이름을 리턴한다.
+     * @return string
+     */
     public function getTable(): string {
         return DB_PREFIX . $this->taxonomy;
     }
+
+
+    /**
+     * 입력된 $in 에서 현재 테이블의 레코드 필드인 것만 리턴한다.
+     * 예를 들어, 사용자 테이블에 'email', 'password', 'name' 필드가 있는데, $in 이 ['email'=>'..', 'name'=>'..', 'yourColor'=>'blue']
+     * 의 값이 들어오면, ['email' => '..', 'password'=>'..'] 가 리턴된다.
+     * @param $in
+     * @return array
+     * - 리턴할 값이 없으면 빈 배열이 리턴된다.
+     *
+     * 예제)
+     * d(entity(USERS)->getRecordFields(['email' => 'email@address.com', 'name' => 'name', 'yourColor' => 'blue']));
+     * 결과)
+     *  Array ( [email] => email@address.com [name] => name )
+     */
+    public function getRecordFields($in): array {
+        $fields = entity($this->taxonomy)->getTableFieldNames();
+        $diffs = array_diff(array_keys($in), $fields);
+        return array_filter( $in, fn($v, $k) => !in_array($k, $diffs), ARRAY_FILTER_USE_BOTH );
+    }
+
 
 
     /**
@@ -410,6 +749,8 @@ class Entity {
      * Array ( [0] => idx [1] => email [2] => password [3] => name [4] => createdAt [5] => updatedAt )
      *
      * @note 메모리 캐시를 한다.
+     *
+     * @todo EzSQL 의 col_info 를 사용해서, 다른 DB 도 지원 할 수 있도록 한다.
      */
     private $fields = [];
     public function getTableFieldNames(): array {
@@ -417,6 +758,7 @@ class Entity {
         if ( isset($this->fields[$table]) ) return $this->fields[$table];
         $q = "SELECT column_name FROM information_schema.columns WHERE table_schema = '".DB_NAME."' AND table_name = '$table'";
         $rows = db()->get_results($q, ARRAY_A);
+        $names = [];
         foreach($rows as $row) {
             $names[] = $row['column_name'];
         }
@@ -444,304 +786,6 @@ class Entity {
         $fields = entity($this->taxonomy)->getTableFieldNames();
         $diffs = array_diff(array_keys($in), $fields);
         return array_filter( $in, fn($v, $k) => in_array($k, $diffs), ARRAY_FILTER_USE_BOTH );
-    }
-
-    /**
-     * 입력된 $in 에서 현재 테이블의 레코드 필드인 것만 리턴한다.
-     * 예를 들어, 사용자 테이블에 'email', 'password', 'name' 필드가 있는데, $in 이 ['email'=>'..', 'name'=>'..', 'yourColor'=>'blue']
-     * 의 값이 들어오면, ['email' => '..', 'password'=>'..'] 가 리턴된다.
-     * @param $in
-     * @return array
-     * - 리턴할 값이 없으면 빈 배열이 리턴된다.
-     *
-     * 예제)
-     * d(entity(USERS)->getRecordFields(['email' => 'email@address.com', 'name' => 'name', 'yourColor' => 'blue']));
-     * 결과)
-     *  Array ( [email] => email@address.com [name] => name )
-     */
-    public function getRecordFields($in): array {
-        $fields = entity($this->taxonomy)->getTableFieldNames();
-        $diffs = array_diff(array_keys($in), $fields);
-        return array_filter( $in, fn($v, $k) => !in_array($k, $diffs), ARRAY_FILTER_USE_BOTH );
-    }
-
-
-    /**
-     * 단순히, updateMeta() 를 재 지정한 것이다.
-     *
-     * 현재 테이블(taxonomy)와 레코드(entity)로 키, 값을 저장한다.
-     *
-     * 예를 들면, 사용자의 경우, taxonomy 는 users, entity 는 회원 번호(idx) 가 된다.
-     *
-     * @param int $idx - taxonomy.idx 이다. 회원 가입 등에서 taxonomy entity 가 새로 생성되는 경우를 위해서, taxonomy entity idx 값을 입력 받는다.
-     * @param array $in
-     * @return array
-     * - 코드를 생성한 결과를 리턴한다. 키는 taxonomy.entity.idx, 값은 생성되었으면, meta 테이블의 idx 실패면, false.
-     */
-    public function createMetas(int $idx, array $in): array
-    {
-        return $this->updateMetas($idx, $in);
-    }
-
-
-    /**
-     * meta 값 들을 추가 또는 업데이트 한다.
-     *
-     * - 해당 taxonomy, entity, code 가 존재하지 않으면 추가한다.
-     *
-     * @param int $idx
-     * @param array $in
-     * @return array
-     */
-    public function updateMetas(int $idx, array $in): array
-    {
-        $table = entity(METAS)->getTable();
-        $rets = [];
-        foreach( $in as $k=>$v) {
-            $result = db()->select($table, 'idx', eq(TAXONOMY, $this->taxonomy), eq(ENTITY, $idx), eq(CODE, $k));
-            if ( $result ) {
-                $metaIdx = $this->updateMeta($idx, $k, $v);
-            } else {
-                $metaIdx = $this->setMeta($idx, $k, $v);
-            }
-            $rets[$idx] = $metaIdx;
-        }
-        return $rets;
-    }
-
-
-    /**
-     * 현재 taxonomy 에서 meta 값을 리턴한다.
-     * Returns a meta value of the taxonomy and entity.
-     *
-     *
-     * Note that, it works without the real taxonomy table. That means, you can use this method even if the taxonomy table does not exist.
-     * Read the readme for details.
-     *
-     * @param string $code
-     * @return mixed
-     * - If record does not exists, it returns null.
-     * - Or meta value
-     *
-     * @todo 더 많은 테스트 코드를 작성 할 것.
-     */
-    public function getMeta(string $code, mixed $data = null): mixed {
-
-        $q = "SELECT data FROM " . entity(METAS)->getTable() . " WHERE taxonomy='{$this->taxonomy}' AND entity={$this->idx} AND code='$code'";
-
-//          echo("Q: $q\n");
-        $data = db()->get_var($q);
-        $un = $this->_unserialize($data);
-        return $un;
-    }
-
-
-    /**
-     * 현재 taxonomy 에서 code=$code AND data=$data 와 같이 비교해서, data 값이 맞으면 entity 를 리턴한다.
-     * 이 때에는 현재 idx 는 사용하지 않는다(무시된다).
-     * 현재 idx 값을 모르고, taxonomy 와 code, 그리고 data 를 알고 있는데, entity(userIdx 등)을 몰라서 찾고자 하는 경우 사용 할 수 있다.
-     *
-     * @attention 주의 할 점은, 맨 마지막 정보의 entity 값을 리턴한다.
-     *
-     * @param string $code
-     * @param mixed $data
-     *
-     * @return int
-     *
-     * @example
-     *  user()->getMetaEntity('plid', $user['plid']);
-     *
-     * @todo $data 에 따옴표가 들어 갈 때, 에러가 나는지 확인 할 것.
-     */
-    public function getMetaEntity(string $code, mixed $data ): int {
-        $q = "SELECT entity FROM " . entity(METAS)->getTable() . " WHERE taxonomy='{$this->taxonomy}' AND code='$code' AND data='$data' ORDER BY idx DESC LIMIT 1";
-//          echo("Q: $q\n");
-        return db()->get_var($q) ?? 0;
-    }
-
-
-
-
-
-
-
-    /**
-     * 현재 테이블(taxonomy)과 연결되는, 그리고 입력된 entity $idx 와 연결되는 meta 값 1개를 저장한다.
-     *
-     * - 주의: 존재해도 생성을 하려한다. 그래서 에러가 난다. 만약, 존재하면 업데이트를 하려면 updateMetas() 함수를 사용한다.
-     *      이 부분에서 실수를 할 수 있으므로 각별히 주의한다.
-     *
-     * - entity(taxonomy)->updateMeta() 와 같이 taxonomy 에 아무 값이나 주고, 바로 호출 할 수 있다. 실제 taxonomy 테이블은 존재하지 않아도 된다.
-     *
-     *
-     * @attention Don't save null.
-     *
-     * @param int $idx - taxonomy.idx 이다. 새로운 entity 가 생성될 때, 그 entity 로 연결하거나, 다른 entity 로 연결 할 수 있다.
-     * @param string $code
-     * @param mixed $data
-     * @return mixed
-     */
-    public function setMeta(int $idx, string $code, mixed $data): mixed
-    {
-        if ( in_array($code, META_CODE_EXCEPTIONS) ) return false;
-        $table = entity(METAS)->getTable();
-        return db()->insert($table, [
-            TAXONOMY => $this->taxonomy,
-            ENTITY => $idx,
-            CODE => $code,
-            DATA => $this->_serialize($data),
-            CREATED_AT => time(),
-            UPDATED_AT => time(),
-        ]);
-    }
-
-    /**
-     * Add(or set) a meta & value only if it does not exists. If the meta exists already, then it doesn't do anything.
-     *
-     * Note, since `idx` is passed over parameter, entity.`idx` is ignored.
-     *
-     * @attention Don't save null.
-     *
-     * @param int $idx
-     * @param string $code
-     * @param mixed $data
-     * @return mixed
-     *  - false if the meta was not added.
-     *  - idx number if the meta was added.
-     */
-    public function setMetaIfNotExists(int $idx, string $code, mixed $data): mixed {
-        $re = entity($this->taxonomy, $idx)->getMeta($code);
-        if ( $re === null ) {
-            return $this->setMeta($idx, $code, $data);
-        }
-        return false;
-    }
-    /// Alias of setMetaIfNotExists()
-    public function addMetaIfNotExists(int $idx, string $code, mixed $data): mixed {
-        return $this->setMetaIfNotExists($idx, $code, $data);
-    }
-
-    /**
-     * 현재 테이블(taxonomy)의 $idx 에 연결되는 meta 데이터를 업데이트한다.
-     *
-     * - entity(taxonomy)->updateMeta() 와 같이 taxonomy 에 아무 값이나 주고, 바로 호출 할 수 있다. 실제 taxonomy 테이블은 존재하지 않아도 된다.
-     *
-     * - 주의: 존재하지 않아도 업데이트 하려한다. 만약, 존재하지 않으면 생성하려 한다면, updateMetas() 함수를 사용한다.
-     *      이 부분에서 실수를 할 수 있으므로 각별히 주의한다.
-     *
-     * @param int $idx
-     * @param string $code
-     * @param mixed $data
-     * @return bool|mixed
-     */
-    public function updateMeta(int $idx, string $code, mixed $data) {
-        if ( in_array($code, META_CODE_EXCEPTIONS) ) return false; // This may not be needed since it only updates and META_CODE_EXCEPTIONS are not saved at very first.
-        $table = entity(METAS)->getTable();
-        return db()->update(
-            $table,
-            [DATA => $this->_serialize($data), UPDATED_AT => time()],
-            db()->where(
-                eq(TAXONOMY, $this->taxonomy),
-                eq(ENTITY, $idx),
-                eq(CODE, $code)
-            )
-        );
-    }
-
-
-    /**
-     * Returns a meta value based on current taxonomy and entity.
-     * So, entity idx must be set.
-     * You may instantiate another object with entity.idx if you only have taxonomy.
-     *
-     *
-     * @return array
-     *
-     * 예제)
-     *  entity($this->taxonomy, $record['idx'])->getMetas();
-     */
-    public function getMetas(): array {
-        $q = "SELECT code, data FROM " . entity(METAS)->getTable() . " WHERE taxonomy='{$this->taxonomy}' AND entity={$this->idx}";
-        $rows = db()->get_results($q, ARRAY_A);
-        $rets = [];
-        foreach($rows as $row) {
-            $rets[$row['code']] = $this->_unserialize($row['data']);
-        }
-        return $rets;
-    }
-
-    /**
-     * Return serialzied string if the input $v is not an int, string, or double.
-     * @param $v
-     */
-    public function _serialize(mixed $v): mixed {
-        if ( is_int($v) || is_numeric($v) || is_float($v) || is_string($v) ) return $v;
-        else return serialize($v);
-    }
-    public function _unserialize(mixed $v): mixed {
-        if ( is_serialized($v) ) return unserialize($v);
-        else return $v;
-    }
-
-
-    /**
-     * Returns a value of a field (of entity table) or meta field(of metas table).
-     *
-     *
-     *
-     * @param string $field
-     * @param mixed|null $default_value
-     *  - default value to be returned if field not exists.
-     * @param bool $cache
-     *  - to use cached data if exists in cache.
-     * @return mixed
-     * - null if field not exist in taxonomy or meta.
-     * - or value.
-     */
-    public function value(string $field, mixed $default_value = null, bool $cache = true): mixed {
-        $got = self::get(cache: $cache);
-        if ( isset($got[$field]) && $got[$field] ) return $got[$field];
-        else return $default_value;
-    }
-
-    /**
-     * Short for $this->value();
-     * @param string $field
-     * @param mixed|null $default_value
-     * @param bool $cache
-     * @return mixed
-     */
-    public function v(string $field, mixed $default_value = null, bool $cache = true): mixed {
-        return $this->value($field, $default_value, $cache);
-    }
-
-    /**
-     * 현재 entity 의 taxonomy 가 users 라면, 그냥 $this->idx 를 리턴하고,
-     * 그렇지 않으면 entity 의 userIdx 필드를 리턴한다.
-     * @return int
-     */
-    public function userIdx(): int {
-        if ( $this->taxonomy == USERS ) return $this->idx;
-        else return $this->value(USER_IDX);
-    }
-
-    /**
-     * Returns login user's records in array.
-     *
-     * Helper class for search().
-     * It does very much the same as search(), but returns login user's record only.
-     *
-     *
-     * @param int $page
-     * @param int $limit
-     * @param string $order
-     * @param string $by
-     * @param string $select
-     * @return array
-     * @throws Exception
-     */
-    public function my(int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='*'): array {
-        return $this->search("userIdx=" . login()->idx, $page, $limit, $order, $by, $select);
     }
 
 }

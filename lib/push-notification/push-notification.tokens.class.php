@@ -2,7 +2,7 @@
 use Kreait\Firebase\Messaging\MulticastSendReport;
 
 class PushNotificationTokens extends Entity {
-    public function __construct(int $idx)
+    public function __construct(public int $idx = 0)
     {
         parent::__construct(PUSH_NOTIFICATION_TOKENS, $idx);
     }
@@ -12,21 +12,21 @@ class PushNotificationTokens extends Entity {
      * @attention To update, entity.idx must be set properly.
      *
      * @param array $in
-     * @return array|string
+     * @return PushNotificationTokens
      */
-    public function update(array $in): array|string {
+    public function update(array $in): self {
 
         $token = $in[TOKEN];
         $data = [
-            USER_IDX => my(IDX) ?? 0,
+            USER_IDX => login()->idx,
             TOKEN => $token,
             DOMAIN => get_domain_name(),
         ];
 
         if ( $this->exists() == false ) {
-            $res = parent::create($data);
+            parent::create($data);
         } else {
-            $res = parent::update($data);
+            parent::update($data);
         }
 
         if (isset($in[TOPIC]) && !empty($in[TOPIC])) {
@@ -36,10 +36,10 @@ class PushNotificationTokens extends Entity {
         }
 
         if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
-            return e()->topic_subscription;
+            return $this->error(e()->topic_subscription);
         }
 
-        return $res;
+        return $this;
     }
 
     /**
@@ -59,7 +59,7 @@ class PushNotificationTokens extends Entity {
      * @throws Exception
      */
     function myTokens(): array {
-        return $this->getTokens(my(IDX));
+        return $this->getTokens( login()->idx );
     }
 }
 
@@ -71,9 +71,11 @@ class PushNotificationTokens extends Entity {
 function token(int|string $idx=0): PushNotificationTokens
 {
     if ( is_numeric($idx) ) return new PushNotificationTokens($idx);
-    $record = entity(PUSH_NOTIFICATION_TOKENS, 0)->get(TOKEN, $idx);
-    if ( ! $record ) return new PushNotificationTokens(0);
-    return new PushNotificationTokens($record[IDX]);
+    return (new PushNotificationTokens())->findOne([TOKEN => $idx]);
+
+//    $record = entity(PUSH_NOTIFICATION_TOKENS, 0)->get(TOKEN, $idx);
+//    if ( ! $record ) return new PushNotificationTokens(0);
+//    return new PushNotificationTokens($record[IDX]);
 }
 
 function sanitizedInput($in): array {
@@ -82,7 +84,7 @@ function sanitizedInput($in): array {
     if ( !isset($in['click_action'])) $in['click_action'] = '/';
     if ( !isset($in['imageUrl'])) $in['imageUrl'] = '';
     if ( !isset($in['data'])) $in['data'] = [];
-    $in['data']['senderIdx'] = my(IDX);
+    $in['data']['senderIdx'] = login()->idx;
     return $in;
 }
 
@@ -110,8 +112,8 @@ function send_message_to_users($in): array|string
     }
     foreach ($users as $userIdx) {
         if ( isset($in[SUBSCRIPTION]) ) {
-            $re = user($userIdx)->get();
-            if ( $re[$in[SUBSCRIPTION]] == 'N' ) continue;
+            $re = user($userIdx);
+            if ( $re->v($in[SUBSCRIPTION]) == 'N' ) continue;
         }
         $tokens = token()->getTokens($userIdx);
         $all_tokens = array_merge($all_tokens, $tokens);
@@ -120,10 +122,15 @@ function send_message_to_users($in): array|string
     if (empty($all_tokens)) return e()->token_is_empty;
     $in = sanitizedInput($in);
     $re = sendMessageToTokens($all_tokens, $in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']);
+    $res = [];
+    foreach($re->getItems() as $item) {
+        $res[] = $item->result();
+    }
 
-    return [
-        'tokens' => $all_tokens
-    ];
+    // @todo handle invalid/unknown tokends..
+    // @how to properly return response here.
+
+    return $res;
 }
 
 
@@ -138,7 +145,7 @@ function getTokensFromUserIDs($idxs = [], $filter = null): array
     foreach ($idxs as $idx) {
         $rows = token()->getTokens($idx);
         if ($filter) {
-            $user = user($idx)->get();
+            $user = user($idx)->getData();
             if (isset($user[$filter]) && $user[$filter] == 'N') {
             } else {
                 foreach ($rows as $token) {

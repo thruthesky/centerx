@@ -2,20 +2,23 @@
 
 
 class PostRoute {
+
     public function create($in) {
-        return post()->create($in);
+        return post()->create($in)->response();
     }
     public function update($in) {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
-        return post($in[IDX])->update($in);
+        $post = post($in[IDX]);
+        if ( $post->isMine() == false ) return  e()->not_your_post;
+        return $post->update($in)->response();
     }
     public function delete($in) {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
-        return post($in[IDX])->markDelete($in);
+        return post($in[IDX])->markDelete()->response();
     }
     public function get($in) {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
-        return post($in[IDX])->get();
+        return post($in[IDX])->response();
     }
 
     public function gets($in) {
@@ -24,28 +27,34 @@ class PostRoute {
 
         $rets = [];
         foreach( $idxes as $idx ) {
-            /// 데이터가 존재하지 않으면, 리턴되지 않는다.
-            if ( post($idx)->exists() == false ) continue;
-            $post = post($idx)->get();
-            $rets[] = $post;
+		if ( post($idx)->hasError ) continue;
+            $rets[] = post($idx)->response();
         }
         return $rets;
     }
 
     public function search($in) {
-        return post()->search(
+        $posts = post()->search(
+            select: $in['select'] ?? 'idx',
             where: $in['where'] ?? '1',
-            page: $in['page'] ?? 1,
-            limit: $in['limit'] ?? 10,
             order: $in['order'] ?? IDX,
             by: $in['by'] ?? 'DESC',
-            select: $in['select'] ?? '*',
+            page: $in['page'] ?? 1,
+            limit: $in['limit'] ?? 10,
         );
+        $res = [];
+        foreach($posts as $post) {
+            $res[] = $post->response();
+        }
+        return $res;
     }
 
-    public function vote($in) {
+
+
+
+    public function vote($in): array|string {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
-        return postTaxonomy($in[IDX])->vote($in[CHOICE]);
+        return post($in[IDX])->vote($in[CHOICE])->response();
     }
 
 }

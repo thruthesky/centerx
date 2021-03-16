@@ -23,6 +23,6 @@ class AppRoute
 
     public function settings()
     {
-        return config(ADMIN_SETTINGS)->getMetas();
+        return adminSettings()->get();
     }
 }

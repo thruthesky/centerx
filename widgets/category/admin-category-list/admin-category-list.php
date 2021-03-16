@@ -14,7 +14,6 @@ if ( modeCreate() ) {
     <div class="row">
         <div class="col-6">
             <?php if ( in(ID) && modeDelete() == false ) {
-                $cat = category(in(ID))->get();
                 ?>
                     <h3>Category Update</h3>
                 <?php
@@ -38,7 +37,7 @@ if ( modeCreate() ) {
                             <input type="text" class="form-control mb-2" name='id' placeholder="카테고리 아이디 입력">
                         </div>
                         <div class="col-auto">
-                            <button type="submit" class="btn btn-primary mb-2">Create</button>
+                            <button type="submit" class="btn btn-primary mb-2">Create Or Update</button>
                         </div>
                     </div>
                 </form>
@@ -54,13 +53,13 @@ if ( modeCreate() ) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach( categories() as $cat ) { ?>
+                <?php foreach( category()->search(  ) as $category ) { ?>
 
                     <tr>
-                        <th scope="row"><a href="/?p=forum.post.list&categoryId=<?=$cat[ID]?>" target="_blank"><?=$cat[IDX]?></a></th>
-                        <td><a href="/?p=admin.index&w=category/admin-category-list&id=<?=$cat[ID]?>"><?=$cat[ID]?></a></td>
-                        <td><?=$cat[TITLE]?></td>
-                        <td><?=$cat[DESCRIPTION]?></td>
+                        <th scope="row"><a href="/?p=forum.post.list&categoryId=<?=$category->id?>" target="_blank"><?=$category->idx?></a></th>
+                        <td><a href="/?p=admin.index&w=category/admin-category-list&id=<?=$category->id?>"><?=$category->id?></a></td>
+                        <td><?=$category->title?></td>
+                        <td><?=$category->description?></td>
                     </tr>
                 <?php } ?>
                 </tbody>
