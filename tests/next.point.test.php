@@ -15,6 +15,8 @@ $post2 = new Post(0);
 $post3 = new Post(0);
 
 
+//d(date('r', mktime(0, 0, 0, date('m'), date('d'), date('Y'))));
+
 
 
 // 테스트 용 이메일 주소와 비번
@@ -33,7 +35,12 @@ testLikeDailyLimit();
 testPostCreateDelete();
 testCommentCreateDelete();
 testPostCommentCreateHourlyLimit();
+
 testPostCommentCreateDailyLimit();
+
+
+testTwoDifferentCategories();
+testChangeDate();
 
 
 function testPointRegisterAndLogin() {
@@ -45,7 +52,6 @@ function testPointRegisterAndLogin() {
 
     user()->login(['email' => $registered->email, 'password' => '12345a']);
     isTrue($registered->getPoint() == 3, 'register point 3');
-
 
 }
 
@@ -118,6 +124,7 @@ function testPointBasics() {
 function testPostCommentCreateDailyLimit(): void
 {
     clearTestPoint();
+    point()->disableCategoryBanOnLimit(POINT);
 
     // 하루에 3번 제한
     point()->setCategoryDailyLimitCount(POINT, 3);
@@ -126,21 +133,20 @@ function testPostCommentCreateDailyLimit(): void
     $post1 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 1']);
     $post2 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 2']);
     $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
-    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
+
     // 제한 없으므로 성공
-    isTrue($post4->ok, 'post 4 should success');
+    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
+    isTrue($post4->ok, 'post4 should success');
 
 
     // 제한 하므로 실패.
     point()->enableCategoryBanOnLimit(POINT);
     $post5 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 5']);
-    isTrue($post5->hasError, 'post 5 must error');
-
+    isTrue($post5->hasError, 'post5 must be error.');
 
     point()->disableCategoryBanOnLimit(POINT);
     $post6 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 6']);
     isTrue($post6->ok, 'post 6 must success');
-
 
     // 제한 하므로 다시 실패.
     point()->enableCategoryBanOnLimit(POINT);
@@ -148,6 +154,80 @@ function testPostCommentCreateDailyLimit(): void
     isTrue($cmt1->hasError, 'cmt1 must fail');
 
 }
+
+/**
+ * POINT 게시판에는 제한을 해서, 더 이상 글을 못쓰는데, 다른 게시판에는 제한이 없어서, 계속 글을 쓸 수 있는지 테스트를 한다.
+ */
+function testTwoDifferentCategories() {
+    clearTestPoint();
+    point()->disableCategoryBanOnLimit(POINT);
+
+    // 하루에 3번 제한
+    point()->setCategoryDailyLimitCount(POINT, 3);
+
+    setLogin(A);
+    $post1 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 1']);
+    $post2 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 2']);
+    $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
+
+    // 제한 없으므로 성공
+    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
+    isTrue($post4->ok, 'post4 should success');
+
+    // 제한 하므로 실패.
+    point()->enableCategoryBanOnLimit(POINT);
+    $post5 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 5']);
+    isTrue($post5->hasError, 'post5 must be error.');
+
+    $cat = category()->create(['id' => 'twocats' . time()]);
+    $p1 = post()->create([CATEGORY_ID => $cat->id, 'title' => '1']);
+    $p2 = post()->create([CATEGORY_ID => $cat->id, 'title' => '2']);
+    $p3 = post()->create([CATEGORY_ID => $cat->id, 'title' => '3']);
+    $p4 = post()->create([CATEGORY_ID => $cat->id, 'title' => '4']);
+    $p5 = post()->create([CATEGORY_ID => $cat->id, 'title' => '5']);
+
+    isTrue($p1->ok && $p1->title == '1', 'two cat create 1');
+    isTrue($p2->ok && $p2->title == '2', 'two cat create 2');
+    isTrue($p3->ok && $p3->title == '3', 'two cat create 3');
+    isTrue($p4->ok && $p4->title == '4', 'two cat create 4');
+    isTrue($p5->ok && $p5->title == '5', 'two cat create 5');
+}
+
+
+/**
+ * 날짜를 바꾸어서 테스트
+ */
+function testChangeDate() {
+    clearTestPoint();
+    point()->enableCategoryBanOnLimit(POINT);
+
+    // 하루에 1번 제한
+    point()->setCategoryDailyLimitCount(POINT, 1);
+
+    setLogin(A);
+    $post1 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 1']);
+    isTrue($post1->ok, 'testChangeDate() -> post1 must success');
+
+    // 제한 하므로 실패.
+    point()->enableCategoryBanOnLimit(POINT);
+    $post2 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 2']);
+    isTrue($post2->hasError, 'testChangeDate() -> post2 must be error.');
+
+    // 마지막 추천 기록을 24시간 이전으로 돌림.
+    $ph = pointHistory()->last(POSTS, $post1->idx, POINT_POST_CREATE);
+    $ph->update([CREATED_AT => $ph->createdAt - (60 * 60 * 24)]);
+
+    // 그리고 다시 쓰기 성공.
+    $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
+    isTrue($post3->ok && $post3->title == 'post 3', 'testChangeDate() -> post3 must be success.');
+
+    // 하지만 한번 더 쓰기하면 실패.
+    point()->enableCategoryBanOnLimit(POINT);
+    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
+    isTrue($post4->hasError, 'testChangeDate() -> post4 must be error.');
+    isTrue($post4->getError() == e()->daily_limit, 'post4 daily limit');
+}
+
 
 
 function testPostCommentCreateHourlyLimit(): void
@@ -159,7 +239,6 @@ function testPostCommentCreateHourlyLimit(): void
     point()->setCategoryHourLimitCount(POINT, 3);
 
     setLogin(A);
-
 
     point()->disableCategoryBanOnLimit(POINT);
     $post1 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 1']);

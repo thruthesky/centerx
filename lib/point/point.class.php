@@ -320,7 +320,6 @@ class Point {
         return false;
     }
 
-
     /**
      * 카테고리 별 글/코멘트 쓰기 제한에 걸렸으면 true 를 리턴한다.
      * @param int|string $categoryIdx
@@ -328,9 +327,10 @@ class Point {
      */
     public function categoryHourlyLimit(int|string $categoryIdx): bool {
         $re = $this->countOver(
-            [ POINT_POST_CREATE, POINT_COMMENT_CREATE ], // 글/코멘트 작성을
-            $this->getCategoryHourLimit($categoryIdx) * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
-            $this->getCategoryHourLimitCount($categoryIdx) // count 회 수 이상 했으면,
+            reasons: [ POINT_POST_CREATE, POINT_COMMENT_CREATE ], // 글/코멘트 작성을
+            stamp: $this->getCategoryHourLimit($categoryIdx) * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
+            count: $this->getCategoryHourLimitCount($categoryIdx), // count 회 수 이상 했으면,
+            categoryIdx: $categoryIdx,
         );
 //        d("결과: $re, 회수: " . $this->getCategoryHourLimitCount($categoryIdx));
         return $re;
@@ -342,17 +342,89 @@ class Point {
      * @return bool
      */
     public function categoryDailyLimit(int $categoryIdx): bool {
+//        d("categoryDailyLimit(int $categoryIdx)");
         // 추천/비추천 일/수 제한
+
         return $this->countOver(
-            [ POINT_POST_CREATE, POINT_COMMENT_CREATE ], // 글/코멘트 작성을
-            24 * 60 * 60, // 하루에
-            $this->getCategoryDailyLimitCount($categoryIdx) // count 회 수 이상 했으면,
+            reasons: [ POINT_POST_CREATE, POINT_COMMENT_CREATE ], // 글/코멘트 작성을
+            stamp: time() - mktime(0, 0, 0, date('m'), date('d'), date('Y')), // 하루에 몇번. 주의: 정확히는 0시 0분 0초 부터 현재 시점까지이다. README.md# 포인트 참고
+            count: $this->getCategoryDailyLimitCount($categoryIdx), // count 회 수 이상 했으면,
+            categoryIdx: $categoryIdx
         );
     }
 
+    /**
+     * 포인트 기록 테이블에서 $stamp 시간 내에 $reason 들을 찾아 그 수가 $count 보다 많으면 true 를 리턴한다.
+     *
+     * 예를 들어,
+     *   - 추천/비추천을 1시간 이내에 5번으로 제한을 하려고 할 때,
+     *   - 글 쓰기를 하루에 몇번으로 제한 할 때 등에 사용 할 수 있다.
+     *
+     * @param array $reasons
+     * @param int $stamp
+     * @param int $count
+     * @param int $fromUserIdx
+     * @param int $categoryIdx
+     * @return bool
+     *
+     * @example
+     *
+     * // 추천/비추천 시간/수 제한
+     * if ( $re = count_over(
+     * [ POINT_LIKE, POINT_DISLIKE ], // 추천/비추천을
+     * get_like_hour_limit() * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
+     * get_like_hour_limit_count() // count 회 수 이상 했으면,
+     * ) ) return ERROR_HOURLY_LIMIT; // 에러 리턴
+     */
+    function countOver(array $reasons, int $stamp, int $count, $fromUserIdx=0, int $categoryIdx=0): bool {
+        if ( $count ) {
+//            d("countOver: $categoryIdx");
+            $total = $this->countReasons( stamp: $stamp, reasons: $reasons, fromUserIdx: $fromUserIdx, categoryIdx: $categoryIdx );
+            if ( $total >= $count ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 포인트 기록 테이블에서, $stamp 시간 내의 입력된 $actions 의 레코드를 수를 찾아 리턴한다.
+     *
+     * 주의, 추천/비추천과 같이 행동을 하는(포인트를 주는) 주체가 나 인경우, fromUser 에서 제한한다.
+     * 그 외(가입, 로그인 글 쓰기)는 toUser 에서 제한한다.
+     * 이 때에는 $fromUserIdx 에 값이 들어와야 한다.
+     *
+     * @param $stamp
+     * @param array $reasons
+     * @param int $fromUserIdx - 만약 fromUserIdx 가 지정되지 않으면, 로그인한 사용자의 idx 를 toUserIdx 로 사용한다.
+     * @param int $categoryIdx
+     * @return int|string|null
+     */
+    function countReasons($stamp, $reasons, int $fromUserIdx=0, int $categoryIdx=0): int|string|null
+    {
+        if ( ! $stamp ) return 0;
+        $reason_ors = "(" . sqlCondition($reasons, 'OR', REASON) . ")";
+
+        $q_categoryIdx = '';
+        if ( $categoryIdx ) $q_categoryIdx = "AND categoryIdx=$categoryIdx";
+
+        $last_stamp = time() - $stamp;
+        if ( $fromUserIdx ) {
+            $user = "fromUserIdx=$fromUserIdx";
+        } else {
+            $user = "toUserIdx=" . login()->idx;
+        }
+
+        $q = "SELECT COUNT(*) FROM ".entity(POINT_HISTORIES)->getTable()." WHERE createdAt > $last_stamp AND $user $q_categoryIdx AND $reason_ors";
+//        d($q);
+        if ( isDebugging() ) d( $q );
+        return db()->get_var($q);
+    }
+
+
 
     public function vote(PostTaxonomy $post, $Yn) {
-
 
         // 내 글/코멘트이면 리턴. 내 글/코멘트에 추천하는 경우, 포인트 증감 없음.
         if ( $post->isMine() ) return;
@@ -398,78 +470,11 @@ class Point {
                 fromUserPointApply: $fromUserPointApply,
             );
         }
-
-    }
-
-
-    /**
-     * 포인트 기록 테이블에서 $stamp 시간 내에 $reason 들을 찾아 그 수가 $count 보다 많으면 true 를 리턴한다.
-     *
-     * 예를 들어,
-     *   - 추천/비추천을 1시간 이내에 5번으로 제한을 하려고 할 때,
-     *   - 글 쓰기를 하루에 몇번으로 제한 할 때 등에 사용 할 수 있다.
-     *
-     * @param array $reasons
-     * @param int $stamp
-     * @param int $count
-     * @param int $fromUserIdx
-     * @return bool
-     *
-     * @example
-     *
-     * // 추천/비추천 시간/수 제한
-     * if ( $re = count_over(
-     * [ POINT_LIKE, POINT_DISLIKE ], // 추천/비추천을
-     * get_like_hour_limit() * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
-     * get_like_hour_limit_count() // count 회 수 이상 했으면,
-     * ) ) return ERROR_HOURLY_LIMIT; // 에러 리턴
-     */
-    function countOver(array $reasons, int $stamp, int $count, $fromUserIdx=0): bool {
-        if ( $count ) {
-            $total = $this->countMyReasons( $stamp, $reasons, $fromUserIdx );
-            if ( $total >= $count ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * 포인트 기록 테이블에서, $stamp 시간 내의 입력된 $actions 의 레코드를 수를 찾아 리턴한다.
-     *
-     * 주의, 추천/비추천과 같이 행동을 하는(포인트를 주는) 주체가 나 인경우, fromUser 에서 제한한다.
-     * 그 외(가입, 로그인 글 쓰기)는 toUser 에서 제한한다.
-     * 이 때에는 $fromUserIdx 에 값이 들어와야 한다.
-     *
-     * @param $stamp
-     * @param array $reasons
-     *
-     * @return int|string|null
-     */
-    function countMyReasons($stamp, $reasons, int $fromeUserIdx=0) {
-        if ( ! $stamp ) return 0;
-//        $_reasons = [];
-//        foreach( $reasons as $r ) {
-//            $_reasons[] = REASON . "='$r'";
-//        }
-//        $reason_ors = "(" . implode(" OR ", $_reasons) . ")";
-
-        $reason_ors = "(" . sqlCondition($reasons, 'OR', REASON) . ")";
-
-        $last_stamp = time() - $stamp;
-        if ( $fromeUserIdx ) {
-            $user = "fromUserIdx=$fromeUserIdx";
-        } else {
-            $user = "toUserIdx=" . login()->idx;
-        }
-        $q = "SELECT COUNT(*) FROM ".entity(POINT_HISTORIES)->getTable()." WHERE createdAt > $last_stamp AND $user AND $reason_ors";
-        if ( isDebugging() ) d( $q );
-        return db()->get_var($q);
     }
 
 
 }
+
 
 
 
