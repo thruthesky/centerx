@@ -24,9 +24,15 @@ class UserRoute {
         return login()->update($in)->response();
     }
 
-    public function updateOptionSetting($in) {
-        return login()->updateOptionSetting($in)->response();
+    public function switch($in) {
+//        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+//        if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return $this->error(e()->option_is_empty);
+        return login()->switch($in[OPTION])->response();
     }
+
+//    public function updateOptionSetting($in) {
+//        return login()->updateOptionSetting($in)->response();
+//    }
 
 
 

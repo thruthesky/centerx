@@ -91,17 +91,22 @@ class Entity {
      * 에러가 있는 상태에서, entity 삭제시, not your entity 등의 에러가 날 수 있다.
      * 이 부분에 실수 할 수 있으니 유의한다.
      *
+     * @attention When the $field exists in $this->data, it returns the value (Event if it's null or false, it returns the value).
+     *
      * @param string|null $field - 값이 주어지면, 특정 필드의 값 1개만 리턴한다.
      * @param mixed|null $default_value
      * @return array|int|float|string|null
-     * - 에러가 있으면, $field 가 주어졌으면 null 아니면 빈 배열을 리턴한다. 단, $field 가 주어진 경우, 기본 리턴 값을 $default_value 에 지정 할 수 있다.
+     * - 에러가 있으면, $field 가 주어졌으면 null 아니면 빈 배열을 리턴한다.
+     *   단, $field 가 주어진 경우, 기본 리턴 값을 $default_value 에 지정 할 수 있다.
      * - 아니면, $field 가 주어진 경우, $field 값. 아니면 전체 배열을 리턴한다.
+     *
+     *
      */
     public function getData(string $field=null, mixed $default_value=null): array|int|float|string|null
     {
         if ( $field ) {
             if ( $this->hasError ) return null;
-            else return isset($this->data[$field]) && $this->data[$field] ? $this->data[$field] : $default_value;
+            else return isset($this->data[$field]) ? $this->data[$field] : $default_value;
         } else {
             if ( $this->hasError ) return [];
             return $this->data;
@@ -443,6 +448,47 @@ class Entity {
 
         return $this;
     }
+
+
+    /**
+     * Switch `on` or `off` on the $optionName.
+     *
+     * To know if it is `on` or `off`, just use `$this->v($optionName)`. If it returns null, then it never switched.
+     *
+     * @param string $optionName
+     * @return self
+     */
+    public function switch(string $optionName): self {
+        $v = $this->v($optionName);
+        if ( empty($v) || $v == 'off' ) {
+            $v = 'on';
+        } else {
+            $v = 'off';
+        }
+        return $this->update([$optionName => $v]);
+    }
+
+    /**
+     * Switch On
+     *
+     * @param string $optionName
+     * @return $this
+     */
+    public function switchOn(string $optionName): self {
+        return $this->update([$optionName => 'on']);
+    }
+
+    /**
+     * Switch Off
+     *
+     * @param string $optionName
+     * @return $this
+     */
+    public function switchOff(string $optionName): self {
+        return $this->update([$optionName => 'off']);
+    }
+
+
 
 
     /**

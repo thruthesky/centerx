@@ -112,8 +112,8 @@ function send_message_to_users($in): array|string
     }
     foreach ($users as $userIdx) {
         if ( isset($in[SUBSCRIPTION]) ) {
-            $re = user($userIdx)->get();
-            if ( $re[$in[SUBSCRIPTION]] == 'N' ) continue;
+            $re = user($userIdx);
+            if ( $re->v($in[SUBSCRIPTION]) == 'N' ) continue;
         }
         $tokens = token()->getTokens($userIdx);
         $all_tokens = array_merge($all_tokens, $tokens);
