@@ -23,6 +23,7 @@ if ( $post == null ) {
 //    'category' => $category,
 //];
 
-$w = $post->category()->v('postViewWidget', 'post-view/post-view-default');
-include_once widget($w);
+
+
+include_once widget($post->category()->postViewWidget ? $post->category()->postViewWidget : 'post-view/post-view-default');
 

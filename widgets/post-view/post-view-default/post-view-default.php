@@ -17,6 +17,7 @@ $post = post()->current();
 <div class="meta">
     No. <?=$post->idx?>
     User. <?=$post->user()->name?>
+    Date: <?=date('r', $post->createdAt)?>
 </div>
 <div class="content box mt-3">
     <?=$post->content?>

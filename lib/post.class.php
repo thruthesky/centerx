@@ -87,7 +87,6 @@ class Post extends PostTaxonomy {
         // 회원 번호
         $in[USER_IDX] = login()->idx;
 
-
         // 제한에 걸렸으면, 에러 리턴.
         if ( $category->BAN_ON_LIMIT == 'Y' ) {
             $re = point()->checkCategoryLimit($category->idx);
