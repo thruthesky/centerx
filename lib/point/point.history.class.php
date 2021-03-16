@@ -25,10 +25,18 @@ class PointHistory extends Entity {
 
 
     /**
+     * point history 테이블에서 taxonomy, entity, reason 에 맞는 마지막 기록 1개를 리턴한다.
+     *
+     * - 예제) 마지막 기록을 가져와서, 포인트 기록이 된 시간을 24시간 이전으로 수정한다.
+     * ```php
+     * $ph = pointHistory()->last(POSTS, $post1->idx, POINT_POST_CREATE);
+     * $ph->update([CREATED_AT => $ph->createdAt - (60 * 60 * 24)]);
+     * ```
+     *
      * @param $taxonomy
      * @param $entity
+     * @param string $reason
      * @return PointHistory
-     * @throws Exception
      */
     public function last($taxonomy, $entity, $reason=''): PointHistory {
         $q = '';

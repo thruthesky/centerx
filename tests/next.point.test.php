@@ -15,6 +15,8 @@ $post2 = new Post(0);
 $post3 = new Post(0);
 
 
+//d(date('r', mktime(0, 0, 0, date('m'), date('d'), date('Y'))));
+
 
 
 // 테스트 용 이메일 주소와 비번
@@ -38,6 +40,7 @@ testPostCommentCreateDailyLimit();
 
 
 testTwoDifferentCategories();
+testChangeDate();
 
 
 function testPointRegisterAndLogin() {
@@ -189,6 +192,42 @@ function testTwoDifferentCategories() {
     isTrue($p4->ok && $p4->title == '4', 'two cat create 4');
     isTrue($p5->ok && $p5->title == '5', 'two cat create 5');
 }
+
+
+/**
+ * 날짜를 바꾸어서 테스트
+ */
+function testChangeDate() {
+    clearTestPoint();
+    point()->enableCategoryBanOnLimit(POINT);
+
+    // 하루에 1번 제한
+    point()->setCategoryDailyLimitCount(POINT, 1);
+
+    setLogin(A);
+    $post1 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 1']);
+    isTrue($post1->ok, 'testChangeDate() -> post1 must success');
+
+    // 제한 하므로 실패.
+    point()->enableCategoryBanOnLimit(POINT);
+    $post2 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 2']);
+    isTrue($post2->hasError, 'testChangeDate() -> post2 must be error.');
+
+    // 마지막 추천 기록을 24시간 이전으로 돌림.
+    $ph = pointHistory()->last(POSTS, $post1->idx, POINT_POST_CREATE);
+    $ph->update([CREATED_AT => $ph->createdAt - (60 * 60 * 24)]);
+
+    // 그리고 다시 쓰기 성공.
+    $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
+    isTrue($post3->ok && $post3->title == 'post 3', 'testChangeDate() -> post3 must be success.');
+
+    // 하지만 한번 더 쓰기하면 실패.
+    point()->enableCategoryBanOnLimit(POINT);
+    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
+    isTrue($post4->hasError, 'testChangeDate() -> post4 must be error.');
+    isTrue($post4->getError() == e()->daily_limit, 'post4 daily limit');
+}
+
 
 
 function testPostCommentCreateHourlyLimit(): void

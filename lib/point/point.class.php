@@ -344,9 +344,10 @@ class Point {
     public function categoryDailyLimit(int $categoryIdx): bool {
 //        d("categoryDailyLimit(int $categoryIdx)");
         // 추천/비추천 일/수 제한
+
         return $this->countOver(
             reasons: [ POINT_POST_CREATE, POINT_COMMENT_CREATE ], // 글/코멘트 작성을
-            stamp: 24 * 60 * 60, // 하루에 몇번. 주의: 정확히는 지난 24시간 동안의 회수 검사. 0시 부터 24시 까지가 아니다.
+            stamp: time() - mktime(0, 0, 0, date('m'), date('d'), date('Y')), // 하루에 몇번. 주의: 정확히는 0시 0분 0초 부터 현재 시점까지이다. README.md# 포인트 참고
             count: $this->getCategoryDailyLimitCount($categoryIdx), // count 회 수 이상 했으면,
             categoryIdx: $categoryIdx
         );
@@ -416,7 +417,7 @@ class Point {
         }
 
         $q = "SELECT COUNT(*) FROM ".entity(POINT_HISTORIES)->getTable()." WHERE createdAt > $last_stamp AND $user $q_categoryIdx AND $reason_ors";
-//        d($q); exit;
+//        d($q);
         if ( isDebugging() ) d( $q );
         return db()->get_var($q);
     }
