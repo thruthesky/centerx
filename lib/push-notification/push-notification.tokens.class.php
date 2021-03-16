@@ -79,12 +79,12 @@ function token(int|string $idx=0): PushNotificationTokens
 }
 
 function sanitizedInput($in): array {
-    if ( !isset($in['title'])) $in['title'] = '';
-    if ( !isset($in['body'])) $in['body'] = '';
-    if ( !isset($in['click_action'])) $in['click_action'] = '/';
-    if ( !isset($in['imageUrl'])) $in['imageUrl'] = '';
-    if ( !isset($in['data'])) $in['data'] = [];
-    $in['data']['senderIdx'] = login()->idx;
+    if ( !isset($in[TITLE])) $in[TITLE] = '';
+    if ( !isset($in[BODY])) $in[BODY] = '';
+    if ( !isset($in[CLICK_ACTION])) $in[CLICK_ACTION] = '/';
+    if ( !isset($in[IMAGE_URL])) $in[IMAGE_URL] = '';
+    if ( !isset($in[DATA])) $in[DATA] = [];
+    $in[DATA]['senderIdx'] = login()->idx;
     return $in;
 }
 
@@ -100,9 +100,9 @@ function sanitizedInput($in): array {
  */
 function send_message_to_users($in): array|string
 {
-    if (!isset($in['users'])) return e()->users_is_empty;
-    if (!isset($in['title'])) return e()->title_is_not_exist;
-    if (!isset($in['body'])) return e()->body_is_not_exist;
+    if (!isset($in[USERS])) return e()->users_is_empty;
+    if (!isset($in[TITLE])) return e()->title_is_not_exist;
+    if (!isset($in[BODY])) return e()->body_is_not_exist;
     $all_tokens = [];
 
     if (gettype($in[USERS]) == 'array') {
@@ -113,7 +113,7 @@ function send_message_to_users($in): array|string
     foreach ($users as $userIdx) {
         if ( isset($in[SUBSCRIPTION]) ) {
             $re = user($userIdx);
-            if ( $re->v($in[SUBSCRIPTION]) == 'N' ) continue;
+            if ( $re->v($in[SUBSCRIPTION]) == OFF ) continue;
         }
         $tokens = token()->getTokens($userIdx);
         $all_tokens = array_merge($all_tokens, $tokens);
@@ -121,7 +121,7 @@ function send_message_to_users($in): array|string
     /// If there are no tokens to send, then it will return empty array.
     if (empty($all_tokens)) return e()->token_is_empty;
     $in = sanitizedInput($in);
-    $re = sendMessageToTokens($all_tokens, $in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']);
+    $re = sendMessageToTokens($all_tokens, $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL]);
     $res = [];
     foreach($re->getItems() as $item) {
         $res[] = $item->result();
@@ -145,8 +145,7 @@ function getTokensFromUserIDs($idxs = [], $filter = null): array
     foreach ($idxs as $idx) {
         $rows = token()->getTokens($idx);
         if ($filter) {
-            $user = user($idx)->getData();
-            if (isset($user[$filter]) && $user[$filter] == 'N') {
+            if (user($idx)->v($filter) == OFF) {
             } else {
                 foreach ($rows as $token) {
                     $tokens[] = $token;

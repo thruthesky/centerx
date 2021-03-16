@@ -459,6 +459,8 @@ class Entity {
      * @return self
      */
     public function switch(string $optionName): self {
+        if ( empty($optionName) ) return $this->error(e()->option_is_empty);
+
         $v = $this->v($optionName);
         if ( empty($v) || $v == 'off' ) {
             $v = 'on';

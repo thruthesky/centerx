@@ -79,6 +79,10 @@ define('POINT', 'point');
 define('CHOICE', 'choice');
 
 
+define('ON', 'on');
+define('OFF', 'off');
+
+
 
 define('OPTION', 'option');
 
