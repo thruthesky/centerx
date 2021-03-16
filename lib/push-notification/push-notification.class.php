@@ -17,7 +17,7 @@ class PushNotification {
         if ( ! isset($in[TOKENS])) $in[TOKENS] = token()->myTokens();
 
         $res = subscribeTopic($in[TOPIC], $in[TOKENS]);
-        return login()->update( [ $in[TOPIC] => 'Y' ])->response();
+        return login()->switchOn($in[TOPIC])->response();
     }
 
     public function unsubscribeTopic($in): array|string {
@@ -26,7 +26,7 @@ class PushNotification {
         if ( ! isset($in[TOKENS])) $in[TOKENS] = token()->myTokens();
 
         $res = unsubscribeTopic($in[TOPIC], $in[TOKENS]);
-        return login()->update( [ $in[TOPIC] => 'N' ])->response();
+        return login()->switchOff($in[TOPIC])->response();
     }
 
 }
