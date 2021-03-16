@@ -15,25 +15,26 @@
  * 참고로, 현재 글의 카테고리 아이디를 얻기 위해서는 $this->category()->id 와 같이 할 수도 있고, postCategoryId($this->categoryIdx) 와 같이
  * 할 수 있다. 전자는 레코드와 메타 데이터 전체를 다 읽고 필요한 초기화까지 한다. 후자는 필드 하나만 읽는다. 어느 함수를 쓸지는 적절히 결정해야 한다.
  *
- * @property-read string $rootIdx;
- * @property-read string $parentIdx;
- * @property-read string $categoryIdx;
- * @property-read string $userIdx;
+ * @property-read int $rootIdx;
+ * @property-read int $parentIdx;
+ * @property-read int $categoryIdx;
+ * @property-read int $userIdx;
  * @property-read string $title;
- * @property-read string $files;
+ * @property-read File[] $files;
  * @property-read string $path;
  * @property-read string $content;
  * @property-read string $url;
- * @property-read string $y;
- * @property-read string $n;
+ * @property-read int $y;
+ * @property-read int $n;
  * @property-read string $countryCode;
  * @property-read string $province;
  * @property-read string $city;
  * @property-read string $address;
  * @property-read string $zipcode;
- * @property-read string $createdAt;
- * @property-read string $updatedAt;
- * @property-read string $deletedAt;
+ * @property-read int $Ymd
+ * @property-read int $createdAt;
+ * @property-read int $updatedAt;
+ * @property-read int $deletedAt;
  */
 class Post extends PostTaxonomy {
 
@@ -106,6 +107,7 @@ class Post extends PostTaxonomy {
 
         // Update path
         $in[PATH] = $this->getPath($in['title'] ?? '');
+        $in['Ymd'] = date('Ymd');
         parent::create($in);
         if ( $this->hasError ) return $this;
 
