@@ -61,3 +61,9 @@ https://local.itsuda50.com/?route=comment.get&idx=12603
 ###
 https://local.itsuda50.com/?route=comment.delete&sessionId=5592-52f7119495484c1d56cf8629e9664001&idx=12603
 
+
+###
+https://local.itsuda50.com/?route=user.update&sessionId=5592-52f7119495484c1d56cf8629e9664001&height=123&weight=45&blood_pressure_low=80&blood_pressure_hight=128&diabetes=Y&heart_disease=N
+
+###
+https://local.itsuda50.com/?route=health.create&sessionId=5592-52f7119495484c1d56cf8629e9664001&categoryId=scribble&title=yo&content=yoyoyo&reload=true

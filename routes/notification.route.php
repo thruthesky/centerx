@@ -114,7 +114,7 @@ class NotificationRoute {
      */
     public function topicSubscription(array $in): array|string
     {
-        if (login()->v($in[TOPIC]) == "Y") {
+        if (login()->v($in[TOPIC]) == ON) {
             return $this->unsubscribeTopic($in);
         } else {
             return $this->subscribeTopic($in);

@@ -16,6 +16,7 @@ define('FIX_LANGUAGE', 'ko');
 
 
 include 'itsuda.hooks.php';
+include 'itsuda.route.php';
 
 
 

@@ -1069,13 +1069,7 @@ function onCommentCreateSendNotification(Comment|Post $cp)
  */
 function getForumSubscribers(string $topic): array
 {
-    return getMetaEntities([CODE => $topic, DATA => 'Y'], limit: 10000);
-//    $ids = [];
-//    $rows = meta()->search(where: "taxonomy='users' AND code='$topic' AND data='Y'", limit: 10000, select: ENTITY);
-//    foreach ($rows as $user) {
-//        $ids[] = $user[ENTITY];
-//    }
-//    return $ids;
+    return getMetaEntities([CODE => $topic, DATA => ON], limit: 10000);
 }
 
 

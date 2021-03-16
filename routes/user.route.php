@@ -18,23 +18,25 @@ class UserRoute {
         return login()->response();
     }
 
-
     public function update($in) {
         if ( notLoggedIn() ) return e()->not_logged_in;
         return login()->update($in)->response();
     }
 
     public function switch($in) {
-//        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
-//        if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return $this->error(e()->option_is_empty);
+        if ( notLoggedIn() ) return e()->not_logged_in;
         return login()->switch($in[OPTION])->response();
     }
 
-//    public function updateOptionSetting($in) {
-//        return login()->updateOptionSetting($in)->response();
-//    }
+    public function switchOn($in) {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        return login()->switchOn($in[OPTION])->response();
+    }
 
-
+    public function switchOff($in) {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        return login()->switchOff($in[OPTION])->response();
+    }
 
     /**
      * Returns user point history.
