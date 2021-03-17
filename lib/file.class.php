@@ -47,6 +47,9 @@ class File extends Entity {
      * 주의, 현재 $this->idx 에 대해서만 삭제를 한다.
      * 주의, 현재 객체에 에러가 설정되어져 있으면 그냥 현재 객체 리턴.
      *
+     * 참고, posts.files 와 같이 필드에 해당 글과 연관된 첨부 파일이 기록되는데, 여기서 글을 삭제할 때, 그 files 필드 정보를 업데이트하지 않는다.
+     * 따라서, 각 글이나 entity 에 연결된 첨부 파일을 추출 할 때에는 fromIndexes() 대신, find() 함수를 쓴다.
+     *
      * @return self
      *
      * @todo update `files` field on entity if exists.
@@ -58,10 +61,9 @@ class File extends Entity {
         if ( $this->isMine() === false ) return $this->error(e()->not_your_file);
 
 
-	$file_path = UPLOAD_DIR . $this->path;
-        if ( file_exists($file_path) === false ) return $this->error(e()->file_not_exists);
+        if ( file_exists($this->path) === false ) return $this->error(e()->file_not_exists);
 
-        $re = @unlink($file_path);
+        $re = @unlink($this->path);
         if ( $re === false ) return $this->error(e()->file_delete_failed);
         return parent::delete();
     }
@@ -71,6 +73,7 @@ class File extends Entity {
         parent::read($idx);
         $url = UPLOAD_URL . $this->v(PATH);// $data[PATH];
         $this->updateData('url', $url);
+        $this->updateData('path', UPLOAD_DIR . $this->path);
         return $this;
     }
 
@@ -89,7 +92,7 @@ class File extends Entity {
      *
      * 참고로, 글의 첨부 파일은 1,2,3 과 같이 저장되어져 있다.
      * @param string $idxes
-     * @param bool $object - true 이면 객체로 리턴하고, false 이면 배열로 리턴한다.
+     * @param bool $object - true 이면 객체로 리턴하고, false 이면 response 배열로 리턴한다.
      * @return File[]
      * - 만약, 파일이 없으면 빈 배열이 리턴된다.
      */
@@ -101,7 +104,6 @@ class File extends Entity {
             else $rets[] = files($idx)->response();
         }
         return $rets;
-
     }
 
     /**

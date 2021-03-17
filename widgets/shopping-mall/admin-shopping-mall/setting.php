@@ -31,7 +31,7 @@ if ( modeSubmit() ) {
     </form>
 </section>
 
-<script src="<?=ROOT_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
+<script src="<?=HOME_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
 
 <script>
     const attr = {

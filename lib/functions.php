@@ -1177,8 +1177,9 @@ function includeVueOnce() {
     global $__include_vue_once;
     if ( $__include_vue_once ) return;
     $__include_vue_once = true;
+    $homeUrl = HOME_URL;
     echo <<<EOH
-<script src="<?=ROOT_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
+<script src="$homeUrl/etc/js/vue.3.0.7.global.prod.min.js"></script>
 EOH;
 
 }

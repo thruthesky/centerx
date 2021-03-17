@@ -564,13 +564,33 @@ class Entity {
      */
     public function findOne(array $conds, string $conj = 'AND'): self {
 
-        $arr = self::search(conds: $conds, conj: $conj); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
+        $arr = self::search(conds: $conds, conj: $conj, limit: 1); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
 
         if ( ! $arr ) return $this->error(e()->entity_not_found);
         $idx = $arr[0][IDX];
 
         return $this->read($idx);
     }
+
+
+    /**
+     * entity 를 찾아서 현재 객체 배열을 리턴한다.
+     *
+     * search() 와 다른 점은 search() 는 레코드를 배열로 리턴하는데, find() 는 객체 배열로 리턴한다.
+     *
+     * @param array $conds
+     * @param string $conj
+     * @return self[]
+     */
+    public function find(array $conds, string $conj = 'AND'): array {
+        $rows = self::search(conds: $conds, conj: $conj); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
+        $rets = [];
+        foreach( $rows as $row ) {
+            $rets[] = clone $this->read($row[IDX]);
+        }
+        return $rets;
+    }
+
 
 
     /**

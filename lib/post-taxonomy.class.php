@@ -105,9 +105,29 @@ class PostTaxonomy extends Entity {
      *
      * @return File[]
      */
-    public function files(): array {
+    public function files(bool $object = true): array {
         /// 기본적으로 files 필드는 빈 문자열을 가지는데, 때로는 null 이 되는 경우가 있다.
-        return files()->fromIdxes($this->files ?? '');
+//        return files()->fromIdxes($this->files ?? '');
+
+        ///
+        /**
+         *
+         * taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
+         */
+
+        $files = files()->find([TAXONOMY => POSTS, ENTITY => $this->idx]);
+        if ( $object ) {
+            return $files;
+        }
+
+        $rets = [];
+
+            foreach( $files as $file ) {
+                $rets[] = $file->response();
+            }
+
+            return $rets;
+
     }
 
 
@@ -132,7 +152,22 @@ class PostTaxonomy extends Entity {
     }
 
 
+    /**
+     * 글/코멘트 쓰기/수정 등에서 첨부 파일이 업로드된 경우, 그 첨부 파일의 taxonomy 와 entity 를 현재 글/코멘트의 것으로 수정한다.
+     *
+     * @param $in
+     */
+    public function fixUploadedFiles($in) {
 
+        /// 업로드된 첨부 파일의 taxonomy 와 entity 를 지정한다.
+        if ( isset($in[FILES]) && $in[FILES] ) {
+            $files = separateByComma($in[FILES]);
+            foreach( $files as $file ) {
+                files($file)->update([TAXONOMY => POSTS, ENTITY => $this->idx]);
+            }
+        }
+
+    }
 
 }
 
