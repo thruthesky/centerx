@@ -159,7 +159,7 @@ class Comment extends PostTaxonomy {
         }
 
         
-        $comment['short_date_time'] = short_date_time($comment['createdAt']);
+        $comment['shortDate'] = short_date_time($comment['createdAt']);
 
 
         return $comment;
