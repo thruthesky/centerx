@@ -28,9 +28,10 @@ $post = post()->current();
     <a class="btn btn-sm btn-secondary" href="/?p=forum.post.list&categoryId=<?=$post->categoryId()?>">List</a>
 </section>
 
+
 <div class="files mt-3">
     <?php foreach( $post->files() as $file ) { ?>
-        <img class="w-100" src="<?=$file['url']?>">
+        <img class="w-100" src="<?=$file->url?>">
     <?php } ?>
 </div>
 

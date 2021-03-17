@@ -574,6 +574,26 @@ class Entity {
 
 
     /**
+     * entity 를 찾아서 현재 객체 배열을 리턴한다.
+     *
+     * search() 와 다른 점은 search() 는 레코드를 배열로 리턴하는데, find() 는 객체 배열로 리턴한다.
+     *
+     * @param array $conds
+     * @param string $conj
+     * @return self[]
+     */
+    public function find(array $conds, string $conj = 'AND'): array {
+        $rows = self::search(conds: $conds, conj: $conj); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
+        $rets = [];
+        foreach( $rows as $row ) {
+            $rets[] = clone $this->read($row[IDX]);
+        }
+        return $rets;
+    }
+
+
+
+    /**
      * 현재 Taxonomy 에서 1개의 레코드를 검색해서, 1개의 필드 값을 리턴한다.
      *
      * @param string $select - 1개의 필드만 입력해야 한다. 그 필드의 값을 리턴한다.

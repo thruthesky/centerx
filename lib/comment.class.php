@@ -53,6 +53,8 @@ class Comment extends PostTaxonomy {
         if ( $this->hasError ) return $this;
 
 
+        $this->fixUploadedFiles($in);
+
         $category = category($categoryIdx);
 
         // 제한에 걸렸으면, 에러 리턴.
@@ -104,7 +106,11 @@ class Comment extends PostTaxonomy {
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->isMine() == false ) return $this->error(e()->not_your_comment);
 
-        return parent::update($in);
+        parent::update($in);
+
+        $this->fixUploadedFiles($in);
+
+        return $this;
     }
 
 

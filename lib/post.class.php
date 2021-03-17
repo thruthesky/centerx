@@ -104,11 +104,16 @@ class Post extends PostTaxonomy {
         // @todo check if too many post creation.
         // @todo check if too many comment creation.
 
-        // Update path
+        // Update path for SEO friendly.
         $in[PATH] = $this->getPath($in['title'] ?? '');
         $in['Ymd'] = date('Ymd');
         parent::create($in);
         if ( $this->hasError ) return $this;
+
+
+        $this->fixUploadedFiles($in);
+
+
 
         point()->forum(POINT_POST_CREATE, $this->idx);
 
@@ -150,8 +155,9 @@ class Post extends PostTaxonomy {
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
 
-
-        return parent::update($in);
+        parent::update($in);
+        $this->fixUploadedFiles($in);
+        return $this;
     }
 
 
@@ -198,11 +204,17 @@ class Post extends PostTaxonomy {
         $post['comments'] = $this->comments(false);
 
         /**
-         * Get files only if $select includes 'files' field.
+         *
+         * taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
          */
         if ( isset($post[FILES]) ) {
-            $post[FILES] = files()->fromIdxes($post[FILES], false);
+            $post[FILES] = [];
+            $files = files()->find([TAXONOMY => POSTS, ENTITY => $this->idx]);
+            foreach( $files as $file ) {
+                $post[FILES][] = $file->response();
+            }
         }
+        $post[FILES] = $this->files(false);
 
         if ( $post[USER_IDX] ) {
             $post['user'] = user($post[USER_IDX])->postProfile();
