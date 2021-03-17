@@ -154,12 +154,9 @@ class Comment extends PostTaxonomy {
 
         $comment = $this->getData();
 
-        /**
-         * Get files only if $select includes 'files' field.
-         */
-        if ( isset($comment[FILES]) ) {
-            $comment[FILES] = files()->fromIdxes($comment[FILES], false);
-        }
+
+        // taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
+        $post[FILES] = $this->files(false);
 
 
         if ( $comment[USER_IDX] ) {
