@@ -20,7 +20,6 @@ if ( modeDelete() ) {
     $post = post();
 }
 
-
 $category = category(SHOPPING_MALL);
 
 ?>
