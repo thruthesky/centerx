@@ -450,6 +450,13 @@ category2=subscateogry-2-1,subcategory-2-2, ...
 
 - If a comment has same value of `rootIdx` and `parentIdx`, then it's the first depth(immediate) child comment of the post.
 
+- `code` 필드는 posts 테이블 레코드에 특정 코드를 저장해서, 해당 글을 추출할 때 사용한다.
+  예를 들면, 어떤 글에 특정 code 를 저장하고 URL 로 /?p=forum.post.view&code=abc 와 같이 해서 특정 글을 보거나
+  
+  또 다른 예로, 특정 청소 기록을 하는 테이블을 만들때, 각 날짜별로 방청소, 화장실 청고, 거실 청소 등 코드를 두어서, 날짜별로 청소를 했는지 안했는지 체크 할 수 있다.
+  즉, 별도의 테이블을 만들지 않고, 게시판 테이블로 여러가지 기능을 만들 수 있다.
+  `code` 에는 최대 32 글자의 문자열이 저장되는데, 숫자로 저장해도 상관 없다.
+  
 
 ## Config taxonomy class
 
@@ -748,6 +755,16 @@ https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d802387
 
 - You can upload a file/image and save the idx (of uploaded file) in a different meta field of the taxonomy.
   - You have to delete the taxonomy meta field after delte the file.
+
+
+- 파일을 업로드 할 때, 기존의 파일을 삭제해야하는 경우가 있다.
+  예를 들어, 하나의 글에 하나의 사진만 올릴 수 있도록 하는 경우, 사용자가 사진을 변경하면 기존의 사진은 자동으로 삭제가 되어야한다.
+  이 때, file upload 를 할 때,
+  deletePreviousUpload: Y
+  taxonomy:
+  entity:
+  에 값이 들어오면, 백엔드에서 삭제를 한다.
+  Flutter Firelamp api.controller.dart 의 takeUploadFile() 과 uploadFile() 함수를 참고.
 
 
 ## Point Api

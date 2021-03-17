@@ -580,10 +580,11 @@ class Entity {
      *
      * @param array $conds
      * @param string $conj
+     * @param int $limit - 기본적으로 100 개만 리턴.
      * @return self[]
      */
-    public function find(array $conds, string $conj = 'AND'): array {
-        $rows = self::search(conds: $conds, conj: $conj); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
+    public function find(array $conds, string $conj = 'AND', int $limit=100): array {
+        $rows = self::search(limit: $limit, conds: $conds, conj: $conj); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
         $rets = [];
         foreach( $rows as $row ) {
             $rets[] = clone $this->read($row[IDX]);

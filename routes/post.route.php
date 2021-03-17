@@ -24,8 +24,8 @@ class PostRoute {
     /**
      * 오늘 쓰여진 글을 찾아 리턴한다.
      *
-     * $in['categoryId'] 와 $in['userIdx'] 값을 바탕으로 글 1개를 추출하는데,
-     * 만약, 동일한 조건(categoryId 와 userIdx) 에 여러개의 글이 있으면 최근글 1개를 리턴한다.
+     * $in['categoryId'] 와 $in['userIdx'] 값을 바탕으로 글 추출하여 배열로 리턴한다.
+     * 만약, $in['limit'] 에 값이 들어가면 오늘의 글 중, 그 만큼을 찾아 배열로 리턴한다.
      *
      * @param $in
      * @return array|string
@@ -41,8 +41,17 @@ class PostRoute {
         if ( isset($in[USER_IDX]) && $in[USER_IDX] ) {
             $conds[USER_IDX] = $in[USER_IDX];
         }
-        return post()->findOne($conds)->response();
+
+        $posts = post()->find($conds, limit: $in['limit']);
+        $rets = [];
+        foreach($posts as $post) {
+            $rets[] = $post->response();
+        }
+        return $rets;
+
     }
+
+
 
     public function gets($in) {
         if ( ! isset($in['idxes']) ) return e()->idx_is_empty;

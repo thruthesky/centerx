@@ -210,11 +210,11 @@ class Post extends PostTaxonomy {
         if ( $this->hasError ) return $this->getError();
         $post = $this->getData();
 
-        $post['comments'] = $this->comments(false);
+        $post['comments'] = $this->comments(true);
 
 
         // taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
-        $post[FILES] = $this->files(false);
+        $post[FILES] = $this->files(true);
 
 
         if ( $post[USER_IDX] ) {
@@ -453,10 +453,10 @@ class Post extends PostTaxonomy {
      *
      * 참고: getComments() 는 하위 코멘트의 구조만 담고 있다.
      *
-     * @param bool $object - true 이면 객체로 리턴. false 이면 배열로 리턴.
+     * @param bool $response - false 이면 객체로 리턴. true 이면 배열로 리턴.
      * @return Comment[]
      */
-    public function comments(bool $object = true): array {
+    public function comments(bool $response = false): array {
 
 
         // reset global comments container.
@@ -469,12 +469,12 @@ class Post extends PostTaxonomy {
         $rets = [];
         if ( $comments ) {
             foreach($comments as $comment) {
-                if ( $object ) {
-                    $cmt = comment($comment[IDX]);
-                    $cmt->depth = $comment[DEPTH];
-                } else {
+                if ( $response ) {
                     $cmt = comment($comment[IDX])->response();
                     $cmt[DEPTH] = $comment[DEPTH];
+                } else {
+                    $cmt = comment($comment[IDX]);
+                    $cmt->depth = $comment[DEPTH];
                 }
                 $rets[] = $cmt;
             }

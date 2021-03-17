@@ -26,6 +26,17 @@ class File extends Entity {
         $name = basename($_FILES[USERFILE]['name']);
         $path = $this->getPath($name);
 
+        /**
+         * 기존 사진을 삭제한다. README 참고.
+         */
+        if ( isset($in['deletePreviousUpload']) && $in['deletePreviousUpload'] == 'Y' ) {
+            $files = $this->find([TAXONOMY => $in[TAXONOMY], ENTITY => $in[ENTITY]]);
+            foreach( $files as $file ) {
+                files($file->idx)->delete();
+            }
+        }
+
+
         if (move_uploaded_file($_FILES[USERFILE]['tmp_name'], $path)) {
             $save = [
                 USER_IDX => login()->idx,

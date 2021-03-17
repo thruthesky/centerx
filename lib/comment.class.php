@@ -168,7 +168,8 @@ class Comment extends PostTaxonomy {
 
 
         // taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
-        $post[FILES] = $this->files(false);
+        $comment[FILES] = $this->files(true);
+
 
         if ( $comment[USER_IDX] ) {
             $comment['user'] = user($comment[USER_IDX])->postProfile();

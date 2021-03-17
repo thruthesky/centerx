@@ -118,24 +118,26 @@ class PostTaxonomy extends Entity {
      * foreach( $post->files() as $file ) { ... }
      * ```
      *
-     * @param bool $object
+     *
+     * @param bool $response
      * @return File[]
      */
-    public function files(bool $object = true): array {
+    public function files(bool $response = false): array {
         /**
          *
          * taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
          */
         $files = files()->find([TAXONOMY => POSTS, ENTITY => $this->idx]);
-        if ( $object ) {
+        if ( $response ) {
+            $rets = [];
+            foreach( $files as $file ) {
+                $rets[] = $file->response();
+            }
+            return $rets;
+        } else {
             return $files;
         }
 
-        $rets = [];
-        foreach( $files as $file ) {
-            $rets[] = $file->response();
-        }
-        return $rets;
     }
 
 
