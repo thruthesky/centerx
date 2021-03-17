@@ -65,6 +65,9 @@ class Post extends PostTaxonomy {
             $this->updateData('url', $url);
         }
 
+        /// 현재 글을 생성 할 때, 글쓴이가 획득한 포인트.
+        $point = pointHistory()->last(POSTS, $this->idx, POINT_POST_CREATE)?->toUserPointApply ?? 0;
+        $this->updateData('appliedPoint', $point);
         return $this;
     }
 

@@ -22,7 +22,6 @@ class PostTaxonomy extends Entity {
         parent::__construct(POSTS, $idx);
     }
 
-
     /**
      *
      * 동일한 투표를 두 번하면, 취소가 된다. 찬성 투표를 했다가 찬성을 하면 취소.

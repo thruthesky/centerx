@@ -72,7 +72,8 @@
   where: "a='apple' or (b='banana' and meta.c='cherry') or meta.d=1"
   SQL query 에 `meta.` 이라는 것이 들어가면 무조건 meta 검색으로 인식한다. 따라서 검색 조건에 `meta.` 라는 단어가 들어가면 안된다.
 
-## next branch 에서 해야 할 것
+- @doc
+  `https://local.itsuda50.com/?route=comment.get&idx=15224` 와 같이 글이나 코멘트를 가져올 때, 글/코멘트 생성시, 작성자에게 추가된 포인트가 `appliedPoint` 로 클라이언트에게 전달된다.
 
 - README 에 최소한의 정보만 두고, 모두 phpDocument 화 한다.
   
@@ -747,6 +748,17 @@ https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d802387
 
 - You can upload a file/image and save the idx (of uploaded file) in a different meta field of the taxonomy.
   - You have to delete the taxonomy meta field after delte the file.
+
+
+## Point Api
+
+- 글(또는 코멘트)을 쓸 때, 얼마의 포인트를 획득했는지, 포인트 값을 알고 싶다면, 아래와 같이 호출한다.
+  - `idx` 는 글 또는 코멘트 번호이다.
+  - @todo 로그인한 사용자 자신의 레코드이어야 값을 가져올 수 있도록 수정해야 한다.
+  
+```
+https://local.itsuda50.com/?route=point.postCreate&idx=15130
+```
 
 
 ### Displaying images

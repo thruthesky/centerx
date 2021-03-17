@@ -32,6 +32,18 @@ class Comment extends PostTaxonomy {
     }
 
 
+    /// 글 읽기
+    public function read(int $idx = 0): Entity
+    {
+        parent::read($idx);
+
+        /// 현재 코멘트를 생성 할 때, 글쓴이가 획득한 포인트.
+        $point = pointHistory()->last(POSTS, $this->idx, POINT_COMMENT_CREATE)?->toUserPointApply ?? 0;
+        $this->updateData('appliedPoint', $point);
+        return $this;
+    }
+
+
     /**
      * @param array $in
      *
