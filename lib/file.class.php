@@ -71,6 +71,7 @@ class File extends Entity {
         parent::read($idx);
         $url = UPLOAD_URL . $this->v(PATH);// $data[PATH];
         $this->updateData('url', $url);
+        $this->updateData('path', UPLOAD_DIR . $this->path);
         return $this;
     }
 

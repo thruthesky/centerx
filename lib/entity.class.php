@@ -564,7 +564,7 @@ class Entity {
      */
     public function findOne(array $conds, string $conj = 'AND'): self {
 
-        $arr = self::search(conds: $conds, conj: $conj); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
+        $arr = self::search(conds: $conds, conj: $conj, limit: 1); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
 
         if ( ! $arr ) return $this->error(e()->entity_not_found);
         $idx = $arr[0][IDX];
