@@ -1,4 +1,4 @@
-# CenterX
+# CenterXgit stat
 
 - 위세너에서 개발한 LEMP 기반 백엔드.
 - 특징
