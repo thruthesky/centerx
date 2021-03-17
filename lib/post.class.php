@@ -65,11 +65,11 @@ class Post extends PostTaxonomy {
             $this->updateData('url', $url);
         }
 
-        /// 현재 글을 생성 할 때, 글쓴이가 획득한 포인트.
-        $point = pointHistory()->last(POSTS, $this->idx, POINT_POST_CREATE)?->toUserPointApply ?? 0;
-        $this->updateData('appliedPoint', $point);
+        $this->patchPoint();
         return $this;
     }
+
+
 
     /**
      * @param array $in
@@ -119,7 +119,12 @@ class Post extends PostTaxonomy {
 
 
 
+        // 포인트 충전
         point()->forum(POINT_POST_CREATE, $this->idx);
+
+        // 포인트를 현재 객체의 $this->data 에 업데이트
+        $this->patchPoint();
+
 
 
 

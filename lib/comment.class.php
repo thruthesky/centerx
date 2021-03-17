@@ -37,9 +37,7 @@ class Comment extends PostTaxonomy {
     {
         parent::read($idx);
 
-        /// 현재 코멘트를 생성 할 때, 글쓴이가 획득한 포인트.
-        $point = pointHistory()->last(POSTS, $this->idx, POINT_COMMENT_CREATE)?->toUserPointApply ?? 0;
-        $this->updateData('appliedPoint', $point);
+        $this->patchPoint();
         return $this;
     }
 
@@ -61,6 +59,7 @@ class Comment extends PostTaxonomy {
         $categoryIdx = postCategoryIdx($in[ROOT_IDX]);
 
         $in[CATEGORY_IDX] = $categoryIdx;
+        $in['Ymd'] = date('Ymd'); // 오늘 날짜
         parent::create($in);
         if ( $this->hasError ) return $this;
 
@@ -84,6 +83,7 @@ class Comment extends PostTaxonomy {
 
         // $comment = parent::create($in);
         point()->forum(POINT_COMMENT_CREATE, $this->idx);
+        $this->patchPoint();
 
         /**
          * NEW COMMENT IS CREATED ==>  Send notification to forum comment subscriber

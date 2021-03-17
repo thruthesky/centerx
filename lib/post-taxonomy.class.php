@@ -13,6 +13,7 @@
  *
  *
  * @property-read int categoryIdx
+ * @property-read int parentIdx
  * @property-read string files
  */
 class PostTaxonomy extends Entity {
@@ -22,6 +23,21 @@ class PostTaxonomy extends Entity {
         parent::__construct(POSTS, $idx);
     }
 
+    /**
+     * 현재 글(또는 코멘트)을 생성 할 때, 작성자가 획득한 포인트를 $this->data 에 업데이트한다.
+     *
+     * 획득한 포인트는 오직, point_histories 에만 기록되는데, 그 값을 읽어, 현재 $this->data 메모리 변수에 적용한다.
+     * 이 함수는 글/코멘트 read() 함수와, 글/코멘트에서 포인트 업데이트 직후에 사용하면 된다.
+     *
+     * 참고로 PointRoute::postCreate() 에서 비슷한 코드를 사용한다.
+     */
+    public function patchPoint() {
+        if ( $this->parentIdx ) $reason = POINT_COMMENT_CREATE;
+        else $reason = POINT_POST_CREATE;
+        $point = pointHistory()->last(POSTS, $this->idx, $reason)?->toUserPointApply ?? 0;
+        $this->updateData('appliedPoint', $point);
+
+    }
     /**
      *
      * 동일한 투표를 두 번하면, 취소가 된다. 찬성 투표를 했다가 찬성을 하면 취소.
@@ -38,7 +54,7 @@ class PostTaxonomy extends Entity {
      * @example
      *  $re = api_vote(['post_ID' => 1, 'choice' => 'Y']);
      */
-    function vote($Yn): self {
+    public function vote($Yn): self {
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
         if ( !$Yn ) return $this->error(e()->empty_vote_choice);// ERROR_EMPTY_CHOICE;
         if ( $Yn != 'Y'  && $Yn != 'N' ) return $this->error(e()->empty_wrong_choice);// ERROR_WRONG_INPUT;
