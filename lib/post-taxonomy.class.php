@@ -103,6 +103,7 @@ class PostTaxonomy extends Entity {
      * foreach( $post->files() as $file ) { ... }
      * ```
      *
+     * @param bool $object
      * @return File[]
      */
     public function files(bool $object = true): array {
@@ -116,13 +117,10 @@ class PostTaxonomy extends Entity {
         }
 
         $rets = [];
-
-            foreach( $files as $file ) {
-                $rets[] = $file->response();
-            }
-
-            return $rets;
-
+        foreach( $files as $file ) {
+            $rets[] = $file->response();
+        }
+        return $rets;
     }
 
 
