@@ -111,6 +111,7 @@ class Post extends PostTaxonomy {
         if ( $this->hasError ) return $this;
 
 
+        // 업로드된 파일의 taxonomy 와 entity 수정
         $this->fixUploadedFiles($in);
 
 
@@ -203,21 +204,10 @@ class Post extends PostTaxonomy {
 
         $post['comments'] = $this->comments(false);
 
-        /**
-         *
-         * taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
-         */
-        // if ( isset($post[FILES]) ) {
-        //     $post[FILES] = [];
-        //     $files = files()->find([TAXONOMY => POSTS, ENTITY => $this->idx]);
-        //     foreach( $files as $file ) {
-        //         $post[FILES][] = $file->response();
-        //     }
-        // }
-        // $post[FILES] = $this->files(false);
-        if ( isset($post[FILES]) ) {
-            $post[FILES] = files()->fromIdxes($post[FILES], false);
-        }
+
+        // taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
+        $post[FILES] = $this->files(false);
+
 
         if ( $post[USER_IDX] ) {
             $post['user'] = user($post[USER_IDX])->postProfile();

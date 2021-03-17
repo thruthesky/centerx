@@ -56,19 +56,6 @@ class PostRoute {
         return $rets;
     }
 
-    // public function gets($in) {
-    //     if ( ! isset($in['idxes']) ) return e()->idx_is_empty;
-    //     $idxes = explode(',', $in['idxes']);
-
-    //     $rets = [];
-    //     foreach( $idxes as $idx ) {
-    //         /// 데이터가 존재하지 않으면, 리턴되지 않는다.
-    //         if ( post($idx)->exists() == false ) continue;
-    //         $post = post($idx)->get();
-    //         $rets[] = $post;
-    //     }
-    //     return $rets;
-    // }
 
     public function search($in) {
         $posts = post()->search(

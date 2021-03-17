@@ -53,6 +53,7 @@ class Comment extends PostTaxonomy {
         if ( $this->hasError ) return $this;
 
 
+        // 업로드된 파일의 taxonomy 와 enttity 수정
         $this->fixUploadedFiles($in);
 
         $category = category($categoryIdx);
@@ -108,6 +109,7 @@ class Comment extends PostTaxonomy {
 
         parent::update($in);
 
+        // 업로드된 파일의 taxonomy 와 enttity 수정
         $this->fixUploadedFiles($in);
 
         return $this;
