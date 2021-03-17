@@ -110,15 +110,10 @@ class Post extends PostTaxonomy {
         parent::create($in);
         if ( $this->hasError ) return $this;
 
-
         $this->fixUploadedFiles($in);
 
-
-
         point()->forum(POINT_POST_CREATE, $this->idx);
-
-
-
+        
         // update `noOfPosts`
         // update `noOfComments`
 
@@ -203,6 +198,12 @@ class Post extends PostTaxonomy {
 
         $post['comments'] = $this->comments(false);
 
+
+
+
+
+
+        //
         /**
          *
          * taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
@@ -287,6 +288,8 @@ class Post extends PostTaxonomy {
 
 
 
+
+    //
     /**
      * @param string $where
      * @param array $conds
@@ -303,7 +306,6 @@ class Post extends PostTaxonomy {
      * @return string
      */
     private function parseCategory(string $where): string {
-
         $count = preg_match_all("/<([^>]+)>/", $where, $ms);
         if ( $count ) {
             for( $i = 0; $i < $count; $i ++ ) {
@@ -456,8 +458,6 @@ class Post extends PostTaxonomy {
      * @return Comment[]
      */
     public function comments(bool $object = true): array {
-
-
         // reset global comments container.
         global $__rets;
         $__rets = [];
