@@ -4,216 +4,200 @@
  */
 /**
  * Class User
+ * @property-read string $email
+ * @property-read string $password
+ * @property-read string $sessionId
+ * @property-read string $name
+ * @property-read string $nickname
+ * @property-read int $photoIdx
+ * @property-read string $phoneNo
+ * @property-read string $gender
+ * @property-read int $birthdate
+ * @property-read string $countryCode
+ * @property-read string $province
+ * @property-read string $city
+ * @property-read string $address
+ * @property-read string $zipcode
+ * @property-read string $createdAt
+ * @property-read string $updatedAt
+ * @property-read string $provider -  social login
+ * @property-read string $plid - pass login
+ * @property-read string $ci - pass login
  */
 class User extends Entity {
 
-    public string $email;
-    public string $name;
-    public string $nickname;
-    public string $photoIdx;
-    public string $point;
-    public string $phoneNo;
-    public string $gender;
-    public string $birthdate;
-    public string $countryCode;
-    public string $province;
-    public string $city;
-    public string $address;
-    public string $zipcode;
-    public string $createdAt;
-    public string $updatedAt;
-    public string $provider; // social login
-    public string $plid; // pass login
-    public string $ci; // pass login
-
-    private array $profile = [];
+    /**
+     * @deprecated 이 변수를 사용하면 안된다. getPoint() 를 사용해야 한다.
+     * @var int
+     */
+    public int $point;
 
     public function __construct(int $idx)
     {
         parent::__construct(USERS, $idx);
-        $this->init();
     }
 
-    private function init() {
-        $u = $this->profile();
-        if ( isError($u) || empty($u) ) return;
 
-        $this->profile = $u;
-
-
-
-        $this->email = $u[EMAIL];
-        $this->name = $u[NAME];
-        $this->nickname = $u[NICKNAME] ?? '';
-        $this->photoIdx = $u['photoIdx'] ?? 0;
-        $this->point = $u['point'];
-        $this->phoneNo = $u['phoneNo'];
-        $this->gender = $u['gender'];
-        $this->birthdate = $u['birthdate'];
-        $this->countryCode = $u['countryCode'];
-        $this->province = $u['province'];
-        $this->city = $u['city'];
-        $this->address = $u['address'];
-        $this->zipcode = $u['zipcode'];
-
-        $this->createdAt = $u[CREATED_AT];
-        $this->updatedAt = $u[UPDATED_AT];
-
-        $this->provider = $u['provider'] ?? '';
-        $this->plid = $u['plid'] ?? '';
-        $this->ci = $u['ci'] ?? '';
-
-
-    }
 
     /**
-     * 사용자 필드를 가져오는 magic getter
+     * 회원 정보를 읽어서 data 에 보관한다.
      *
-     * users 테이블과 meta 테이블에서 데이터를 가져온고, 레코드가 없으면 null 를 리턴한다.
-     * @attention 주의 할 것은,
-     *  1. 객체 초기화를 할 때, init() 함수에서
-     *  2. users 테이블은 멤버 변수로 설정하고,
-     *  3. 그리고 users 테이블과 meta 테이블의 모든 값은 $profile 에 저장한다.
-     *  4. magic getter 로 값을 읽을 때, 새로 DB 에서 가져오는 것이 아니라, (멤버 변수로 설정되지 않았다면, 즉, meta 의 경우,) $profile 에서 가져온다.
-     *  5 $this->update() 를 하면, 다시 init() 을 호출 한다.
+     * 회원 정보를 읽을 때, password 를 없애고, sessionId 를 추가한다.
+     * 참고, 현재 객체에 read() 메소드를 정의하면, 부모 클래스의 read() 메소드를 overridden 한다. 그래서 부모 함수를 호출해야한다.
+     * read() 메소드를 정의하지 않고, 그냥 constructor 에서 정의 할 수 있는데, 그렇게하면 각종 상황에서 read() 가 호출되는데, 그 때 적절한 패치를 못할 수 있다.
      *
-     *
-     * @param $name
-     * @return mixed
-     *
-     * @example
-     *  d( user(49)->password );
-     *  d( user(49)->oooo === null ? 'is null' : 'is not null' );
-     *  $user = user($u[IDX]);
-     *  isTrue($u[EMAIL] == $user->email, "same email");
-     *  $updated = $user->update(['what' => 'blue']);
-     *  isTrue($user->v('what') == 'blue', 'should be blue. but ' . $user->v('color'));
-     *  isTrue($user->what == 'blue', 'should be blue. but ' . $user->what);
+     * @param int $idx
+     * @return self
      */
-    public function __get($name) {
-        $u = $this->profile;
-        if ( $u && isset($u[$name]) ) return $u[$name];
-        else return null;
-    }
-
-    /**
-     * 현재 객체에 회원 idx 를 지정한다.
-     * @param string $email
-     * @return mixed
-     * - 에러가 있으면 에러 코드를 리턴한다.
-     * - 에러가 없으면, (password 필드를 포함하는) 회원 프로필 레코드를 리턴한다.
-     */
-    private function _setUserByEmail(string $email): mixed {
-        $record = $this->get(EMAIL, $email);
-        if ( !$record ) return e()->user_not_found_by_that_email;
-        $this->setIdx($record[IDX]);
-        return $record;
-    }
-
-    /**
-     * 현재 사용자의 users 테이블 또는 meta(config) 테이블에서, field 의 값을 가져온다.
-     *
-     * @param string $field
-     * @param mixed|null $_
-     * @return mixed
-     * - 에러이면, 에러 코드를 리턴한다.
-     * - 필드가 존재하지 않으면 null 을 리턴한다.
-     * - 그 외, 필드 값을 리턴한다.
-     *
-     * 예제)
-     *  d( user(48)->get(PASSWORD) );
-     */
-    public function data(string $field): mixed {
-        $record = $this->profile(unsetPassword: false);
-        if ( e($record)->isError ) return $record;
-        return isset($record[$field]) ? $record[$field] : null;
+    public function read(int $idx = 0): self
+    {
+        parent::read($idx);
+        $data = $this->getData();
+        $data[SESSION_ID] = getSessionId($this->getData());
+        $this->setData($data);
+        return $this;
     }
 
 
     /**
      * Create a user account and return his profile.
      *
+     * 주의: 이 함수는 기존의 에러를 없애고, 이 함수에서 발생하는 에러를 저장한다.
+     *
      * @param array $in
-     * @return array|string
+     * @return User
      */
-    public function register(array $in): array|string {
+    public function register(array $in): self {
+        $this->resetError();
+        if ( isset($in[EMAIL]) == false ) return $this->error(e()->email_is_empty);
+        if ( !checkEmailFormat($in[EMAIL]) ) return $this->error(e()->malformed_email);
+        if ( isset($in[PASSWORD]) == false ) return $this->error(e()->password_is_empty);
 
-        if ( isset($in[EMAIL]) == false ) return e()->email_is_empty;
-        if ( !checkEmailFormat($in[EMAIL]) ) return e()->malformed_email;
-        if ( isset($in[PASSWORD]) == false ) return e()->password_is_empty;
 
-        $user = $this->get(EMAIL, $in[EMAIL]);
-        if ( $user ) return e()->email_exists;
+        $found = $this->exists([EMAIL=>$in[EMAIL]]);
+
+        if ( $found ) return $this->error(e()->email_exists);
 
         $in[PASSWORD] = encryptPassword($in[PASSWORD]);
 
-        $record = $this->create($in);
+        $this->create($in);
 
-        if ( isError($record) ) return $record;
+        point()->register($this->profile());
 
-        $profile = user($record[IDX])->profile();
-
-        point()->register($profile);
-
-        return $profile;
+        return $this;
     }
 
-    public function loginOrRegister(array $in): array|string {
+    /**
+     * 비밀번호 변경
+     *
+     * @param string $newPassword
+     * @return User
+     *
+     * @example
+     *      user()->by('thruthesky@gmail.com')->changePassword('abc123d')
+     */
+    public function changePassword(string $newPassword): self {
+        return parent::update([PASSWORD => encryptPassword($newPassword)]);
+    }
+
+
+
+
+
+    /**
+     * 이 메일이 존재하면 true, 아니면 false 를 리턴한다.
+     * @param $email
+     * @return bool
+     */
+    public function emailExists($email): bool {
+        return count($this->search(conds: [EMAIL => $email])) == 1;
+    }
+
+    /**
+     * 회원 로그인
+     *
+     * 회원 로그인 성공하면, 현재 객체를 로그인한 사용자 것으로 변경한다.
+     *
+     * @param array $in
+     * @return self
+     *
+     * 예제)
+     * d(user()->login(email: '...', password: '...');
+     */
+    public function login(array $in): self {
+        if ( isset($in[EMAIL]) == false || !$in[EMAIL] ) return $this->error(e()->email_is_empty);
+        if ( isset($in[PASSWORD]) == false || !$in[PASSWORD] ) return $this->error(e()->empty_password);
+
+        $users = $this->search(select: 'idx, password', conds: [EMAIL => $in[EMAIL]]);
+        if ( !$users ) return $this->error(e()->user_not_found_by_that_email);
+        $user = $users[0];
+
+        if ( ! checkPassword($in[PASSWORD], $user->password) ) return $this->error(e()->wrong_password);
+
+        // 회원 정보 및 메타 정보 업데이트
+        // 로그인을 할 때, 추가 정보를 저장한다. 이 때, 비밀번호는 저장되지 않게 한다.
+        unset($in[PASSWORD]);
+
+        // 회원 로그인 성공하면, 현재 객체를 로그인한 사용자 것으로 변경한다.
+        $this->idx = $user->idx;
+        $this->update($in);
+
+        point()->login($this->profile());
+        return $this;
+    }
+
+
+
+
+    /**
+     *
+     * @param array $in
+     * @return self
+     */
+    public function loginOrRegister(array $in): self {
         $re = $this->login($in);
-        if ( $re == e()->user_not_found_by_that_email ) {
+        if ( $re->getError() == e()->user_not_found_by_that_email ) {
             return $this->register($in);
         } else {
             return $re;
         }
-//        d($re);
-//        if ( isError($re) == false ) return $re;
-//        else return $this->register($in);
     }
 
+
     /**
+     * 회원 정보를 클라이언트로 전달하기 위한 값을 리턴한다.
      *
-     * @attention User may not be logged in. So, login check must be done before calling this method like in route.
-     *  But $this->idx must be set.
+     * 에러가 있으면, 에러 문자열. 아니면, 사용자 레코드와 메타를 배열로 리턴한다.
      *
+     * - sessionId 는 객체 생성시 이미 적용되어져 있다.
      *
-     * @param array $in
      * @return array|string
-     * - error_idx_not_set if current instance has not `idx`.
-     * - profile on success.
-     *
-     * @example
-     *  user(123)->update();
-     *  login()->update()
      */
-    public function update(array $in): array|string {
-        if ( ! $this->idx ) return e()->idx_not_set;
-        parent::update($in);
-        $this->init();
-        return $this->profile();
+    public function response(): array|string {
+        if ( $this->hasError ) return $this->getError();
+        $data = $this->getData();
+        unset($data[PASSWORD]);
+        return $data;
     }
 
     /**
-     * 회원 정보를 리턴한다.
-     * meta(config) 에 설정된 값들도 같이 리턴한다.
-     * @param bool $unsetPassword - false 이면, 비밀번호를 같이 리턴한다.
-     * @return mixed
+     * Alias of response()
      *
+     * 단순히, $this->data() 를 배열로 리턴한다.
+     *
+     * @return array|string
      * 예제)
      * d( user(48)->profile() );
      */
-    public function profile(bool $unsetPassword=true, bool $cache=true): mixed {
-        if ( ! $this->idx ) return e()->idx_not_set;
-        $record = $this->get('idx', $this->idx, cache: $cache);
-        if ( !$record ) return e()->user_not_found_by_that_idx;
-        $record[SESSION_ID] = getSessionId($record);
-        if ( $unsetPassword ) unset($record[PASSWORD]);
-        return $record;
+    public function profile(): array|string {
+        return $this->response();
     }
 
     /**
      * 글/코멘트 용으로 전달할(보여줄) 간단한 프로필 정보를 리턴한다.
+     * @return array
      */
-    public function postProfile() {
+    public function postProfile(): array {
         return [
             'idx' => $this->idx,
             'name' => $this->name,
@@ -223,63 +207,63 @@ class User extends Entity {
         ];
     }
 
+
     /**
-     *
-     * @return mixed
-     *
-     * 예제)
-     * d(user()->login(email: '...', password: '...');
+     * @param $p
+     * @return User
      */
-    public function login(array $in):mixed {
-        if ( isset($in[EMAIL]) == false || !$in[EMAIL] ) return e()->email_is_empty;
-
-        if ( isset($in[PASSWORD]) == false || !$in[PASSWORD] ) return e()->empty_password;
-        $profile = $this->_setUserByEmail($in[EMAIL]);
-        if ( isError($profile) ) return $profile;
-
-        if ( ! checkPassword($in[PASSWORD], $profile[PASSWORD]) ) return e()->wrong_password;
-
-        // 회원 정보 및 메타 정보 업데이트
-        unset($in[PASSWORD]);
-        $this->update($in);
-
-        $profile = $this->profile();
-        point()->login($profile);
-        return $profile;
+    public function setPoint($p): self {
+        return $this->update([POINT => $p]);
     }
 
 
-
-
-    public function setPoint($p) {
-        $this->update([POINT => $p]);
-    }
-    public function getPoint() {
-        if ( $this->idx ) {
-            return $this->get(select: POINT, cache: false)[POINT];
+    /**
+     * 사용자 포인트를 리턴한다.
+     *
+     * 포인트는 캐시된 값을 쓰면 안되고, DB 에서 값을 가져와야하는 경우가 많으므로, `$this->point` 는 쓰지 못한다.
+     * `$this->point` 를 쓰려고 한다면, `User::$point must not be accessed before initialization` 에러를 만날 것이다.
+     *
+     * 주의, 로그인을 하지 않은 상태라도, 현재 User 객체의 $this->idx 값이 설정되어져 있으면, 그 entity 의 point 를 가져온다.
+     *
+     * @param bool $cache - 이 값이 true 이면, DB 에서 읽지 않고, 이미 읽은 데이터를 사용한다. 기본 값 false.
+     * @return int
+     */
+    public function getPoint(bool $cache=false): int {
+        if ( $cache ) {
+            return $this->getData()['point'];
         } else {
-            return 0;
+            return $this->getVar(POINT, [IDX => $this->idx]);
         }
     }
 
+
+
+
+
     /**
      * Returns User instance by idx or email.
-     * @param int|string $uid
-     * @return User
      *
-     *  - If there is no user by email, then it returns User(0).
+     * Entity 클래스의 findOne() 설명을 참고한다.
      *
      * @example
      *      user()->by($email)->setPoint(0);
+     *
+     * @param int|string $uid user idx or email
+     * @return User
+     * - If there is no user by email, then error will be set.
+     *
      */
     public function by(int|string $uid): User {
         if ( is_int($uid) ) return user($uid);
-        $row = parent::get(EMAIL, $uid);
-        if ( $row ) return user($row[IDX]);
-        return user();
+        return $this->findOne([EMAIL => $uid]);
     }
 
+
     /**
+     * @todo This is a optional switching (on/off) function. Make it generic like `entity()->on(OPTION)`, `entity()->off(OPTION)
+     * @todo Make it like `user(123)->on('chat_room_id')`, `user(123)->off(...)`
+     * @todo Move the function to route.
+     *
      * Update User Option Setting - to set userMeta[OPTION] to Y or N
      * if $in[OPTION] is null or 'Y' then change it to N
      * if $in[OPTION] is 'N' then change it to Y
@@ -287,18 +271,63 @@ class User extends Entity {
      * @param $in
      * @return array|string
      */
-    public function updateOptionSetting(array $in): array|string
-    {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return e()->option_is_empty;
-        if ( my($in[OPTION]) == null  || my($in[OPTION]) == "Y" ) {
-            parent::update( [ $in[OPTION] => 'N' ]);
-        } else {
-            parent::update( [ $in[OPTION] => 'Y' ]);
-        }
-        return $this->profile();
-    }
+//    public function updateOptionSetting(array $in): self
+//    {
+//        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+//        if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return $this->error(e()->option_is_empty);
+//
+//        if ( login()->v($in[OPTION]) != 'N' ) {
+//            parent::update( [ $in[OPTION] => 'N' ]);
+//        } else {
+//            parent::update( [ $in[OPTION] => 'Y' ]);
+//        }
+//
+//        return $this;
+//    }
 
+
+    /**
+     * 사용자를 검색 후, User 객체를 배열로 리턴한다.
+     *
+     * @param string $where
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @param string $by
+     * @param string $select
+     * @param array $conds
+     * @param string $conj
+     * @return User[]
+     */
+    public function search(
+        string $select='idx',
+        string $where='1',
+        string $order='idx',
+        string $by='DESC',
+        int $page=1,
+        int $limit=10,
+        array $conds=[],
+        string $conj = 'AND',
+    ): array
+    {
+
+        $users = parent::search(
+            select: $select,
+            where: $where,
+            order: $order,
+            by: $by,
+            page: $page,
+            limit: $limit,
+            conds: $conds,
+            conj: $conj
+        );
+
+        $rets = [];
+        foreach( ids($users) as $idx ) {
+            $rets[] = user($idx);
+        }
+        return $rets;
+    }
 
 }
 
@@ -315,18 +344,18 @@ function user(int $idx=0): User
 }
 
 /**
- * Returns User class instance with the login user. Or optionally, meta value of user field.
+ * Returns User class instance of the login user. Or optionally, returns meta value of user field.
  *
- * Note, that it does not only returns `wc_users` table, but also returns from `wc_metas` table.
- * Use `$cache` to get critical information. Like getting user point before updating it.
+ * Note, that it returns Not Only user's field, but also user's meta field.
+ *
+ * 만약, 로그인이 안된 상태에서 이 함수를 호출하면, login()->idx 의 값은 0 이 된다.
  *
  * @param string|null $field
- * @param bool $cache
  * @return User|int|string|array|null
  *
  * Example)
  *  d(user()->profile()); // Result. error_idx_not_set
- *  d(login()->profile()); // Result. it will return user profile if the user has logged in or erorr.
+ *  d(login()->profile()); // Result. it will return user profile if the user has logged in or error.
  *
  * You may check if user had logged in before calling this method.
  *
@@ -334,25 +363,21 @@ function user(int $idx=0): User
  *  login('color', false); // returns color meta.
  *  login()->color; // returns color meta also.
  */
-function login(string $field=null, bool $cache=true): User|int|string|array|null {
+function login(string $field=null): User|int|string|array|null {
     global $__login_user_profile;
+    $profile = $__login_user_profile;
     if ( $field ) {             // Want to get only 1 field?
-        if (loggedIn()) {       // Logged in?
-            if ($cache) {       // Want cached value?
-                return $__login_user_profile[$field] ?? null;
-            } else {            // Real value from database.
-                $profile = login()->profile(cache: false);
-                if ( isset($profile[$field]) ) { // Has field?
-                    return $profile[$field];
-                } else {
-                    return null; // No field.
-                }
+        if ( $profile ) {       // Logged in?
+            if ( isset($profile[$field]) ) { // Has field?
+                return $profile[$field];
+            } else {
+                return null; // No field.
             }
         } else {
             return null;        // Not logged in to get a field.
         }
     } else {
-        return new User($__login_user_profile[IDX] ?? 0);
+        return new User($profile[IDX] ?? 0);
     }
 
 }

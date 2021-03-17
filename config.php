@@ -55,6 +55,9 @@ define('DB_HOST', 'mariadb');
 
 define('DB_PREFIX', 'wc_');
 
+// @todo 안보이는데로 이동 시킬 것.
+define('META_TABLE', DB_PREFIX . 'metas');
+
 
 
 /**
@@ -81,15 +84,25 @@ if ( !defined('COOKIE_DOMAIN') ) {
 define('UPLOAD_DIR', ROOT_DIR . 'files/uploads/');
 define('THUMBNAILS_DIR', ROOT_DIR . 'files/thumbnails/');
 
+
+/**
+ * 현재 홈페이지 URL 을 강제로 지정한다.
+ *
+ * 기본적으로, HOME_URL 은 현재 웹 브라우저로 접속한 홈 URL 이 된다.
+ * 현재 웹브라우저 접속 URL 이 아닌 다른 주소로 지정 할 수 있다.
+ * 특히, CLI 로 작업을 하거나 테스트를 하는 경우, 현재 브라우저 접속 URL 값을 찾을 수 없으며,
+ * 임시 도메인 주소인 기본 값인 DEFAULT_HOME_URL 상수가 사용한다. 물론변경 가능하다.
+ * 주의, URL 이 슬래시(/)로 끝나야 한다.
+ *
+ */
 if ( isCli() ) {
-    define('ROOT_URL', UPLOAD_DIR);
+    define('HOME_URL', DEFAULT_HOME_URL);
 } else {
-    define('ROOT_URL', get_current_root_url());
+    define('HOME_URL', get_current_root_url());
 }
+define('UPLOAD_URL', HOME_URL . 'files/uploads/');
+define('THUMBNAILS_URL', HOME_URL . 'files/thumbnails/');
 
-
-define('UPLOAD_URL', ROOT_URL . 'files/uploads/');
-define('THUMBNAILS_URL', ROOT_URL . 'files/thumbnails/');
 
 
 /**
@@ -170,4 +183,5 @@ if ( !defined('NAVER_CLIENT_ID') ) define('NAVER_CLIENT_ID', 'gCVN3T_vsOmX1ADriD
 if ( !defined('NAVER_CLIENT_SECRET') ) define('NAVER_CLIENT_SECRET', 'JzWh7zPeJF');
 if ( !defined('NAVER_CALLBACK_URL') ) define('NAVER_CALLBACK_URL', urlencode('https://main.philov.com/wp-content/themes/sonub/callbacks/naver-login.callback.php'));
 if ( !defined('NAVER_API_URL') ) define('NAVER_API_URL', "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=".NAVER_CLIENT_ID."&redirect_uri=".NAVER_CALLBACK_URL."&state=1");
+
 

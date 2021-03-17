@@ -1,5 +1,51 @@
 <?php
 
+/**
+ * Class Translation
+ *
+ * Translation class can be used on both functional(inside PHP) and restful(by API calling).
+ *
+ * - For client-end, the app should listen to the `/notifications/translation` document in Firebase realtime database.
+ *   And when the document is updated, the app would get the translated text from backend and re-render updated text on app.
+ *
+ *
+ * 언어화 코드는 여러개의 레코드가 모여서 하나의 정보를 구성한다. 따라서, 일반적인 Entity 클래스의 사용 방식과 약간다르다.
+ *
+ * - For functional use, below is the code sample.
+ *
+ * ```php
+ * d(ln('code', 'default value'));
+ *
+ * // Another way to display text based on user's language.
+ * // This may be better to reduce database access and size.
+ * // Consider when you deliver all of the text code to client-end,
+ * // It might be painful if the size of translation is big.
+ * ln(['en' => 'User Agreements', 'ko' => '이용자 약관', 'ch' => '...', ]);
+ * ```
+ *
+ * - User can use their languages by;
+ *
+ * ```html
+ * <form action="/">
+ *  <input type="hidden" name="p" value="setting.language.submit">
+ *  <select name="language" onchange="this.form.submit()">
+ *      <option value="">Choose language</option>
+ *      <?php foreach( SUPPORTED_LANGUAGES as $ln ) { ?>
+ *          <option value="<?=$ln?>"><?=ln($ln, $ln)?></option>
+ *      <?php } ?>
+ *  </select>
+ * </form>
+ * ```
+ *
+ * - If `FIX_LANGAUGE` is set, then user language is ignored, and this applies only on web.
+ *
+ *
+ * @example ../tests/next.translation.test.php
+ *
+ * @property-read string $language
+ * @property-read string $code
+ * @property-read string $text
+ */
 class Translation extends Entity
 {
 
@@ -8,13 +54,17 @@ class Translation extends Entity
         parent::__construct(TRANSLATIONS, $idx);
     }
 
-
     /**
+     * - `[ 'code' => 'apple', 'en' => 'Apple', 'ko' => '사과' ]` 와 같이 값을 입력 받아 저장을 한다.
+     * - 저장 후, Firebase realtime database 의 notification 도큐먼트에 time 을 업데이트 한다.
+     *
      * @param $in
      * @return string
+     * - 에러가 있으면 에러 문자열
+     * - 저장을 했으면, 'code' 값이 리턴된다.
      * @throws \Kreait\Firebase\Exception\DatabaseException
      */
-    public function createCode($in) {
+    public function createCode($in): string {
         if ( !isset($in['code']) || empty($in['code']) ) return e()->empty_code;
         foreach( SUPPORTED_LANGUAGES as $ln ) {
 
@@ -26,19 +76,33 @@ class Translation extends Entity
 
         }
         setRealtimeDatabaseDocument('/notifications/translations', ['time' => time()]);
-        return $in;
+        if ( $this->hasError ) return $this->getError();
+        return $in[CODE];
     }
 
+    /**
+     * 코드와 텍스트를 변경한다.
+     *
+     * - 코드를 변경하는 경우, 새로은 코드 이름이 이미 존재한다면, 에러.
+     *
+     * @param $in
+     * @return string
+     * @throws \Kreait\Firebase\Exception\DatabaseException
+     */
     public function updateCode($in) {
         if ( !isset($in['code']) || empty($in['code']) ) return e()->empty_code;
 
         if ( $in['currentCodeName'] != $in['code'] ) {
-            $re = $this->get('code', $in['code']);
-            if ( $re ) return e()->code_exists;
+            if ( $this->exists([CODE => $in[CODE]]) ) return e()->code_exists;
         }
         $this->deleteCode($in['currentCodeName']);
         return $this->createCode($in);
     }
+
+    /**
+     * 코드 삭제
+     * @param $code
+     */
     public function deleteCode($code) {
         $idxes = $this->search(where: "code='$code'");
         foreach(ids($idxes) as $idx) {
@@ -55,10 +119,10 @@ class Translation extends Entity
      */
     public function load() {
         $rets = [];
-        foreach( ids($this->search(limit: 1230000, order: 'code', by: 'ASC')) as $idx ) {
-            $row = translation($idx)->get(select: 'idx, language, code, text');
-            if ( ! isset($rets[ $row['code'] ] ) ) $rets[ $row['code'] ] = []; // init
-            $rets[ $row['code'] ][ $row['language'] ] = $row['text'];
+        foreach( ids($this->search(order: 'code', by: 'ASC', limit: 1234567)) as $idx ) {
+            $tr = translation($idx);
+            if ( ! isset($rets[ $tr->code ] ) ) $rets[ $tr->code ] = []; // init
+            $rets[ $tr->code ][ $tr->language ] = $tr->text;
         }
         return $rets;
     }
@@ -72,18 +136,25 @@ class Translation extends Entity
      */
     public function loadByLanguageCode() {
         $rets = [];
-        foreach( ids($this->search(limit: 1230000, order: 'code', by: 'ASC')) as $idx ) {
-            $row = translation($idx)->get(select: 'idx, language, code, text');
+        foreach( ids($this->search(order: 'code', by: 'ASC', limit: 1234567)) as $idx ) {
+            $tr = translation($idx);
 
-            if (!isset($rets[$row['language']])) $rets[$row['language']] = []; // init
-            $rets[$row['language']][$row['code']] = $row['text'];
+            if (!isset($rets[$tr->language])) $rets[$tr->language] = []; // init
+            $rets[$tr->language][$tr->code] = $tr->text;
         }
         return $rets;
     }
 
 
+    /**
+     * 해당 언어의 해당 코드에 해당하는 text 를 리턴한다.
+     *
+     * @param string $language
+     * @param string $code
+     * @return mixed|string
+     */
     public function text(string $language, string $code) {
-        $rows = $this->search("language='$language' AND code='$code'", select: 'language, code, text');
+        $rows = $this->search(select: 'language, code, text', where: "language='$language' AND code='$code'");
         if ( count($rows) ) {
             return $rows[0]['text'];
         }

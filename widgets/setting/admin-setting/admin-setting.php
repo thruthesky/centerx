@@ -1,10 +1,11 @@
 <?php
     if ( modeUpdate() ) {
-        config()->updateMetas(ADMIN_SETTINGS, in());
+        adminSettings()->set(in());
         setRealtimeDatabaseDocument('/notifications/settings', ['time' => time()]);
     }
 
-    $ms = config(ADMIN_SETTINGS)->getMetas();
+    $ms = adminSettings()->get();
+
 ?>
 <div class="container">
     <div class="row">

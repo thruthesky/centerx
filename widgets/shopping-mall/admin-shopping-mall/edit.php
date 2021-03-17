@@ -1,10 +1,10 @@
 <?php
 if ( modeDelete() ) {
-    $re = post(in(IDX))->markDelete();
-    if ( isSucess($re) ) {
-        jsGo("/?p=" . in('p') . "&w=" . in('w'));
-    } else {
+    $post = post(in(IDX))->markDelete();
+    if ( $post->hasError ) {
         bsAlert("삭제 실패: $re");
+    } else {
+        jsGo("/?p=" . in('p') . "&w=" . in('w'));
     }
 } else if ( modeSubmit() ) {
     $in = in();
@@ -15,13 +15,17 @@ if ( modeDelete() ) {
         $post = post()->create($in);
     }
 } else if ( in(IDX) ) {
-    $post = post(in(IDX))->get();
+    $post = post(in(IDX));
 } else {
-    $post = [];
+    $post = post();
 }
 
+<<<<<<< HEAD
 $category = category(SHOPPING_MALL)->get();
 
+=======
+$category = category(SHOPPING_MALL);
+>>>>>>> 510f21e15950e0faafa72bc45302b1a60af51150
 
 ?>
 <style>
@@ -32,11 +36,19 @@ $category = category(SHOPPING_MALL)->get();
     <h1>상품 등록</h1>
     <form method="post" action="/">
 
-        <input type="hidden" name="p" value="<?=in('p')?>">
-        <input type="hidden" name="w" value="<?=in('w')?>">
-        <input type="hidden" name="s" value="<?=in('s')?>">
-        <input type="hidden" name="idx" value="<?=$post[IDX] ?? '0'?>">
-        <input type="hidden" name="mode" value="submit">
+        <?=hiddens(in: ['p', 'w', 'cw'], mode: 'submit', kvs: ['idx' => $post->idx])?>
+
+
+        <div class="form-group mb-3">
+            <label for="post_title">카테고리</label>
+            <select name="subcategory" class="custom-select">
+                <option value="">카테고리 선택</option>
+                <?php foreach( $category->subcategories as $subcategory ) { ?>
+                    <option value="<?=$subcategory?>" <?php if ( $subcategory == ($post->subcategory ?? '') ) echo "selected"; ?>><?=$subcategory?></option>
+                <?php } ?>
+            </select>
+        </div>
+
 
 
         <div class="form-group mb-3">
@@ -53,13 +65,13 @@ $category = category(SHOPPING_MALL)->get();
 
         <div class="form-group mb-3">
             <label for="post_title">제목</label>
-            <input type="text" class="form-control" name="title" value="<?=$post[TITLE] ?? ''?>">
+            <input type="text" class="form-control" name="title" value="<?=$post->title ?? ''?>">
         </div>
 
 
         <div class="form-group mb-3">
             <label for="short_title">짧은 제목</label>
-            <input type="text" class="form-control" name="shortTitle" value="<?=$post['shortTitle'] ?? ''?>">
+            <input type="text" class="form-control" name="shortTitle" value="<?=$post->shortTitle?>">
             <div class="hint">
                 메인 화면이나 위젯에 표시할 짧은 제목. 한글 8글자.
             </div>
@@ -68,7 +80,7 @@ $category = category(SHOPPING_MALL)->get();
 
         <div class="form-group mb-3">
             <label for="short_title">키워드(또는 카피)</label>
-            <input type="text" class="form-control" name="keywords" value="<?=$post['keywords'] ?? ''?>">
+            <input type="text" class="form-control" name="keywords" value="<?=$post->keywords?>">
             <div class="hint">
                 상품을 설명을 할 때, 보여지는 짧은 키워드 문구. 한 줄로 입력 할 수 있으며, 콤마로 구분하여 입력 가능.
                 <div class="d-block hint">예) 여름 신상품 초특가 세일</div>
@@ -107,40 +119,38 @@ $category = category(SHOPPING_MALL)->get();
         </div>
 
 
-        <label for="point">운영 또는 일시 중단</label>
 
+        <?php /*
+        <label for="point">운영 또는 일시 중단</label>
         <div class="form-check">
             <div class="form-check">
-                <input class="form-check-input" type="radio" id="pauseY" name="pause" value="Y" <?= !isset($post['pause']) || $post['pause'] == 'Y' ? 'checked' : '' ?>>
+                <input class="form-check-input" type="radio" id="pauseY" name="pause" value="Y" <?= $post->pause == 'Y' ? 'checked' : '' ?>>
                 <label class="form-check-label" for="pauseY">
                     운영
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" id="pauseN" name="pause" value="N" <?= ($post['pause'] ?? '') == 'N' ? 'checked' : '' ?>>
+                <input class="form-check-input" type="radio" id="pauseN" name="pause" value="N" <?= $post->pause == 'N' ? 'checked' : '' ?>>
                 <label class="form-check-label" for="pauseN">
                     중단
                 </label>
             </div>
         </div>
         <div class="hint">본 상품을 사이트(앱)에 노출이 안되도록 일시 중지 할 수 있습니다.</div>
-
+ */?>
 
 
         <div class="form-group mb-3">
             <label for="volume">용량, 수량</label>
-            <input type="text" class="form-control" id="volume" name="volume" value="<?=$post['volume'] ?? ''?>">
+            <input type="text" class="form-control" id="volume" name="volume" value="<?=$post->volume?>">
             <div class="form-text">
                 상품의 크기나, 용량, 수량을 입력하세요.
             </div>
         </div>
 
-
-
-
         <div class="form-group mb-2">
             <label for="short_title"><a href="https://docs.google.com/document/d/1JnEIoytM1MgS35emOju90qeDoIH963VeMHLaqvOhA7o/edit#heading=h.inp7ewl4tmv3" target="_blank">옵션 [?]</a></label>
-            <input type="text" class="form-control" id="options" name="options" value="<?=$post['options'] ?? ''?>">
+            <input type="text" class="form-control" id="options" name="options" value="<?=$post->options?>">
         </div>
 
         <label class="form-check-label" for="option_item_price">
@@ -148,13 +158,13 @@ $category = category(SHOPPING_MALL)->get();
         </label>
         <div class="form-check">
             <div class="form-check">
-                <input class="form-check-input" type="radio" id="optionItemPriceN" name="optionItemPrice" value="N" <?= !isset($post['optionItemPrice']) || $post['optionItemPrice'] == 'N' ? 'checked' : '' ?>>
+                <input class="form-check-input" type="radio" id="optionItemPriceN" name="optionItemPrice" value="N" <?= $post->optionItemPrice != 'N' ? 'checked' : '' ?>>
                 <label class="form-check-label" for="optionItemPriceN">
                     옵션에 추가금액지정
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" id="optionItemPriceY" name="optionItemPrice" value="Y" <?= ($post['optionItemPrice'] ?? '') == 'Y' ? 'checked' : '' ?>>
+                <input class="form-check-input" type="radio" id="optionItemPriceY" name="optionItemPrice" value="Y" <?= $post->optionItemPrice == 'Y' ? 'checked' : '' ?>>
                 <label class="form-check-label" for="optionItemPriceY">
                     옵션에 상품가격지정
                 </label>
@@ -180,7 +190,7 @@ $category = category(SHOPPING_MALL)->get();
 
         <div class="form-group mb-3">
             <label for="storageMethod">보관방법</label>
-            <input type="text" class="form-control" id="storageMethod" name="storageMethod" value="<?=$post['storageMethod']??''?>">
+            <input type="text" class="form-control" id="storageMethod" name="storageMethod" value="<?=$post->storageMethod?>">
             <div class="form-text">
                 보관 방법을 입력하세요. 예) 냉장고에 보관하세요.
             </div>
@@ -189,7 +199,7 @@ $category = category(SHOPPING_MALL)->get();
 
         <div class="form-group mb-3">
             <label for="expiry">유통기한</label>
-            <input type="text" class="form-control" id="expiry" name="expiry"  value="<?=$post['expiry']??''?>">
+            <input type="text" class="form-control" id="expiry" name="expiry"  value="<?=$post->expiry?>">
             <div class="form-text">
                 유통 기한을 입력하세요. 예) 2022년 3월 30일 까지.
             </div>
@@ -209,7 +219,7 @@ $category = category(SHOPPING_MALL)->get();
         ?>
         <?php foreach( $images as $image ) { ?>
 
-                <input type="hidden" name="<?=$image['field']?>" id="<?=$image['field']?>" value="<?=$post[$image['field']]??''?>">
+                <input type="hidden" name="<?=$image['field']?>" id="<?=$image['field']?>" value="<?=$post->v($image['field'])?>">
         <div class="mb-3 of-hidden">
             <div class="position-relative d-flex align-items-center p-2 bg-light">
                 <div>
@@ -224,14 +234,16 @@ $category = category(SHOPPING_MALL)->get();
 
             <?php
             $src = '';
-            $file = [];
-            if ( isset($post[$image['field']]) && $post[$image['field']] ) {
-                $file = files($post[$image['field']])->get();
+            $file = files();
+            if ( $post->v($image['field']) ) {
+                $file = files($post->v($image['field']));
             }
             ?>
+
             <div class="position-relative">
-                <img id="<?=$image['field']?>Src" src="<?=$file['url']??''?>" class="mw-100" onclick="onClickFileDelete(<?=$file[IDX] ?? 0?>, '<?=$image["field"]?>');">
+                <img id="<?=$image['field']?>Src" src="<?=$file?->url?>" class="mw-100" onclick="onClickFileDelete(<?=$file?->idx?>, '<?=$image["field"]?>');">
             </div>
+
         </div>
         <?php } ?>
 
@@ -255,7 +267,7 @@ $category = category(SHOPPING_MALL)->get();
         fileUpload(
             file,
             {
-                sessionId: '<?=my(SESSION_ID)?>',
+                sessionId: '<?=login()->sessionId?>',
             },
             function (res) {
                 console.log("success: res.path: ", res, res.path);
@@ -275,7 +287,7 @@ $category = category(SHOPPING_MALL)->get();
         const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
         if ( re === false ) return;
         axios.post('/index.php', {
-            sessionId: '<?=my(SESSION_ID)?>',
+            sessionId: '<?=login()->sessionId?>',
             route: 'file.delete',
             idx: idx,
         })
@@ -289,13 +301,14 @@ $category = category(SHOPPING_MALL)->get();
     }
 </script>
 
-<script src="<?=ROOT_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
+
+<script src="<?php echo HOME_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
 <script>
     const app = Vue.createApp({
         data() {
             return {
                 discountedPrice: 0,
-                post: <?=json_encode($post)?>,
+                post: <?=json_encode($post->getData())?>,
             }
         },
         created() {

@@ -77,7 +77,7 @@ class Point {
 
 
     public function get(int $categoryIdx, string $reason) {
-        return category($categoryIdx)->get()[$reason];
+        return category($categoryIdx)->getAttribute($reason);
     }
 
     public function setPostCreate($category, $point) {
@@ -85,7 +85,7 @@ class Point {
     }
 
     public function getPostCreate($category) {
-        return category($category)->get()[POINT_POST_CREATE];
+        return category($category)->POINT_POST_CREATE;
     }
 
     public function setCommentCreate($category, $point) {
@@ -93,7 +93,7 @@ class Point {
     }
 
     public function getCommentCreate(int|string $category) {
-        return category($category)->get()[POINT_COMMENT_CREATE];
+        return category($category)->POINT_COMMENT_CREATE;
     }
 
     public function setPostDelete($category, $point) {
@@ -101,7 +101,7 @@ class Point {
     }
 
     public function getPostDelete($category) {
-        return category($category)->get()[POINT_POST_DELETE];
+        return category($category)->POINT_POST_DELETE;
     }
 
     public function setCommentDelete($category, $point) {
@@ -109,7 +109,7 @@ class Point {
     }
 
     public function getCommentDelete($category) {
-        return category($category)->get()[POINT_COMMENT_DELETE];
+        return category($category)->POINT_COMMENT_DELETE;
     }
 
     public function setCategoryHour($category, $hour) {
@@ -118,7 +118,7 @@ class Point {
 
 
     public function getCategoryHourLimit(int|string $category) {
-        return category($category)->get()[POINT_HOUR_LIMIT];
+        return category($category)->POINT_HOUR_LIMIT;
     }
 
     public function setCategoryHourLimitCount($category, $count) {
@@ -126,14 +126,14 @@ class Point {
     }
 
     public function getCategoryHourLimitCount(int|string $category) {
-        return category($category)->get()[POINT_HOUR_LIMIT_COUNT];
+        return category($category)->POINT_HOUR_LIMIT_COUNT;
     }
 
     public function setCategoryDailyLimitCount($category, $count) {
         category($category)->update([POINT_DAILY_LIMIT_COUNT => $count]);
     }
     public function getCategoryDailyLimitCount(int|string $category) {
-        return category($category)->get()[POINT_DAILY_LIMIT_COUNT];
+        return category($category)->POINT_DAILY_LIMIT_COUNT;
     }
 
     public function enableCategoryBanOnLimit(int|string $category) {
@@ -226,16 +226,26 @@ class Point {
             'toUserPointAfter' => user($toUserIdx)->getPoint(),
         ];
         $record = pointHistory()->create($history);
-        return $record[IDX];
+        return $record->idx;
     }
 
+    /**
+     * 에러가 있으면 에러 문자열, 아니면, idx 가 리턴된다.
+     * @param array $profile
+     * @return int
+     */
     public function register(array $profile) {
         $applied = $this->addUserPoint($profile[IDX], config()->get(POINT_REGISTER));
-        return $this->log(
+        $idx = $this->log(
             POINT_REGISTER,
             toUserIdx: $profile[IDX],
             toUserPointApply: $applied,
         );
+        if (pointHistory($idx)->toUserPointAfter == config()->get(POINT_REGISTER)) {
+            return $idx;
+        } else {
+            return e()->failed_to_add_register_point;
+        }
     }
 
     /**
@@ -245,8 +255,8 @@ class Point {
     public function login(array $profile) {
 //        debug_log("POINT_LOING: ", config()->get(POINT_LOGIN));
         $applied = $this->addUserPoint($profile[IDX], config()->get(POINT_LOGIN));
-        debug_log('applied: ', $applied);
-        debug_log('my point: ', my(POINT));
+//        debug_log('applied: ', $applied);
+//        debug_log('my point: ', login()->getPoint());
         return $this->log(
             POINT_LOGIN,
             toUserIdx: $profile[IDX],
@@ -257,14 +267,18 @@ class Point {
 
     /**
      * 글 뿐만아니라, 코멘트나 기타 posts 테이블을 사용하는 모든 것이 된다.
-     * 추천이 아니라, 쓰기/삭제이기 때문에, 상대방이 없이 나에게만 적용이 된다. 그래서 toUserIdx 와 toUserPointApply 만 업데이트 된다.
+     * 추천이 아니라, 쓰기/삭제이기 때문에, 내가 내 자신에게만 적용한다. 그래서 다른 사람의 글이면 그냥 리턴한다.
+     * 그리고 toUserIdx 와 toUserPointApply 만 업데이트 된다.
+     *
      * @param string $reason
      * @param int|string $idx
+     * @return int|string
      */
     public function forum(string $reason, int $idx): int|string {
-        $entity = entity(POSTS, $idx);
-        if ( $entity->isMine() == false ) return 0; // 내 글에만 추천
-        $categoryIdx = $entity->value(CATEGORY_IDX);
+
+        $post = post($idx);
+        if ( $post->isMine() == false ) return 0;
+        $categoryIdx = $post->categoryIdx;
 
         // 제한에 걸렸으면, 에러 코드 리턴
         $re = $this->checkCategoryLimit($categoryIdx);
@@ -276,17 +290,17 @@ class Point {
         $point = $this->get($categoryIdx, $reason);
 
         // 포인트 추가하기
-        $applied = $this->addUserPoint(my(IDX), $point );
+        $applied = $this->addUserPoint(login()->idx, $point );
 
-//        d("reason: $reason, toUserIdx: " . $entity->userIdx() . ", toUserPointApply: $applied, taxonomy: posts");
+//        d("reason: $reason, toUserIdx: " . $post->userIdx . ", toUserPointApply: $applied, taxonomy: posts");
 
         // 포인트 기록 남기기
         return $this->log(
             reason: $reason,
-            toUserIdx: $entity->userIdx(),
+            toUserIdx: $post->userIdx,
             toUserPointApply: $applied,
             taxonomy: POSTS,
-            entity: $entity->idx,
+            entity: $post->idx,
             categoryIdx: $categoryIdx,
         );
     }
@@ -297,11 +311,14 @@ class Point {
      * @return false|string
      */
     public function checkCategoryLimit(int|string $category) {
-        if ( $this->categoryHourlyLimit($category) ) return e()->hourly_limit;
-        if ( $this->categoryDailyLimit($category) ) return e()->daily_limit;
+        if ( $this->categoryHourlyLimit($category) ) {
+            return e()->hourly_limit;
+        }
+        if ( $this->categoryDailyLimit($category) ) {
+            return e()->daily_limit;
+        }
         return false;
     }
-
 
     /**
      * 카테고리 별 글/코멘트 쓰기 제한에 걸렸으면 true 를 리턴한다.
@@ -309,11 +326,14 @@ class Point {
      * @return bool
      */
     public function categoryHourlyLimit(int|string $categoryIdx): bool {
-        return $this->countOver(
-            [ POINT_POST_CREATE, POINT_COMMENT_CREATE ], // 글/코멘트 작성을
-            $this->getCategoryHourLimit($categoryIdx) * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
-            $this->getCategoryHourLimitCount($categoryIdx) // count 회 수 이상 했으면,
+        $re = $this->countOver(
+            reasons: [ POINT_POST_CREATE, POINT_COMMENT_CREATE ], // 글/코멘트 작성을
+            stamp: $this->getCategoryHourLimit($categoryIdx) * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
+            count: $this->getCategoryHourLimitCount($categoryIdx), // count 회 수 이상 했으면,
+            categoryIdx: $categoryIdx,
         );
+//        d("결과: $re, 회수: " . $this->getCategoryHourLimitCount($categoryIdx));
+        return $re;
     }
 
     /**
@@ -322,64 +342,16 @@ class Point {
      * @return bool
      */
     public function categoryDailyLimit(int $categoryIdx): bool {
+//        d("categoryDailyLimit(int $categoryIdx)");
         // 추천/비추천 일/수 제한
+
         return $this->countOver(
-            [ POINT_POST_CREATE, POINT_COMMENT_CREATE ], // 글/코멘트 작성을
-            24 * 60 * 60, // 하루에
-            $this->getCategoryDailyLimitCount($categoryIdx) // count 회 수 이상 했으면,
+            reasons: [ POINT_POST_CREATE, POINT_COMMENT_CREATE ], // 글/코멘트 작성을
+            stamp: time() - mktime(0, 0, 0, date('m'), date('d'), date('Y')), // 하루에 몇번. 주의: 정확히는 0시 0분 0초 부터 현재 시점까지이다. README.md# 포인트 참고
+            count: $this->getCategoryDailyLimitCount($categoryIdx), // count 회 수 이상 했으면,
+            categoryIdx: $categoryIdx
         );
     }
-
-
-    public function vote(PostTaxonomy $post, $Yn) {
-
-        // 내 글/코멘트가 아니면, 포인트 증/감. 내 글/코멘트에 추천하는 경우, 포인트 증감 없음.
-        if ( $post->isMine() === false ) {
-
-            $limit = false;
-            // 추천/비추천 시간/수 제한
-            if ( $re = point()->countOver(
-                [ POINT_LIKE, POINT_DISLIKE ], // 추천/비추천을
-                point()->getLikeHourLimit() * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
-                point()->getLikeHourLimitCount(), // count 회 수 이상 했으면,
-                fromUserIdx: login()->idx,
-            ) ) {
-                // 제한에 걸렸다.
-                // 추천/비추천에서는 에러를 리턴 할 필요 없이 그냥 계속 한다.
-                $limit = true;
-            }
-
-
-            // 추천/비추천 일/수 제한
-            if ( $re = point()->countOver(
-                [ POINT_LIKE, POINT_DISLIKE ], // 추천/비추천을
-                24 * 60 * 60, // 하루에
-                point()->getLikeDailyLimitCount(), // count 회 수 이상 했으면,
-                login()->idx,
-            ) ) {
-                // 제한에 걸렸다.
-                // 무시하고 계속
-                $limit = true;
-            }
-
-            // 제한에 안 걸렸으면, 포인트 증/감.
-            if ( $limit == false ) {
-                $fromUserPointApply = $this->addUserPoint(login()->idx, $Yn == 'Y' ? $this->getLikeDeduction() : $this->getDislikeDeduction());
-                $toUserPointApply = $this->addUserPoint($post->value(USER_IDX), $Yn == 'Y' ? $this->getLike() : $this->getDislike() );
-                $myPoint = my(POINT, false);
-                $toUserIdx = $post->value(USER_IDX);
-//                d("{$post->idx} : $Yn, toUserIdx: $toUserIdx, userIdx: " . $post->value(USER_IDX) . ", myIdx: " . my(IDX) . ", myPoint: $myPoint, fromuserPointApply: $fromUserPointApply, toUserPointApply: $toUserPointApply\n");
-                $this->log(
-                    $Yn== 'Y' ? POINT_LIKE : POINT_DISLIKE,
-                    toUserIdx: $post->value(USER_IDX),
-                    fromUserIdx: my(IDX),
-                    toUserPointApply: $toUserPointApply,
-                    fromUserPointApply: $fromUserPointApply,
-                );
-            }
-        }
-    }
-
 
     /**
      * 포인트 기록 테이블에서 $stamp 시간 내에 $reason 들을 찾아 그 수가 $count 보다 많으면 true 를 리턴한다.
@@ -392,6 +364,7 @@ class Point {
      * @param int $stamp
      * @param int $count
      * @param int $fromUserIdx
+     * @param int $categoryIdx
      * @return bool
      *
      * @example
@@ -403,9 +376,10 @@ class Point {
      * get_like_hour_limit_count() // count 회 수 이상 했으면,
      * ) ) return ERROR_HOURLY_LIMIT; // 에러 리턴
      */
-    function countOver(array $reasons, int $stamp, int $count, $fromUserIdx=0): bool {
+    function countOver(array $reasons, int $stamp, int $count, $fromUserIdx=0, int $categoryIdx=0): bool {
         if ( $count ) {
-            $total = $this->countMyReasons( $stamp, $reasons, $fromUserIdx );
+//            d("countOver: $categoryIdx");
+            $total = $this->countReasons( stamp: $stamp, reasons: $reasons, fromUserIdx: $fromUserIdx, categoryIdx: $categoryIdx );
             if ( $total >= $count ) {
                 return true;
             }
@@ -423,29 +397,84 @@ class Point {
      *
      * @param $stamp
      * @param array $reasons
-     *
+     * @param int $fromUserIdx - 만약 fromUserIdx 가 지정되지 않으면, 로그인한 사용자의 idx 를 toUserIdx 로 사용한다.
+     * @param int $categoryIdx
      * @return int|string|null
      */
-    function countMyReasons($stamp, $reasons, int $fromeUserIdx=0) {
+    function countReasons($stamp, $reasons, int $fromUserIdx=0, int $categoryIdx=0): int|string|null
+    {
         if ( ! $stamp ) return 0;
-        $_reasons = [];
-        foreach( $reasons as $r ) {
-            $_reasons[] = REASON . "='$r'";
-        }
-        $reason_ors = "(" . implode(" OR ", $_reasons) . ")";
+        $reason_ors = "(" . sqlCondition($reasons, 'OR', REASON) . ")";
+
+        $q_categoryIdx = '';
+        if ( $categoryIdx ) $q_categoryIdx = "AND categoryIdx=$categoryIdx";
+
         $last_stamp = time() - $stamp;
-        if ( $fromeUserIdx ) {
-            $user = "fromUserIdx=$fromeUserIdx";
+        if ( $fromUserIdx ) {
+            $user = "fromUserIdx=$fromUserIdx";
         } else {
-            $user = "toUserIdx=" . my(IDX);
+            $user = "toUserIdx=" . login()->idx;
         }
-        $q = "SELECT COUNT(*) FROM ".entity(POINT_HISTORIES)->getTable()." WHERE createdAt > $last_stamp AND $user AND $reason_ors";
+
+        $q = "SELECT COUNT(*) FROM ".entity(POINT_HISTORIES)->getTable()." WHERE createdAt > $last_stamp AND $user $q_categoryIdx AND $reason_ors";
+//        d($q);
         if ( isDebugging() ) d( $q );
         return db()->get_var($q);
     }
 
 
+
+    public function vote(PostTaxonomy $post, $Yn) {
+
+        // 내 글/코멘트이면 리턴. 내 글/코멘트에 추천하는 경우, 포인트 증감 없음.
+        if ( $post->isMine() ) return;
+
+        $limit = false;
+        // 추천/비추천 시간/수 제한
+        if ( $re = point()->countOver(
+            [ POINT_LIKE, POINT_DISLIKE ], // 추천/비추천을
+            point()->getLikeHourLimit() * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
+            point()->getLikeHourLimitCount(), // count 회 수 이상 했으면,
+            fromUserIdx: login()->idx,
+        ) ) {
+            // 제한에 걸렸다.
+            // 추천/비추천에서는 에러를 리턴 할 필요 없이 그냥 계속 한다.
+            $limit = true;
+        }
+
+
+        // 추천/비추천 일/수 제한
+        if ( $re = point()->countOver(
+            [ POINT_LIKE, POINT_DISLIKE ], // 추천/비추천을
+            24 * 60 * 60, // 하루에
+            point()->getLikeDailyLimitCount(), // count 회 수 이상 했으면,
+            login()->idx,
+        ) ) {
+            // 제한에 걸렸다.
+            // 무시하고 계속
+            $limit = true;
+        }
+
+        // 제한에 안 걸렸으면, 포인트 증/감.
+        if ( $limit == false ) {
+            $fromUserPointApply = $this->addUserPoint(login()->idx, $Yn == 'Y' ? $this->getLikeDeduction() : $this->getDislikeDeduction());
+            $toUserPointApply = $this->addUserPoint($post->userIdx, $Yn == 'Y' ? $this->getLike() : $this->getDislike() );
+            $myPoint = login()->getPoint();
+            $toUserIdx = $post->userIdx;
+//                d("{$post->idx} : $Yn, toUserIdx: $toUserIdx, userIdx: " . $post->value(USER_IDX) . ", myIdx: " . my(IDX) . ", myPoint: $myPoint, fromuserPointApply: $fromUserPointApply, toUserPointApply: $toUserPointApply\n");
+            $this->log(
+                $Yn== 'Y' ? POINT_LIKE : POINT_DISLIKE,
+                toUserIdx: $post->userIdx,
+                fromUserIdx: login()->idx,
+                toUserPointApply: $toUserPointApply,
+                fromUserPointApply: $fromUserPointApply,
+            );
+        }
+    }
+
+
 }
+
 
 
 

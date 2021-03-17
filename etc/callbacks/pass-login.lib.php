@@ -32,7 +32,7 @@ Array(
 )
  *
  */
-function pass_login_callback($in)
+function pass_login_callback($in): array|string
 {
     // @todo PASS 휴대폰번호 로그인을 하면, Callback URL 이 호출된다. 그리고 그 정보를 기록한다.
     // Callback url 이 처음 호출 되면,
@@ -162,25 +162,29 @@ function pass_login_callback($in)
 }
 
 
-function pass_login_or_register($user)
+
+/**
+ *
+ * @param array $user
+ * @return array
+ */
+function pass_login_or_register(array $user): array
 {
-d($user);
     if (isset($user['ci']) && $user['ci']) {
         /// 처음 로그인 또는 자동 로그인이 아닌 경우,
         $user['email'] = PASS_LOGIN_MOBILE_PREFIX . "$user[phoneNo]@passlogin.com";
         $user['password'] = md5(LOGIN_PASSWORD_SALT . PASS_LOGIN_CLIENT_ID . $user['phoneNo']);
         $user['provider'] = 'passlogin';
-        d($user);
-        $profile = user()->loginOrRegister($user);
+        $profile = user()->loginOrRegister($user)->profile();
     } else {
         /// plid 가 들어 온 경우, meta 에서 ci 를 끄집어 낸다.
-        $userIdx = user()->getMetaEntity('plid', $user['plid']);
+        $userIdx = getMetaEntity(USERS, 'plid', $user['plid']); //  user()->getMetaEntity('plid', $user['plid']);
         $profile = user($userIdx)->profile();
     }
-
-
     return $profile;
 }
+
+
 
 
 function pass_login_message($msg) {

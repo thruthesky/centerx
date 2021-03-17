@@ -5,8 +5,8 @@
 /**
  * Get the post
  */
-$post = post()->current();
 
+$post = post()->current();
 
 if ( $post == null ) {
     $_uri = urldecode($_SERVER['REQUEST_URI']);
@@ -23,5 +23,7 @@ if ( $post == null ) {
 //    'category' => $category,
 //];
 
-$w = category($post[CATEGORY_IDX])->v('postViewWidget', 'post-view/post-view-default');
-include_once widget($w);
+
+
+include_once widget($post->category()->postViewWidget ? $post->category()->postViewWidget : 'post-view/post-view-default');
+

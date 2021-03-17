@@ -46,6 +46,7 @@ class E {
 
     public string $response_is_empty = 'error_response_is_empty';
     public string $entity_not_exists = 'error_entity_not_exists';
+    public string $entity_not_found = 'error_entity_not_found';
 
     public string $category_id_is_empty = 'error_category_id_is_empty';
     public string $root_idx_is_empty = 'error_root_idx_is_empty';
@@ -87,6 +88,15 @@ class E {
 
     public string $passlogin_faield = 'error_passlogin_faield';
 
+    public string $meta_update_failed = 'error_meta_update_failed';
+    public string $meta_insert_failed = 'error_meta_insert_failed';
+
+    public string $post_path_is_empty = 'error_post_path_is_empty';
+
+    public string $failed_to_add_register_point  ='error_failed_to_add_register_point';
+
+
+
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)
@@ -107,6 +117,12 @@ function e(mixed $errcode=null): E {
 function isError($obj) {
     return e($obj)->isError;
 }
-function isSucess($obj) {
-    return isError($obj) === false;
-}
+
+/**
+ * @deprecated
+ * @param $obj
+ * @return bool
+ */
+//function isSucess($obj) {
+//    return isError($obj) === false;
+//}

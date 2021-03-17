@@ -23,6 +23,6 @@
 ?>
 
 
-<script src="<?=ROOT_URL?>etc/js/helper.js?v=2"></script>
+<script src="<?=HOME_URL?>etc/js/helper.js?v=2"></script>
 </body>
 </html>

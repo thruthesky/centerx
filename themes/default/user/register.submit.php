@@ -1,8 +1,8 @@
 <?php
 
-$idx = user()->register(in());
-if ( isError($idx) ) jsAlert($idx);
+$user = user()->register(in());
+if ( $user->hasError ) jsAlert($user->getError());
 else {
-    setLoginCookies($idx);
+    setLoginCookies($user->profile());
     jsGo('/');
 }

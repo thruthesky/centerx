@@ -1,6 +1,7 @@
 <?php
 
 
+use Kreait\Firebase\Messaging\SendReport;
 
 class NotificationRoute {
 
@@ -22,19 +23,29 @@ class NotificationRoute {
     public function updateToken($in): array|string
     {
         if (!isset($in[TOKEN])) return e()->token_is_empty;
-        return token($in[TOKEN])->update($in);
+        return token($in[TOKEN])->update($in)->getData();
     }
 
     /**
      * @param $in
      * $in['tokens'] can be a string of a token or an array of tokens
      *
+     *  http://domain/index.php?route=notification.sendMessageToTokens&tokens=ebyHPOGMSqmwEMeK2PE7jx%3AAPA91bEBTmyYTWxUXKdypgeC5jKxJ6nXL27EQN9NTe1U6GTSlchv2ZGKVXKfjk_yA6T-hfHh-vRxqJzFb_rrWVSxQJKB5ZNBHQ21kLd_Dt-4PAguVF1hh13HeH2NPGFyaaLwFAxYMh5v&title=Dalgona+Push+notification+token&body=This+is+a+test+push+notification+token&imageUrl&sessionId=6-e420d272e3c91ab7c15b3c5cdc2d8d62
+     *
      * @return array|string
      */
     public function sendMessageToTokens($in): array|string {
         if ( !isset($in[TOKENS]) ) return e()->tokens_is_empty;
         $in = sanitizedInput($in);
-        return sendMessageToTokens($in[TOKENS], $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL]);
+        $re = sendMessageToTokens($in[TOKENS], $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL]);
+//        d($re->getItems());exit;
+        $res = [];
+        foreach($re->getItems() as $item) {
+            $res[] = $item->result();
+        }
+        // @todo handle invalid/unknown tokends..
+        // @how to properly return response here.
+        return $res;
     }
 
 
@@ -42,6 +53,12 @@ class NotificationRoute {
 
     /**
      * @param $in
+     *
+     * @example
+     *
+     * http://domain/index.php?route=notification.sendMessageToTopic&topic=defaultTopic123&title=Dalgona+Push+notification+DefaultTopic&body=This+is+a+test+push+notification+DefaultTopic&imageUrl&sessionId=6-e420d272e3c91ab7c15b3c5cdc2d8d62
+     *
+     *
      * @return array|string
      */
     public function sendMessageToTopic($in): array|string {
@@ -52,6 +69,11 @@ class NotificationRoute {
 
 
     /**
+     *
+     * @example
+     *
+     * http://domain/index.php?route=notification.sendMessageToUsers&users=6&title=Dalgona+Push+notification+DefaultTopic&body=This+is+a+test+push+notification+DefaultTopic&imageUrl&sessionId=6-e420d272e3c91ab7c15b3c5cdc2d8d62
+     *
      * @param $in
      * @return array|string
      * @throws Exception
@@ -92,7 +114,7 @@ class NotificationRoute {
      */
     public function topicSubscription(array $in): array|string
     {
-        if (my($in[TOPIC]) == "Y") {
+        if (login()->v($in[TOPIC]) == ON) {
             return $this->unsubscribeTopic($in);
         } else {
             return $this->subscribeTopic($in);

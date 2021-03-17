@@ -17,6 +17,15 @@ class Hook {
     }
 
     /**
+     * 해당 훅 이름에 연결된 모든 훅들을 제거한다.
+     * 테스트용으로 사용한다.
+     * @param string $name
+     */
+    public function delete(string $name) {
+        unset($this->hooks[$name]);
+    }
+
+    /**
      * 훅을 실행한다.
      *
      * 하나의 훅 이름에 여러개의 훅 함수가 실행될 수 있다.

@@ -1,5 +1,5 @@
 <?php
-    $cat = category(in(ID))->get(cache: false);
+    $category = category(in(ID));
 
 ?>
 <form action="/" method="post">
@@ -7,8 +7,6 @@
     <input type="hidden" name="w" value="category/admin-category-list">
     <input type="hidden" name="mode" value="update">
     <input type="hidden" name="<?=ID?>" value="<?=in(ID)?>">
-
-
 
 
     <table class="table">
@@ -22,16 +20,23 @@
 
 
         <tr>
+            <td><?=ln(['en' => 'Category ID', 'ko' => '카테고리 ID'])?></td>
+            <td>
+                <?= $category->id ?>
+            </td>
+        </tr>
+
+        <tr>
             <td><?=ln('Title', '게시판 제목')?></td>
             <td>
-                <input name="<?=TITLE?>" value="<?= $cat[TITLE] ?>">
+                <input name="<?=TITLE?>" value="<?= $category->title ?>">
             </td>
         </tr>
 
         <tr>
             <td><?=ln('Description', '설명')?></td>
             <td>
-                <input name="<?=DESCRIPTION?>" value="<?= $cat[DESCRIPTION] ?>">
+                <input name="<?=DESCRIPTION?>" value="<?= $category->description ?>">
             </td>
         </tr>
 
@@ -48,9 +53,9 @@
         </tr>
 
         <tr>
-            <td><?=ln('Description', '설명')?></td>
+            <td><?=ln('Description', '카테고리')?></td>
             <td>
-                <input name="subcategories" value="<?= implode(',', $cat['subcategories']) ?>">
+                <input name="subcategories" value="<?= implode(',', $category->subcategories) ?>">
             </td>
         </tr>
 
@@ -70,26 +75,26 @@
         <tr>
             <td><?=ln('Post Create Point', '글 쓰기 포인트')?></td>
             <td>
-                <input type="number" name="<?=POINT_POST_CREATE?>" value="<?=$cat[ POINT_POST_CREATE ]?>">
+                <input type="number" name="<?=POINT_POST_CREATE?>" value="<?=$category->POINT_POST_CREATE?>">
             </td>
         </tr>
         <tr>
             <td><?=ln('Point Delete Point', '글 삭제 포인트')?></td>
             <td>
-                <input type="number" name="<?=POINT_POST_DELETE?>" value="<?=$cat[ POINT_POST_DELETE ]?>">
+                <input type="number" name="<?=POINT_POST_DELETE?>" value="<?= $category->POINT_POST_DELETE ?>">
             </td>
         </tr>
 
         <tr>
             <td><?=ln('Comment Create Point', '코멘트 쓰기 포인트')?></td>
             <td>
-                <input type="number" name="<?=POINT_COMMENT_CREATE?>" value="<?=$cat[POINT_COMMENT_CREATE]?>">
+                <input type="number" name="<?=POINT_COMMENT_CREATE?>" value="<?=$category->POINT_COMMENT_CREATE?>">
             </td>
         </tr>
         <tr>
             <td><?=ln('Comment Delete Point', '코멘트 삭제 포인트')?></td>
             <td>
-                <input type="number" name="<?=POINT_COMMENT_DELETE?>" value="<?=$cat[POINT_COMMENT_DELETE]?>">
+                <input type="number" name="<?=POINT_COMMENT_DELETE?>" value="<?=$category->POINT_COMMENT_DELETE?>">
             </td>
         </tr>
 
@@ -108,19 +113,17 @@
         <tr>
             <td><?=ln('Hour/Count Limit', '시간/수 제한')?></td>
             <td>
-                <input class="w-25" type="number" name="<?=POINT_HOUR_LIMIT?>" value="<?=$cat[POINT_HOUR_LIMIT]?>">
+                <input class="w-25" type="number" name="<?=POINT_HOUR_LIMIT?>" value="<?=$category->POINT_HOUR_LIMIT?>">
                 /
-                <input class="w-25" type="number" name="<?=POINT_HOUR_LIMIT_COUNT?>" value="<?=$cat[POINT_HOUR_LIMIT_COUNT]?>">
+                <input class="w-25" type="number" name="<?=POINT_HOUR_LIMIT_COUNT?>" value="<?=$category->POINT_HOUR_LIMIT_COUNT?>">
             </td>
         </tr>
         <tr>
             <td><?=ln('Day/Count Limit', '일/수 제한')?></td>
             <td>
-                <input class="w-25" type="number" name="<?=POINT_DAILY_LIMIT_COUNT?>" value="<?=$cat[POINT_DAILY_LIMIT_COUNT]?>">
+                <input class="w-25" type="number" name="<?=POINT_DAILY_LIMIT_COUNT?>" value="<?=$category->POINT_DAILY_LIMIT_COUNT?>">
             </td>
         </tr>
-
-
 
         <tr>
             <td><?=ln('Ban on Creation', '글/코멘트에 제한')?></td>
@@ -130,7 +133,7 @@
                         type="radio"
                         name="<?=BAN_ON_LIMIT?>"
                         value="Y"
-                        <?php if ($cat[BAN_ON_LIMIT] == 'Y' ) echo 'checked' ?>> 예,
+                        <?php if ($category->BAN_ON_LIMIT == 'Y' ) echo 'checked' ?>> 예,
                 </label>
                 &nbsp;
                 <label>
@@ -138,12 +141,10 @@
                         type="radio"
                         name="<?=BAN_ON_LIMIT?>"
                         value="N"
-                        <?php if ($cat[BAN_ON_LIMIT] != 'Y' ) echo 'checked' ?>> 아니오
+                        <?php if ($category->BAN_ON_LIMIT != 'Y' ) echo 'checked' ?>> 아니오
                 </label>
             </td>
         </tr>
-
-
 
 
         <tr class="table-dark">
@@ -153,17 +154,15 @@
         <tr>
             <td><?=ln('Post Edit Widget', '글 수정 위젯')?></td>
             <td>
-                <?php select_list_widgets($cat[ID], 'post-edit', 'postEditWidget'); ?>
+                <?php select_list_widgets($category->idx, 'post-edit', 'postEditWidget'); ?>
             </td>
         </tr>
-
-
 
 
         <tr>
             <td><?=ln('Post View Widget', '글 읽기 위젯')?></td>
             <td>
-                <?php select_list_widgets($cat[ID], 'post-view', 'postViewWidget'); ?>
+                <?php select_list_widgets($category->idx, 'post-view', 'postViewWidget'); ?>
             </td>
         </tr>
 
@@ -173,7 +172,7 @@
         <tr>
             <td><?=ln('Forum List Header', '글 목록 헤더 위젯')?></td>
             <td>
-                <?php select_list_widgets($cat[ID], 'post-list-header', 'postListHeaderWidget'); ?>
+                <?php select_list_widgets($category->idx, 'post-list-header', 'postListHeaderWidget'); ?>
             </td>
         </tr>
 
@@ -182,7 +181,7 @@
         <tr>
             <td><?=ln('Forum List Widget', '글 목록 위젯')?></td>
             <td>
-                <?php select_list_widgets($cat[ID], 'post-list', 'postListWidget'); ?>
+                <?php select_list_widgets($category->idx, 'post-list', 'postListWidget'); ?>
             </td>
         </tr>
 
@@ -191,7 +190,7 @@
             <td><?=ln('Forum List Pagination Widget', '네비게이션 위젯')?></td>
             <td>
                 <?php
-                select_list_widgets($cat[ID], 'pagination', 'paginationWidget');
+                select_list_widgets($category->idx, 'pagination', 'paginationWidget');
                 ?>
             </td>
         </tr>
@@ -209,7 +208,7 @@
                         type="radio"
                         name="listOnView"
                         value="Y"
-                        <?php if ($cat['listOnView'] == 'Y' ) echo 'checked' ?>> 예,
+                        <?php if ($category->listOnView == 'Y' ) echo 'checked' ?>> 예,
                 </label>
                 &nbsp;
                 <label>
@@ -217,7 +216,7 @@
                         type="radio"
                         name="listOnView"
                         value="N"
-                        <?php if ($cat['listOnView'] != 'Y' ) echo 'checked' ?>> 아니오
+                        <?php if ($category->listOnView != 'Y' ) echo 'checked' ?>> 아니오
                 </label>
             </td>
         </tr>
@@ -227,7 +226,7 @@
                 <input
                     name="noOfPostsPerPage"
                     type="text"
-                    value="<?=$cat['noOfPostsPerPage']?>">
+                    value="<?=$category->noOfPostsPerPage?>">
             </td>
         </tr>
         <tr>
@@ -236,7 +235,7 @@
                 <input
                     name="noOfPagesOnNav"
                     type="text"
-                    value="<?=$cat['noOfPagesOnNav']?>">
+                    value="<?=$category->noOfPagesOnNav?>">
             </td>
         </tr>
 
@@ -246,21 +245,21 @@
         </tr>
 
         <tr>
-            <td><?=ln('Post List Widget', '글 목록 위젯')?></td>
+            <td><?=ln(['en' => 'Post List Widget', 'ko' => '글 목록 위젯'])?></td>
             <td>
                 <label class="">
                     <input
                         type="radio"
                         name="mobilePostListWidget"
                         value="text"
-                        <?php if ($cat['mobilePostListWidget'] == 'text' ) echo 'checked' ?>> <?=ln('Text', '텍스트')?>
+                        <?php if ($category->mobilePostListWidget == 'text' ) echo 'checked' ?>> <?=ln(['en' => 'Text', 'ko' => '텍스트'])?>
                 </label>
                 <label class="ps-2">
                     <input
                         type="radio"
                         name="mobilePostListWidget"
                         value="gallery"
-                        <?php if ($cat['mobilePostListWidget'] == 'gallery' ) echo 'checked' ?>> <?=ln('Gallery', '갤러리')?>
+                        <?php if ($category->mobilePostListWidget == 'gallery' ) echo 'checked' ?>> <?=ln(['en' => 'Gallery',  'ko' => '갤러리'])?>
                 </label>
 
                 <label class="ps-2">
@@ -268,28 +267,28 @@
                         type="radio"
                         name="mobilePostListWidget"
                         value="thumbnail"
-                        <?php if ($cat['mobilePostListWidget'] == 'thumbnail' ) echo 'checked' ?>> <?=ln('Thumbnail', '썸네일')?>
+                        <?php if ($category->mobilePostListWidget == 'thumbnail' ) echo 'checked' ?>> <?=ln(['en' => 'Thumbnail',  'ko' => '썸네일'])?>
                 </label>
 
             </td>
         </tr>
 
         <tr>
-            <td><?=ln('Post View Widget', '글 읽기 위젯')?></td>
+            <td><?=ln(['en' => 'Post View Widget', 'ko' => '글 읽기 위젯'])?></td>
             <td>
                 <label class="">
                     <input
                         type="radio"
                         name="mobilePostViewWidget"
                         value="default"
-                        <?php if ($cat['mobilePostViewWidget'] == 'default' ) echo 'checked' ?>> <?=ln('Default', '기본')?>
+                        <?php if ($category->mobilePostViewWidget == 'default' ) echo 'checked' ?>> <?=ln(['en' => 'Default', 'ko' => '기본'])?>
                 </label>
                 <label class="ps-2">
                     <input
                         type="radio"
                         name="mobilePostViewWidget"
                         value="slide"
-                        <?php if ($cat['mobilePostViewWidget'] == 'slide' ) echo 'checked' ?>> <?=ln('Slide', '슬라이드')?>
+                        <?php if ($category->mobilePostViewWidget == 'slide' ) echo 'checked' ?>> <?=ln(['en' => 'Slide', 'ko' => '슬라이드'])?>
                 </label>
 
             </td>

@@ -1,4 +1,5 @@
 # CenterX
+<<<<<<< HEAD
 
 - 위세너에서 개발한 LEMP 기반 백엔드.
 - 특징
@@ -6,15 +7,32 @@
   - OOP 를 활용한 간단하면서 견고한 디자인
   
 
+=======
+>>>>>>> 510f21e15950e0faafa72bc45302b1a60af51150
+
+
+- 위세너에서 개발한 LEMP 기반 백엔드.
+- 특징
+  - 최신 PHP 버전(버전 8) 을 활용한 코드
+  - OOP 를 활용한 간단하면서 견고한 디자인
+  
+
+# 목표
+
+- Nuxt.js 로 SEO 와 PWA 를 하고,
+- Flutter 로 앱을 만들기 위해서 개발한 백엔드이다.
+
+- 관리자 페이지만 PHP 와 인라인 Vue.js 3 로 작업을 하면 되며,
+  PHP 로 작성하는 웹은 실험용 또는 테스트용으로만 한다.
+  이 경우, 사진 등록에서 복잡하게 Vue.js 로 업로드된 사진을 바로 보여줄 필요 없이 대충 업로드만 되면 된다.
+  
+- 즉, 웹은 PHP 로 하지 않는다. PWA 로 하며 특히, 복잡한 기능(예: 사용자가 직접 위젯 옵션으로 디자인을 하는 그런 것)은 PWA 로만 하게 한다.
 
 # 해야 할 일
 
-
 - Generate thumbnails on the fly. 썸네일으 사진 업로드 할 때 하지 말고, files/thumbnails 폴더에 저장한다.
   - /etc/image/thumbnail.php?source=...&width=..&height=.. 와 같이하는데, target 은 source 는 파일 경로 URL 이나, file.idx 일 수 있다.
-    
-
-
+  
 - docker 에서 php 설정, short_open_tag On 이 동작하지 않음.
 
 - pass login
@@ -42,7 +60,8 @@
   - name, password, email, gender, address1, address2, zipcode, 등 기타 필드 다 생성.
 - phpunit 을 host os 에서 실행 할 수 있도록 할 것. https://hub.docker.com/r/phpunit/phpunit/ 에 host os 에서 실행하는 방법 설명.
   
-- 코멘트 재귀 함수.
+- https://domain.com/qna 와 같이 짧은 URL 을 지원 할 것.
+  기본적으로 모든 category 는 최 상위 슬래시(/) 다음에 기록 할 수 있도록 한다.
 
 - .gitignore 에 기본적으로 widgets 폴더를 빼고, 원하는 위젯만 -f 로 넣을 것.
   
@@ -64,11 +83,106 @@
   where: "a='apple' or (b='banana' and meta.c='cherry') or meta.d=1"
   SQL query 에 `meta.` 이라는 것이 들어가면 무조건 meta 검색으로 인식한다. 따라서 검색 조건에 `meta.` 라는 단어가 들어가면 안된다.
 
-## 점진적으로 해야 할 일
+## next branch 에서 해야 할 것
 
-- `next` branch 에서 작업한다.
+- README 에 최소한의 정보만 두고, 모두 phpDocument 화 한다.
+  
+- next 를 main 에 merge 또는 이동 계획
+  - 먼저, next 브랜치로 작업이 잘 되는지, 확인을 한다.
+    - 플러터와 CenterX 모두 main branch 는 놔 두고,
+    - 플러터에서도 next 브랜치를 만들고, CenterX next branch 로 바로 접속 하도록 한다.
+  - 작업이 잘 되면, main 을 0.2 로 백업하고, next 를 main 으로 바꾼다.
+    - 먼저, 그동안 변경된 사항을, https://github.com/thruthesky/centerx/commits/main 에서 확인해서, 변경된 내용을 적용한다.
+    - branch 이름 변경하기 참고: https://docs.google.com/document/d/1OV1FYLwBBloQU_H8wUkZLnzCLtFdVLiRtXPZXNa5Bkw/edit#heading=h.fbs4ukt4a7lj
 
-- 100% getter/setter 를 사용한다.
+- @done User test,
+  
+- @done Category test,
+  
+- @done Post test
+  
+- @done Comment test
+
+- @done VoteHistory entity test
+
+- @done Entity hook test
+
+- @done Point test
+
+- @done entity::get() 함수 삭제
+- @done my() 함수 삭제. login() 으로 대체
+- @done isSucess() 함수 삭제. 테스트에서 별 소용 없는 함수.
+- @done entity 밑에 안쓰는 함수 삭제.
+
+- comment-edit-default 작업 중. 모든 코멘트 쓰기/수정/삭제/ 파일 업로드에 기본적으로 적용한다.
+
+
+- 관리자 페이지 작업.
+  - 관리자만 관리자 페이지를 사용 할 수 있도록 한다.
+  - p() 함수를 두어서 &p=current.page 를 리턴하게 하고
+    w() 함수를 두어서 &w=widget.name 을 리턴하게 하고,
+    wc() 함수를 두어서 &wc=child.widget.name 을 리턴하게 한다.
+    widget_html_form_hidden_tags('mode', ['idx' => ...])
+    와 같이 함수를 두어서 widget html form hidden tags 를 한번에 호출한다.
+    p, w, wc, mode 는 기본적으로 들어가고, 그외 Hidden 값을 입력을 받을 수 있도록 한다.
+    그래서 관리자 페이지 링크를 좀 더 통일성있게 사용한다.
+    
+  - 카테고리 페이지 업데이트
+  - 게시글 페이지 업데이트
+  - 세팅 페이지 업데이트
+  - 언어화 페이지 업데이트
+  - 상품 등록 페이지에서, File 업로드 테스트
+
+- 플러터에서 next 브랜치 테스트
+
+- next 브랜치를 main 으로 변경
+
+
+- @doc `next.***.test.php` 로 테스트 코드를 작성하고 있다.
+  - user, category, post, comment 순서로 테스트
+  - user()->create()->response() 에서 에러가 있으면 response() 항상 에러 문자열을 리턴한다.
+  
+- @doc 클라이언트로 전달하는 response() 함수는 에러가 있으면 에러 문자열을 리턴한다.
+- @doc 클라이언트로 전달하는 경우가 아니면 `->hasError` 로 에러가 있는지 없는지 검사해야 한다.
+
+
+
+- @later meta 에 동일한 키를 여러개 입력 할 수 없지만, 배열이나 기타 여러 값을 저장하면, serialized 되어 저장된다.
+  이점을 활용해서,
+  기본 meta 함수명 addMeta(), getMeta(), updateMeta(), deleteMeta() 에,
+  addMetaDataSet(...) 을 하면, Type SET 형식으로 배열인데, 고유한 값을 유지하는 배열에 값을 추가하는 함수를 만든다.
+  deleteMetaDataSet(...) 을 하면 삭제를 한다.
+  addMetaDataAssoc($key, $value) 를 하면, 메타 데이터의 값이 연관 배열인데, 연관 배열의 값을 추가하다록 한다.
+  deleteMetaDataAssoc($key) 와 같이 하면 삭제를 한다.
+
+  getMeta() 에서 taxonomy 와 entity 까지만 입력하면, 배열로 해당 entity 에 속만 메타가 모두 리턴된다.
+
+
+
+
+- @doc entity 는 실제 존재하는 taxonomy 에 대해서만 작업을 한다. 즉, table 이 존재하지 않으면 안된다.
+
+- @doc meta 는 실제 taxonomy 가 존재하지 않아도 된다.
+
+- @done entity 에서 meta 값 업데이트하는 테스트
+  
+- @done entity 에서 search(), my(), 테스트
+
+- @doc 1개의 값을 리턴 하는 경우, 에러가 있으면 null 또는 빈 배열을 리턴한다.
+- @doc 객체를 리턴하는 경우, ->hasError 를 통해 에러가 있는지 없는지 봐야 한다.
+
+
+  
+- @doc meta 관련 함수를 meta.functions.php 로 떼어 낸다.
+
+
+- @later etc/configs 폴더에 각종 설정을 넣는다.
+  db.config.php
+  app.config.php
+  와 같이 분리를 한다. 그리고 db.config.php 가 존재하지 않으면 설치가 안된 것으로 한다.
+  
+- @doc meta 테이블은 그 활용가 간단해서 taxonomy 와 entity 방식으로 사용하지 않는다. 하지만, 사용해도 무방하다. 실제로 테스트 코드에서는 사용을 한다.
+- @doc 100% getter/setter 를 사용한다.
   변수 x 가 있다면, 아래와 같이 getter/setter 를 사용한다.
 ```php
     private int $x;
@@ -76,19 +190,19 @@
     public function setX() { ... }
 ```
 
-- 데이터베이스 레코드에 대해서는 magic getter/setter 를 사용한다.
+- @doc 데이터베이스 레코드에 대해서는 magic getter/setter 를 사용한다.
 
-- instantiate 를 할 때, constructor 에서 해당 entity 레코드와 meta 에 대한 모든 값들을 불러와 메모리에 저장한다.
+- @doc instantiate 를 할 때, constructor 에서 해당 entity 레코드와 meta 에 대한 모든 값들을 불러와 메모리에 저장한다.
   즉, entity()->get() 에서 더 이상 메모리 캐시를 할 필요 없다.
   이 때, 자식(코멘트) entity 는 로드하지 않는다.
 
-- 각종 entity() 클래스와 게시판에서 get() 함수를 없애고, read() 로 변경한다.
+- @doc 각종 entity() 클래스와 게시판에서 get() 함수를 없애고, read() 로 변경한다.
 
-- 글을 클라이언트로 보낼 때에는 post()->create(...)->response() 를 할 수 있도록 한다.
+- @doc 글을 클라이언트로 보낼 때에는 post()->create(...)->response() 를 할 수 있도록 한다.
   이 response() 함수에서 코멘트 정보를 다 읽고 파싱한다.
-  
-- 참/거짓, 숫자, 문자열을 리턴하는 함수 외에는 모두 객체를 리턴한다.
-  단, 옵션으로 user()->by(email, returnFormat: ARRAY_A) 와 같이 배열로 받을 수 있도록 한다.
+
+- @later SQLite3 지원. 그러면 그냥 php dev web server 로 SSL 없이, localhost 로 바로 실행가능하리라 생각한다.
+
 
 # Primary Conception
 
@@ -96,6 +210,41 @@
   - `post(1)->get()` to get whole record.
   - `post(1)->value(...)` to get a field value. Or `post(1)->v(...)` for short.
 
+
+- @next 회원 인증은 Route 에서 해야한다. 그외 입력값 검사는 각 함수에서 한다.
+
+# 데이터 저장
+
+기본적으로 각 테이블에 저장하며, 테이블에 없는 값은 meta 로 저장한다.
+
+이 때, 쓸데 없는 값이 저장되지 않도록 defines 에 정의를 해서 처리를 하지만
+
+악용을 하기 위해 큰 데이터를 저장하려는 경우가 있다. 
+
+이 때에는 입력값에 허용된 값이 아닌 다른 값이 들어오면, 저장을 하지 않던지 에러를 내야한다.
+
+현재는 이 기능이 없으며, 훅을 통해서 처리를 해야 한다.
+
+객체를 리턴하지 않는 bool, string, int 등의 함수는  리턴값은 객체가 기본이다.
+
+다만, API 로 전달하는 경우, 에러가 있으면 문자열, 에러가 없으면 배열로 리턴한다.
+
+
+
+
+# 문서화
+
+- phpDocumentor 에 맞춰서 문서화를 했다. 다만, 기본적으로 문서가 생성되어져 있지않다. 문서화를 하는 방법은 아래와 같이 실행을 하면된다.
+
+
+```shell
+cd etc/phpdoc
+./phpDocumentor
+```
+
+- 작성된 문서를 보기 위해서는 `http://your-domain.com/etc/phpdoc/index.html` 와 같이 접속을 하면 된다.
+
+- 참고로 phpDocumentor 의 태그는 https://docs.phpdoc.org/3.0/guide/references/phpdoc/tags/index.html 에 나와 있으며 Markdown 을 사용 할 수 있다.
 
 # Installation
 
@@ -243,6 +392,10 @@ define('DOMAIN_THEMES', [
 
 - Meta data is saved through serialize/unserialze.
 
+
+- user()->profile() 또는 user()->response() 의 결과는 배열이다. 그리고 profile 이라 부르는 데이터는 사용자 정보를 배열로 담은 것을 말한다.
+  - 사용자 로그인 정보를 profile 로 글로벌 변수 $__login_user_profile 에 저장한다. 즉, 로그인 한 사용자 정보를 배열로 보관하는 것이다.
+  - 클라이언트 엔드에서 API 호출을 하는 경우에도 이 profile 정보를 가져오는 것이다.
 
 
 
@@ -419,6 +572,8 @@ d($result);
 
 # API Protocol
 
+- API Protocol examples are written in `/etc/rest-client/rest-client.http`
+
 - `route` is the route of the api call.
   Ex) `/?route=app.version`
   
@@ -449,12 +604,29 @@ routeAdd('app.version', function($in) {
   Then, the function that is added to `routeAdd()` will be used. This means, you can overwrite the routes in `routes` folder.
 
 
+## App Api
+
+- To get app version,
+
+```
+https://local.itsuda50.com/index.php?route=app.version
+```
+
+- To get app settings,
+
+```
+https://local.itsuda50.com/index.php?route=app.settings
+```
+
+
+
 ## User Api
 
 - To login, access like below
   Ex) `/?route=user.login&email=...&password=...`
   
-- To register
+- To register,
+
 ```text
 https://local.itsuda50.com/?route=user.register&reload=true&email=user3@test.com&password=12345a
 ```
@@ -507,7 +679,7 @@ https://local.itsuda50.com/?route=category.delete&reload=true&idx=1
   - Since `Entity` class supports adding any meta data, you can add any data in `&key=value` format.
   
 ```text
-https://local.itsuda50.com/?route=post.create&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&category=apple&title=yo&content=content&a=apple&b=banana
+https://local.itsuda50.com/?route=post.create&sessionId=5592-52f7119495484c1d56cf8629e9664001&categoryId=banana&title=yo&content=there&a=apple&b=banana&c=cherry
 ```
 
 - To update a post, add `sessionId` with `idx` and other `key/value` pair fields to update.
@@ -515,15 +687,17 @@ https://local.itsuda50.com/?route=post.create&reload=true&sessionId=4-d8023872c2
 https://local.itsuda50.com/?route=post.update&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&category=apple&title=updated-by-no.%204&content=content&a=apple&b=banana&idx=19
 ````
 
-- To delete a post,
-```text
-https://local.itsuda50.com/?route=post.delete&sessionId=5-9b41c88bcd239de7ca6467d1975a44ca&idx=18
-```
 
 - To get a post, just give `posts.idx`. `sessionId` may not be needed.
 ```text
 https://local.itsuda50.com/?route=post.get&reload=true&idx=19
 ```
+
+- To delete a post,
+```text
+https://local.itsuda50.com/?route=post.delete&sessionId=5-9b41c88bcd239de7ca6467d1975a44ca&idx=18
+```
+
 
 - To list posts of a category.
   - Most of the search options goes in value string of `where` param. You can put any SQL conditions on `where`.
@@ -535,7 +709,7 @@ https://local.itsuda50.com/?route=post.search&reload=true&where=(categoryId=<app
 ## Comment Api
 
 
-- To create a post,
+- To create a comment,
   - Required fields are: `sessionId`, `rootIdx`, `parentIdx`.
     - `rootIdx` is the post.idx and `parentIdx` is the parent idx. parent idx can be a post.idx or comment.idx.
   - `content`, and other properties are optoinal.
@@ -545,20 +719,22 @@ https://local.itsuda50.com/?route=post.search&reload=true&where=(categoryId=<app
 https://local.itsuda50.com/?route=comment.create&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&content=A&rootIdx=159&parentIdx=159
 ```
 
-- To update a post, add `sessionId` with `idx` and other `key/value` pair fields to update.
+- To update a comment, add `sessionId` with `idx` and other `key/value` pair fields to update.
 ````text
 https://local.itsuda50.com/?route=comment.update&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&content=B-A-Updated&idx=162
 ````
 
-- To delete a post,
+
+- To get a comment, just give `posts.idx`. `sessionId` may not be needed.
+```text
+https://local.itsuda50.com/?route=comment.get&idx=163
+```
+
+- To delete a comment,
 ```text
 https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&idx=162
 ```
 
-- To get a post, just give `posts.idx`. `sessionId` may not be needed.
-```text
-https://local.itsuda50.com/?route=comment.get&reload=true&idx=163
-```
 
 
 ## Files and File Api
@@ -644,34 +820,7 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 # Translation
 
-- When app starts, app listens for update of the timestamp property in /notifications/translation document of Firebase realtime database.
-- Admin can add translation in admin page.
-- When translation is updated, it will update the timestamp property in /notifications/translation document of Firebase realtime database.
-- Then, app updates the changed text on the screen.
-- Translation is being used not only in app but also web.
-
-- In web, you can use like below;
-```php
-d(ln('code', 'default value'));
-ln(['en' => 'User Agreements', 'ko' => '이용자 약관', 'ch' => '...', ]); // This may be better to reduce database access and to translate inside the page.
-```
-
-- User can use their languages by;
-```html
-<form action="/">
-  <input type="hidden" name="p" value="setting.language.submit">
-  <select name="language" onchange="this.form.submit()">
-    <option value="">Choose language</option>
-    <?php foreach( SUPPORTED_LANGUAGES as $ln ) { ?>
-    <option value="<?=$ln?>"><?=ln($ln, $ln)?></option>
-    <?php } ?>
-  </select>
-</form>
-```
-
-
-- If `FIX_LANGAUGE` is set, then user language is ignored, and this applies only on web.
-
+- @see the phpdoc
 
 # Settings
 
@@ -683,6 +832,20 @@ ln(['en' => 'User Agreements', 'ko' => '이용자 약관', 'ch' => '...', ]); //
 
 
 # Theme
+
+## 테마 페이지 로딩
+
+- 테마 페이지는 URL 변수 `p=...` 에 따라 각 `theme/theme-name` 에 있는 페이지를 연다.
+  이 때 만약 해당 페이지가 없으면 `theme/default` 에 있는 페이지를 연다.
+  
+- 테마 페이지를 열 때, 각 테마의 `theme/**/index.php` 가 먼저 로드된다.
+  그리고 각 테마의 index.php 에서 `include theme()->page()` 와 같이 호출해서 테마 페이지를 로드해야한다.
+  즉, 각 테마 페이지에서 적절한 디자인을 추가하거나 기본적인 HTML head 등을 화면에 출력 할 수 있다.
+  
+- URL 변수 `p=abc.submit` 과 같이 `.submit` 으로 끝나면, index.php 에 의해서 각 테마의 index.php 를 호출하지 않고, 바로 테마 페이지를 연다.
+  즉, 테마 디자인을 생략하고(화면에 출력하지 않고), 곧 바로 테마 스크립트만 실행하는 것이다.
+
+
 
 ## Admin page design
 
@@ -757,6 +920,14 @@ if ( modeCreate() ) {
   그러면, 테마를 실행하지 않고, 바로 그 스크립트를 실행한다. 즉, 화면에 번쩍임이 사라지게 된다.
   
 - 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="returnTo" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
+
+
+## 글 쓰기
+
+- 글 쓰기 기본 FORM 을 보고 새로운 디자인을 만들 수 있으며, 글 쓰기 FORM 이 데이터를 전송 할 때, 기본적으로 사용되는 `themes/default/post.edit.submit.php` 스크립트를 사용하면 된다.
+  물론 필요에 따라 적절히 수정을 할 수 있다.
+  참고로 수정을 할 때에는 다른 파일 이름으로 복사해서 사용 할 것을 권한다.
+
 
 
 # Vue.js 3
@@ -959,6 +1130,24 @@ EOS;
 });
 ```
 
+
+# 포인트 시스템
+
+- 포인트를 적용하는 곳(회원 가입, 로그인, 글 쓰기/삭제, 코멘트 쓰기/삭제, 추천, 비추천 등)에서는 포인트의 변화가 없어도(포인트 증감이 없어도) 기록을 남긴다.
+  
+- 이 기록을 바탕으로 추천/글쓰기/코멘트쓰기 시간/수 제한, 일/수 제한을 한다.
+  
+- 일/수 제한은 해당일(오늘) 0시 0분 0초 부터 현재 시간까지 해당 글/코멘트/추천 들이 얼마나 발생했는지 확인하고 제한한다.
+  예를 들어, 현재 시간이 14시 14분 14초 라면, 오늘 0시 0분 0초 부터 지금 현재 14시 14분 14초 까지 시간을 제한하는 것이다.
+
+  즉, 하루에 10개를 제한 한다면, 0시 0분 0초 부터, 23시, 59분 59초 까지 10개를 썼는지 검사를 하는 것이다.
+  만약, 23시 59분에 10개를 쓰고, 그 다음을 0시 0분에 또 10개를 쓸 수 있다. 즉, 20개를 연달아 쓸 수 있다.
+
+- 게시판에는 Ymd 필드에 글 쓴 날짜의 YYYYMMDD 형식의 날자 값이 저장된다. 이 값은 글 쓰기에서 제한이 되지 않는다.
+
+
+
+
 # 데이터베이스 테이블
 
 ## posts
@@ -976,6 +1165,15 @@ EOS;
   
 - 'Y' 는 찬성(또는 like) 수
 - 'N' 은 반대(또는 dislke) 수
+
+- `Ymd` 는 글을 쓴 시점의 날짜(YYYYMMDD)의 값이 자동으로 들어간다.
+
+
+
+## files
+
+- taxonomy, entity 는 예를 들어, posts taxonomy 의 어떤 글 번호에 연결이 되었는지 또는 users taxonomy 의 어떤 사용자와 연결이 되었는지 나타낸다.
+- code 는 파일의 코드 값으로 예를 들어, taxonomy=users AND entity=사용자번호 AND code=profilePhoto 와 같이 업로드된 파일의 특성을 나타낼 때 사용 할 수 있다.
 
 
 
@@ -998,7 +1196,7 @@ echo Markdown::render ($md);
 - 아래와 같이 실행하면, `tests/*.test.php` PHP 스크립트(파일)을 실행한다.
 
 ```shell
-% chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php"
+chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php"
 ```
 
 - 원한다면, 아래와 같이 테스트 파일의 일부 문자열을 포함하는 파일만 실행 할 수 있다.
@@ -1011,3 +1209,5 @@ chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php point"
 chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php shopping-mall"
 chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php getter"
 ```
+
+

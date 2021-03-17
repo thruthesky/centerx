@@ -4,13 +4,13 @@
  */
 
 
-$p = post(in(IDX, 0));
+$post = post(in(IDX, 0));
 
 
 if ( in(CATEGORY_ID) ) {
     $category = category( in(CATEGORY_ID) );
 } else if (in(IDX)) {
-    $category = category( $p->v(CATEGORY_IDX) );
+    $category = category( $post->v(CATEGORY_IDX) );
 } else {
     jsBack('잘못된 접속입니다.');
 }
@@ -24,15 +24,15 @@ if ( in(CATEGORY_ID) ) {
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="files" v-model="files">
         <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
-        <input type="hidden" name="<?=IDX?>" value="<?=$p->idx?>">
+        <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">
 
         <div>
             title:
-            <input type="text" name="<?=TITLE?>" value="<?=$p->v(TITLE)?>">
+            <input type="text" name="<?=TITLE?>" value="<?=$post->v(TITLE)?>">
         </div>
         <div>
             content:
-            <input type="text" name="<?=CONTENT?>" value="<?=$p->v(CONTENT)?>">
+            <input type="text" name="<?=CONTENT?>" value="<?=$post->v(CONTENT)?>">
         </div>
         <div>
             <input name="<?=USERFILE?>" type="file" @change="onFileChange($event)" />
@@ -53,14 +53,14 @@ if ( in(CATEGORY_ID) ) {
     </form>
 </div>
 
-<script src="<?=ROOT_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
+<?php includeVueOnce(); ?>
 <script>
     const app = Vue.createApp({
         data() {
             return {
                 percent: 0,
-                files: '<?=$p->v('files')?>',
-                uploadedFiles: <?=json_encode($p->get()['files'] ?? [], true)?>,
+                files: '<?=$post->v('files')?>',
+                uploadedFiles: <?=json_encode($post->files(), true)?>,
             }
         },
         methods: {
@@ -73,7 +73,7 @@ if ( in(CATEGORY_ID) ) {
                 fileUpload(
                     file,
                     {
-                        sessionId: '<?=my(SESSION_ID)?>',
+                        sessionId: '<?=login()->sessionId?>',
                     },
                     function (res) {
                         console.log("success: res.path: ", res, res.path);
@@ -91,7 +91,7 @@ if ( in(CATEGORY_ID) ) {
                 const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
                 if ( re === false ) return;
                 axios.post('/index.php', {
-                    sessionId: '<?=my(SESSION_ID)?>',
+                    sessionId: '<?=login()->sessionId?>',
                     route: 'file.delete',
                     idx: idx,
                 })

@@ -1,6 +1,5 @@
 <?php
 if ( modeCreate() ) {
-    d(in());
     $re = translation()->createCode(in());
     if ( isError($re) ) jsBack($re);
 }
@@ -26,7 +25,6 @@ else if ( modeUpdate() ) {
                 <input type="hidden" name="p" value="admin.index">
                 <input type="hidden" name="w" value="<?=in('w')?>">
                 <input type="hidden" name="mode" value="create">
-
 
                 <div class="row">
                     <div class="col">

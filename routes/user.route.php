@@ -3,32 +3,40 @@
 class UserRoute {
 
     public function login($in) {
-        return user()->login($in);
+        return user()->login($in)->response();
     }
 
     public function register($in) {
-        return user()->register($in);
+        return user()->register($in)->response();
     }
 
     public function loginOrRegister($in) {
-        return user()->loginOrRegister($in);
+        return user()->loginOrRegister($in)->response();
     }
 
     public function profile($in) {
-        return login()->profile();
+        return login()->response();
     }
-
 
     public function update($in) {
         if ( notLoggedIn() ) return e()->not_logged_in;
-        return login()->update($in);
+        return login()->update($in)->response();
     }
 
-    public function updateOptionSetting($in) {
-        return login()->updateOptionSetting($in);
+    public function switch($in) {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        return login()->switch($in[OPTION])->response();
     }
 
+    public function switchOn($in) {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        return login()->switchOn($in[OPTION])->response();
+    }
 
+    public function switchOff($in) {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        return login()->switchOff($in[OPTION])->response();
+    }
 
     /**
      * Returns user point history.
@@ -40,7 +48,7 @@ class UserRoute {
      * @throws Exception
      */
     public function point($in) {
-        $myIdx = my(IDX);
+        $myIdx = login()->idx;
         return pointHistory()->search(where: "fromUserIdx=$myIdx OR toUserIdx=$myIdx", limit: 200, select: '*');
     }
 }

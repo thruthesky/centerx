@@ -1,4 +1,9 @@
 .idea
+.phpdoc
+docs
+buid
+etc/phpdoc/build
+etc/phpdoc/docs
 node_modules
 logs
 etc/keys

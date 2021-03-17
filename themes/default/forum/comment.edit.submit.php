@@ -2,9 +2,9 @@
 
 
 $comment = comment()->create(in());
-if ( isError($comment) ) jsBack($comment);
+if ( $comment->hasError ) jsBack($comment->getError());
 if ( in('returnTo') == 'post' ) {
-    jsGo(post($comment[ROOT_IDX])->get()['url']);
+    jsGo($comment->post()->url); // post($comment[ROOT_IDX])->get()['url']);
 } else {
-    jsGo("/?p=forum.post.list&categoryId=" . comment($comment)->categoryId() );
+    jsGo("/?p=forum.post.list&categoryId=" . $comment->categoryId() );
 }

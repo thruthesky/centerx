@@ -1,55 +1,84 @@
 <?php
-
+/**
+ * @file comment.class.php
+ */
+/**
+ * Class Comment
+ *
+ * 코멘트는 Post 와 동일한 테이블을 사용한다. 따라서 Post 클래스와 비슷한 부분이 많다.
+ *
+ * @property-read int $rootIdx
+ * @property-read int $parentIdx
+ * @property-read int $categoryIdx
+ * @property-read string $title
+ * @property-read string $content
+ * @property-read string $files
+ * @property-read string $Y
+ * @property-read string $N
+ * @property-read int $createdAt
+ * @property-read int $deletedAt
+ */
 class Comment extends PostTaxonomy {
+
+    /**
+     * depth 는 재귀적 함수 호출에 의해서 결정되므로, DB 에 없는 필드이다. 따라서 재귀적 함수 호출 후에 설정을 해 주어야 한다.
+     * @var int
+     */
+    public int $depth = 0;
 
     public function __construct(int $idx)
     {
         parent::__construct($idx);
     }
 
+
     /**
      * @param array $in
-     * @return array|string
+     *
+     * @return Comment
      */
-    public function create(array $in): array|string
+    public function create(array $in): self
     {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( !isset($in[ROOT_IDX]) ) return e()->root_idx_is_empty;
-        $in[USER_IDX] = my(IDX);
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( !isset($in[ROOT_IDX]) ) return $this->error(e()->root_idx_is_empty);
+        $in[USER_IDX] = login()->idx;
 
         /**
          * @todo when categoryIdx of post changes, categoryIdx of children must be changes.
          */
-        $categoryIdx = postCategoryIdx($in[ROOT_IDX]); // post($in[ROOT_IDX])->get(select: CATEGORY_IDX);
-
+        $categoryIdx = postCategoryIdx($in[ROOT_IDX]);
 
         $in[CATEGORY_IDX] = $categoryIdx;
-        $re = parent::create($in);
-        if ( isError($re) ) return $re;
+        parent::create($in);
+        if ( $this->hasError ) return $this;
 
-        $category = category($re[CATEGORY_IDX]);
+
+        $this->fixUploadedFiles($in);
+
+        $category = category($categoryIdx);
 
         // 제한에 걸렸으면, 에러 리턴.
-        if ( $category->value(BAN_ON_LIMIT) ) {
+        if ( $category->BAN_ON_LIMIT ) {
             $limit = point()->checkCategoryLimit($category->idx);
-            if ( isError($limit) ) return $limit;
+            if ( isError($limit) ) return $this->error($limit);
         }
 
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
         $pointToCreate = point()->getCommentCreate($category->idx);
         if ( $pointToCreate < 0 ) {
-            if ( my(POINT) < abs( $pointToCreate ) ) return e()->lack_of_point;
+            if ( login(POINT) < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
         }
 
         // $comment = parent::create($in);
-        point()->forum(POINT_COMMENT_CREATE, $re[IDX]);
+        point()->forum(POINT_COMMENT_CREATE, $this->idx);
 
         /**
          * NEW COMMENT IS CREATED ==>  Send notification to forum comment subscriber
          */
-        onCommentCreateSendNotification($re); //
+        onCommentCreateSendNotification($this); //
 
-        return comment($re[IDX])->get();
+        return $this;
+
     }
 
     /**
@@ -57,84 +86,77 @@ class Comment extends PostTaxonomy {
      * @return string
      */
     public function categoryId(): string {
-        $record = $this->get(select: CATEGORY_IDX);
-        $category = category($record[CATEGORY_IDX])->get(select: ID);
-        return $category[ID];
+        return postCategoryId($this->categoryIdx);
     }
+
 
 
 
     /**
-     * @attention The entity.idx must be set. That means, it can only be called with `post(123)->update()`.
+     * Update comment
+     *
+     * The `$this->idx` must be set. That means, it can only be called with current entity(comment).
      *
      * @param array $in
-     * @return array|string
+     *
+     * @return Comment
      */
-    public function update(array $in): array|string {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( ! $this->idx ) return e()->idx_is_empty;
-        if ( $this->exists() == false ) return e()->post_not_exists;
-        if ( $this->isMine() == false ) return e()->not_your_comment;
+    public function update(array $in): self {
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
+        if ( $this->isMine() == false ) return $this->error(e()->not_your_comment);
 
+        parent::update($in);
 
-        $updated = parent::update($in);
-        if ( isError($updated) ) return $updated;
-        return comment($updated[IDX])->get();
+        $this->fixUploadedFiles($in);
+
+        return $this;
     }
 
 
-
-    public function delete()
+    /**
+     * @return $this
+     */
+    public function delete(): self
     {
-        return e()->comment_delete_not_supported;
+        return $this->error(e()->comment_delete_not_supported);
     }
 
 
-    public function markDelete(): array|string {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( ! $this->idx ) return e()->idx_is_empty;
-        if ( $this->exists() == false ) return e()->post_not_exists;
-        if ( $this->isMine() == false ) return e()->not_your_comment;
+    /**
+     * @return $this
+     */
+    public function markDelete(): self {
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
+        if ( $this->isMine() == false ) return $this->error(e()->not_your_comment);
 
-
-        $record = parent::markDelete();
-        if ( isError($record) ) return $record;
-        $this->update([TITLE => '', CONTENT => '']);
-
+        parent::markDelete();
+        parent::update([TITLE => '', CONTENT => '']);
 
         point()->forum(POINT_COMMENT_DELETE, $this->idx);
 
-        return $this->get();
+        return $this;
     }
 
 
     /**
+     * 클라이언트로 보낼 정보
      *
-     * @param string|null $field
-     * @param mixed|null $value
-     * @param string $select
-     * @param bool $cache
-     * @return mixed
-     * - Empty array([]) if comment not exists.
-     *
-     *
-     * @todo add user(author) information
-     * @todo add attached files if exists.
+     * @return array|string
+     * - 에러가 있으면 에러 문자열
+     * - 아니면, 배열
      */
-    public function get(string $field=null, mixed $value=null, string $select='*', bool $cache=true): mixed
-    {
-        $comment = parent::get($field, $value, $select, $cache);
+    public function response(): array|string {
+        if ( $this->hasError ) return $this->getError();
 
-        /// @todo why is it getting empty comment? why empty comment happens?
-        if ( empty($comment) ) {
-            return [];
-        }
+        $comment = $this->getData();
 
         /**
          * Get files only if $select includes 'files' field.
          */
         if ( isset($comment[FILES]) ) {
-            $comment[FILES] = files()->get($comment[FILES], select: 'idx,userIdx,path,name,size');
+            $comment[FILES] = files()->fromIdxes($comment[FILES], false);
         }
 
 
@@ -142,7 +164,9 @@ class Comment extends PostTaxonomy {
             $comment['user'] = user($comment[USER_IDX])->postProfile();
         }
 
+        
         $comment['short_date_time'] = short_date_time($comment['createdAt']);
+
 
         return $comment;
     }
@@ -160,46 +184,60 @@ class Comment extends PostTaxonomy {
      * @param string $order
      * @param string $by
      * @param string $select
-     * @param string $categoryId
-     * @return mixed
-     * @throws Exception
+     * @param array $conds
+     * @param string $conj
+     * @return Comment[]
      */
+
     public function search(
-        string $where='1', int $page=1, int $limit=10, string $order='idx', string $by='DESC', $select='idx'
-    ): mixed {
+        string $select='idx',
+        string $where='1',
+        string $order='idx',
+        string $by='DESC',
+        int $page=1,
+        int $limit=10,
+        array $conds=[],
+        string $conj = 'AND',
+    ): array {
 
         $posts = parent::search(
+            select: $select,
             where: $where,
-            page: $page,
-            limit: $limit,
             order: $order,
             by: $by,
-            select: $select,
+            page: $page,
+            limit: $limit,
         );
 
         $rets = [];
         foreach( $posts as $post ) {
             $idx = $post[IDX];
-            $rets[] = comment($idx)->get();
+            $rets[] = comment($idx);
         }
 
         return $rets;
     }
 
-
+    /**
+     * 현재 코멘트의 (최상위) 글을 객체로 리턴한다.
+     *
+     * @return Post
+     */
+    public function post(): Post {
+        return post($this->rootIdx);
+    }
 }
 
 
 /**
  * Returns Comment instance.
  *
- * @param array|int $idx - The `posts.idx` which is considered as comment idx. Or an array of the comment record.
+ * @param int $idx - The `idx` is the field of `posts` table. Comment uses the same table of posts.
  * @return Comment
  */
-function comment(array|int $idx=0): Comment
+function comment(int $idx=0): Comment
 {
-    if ( is_array($idx) ) return new Comment($idx[IDX]);
-    else return new Comment($idx);
+    return new Comment($idx);
 }
 
 
