@@ -187,8 +187,7 @@ function get_root_domain(string $_domain = null): string {
     if ( $_domain == null ) $_domain = get_domain_name();
     if ( empty($_domain) ) return '';
 
-    $_root_domains = ['.com', '.net', '.co.kr', '.kr'];
-    foreach( $_root_domains as $_root ) {
+    foreach( SUPPORTED_DOMAIN_SUFFIX as $_root ) {
         if ( stripos($_domain, $_root) !== false ) {
             $_without_root = str_ireplace($_root, '', $_domain);
             $_parts = explode('.', $_without_root);
@@ -1169,19 +1168,39 @@ function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): s
 }
 
 
-$__include_vue_once = false;
+
 /**
  * Vue.js 를 한번만 로드하게 한다.
  */
 function includeVueOnce() {
-    global $__include_vue_once;
-    if ( $__include_vue_once ) return;
-    $__include_vue_once = true;
-    $homeUrl = HOME_URL;
-    echo <<<EOH
-<script src="$homeUrl/etc/js/vue.3.0.7.global.prod.min.js"></script>
-EOH;
+    if ( defined('VUE_JS') ) return;
+    define('VUE_JS', true);
 
+    $homeUrl = HOME_URL;
+
+    if ( isLocalhost() ) {
+        $url = "$homeUrl/etc/js/vue.3.0.7.dev.js";
+    } else {
+        $url = "$homeUrl/etc/js/vue.3.0.7.min.js";
+    }
+    echo "<script src='$url'></script>";
+}
+
+
+/**
+ * Vue.js 를 한번만 로드한다.
+ */
+function includeVue2Once() {
+    if ( defined('VUE_JS') ) return;
+    define('VUE_JS', true);
+
+    $homeUrl = HOME_URL;
+    if ( isLocalhost() ) {
+        $url = "$homeUrl/etc/js/vue.2.dev.js";
+    } else {
+        $url = "$homeUrl/etc/js/vue.2.min.js";
+    }
+    echo "<script src='$url'></script>";
 }
 
 
@@ -1236,4 +1255,20 @@ function short_date_time($stamp)
         $dt = "$Y-$m-$d";
     }
     return $dt;
+}
+
+
+/**
+ * file.idx 를 입력 받아, 썸네일 URL 을 리턴한다.
+ *
+ * @param int $fileIdx
+ * @param int $width
+ * @param int $height
+ * @param int $quality
+ * @return string
+ */
+function thumbnailUrl(int $fileIdx, int $width=200, int $height=200, int $quality=200): string
+{
+    if ( empty($fileIdx) ) return '';
+    return HOME_URL . "etc/phpThumb/phpThumb.php?src=$fileIdx&w=$width&h=$height&f=jpeg&q=$quality";
 }

@@ -20,7 +20,7 @@ $comment = $o['comment'] ?? null;
 
 ?>
 
-<div id="comment-form">
+<div id="comment-edit-default-form">
     <form enctype="multipart/form-data" action="/" method="POST">
         <input type="hidden" name="p" value="forum.comment.edit.submit">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
@@ -40,6 +40,17 @@ $comment = $o['comment'] ?? null;
 if ( defined('COMMENT_EDIT_DEFAULT_JAVASCRIPT') ) return;
 define('COMMENT_EDIT_DEFAULT_JAVASCRIPT', true);
 ?>
+
+<?php includeVueOnce(); ?>
+<script>
+    const postListCreateView = Vue.createApp({
+        created() {
+            console.log("created() for : comment-edit-default-form")
+        }
+    }).mount("#comment-edit-default-form");
+</script>
+
+
 <script>
     function onFileChange(event, id) {
         console.log(event);

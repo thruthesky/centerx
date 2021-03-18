@@ -15,6 +15,17 @@ define('PASS_LOGIN_CALLBACK_URL', isLocalhost() ?
 define('FIX_LANGUAGE', 'ko');
 
 
+define('HEALTH_CATEGORIES', [
+    'health_meal_morning',
+    'health_meal_lunch',
+    'health_meal_dinner',
+    'health_scribble',
+    'health_exercise',
+    'health_sleep',
+    'health_brain'
+]);
+
+
 include 'itsuda.hooks.php';
 include 'itsuda.route.php';
 

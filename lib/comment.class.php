@@ -168,7 +168,7 @@ class Comment extends PostTaxonomy {
 
 
         // taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
-        $comment[FILES] = $this->files(true);
+        $comment[FILES] = $this->files(response: true);
 
 
         if ( $comment[USER_IDX] ) {

@@ -15,9 +15,11 @@ if ( in(CATEGORY_ID) ) {
     jsBack('잘못된 접속입니다.');
 }
 
+d($category);
+
 ?>
 
-<div id="app" class="p-5">
+<div id="post-edit-default" class="p-5">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
         <input type="hidden" name="returnTo" value="post">
@@ -55,13 +57,16 @@ if ( in(CATEGORY_ID) ) {
 
 <?php includeVueOnce(); ?>
 <script>
-    const app = Vue.createApp({
+    const postEditDefault = Vue.createApp({
         data() {
             return {
                 percent: 0,
                 files: '<?=$post->v('files')?>',
                 uploadedFiles: <?=json_encode($post->files(), true)?>,
             }
+        },
+        created () {
+            console.log('created() for post-edit-default');
         },
         methods: {
             onFileChange(event) {
@@ -77,8 +82,8 @@ if ( in(CATEGORY_ID) ) {
                     },
                     function (res) {
                         console.log("success: res.path: ", res, res.path);
-                        app.files = addByComma(app.files, res.idx);
-                        app.uploadedFiles.push(res);
+                        postEditDefault.files = addByComma(postEditDefault.files, res.idx);
+                        postEditDefault.uploadedFiles.push(res);
                     },
                     alert,
                     function (p) {
@@ -98,15 +103,15 @@ if ( in(CATEGORY_ID) ) {
                     .then(function (res) {
                         checkCallback(res, function(res) {
                             console.log('delete success: ', res);
-                            app.uploadedFiles = app.uploadedFiles.filter(function(v, i, ar) {
+                            postEditDefault.uploadedFiles = postEditDefault.uploadedFiles.filter(function(v, i, ar) {
                                 return v.idx !== res.idx;
                             });
-                            app.files = deleteByComma(app.files, res.idx);
+                            postEditDefault.files = deleteByComma(postEditDefault.files, res.idx);
                         }, alert);
                     })
                     .catch(alert);
             }
         }
-    }).mount("#app");
+    }).mount("#post-edit-default");
 </script>
 

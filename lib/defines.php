@@ -124,7 +124,7 @@ define('META_CODE_EXCEPTIONS', [
     'reload',
     'p', 'w', 'cw', 'mode', 'MAX_FILE_SIZE',
     TOKEN,
-    'returnTo', // to return where after form submit.
+    'returnTo', // returnTo 는 더 이상 사용되지 않음. 없애도 됨.
     'userfile', // file upload form name.
 ]);
 

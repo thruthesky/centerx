@@ -50,3 +50,28 @@ hook()->add('posts-before-create', function($record, $in) {
 hook()->add('posts-before-create', function($record, $in) {
 //    debug_log("-------------- 두번째 훅: hook of posts-before-create", $in);
 });
+
+hook()->add('posts-after-create', function($record, $in) {
+//    debug_log("-------------- hook of posts-after-create. record:", $record);
+//    debug_log("-------------- hook of posts-after-create. in:", $in);
+});
+
+hook()->add('posts-create-point', function($data) {
+    debug_log("-------------- hook of posts-create-point. post data:", $data);
+
+    $categoryIdxes = [];
+    foreach( HEALTH_CATEGORIES as $categoryId ) {
+        $categoryIdxes[] = category($categoryId)->idx;
+    }
+    if ( in_array($data[CATEGORY_IDX], $categoryIdxes) ) {
+        $entity = entity('itsuda');
+        if ( $entity->exists([USER_IDX => login()->idx]) ) {
+            $found = $entity->findOne([USER_IDX => login()->idx]);
+            $found->update(['healthPoint' => $found->healthPoint + $data['appliedPoint'] ]);
+        } else {
+            $entity->create([USER_IDX => login()->idx, 'healthPoint' => $data['appliedPoint']]);
+        }
+    }
+});
+
+

@@ -148,6 +148,32 @@
 
 
         <tr class="table-dark">
+            <td colspan="2">게시판 동작 설정</td>
+        </tr>
+
+        <tr>
+            <td><?=ln('Return To After Edit', '글 편집 후 이동')?></td>
+            <td>
+                <label>
+                    <input
+                            type="radio"
+                            name="returnToAfterPostEdit"
+                            value="V"
+                        <?php if ($category->returnToAfterPostEdit == 'V' || empty($category->returnToAfterPostEdit) ) echo 'checked' ?>> 글 읽기 페이지,
+                </label>
+                &nbsp;
+                <label>
+                    <input
+                            type="radio"
+                            name="returnToAfterPostEdit"
+                            value="L"
+                        <?php if ($category->returnToAfterPostEdit == 'L' ) echo 'checked' ?>> 글 목록 페이지
+                </label>
+            </td>
+        </tr>
+
+
+        <tr class="table-dark">
             <td colspan="2">웹 위젯 설정</td>
         </tr>
 

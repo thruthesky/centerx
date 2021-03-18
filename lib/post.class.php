@@ -125,7 +125,9 @@ class Post extends PostTaxonomy {
         // 포인트를 현재 객체의 $this->data 에 업데이트
         $this->patchPoint();
 
-
+        /// 글/코멘트에 포인트를 적용 한 후, 훅
+        $data = $this->getData();
+        hook()->run("{$this->taxonomy}-create-point", $data);
 
 
         // update `noOfPosts`
@@ -210,11 +212,11 @@ class Post extends PostTaxonomy {
         if ( $this->hasError ) return $this->getError();
         $post = $this->getData();
 
-        $post['comments'] = $this->comments(true);
+        $post['comments'] = $this->comments(response: true);
 
 
         // taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
-        $post[FILES] = $this->files(true);
+        $post[FILES] = $this->files(response: true);
 
 
         if ( $post[USER_IDX] ) {

@@ -288,7 +288,7 @@ class Entity {
         $this->read($idx);
 
         // Entity 생성 후 훅
-        $re = hook()->run("{$this->taxonomy}-after-create", $record, $in);
+        $re = hook()->run("{$this->taxonomy}-after-create", $this->data, $in);
         if ( isError($re) ) return $this->error($re);
 
         return $this;
@@ -497,12 +497,11 @@ class Entity {
      * DB 레코드에서 idx 를 읽어서 존재하는지 아닌지 검사한다.
      *
      * 참고, $conds 에 값이 넘어오면, 해당 조건에 존재하는 레코드가 있는지 확인한다.
-     * 이 때, search() 함수를 사용하는데, search() 함수의 특성에 따라 $conds 조건에 맞는 여러개의 레코드가 존재 할 수 있다.
-     * 하지만, $this->idx 로 검사하는 경우, 오직 현재 레코드가 존재하는지만 검사한다.
+     *  이 때, search() 함수를 사용하는데, search() 함수의 특성에 따라 $conds 조건에 맞는 여러개의 레코드가 존재 할 수 있다.
+     *  만약, $conds 이 들어오지 않으면, $this->idx 로 검사하는 데, 오직 현재 레코드가 존재하는지만 검사한다.
      *
      * 참고, DB 접속을 매번하므로, 원격 DB의 경우 connection 시간이 걸릴 수 있다.
      *
-     * $this->idx 가 설정되어야 한다. 아니면 false 리턴.
      *
      *
      * 참고, 카테고리가 존재하는지 안하는지를 확인하기 위해서 category(123) 과 같이 초기화하면, 레코드 전체를 읽으므로 쿼리가 느릴 수 있다.

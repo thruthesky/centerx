@@ -25,6 +25,7 @@
  * @property-read string listOnView
  * @property-read string noOfPostsPerPage
  * @property-read string noOfPagesOnNav
+ * @property-read string returnToAfterPostEdit
  * @property-read string mobilePostListWidget
  * @property-read string mobilePostViewWidget
  *

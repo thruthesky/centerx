@@ -36,7 +36,6 @@ class PostTaxonomy extends Entity {
         else $reason = POINT_POST_CREATE;
         $point = pointHistory()->last(POSTS, $this->idx, $reason)?->toUserPointApply ?? 0;
         $this->updateData('appliedPoint', $point);
-
     }
     /**
      *

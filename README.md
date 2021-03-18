@@ -85,24 +85,7 @@
     - 먼저, 그동안 변경된 사항을, https://github.com/thruthesky/centerx/commits/main 에서 확인해서, 변경된 내용을 적용한다.
     - branch 이름 변경하기 참고: https://docs.google.com/document/d/1OV1FYLwBBloQU_H8wUkZLnzCLtFdVLiRtXPZXNa5Bkw/edit#heading=h.fbs4ukt4a7lj
 
-- @done User test,
-  
-- @done Category test,
-  
-- @done Post test
-  
-- @done Comment test
-
-- @done VoteHistory entity test
-
-- @done Entity hook test
-
-- @done Point test
-
-- @done entity::get() 함수 삭제
-- @done my() 함수 삭제. login() 으로 대체
-- @done isSucess() 함수 삭제. 테스트에서 별 소용 없는 함수.
-- @done entity 밑에 안쓰는 함수 삭제.
+- 앱 설정 및 언어화 실시간 업데이트를 php 와 realtime database 로 했는데, 그냥 자바스크립트로해서 Firestore 로 할 것.
 
 - comment-edit-default 작업 중. 모든 코멘트 쓰기/수정/삭제/ 파일 업로드에 기본적으로 적용한다.
 
@@ -127,6 +110,9 @@
 
 - next 브랜치를 main 으로 변경
 
+- @doc 게시판 설정에서, 글 편집 후 이동 옵션에서, 글 읽기 페이지를 선택하면, 글을 작성하고 난 다음에 글 읽기 페이지로 간다.
+  글 목록 페이지를 선택하면, 글 쓴 후, 글 목록 페이지로 한다.
+  
 
 - @doc `next.***.test.php` 로 테스트 코드를 작성하고 있다.
   - user, category, post, comment 순서로 테스트
@@ -405,6 +391,9 @@ define('DOMAIN_THEMES', [
     So, when `Config` uses the functionality of `Entity`, it cannot do anything that is related with the table.
     It can do such things like `entity->getMtea()`, set, update, delete, addifNotExists that are not related with the taxonomy table.
 
+
+- 테이블을 새로 만들 때, idx, createdAt, updatedAt 3개의 필드만 있으면 entity 클래스를 통해서 작업을 할 수 있다.
+  이 때, 테이블 prefix 를 맞추어서 테이블 이름을 정해야 한다. 예) wc_table_name
 
 
 ## Taxonomy helper classes

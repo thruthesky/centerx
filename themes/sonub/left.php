@@ -1,4 +1,6 @@
 <div>
+    left.php
+    <hr>
     <?php
     if ( loggedIn() ) echo login()->name . '님, 어서오세요';
     ?>

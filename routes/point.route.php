@@ -11,4 +11,6 @@ class PointRoute {
 
         return ['point' => pointHistory()->last(POSTS, $in[IDX], $reason)->toUserPointApply];
     }
+
+
 }

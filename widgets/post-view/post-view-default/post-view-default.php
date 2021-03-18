@@ -38,7 +38,6 @@ $post = post()->current();
 <div class="mt-3">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.comment.edit.submit">
-        <input type="hidden" name="returnTo" value="post">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="<?=ROOT_IDX?>" value="<?=$post->idx?>">
         <input type="hidden" name="<?=PARENT_IDX?>" value="<?=$post->idx?>">

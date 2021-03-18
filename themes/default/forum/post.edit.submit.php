@@ -11,10 +11,13 @@ else {
 if ( $post->hasError ) jsBack($post->getError());
 
 
-if ( in('returnTo') == 'post' ) {
-    jsGo($post->url);
-} else {
+$category = category($categoryId);
+$category->returnToAfterPostEdit;
+
+if ( $category->returnToAfterPostEdit == 'L' ) {
     jsGo("/?p=forum.post.list&categoryId=" . $categoryId );
+} else {
+    jsGo($post->url);
 }
 
 

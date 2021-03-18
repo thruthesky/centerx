@@ -47,7 +47,6 @@
 
 <nav class="mainmenu-desktop mt-1 mb-3">
     <div class="l-content d-flex justify-content-between fs-md">
-        <a class="py-2" href="#">홈</a>
         <a class="py-2" href="/?p=forum.post.list&categoryId=discussion">자유토론</a>
         <a class="py-2" href="/?p=forum.post.list&categoryId=qna">질문답변</a>
         <a class="py-2" href="/?p=forum.post.list&categoryId=market">회원장터</a>

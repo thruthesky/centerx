@@ -21,6 +21,16 @@ define('DOMAIN_THEMES', [
 
 
 /**
+ * 지원 도메인
+ *
+ * 현재 사이트에서 서비스하는 도메인의 최상위 도메인을 가져오거나 특정 도메인의 루트 도메인을 가져오고자 할 때, 지원되는 도메인들이다.
+ * 만약, 필리핀 사이트 도메인을 사용(지원)하려 한다면, ph 와 com.ph 두개를 추가하면 된다.
+ * 현재 사이트에서 사용하려는 도메인의 suffix 를 여기에 입력하면 된다. 예를 들어, abc.uk 도메인을 쓴다면, .uk 를 추가하면 된다.
+ * 필요하다면, .com, .net, .org, .co.kr, .kr 등이 많이 쓰이는 도메인이므로 이것들을 추가하면 된다.
+ */
+define('SUPPORTED_DOMAIN_SUFFIX', ['.com', '.co.kr', '.kr']);
+
+/**
  * Local hosts
  *
  * 현재 컴퓨터에서 테스트하는 도메인을 기록. 이 도메인으로 접속하면, 실제 서버가 아닌 현재 컴퓨터로 접속을 하며, 테스트를 위한 것이다.
@@ -28,7 +38,7 @@ define('DOMAIN_THEMES', [
  *
  * 참고, 테마 설정 파일에서 isLocalhost() 를 사용 할 수 있으므로, 테마 설정이 로드되기 전에 정의되어야 한다.
  */
-define('LOCAL_HOSTS', ['localhost', 'local.itsuda50.com']);
+define('LOCAL_HOSTS', ['localhost', 'local.itsuda50.com', 'main.philov.com']);
 
 
 
