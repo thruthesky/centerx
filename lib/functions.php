@@ -642,6 +642,7 @@ function seoFriendlyString(string $s): string {
 
 
 /**
+ * HTML FORM 을 전송할 때 반드시, mode 값이 create, update, delete, submit 중에 하나라야 한다.
  * Helper function to detect if form have submitted for creation
  * @return bool
  */
@@ -669,6 +670,15 @@ function modeDelete(): bool {
  */
 function modeSubmit(): bool {
     return in('mode') == 'submit';
+}
+
+/**
+ * HTML FORM 이 전송되었는지 검사한다.
+ * @return bool
+ */
+function modeAny(): bool {
+    $mode = in('mode');
+    return !empty($mode);
 }
 
 /**

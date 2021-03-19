@@ -341,6 +341,9 @@ define('DOMAIN_THEMES', [
 - `themes/[theme-name]/[theme-name].config` will be included(and run) if it exists.
   It will run even if it is API call. (Just connect to api domain to proper theme.)
 
+- 주의, 테마 폴더가 abc, def 가 있는데, 이것은 도메인과 상관이 없다.
+  도메인 def.com 으로 접속해도, abc 테마로 사용할 수 있는데, 이것은 config.php 에서 테마 설정을 다르게 해 주면 된다.
+
 - All the default configuration can be over-written by theme configuration.
   That means, each theme can use different database settings.
 

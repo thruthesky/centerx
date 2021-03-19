@@ -3,17 +3,16 @@
         adminSettings()->set(in());
         setRealtimeDatabaseDocument('/notifications/settings', ['time' => time()]);
         ?>
+            <?php includeFirebase(); ?>
 <script>
     later(function() {
         const db = firebase.firestore();
-        console.log(db);
         db.collection('notifications').doc('settings').set({time: (new Date).getTime()});
     })
 </script>
 <?php
     }
     $ms = adminSettings()->get();
-    includeFirebase();
 ?>
 <div class="container">
     <div class="row">
