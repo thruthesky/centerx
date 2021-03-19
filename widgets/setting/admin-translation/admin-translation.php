@@ -9,6 +9,18 @@ else if ( modeUpdate() ) {
 } else if ( modeDelete() ) {
     translation()->deleteCode(in('code'));
 }
+
+if ( modeAny() ) {
+    ?>
+    <?php includeFirebase(); ?>
+    <script>
+        later(function() {
+            const db = firebase.firestore();
+            db.collection('notifications').doc('translations').set({time: (new Date).getTime()});
+        })
+    </script>
+<?php
+}
 ?>
 <div class="container">
     <div class="row">

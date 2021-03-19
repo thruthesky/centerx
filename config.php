@@ -195,3 +195,35 @@ if ( !defined('NAVER_CALLBACK_URL') ) define('NAVER_CALLBACK_URL', urlencode('ht
 if ( !defined('NAVER_API_URL') ) define('NAVER_API_URL', "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=".NAVER_CLIENT_ID."&redirect_uri=".NAVER_CALLBACK_URL."&state=1");
 
 
+/**
+ * Firebase 사용을 위한 설정
+ *
+ * Firebase 콘솔에서 해당 프로젝트에서 제공하는 설정을 그대로 이곳에 복사해 넣으면 된다.
+ * 그리고 필요한 firebase auth 또는 firebase firestore 등을 추가하면 된다.
+ *
+ * 만약, Firebase 를 사용하지 않는다면, 이 값을 null 로 주면 된다.
+ */
+$__firebase_sdk = <<<EOH
+<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.3.0/firebase-app.js"></script>
+
+<!-- Add Firebase products like firestore -->
+<script src="https://www.gstatic.com/firebasejs/8.3.0/firebase-firestore.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDZ8Bfuxtp2uXZxgXM7Q9Kl4-ae034GQ5o",
+    authDomain: "itsuda50.firebaseapp.com",
+    databaseURL: "https://itsuda50-default-rtdb.firebaseio.com",
+    projectId: "itsuda50",
+    storageBucket: "itsuda50.appspot.com",
+    messagingSenderId: "559371413269",
+    appId: "1:559371413269:web:23570a748e08b7b00eeb1c"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+EOH;
+if ( !defined('FIREBASE_SDK') ) define('FIREBASE_SDK', $__firebase_sdk);
+
