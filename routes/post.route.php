@@ -66,6 +66,7 @@ class PostRoute {
     }
 
 
+    /// TODO: include postOnTop
     public function search($in) {
         $posts = post()->search(
             select: $in['select'] ?? 'idx',
