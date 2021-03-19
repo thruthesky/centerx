@@ -646,6 +646,7 @@ class Entity {
      * - 원한다면 select: 'name' 또는 select: '*' 와 같이 특정 레코드 또는 전체 레코드를 배열로 리턴 할 수 있다.
      * - 하나의 레코드 또는 하나의 필드를 가져오고자 할 때 사용 할 수 있다.
      *
+     *
      * @param string $where
      * @param int $page
      * @param int $limit
