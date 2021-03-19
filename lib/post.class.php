@@ -228,7 +228,11 @@ class Post extends PostTaxonomy {
     }
 
     /**
-     * Returns posts after search and add meta datas.
+     * Returns post objects after search and add meta data.
+     *
+     *
+     * - 게시글 목록을 클라이언트로 리턴 할 때, response() 함수를 호출해야하는데, 이 search() 함수로 먼저 post 객체(들)를 얻어서 foreach() 루프를
+     *   돌려, response() 를 호출 한 다음 리턴해야 한다.
      *
      * @attention Categories can be passed like  "categoryId=<apple> or categoryId='<banana>'" and it wil be converted
      * as "categoryIdx=1 or categoryIdx='2'"
@@ -253,6 +257,9 @@ class Post extends PostTaxonomy {
      * @param string $conj
      * @return Post[]
      *
+     * @example
+     *  $where = "userIdx=$userIdx AND categoryIdx=$categoryIdx AND createdAt>=$beginStamp AND createdAt<=$endStamp";
+     *  $posts = post()->search(where: $where);
      *
      */
     public function search(
@@ -270,7 +277,6 @@ class Post extends PostTaxonomy {
         // Parse category
         $where = $this->parseCategory($where);
 
-
         $posts = parent::search(
             select: $select,
             where: $where,
@@ -278,6 +284,8 @@ class Post extends PostTaxonomy {
             by: $by,
             page: $page,
             limit: $limit,
+            conds: $conds,
+            conj: $conj
         );
 
 
@@ -314,8 +322,8 @@ class Post extends PostTaxonomy {
                 $idx = category($cat)->idx;
                 $where = str_replace($ms[0][$i], $idx, $where);
             }
+            $where = str_replace('categoryId', CATEGORY_IDX, $where);
         }
-        $where = str_replace('categoryId', CATEGORY_IDX, $where);
         return $where;
     }
 

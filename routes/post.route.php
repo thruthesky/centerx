@@ -66,8 +66,18 @@ class PostRoute {
     }
 
 
-    /// TODO: include postOnTop
+    /**
+     * @param $in
+     * @return array
+     */
     public function search($in) {
+
+        ///
+        if ( isset($in['postOnTop']) && $in['postOnTop'] ) {
+            $categoryId = post($in['postOnTop'])->categoryId();
+            $in['where'] = "categoryId=<$categoryId>";
+        }
+
         $posts = post()->search(
             select: $in['select'] ?? 'idx',
             where: $in['where'] ?? '1',

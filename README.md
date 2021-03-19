@@ -134,6 +134,13 @@
   getMeta() 에서 taxonomy 와 entity 까지만 입력하면, 배열로 해당 entity 에 속만 메타가 모두 리턴된다.
 
 
+- @doc 비밀번호 변경하기
+
+간단하게 아래와 같이 코딩을 해서, 어디서든 실행을 한번 하면 된다.
+
+```php
+user()->by('thruthesky@gmail.com')->changePassword('12345a');
+```
 
 
 - @doc entity 는 실제 존재하는 taxonomy 에 대해서만 작업을 한다. 즉, table 이 존재하지 않으면 안된다.
