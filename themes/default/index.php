@@ -22,6 +22,9 @@
 
 
 <?php
+
+
+
     include theme()->page();
 ?>
 
