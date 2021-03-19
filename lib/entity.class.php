@@ -141,11 +141,13 @@ class Entity {
      * @param $k
      * @param $v
      *
+     * @return self
      * @example
      * category(123)->updateData('subcategories', separateByComma($this->subcategories));
      */
-    public function updateData($k, $v) {
+    public function updateData($k, $v): self {
         $this->data[$k] = $v;
+        return $this;
     }
 
 

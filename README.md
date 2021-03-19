@@ -1,4 +1,4 @@
-# CenterXgit stat
+# CenterX
 
 - 위세너에서 개발한 LEMP 기반 백엔드.
 - 특징
@@ -554,6 +554,25 @@ d($result);
 - After filling up on post create/update form, send the form to `/?p=forum.post.edit.submit` and it will redirect to the list page.
 
 
+# Firebase
+
+## Javascript
+
+- Firebase 설정은 config.php 에서 한다. 필요한 Firebase product 를 추가하면 된다.
+- Firestore 사용은 아래와 같이 하면 된다.
+
+```html
+<script>
+    later(function() {
+        const db = firebase.firestore();
+        console.log(db);
+        db.collection('notifications').doc('settings').set({time: (new Date).getTime()});
+    })
+</script>
+<?php
+    includeFirebase();
+?>
+```
 
 
 # API Protocol
@@ -568,6 +587,23 @@ d($result);
   
 - To live reload on web browser, add `/?reload=true`. But you must remove it when you don't need live reload.
   
+
+## Response
+
+- `login()` 함수는 매번 호출 될 때마다 새로운 객체를 생성하므로, 필요하다면 `$login = login()` 와 같이 객체를 저장해서 재 사용해야한다.
+  그래서 아래와 같이 하면, 업데이트된 값이 제대로 전달되지 않는다.
+  
+```php
+login()->updateData('rank', 2); // 이 객체와
+return login()->response(); // 이 객체는 서로 달라서, rank 값이 클라이언트로 전달되지 않는다.
+```
+
+- 단, 아래와 같이 할 수는 있다.
+
+``php
+return login()->updateData('rank', 2)->response();
+``
+
 ## Writing route code
 
 - There are two ways of handling route.

@@ -38,3 +38,18 @@ routeAdd('health.pointRank', function($in) {
     return $rets;
 });
 
+
+routeAdd('health.myRank', function($in) {
+
+    $my = entity('itsuda')->findOne([USER_IDX => login()->idx]);
+    if ( $my->hasError ) $point = 0;
+    else $point = $my->healthPoint;
+    $q = "SELECT COUNT(*) FROM wc_itsuda WHERE healthPoint > $point";
+    $rank = db()->get_var($q);
+    return login()->updateData('rank', $rank + 1)->updateData('healthPoint', $point)->response();
+});
+
+
+
+
+
