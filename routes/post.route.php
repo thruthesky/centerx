@@ -73,8 +73,10 @@ class PostRoute {
     public function search($in) {
 
         ///
+        $onTop = null;
         if ( isset($in['postOnTop']) && $in['postOnTop'] ) {
-            $categoryId = post($in['postOnTop'])->categoryId();
+            $onTop = post($in['postOnTop']);
+            $categoryId = $onTop->categoryId();
             $in['where'] = "categoryId=<$categoryId>";
         }
 
@@ -87,7 +89,9 @@ class PostRoute {
             limit: $in['limit'] ?? 10,
         );
         $res = [];
+        if ( $onTop ) $res[] = $onTop->response();
         foreach($posts as $post) {
+            if ( $onTop?->idx == $post->idx ) continue;
             $res[] = $post->response();
         }
         return $res;

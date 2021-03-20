@@ -1,4 +1,5 @@
 <?php
+
 include './boot.php';
 if ( in(ROUTE) ) return include ROOT_DIR . 'routes/index.php';
 ob_start();
