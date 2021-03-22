@@ -18,6 +18,18 @@ class UserRoute {
         return login()->response();
     }
 
+    public function otherUserProfile($in) {
+        if ( isset($in['idx']) ) {
+            return user($in['idx'])->shortProfile();
+        } else if ( isset($in['email']) ) {
+            return user($in['email'])->shortProfile();
+        } else if ( isset($in['firebaseUid']) ) {
+            return user()->findOne(['firebaseUid' => $in['firebaseUid']])->shortProfile();
+        } else {
+            return e()->user_not_found;
+        }
+    }
+
     public function update($in) {
         if ( notLoggedIn() ) return e()->not_logged_in;
         return login()->update($in)->response();

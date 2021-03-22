@@ -4,6 +4,7 @@ class E {
     public string $register_failed = 'error_register_failed';
     public string $idx_not_set = 'error_idx_not_set';
     public string $user_not_found_by_that_idx = 'error_user_not_found_by_that_idx';
+    public string $user_not_found = 'error_user_not_found';
     public string $user_not_found_by_that_email = 'error_user_not_found_by_that_email';
     public string $wrong_password = 'error_wrong_password';
     public string $empty_password = 'error_empty_password';
