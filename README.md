@@ -1199,7 +1199,17 @@ EOS;
 - 게시판에는 Ymd 필드에 글 쓴 날짜의 YYYYMMDD 형식의 날자 값이 저장된다. 이 값은 글 쓰기에서 제한이 되지 않는다.
 
 
+# 파이어베이스
 
+## Firestore 퍼미션
+
+```txt
+    /// Notifications
+    match /notifications/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+```
 
 # 데이터베이스 테이블
 
