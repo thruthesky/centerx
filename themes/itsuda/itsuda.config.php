@@ -34,7 +34,7 @@ include 'itsuda.route.php';
 
 
 routeAdd('app.version', function($in) {
-    return ['version' => 'app version 12345 !!!'];
+    return ['version' => 'itsuda 0.2'];
 });
 
 

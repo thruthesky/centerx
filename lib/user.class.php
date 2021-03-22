@@ -169,7 +169,8 @@ class User extends Entity {
      *
      * 에러가 있으면, 에러 문자열. 아니면, 사용자 레코드와 메타를 배열로 리턴한다.
      *
-     * - sessionId 는 객체 생성시 이미 적용되어져 있다.
+     * - sessionId 는 객체 생성시 read() 에 의해 이미 적용되어져 있다.
+     * - admin 속성에 관리자이면 Y 아니면 N 이 저장되어 리턴된다.
      *
      * @return array|string
      */
@@ -177,6 +178,7 @@ class User extends Entity {
         if ( $this->hasError ) return $this->getError();
         $data = $this->getData();
         unset($data[PASSWORD]);
+        $data[ADMIN] = admin() ? 'Y' : 'N';
         return $data;
     }
 

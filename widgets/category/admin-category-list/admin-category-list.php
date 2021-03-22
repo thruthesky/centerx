@@ -63,7 +63,7 @@ if ( $editCategory ) {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach( category()->search( limit: 200 ) as $category ) { ?>
+                <?php foreach( ids(category()->search( limit: 200 )) as $idx ) { $category = category($idx) ?>
 
                     <tr>
                         <th scope="row"><a href="/?p=forum.post.list&categoryId=<?=$category->id?>" target="_blank"><?=$category->idx?></a></th>

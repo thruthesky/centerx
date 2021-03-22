@@ -86,50 +86,6 @@ class Category extends Entity {
     }
 
 
-
-    /**
-     * Category 를 검색 후, Category 객체를 배열로 리턴한다.
-     *
-     * @param string $where
-     * @param int $page
-     * @param int $limit
-     * @param string $order
-     * @param string $by
-     * @param string $select
-     * @param array $conds
-     * @param string $conj
-     * @return Category[]
-     */
-    public function search(
-        string $select='idx',
-        string $where='1',
-        string $order='idx',
-        string $by='DESC',
-        int $page=1,
-        int $limit=10,
-        array $conds=[],
-        string $conj = 'AND',
-    ): array
-    {
-
-        $categories = parent::search(
-            select: $select,
-            where: $where,
-            order: $order,
-            by: $by,
-            page: $page,
-            limit: $limit,
-            conds: $conds,
-            conj: $conj
-        );
-
-        $rets = [];
-        foreach( ids($categories) as $idx ) {
-            $rets[] = Category($idx);
-        }
-        return $rets;
-    }
-
     /**
      * @return array|string
      */
@@ -155,31 +111,4 @@ function category(int|string $idx = 0): Category
     }
 
     return new Category($idx);
-}
-
-/**
- * Returns category objects of all the categories including their records and metas.
- *
- * @return Category[]
- */
-function categories(): array
-{
-    return category()->search();
-}
-
-/**
- * @deprecated
- * Returns all the existing category ids.
- */
-function search_categories() {
-    $categories = category()->search(select: 'id');
-
-    $cats = '';
-    if ( ! empty($categories) ) {
-        foreach ($categories as $category) {
-            if ( $cats != '' ) $cats = $cats . ',';
-            $cats = $cats . $category[ID];
-        }
-    }
-    return $cats;
 }

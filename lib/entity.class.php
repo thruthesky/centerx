@@ -690,7 +690,7 @@ class Entity {
         string $conj = 'AND',
     ): array {
         $table = $this->getTable();
-        $from = ($page-1) * $limit;
+        $from = ($page-1) * ($limit ? $limit : 10);
 
         if ( $conds ) {
             $where = sqlCondition($conds, $conj);

@@ -438,21 +438,6 @@ function setLoginAny(): User {
     return setLogin($users[0]->idx);
 }
 
-/**
- * @deprecated login() 을 사용할 것. 그러면 auto intelligence 가 된다.
- *
- * Returns login user record field.
- * @see login() for more details
- * @param string $field
- * @param bool $cache
- * @return mixed|null
- *
- * @example
- *  my('color')
- */
-function my(string $field, bool $cache=true) {
-//    return login($field);
-}
 
 function admin(): bool {
     if ( login()->email === ADMIN_EMAIL ) return true;
