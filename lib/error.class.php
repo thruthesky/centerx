@@ -95,6 +95,10 @@ class E {
 
     public string $failed_to_add_register_point  ='error_failed_to_add_register_point';
 
+    public string $ids_is_empty = 'error_ids_is_empty';
+    public string $you_are_not_admin = 'error_you_are_not_admin';
+
+
 
 
 

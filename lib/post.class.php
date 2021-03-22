@@ -220,7 +220,7 @@ class Post extends PostTaxonomy {
 
 
         if ( $post[USER_IDX] ) {
-            $post['user'] = user($post[USER_IDX])->postProfile();
+            $post['user'] = user($post[USER_IDX])->shortProfile();
         }
 
         $post['shortDate'] = short_date_time($post['createdAt']);

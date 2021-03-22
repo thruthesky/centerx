@@ -51,6 +51,24 @@ class UserRoute {
         $myIdx = login()->idx;
         return pointHistory()->search(where: "fromUserIdx=$myIdx OR toUserIdx=$myIdx", limit: 200, select: '*');
     }
+
+    /**
+     * @param $in
+     * @return array
+     */
+    public function pointRank($in): array
+    {
+        $users = user()->search(
+            order: 'point',
+            page: $in['page'] ?? 1,
+            limit: $in['limit'],
+        );
+        $rets = [];
+        foreach( $users as $user ) {
+            $rets[] = $user->shortProfile();
+        }
+        return $rets;
+    }
 }
 
 

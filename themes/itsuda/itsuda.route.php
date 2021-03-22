@@ -61,15 +61,13 @@ routeAdd('health.month', function($in) {
 
 routeAdd('health.pointRank', function($in) {
     $entity = entity('itsuda');
-    $rows = $entity->search(select: 'userIdx, healthPoint', order: 'healthPoint', limit: $in['limit']);
+    $rows = $entity->search(select: 'userIdx, healthPoint', order: 'healthPoint', page: $in['page'] ?? 1, limit: $in['limit']);
     $rets = [];
     foreach( $rows as $row ) {
-        $ret = [ 'userIdx' => $row['userIdx'], 'point' => $row['healthPoint'] ];
-        $user = user($row['userIdx']);
-        $ret['photoUrl'] = thumbnailUrl($user->photoIdx ?? 0, 100, 100);
-        $ret['name'] = empty($user->name) ? '이름없음' : $user->name;
-        $ret['gender'] = $user->gender;
-        $ret['birthdate'] = $user->birthdate;
+
+        $ret = user($row['userIdx'])->shortProfile();
+        $ret['point'] = $row['healthPoint'];
+
         $rets[] = $ret;
     }
     return $rets;
