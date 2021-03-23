@@ -44,6 +44,9 @@ class File extends Entity {
                 NAME => $_FILES[USERFILE][NAME],
                 SIZE => $_FILES[USERFILE][SIZE],
                 TYPE => $_FILES[USERFILE][TYPE],
+                TAXONOMY => $in[TAXONOMY],
+                ENTITY => $in[ENTITY],
+                CODE => $in[CODE],
             ];
             debug_log("save: ", $save);
             return $this->create($save);
