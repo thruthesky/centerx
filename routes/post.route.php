@@ -68,9 +68,10 @@ class PostRoute {
 
     /**
      * @param $in
-     * @return array
+     * @return array|string
      */
-    public function search($in) {
+    public function search($in): array|string
+    {
 
         ///
         $onTop = null;
