@@ -984,14 +984,14 @@ function getCommentAncestors(int $idx): array
 function onCommentCreateSendNotification(Comment|Post $cp)
 {
 
-//    $post = post($commentRecord[ROOT_IDX]);
+    $post = post($cp->rootIdx);
     $usersIdx = [];
 
     /**
      * add post owner id if not mine
      */
 
-    if ($cp->isMine() == false) {
+    if ($post->isMine() == false) {
         $usersIdx[] = $cp->userIdx;
     }
 
@@ -1039,7 +1039,7 @@ function onCommentCreateSendNotification(Comment|Post $cp)
     $data               = [
         'senderIdx' => login()->idx,
         'type' => 'post',
-        'idx'=> $cp->idx,
+        'idx'=> $post->idx,
     ];
 
     /**
@@ -1047,7 +1047,7 @@ function onCommentCreateSendNotification(Comment|Post $cp)
      */
     sendMessageToTopic(NOTIFY_COMMENT . $cat->id, $title, $body, $click_url, $data);
 
-    debug_log('tokens: ', $tokens);
+//    debug_log('tokens: ', $tokens);
 
 
     /**
