@@ -76,6 +76,7 @@ class PostRoute {
         $onTop = null;
         if ( isset($in['postOnTop']) && $in['postOnTop'] ) {
             $onTop = post($in['postOnTop']);
+            if ($onTop->hasError) return $onTop->getError();
             $categoryId = $onTop->categoryId();
             $in['where'] = "categoryId=<$categoryId>";
         }
