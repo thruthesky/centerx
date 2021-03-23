@@ -1047,7 +1047,7 @@ function onCommentCreateSendNotification(Comment|Post $cp)
      */
     sendMessageToTopic(NOTIFY_COMMENT . $cat->id, $title, $body, $click_url, $data);
 
-    debug_log('tokens: ', $tokens);
+//    debug_log('tokens: ', $tokens);
 
 
     /**
