@@ -312,7 +312,7 @@ class Entity {
      * 참고, 이전에 에러가 있었으면 그냥 현재 객체를 리턴한다.
      * 참고, 에러, 퍼미션 점검은 이 함수를 호출하기 전에 미리 해야 한다.
      *
-     * @param $in
+     * @param $in - 연관 배열. 키/값을 바탕으로 한 사용자 추가 메타 업데이트
      *
      * @return self
      * - error string on error.

@@ -126,6 +126,7 @@ function updateMeta(string $taxonomy, int $entity, array|string $code, mixed $da
 
     $table = META_TABLE;
 
+    // Make it array if the input is not an array.
     if ( is_string($code) ) $in = [$code => $data];
     else $in = $code;
 

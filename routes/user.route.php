@@ -35,7 +35,16 @@ class UserRoute {
         return login()->update($in)->response();
     }
 
-    public function switch($in) {
+    /**
+     * Save user meta code with on/off.
+     *
+     * Use this to switch on/off user optoin.
+     *
+     * @param $in
+     * @return array|string
+     */
+    public function switch($in): array|string
+    {
         if ( notLoggedIn() ) return e()->not_logged_in;
         return login()->switch($in[OPTION])->response();
     }

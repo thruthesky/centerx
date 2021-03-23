@@ -27,10 +27,15 @@ class File extends Entity {
         $path = $this->getPath($name);
 
         /**
-         * 기존 사진을 삭제한다. README 참고.
+         * taxonomy 와 entity 에 동일한 값이 있으면, 삭제. 기존 사진을 삭제한다. README 참고.
+         * code 값이 있으면 해당 코드 code 의 해당 파일(들)을 삭제한다.
          */
         if ( isset($in['deletePreviousUpload']) && $in['deletePreviousUpload'] == 'Y' ) {
-            $files = $this->find([TAXONOMY => $in[TAXONOMY], ENTITY => $in[ENTITY]]);
+            if ( isset($in['code']) && $in['code'] ) {
+                $files = $this->find([ CODE => $in[CODE] ]);
+            } else {
+                $files = $this->find([TAXONOMY => $in[TAXONOMY], ENTITY => $in[ENTITY]]);
+            }
             foreach( $files as $file ) {
                 files($file->idx)->delete();
             }
