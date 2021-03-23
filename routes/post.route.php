@@ -68,14 +68,16 @@ class PostRoute {
 
     /**
      * @param $in
-     * @return array
+     * @return array|string
      */
-    public function search($in) {
+    public function search($in): array|string
+    {
 
         ///
         $onTop = null;
         if ( isset($in['postOnTop']) && $in['postOnTop'] ) {
             $onTop = post($in['postOnTop']);
+            if ($onTop->hasError) return $onTop->getError();
             $categoryId = $onTop->categoryId();
             $in['where'] = "categoryId=<$categoryId>";
         }
