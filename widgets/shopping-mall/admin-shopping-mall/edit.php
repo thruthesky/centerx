@@ -51,8 +51,8 @@ $category = category(SHOPPING_MALL);
 
             <select name="subcategory" class="custom-select">
                 <option value="">카테고리 선택</option>
-                <?php foreach( $category['subcategories'] as $subcategory ) { ?>
-                    <option value="<?=$subcategory?>" <?php if ( $subcategory == ($post['subcategory'] ?? '') ) echo "selected"; ?>><?=$subcategory?></option>
+                <?php foreach( $category->subcategories as $subcategory ) { ?>
+                    <option value="<?=$subcategory?>" <?php if ( $subcategory == ($post->subcategory ?? '') ) echo "selected"; ?>><?=$subcategory?></option>
                 <?php } ?>
             </select>
         </div>

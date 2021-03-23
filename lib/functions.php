@@ -1047,6 +1047,9 @@ function onCommentCreateSendNotification(Comment|Post $cp)
      */
     sendMessageToTopic(NOTIFY_COMMENT . $cat->id, $title, $body, $click_url, $data);
 
+    debug_log('tokens: ', $tokens);
+
+
     /**
      * send notification to comment ancestors who enable reaction notification
      */

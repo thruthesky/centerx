@@ -60,7 +60,7 @@ function sendMessageToTokens($tokens, $title, $body, $click_action, $data = [], 
         'webpush' => getWebPushData($title, $body, $click_action, $data, $imageUrl),
         'android' => getAndroidPushData(),
         'data' => $data,
-    ]);
+    ])->withDefaultSounds();
     return getMessaging()->sendMulticast($message, $tokens);
 }
 
@@ -159,7 +159,7 @@ function getNotificationData($title, $body, $clickUrl, $data, $imageUrl) {
         'body' => $body,
         'image' => $imageUrl,
         'click_action' => $clickUrl,
-        'data' => $data
+        'data' => $data,
     ]);
     return $notification;
 }

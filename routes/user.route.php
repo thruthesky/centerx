@@ -18,6 +18,18 @@ class UserRoute {
         return login()->response();
     }
 
+    public function otherUserProfile($in) {
+        if ( isset($in['idx']) ) {
+            return user($in['idx'])->shortProfile();
+        } else if ( isset($in['email']) ) {
+            return user($in['email'])->shortProfile();
+        } else if ( isset($in['firebaseUid']) ) {
+            return user()->findOne(['firebaseUid' => $in['firebaseUid']])->shortProfile();
+        } else {
+            return e()->user_not_found;
+        }
+    }
+
     public function update($in) {
         if ( notLoggedIn() ) return e()->not_logged_in;
         return login()->update($in)->response();
@@ -50,6 +62,24 @@ class UserRoute {
     public function point($in) {
         $myIdx = login()->idx;
         return pointHistory()->search(where: "fromUserIdx=$myIdx OR toUserIdx=$myIdx", limit: 200, select: '*');
+    }
+
+    /**
+     * @param $in
+     * @return array
+     */
+    public function pointRank($in): array
+    {
+        $users = user()->search(
+            order: 'point',
+            page: $in['page'] ?? 1,
+            limit: $in['limit'],
+        );
+        $rets = [];
+        foreach( $users as $user ) {
+            $rets[] = $user->shortProfile();
+        }
+        return $rets;
     }
 }
 
