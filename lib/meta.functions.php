@@ -95,7 +95,7 @@ function getMetaEntity(string $taxonomy, string $code, mixed $data ): int {
 function getMetaEntities(array $conds, string $conj='AND', int $limit=1000 ): array {
     $where = sqlCondition($conds, $conj);
     $q = "SELECT entity FROM " . entity(METAS)->getTable() . " WHERE $where LIMIT $limit";
-    $arr = db()->get_results($q);
+    $arr = db()->get_results($q, ARRAY_A);
     if ( ! $arr ) return [];
     else return ids($arr, 'entity');
 }

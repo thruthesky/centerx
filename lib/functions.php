@@ -992,7 +992,7 @@ function onCommentCreateSendNotification(Comment|Post $cp)
      */
 
     if ($post->isMine() == false) {
-        $usersIdx[] = $cp->userIdx;
+        $usersIdx[] = $post->userIdx;
     }
 
     /**
@@ -1027,10 +1027,10 @@ function onCommentCreateSendNotification(Comment|Post $cp)
     /**
      * set the title and body, etc.
      */
-    $title = $cp->title;
+    $title = login()->name . " Comment to " . $post->title;
     if (empty($title)) {
         if (isset($in[FILES]) && !empty($in[FILES])) {
-            $title = "New photo was uploaded";
+            $title .= "uploaded photos post#" . $post->idx;
         }
     }
 
