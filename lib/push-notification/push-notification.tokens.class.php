@@ -84,7 +84,6 @@ function sanitizedInput($in): array {
     if ( !isset($in[CLICK_ACTION])) $in[CLICK_ACTION] = '/';
     if ( !isset($in[IMAGE_URL])) $in[IMAGE_URL] = '';
     if ( !isset($in[DATA])) $in[DATA] = [];
-    if( isset($in[DATA][TYPE]) && $in[DATA][TYPE] == 'chat' ) $in[DATA]['firebaseUid'] = login()->firebaseUid;
     $in[DATA]['senderIdx'] = login()->idx;
     return $in;
 }
