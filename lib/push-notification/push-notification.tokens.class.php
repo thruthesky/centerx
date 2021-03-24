@@ -134,11 +134,7 @@ function send_message_to_users($in): array|string
 }
 
 
-/**
- * @param array $idxs
- * @param null $filter 'notifyComment' || 'notifyPost'
- * @return array
- */
+
 //function sendMessageToUsersgetTokensFromUserIDs($idxs = [], $filter = null): array
 //{
 //    $tokens = [];
