@@ -1030,7 +1030,7 @@ function onCommentCreateSendNotification(Comment|Post $cp)
     $title = login()->name . " Comment to " . $post->title;
     if (empty($title)) {
         if (isset($in[FILES]) && !empty($in[FILES])) {
-            $title .= "uploaded photos post#" . $post->idx;
+            $title .= " uploaded photos post#" . $post->idx;
         }
     }
 
