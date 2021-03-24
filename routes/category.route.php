@@ -10,11 +10,13 @@ class CategoryRoute {
         if ( admin() == false ) return e()->you_are_not_admin;
         return category()->create($in)->response();
     }
+    public function update($in): array|string
+    {
+        if ( admin() == false ) return e()->you_are_not_admin;
+        return category($in[IDX] ?? $in[ID])->update($in)->response();
+    }
     public function get($in) {
         return category($in[IDX] ?? $in[ID])->response();
-    }
-    public function update($in) {
-        return category($in[IDX] ?? $in[ID])->update($in)->response();
     }
     public function delete($in) {
         return category($in[IDX])->delete()->response();
