@@ -82,7 +82,7 @@ function sendMessageToTopic($topic, $title, $body, $click_action, $data = [], $i
         'webpush' => getWebPushData($title, $body, $click_action, $data, $imageUrl),
         'android' => getAndroidPushData(),
         'data' => $data,
-    ]);
+    ])->withDefaultSounds();
 
     return getMessaging()->send($message);
 }

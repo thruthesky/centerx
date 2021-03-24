@@ -44,11 +44,11 @@ class PushNotificationTokens extends Entity {
 
     /**
      * Returns tokens of login user in an array
-     * @param string $userIdx
+     * @param int $userIdx
      * @return array
      * @throws Exception
      */
-    function getTokens(string $userIdx) :array
+    function getTokens(int $userIdx) :array
     {
         $rows = parent::search(where: "userIdx=$userIdx", select: 'token');
         return ids($rows, 'token');
@@ -84,6 +84,7 @@ function sanitizedInput($in): array {
     if ( !isset($in[CLICK_ACTION])) $in[CLICK_ACTION] = '/';
     if ( !isset($in[IMAGE_URL])) $in[IMAGE_URL] = '';
     if ( !isset($in[DATA])) $in[DATA] = [];
+    if( isset($in[DATA][TYPE]) && $in[DATA][TYPE] == 'chat' ) $in[DATA]['firebaseUid'] = login()->firebaseUid;
     $in[DATA]['senderIdx'] = login()->idx;
     return $in;
 }
@@ -112,10 +113,10 @@ function send_message_to_users($in): array|string
     }
     foreach ($users as $userIdx) {
         if ( isset($in[SUBSCRIPTION]) ) {
-            $re = user($userIdx);
+            $re = user((int)$userIdx);
             if ( $re->v($in[SUBSCRIPTION]) == OFF ) continue;
         }
-        $tokens = token()->getTokens($userIdx);
+        $tokens = token()->getTokens((int)$userIdx);
         $all_tokens = array_merge($all_tokens, $tokens);
     }
     /// If there are no tokens to send, then it will return empty array.
@@ -139,7 +140,7 @@ function send_message_to_users($in): array|string
  * @param null $filter 'notifyComment' || 'notifyPost'
  * @return array
  */
-function getTokensFromUserIDs($idxs = [], $filter = null): array
+function sendMessageToUsersgetTokensFromUserIDs($idxs = [], $filter = null): array
 {
     $tokens = [];
     foreach ($idxs as $idx) {
