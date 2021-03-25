@@ -72,18 +72,18 @@ class Category extends Entity {
      * @param array $in
      * @return Category
      */
-    public function update(array $in): self {
-        return parent::update($in);
-    }
+//    public function update(array $in): self {
+//        return parent::update($in);
+//    }
 
     /**
      * @attention To delete, entity.idx must be set properly.
      *
      * @return Category
      */
-    public function delete(): self {
-        return parent::delete();
-    }
+//    public function delete(): self {
+//        return parent::delete();
+//    }
 
 
     /**
