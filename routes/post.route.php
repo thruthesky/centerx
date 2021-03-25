@@ -90,6 +90,9 @@ class PostRoute {
             page: $in['page'] ?? 1,
             limit: $in['limit'] ?? 10,
         );
+
+        db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $in['searchKey'], 'createdAt' => time()]);
+
         $res = [];
         if ( $onTop ) $res[] = $onTop->response();
         foreach($posts as $post) {

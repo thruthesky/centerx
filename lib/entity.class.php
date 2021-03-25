@@ -344,6 +344,7 @@ class Entity {
         if ( $re === false ) return $this->error(e()->update_failed);
 
         // 레코드에 없는 필드들은 메타에 업데이트
+//        debug_log("update: tax: {$this->taxonomy}, entity: {$this->idx}, meta fields: ", $this->getMetaFields($in));
         updateMeta($this->taxonomy, $this->idx, $this->getMetaFields($in));
 
         return $this->read();
