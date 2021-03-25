@@ -1286,6 +1286,6 @@ chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php getter
   - `fromUserIdx` is the user who trigger the action.
   - `toUserIdx` is the user who takes the benefit.
   - If the values of `fromUserIdx` and `toUserIdx` are same, then, `fromUserIdx` may be 0. Like user register, login, post create, delete, comment create, delete.
-  - 
+  - Note that, when a user like or dislike on his own post or comment, there will be no point history.
   
 - For like and dislike, the history is saved under `post_vote_histories` but that has no information about who liked who.

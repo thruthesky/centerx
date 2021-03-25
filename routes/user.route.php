@@ -20,11 +20,11 @@ class UserRoute {
 
     public function otherUserProfile($in) {
         if ( isset($in['idx']) ) {
-            return user($in['idx'])->shortProfile();
+            return user($in['idx'])->shortProfile(firebaseUid: true);
         } else if ( isset($in['email']) ) {
-            return user($in['email'])->shortProfile();
+            return user($in['email'])->shortProfile(firebaseUid: true);
         } else if ( isset($in['firebaseUid']) ) {
-            return user()->findOne(['firebaseUid' => $in['firebaseUid']])->shortProfile();
+            return user()->findOne(['firebaseUid' => $in['firebaseUid']])->shortProfile(firebaseUid: true);
         } else {
             return e()->user_not_found;
         }

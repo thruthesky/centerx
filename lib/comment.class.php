@@ -172,7 +172,7 @@ class Comment extends PostTaxonomy {
 
 
         if ( $comment[USER_IDX] ) {
-            $comment['user'] = user($comment[USER_IDX])->shortProfile();
+            $comment['user'] = user($comment[USER_IDX])->shortProfile(firebaseUid: true);
         }
 
         $comment['shortDate'] = short_date_time($comment['createdAt']);

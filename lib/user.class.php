@@ -201,10 +201,11 @@ class User extends Entity {
      * 글/코멘트/기타 용으로 전달할(보여줄) 간단한 프로필 정보를 리턴한다.
      *
      * 주의, 배열을 리턴한다.
+     * @param bool $firebaseUid - if it is set to true, returns data will include firebaseUid.
      * @return array
      */
-    public function shortProfile(): array {
-        return [
+    public function shortProfile(bool $firebaseUid = false): array {
+        $ret = [
             'idx' => $this->idx,
             'name' => $this->name ? $this->name : '',
             'nickname' => $this->nickname,
@@ -213,9 +214,13 @@ class User extends Entity {
             'point' => $this->point,
             'photoIdx' => $this->photoIdx ?? 0,
             'photoUrl' => thumbnailUrl($this->photoIdx ?? 0, 100, 100),
-            'firebaseUid' => $this->firebaseUid,
 
         ];
+        if ( $firebaseUid ) {
+            $ret['firebaseUid'] = $this->firebaseUid;
+        }
+        return $ret;
+
     }
 
 
