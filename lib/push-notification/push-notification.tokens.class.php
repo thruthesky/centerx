@@ -135,25 +135,25 @@ function send_message_to_users($in): array|string
 
 
 
-//function sendMessageToUsersgetTokensFromUserIDs($idxs = [], $filter = null): array
-//{
-//    $tokens = [];
-//    foreach ($idxs as $idx) {
-//        $rows = token()->getTokens($idx);
-//        if ($filter) {
-//            if (user($idx)->v($filter) == OFF) {
-//            } else {
-//                foreach ($rows as $token) {
-//                    $tokens[] = $token;
-//                }
-//            }
-//        } else {
-//            foreach ($rows as $token) {
-//                $tokens[] = $token;
-//            }
-//        }
-//    }
-//    return $tokens;
-//}
+function getTokensFromUserIDs($idxs = [], $filter = null): array
+{
+    $tokens = [];
+    foreach ($idxs as $idx) {
+        $rows = token()->getTokens($idx);
+        if ($filter) {
+            if (user($idx)->v($filter) == OFF) {
+            } else {
+                foreach ($rows as $token) {
+                    $tokens[] = $token;
+                }
+            }
+        } else {
+            foreach ($rows as $token) {
+                $tokens[] = $token;
+            }
+        }
+    }
+    return $tokens;
+}
 
 

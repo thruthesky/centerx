@@ -1274,3 +1274,18 @@ chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php getter
 ```
 
 
+
+# User Activity
+
+- Most of user actions are recorded in the `point_histories`.
+  The actions are user register, login, post create, delete, like, dislike, and more.
+  
+  - When an entity of `posts` is created, taxonomy is `posts`, and the entity is the idx of the record, and categoryIdx is the category.idx.
+    An entity of `posts` may be a post, a comment, or any record in `posts` table.
+    
+  - `fromUserIdx` is the user who trigger the action.
+  - `toUserIdx` is the user who takes the benefit.
+  - If the values of `fromUserIdx` and `toUserIdx` are same, then, `fromUserIdx` may be 0. Like user register, login, post create, delete, comment create, delete.
+  - 
+  
+- For like and dislike, the history is saved under `post_vote_histories` but that has no information about who liked who.
