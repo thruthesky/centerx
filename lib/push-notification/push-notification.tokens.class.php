@@ -112,14 +112,24 @@ function send_message_to_users($in): array|string
     }
     foreach ($users as $userIdx) {
         if ( isset($in[SUBSCRIPTION]) ) {
-            $re = user((int)$userIdx);
-            if ( $re->v($in[SUBSCRIPTION]) == OFF ) continue;
+
+            if (gettype($userIdx) == 'int') {
+                $user = user($userIdx);
+            } else {
+                $user = user()->findOne(['firebaseUid'=> $userIdx]);
+            }
+
+//            $re = user((int)$userIdx);
+            if ( $user->v($in[SUBSCRIPTION]) == OFF ) continue;
         }
-        $tokens = token()->getTokens((int)$userIdx);
+        $tokens = token()->getTokens($user->idx);
         $all_tokens = array_merge($all_tokens, $tokens);
     }
     /// If there are no tokens to send, then it will return empty array.
-    if (empty($all_tokens)) return e()->token_is_empty;
+//    if (empty($all_tokens)) return e()->token_is_empty;
+
+    /// if no token to send then simply return empty array.
+    if (empty($all_tokens)) return [];
     $in = sanitizedInput($in);
     $re = sendMessageToTokens($all_tokens, $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL]);
     $res = [];

@@ -275,32 +275,6 @@ class User extends Entity {
     }
 
 
-    /**
-     * @todo This is a optional switching (on/off) function. Make it generic like `entity()->on(OPTION)`, `entity()->off(OPTION)
-     * @todo Make it like `user(123)->on('chat_room_id')`, `user(123)->off(...)`
-     * @todo Move the function to route.
-     *
-     * Update User Option Setting - to set userMeta[OPTION] to Y or N
-     * if $in[OPTION] is null or 'Y' then change it to N
-     * if $in[OPTION] is 'N' then change it to Y
-     *
-     * @param $in
-     * @return array|string
-     */
-//    public function updateOptionSetting(array $in): self
-//    {
-//        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
-//        if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return $this->error(e()->option_is_empty);
-//
-//        if ( login()->v($in[OPTION]) != 'N' ) {
-//            parent::update( [ $in[OPTION] => 'N' ]);
-//        } else {
-//            parent::update( [ $in[OPTION] => 'Y' ]);
-//        }
-//
-//        return $this;
-//    }
-
 
     /**
      * 사용자를 검색 후, User 객체를 배열로 리턴한다.
