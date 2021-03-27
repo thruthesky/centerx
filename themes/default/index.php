@@ -13,12 +13,18 @@
         .top { top: 0; }
         .left { left: 0; }
     </style>
+    <script>
+        function later(fn) { window.addEventListener('load', fn); }
+    </script>
 </head>
 <body>
 
 
 
 <?php
+
+
+
     include theme()->page();
 ?>
 

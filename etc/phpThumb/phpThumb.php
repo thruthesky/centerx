@@ -15,11 +15,16 @@ ini_set('display_errors', '1');
 /**
  * 아래는 직접 패치한 것으로, src 에 숫자가 들어오면 file 테이블 idx 로 인식하여, 해당 이미지를 썸네일 한다.
  */
-if ( is_numeric($_GET['src']) ) {
+if (isset($_GET['src']) && is_numeric($_GET['src']) ) {
     require_once '../../boot.php';
     $_GET['src']  = files($_GET['src'])->path;
+} else if ( isset( $_GET['code']) &&  $_GET['code'] ) {
+    require_once '../../boot.php';
+    $_GET['src']  = files()->findOne([CODE => $_GET[CODE]])->path;
 }
 
+debug_log('phpThumb;', $_GET);
+debug_log('src;', $_GET['src']);
 /**
  * 썸네일하려는 이미지가 GIF 이면, 썸네일하지 않는다.
  */
@@ -415,7 +420,7 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '2')) {
 $PHPTHUMB_DEFAULTS_DISABLEGETPARAMS = (bool) ($phpThumb->config_cache_default_only_suffix && (strpos($phpThumb->config_cache_default_only_suffix, '*') !== false));
 
 // deprecated: 'err', 'file', 'goto',
-$allowedGETparameters = array('src', 'new', 'w', 'h', 'wp', 'hp', 'wl', 'hl', 'ws', 'hs', 'f', 'q', 'sx', 'sy', 'sw', 'sh', 'zc', 'ica', 'bc', 'bg', 'bgt', 'fltr', 'xto', 'ra', 'ar', 'aoe', 'far', 'iar', 'maxb', 'down', 'phpThumbDebug', 'hash', 'md5s', 'sfn', 'dpi', 'sia', 'nocache');
+$allowedGETparameters = array('src', 'code', 'new', 'w', 'h', 'wp', 'hp', 'wl', 'hl', 'ws', 'hs', 'f', 'q', 'sx', 'sy', 'sw', 'sh', 'zc', 'ica', 'bc', 'bg', 'bgt', 'fltr', 'xto', 'ra', 'ar', 'aoe', 'far', 'iar', 'maxb', 'down', 'phpThumbDebug', 'hash', 'md5s', 'sfn', 'dpi', 'sia', 'nocache');
 foreach ($_GET as $key => $value) {
 	if (!empty($PHPTHUMB_DEFAULTS_DISABLEGETPARAMS) && ($key != 'src')) {
 		// disabled, do not set parameter

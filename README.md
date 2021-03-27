@@ -1,4 +1,4 @@
-# CenterXgit stat
+# CenterX
 
 - 위세너에서 개발한 LEMP 기반 백엔드.
 - 특징
@@ -138,6 +138,13 @@
   getMeta() 에서 taxonomy 와 entity 까지만 입력하면, 배열로 해당 entity 에 속만 메타가 모두 리턴된다.
 
 
+- @doc 비밀번호 변경하기
+
+간단하게 아래와 같이 코딩을 해서, 어디서든 실행을 한번 하면 된다.
+
+```php
+user()->by('thruthesky@gmail.com')->changePassword('12345a');
+```
 
 
 - @doc entity 는 실제 존재하는 taxonomy 에 대해서만 작업을 한다. 즉, table 이 존재하지 않으면 안된다.
@@ -344,6 +351,9 @@ define('DOMAIN_THEMES', [
 
 - `themes/[theme-name]/[theme-name].config` will be included(and run) if it exists.
   It will run even if it is API call. (Just connect to api domain to proper theme.)
+
+- 주의, 테마 폴더가 abc, def 가 있는데, 이것은 도메인과 상관이 없다.
+  도메인 def.com 으로 접속해도, abc 테마로 사용할 수 있는데, 이것은 config.php 에서 테마 설정을 다르게 해 주면 된다.
 
 - All the default configuration can be over-written by theme configuration.
   That means, each theme can use different database settings.
@@ -558,6 +568,25 @@ d($result);
 - After filling up on post create/update form, send the form to `/?p=forum.post.edit.submit` and it will redirect to the list page.
 
 
+# Firebase
+
+## Javascript
+
+- Firebase 설정은 config.php 에서 한다. 필요한 Firebase product 를 추가하면 된다.
+- Firestore 사용은 아래와 같이 하면 된다.
+
+```html
+<script>
+    later(function() {
+        const db = firebase.firestore();
+        console.log(db);
+        db.collection('notifications').doc('settings').set({time: (new Date).getTime()});
+    })
+</script>
+<?php
+    includeFirebase();
+?>
+```
 
 
 # API Protocol
@@ -572,6 +601,23 @@ d($result);
   
 - To live reload on web browser, add `/?reload=true`. But you must remove it when you don't need live reload.
   
+
+## Response
+
+- `login()` 함수는 매번 호출 될 때마다 새로운 객체를 생성하므로, 필요하다면 `$login = login()` 와 같이 객체를 저장해서 재 사용해야한다.
+  그래서 아래와 같이 하면, 업데이트된 값이 제대로 전달되지 않는다.
+  
+```php
+login()->updateData('rank', 2); // 이 객체와
+return login()->response(); // 이 객체는 서로 달라서, rank 값이 클라이언트로 전달되지 않는다.
+```
+
+- 단, 아래와 같이 할 수는 있다.
+
+``php
+return login()->updateData('rank', 2)->response();
+``
+
 ## Writing route code
 
 - There are two ways of handling route.
@@ -1157,7 +1203,17 @@ EOS;
 - 게시판에는 Ymd 필드에 글 쓴 날짜의 YYYYMMDD 형식의 날자 값이 저장된다. 이 값은 글 쓰기에서 제한이 되지 않는다.
 
 
+# 파이어베이스
 
+## Firestore 퍼미션
+
+```txt
+    /// Notifications
+    match /notifications/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+```
 
 # 데이터베이스 테이블
 
@@ -1222,3 +1278,18 @@ chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php getter
 ```
 
 
+
+# User Activity
+
+- Most of user actions are recorded in the `point_histories`.
+  The actions are user register, login, post create, delete, like, dislike, and more.
+  
+  - When an entity of `posts` is created, taxonomy is `posts`, and the entity is the idx of the record, and categoryIdx is the category.idx.
+    An entity of `posts` may be a post, a comment, or any record in `posts` table.
+    
+  - `fromUserIdx` is the user who trigger the action.
+  - `toUserIdx` is the user who takes the benefit.
+  - If the values of `fromUserIdx` and `toUserIdx` are same, then, `fromUserIdx` may be 0. Like user register, login, post create, delete, comment create, delete.
+  - Note that, when a user like or dislike on his own post or comment, there will be no point history.
+  
+- For like and dislike, the history is saved under `post_vote_histories` but that has no information about who liked who.

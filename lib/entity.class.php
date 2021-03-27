@@ -141,11 +141,13 @@ class Entity {
      * @param $k
      * @param $v
      *
+     * @return self
      * @example
      * category(123)->updateData('subcategories', separateByComma($this->subcategories));
      */
-    public function updateData($k, $v) {
+    public function updateData($k, $v): self {
         $this->data[$k] = $v;
+        return $this;
     }
 
 
@@ -310,7 +312,7 @@ class Entity {
      * 참고, 이전에 에러가 있었으면 그냥 현재 객체를 리턴한다.
      * 참고, 에러, 퍼미션 점검은 이 함수를 호출하기 전에 미리 해야 한다.
      *
-     * @param $in
+     * @param $in - 연관 배열. 키/값을 바탕으로 한 사용자 추가 메타 업데이트
      *
      * @return self
      * - error string on error.
@@ -342,6 +344,7 @@ class Entity {
         if ( $re === false ) return $this->error(e()->update_failed);
 
         // 레코드에 없는 필드들은 메타에 업데이트
+//        debug_log("update: tax: {$this->taxonomy}, entity: {$this->idx}, meta fields: ", $this->getMetaFields($in));
         updateMeta($this->taxonomy, $this->idx, $this->getMetaFields($in));
 
         return $this->read();
@@ -644,6 +647,7 @@ class Entity {
      * - 원한다면 select: 'name' 또는 select: '*' 와 같이 특정 레코드 또는 전체 레코드를 배열로 리턴 할 수 있다.
      * - 하나의 레코드 또는 하나의 필드를 가져오고자 할 때 사용 할 수 있다.
      *
+     *
      * @param string $where
      * @param int $page
      * @param int $limit
@@ -687,7 +691,7 @@ class Entity {
         string $conj = 'AND',
     ): array {
         $table = $this->getTable();
-        $from = ($page-1) * $limit;
+        $from = ($page-1) * ($limit ? $limit : 10);
 
         if ( $conds ) {
             $where = sqlCondition($conds, $conj);

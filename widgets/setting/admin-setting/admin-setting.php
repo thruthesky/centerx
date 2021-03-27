@@ -2,10 +2,17 @@
     if ( modeUpdate() ) {
         adminSettings()->set(in());
         setRealtimeDatabaseDocument('/notifications/settings', ['time' => time()]);
+        ?>
+            <?php includeFirebase(); ?>
+<script>
+    later(function() {
+        const db = firebase.firestore();
+        db.collection('notifications').doc('settings').set({time: (new Date).getTime()});
+    })
+</script>
+<?php
     }
-
     $ms = adminSettings()->get();
-
 ?>
 <div class="container">
     <div class="row">

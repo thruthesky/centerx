@@ -29,6 +29,33 @@ class PushNotification {
         return login()->switchOff($in[TOPIC])->response();
     }
 
+
+
+
+
+    /**
+     * $tokens can be a string of a token or an array of tokens
+     *
+     *  http://domain/index.php?route=notification.sendMessageToTokens&tokens=ebyHPOGMSqmwEMeK2PE7jx%3AAPA91bEBTmyYTWxUXKdypgeC5jKxJ6nXL27EQN9NTe1U6GTSlchv2ZGKVXKfjk_yA6T-hfHh-vRxqJzFb_rrWVSxQJKB5ZNBHQ21kLd_Dt-4PAguVF1hh13HeH2NPGFyaaLwFAxYMh5v&title=Dalgona+Push+notification+token&body=This+is+a+test+push+notification+token&imageUrl&sessionId=6-e420d272e3c91ab7c15b3c5cdc2d8d62
+     *
+     * @return array|string
+     */
+    public function send(array|string $tokens='', string $title='', string $body='', string $clickAction='/',
+                                        string $imageUrl='', array $data=[]): array|string {
+        if ( !isset($tokens) ) return e()->tokens_is_empty;
+        $data['senderIdx'] = login()->idx;
+        $re = sendMessageToTokens($tokens, $title, $body, $clickAction, $data, $imageUrl);
+        $res = [];
+        foreach($re->getItems() as $item) {
+            $res[] = $item->result();
+        }
+        // @todo handle invalid/unknown tokends..
+        // @how to properly return response here.
+        return $res;
+    }
+
+
+
 }
 
 /**

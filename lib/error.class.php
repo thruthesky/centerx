@@ -4,6 +4,7 @@ class E {
     public string $register_failed = 'error_register_failed';
     public string $idx_not_set = 'error_idx_not_set';
     public string $user_not_found_by_that_idx = 'error_user_not_found_by_that_idx';
+    public string $user_not_found = 'error_user_not_found';
     public string $user_not_found_by_that_email = 'error_user_not_found_by_that_email';
     public string $wrong_password = 'error_wrong_password';
     public string $empty_password = 'error_empty_password';
@@ -94,6 +95,10 @@ class E {
     public string $post_path_is_empty = 'error_post_path_is_empty';
 
     public string $failed_to_add_register_point  ='error_failed_to_add_register_point';
+
+    public string $ids_is_empty = 'error_ids_is_empty';
+    public string $you_are_not_admin = 'error_you_are_not_admin';
+
 
 
 

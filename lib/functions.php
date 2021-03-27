@@ -438,21 +438,6 @@ function setLoginAny(): User {
     return setLogin($users[0]->idx);
 }
 
-/**
- * @deprecated login() 을 사용할 것. 그러면 auto intelligence 가 된다.
- *
- * Returns login user record field.
- * @see login() for more details
- * @param string $field
- * @param bool $cache
- * @return mixed|null
- *
- * @example
- *  my('color')
- */
-function my(string $field, bool $cache=true) {
-//    return login($field);
-}
 
 function admin(): bool {
     if ( login()->email === ADMIN_EMAIL ) return true;
@@ -642,6 +627,7 @@ function seoFriendlyString(string $s): string {
 
 
 /**
+ * HTML FORM 을 전송할 때 반드시, mode 값이 create, update, delete, submit 중에 하나라야 한다.
  * Helper function to detect if form have submitted for creation
  * @return bool
  */
@@ -669,6 +655,15 @@ function modeDelete(): bool {
  */
 function modeSubmit(): bool {
     return in('mode') == 'submit';
+}
+
+/**
+ * HTML FORM 이 전송되었는지 검사한다.
+ * @return bool
+ */
+function modeAny(): bool {
+    $mode = in('mode');
+    return !empty($mode);
 }
 
 /**
@@ -989,15 +984,15 @@ function getCommentAncestors(int $idx): array
 function onCommentCreateSendNotification(Comment|Post $cp)
 {
 
-//    $post = post($commentRecord[ROOT_IDX]);
+    $post = post($cp->rootIdx);
     $usersIdx = [];
 
     /**
      * add post owner id if not mine
      */
 
-    if ($cp->isMine() == false) {
-        $usersIdx[] = $cp->userIdx;
+    if ($post->isMine() == false) {
+        $usersIdx[] = $post->userIdx;
     }
 
     /**
@@ -1032,10 +1027,10 @@ function onCommentCreateSendNotification(Comment|Post $cp)
     /**
      * set the title and body, etc.
      */
-    $title = $cp->title;
+    $title = login()->name . " Comment to " . $post->title;
     if (empty($title)) {
         if (isset($in[FILES]) && !empty($in[FILES])) {
-            $title = "New photo was uploaded";
+            $title .= " uploaded photos post#" . $post->idx;
         }
     }
 
@@ -1044,13 +1039,16 @@ function onCommentCreateSendNotification(Comment|Post $cp)
     $data               = [
         'senderIdx' => login()->idx,
         'type' => 'post',
-        'idx'=> $cp->idx,
+        'idx'=> $post->idx,
     ];
 
     /**
      * send notification to users who subscribe to comment topic
      */
     sendMessageToTopic(NOTIFY_COMMENT . $cat->id, $title, $body, $click_url, $data);
+
+//    debug_log('tokens: ', $tokens);
+
 
     /**
      * send notification to comment ancestors who enable reaction notification
@@ -1171,6 +1169,8 @@ function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): s
 
 /**
  * Vue.js 를 한번만 로드하게 한다.
+ *
+ * 참고로, 모든 자바스크립트 관련 코드는, 웹 브라우저로 전달되기 전에, 맨 하단으로 이동 될 수 있다.
  */
 function includeVueOnce() {
     if ( defined('VUE_JS') ) return;
@@ -1189,6 +1189,8 @@ function includeVueOnce() {
 
 /**
  * Vue.js 를 한번만 로드한다.
+ *
+ * 참고로, 모든 자바스크립트 관련 코드는, 웹 브라우저로 전달되기 전에, 맨 하단으로 이동 될 수 있다.
  */
 function includeVue2Once() {
     if ( defined('VUE_JS') ) return;
@@ -1201,6 +1203,21 @@ function includeVue2Once() {
         $url = "$homeUrl/etc/js/vue.2.min.js";
     }
     echo "<script src='$url'></script>";
+}
+
+
+/**
+ * Firebase 관련 Javascript 를 표시를 한다.
+ *
+ * 참고로, 모든 자바스크립트 관련 코드는, 웹 브라우저로 전달되기 전에, 맨 하단으로 이동 될 수 있다.
+ */
+function includeFirebase() {
+    if ( defined('INCLUDE_FIREBASE') ) return;
+    define('INCLUDE_FIREBASE', true);
+
+
+    if ( defined('FIREBASE_SDK') ) echo FIREBASE_SDK;
+
 }
 
 

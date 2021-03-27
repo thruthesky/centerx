@@ -67,3 +67,20 @@ https://local.itsuda50.com/?route=user.update&sessionId=5592-52f7119495484c1d56c
 
 ###
 https://local.itsuda50.com/?route=health.create&sessionId=5592-52f7119495484c1d56cf8629e9664001&categoryId=scribble&title=yo&content=yoyoyo&reload=true
+
+### point like search
+https://local.itsuda50.com/?route=pointHistory.search&select=idx,fromUserIdx,toUserIdx&where=reason='POINT_LIKE'
+
+### point like search. next page.
+https://local.itsuda50.com/?route=pointHistory.search&select=idx,fromUserIdx,toUserIdx&where=reason='POINT_LIKE'&page=2&limit=3
+
+### point like search for whom I liked. consdier the login user idx is 6.
+https://local.itsuda50.com/?route=pointHistory.search&select=idx,fromUserIdx,toUserIdx&where=reason='POINT_LIKE' and fromUserIdx=6
+
+### point like search for who liked me. consdier the login user idx is 6. including all fields.
+https://local.itsuda50.com/?route=pointHistory.search&select=*&where=reason='POINT_LIKE' and toUserIdx=6
+
+
+### point like search for who liked me. consdier the login user idx is 6. including all fields.
+https://local.itsuda50.com/?route=searchKey.stats&days=3
+

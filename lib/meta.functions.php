@@ -95,7 +95,7 @@ function getMetaEntity(string $taxonomy, string $code, mixed $data ): int {
 function getMetaEntities(array $conds, string $conj='AND', int $limit=1000 ): array {
     $where = sqlCondition($conds, $conj);
     $q = "SELECT entity FROM " . entity(METAS)->getTable() . " WHERE $where LIMIT $limit";
-    $arr = db()->get_results($q);
+    $arr = db()->get_results($q, ARRAY_A);
     if ( ! $arr ) return [];
     else return ids($arr, 'entity');
 }
@@ -126,6 +126,7 @@ function updateMeta(string $taxonomy, int $entity, array|string $code, mixed $da
 
     $table = META_TABLE;
 
+    // Make it array if the input is not an array.
     if ( is_string($code) ) $in = [$code => $data];
     else $in = $code;
 
@@ -146,6 +147,7 @@ function updateMeta(string $taxonomy, int $entity, array|string $code, mixed $da
                 CREATED_AT => time(),
                 UPDATED_AT => time(),
             ];
+            debug_log("table: $table, record: ", $record);
             $idx = db()->insert($table, $record);
             if ( $idx === false ) return e()->meta_insert_failed;
         }
@@ -199,9 +201,12 @@ function addMetaIfNotExists(string $taxonomy, int $entity, mixed $code, mixed $d
 
 /**
  * Return serialized string if the input $v is not an int, string, or double, or any falsy value.
+ * @attention if the input $v is null, then, empty string will be returned to prevent null error on inserting into database record field.
  * @param $v
+ * @return mixed
  */
 function _serialize(mixed $v): mixed {
+    if ( $v === null ) return '';
     if ( is_int($v) || is_numeric($v) || is_float($v) || is_string($v) || empty($v) ) return $v;
     else return serialize($v);
 }

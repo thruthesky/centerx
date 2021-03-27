@@ -426,7 +426,7 @@ class Point {
 
     public function vote(PostTaxonomy $post, $Yn) {
 
-        // 내 글/코멘트이면 리턴. 내 글/코멘트에 추천하는 경우, 포인트 증감 없음.
+        // 내 글/코멘트이면 리턴. 내 글/코멘트에 추천하는 경우, 포인트 증감 없으며, 포인트 기록도 하지 않는다.
         if ( $post->isMine() ) return;
 
         $limit = false;

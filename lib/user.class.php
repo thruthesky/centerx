@@ -7,11 +7,19 @@
  * @property-read string $email
  * @property-read string $password
  * @property-read string $sessionId
+ * @property-read string $firebaseUid
  * @property-read string $name
  * @property-read string $nickname
  * @property-read int $photoIdx
  * @property-read string $phoneNo
  * @property-read string $gender
+ *
+ *
+ * @attention
+ * User entity 의 변수는 기본적으로 캐시가 된다. 즉, point 의 값을 변경했는데, 기존의 변경되지 않은 값이 읽혀질 수 있다.
+ * 그래서, DB 에서 변경된, 새로운 point 값이 필요한 경우, 이 변수를 사용하지 말고, DB 에서 직접 가져오는 getPoint() 를 사용해야 한다.
+ * @property-read string $point
+ *
  * @property-read int $birthdate
  * @property-read string $countryCode
  * @property-read string $province
@@ -25,12 +33,6 @@
  * @property-read string $ci - pass login
  */
 class User extends Entity {
-
-    /**
-     * @deprecated 이 변수를 사용하면 안된다. getPoint() 를 사용해야 한다.
-     * @var int
-     */
-    public int $point;
 
     public function __construct(int $idx)
     {
@@ -169,7 +171,8 @@ class User extends Entity {
      *
      * 에러가 있으면, 에러 문자열. 아니면, 사용자 레코드와 메타를 배열로 리턴한다.
      *
-     * - sessionId 는 객체 생성시 이미 적용되어져 있다.
+     * - sessionId 는 객체 생성시 read() 에 의해 이미 적용되어져 있다.
+     * - admin 속성에 관리자이면 Y 아니면 N 이 저장되어 리턴된다.
      *
      * @return array|string
      */
@@ -177,6 +180,7 @@ class User extends Entity {
         if ( $this->hasError ) return $this->getError();
         $data = $this->getData();
         unset($data[PASSWORD]);
+        $data[ADMIN] = admin() ? 'Y' : 'N';
         return $data;
     }
 
@@ -194,17 +198,29 @@ class User extends Entity {
     }
 
     /**
-     * 글/코멘트 용으로 전달할(보여줄) 간단한 프로필 정보를 리턴한다.
+     * 글/코멘트/기타 용으로 전달할(보여줄) 간단한 프로필 정보를 리턴한다.
+     *
+     * 주의, 배열을 리턴한다.
+     * @param bool $firebaseUid - if it is set to true, returns data will include firebaseUid.
      * @return array
      */
-    public function postProfile(): array {
-        return [
+    public function shortProfile(bool $firebaseUid = false): array {
+        $ret = [
             'idx' => $this->idx,
-            'name' => $this->name,
+            'name' => $this->name ? $this->name : '',
             'nickname' => $this->nickname,
             'gender' => $this->gender,
-            'photoIdx' => $this->photoIdx,
+            'birthdate' => $this->birthdate,
+            'point' => $this->point,
+            'photoIdx' => $this->photoIdx ?? 0,
+            'photoUrl' => thumbnailUrl($this->photoIdx ?? 0, 100, 100),
+
         ];
+        if ( $firebaseUid ) {
+            $ret['firebaseUid'] = $this->firebaseUid;
+        }
+        return $ret;
+
     }
 
 
@@ -258,32 +274,6 @@ class User extends Entity {
         return $this->findOne([EMAIL => $uid]);
     }
 
-
-    /**
-     * @todo This is a optional switching (on/off) function. Make it generic like `entity()->on(OPTION)`, `entity()->off(OPTION)
-     * @todo Make it like `user(123)->on('chat_room_id')`, `user(123)->off(...)`
-     * @todo Move the function to route.
-     *
-     * Update User Option Setting - to set userMeta[OPTION] to Y or N
-     * if $in[OPTION] is null or 'Y' then change it to N
-     * if $in[OPTION] is 'N' then change it to Y
-     *
-     * @param $in
-     * @return array|string
-     */
-//    public function updateOptionSetting(array $in): self
-//    {
-//        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
-//        if ( ! isset($in[OPTION]) && empty($in[OPTION]) ) return $this->error(e()->option_is_empty);
-//
-//        if ( login()->v($in[OPTION]) != 'N' ) {
-//            parent::update( [ $in[OPTION] => 'N' ]);
-//        } else {
-//            parent::update( [ $in[OPTION] => 'Y' ]);
-//        }
-//
-//        return $this;
-//    }
 
 
     /**

@@ -66,7 +66,22 @@ class PostRoute {
     }
 
 
-    public function search($in) {
+    /**
+     * @param $in
+     * @return array|string
+     */
+    public function search($in): array|string
+    {
+
+        ///
+        $onTop = null;
+        if ( isset($in['postOnTop']) && $in['postOnTop'] ) {
+            $onTop = post($in['postOnTop']);
+            if ($onTop->hasError) return $onTop->getError();
+            $categoryId = $onTop->categoryId();
+            $in['where'] = "categoryId=<$categoryId>";
+        }
+
         $posts = post()->search(
             select: $in['select'] ?? 'idx',
             where: $in['where'] ?? '1',
@@ -75,8 +90,15 @@ class PostRoute {
             page: $in['page'] ?? 1,
             limit: $in['limit'] ?? 10,
         );
+
+        if (isset($in['searchKey'])) {
+            db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $in['searchKey'], 'createdAt' => time()]);
+        }
+
         $res = [];
+        if ( $onTop ) $res[] = $onTop->response();
         foreach($posts as $post) {
+            if ( $onTop?->idx == $post->idx ) continue;
             $res[] = $post->response();
         }
         return $res;
