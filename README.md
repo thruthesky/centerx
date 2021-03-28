@@ -1289,3 +1289,240 @@ chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php getter
   - Note that, when a user like or dislike on his own post or comment, there will be no point history.
   
 - For like and dislike, the history is saved under `post_vote_histories` but that has no information about who liked who.
+
+
+# 사진업로드
+
+- 파일 업로드를 할 때, Vue 를 사용 할 수 있고, 그냥 Vanilla Javascript 를 사용 할 수 있다.
+
+## Vue.js 를 사용한 예제
+
+- 아래는 글 작성(생성, 수정)을 하는 예제이다. Vue.js 를 통해서 파일을 업로드한다.
+
+```html
+<?php
+$post = post(in(IDX, 0));
+if ( in(CATEGORY_ID) ) {
+    $category = category( in(CATEGORY_ID) );
+} else if (in(IDX)) {
+    $category = category( $post->v(CATEGORY_IDX) );
+} else {
+    jsBack('잘못된 접속입니다.');
+}
+?>
+<div id="post-edit-default" class="p-5">
+    <form action="/" method="POST">
+        <input type="hidden" name="p" value="forum.post.edit.submit">
+        <input type="hidden" name="returnTo" value="post">
+        <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
+        <input type="hidden" name="files" v-model="files">
+        <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
+        <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">
+        <div>
+            title:
+            <input type="text" name="<?=TITLE?>" value="<?=$post->v(TITLE)?>">
+        </div>
+        <div>
+            content:
+            <input type="text" name="<?=CONTENT?>" value="<?=$post->v(CONTENT)?>">
+        </div>
+        <div>
+            <input name="<?=USERFILE?>" type="file" @change="onFileChange($event)" />
+        </div>
+        <div class="container photos">
+            <div class="row">
+                <div class="col-3 col-sm-2 photo" v-for="file in uploadedFiles" :key="file['idx']">
+                    <div clas="position-relative">
+                        <img class="w-100" :src="file['url']">
+                        <div class="position-absolute top left font-weight-bold" @click="onFileDelete(file['idx'])">[X]</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+<?php includeVueOnce(); ?>
+<script>
+    const postEditDefault = Vue.createApp({
+        data() {
+            return {
+                percent: 0,
+                files: '<?=$post->v('files')?>',
+                uploadedFiles: <?=json_encode($post->files(), true)?>,
+            }
+        },
+        created () {
+            console.log('created() for post-edit-default');
+        },
+        methods: {
+            onFileChange(event) {
+                if (event.target.files.length === 0) {
+                    console.log("User cancelled upload");
+                    return;
+                }
+                const file = event.target.files[0];
+                fileUpload(
+                    file,
+                    {
+                        sessionId: '<?=login()->sessionId?>',
+                    },
+                    function (res) {
+                        console.log("success: res.path: ", res, res.path);
+                        postEditDefault.files = addByComma(postEditDefault.files, res.idx);
+                        postEditDefault.uploadedFiles.push(res);
+                    },
+                    alert,
+                    function (p) {
+                        console.log("pregoress: ", p);
+                        this.percent = p;
+                    }
+                );
+            },
+            onFileDelete(idx) {
+                const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
+                if ( re === false ) return;
+                axios.post('/index.php', {
+                    sessionId: '<?=login()->sessionId?>',
+                    route: 'file.delete',
+                    idx: idx,
+                })
+                    .then(function (res) {
+                        checkCallback(res, function(res) {
+                            console.log('delete success: ', res);
+                            postEditDefault.uploadedFiles = postEditDefault.uploadedFiles.filter(function(v, i, ar) {
+                                return v.idx !== res.idx;
+                            });
+                            postEditDefault.files = deleteByComma(postEditDefault.files, res.idx);
+                        }, alert);
+                    })
+                    .catch(alert);
+            }
+        }
+    }).mount("#post-edit-default");
+</script>
+```
+
+## Vue.js 로 특정 코드로 이미지를 업로드하고 관리하는 방법
+
+- 아래의 예제는 PHP 와 연동하여, 특정 코드에 사진을 업로드하고, 관리자 설정에 file.idx 를 저장한다. 그래서 나중에 재 활용 할 수 있도록 한다.
+
+```html
+<?php
+$file = files()->getByCode(in('code'));
+?>
+<section id="admin-upload-image">
+  <form>
+    <div class="position-relative overflow-hidden">
+      <button class="btn btn-primary" type="submit">사진 업로드</button>
+      <input class="position-absolute left top fs-lg opacity-0" type="file" @change="onFileChange($event)">
+    </div>
+  </form>
+  <div v-if="percent">업로드 퍼센티지: {{ percent }} %</div>
+  <hr>
+  <div class="" v-if="src">
+    <img class="w-100" :src="src">
+  </div>
+</section>
+
+<?php includeVueOnce(); /** Vue.js 가 여러번 로딩되지 않도록 한다. */ ?>
+<script>
+  const adminUploadImage = Vue.createApp({
+    data() {
+      return {
+        percent: 0,
+        src: "<?=$file->url?>"
+      }
+    },
+    mounted() { console.log("admin-upload-image 마운트 완료!"); },
+    methods: {
+      onFileChange(event) {
+        if (event.target.files.length === 0) {
+          console.log("User cancelled upload");
+          return;
+        }
+        const file = event.target.files[0];
+        fileUpload( // 파일 업로드 함수로 파일 업로드
+                file,
+                {
+                  sessionId: '<?=login()->sessionId?>',
+                  code: '<?=in('code')?>',
+                  deletePreviousUpload: 'Y'
+                },
+                function (res) {
+                  console.log("파일 업로드 성공: res.path: ", res, res.path);
+                  adminUploadImage.src = res.url;
+                  adminUploadImage.percent = 0;
+                  axios({ // 파일 업로드 후, file.idx 를 관리자 설정에 추가.
+                    method: 'post',
+                    url: '/index.php',
+                    data: {
+                      route: 'app.setConfig',
+                      code: '<?=in('code')?>',
+                      data: res.idx
+                    }
+                  })
+                          .then(function(res) { console.log('app.setConfig success:', res); })
+                          .catch(function(e) { conslole.log('app.setConfig error: ', e); })
+                },
+                alert, // 에러가 있으면 화면에 출력.
+                function (p) { // 업로드 프로그레스바 표시 함수.
+                  console.log("업로드 퍼센티지: ", p);
+                  adminUploadImage.percent = p;
+                }
+        );
+      },
+    }
+  }).mount("#admin-upload-image");
+</script>
+```
+
+## 바닐라 자바스크립트를 사용한 파일 업로드 예제
+
+- 다음은 바닐라 자바스크립트를 사용한 예제이다. 특징적으로는 코드별로 사진을 업로드한다.
+  즉, 게시판처럼 그냥 하나의 글에 여러 사진을 올리는 것이 아니라, 쇼핑몰의 대표사진, 설명사진, 위젯 사진 등으로 나누어 업로드하고 활용하는 것이다.
+
+```html
+<script>
+    function onFileChange(event, id) {
+        const file = event.target.files[0];
+        fileUpload(
+            file,
+            {
+                sessionId: '<?=login()->sessionId?>',
+            },
+            function (res) {
+                console.log("success: res.path: ", res, res.path);
+                const $input = document.getElementById(id);
+                $input.value = res.idx;
+                const $img = document.getElementById(id + 'Src');
+                $img.src = res.url;
+            },
+            alert,
+            function (p) {
+                console.log("pregoress: ", p);
+            }
+        );
+    }
+
+    function onClickFileDelete(idx, id) {
+        const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
+        if ( re === false ) return;
+        axios.post('/index.php', {
+            sessionId: '<?=login()->sessionId?>',
+            route: 'file.delete',
+            idx: idx,
+        })
+            .then(function (res) {
+                const $input = document.getElementById(id);
+                $input.value = '';
+                const $img = document.getElementById(id + 'Src');
+                $img.src = '';
+            })
+            .catch(alert);
+    }
+</script>
+```

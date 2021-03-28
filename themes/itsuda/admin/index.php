@@ -40,11 +40,15 @@ if ( admin() == false ) jsBack('You are not admin');
         <a href="/?p=admin.index&w=setting/admin-translation"><?=ln(['en' => 'Translations', 'ko' => '언어화'])?></a>
         <a href="/?p=admin.index&w=setting/admin-setting"><?=ln(['en' => 'Settings', 'ko' => '설정'])?></a>
         <a href="/?p=admin.index&w=point/admin-point-setting"><?=ln(['en' => 'Point Setting', 'ko' => '포인트 설정'])?></a>
-        <a href="/?p=admin.index&w=setting/upload-image&code=app-about-page"><?=ln(['en' => 'Point Setting', 'ko' => '앱 어바웃 페이지 설정'])?></a>
+        <a href="/?p=admin.index&w=setting/upload-image&code=admin.app.about.setting"><?=ln(['en' => 'About Setting', 'ko' => '어바웃 설정'])?></a>
     </div>
 
     <div class="content mt-3">
         <?php
+        if ( in('code') == 'admin.app.about.setting') {
+            $admin_upload_title = '어바웃 페이지 사진 등록';
+            $admin_upload_description = '앱 어바웃 페이지에 들어갈 사진을 업로드 해 주세요.';
+        }
         if ( in('w') ) include widget(in('w'));
         else include theme()->file('admin/home');
         ?>

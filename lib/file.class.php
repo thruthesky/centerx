@@ -49,9 +49,9 @@ class File extends Entity {
                 NAME => $_FILES[USERFILE][NAME],
                 SIZE => $_FILES[USERFILE][SIZE],
                 TYPE => $_FILES[USERFILE][TYPE],
-                TAXONOMY => $in[TAXONOMY],
-                ENTITY => $in[ENTITY],
-                CODE => $in[CODE],
+                TAXONOMY => $in[TAXONOMY] ?? '',
+                ENTITY => $in[ENTITY] ?? 0,
+                CODE => $in[CODE] ?? '',
             ];
             debug_log("save: ", $save);
             return $this->create($save);
@@ -125,43 +125,6 @@ class File extends Entity {
         return $rets;
     }
 
-    /**
-     * @deprecated
-     *
-     * if `$files` is empty, then it returns the file information of $this->idx.
-     * Or the $files must be a string of file.idx(es) separated by comma(,)
-     *
-     * @param string|null $files
-     * @param mixed|null $_
-     * @param string $select
-     * @param bool $cache
-     * @return mixed
-     */
-//    public function get(string $files = null, mixed $_ = null, string $select = '*', bool $cache=true): mixed
-//    {
-//        if ( empty($files) && $this->idx ) {
-//            $got = parent::get(IDX, $this->idx, $select, $cache);
-//            if ( !$got ) return $got;
-//            $got['url'] = UPLOAD_URL . $got[PATH];
-//            $got[PATH] = UPLOAD_DIR . $got[PATH];
-//            return $got;
-//        } else {
-//            $files = trim($files);
-//            if ( empty($files) ) return [];
-//            $arr = explode(',', $files);
-//            if ( empty($arr) ) return [];
-//            $rets = [];
-//            foreach( $arr as $idx ) {
-//                $got = parent::get(IDX, $idx, $select, $cache);
-//                if ( ! $got ) continue;
-//                $got['url'] = UPLOAD_URL . $got[PATH];
-//                $got[PATH] = UPLOAD_DIR . $got[PATH];
-//                $rets[] = $got;
-//            }
-//            return $rets;
-//        }
-//    }
-
 
     /**
      * Returns unique seo friendly url for the post.
@@ -184,6 +147,18 @@ class File extends Entity {
                 return $path;
             }
         }
+    }
+
+
+    /**
+     * code 에 맞는 (아무) 파일 하나를 리턴한다.
+     * 파일이 존재하지 않으면, entity_not_found 에러가 설정된 객체를 리턴된된다. 이 때, (에러가 있다면,) $this->idx 는 0, $this->url 은 null 의 값을 가진다.
+     *
+     * @param string $code
+     * @return $this
+     */
+    public function getByCode(string $code): self {
+        return $this->findOne(['code' => $code]);
     }
 
 }

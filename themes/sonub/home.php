@@ -1,12 +1,9 @@
 <?php
 
-
-
-
-
 ?>
 
 <h1>Sonub Theme</h1>
+<?php echo get_root_domain() ?>
 <hr>
 <?php if ( loggedIn() ) { ?>
     어서오세요, <?=login()->name ? login()->name : '이름 없음'?>님.

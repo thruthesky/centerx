@@ -103,3 +103,8 @@ input.underline {
 input.focus-none:focus {
     outline: none !important;
 }
+
+.banner-255x100 {
+    width: 255px;
+    height: 100px;
+}

@@ -11,30 +11,18 @@
     <style>
         <?php include theme()->css('index') ?>
     </style>
-    <style>
-        .l-content {
-            margin: 0 auto;
-            max-width: <?=L_CONTENT?>px;
-            overflow: hidden;
-        }
-        .l-left {
-            min-width: <?=L_LEFT?>px;
-        }
-    </style>
 </head>
 <body>
 <?php
     include theme()->file('header');
     ?>
-<table class="l-content" width="<?=L_CONTENT?>" cellpadding="0" cellspacing="0">
-    <tr valign="top">
-        <td width="<?=L_LEFT?>"><section class="l-left mh-1024px"><?php include theme()->file('left'); ?></section></td>
-        <td width="<?=L_CENTER?>"><section class="l-center <?=inHome() ? 'mx-3' : 'ml-3'?>"><?php include theme()->page(); ?></section></td>
-        <?php if ( inHome() ) { ?>
-            <td width="<?=L_RIGHT?>"><section class="l-right mh-1024px"><?php include theme()->file('right'); ?></section></td>
-        <?php } ?>
-    </tr>
-</table>
+<div class="container-xl">
+    <div class="row">
+        <div class="d-none d-md-block col-3"><?php include theme()->file('left'); ?></div>
+        <div class="col"><?php include theme()->page(); ?></div>
+        <div class="d-none d-lg-block col-3"><?php include theme()->file('right'); ?></div>
+    </div>
+</div>
 <?php
     include theme()->file('footer');
 ?>
