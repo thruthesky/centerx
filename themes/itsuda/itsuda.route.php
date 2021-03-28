@@ -3,7 +3,7 @@
 
 
 
-routeAdd('health.point', function($in) {
+addRoute('health.point', function($in) {
     $beginStamp = mktime(0, 0, 0, $in['month'], 1, $in['year']);
     $endStamp = mktime(0, 0, 0, $in['month']+1, 1, $in['year']) - 1;
 
@@ -32,7 +32,7 @@ routeAdd('health.point', function($in) {
 /**
  * 년/월을 입력 받아서, 그 년/월의 모든 건강 기록을 리턴한다.
  */
-routeAdd('health.month', function($in) {
+addRoute('health.month', function($in) {
     $beginStamp = mktime(0, 0, 0, $in['month'], 1, $in['year']);
     $endStamp = mktime(0, 0, 0, $in['month']+1, 1, $in['year']) - 1;
     $beginYmd = date('Ymd', $beginStamp);
@@ -59,7 +59,7 @@ routeAdd('health.month', function($in) {
 });
 
 
-routeAdd('health.pointRank', function($in) {
+addRoute('health.pointRank', function($in) {
     $entity = entity('itsuda');
     $rows = $entity->search(select: 'userIdx, healthPoint', order: 'healthPoint', page: $in['page'] ?? 1, limit: $in['limit']);
     $rets = [];
@@ -74,7 +74,7 @@ routeAdd('health.pointRank', function($in) {
 });
 
 
-routeAdd('health.myRank', function($in) {
+addRoute('health.myRank', function($in) {
 
     $my = entity('itsuda')->findOne([USER_IDX => login()->idx]);
     if ( $my->hasError ) $point = 0;

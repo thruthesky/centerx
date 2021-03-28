@@ -23,3 +23,7 @@ if ( get_root_domain() == 'philov.com' ) {
 
 
 include 'functions.php';
+
+
+addPage('menu');
+

@@ -614,16 +614,16 @@ return login()->response(); // 이 객체는 서로 달라서, rank 값이 클�
 return login()->updateData('rank', 2)->response();
 ``
 
-## Writing route code
+## Adding Custom Api Route
 
 - There are two ways of handling route.
 - First, you can create a route class under `routes` folder and add method.
   For instance, if `/?route=app.version` is accessed, create `routes/app.route.php` and define `AppRoute` class, then add `version` method in it.
   
 - Second, simple define a function of anywhere.
-  For instance, if `/?route=app.version` is accessed, add a function to `routeAdd()` function like below.
+  For instance, if `/?route=app.version` is accessed, add a function to `addRoute()` function like below.
 ```php
-routeAdd('app.version', function($in) {
+addRoute('app.version', function($in) {
     return ['version' => 'app version 12345 !!!'];
 });
 ```  
@@ -632,9 +632,10 @@ routeAdd('app.version', function($in) {
 
 - For core routes, it is defined in `routes` folder.
 
-- If there are two route handlers for the same route, that comes from route class in `routes` folder and the other comes from `routeAdd()`,
-  Then, the function that is added to `routeAdd()` will be used. This means, you can overwrite the routes in `routes` folder.
+- If there are two route handlers for the same route, that comes from route class in `routes` folder and the other comes from `addRoute()`,
+  Then, the function that is added to `addRoute()` will be used. This means, you can overwrite the routes in `routes` folder.
 
+- See `themes/itsuda/itsuda.route.php` for more examples.
 
 ## App Api
 
@@ -863,6 +864,18 @@ $meta = entity(METAS)->get('code', 'topic_qna');
 $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='Y'", select: 'entity', limit: 10000);
 ```
 
+# 페이지 라우트 추가. Adding Page Route
+
+- Page route 추가하는 것은 Api route 추가하는 것과 다르다.
+  - Api route 추가는 `/?route=app.version` 과 같이 API 호출에서 사용하는 것이고,
+  - Page route 는 `/menu` 와 같이하여 `themes/theme-name/pages/**.php` 폴더 아래의 웹 페이지 스크립트를 로드하는 것이다.
+  
+```php
+
+```
+
+
+
 # Firebase
 
 - Firebase admin key may be kept in each theme folder if you develop many themes at one time.
@@ -885,6 +898,21 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 
 # Theme
+
+## 테마 폴더 구조
+
+- 모든 페이지를 로드할 때, 각 테마의 index.php 가 호출된다. 즉, 테마의 index.php 에서 각 페이지에 맞는 PHP 스크립트를 로드해야한다.
+  - 참고: theme/default/index.php 를 보면, `include theme()->page()` 와 같이 호출하는데, 이렇게 하면 각 페이지 별 PHP 스크립트를 로드한다.
+  
+- `pages/` 폴더는 시스템적으로 고정된 것이 아니지만, 테마 디자인을 할 때, 개발자가 추가하는 페이자의 경우, `pages` 폴더 아래에 넣을 것을 권한다.
+  - 예를 들어 `/?user.login` 과 같이 하면, `theme/theme-name/user/login.php` 가 로드되는데, user, post 와 같이 범용적인 것은 각각의 폴더에 저장하고
+    기타 페이지의 경우, `/?pages.menu` 와 같이 해서, `theme/theme-name/pages/menu.php` 와 같이 `pages` 폴더에 스크립트를 저장하고 로드되도록 한다.
+    
+- `parts/` 폴더는 시스템적으로 정해진 것으로 특정 부분의 스크립트가 존재하면 사용된다. 존재하지 않으면 사용되지 않는다.
+  - 예를 들어, 각 게시판의 상단에 포함될(보여질) 스크립트인 `pages/post-list-top.php` 이 존재하면, 이 PHP 스크립트가 게시판 상단에 보여진다. 만약, 이
+    스크립트가 존재하지 않으면 보여지지 않는 것이다.
+    이것은 훅으로 사용 할 수도 있지만, 보다 편리하게 하기 위해서 `parts` 방식으로 사용한다.
+    
 
 ## 테마 페이지 로딩
 

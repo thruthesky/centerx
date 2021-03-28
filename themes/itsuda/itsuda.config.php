@@ -52,7 +52,7 @@ include 'itsuda.route.php';
 
 
 
-routeAdd('app.version', function($in) {
+addRoute('app.version', function($in) {
     return ['version' => 'itsuda 0.2'];
 });
 

@@ -1,19 +1,22 @@
 <?php
 
-$category = category(in(CATEGORY_ID));
+$category = category(in(CATEGORY_ID) ? in(CATEGORY_ID) : 0);
 
-if ( $category->exists() == false ) jsBack("게시판 카테고리가 존재하지 않습니다.");
+if ( $category->hasError && $category->getError() == e()->entity_not_found ) {
+    jsAlert('카테고리가 존재하지 않습니다.');
+}
 
 
-
-$categoryId = in(CATEGORY_ID);
 $limit = 10;
-$where = "parentIdx=0 AND categoryId=<$categoryId>";
-$posts = post()->search(where: $where, page: in('page', 1), limit: $limit);
-$total = post()->count($where);
+$conds = [PARENT_IDX => 0];
+if ( $category->exists() ) $conds[CATEGORY_IDX] = $category->idx;
+$posts = post()->search(page: in('page', 1), limit: $limit, conds: $conds);
+$total = post()->count(conds: $conds);
 
 
 
+
+include theme()->part('post-list-top');
 include_once widget( $category->postListHeaderWidget ? $category->postListHeaderWidget : 'post-list-header/post-list-header-default' );
 
 

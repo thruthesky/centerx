@@ -438,6 +438,7 @@ class Entity {
         if ( ! $idx ) $idx = $this->idx;
 
         $q = "SELECT * FROM {$this->getTable()} WHERE idx=$idx";
+//        debug_log("read: $q");
         if ( isDebugging() ) d("read() q: $q");
         $record = db()->get_row($q, ARRAY_A);
         if ( $record ) {
@@ -523,8 +524,9 @@ class Entity {
         if ( $conds ) {
             $arr = self::search(conds: $conds, conj: $conj);
             return count($arr) > 0;
+        } else if ( ! $this->idx ) {
+            return false;
         }
-        if ( ! $this->idx ) return false;
         $q = "SELECT " . IDX . " FROM " . $this->getTable() . " WHERE " . IDX . " = {$this->idx} ";
         $re = db()->get_var($q);
         if ( $re ) return true;
