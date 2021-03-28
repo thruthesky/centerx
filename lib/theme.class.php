@@ -75,33 +75,45 @@ class Theme
     }
 
     /**
-     * 현재 페이지 경로를 리턴한다.
-     *
-     * 현재 페이지 경로는 /?p=abc.def 와 같이 들어오거나, `p=` 를 생략하고, /?abc.def.ghi 와 같이 들어올 수 있다.
-     * 점은 1개에서 3개 사이로 있어야 한다.
-     *
-     * 글 페이지 `p` 값이 없고, `/?` 으로 들어오지 않고, uri 에 값이 있으면, 글 페이지로 인식한다.
-     *
      * @return string
      */
     public function page(): string {
+        return $this->file($this->pageName());
+    }
+
+    /**
+     * 현재 페이지 경로를 리턴한다.
+     *
+     * 현재 페이지 경로는 /?p=abc.def 와 같이 들어오거나, `p=` 를 생략하고, /?abc.def.ghi 와 같이 들어올 수 있다.
+     * 점은 0개에서 3개 사이로 있어야 한다.
+     * 즉, `/?menu` 와 같이 들어오면, theme/theme-name/menu.php 를 로드하고,
+     * `/?menu.sitemap` 와 같이 들어오면, theme/theme-name/sitemap.php 를 로드한다.
+     *
+     *
+     * 글 페이지 `p` 값이 없고, '/', `/?` 으로만 접속되는 경우, home.php 를 로드한다.
+     *
+     * 그렇지 않으면, uri 의 값을 글 페이지로 인식한다.
+     *
+     * @return string
+     */
+    public function pageName(): string {
         $p = in('p');
-        if ( empty($p) ) {
+        if ( empty($p) ) { // /?p= 와 같이 p 값이 없는 경우,
             $uri = $_SERVER['REQUEST_URI'];
-            if (str_starts_with($uri, '/?')) { // `/?` 으로 시작하고,
+            if (str_starts_with($uri, '/?') && strlen($uri) > 2) { // `/?` 으로 시작하고 추가 문자열이 있을 때,
                 $uri = str_replace('/?', '', $uri);
                 $arr = explode('.', $uri);
-                if ( count($arr) >= 2 && count($arr) <= 4 ) { // 점(.) 이 1개에서 3개까지이면,
+                if ( count($arr) > 0 && count($arr) <= 4 ) { // 점(.) 이 1개에서 3개까지이면,
                     $p = $uri;
                 } else {
                     $p = 'home'; // `/?` 으로 시작하는데, 점이 없으면 그냥 홈
                 }
             } else {                                // `/?` 으로 시작하지 않고,
-                if ( $uri == '/' ) $p = 'home';     // uri 가 `/` 만 있으면, home
+                if ( $uri == '' || $uri == '/' || $uri == '/?' ) $p = 'home';     // uri 가 `/` 만 있으면, home
                 else $p = 'forum.post.view';        // 아니면, 글 페이지
             }
         }
-        return $this->file($p);
+        return $p;
     }
 
     /**
@@ -118,6 +130,12 @@ class Theme
             }
         }
         $this->folder = ROOT_DIR . 'themes/' . $this->folderName . '/';
+    }
+
+    public function part(string $partName) {
+        $path = theme()->file("parts/$partName");
+        if ( file_exists($path) ) return $path;
+        else return ROOT_DIR . 'etc/empty.php';
     }
 }
 

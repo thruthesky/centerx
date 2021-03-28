@@ -99,6 +99,8 @@ class E {
     public string $ids_is_empty = 'error_ids_is_empty';
     public string $you_are_not_admin = 'error_you_are_not_admin';
 
+    public string $point_must_be_0_or_lower_than_0 = 'error_point_must_be_0_or_lower_than_0';
+
 
 
 

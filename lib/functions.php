@@ -494,7 +494,7 @@ function error(string $code) {
 
 /**
  * @attention Use this function only for Api call.
- * @param mixed $data
+ * @param mixedfun $data
  */
 function success(mixed $data) {
     header('Content-Type: application/json');
@@ -506,10 +506,13 @@ function success(mixed $data) {
 }
 
 /**
+ * Custom Api Route 를 추가한다.
  * $__routes holds routes functions.
+ *
+ * 참고로, 훅과 다르게 Api Route 는 같은 Route 에 여러개의 함수를 정의 할 수 없고, 하나만 정의 할 수 있다.
  */
 $__routes = [];
-function routeAdd($routeName, $func) {
+function addRoute($routeName, $func) {
     global $__routes;
     $__routes[ $routeName ] = $func;
 }
@@ -525,6 +528,13 @@ function getRoute(string|null $routeName): mixed
     if ( isset($__routes[$routeName]) ) return $__routes[$routeName];
     return false;
 }
+
+$__pages = [];
+function addPage($pageName) {
+    global $__pages;
+    $__pages[$pageName] = true;
+}
+
 
 
 /**

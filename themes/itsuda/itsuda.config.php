@@ -26,6 +26,25 @@ define('HEALTH_CATEGORIES', [
 ]);
 
 
+define('DEFAULT_CATEGORIES',  [
+    'qna',
+    'faq',
+    'discussion',
+    'reminder',
+    'gallery',
+    'events',
+    'shopping_mall',
+    'inquiry',
+    'health_meal_lunch',
+    'health_meal_morning',
+    'health_meal_dinner',
+    'health_scribble',
+    'health_exercise',
+    'health_sleep',
+    'health_brain'
+]);
+
+
 include 'itsuda.hooks.php';
 include 'itsuda.route.php';
 
@@ -33,9 +52,11 @@ include 'itsuda.route.php';
 
 
 
-routeAdd('app.version', function($in) {
+addRoute('app.version', function($in) {
     return ['version' => 'itsuda 0.2'];
 });
+
+
 
 
 

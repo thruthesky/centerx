@@ -3,9 +3,7 @@
  * @name Default Post Edit
  */
 
-
 $post = post(in(IDX, 0));
-
 
 if ( in(CATEGORY_ID) ) {
     $category = category( in(CATEGORY_ID) );
@@ -14,9 +12,6 @@ if ( in(CATEGORY_ID) ) {
 } else {
     jsBack('잘못된 접속입니다.');
 }
-
-d($category);
-
 ?>
 
 <div id="post-edit-default" class="p-5">
@@ -27,7 +22,6 @@ d($category);
         <input type="hidden" name="files" v-model="files">
         <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
         <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">
-
         <div>
             title:
             <input type="text" name="<?=TITLE?>" value="<?=$post->v(TITLE)?>">

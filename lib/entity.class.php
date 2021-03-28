@@ -438,6 +438,7 @@ class Entity {
         if ( ! $idx ) $idx = $this->idx;
 
         $q = "SELECT * FROM {$this->getTable()} WHERE idx=$idx";
+//        debug_log("read: $q");
         if ( isDebugging() ) d("read() q: $q");
         $record = db()->get_row($q, ARRAY_A);
         if ( $record ) {
@@ -523,8 +524,9 @@ class Entity {
         if ( $conds ) {
             $arr = self::search(conds: $conds, conj: $conj);
             return count($arr) > 0;
+        } else if ( ! $this->idx ) {
+            return false;
         }
-        if ( ! $this->idx ) return false;
         $q = "SELECT " . IDX . " FROM " . $this->getTable() . " WHERE " . IDX . " = {$this->idx} ";
         $re = db()->get_var($q);
         if ( $re ) return true;
@@ -539,7 +541,7 @@ class Entity {
     /**
      * 특정 레코드를 1개 찾아 현재 객체로 변경하여 리턴한다.
      *
-     * 주의: 현재 객체로 변환한다.
+     * 주의: 현재 Taxonomy 의 Entity 객체로 변환해서 리턴한다. 만약, 파일이 없으면, entity_not_found 에러가 설정된 Entity 객체가 리턴된다.
      *
      * 예를 들어, `user()->by('thruthesky@gmail.com')` 와 같이 호출하면, by() 가 리턴하는 값은
      * thruthesky@gmail.com 사용자의 User 객체가되는 것이다.

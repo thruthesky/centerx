@@ -31,7 +31,7 @@ io.on('connection', function (client) {
     client.on('disconnect', function () {});
 });
 var chokidar = require('chokidar');
-chokidar.watch('.', { ignored: [ '.idea', 'etc/phpdoc', '.phpdoc', 'etc/sql', 'node_modules', 'etc/fontawesome-free-5', 'etc/phpThumb', 'tmp', 'var', 'files', '**/debug.log', '**/vendor', '**/scss', '**/.git', 'package*', 'hot-reload.js', '**/*.mp4', '**/*.mp3', '**/*.jpg', '**/*.png', '**/*.gif', 'etc/phpMyAdmin', 'docker'] } ).on('all', function (event, path) {
+chokidar.watch('.', { ignored: [ '.idea', 'etc/phpdoc', '.phpdoc', 'etc/sql', 'node_modules', 'etc/fontawesome-free-5', 'etc/fontawesome-pro-5', 'etc/phpThumb', 'tmp', 'var', 'files', '**/debug.log', '**/vendor', '**/scss', '**/.git', 'package*', 'hot-reload.js', '**/*.mp4', '**/*.mp3', '**/*.jpg', '**/*.png', '**/*.gif', 'etc/phpMyAdmin', 'docker'] } ).on('all', function (event, path) {
     console.log(event, path, ' at ' + ( new Date ).toLocaleString());
     io.emit('reload', { code: 'reload' });
 });

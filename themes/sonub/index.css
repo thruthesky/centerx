@@ -24,6 +24,9 @@ a:hover {
 .fs-xl {
     font-size: 48px;
 }
+.fs-xxl {
+    font-size: 96px;
+}
 
 .white {
     color: white;
@@ -35,7 +38,7 @@ a:hover {
     color: #666666;
 }
 .bg-blue {
-    background-color: blue;
+    background-color: blue !important;
 }
 .bg-green {
     background-color: green;
@@ -43,6 +46,9 @@ a:hover {
 
 .h-48px {
     height: 48px;
+}
+.h-100px {
+    height: 100px;
 }
 .w-100px {
     width: 100px;
@@ -77,6 +83,12 @@ a:hover {
 .right {
     right: 0;
 }
+.left {
+    left: 0;
+}
+.bottom {
+    bottom: 0;
+}
 
 
 .box {
@@ -102,4 +114,35 @@ input.underline {
 }
 input.focus-none:focus {
     outline: none !important;
+}
+
+.banner-255x100 {
+    width: 255px;
+    height: 100px;
+}
+
+.banner {
+    background-color: #bcbcbc;
+
+}
+
+.circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fafafa;
+    width: 100px;
+    height: 100px;
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+}
+
+.no-gutters {
+    margin-right: 0;
+    margin-left: 0;
+}
+.no-gutters > .col, .no-gutters > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
 }

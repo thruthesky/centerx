@@ -618,16 +618,16 @@ return login()->response(); // 이 객체는 서로 달라서, rank 값이 클�
 return login()->updateData('rank', 2)->response();
 ``
 
-## Writing route code
+## Adding Custom Api Route
 
 - There are two ways of handling route.
 - First, you can create a route class under `routes` folder and add method.
   For instance, if `/?route=app.version` is accessed, create `routes/app.route.php` and define `AppRoute` class, then add `version` method in it.
   
 - Second, simple define a function of anywhere.
-  For instance, if `/?route=app.version` is accessed, add a function to `routeAdd()` function like below.
+  For instance, if `/?route=app.version` is accessed, add a function to `addRoute()` function like below.
 ```php
-routeAdd('app.version', function($in) {
+addRoute('app.version', function($in) {
     return ['version' => 'app version 12345 !!!'];
 });
 ```  
@@ -636,9 +636,10 @@ routeAdd('app.version', function($in) {
 
 - For core routes, it is defined in `routes` folder.
 
-- If there are two route handlers for the same route, that comes from route class in `routes` folder and the other comes from `routeAdd()`,
-  Then, the function that is added to `routeAdd()` will be used. This means, you can overwrite the routes in `routes` folder.
+- If there are two route handlers for the same route, that comes from route class in `routes` folder and the other comes from `addRoute()`,
+  Then, the function that is added to `addRoute()` will be used. This means, you can overwrite the routes in `routes` folder.
 
+- See `themes/itsuda/itsuda.route.php` for more examples.
 
 ## App Api
 
@@ -867,6 +868,18 @@ $meta = entity(METAS)->get('code', 'topic_qna');
 $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='Y'", select: 'entity', limit: 10000);
 ```
 
+# 페이지 라우트 추가. Adding Page Route
+
+- Page route 추가하는 것은 Api route 추가하는 것과 다르다.
+  - Api route 추가는 `/?route=app.version` 과 같이 API 호출에서 사용하는 것이고,
+  - Page route 는 `/menu` 와 같이하여 `themes/theme-name/pages/**.php` 폴더 아래의 웹 페이지 스크립트를 로드하는 것이다.
+  
+```php
+
+```
+
+
+
 # Firebase
 
 - Firebase admin key may be kept in each theme folder if you develop many themes at one time.
@@ -889,6 +902,21 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 
 # Theme
+
+## 테마 폴더 구조
+
+- 모든 페이지를 로드할 때, 각 테마의 index.php 가 호출된다. 즉, 테마의 index.php 에서 각 페이지에 맞는 PHP 스크립트를 로드해야한다.
+  - 참고: theme/default/index.php 를 보면, `include theme()->page()` 와 같이 호출하는데, 이렇게 하면 각 페이지 별 PHP 스크립트를 로드한다.
+  
+- `pages/` 폴더는 시스템적으로 고정된 것이 아니지만, 테마 디자인을 할 때, 개발자가 추가하는 페이자의 경우, `pages` 폴더 아래에 넣을 것을 권한다.
+  - 예를 들어 `/?user.login` 과 같이 하면, `theme/theme-name/user/login.php` 가 로드되는데, user, post 와 같이 범용적인 것은 각각의 폴더에 저장하고
+    기타 페이지의 경우, `/?pages.menu` 와 같이 해서, `theme/theme-name/pages/menu.php` 와 같이 `pages` 폴더에 스크립트를 저장하고 로드되도록 한다.
+    
+- `parts/` 폴더는 시스템적으로 정해진 것으로 특정 부분의 스크립트가 존재하면 사용된다. 존재하지 않으면 사용되지 않는다.
+  - 예를 들어, 각 게시판의 상단에 포함될(보여질) 스크립트인 `pages/post-list-top.php` 이 존재하면, 이 PHP 스크립트가 게시판 상단에 보여진다. 만약, 이
+    스크립트가 존재하지 않으면 보여지지 않는 것이다.
+    이것은 훅으로 사용 할 수도 있지만, 보다 편리하게 하기 위해서 `parts` 방식으로 사용한다.
+    
 
 ## 테마 페이지 로딩
 
@@ -1293,3 +1321,240 @@ chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php getter
   - Note that, when a user like or dislike on his own post or comment, there will be no point history.
   
 - For like and dislike, the history is saved under `post_vote_histories` but that has no information about who liked who.
+
+
+# 사진업로드
+
+- 파일 업로드를 할 때, Vue 를 사용 할 수 있고, 그냥 Vanilla Javascript 를 사용 할 수 있다.
+
+## Vue.js 를 사용한 예제
+
+- 아래는 글 작성(생성, 수정)을 하는 예제이다. Vue.js 를 통해서 파일을 업로드한다.
+
+```html
+<?php
+$post = post(in(IDX, 0));
+if ( in(CATEGORY_ID) ) {
+    $category = category( in(CATEGORY_ID) );
+} else if (in(IDX)) {
+    $category = category( $post->v(CATEGORY_IDX) );
+} else {
+    jsBack('잘못된 접속입니다.');
+}
+?>
+<div id="post-edit-default" class="p-5">
+    <form action="/" method="POST">
+        <input type="hidden" name="p" value="forum.post.edit.submit">
+        <input type="hidden" name="returnTo" value="post">
+        <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
+        <input type="hidden" name="files" v-model="files">
+        <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
+        <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">
+        <div>
+            title:
+            <input type="text" name="<?=TITLE?>" value="<?=$post->v(TITLE)?>">
+        </div>
+        <div>
+            content:
+            <input type="text" name="<?=CONTENT?>" value="<?=$post->v(CONTENT)?>">
+        </div>
+        <div>
+            <input name="<?=USERFILE?>" type="file" @change="onFileChange($event)" />
+        </div>
+        <div class="container photos">
+            <div class="row">
+                <div class="col-3 col-sm-2 photo" v-for="file in uploadedFiles" :key="file['idx']">
+                    <div clas="position-relative">
+                        <img class="w-100" :src="file['url']">
+                        <div class="position-absolute top left font-weight-bold" @click="onFileDelete(file['idx'])">[X]</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+<?php includeVueOnce(); ?>
+<script>
+    const postEditDefault = Vue.createApp({
+        data() {
+            return {
+                percent: 0,
+                files: '<?=$post->v('files')?>',
+                uploadedFiles: <?=json_encode($post->files(), true)?>,
+            }
+        },
+        created () {
+            console.log('created() for post-edit-default');
+        },
+        methods: {
+            onFileChange(event) {
+                if (event.target.files.length === 0) {
+                    console.log("User cancelled upload");
+                    return;
+                }
+                const file = event.target.files[0];
+                fileUpload(
+                    file,
+                    {
+                        sessionId: '<?=login()->sessionId?>',
+                    },
+                    function (res) {
+                        console.log("success: res.path: ", res, res.path);
+                        postEditDefault.files = addByComma(postEditDefault.files, res.idx);
+                        postEditDefault.uploadedFiles.push(res);
+                    },
+                    alert,
+                    function (p) {
+                        console.log("pregoress: ", p);
+                        this.percent = p;
+                    }
+                );
+            },
+            onFileDelete(idx) {
+                const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
+                if ( re === false ) return;
+                axios.post('/index.php', {
+                    sessionId: '<?=login()->sessionId?>',
+                    route: 'file.delete',
+                    idx: idx,
+                })
+                    .then(function (res) {
+                        checkCallback(res, function(res) {
+                            console.log('delete success: ', res);
+                            postEditDefault.uploadedFiles = postEditDefault.uploadedFiles.filter(function(v, i, ar) {
+                                return v.idx !== res.idx;
+                            });
+                            postEditDefault.files = deleteByComma(postEditDefault.files, res.idx);
+                        }, alert);
+                    })
+                    .catch(alert);
+            }
+        }
+    }).mount("#post-edit-default");
+</script>
+```
+
+## Vue.js 로 특정 코드로 이미지를 업로드하고 관리하는 방법
+
+- 아래의 예제는 PHP 와 연동하여, 특정 코드에 사진을 업로드하고, 관리자 설정에 file.idx 를 저장한다. 그래서 나중에 재 활용 할 수 있도록 한다.
+
+```html
+<?php
+$file = files()->getByCode(in('code'));
+?>
+<section id="admin-upload-image">
+  <form>
+    <div class="position-relative overflow-hidden">
+      <button class="btn btn-primary" type="submit">사진 업로드</button>
+      <input class="position-absolute left top fs-lg opacity-0" type="file" @change="onFileChange($event)">
+    </div>
+  </form>
+  <div v-if="percent">업로드 퍼센티지: {{ percent }} %</div>
+  <hr>
+  <div class="" v-if="src">
+    <img class="w-100" :src="src">
+  </div>
+</section>
+
+<?php includeVueOnce(); /** Vue.js 가 여러번 로딩되지 않도록 한다. */ ?>
+<script>
+  const adminUploadImage = Vue.createApp({
+    data() {
+      return {
+        percent: 0,
+        src: "<?=$file->url?>"
+      }
+    },
+    mounted() { console.log("admin-upload-image 마운트 완료!"); },
+    methods: {
+      onFileChange(event) {
+        if (event.target.files.length === 0) {
+          console.log("User cancelled upload");
+          return;
+        }
+        const file = event.target.files[0];
+        fileUpload( // 파일 업로드 함수로 파일 업로드
+                file,
+                {
+                  sessionId: '<?=login()->sessionId?>',
+                  code: '<?=in('code')?>',
+                  deletePreviousUpload: 'Y'
+                },
+                function (res) {
+                  console.log("파일 업로드 성공: res.path: ", res, res.path);
+                  adminUploadImage.src = res.url;
+                  adminUploadImage.percent = 0;
+                  axios({ // 파일 업로드 후, file.idx 를 관리자 설정에 추가.
+                    method: 'post',
+                    url: '/index.php',
+                    data: {
+                      route: 'app.setConfig',
+                      code: '<?=in('code')?>',
+                      data: res.idx
+                    }
+                  })
+                          .then(function(res) { console.log('app.setConfig success:', res); })
+                          .catch(function(e) { conslole.log('app.setConfig error: ', e); })
+                },
+                alert, // 에러가 있으면 화면에 출력.
+                function (p) { // 업로드 프로그레스바 표시 함수.
+                  console.log("업로드 퍼센티지: ", p);
+                  adminUploadImage.percent = p;
+                }
+        );
+      },
+    }
+  }).mount("#admin-upload-image");
+</script>
+```
+
+## 바닐라 자바스크립트를 사용한 파일 업로드 예제
+
+- 다음은 바닐라 자바스크립트를 사용한 예제이다. 특징적으로는 코드별로 사진을 업로드한다.
+  즉, 게시판처럼 그냥 하나의 글에 여러 사진을 올리는 것이 아니라, 쇼핑몰의 대표사진, 설명사진, 위젯 사진 등으로 나누어 업로드하고 활용하는 것이다.
+
+```html
+<script>
+    function onFileChange(event, id) {
+        const file = event.target.files[0];
+        fileUpload(
+            file,
+            {
+                sessionId: '<?=login()->sessionId?>',
+            },
+            function (res) {
+                console.log("success: res.path: ", res, res.path);
+                const $input = document.getElementById(id);
+                $input.value = res.idx;
+                const $img = document.getElementById(id + 'Src');
+                $img.src = res.url;
+            },
+            alert,
+            function (p) {
+                console.log("pregoress: ", p);
+            }
+        );
+    }
+
+    function onClickFileDelete(idx, id) {
+        const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
+        if ( re === false ) return;
+        axios.post('/index.php', {
+            sessionId: '<?=login()->sessionId?>',
+            route: 'file.delete',
+            idx: idx,
+        })
+            .then(function (res) {
+                const $input = document.getElementById(id);
+                $input.value = '';
+                const $img = document.getElementById(id + 'Src');
+                $img.src = '';
+            })
+            .catch(alert);
+    }
+</script>
+```
