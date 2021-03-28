@@ -5,7 +5,7 @@
     </div>
     <a href="javascript:loginWithKakao()"><img class="mt-1 w-100" src="/widgets/login/social-login/kakao-login.png"></a>
     <a href="<?=NAVER_API_URL?>"><img class="mt-1 w-100" src="/widgets/login/social-login/naver-login.png"></a>
-    <img class="mt-1 w-100" src="/widgets/login/social-login/pass-login.png">
+    <a href="<?=passLoginUrl('openHome')?>"><img class="mt-1 w-100" src="/widgets/login/social-login/pass-login.png"></a>
 </div>
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 <script type='text/javascript'>
