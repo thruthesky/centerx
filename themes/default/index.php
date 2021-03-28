@@ -12,6 +12,8 @@
     <style>
         .top { top: 0; }
         .left { left: 0; }
+        .fs-title { font-size: 1.2rem; }
+        .fs-desc { font-size: 0.85rem; color: #676565; }
     </style>
     <script>
         function later(fn) { window.addEventListener('load', fn); }
@@ -22,8 +24,6 @@
 
 
 <?php
-
-
 
     include theme()->page();
 ?>

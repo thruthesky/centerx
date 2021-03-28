@@ -72,9 +72,16 @@ class Category extends Entity {
      * @param array $in
      * @return Category
      */
-//    public function update(array $in): self {
-//        return parent::update($in);
-//    }
+    public function update(array $in): self {
+        debug_log('category.class.php::update()', $in);
+        if ( isset( $in[POINT_POST_DELETE]) && $in[POINT_POST_DELETE] > 0 ) {
+            return $this->error(e()->point_must_be_0_or_lower_than_0);
+        }
+        if ( isset( $in[POINT_COMMENT_DELETE]) && $in[POINT_COMMENT_DELETE] > 0 ) {
+            return $this->error(e()->point_must_be_0_or_lower_than_0);
+        }
+        return parent::update($in);
+    }
 
     /**
      * @attention To delete, entity.idx must be set properly.
