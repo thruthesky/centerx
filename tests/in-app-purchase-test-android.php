@@ -5,7 +5,7 @@ testPurchaseInputTest();
 function testPurchaseInputTest() {
 
     $inApp = inAppPurchase();
-    $serverVerificationData = "......";
+    $serverVerificationData = ".........";
 
     $inputData = [];
     $re = $inApp->verifyPurchase($inputData)->response();
