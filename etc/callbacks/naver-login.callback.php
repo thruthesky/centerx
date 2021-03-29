@@ -43,15 +43,15 @@ if($status_code == 200 && isset($re['access_token'])) {
 
 
         $user_id = $data['response']['id'];
-        $profile = user()->loginOrRegister([
+        $user = user()->loginOrRegister([
             'email' => md5($user_id) . '@naver.com',
             'password' => LOGIN_PASSWORD_SALT,
             'provider' => 'naver',
             'id' => $user_id,
         ]);
-        if ( isError($profile) ) displayWarning($profile);
+        if ( $user->hasError ) displayWarning($user->getError());
         else {
-            setLoginCookies($profile);
+            setLoginCookies($user->profile());
             jsGo('/');
         }
 

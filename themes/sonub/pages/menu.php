@@ -33,6 +33,15 @@
 </div>
 
 
+<?php if ( loggedIn() ) { ?>
+    <a class="p-2" href="/?user.profile">회원 정보</a>
+    <a class="p-2" href="/?user.logout.submit">로그아웃</a>
+<?php } else { ?>
+    <a class="p-2" href="/?user.login">로그인</a>
+    <a class="p-2" href="/?p=user.login&mode=register">가입</a>
+<?php } ?>
+
+
 <div class="d-flex flex-wrap justify-content-around">
     <a href="/?p=forum.post.list&categoryId=discussion" class="circle m-2">자유게시판</a>
     <a href="/?p=forum.post.list&categoryId=qna" class="circle m-2">질문게시판</a>

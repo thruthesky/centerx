@@ -440,6 +440,7 @@ function setLoginAny(): User {
 
 
 function admin(): bool {
+    if ( login()->idx == 0 ) return false;
     if ( login()->email === ADMIN_EMAIL ) return true;
     return login()->email === config()->get(ADMIN);
 }
