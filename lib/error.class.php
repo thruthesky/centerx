@@ -103,6 +103,9 @@ class E {
 
 
 
+    public string $empty_platform = 'error_empty_platform';
+
+
 
 
     public bool $isError = false;

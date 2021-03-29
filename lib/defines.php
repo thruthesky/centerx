@@ -15,6 +15,7 @@ define('TAXONOMY', 'taxonomy');
 define('ENTITY', 'entity');
 define('CATEGORIES', 'categories');
 define('USERS', 'users');
+define('IN_APP_PURCHASE', 'in_app_purchase');
 
 /**
  * The `comments` is the same taxonomy as `posts`.
