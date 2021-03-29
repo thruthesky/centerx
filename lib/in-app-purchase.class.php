@@ -59,38 +59,48 @@ class InAppPurchase extends Entity {
 
     public function verifyPurchase($in): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
-        if ( !isset($in['platform'] ) ) $this->error( e()->empty_platform);
-        if ( !isset($in['productID'] ) ) $this->error( e()->empty_product_id);
-        if ( !isset($in['purchaseID'] ) ) $this->error( e()->empty_purchase_id);
-        if ( !isset($in['price'] ) ) $this->error( e()->empty_product_price);
-        if ( !isset($in['title'] ) ) $this->error( e()->empty_product_title);
-        if ( !isset($in['description'] ) ) $this->error( e()->empty_product_description);
-        if ( !isset($in['transactionDate'] ) ) $this->error( e()->empty_transaction_date);
-        if ( !isset($in['localVerificationData'] ) ) $this->error( e()->empty_local_verification_data);
-        if ( !isset($in['serverVerificationData'] ) ) $this->error( e()->empty_server_verification_data);
+        if ( !isset($in['platform'] ) ) return $this->error( e()->empty_platform);
+        if ( !isset($in['productID'] ) ) return $this->error( e()->empty_product_id);
+        if ( !isset($in['purchaseID'] ) ) return $this->error( e()->empty_purchase_id);
+        if ( !isset($in['price'] ) ) return $this->error( e()->empty_product_price);
+        if ( !isset($in['title'] ) ) return $this->error( e()->empty_product_title);
+        if ( !isset($in['description'] ) ) return $this->error( e()->empty_product_description);
+        if ( !isset($in['transactionDate'] ) ) return $this->error( e()->empty_transaction_date);
+        if ( !isset($in['localVerificationData'] ) ) {
+            return $this->error( e()->empty_local_verification_data);
+        }
+        if ( !isset($in['serverVerificationData'] ) ) return $this->error( e()->empty_server_verification_data);
 
         if ( $in['platform'] == 'ios' ) {
-            if (!isset($in['productIdentifier'])) $this->error( e()->empty_product_identifier);
-            if (!isset($in['quantity'])) $this->error( e()->empty_quantity);
-            if (!isset($in['transactionIdentifier'])) $this->error( e()->empty_transaction_identifier);
-            if (!isset($in['transactionTimeStamp'])) $this->error( e()->empty_transaction_timestamp);
+            if (!isset($in['productIdentifier'])) return $this->error( e()->empty_product_identifier);
+            if (!isset($in['quantity'])) return $this->error( e()->empty_quantity);
+            if (!isset($in['transactionIdentifier'])) return $this->error( e()->empty_transaction_identifier);
+            if (!isset($in['transactionTimeStamp'])) return $this->error( e()->empty_transaction_timestamp);
         }
 
         if ( $in['platform'] == 'android' ) {
-            if ( !isset($in['localVerificationData_packageName']) ) $this->error( e()->empty_package_name);
+            if ( !isset($in['localVerificationData_packageName']) ) return $this->error( e()->empty_package_name);
         }
 
+        /*
         $res = true;
         if ( $in['platform'] == 'ios' ) {
             $res =  verifyIOSPurchase($in);
         } else if ( $in['platform'] == 'android' ) {
             $res =  verifyAndroidPurchase($in);
         } else {
-            $this->error( e()->wrong_platform);
+            return $this->error( e()->wrong_platform);
         }
 
         if($res) inAppPurchase()->create($in);
-        else $this->error(e()->verification_failed);
+        else return $this->error(e()->verification_failed);
+*/
+
+        $in['userIdx'] = login()->idx;
+
+
+
+        parent::create($in);
 
         return $this;
     }

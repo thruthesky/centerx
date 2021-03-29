@@ -32,6 +32,7 @@ require_once ROOT_DIR . 'lib/meta.functions.php';
 require_once ROOT_DIR . 'lib/translation.class.php';
 require_once ROOT_DIR . 'lib/firebase.php';
 require_once ROOT_DIR . 'lib/data.php';
+require_once ROOT_DIR . 'lib/in-app-purchase.class.php';
 require_once ROOT_DIR . 'lib/hook.class.php';
 require_once ROOT_DIR . 'lib/defines.php';
 

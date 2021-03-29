@@ -30,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '46e50b7a8c02f854579b212bb1fae458f5d94ae0',
+    'reference' => '623179959eac688b4df95f48e159e409dc0f608d',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,16 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '46e50b7a8c02f854579b212bb1fae458f5d94ae0',
+      'reference' => '623179959eac688b4df95f48e159e409dc0f608d',
+    ),
+    'aporat/store-receipt-validator' => 
+    array (
+      'pretty_version' => '4.0.3',
+      'version' => '4.0.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '1308f3ae570bbbfade943ea2083e1cf238400f45',
     ),
     'doctrine/instantiator' => 
     array (
@@ -97,6 +106,24 @@ private static $installed = array (
       array (
       ),
       'reference' => 'b07f1eace8072ccc61445ad8fbd493ff9d783043',
+    ),
+    'google/apiclient' => 
+    array (
+      'pretty_version' => 'v2.9.1',
+      'version' => '2.9.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '2fb6e702aca5d68203fa737f89f6f774022494c6',
+    ),
+    'google/apiclient-services' => 
+    array (
+      'pretty_version' => 'v0.166.0',
+      'version' => '0.166.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '46b71684a100f3d976e0321cf24f487b314add68',
     ),
     'google/auth' => 
     array (
@@ -237,6 +264,15 @@ private static $installed = array (
         0 => '1.10.2',
       ),
     ),
+    'nesbot/carbon' => 
+    array (
+      'pretty_version' => '2.46.0',
+      'version' => '2.46.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '2fd2c4a77d58a4e95234c8a61c5df1f157a91bf4',
+    ),
     'nikic/php-parser' => 
     array (
       'pretty_version' => 'v4.10.4',
@@ -245,6 +281,24 @@ private static $installed = array (
       array (
       ),
       'reference' => 'c6d052fc58cb876152f89f532b95a8d7907e7f0e',
+    ),
+    'paragonie/constant_time_encoding' => 
+    array (
+      'pretty_version' => 'v2.4.0',
+      'version' => '2.4.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c',
+    ),
+    'paragonie/random_compat' => 
+    array (
+      'pretty_version' => 'v9.99.100',
+      'version' => '9.99.100.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '996434e5492cb4c3edcb9168db6fbb1359ef965a',
     ),
     'phar-io/manifest' => 
     array (
@@ -290,6 +344,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '6a467b8989322d92aa1c8bf2bebcc6e5c2ba55c0',
+    ),
+    'phpseclib/phpseclib' => 
+    array (
+      'pretty_version' => '3.0.6',
+      'version' => '3.0.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '906a5fafabe5e6ba51ef3dc65b2722a677908837',
     ),
     'phpspec/prophecy' => 
     array (
@@ -463,6 +526,15 @@ private static $installed = array (
       ),
       'reference' => '6e0b97e00e0f36c652dd3c37b194ef07de669b82',
     ),
+    'robrichards/xmlseclibs' => 
+    array (
+      'pretty_version' => '3.1.1',
+      'version' => '3.1.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'f8f19e58f26cdb42c54b214ff8a820760292f8df',
+    ),
     'sebastian/cli-parser' => 
     array (
       'pretty_version' => '1.0.1',
@@ -624,6 +696,40 @@ private static $installed = array (
       array (
       ),
       'reference' => '5232de97ee3b75b0360528dae24e73db49566ab1',
+    ),
+    'symfony/polyfill-php80' => 
+    array (
+      'pretty_version' => 'v1.22.1',
+      'version' => '1.22.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'dc3063ba22c2a1fd2f45ed856374d79114998f91',
+    ),
+    'symfony/translation' => 
+    array (
+      'pretty_version' => 'v5.2.6',
+      'version' => '5.2.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '2cc7f45d96db9adfcf89adf4401d9dfed509f4e1',
+    ),
+    'symfony/translation-contracts' => 
+    array (
+      'pretty_version' => 'v2.3.0',
+      'version' => '2.3.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'e2eaa60b558f26a4b0354e1bbb25636efaaad105',
+    ),
+    'symfony/translation-implementation' => 
+    array (
+      'provided' => 
+      array (
+        0 => '2.3',
+      ),
     ),
     'theseer/tokenizer' => 
     array (

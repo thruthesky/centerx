@@ -49,4 +49,4 @@ foreach(glob('/root/tests/*.test.php') as $path) {
 
 echo "\nTests: $testCount\n";
 if ( $errorCount ) echo "WARNING: ------------------------------------------> Errors: [ $errorCount ]\n";
-else echo "No errors\n";
+else echo "Congratulations! No errors.\n";
