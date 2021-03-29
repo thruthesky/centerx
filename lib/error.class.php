@@ -104,6 +104,23 @@ class E {
 
 
     public string $empty_platform = 'error_empty_platform';
+    public string $empty_product_id = 'error_empty_product_id';
+    public string $empty_purchase_id = 'error_empty_purchase_id';
+    public string $empty_product_price = 'error_empty_product_price';
+    public string $empty_product_title = 'error_empty_product_title';
+    public string $empty_product_description = 'error_empty_product_description';
+    public string $empty_transaction_date = 'error_empty_transaction_date';
+    public string $empty_product_identifier = 'error_empty_product_identifier';
+    public string $empty_quantity = 'error_empty_quantity';
+    public string $empty_transaction_identifier = 'error_empty_transaction_identifier';
+    public string $empty_transaction_timestamp = 'error_empty_transaction_timestamp';
+    public string $empty_local_verification_data = 'error_empty_local_verification_data';
+    public string $empty_server_verification_data = 'error_empty_server_verification_data';
+    public string $empty_package_name = 'error_empty_package_name';
+    public string $wrong_platform = 'error_wrong_platform';
+    public string $verification_failed = 'error_verification_failed';
+
+    public string $receipt_invalid = 'error_$receipt_invalid';
 
 
 
