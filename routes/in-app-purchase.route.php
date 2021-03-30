@@ -11,6 +11,7 @@ class InAppPurchaseRoute {
     {
         if ( notLoggedIn() ) return e()->not_logged_in;
         $in['status'] = 'failure';
+        $in['transactionDate'] = !empty($in['transactionDate']) ? $in['transactionDate'] : 0;
         return inAppPurchase()->create($in)->response();
     }
         public function recordPending()

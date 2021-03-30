@@ -94,7 +94,7 @@ CREATE TABLE `wc_in_app_purchase` (
                                       `description` text NOT NULL,
                                       `applicationUsername` varchar(255) NOT NULL DEFAULT '',
                                       `transactionDate` bigint(20) UNSIGNED NOT NULL,
-                                      `productIdentifier` varchar(32) NOT NULL,
+                                      `productIdentifier` varchar(32) NOT NULL DEFAULT '',
                                       `quantity` smallint(5) UNSIGNED NOT NULL,
                                       `transactionIdentifier` bigint(20) UNSIGNED NOT NULL,
                                       `transactionTimeStamp` double UNSIGNED NOT NULL,
