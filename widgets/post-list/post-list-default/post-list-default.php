@@ -2,8 +2,7 @@
 /**
  * @name Default Post List Style
  */
-
-
+global $posts;
 ?>
 
 <a class="btn btn-primary" href="/?p=forum.post.edit&categoryId=<?=in(CATEGORY_ID)?>">Create</a>
