@@ -1,4 +1,7 @@
 <?php
+
+
+
 /**
  * @file in-app-purchase.class.php
  */
@@ -87,29 +90,37 @@ class InAppPurchase extends Entity {
         }
         if ( isError($res) ) return $this->error( $res );
 
-        $in['status'] = 'success';
+        $in['status'] = SUCCESS;
         $this->create($in);
         return $this;
     }
 
 
-    public function recordFailure($in) {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( !isset($in['platform']) || empty(($in['platform'])) ) return e()->empty_platform;
+    public function recordFailure($in): array|string
+    {
+        $in['status'] = FAILURE;
+        return $this->_record($in);
+    }
 
-        $in['status'] = 'failure';
-//        $in['userIdx'] = login()->idx;
-        $in['localVerificationData'] = '';
-        $in['serverVerificationData'] = '';
+    public function recordPending($in): array|string
+    {
+        $in['status'] = PENDING;
+        return $this->_record($in);
+    }
 
-
+    private function _record($in): array|string
+    {
+        if ( notLoggedIn() ) return $this->error( e()->not_logged_in);
+        if ( !isset($in['platform']) || empty(($in['platform'])) ) return $this->error( e()->empty_platform);
+        if ( !isset($in['productID'] ) || empty(($in['productID'])) ) return $this->error( e()->empty_product_id);
         if ( !isset($in['purchaseID']) || empty(($in['purchaseID'])) ) $in['purchaseID'] = '';
         if ( !isset($in['title']) || empty(($in['title'])) ) $in['title'] = '';
         if ( !isset($in['description']) || empty(($in['description'])) ) $in['description'] = '';
-
         if ( !isset($in['transactionDate']) || empty($in['transactionDate']) ) $in['transactionDate'] = '';
 
-        debug_log("recordFailure(): ", $in);
+        $in['localVerificationData'] = '';
+        $in['serverVerificationData'] = '';
+        debug_log("record{$in['status']}()", $in);
         return $this->create($in)->response();
     }
 

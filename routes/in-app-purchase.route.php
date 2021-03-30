@@ -3,25 +3,19 @@
 class InAppPurchaseRoute {
 
 
-    public function verifyPurchase($in) {
+    public function verifyPurchase($in): array|string
+    {
         return inAppPurchase()->verifyPurchase($in)->response();
     }
 
-    public function recordFailure($in)
+    public function recordFailure($in): array|string
     {
         return inAppPurchase()->recordFailure($in);
 
     }
-    public function recordPending()
+    public function recordPending($in): array|string
     {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        if ( !isset($in['platform'] ) ) return e()->empty_platform;
-        if ( !isset($in['productID'] ) ) return e()->empty_product_id;
-        if ( !isset($in['price'] ) ) return e()->empty_product_price;
-        if ( !isset($in['title'] ) ) return e()->empty_product_title;
-        if ( !isset($in['description'] ) ) return e()->empty_product_description;
-        $in['status'] = 'pending';
-        return inAppPurchase()->create($in)->response();
+        return inAppPurchase()->recordPending($in);
     }
 
 
