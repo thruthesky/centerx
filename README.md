@@ -1303,6 +1303,7 @@ chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php user"
 chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php point"
 chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php shopping-mall"
 chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php getter"
+chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php purchase.android"
 ```
 
 

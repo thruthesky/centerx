@@ -120,7 +120,7 @@ class E {
     public string $wrong_platform = 'error_wrong_platform';
     public string $verification_failed = 'error_verification_failed';
 
-    public string $receipt_invalid = 'error_$receipt_invalid';
+    public string $receipt_invalid = 'error_receipt_invalid';
 
 
 

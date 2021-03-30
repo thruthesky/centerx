@@ -275,6 +275,8 @@ class Entity {
 //        debug_log("훅 리턴 값:", $re);
         if ( isError($re) ) return $this->error($re);
 
+        debug_log("db()->insert(table: ", $this->getTable());
+        debug_log("db()->insert(record: ", $record);
         if ( isDebugging() ) db()->debugOn();
         $idx = db()->insert( $this->getTable(), $record );
         if ( isDebugging() ) db()->debug();

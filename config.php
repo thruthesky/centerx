@@ -131,6 +131,10 @@ if ( ! defined('FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH') ) {
 if ( ! defined('FIREBASE_DATABASE_URI') ) {
     define("FIREBASE_DATABASE_URI", "https://itsuda50-default-rtdb.firebaseio.com/");
 }
+define("SERVICE_ACCOUNT_LINK_TO_APP_JSON_FILE_PATH", ROOT_DIR . "themes/itsuda/keys/itsuda-gcp-iap-service-account-key.json");
+define("ANDROID_APP_ID", "com.itsuda50.app");
+define("IOS_APP_ID", "com.itsuda50.app");
+
 
 
 /**

@@ -9,12 +9,10 @@ class InAppPurchaseRoute {
 
     public function recordFailure($in)
     {
-        if ( notLoggedIn() ) return e()->not_logged_in;
-        $in['status'] = 'failure';
-        $in['transactionDate'] = !empty($in['transactionDate']) ? $in['transactionDate'] : 0;
-        return inAppPurchase()->create($in)->response();
+        return inAppPurchase()->recordFailure($in);
+
     }
-        public function recordPending()
+    public function recordPending()
     {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( !isset($in['platform'] ) ) return e()->empty_platform;
