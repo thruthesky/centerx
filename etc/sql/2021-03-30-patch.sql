@@ -1,1 +1,3 @@
 ALTER TABLE `wc_in_app_purchase` CHANGE `quantity` `quantity` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0', CHANGE `transactionIdentifier` `transactionIdentifier` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0', CHANGE `transactionTimeStamp` `transactionTimeStamp` DOUBLE UNSIGNED NOT NULL DEFAULT '0';
+
+ALTER TABLE `wc_in_app_purchase` CHANGE `productIdentifier` `productIdentifier` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '';
