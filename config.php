@@ -7,16 +7,17 @@ define('DEBUG_LOG_FILE_PATH', ROOT_DIR . 'var/logs/debug.log');
 
 
 define('DOMAIN_THEMES', [
-    'philov' => 'sonub',
-    'tellvi' => 'sonub',
-    'sonub' => 'sonub',
-    'goldenage50' => 'itsuda',
     'itsuda' => 'itsuda',
     '127.0.0.1' => 'itsuda',
     'localhost' => 'itsuda',
     '169.254.194.6' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
     '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.
     '192.168.100.17' => 'itsuda', // Charles Ip address
+
+    'philov' => 'sonub',
+    'tellvi' => 'sonub',
+    'sonub' => 'sonub',
+    'goldenage50' => 'itsuda',
 ]);
 
 
@@ -48,6 +49,8 @@ define('LOCAL_HOSTS', ['localhost', 'local.itsuda50.com', 'main.philov.com']);
  * 참고로, 각 설정 파일에서 아래에서 정의되는 상수들을 미리 정의해서, 본 설정 파일에서 정의되는 값을 덮어 쓸 수 있다.
  */
 $_path = theme()->file( filename: 'config', prefixThemeName: true );
+
+debug_log("Theme Config Path: $_path");
 if ( file_exists($_path) ) {
     require_once $_path;
 }
@@ -150,7 +153,9 @@ define('DEFAULT_DELIVERY_FEE_FREE_LIMIT', 3000);
 define('DEFAULT_DELIVERY_FEE_PRICE', 2500);
 
 
-
+/**
+ *
+ */
 define('LIVE_RELOAD_HOST', 'main.philov.com');
 define('LIVE_RELOAD_PORT', '12345');
 

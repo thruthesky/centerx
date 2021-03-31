@@ -448,7 +448,8 @@ function admin(): bool {
 function debug_log($message, $data='') {
     $str = print_r($message, true);
     $str .= ' ' . print_r($data, true);
-    file_put_contents(DEBUG_LOG_FILE_PATH, $str . "\n");
+//    file_put_contents(DEBUG_LOG_FILE_PATH, $str . "\n", FILE_APPEND);
+    error_log($str, 3, DEBUG_LOG_FILE_PATH);
 }
 
 
