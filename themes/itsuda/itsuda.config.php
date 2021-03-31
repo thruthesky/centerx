@@ -14,7 +14,7 @@ define('PASS_LOGIN_CALLBACK_URL', isLocalhost() ?
 );
 
 
-define('FIX_LANGUAGE', 'ko');
+define('FIX_LANGUAGE', 'en');
 
 
 define('HEALTH_CATEGORIES', [

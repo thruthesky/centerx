@@ -31,7 +31,7 @@ if ( admin() == false ) jsBack('You are not admin');
     }
 </style>
 <section class="layout">
-    <h1 class="title"><a href="/?p=admin.index">있수다! 관리자 페이지</a></h1>
+    <h1 class="title"><a href="/?p=admin.index"><?=ln(['ko' => '있수다! 관리자 페이지', 'en' => 'Admin Page'])?></a></h1>
     <div class="menu mt-3">
         <a href="/?p=admin.index&w=user/admin-user-list"><?=ln('users', ln(['en' => 'Users', 'ko' => '사용자']))?></a>
         <a href="/?p=admin.index&w=category/admin-category-list"><?=ln('category', ln(['en' => 'Category', 'ko' => '카테고리']))?></a>

@@ -24,7 +24,7 @@ if ( $editCategory ) {
         <div class="col-<?=$lw?>">
             <?php if ( $editCategory ) {
                 ?>
-                    <h3>Category Update</h3>
+                    <h3 class="mb-4 pt-1">Category Update</h3>
                 <?php
                 include 'sidebar.php';
                 ?>

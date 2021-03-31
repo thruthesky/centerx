@@ -1,11 +1,19 @@
 <?php
-
 /**
+ * @file config.php
+ */
+/**
+ * Debug path.
  * 디버그를 기록할 로그 파일 경로
  */
 define('DEBUG_LOG_FILE_PATH', ROOT_DIR . 'var/logs/debug.log');
 
 
+/**
+ * Domain & Theme
+ *
+ * @see README.md for the details.
+ */
 define('DOMAIN_THEMES', [
     'itsuda' => 'itsuda',
     '127.0.0.1' => 'itsuda',
@@ -22,6 +30,7 @@ define('DOMAIN_THEMES', [
 
 
 /**
+ * Supported Domain Suffix.
  * 지원 도메인
  *
  * 현재 사이트에서 서비스하는 도메인의 최상위 도메인을 가져오거나 특정 도메인의 루트 도메인을 가져오고자 할 때, 지원되는 도메인들이다.
@@ -31,8 +40,13 @@ define('DOMAIN_THEMES', [
  */
 define('SUPPORTED_DOMAIN_SUFFIX', ['.com', '.co.kr', '.kr']);
 
+
+
 /**
  * Local hosts
+ *
+ * Add test domains. This is to determine whether the service is local development or not.
+ * All the domains specified here are considered as local server.
  *
  * 현재 컴퓨터에서 테스트하는 도메인을 기록. 이 도메인으로 접속하면, 실제 서버가 아닌 현재 컴퓨터로 접속을 하며, 테스트를 위한 것이다.
  * 특히, 이 도메인으로 접속하면, isLocalhost() 에서 참을 리턴한다.
@@ -44,6 +58,7 @@ define('LOCAL_HOSTS', ['localhost', 'local.itsuda50.com', 'main.philov.com']);
 
 
 /**
+ * Load theme configuration
  * 각 테마별 설정 파일이 있으면 그 설정 파일을 사용한다.
  *
  * 참고로, 각 설정 파일에서 아래에서 정의되는 상수들을 미리 정의해서, 본 설정 파일에서 정의되는 값을 덮어 쓸 수 있다.
@@ -57,8 +72,6 @@ if ( file_exists($_path) ) {
 
 
 define('APP_NAME', 'CenterX');
-
-
 
 define('DB_USER', 'centerx');
 define('DB_PASS', 'Wc~Cx7');

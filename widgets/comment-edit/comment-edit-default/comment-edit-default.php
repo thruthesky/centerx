@@ -17,7 +17,7 @@ $parent = $o['parent'];
  */
 $comment = $o['comment'] ?? null;
 
-
+/// when edit, $parent->idx must be changed to $comemnt->idx.
 ?>
 
 <div id="comment-edit-default-form">
@@ -26,10 +26,10 @@ $comment = $o['comment'] ?? null;
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="<?=ROOT_IDX?>" value="<?=$post->idx?>">
         <input type="hidden" name="<?=PARENT_IDX?>" value="<?=$parent->idx?>">
-        <input type="hidden" name="files" id="files<?=$post->idx?>" value="">
+        <input type="hidden" name="files" id="files<?=$parent->idx?>" value="">
         <input type="text" name="<?=CONTENT?>">
         <div>
-            <input name="<?=USERFILE?>" type="file" onchange="onFileChange(event, 'files<?=$post->idx?>')" />
+            <input name="<?=USERFILE?>" type="file" onchange="onFileChange(event, 'files<?=$parent->idx?>')" />
         </div>
         <button type="submit">Submit</button>
     </form>

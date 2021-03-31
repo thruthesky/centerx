@@ -19,6 +19,7 @@
         .em { color: darkred; font-weight: bold; }
         .border-radius-md { border-radius: 16px; }
         .opacity-0 { opacity: 0; }
+        .w-200px { width: 200px; }
     </style>
     <script>
         function later(fn) { window.addEventListener('load', fn); }
@@ -26,13 +27,36 @@
 </head>
 <body>
 
+<?php if ( str_contains(theme()->page(), '/admin/') ) { ?>
+    <?php include theme()->page(); ?>
+<?php } else { ?>
+    <div class="container">
+        <div class="d-flex justify-content-between">
+            <div>
+                <div class="d-block w-200px">
+                    <a href="/"><img class="py-3 pl-5 w-100" src="themes/itsuda/img/logo.jpg"></a>
+                </div>
+            </div>
+            <div class="mt-3">
+                <a class="p-2" style="font-size: 1.4rem" href="/">다운로드</a>
+                <?php if ( loggedIn() ) { ?>
+                    <a class="p-2" style="font-size: 1.4rem" href="/?admin.index"><?=login()->name?>(<?=login()->idx?>)</a>
+                    <a class="p-2" style="font-size: 1.4rem" href="/?user.logout.submit"><?=ln(['en' => 'Logout', 'ko' => '로그아웃'])?></a>
+                <?php } else { ?>
+                    <a class="p-2" style="font-size: 1.4rem" href="/?user.login"><?=ln(['en' => 'Login', 'ko' => '로그인'])?></a>
+                <?php } ?>
 
-
-<?php
-
-include theme()->page();
-?>
-
+                <a class="p-2" style="font-size: 1.4rem" href="/?p=forum.post.list&categoryId=qna"><?=ln(['en' => 'QnA', 'ko' => '질문게시판'])?></a>
+                <a class="p-2" style="font-size: 1.4rem" href="/?p=forum.post.list&categoryId=discussion"><?=ln(['en' => 'Discussion', 'ko' => '자유게시판'])?></a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <?php
+        include theme()->page();
+        ?>
+    </div>
+<?php } ?>
 
 <script src="<?=HOME_URL?>etc/js/helper.js?v=2"></script>
 </body>

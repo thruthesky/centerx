@@ -106,7 +106,7 @@ class Entity {
     {
         if ( $field ) {
             if ( $this->hasError ) return null;
-            else return isset($this->data[$field]) ? $this->data[$field] : $default_value;
+            else return isset($this->data[$field]) && !empty($this->data[$field]) ? $this->data[$field] : $default_value;
         } else {
             if ( $this->hasError ) return [];
             return $this->data;

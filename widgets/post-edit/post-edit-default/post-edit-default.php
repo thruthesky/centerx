@@ -13,41 +13,42 @@ if ( in(CATEGORY_ID) ) {
     jsBack('잘못된 접속입니다.');
 }
 ?>
-
-<div id="post-edit-default" class="p-5">
-    <form action="/" method="POST">
-        <input type="hidden" name="p" value="forum.post.edit.submit">
-        <input type="hidden" name="returnTo" value="post">
-        <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
-        <input type="hidden" name="files" v-model="files">
-        <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
-        <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">
-        <div>
-            title:
-            <input type="text" name="<?=TITLE?>" value="<?=$post->v(TITLE)?>">
-        </div>
-        <div>
-            content:
-            <input type="text" name="<?=CONTENT?>" value="<?=$post->v(CONTENT)?>">
-        </div>
-        <div>
-            <input name="<?=USERFILE?>" type="file" @change="onFileChange($event)" />
-        </div>
-        <div class="container photos">
-            <div class="row">
-                <div class="col-3 col-sm-2 photo" v-for="file in uploadedFiles" :key="file['idx']">
-                    <div clas="position-relative">
-                        <img class="w-100" :src="file['url']">
-                        <div class="position-absolute top left font-weight-bold" @click="onFileDelete(file['idx'])">[X]</div>
+<section class="p3" style="background-color: #efefef;">
+    <div id="post-edit-default" class="p-5">
+        <form action="/" method="POST">
+            <input type="hidden" name="p" value="forum.post.edit.submit">
+            <input type="hidden" name="returnTo" value="post">
+            <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
+            <input type="hidden" name="files" v-model="files">
+            <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
+            <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">
+            <div>
+                title:
+                <input type="text" name="<?=TITLE?>" value="<?=$post->v(TITLE)?>">
+            </div>
+            <div>
+                content:
+                <input type="text" name="<?=CONTENT?>" value="<?=$post->v(CONTENT)?>">
+            </div>
+            <div>
+                <input name="<?=USERFILE?>" type="file" @change="onFileChange($event)" />
+            </div>
+            <div class="container photos">
+                <div class="row">
+                    <div class="col-3 col-sm-2 photo" v-for="file in uploadedFiles" :key="file['idx']">
+                        <div clas="position-relative">
+                            <img class="w-100" :src="file['url']">
+                            <div class="position-absolute top left font-weight-bold" @click="onFileDelete(file['idx'])">[X]</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div>
-            <button type="submit">Submit</button>
-        </div>
-    </form>
-</div>
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</section>
 
 <?php includeVueOnce(); ?>
 <script>
