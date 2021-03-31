@@ -448,7 +448,8 @@ function admin(): bool {
 function debug_log($message, $data='') {
     $str = print_r($message, true);
     $str .= ' ' . print_r($data, true);
-    file_put_contents(DEBUG_LOG_FILE_PATH, $str . "\n");
+//    file_put_contents(DEBUG_LOG_FILE_PATH, $str . "\n", FILE_APPEND);
+    error_log($str, 3, DEBUG_LOG_FILE_PATH);
 }
 
 
@@ -851,14 +852,36 @@ function ln(array|string $code, mixed $default_value=''): string
 {
     if ( FIX_LANGUAGE ) $language = FIX_LANGUAGE;
     else $language = get_user_language();
+
     if ( is_string($code) ) {
         $re = translation()->text($language, $code);
     } else {
-        $re = $code[ $language ] ?? null;
+        // If $code is array.
+        if ( isset($code[ $language ]) ) $re = $code[ $language ]; // User language is set?
+        else if ( isset($code[ 'en' ]) ) $re = $code[ 'en' ]; // English is set?
+        else $re = serialize($code); // or return string of the code.
     }
-    if ( $re ) return $re;
-    else if ( $default_value ) return $default_value;
-    else return $code;
+    if ( $re ) {
+        return $re;
+    }
+    else if ( $default_value ) {
+        return $default_value;
+    }
+    else {
+        return $code;
+    }
+}
+
+/**
+ * English or Korean
+ * @param $en
+ * @param $ko
+ * @return string
+ */
+function ek($en, $ko) {
+    if ( empty($en) ) return 'English is not set';
+    if ( empty($ko) ) return 'Korean is not set';
+    return ln(['en' => $en, 'ko' => $ko]);
 }
 
 function get_user_language() {
@@ -883,6 +906,7 @@ function select_list_widgets($categoryIdx,  $widget_type, $setting_name) {
     $default_selected = category($categoryIdx)->v($setting_name, $widget_type . '-default');
 
 
+
     echo "<select name='$setting_name' class='w-100'>";
     select_list_widgets_option($widget_type, $default_selected);
     echo "</select>";
@@ -902,7 +926,7 @@ function select_list_widgets_option($type, $default_selected) {
 
 
         $value = "$type/$widget_folder_name";
-        if ( $default_selected == $value ) $selected = "selected";
+        if ( str_contains($value, $default_selected) ) $selected = "selected";
         else $selected = "";
 
         echo "<option value='$value' $selected>$description</option>";

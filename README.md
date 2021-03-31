@@ -317,7 +317,7 @@ define('DOMAIN_THEMES', [
   
 
 
-# 폴더구조
+# 폴더구조 (Folder Structure)
 
 - `etc` - For etc files.
   - `etc/boot` - has all boot related code and scripts.
@@ -343,9 +343,9 @@ define('DOMAIN_THEMES', [
 
 # Configuration
 
-- `config.php` on project folder is the default configuration, and it can be overwritten by theme configuration.
-  기본 설정은 root/config.php 에 저장되며, 각 테마에서 설정을 덮어 쓸 수 있다.
+- `co,fnfig.php` on project folder is the default configuration, and this is a starting point of centerx. 
   
+- The default `config.php` can be overwritten by theme configuration.
 
 ## Theme Configuration
 
@@ -918,7 +918,11 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
     이것은 훅으로 사용 할 수도 있지만, 보다 편리하게 하기 위해서 `parts` 방식으로 사용한다.
     
 
-## 테마 페이지 로딩
+## 테마 페이지 로딩. Loading theme page
+
+- Theme page is loaded by the path of HTTP `p` variable.
+  - For instance, `/index.php?p=user.login` will open `/theme/theme-name/user/login.php`.
+  You may open a page without `p=`. For instance, `/index.php?user.login` will do the same of `/index.php?p=user.login`.
 
 - 테마 페이지는 URL 변수 `p=...` 에 따라 각 `theme/theme-name` 에 있는 페이지를 연다.
   이 때 만약 해당 페이지가 없으면 `theme/default` 에 있는 페이지를 연다.
