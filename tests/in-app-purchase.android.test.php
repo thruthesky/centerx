@@ -5,10 +5,12 @@ include_once ROOT_DIR . 'routes/in-app-purchase.route.php';
 //testServiceAccount();
 
 //testIapLogin();
-//testIapEmptyPlatform();
-//testIapInputTest();
+//testIapPlatformTest();
+testIapInputTest();
 //testAndroidFailure();
-testAndroidRealData();
+//testAndroidRealData();
+//testAndroidRealData2();
+//testAndroidRealData3();
 
 
 
@@ -26,9 +28,13 @@ function testIapLogin() {
     isTrue($inApp->verifyPurchase([])->getError() !== e()->not_logged_in, e()->not_logged_in);
 }
 
-function testIapEmptyPlatform() {
+function testIapPlatformTest() {
     setLoginAny();
     isTrue( inAppPurchase()->verifyPurchase([])->getError() == e()->empty_platform, 'Expect: empty platform');
+    isTrue( inAppPurchase()->verifyPurchase(['platform' => 'andro'])->getError() == e()->wrong_platform, 'Expect: wrong platform');
+    isTrue( inAppPurchase()->verifyPurchase(['platform' => 'iso'])->getError() == e()->wrong_platform, 'Expect: wrong platform');
+    isTrue( inAppPurchase()->verifyPurchase(['platform' => 'ANDROID'])->getError() == e()->wrong_platform, 'Expect: wrong platform');
+    isTrue( inAppPurchase()->verifyPurchase(['platform' => 'IOS'])->getError() == e()->wrong_platform, 'Expect: wrong platform');
 }
 
 
@@ -37,13 +43,14 @@ function testIapInputTest() {
     $inApp = inAppPurchase();
     $serverVerificationData = "...";
 
-    setLoginAny();
+    setLogin(1);
 
     $inputData = [
         'platform' => 'android'
     ];
 
     $inApp->verifyPurchase($inputData);
+    d($inApp->getError());
     isTrue($inApp->getError() === e()->empty_product_id, 'Expected: ' . e()->empty_product_id);
 
     $inputData = [
@@ -129,62 +136,33 @@ function testIapInputTest() {
         'serverVerificationData' => $serverVerificationData,
     ];
     $inApp->verifyPurchase($inputData);
-    isTrue($inApp->getError() === e()->empty_package_name,e()->empty_package_name);
-
-
-    $inputData = [
-        'platform' => 'android',
-        'productID' => 'product_ID_101',
-        'purchaseID' => 'purchase_ID_abcd',
-        'price' => 'P1000',
-        'title' => '1k Item',
-        'description' => 'One Thousand Pesos Item',
-        'transactionDate' => '1234567890',
-        'localVerificationData' => 'localVerificationData_this_qwertyuio',
-        'serverVerificationData' => $serverVerificationData,
-        'localVerificationData_packageName' => 'purchase_ID_abcd'
-    ];
-    $inApp->verifyPurchase($inputData);
-
-
-
-    /// TODO UPDATE WHEN THE VERIFICATION FUNCTION IS WORKING
-
-//    $inputData = [
-//        'platform' => 'android',
-//        'productID' => 'product_ID_101',
-//        'purchaseID' => 'purchase_ID_abcd',
-//        'price' => 'P1000',
-//        'title' => '1k Item',
-//        'description' => 'One Thousand Pesos Item',
-//        'transactionDate' => '1234567890',
-//        'localVerificationData' => 'localVerificationData_this_qwertyuio',
-//        'serverVerificationData' => $serverVerificationData,
-//        'localVerificationData_packageName' => 'purchase_ID_abcd'
-//    ];
-//    $iap = $inApp->verifyPurchase($inputData);
-//    isTrue(is_string($iap->response()) && strpos($iap->response(), e()->receipt_invalid) === 0, e()->receipt_invalid);
+    isTrue(is_string($inApp->response()) && strpos($inApp->response(), e()->receipt_invalid) === 0, e()->receipt_invalid);
 
 }
 
 
 function testAndroidFailure() {
-    setLoginAny();
+    setLogin(1);
+
+    $iapRoute = new InAppPurchaseRoute();
     $data = [
-        "productID" => "",
-        "purchaseID" => "",
+        "sessionId" => login()->sessionId,
+    ];
+    isTrue( $iapRoute->recordFailure($data) == e()->empty_platform, 'Expect: empty platform');
+    $data = [
+        "platform" => "android",
+        "sessionId" => login()->sessionId,
+    ];
+    isTrue( $iapRoute->recordFailure($data) == e()->empty_product_id, 'Expect: empty platform');
+
+    $data = [
+        "productID" => "point1000",
         "price" => "₩20,000",
         "title" => "20000 POINT (있수다)",
         "description" => "Please buy 20000 point.",
-        "transactionDate" => "",
-        "localVerificationData" => "",
-        "serverVerificationData" => "",
         "platform" => "android",
-        "route" => "in-app-purchase.recordFailure",
         "sessionId" => login()->sessionId,
     ];
-
-    $iapRoute = new InAppPurchaseRoute();
     $res = $iapRoute->recordFailure($data);
     isTrue($res['idx'] > 0, 'Expect idx > 0');
     isTrue($res['status'] == 'failure', 'Expect status == failure');
@@ -194,7 +172,7 @@ function testAndroidRealData() {
     /// This is a real data from Play store in-app-purchase.
     /// You can use it to verify many times.
     /// You can change the ssession id.
-    setLoginAny();
+    setLogin(1);
     $data =[
         "productID" => "point1000",
         "purchaseID" => "GPA.3369-3869-6910-36525",
@@ -208,8 +186,90 @@ function testAndroidRealData() {
         "route" => "in-app-purchase.verifyPurchase",
         "sessionId" => login()->sessionId,
     ];
-    $iap = inAppPurchase()->verifyPurchase($data);
-    d($iap);
+    $iap = inAppPurchase()->verifyPurchase($data)->response();
 
+    isTrue($iap['idx'] > 0, 'Expect idx > 0');
+    isTrue($iap['status'] == 'success', 'Expect status == success');
+    isTrue($iap['userIdx'] == login()->idx, 'Expect status == ' . login()->idx);
+    isTrue($iap['platform'] == $data['platform'], 'Expect platform == ' . $data['platform']);
+    isTrue($iap['localVerificationData_packageName'] == ANDROID_APP_ID, 'Expect localVerificationData_packageName == ' . ANDROID_APP_ID);
+    isTrue($iap['productID'] == $data['productID'], 'Expect productID == ' . $data['productID']);
+    isTrue($iap['price'] == $data['price'], 'Expect price == ' . $data['price']);
+    isTrue($iap['title'] == $data['title'], 'Expect title == ' . $data['title']);
+    isTrue($iap['description'] == $data['description'], 'Expect description == ' . $data['description']);
+    isTrue($iap['transactionDate'] == $data['transactionDate'], 'Expect transactionDate == ' . $data['transactionDate']);
+    isTrue($iap['localVerificationData'] == $data['localVerificationData'], 'Expect localVerificationData == ' . $data['localVerificationData']);
+    isTrue($iap['serverVerificationData'] == $data['serverVerificationData'], 'Expect serverVerificationData == ' . $data['serverVerificationData']);
+
+
+}
+
+function testAndroidRealData2() {
+    /// This is a real data from Play store in-app-purchase.
+    /// You can use it to verify many times.
+    /// You can change the session id.
+    setLogin(5);
+    $data =[
+        "productID" => "point1000",
+        "purchaseID" => "GPA.3330-4674-5099-66226",
+        "price" => "₱43.00",
+        "title" => "1000 points (있수다)",
+        "description" => "1000 points",
+        "transactionDate" => "1617165610775",
+        "localVerificationData" => '{"orderId":"GPA.3330-4674-5099-66226","packageName":"com.itsuda50.app","productId":"point1000","purchaseTime":1617165610775,"purchaseState":0,"purchaseToken":"mpmbckfmbkfoffjeldlafami.AO-J1OwZQN-Ry4x0fyN8Md6cOdNLSkDNZmsd3SlCj0L7CKx1xMwKw04ymETYC6ufVNW4-9aejdN0Q7Rvl3ycB2AuGu6A_KyG1A","acknowledged":false}',
+        "serverVerificationData" => "mpmbckfmbkfoffjeldlafami.AO-J1OwZQN-Ry4x0fyN8Md6cOdNLSkDNZmsd3SlCj0L7CKx1xMwKw04ymETYC6ufVNW4-9aejdN0Q7Rvl3ycB2AuGu6A_KyG1A",
+        "platform" => "android",
+        "route" => "in-app-purchase.verifyPurchase",
+        "sessionId" => login()->sessionId,
+    ];
+    $iap = inAppPurchase()->verifyPurchase($data)->response();
+
+    isTrue($iap['idx'] > 0, 'Expect idx > 0');
+    isTrue($iap['status'] == 'success', 'Expect status == success');
+    isTrue($iap['userIdx'] == login()->idx, 'Expect status == ' . login()->idx);
+    isTrue($iap['platform'] == $data['platform'], 'Expect platform == ' . $data['platform']);
+    isTrue($iap['localVerificationData_packageName'] == ANDROID_APP_ID, 'Expect localVerificationData_packageName == ' . ANDROID_APP_ID);
+    isTrue($iap['productID'] == $data['productID'], 'Expect productID == ' . $data['productID']);
+    isTrue($iap['price'] == $data['price'], 'Expect price == ' . $data['price']);
+    isTrue($iap['title'] == $data['title'], 'Expect title == ' . $data['title']);
+    isTrue($iap['description'] == $data['description'], 'Expect description == ' . $data['description']);
+    isTrue($iap['transactionDate'] == $data['transactionDate'], 'Expect transactionDate == ' . $data['transactionDate']);
+    isTrue($iap['localVerificationData'] == $data['localVerificationData'], 'Expect localVerificationData == ' . $data['localVerificationData']);
+    isTrue($iap['serverVerificationData'] == $data['serverVerificationData'], 'Expect serverVerificationData == ' . $data['serverVerificationData']);
+
+}
+
+function testAndroidRealData3() {
+    /// This is a real data from Play store in-app-purchase.
+    /// You can use it to verify many times.
+    /// You can change the session id.
+    setLogin(5);
+    $data =[
+        "productID" => "point1000",
+        "purchaseID" => "GPA.3345-6696-2095-56231",
+        "price" => "₱43.00",
+        "title" => "1000 points (있수다)",
+        "description" => "1000 points",
+        "transactionDate" => "1617166686512",
+        "localVerificationData" => '{"orderId":"GPA.3345-6696-2095-56231","packageName":"com.itsuda50.app","productId":"point1000","purchaseTime":1617166686512,"purchaseState":0,"purchaseToken":"kgbbangopllminbjjegifnkg.AO-J1OyPvXidBJZfp6eaKDXxhCchVtSgvJGphDZUCbnp4yyXHZrV0qxHFedEivsR5NaLWBCGRoKT7u35F2RcioGSls1PXmALnQ","acknowledged":false}',
+        "serverVerificationData" => "kgbbangopllminbjjegifnkg.AO-J1OyPvXidBJZfp6eaKDXxhCchVtSgvJGphDZUCbnp4yyXHZrV0qxHFedEivsR5NaLWBCGRoKT7u35F2RcioGSls1PXmALnQ",
+        "platform" => "android",
+        "route" => "in-app-purchase.verifyPurchase",
+        "sessionId" => login()->sessionId,
+    ];
+    $iap = inAppPurchase()->verifyPurchase($data)->response();
+
+    isTrue($iap['idx'] > 0, 'Expect idx > 0');
+    isTrue($iap['status'] == 'success', 'Expect status == success');
+    isTrue($iap['userIdx'] == login()->idx, 'Expect status == ' . login()->idx);
+    isTrue($iap['platform'] == $data['platform'], 'Expect platform == ' . $data['platform']);
+    isTrue($iap['localVerificationData_packageName'] == ANDROID_APP_ID, 'Expect localVerificationData_packageName == ' . ANDROID_APP_ID);
+    isTrue($iap['productID'] == $data['productID'], 'Expect productID == ' . $data['productID']);
+    isTrue($iap['price'] == $data['price'], 'Expect price == ' . $data['price']);
+    isTrue($iap['title'] == $data['title'], 'Expect title == ' . $data['title']);
+    isTrue($iap['description'] == $data['description'], 'Expect description == ' . $data['description']);
+    isTrue($iap['transactionDate'] == $data['transactionDate'], 'Expect transactionDate == ' . $data['transactionDate']);
+    isTrue($iap['localVerificationData'] == $data['localVerificationData'], 'Expect localVerificationData == ' . $data['localVerificationData']);
+    isTrue($iap['serverVerificationData'] == $data['serverVerificationData'], 'Expect serverVerificationData == ' . $data['serverVerificationData']);
 
 }

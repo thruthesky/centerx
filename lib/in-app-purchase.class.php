@@ -82,6 +82,8 @@ class InAppPurchase extends Entity {
             if (!isset($in['transactionTimeStamp'])) return $this->error( e()->empty_transaction_timestamp);
         }
 
+        debug_log("verifyPurchase", $in);
+
         if ( $in['platform'] == 'ios' ) {
             $res = $this->verifyIOSPurchase($in);
         } else {
@@ -96,24 +98,26 @@ class InAppPurchase extends Entity {
     }
 
 
-    public function recordFailure($in): array|string
+    public function recordFailure($in): self
     {
         $in['status'] = FAILURE;
         return $this->_record($in);
     }
 
-    public function recordPending($in): array|string
+    public function recordPending($in): self
     {
         $in['status'] = PENDING;
         return $this->_record($in);
     }
 
-    private function _record($in): array|string
+    private function _record($in): self
     {
         if ( notLoggedIn() ) return $this->error( e()->not_logged_in);
         if ( !isset($in['platform']) || empty(($in['platform'])) ) return $this->error( e()->empty_platform);
         if ( !isset($in['productID'] ) || empty(($in['productID'])) ) return $this->error( e()->empty_product_id);
         if ( !isset($in['purchaseID']) || empty(($in['purchaseID'])) ) $in['purchaseID'] = '';
+
+        if ( !isset($in['price']) || empty(($in['price'])) ) $in['price'] = '';
         if ( !isset($in['title']) || empty(($in['title'])) ) $in['title'] = '';
         if ( !isset($in['description']) || empty(($in['description'])) ) $in['description'] = '';
         if ( !isset($in['transactionDate']) || empty($in['transactionDate']) ) $in['transactionDate'] = '';
@@ -121,8 +125,25 @@ class InAppPurchase extends Entity {
         $in['localVerificationData'] = '';
         $in['serverVerificationData'] = '';
         debug_log("record{$in['status']}()", $in);
-        return $this->create($in)->response();
+        return $this->create($in);
     }
+
+    public function myPurchase(): array|string
+    {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+
+        $myIdx = login()->idx;
+        $rows = $this->search(select: "*", where: "userIdx='$myIdx' AND status='success'", limit: 1000);
+
+        // TODO add more information or summary
+//        $rets = [];
+//        foreach ($rows as $row) {
+//            $rets['total'] = $row
+//        }
+        d($rows);
+        return $rows;
+    }
+
 
 
 
@@ -151,14 +172,14 @@ class InAppPurchase extends Entity {
                 ->validatePurchase();
             debug_log('response->developerPayload', $response->getDeveloperPayload());
 
-            print("\n\nresult: ");
-            echo "\nresponse->getAcknowledgementState()"; print_r($response->getAcknowledgementState());
-            echo "\nresponse->getConsumptionState()"; print_r($response->getConsumptionState());
-            echo "\nresponse->getPurchaseState()"; print_r($response->getPurchaseState());
-            echo "\nresponse->getRawResponse()"; print_r($response->getRawResponse());
-
-            print_r("success?");
-            print_r($response);
+//            print("\n\nresult: ");
+//            echo "\nresponse->getAcknowledgementState()"; print_r($response->getAcknowledgementState());
+//            echo "\nresponse->getConsumptionState()"; print_r($response->getConsumptionState());
+//            echo "\nresponse->getPurchaseState()"; print_r($response->getPurchaseState());
+//            echo "\nresponse->getRawResponse()"; print_r($response->getRawResponse());
+//
+//            print_r("success?");
+//            print_r($response);
 
 //        $history = $this->savePurchaseHistory($in);
 //        $jewelry = $this->generatePurchasedJewelry($in['productID'], $history['ID']);
@@ -248,6 +269,8 @@ class InAppPurchase extends Entity {
             return e()->receipt_invalid . ':' . $response->getResultCode();
         }
     }
+
+
 
 
 }

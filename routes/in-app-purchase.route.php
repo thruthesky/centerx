@@ -10,12 +10,16 @@ class InAppPurchaseRoute {
 
     public function recordFailure($in): array|string
     {
-        return inAppPurchase()->recordFailure($in);
+        return inAppPurchase()->recordFailure($in)->response();
 
     }
     public function recordPending($in): array|string
     {
-        return inAppPurchase()->recordPending($in);
+        return inAppPurchase()->recordPending($in)->response();
+    }
+    public function myPurchase($in): array|string
+    {
+        return inAppPurchase()->myPurchase($in)->response();
     }
 
 
