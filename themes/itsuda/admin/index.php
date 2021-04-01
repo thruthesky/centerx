@@ -42,6 +42,7 @@ if ( admin() == false ) jsBack('You are not admin');
         <a href="/?p=admin.index&w=setting/admin-setting"><?=ln(['en' => 'Settings', 'ko' => '설정'])?></a>
         <a href="/?p=admin.index&w=point/admin-point-setting"><?=ln(['en' => 'Point Setting', 'ko' => '포인트 설정'])?></a>
         <a href="/?p=admin.index&w=setting/upload-image&code=admin.app.about.setting"><?=ln(['en' => 'About Setting', 'ko' => '어바웃 설정'])?></a>
+        <a href="/?p=admin.index&w=in-app-purchase/purchase-list"><?=ln(['en' => 'In App Purchase', 'ko' => '인앱 구매'])?></a>
     </div>
 
     <div class="content mt-3">
