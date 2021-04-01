@@ -10,17 +10,15 @@ $post = post()->current();
 
 ?>
 
-
 <section class="p-3" style="border-radius: 10px; background-color: #f4f4f4;">
     <div class="title">
         <h1><?= $post->title ?></h1>
     </div>
-    <div class="meta">
+    <small class="meta">
         No. <?= $post->idx ?>
         User. <?= $post->user()->name ?>
         Date: <?= date('r', $post->createdAt) ?>
-    </div>
-    <hr>
+    </small>
     <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
     <hr>
     <section class="buttons mt-3">
@@ -41,18 +39,13 @@ $post = post()->current();
     </div>
 
     <?php if (!empty($post->comments())) { ?>
-        <div class="comments">
+        <hr>
+        <small><?= ek('Comment List', '@T Comment List') ?></small>
+
+        <div class="comments mt-2">
             <?php foreach ($post->comments() as $comment) {  ?>
                 <div class="mb-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
-                    <div class="p-2" style="border-radius: 10px; background-color: #e0e0e0">
-                        No.: <?= $comment->idx ?>
-                        <div style="white-space: pre-wrap;"><?= $comment->content ?></div>
-                        <div class="files">
-                            <?php foreach ($comment->files() as $file) { ?>
-                                <img class="w-100" src="<?= $file->url ?>">
-                            <?php } ?>
-                        </div>
-                    </div>
+                    <?php include widget('comment-view/comment-view-default', ['comment' => $comment]) ?>
                     <div class="mt-2">
                         <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $comment]) ?>
                     </div>
