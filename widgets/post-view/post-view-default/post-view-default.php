@@ -27,7 +27,7 @@ $post = post()->current();
         <a class="btn btn-sm btn-secondary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>">List</a>
     </section>
 
-
+    
     <div class="files mt-3">
         <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
     </div>

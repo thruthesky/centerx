@@ -31,12 +31,16 @@ if (in(CATEGORY_ID)) {
                 <?= ek('Content', '@T Content') ?>:
                 <textarea style="min-height: 150px" class="form-control" type="text" name="<?= CONTENT ?>" value="<?= $post->v(CONTENT) ?>"></textarea>
             </div>
-            <div class="mt-3 d-flex justify-content-between">
+            <!-- Buttons. TODO: progress bar -->
+            <div class="mt-3 d-flex">
+                <!-- UPLOAD BUTTON -->
                 <div style="width: 100px" class="position-relative overflow-hidden">
                     <!-- TODO: camera icon -->
                     <button class="btn btn-primary" type="button">Upload</button>
                     <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" @change="onFileChange($event)" />
                 </div>
+                <div class="flex-grow-1"></div>
+                <!-- SUBMIT BUTTON -->
                 <button class="btn btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
             </div>
             <div class="container photos">
