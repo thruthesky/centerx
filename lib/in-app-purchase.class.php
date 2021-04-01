@@ -1,10 +1,8 @@
 <?php
-
-
-
 /**
  * @file in-app-purchase.class.php
  */
+use ReceiptValidator\iTunes\Validator as iTunesValidator;
 /**
  * Class InAppPurchase
  *
@@ -252,7 +250,7 @@ class InAppPurchase extends Entity {
         } catch (Exception $e) {
             $errmsg = 'got error = ' . $e->getMessage() . PHP_EOL;
             debug_log($errmsg);
-            return $errmsg;
+            return e()->receipt_invalid . ':' . $e->getMessage();
         }
 
         if ($response->isValid()) {
