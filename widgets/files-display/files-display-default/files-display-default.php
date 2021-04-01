@@ -10,7 +10,7 @@ $files =  $o['files'];
 
 if (count($files)) { ?>
 
-    <div class="container photos">
+    <div class="container photos mt-3">
         <div class="row">
             <?php
             if (count($files) > 1) {

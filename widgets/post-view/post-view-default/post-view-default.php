@@ -26,12 +26,11 @@ $post = post()->current();
         <a class="btn btn-sm btn-secondary" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>">Delete</a>
         <a class="btn btn-sm btn-secondary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>">List</a>
     </section>
-
     
-    <div class="files mt-3">
-        <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
-    </div>
+    <!-- FILES -->
+    <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
 
+    <!-- Comment Box -->
     <div class="mt-3">
         <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post]) ?>
     </div>
