@@ -10,9 +10,9 @@ $comment = $o['comment'];
 
 <div class="p-3" style="border-radius: 10px; background-color: #e0e0e0">
 
-    <div class="row">
+    <div class="d-flex">
         <!-- TODO: user profile photo -->
-        <div class="mx-3" style="height: 50px; width: 50px; border-radius: 50px; background-color: grey;">
+        <div class="mr-3" style="height: 50px; width: 50px; border-radius: 50px; background-color: grey;">
         </div>
         <div>
             <b><?= $comment->user()->name ?></b>
