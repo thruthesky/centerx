@@ -29,9 +29,7 @@ $post = post()->current();
 
 
     <div class="files mt-3">
-        <?php foreach ($post->files() as $file) { ?>
-            <img class="w-100" src="<?= $file->url ?>">
-        <?php } ?>
+        <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
     </div>
 
     <div class="mt-3">

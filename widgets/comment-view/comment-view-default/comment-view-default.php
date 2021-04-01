@@ -12,14 +12,12 @@ $comment = $o['comment'];
     <?= $comment->user()->name ?>
     <div class="meta">
         <small>
-            No: <?= $comment->idx ?> - 
+            No: <?= $comment->idx ?> -
             Date: <?= date('r', $post->createdAt) ?>
         </small>
     </div>
     <div class="mt-3" style="white-space: pre-wrap;"><?= $comment->content ?></div>
     <div class="files">
-        <?php foreach ($comment->files() as $file) { ?>
-            <img class="w-100" src="<?= $file->url ?>">
-        <?php } ?>
+        <?php include widget('files-display/files-display-default', ['files' => $comment->files()]) ?>
     </div>
 </div>
