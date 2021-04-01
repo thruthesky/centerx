@@ -27,6 +27,15 @@ define('HEALTH_CATEGORIES', [
     'health_brain'
 ]);
 
+define('COMMUNITY_CATEGORIES', [
+    'discussion',
+//    'reminder',
+//    'qna',
+//    'daily_life',
+//    'hobby',
+//    'health',
+]);
+
 
 define('DEFAULT_CATEGORIES',  [
     'qna',
@@ -43,8 +52,13 @@ define('DEFAULT_CATEGORIES',  [
     'health_scribble',
     'health_exercise',
     'health_sleep',
-    'health_brain'
+    'health_brain',
+    'daily_life',
+    'hobby',
+    'health',
 ]);
+
+
 
 
 include 'itsuda.hooks.php';

@@ -94,6 +94,12 @@ class Theme
      *
      * 그렇지 않으면, uri 의 값을 글 페이지로 인식한다.
      *
+     * 예제)
+     * - `https://local.itsuda50.com/?` 와 같이 접속되면, /themes/[theme-name]/home.php 가 실행된다.
+     * - `https://local.itsuda50.com/?p=admin.index` 와 같이 접속되면, /themes/[theme-name]/admin/index.php 가 실행된다.
+     * - `https://local.itsuda50.com/?admin.index` 와 같이 접속되면, /themes/[theme-name]/admin/index.php 가 실행된다.
+     * - `https://local.itsuda50.com/?admin.index&mode=submit` 와 같이 접속되면, /themes/[theme-name]/admin/index.php 가 실행된다.
+     *
      * @return string
      */
     public function pageName(): string {
@@ -102,12 +108,14 @@ class Theme
             $uri = $_SERVER['REQUEST_URI'];
             if (str_starts_with($uri, '/?') && strlen($uri) > 2) { // `/?` 으로 시작하고 추가 문자열이 있을 때,
                 $uri = str_replace('/?', '', $uri);
-                $arr = explode('.', $uri);
+                $uriParts = explode('&', $uri); // '&' 로 분리. 즉, `/?admin.index&mode=submit` 과 같을 때, &mode= 이후는 버림.
+                $arr = explode('.', $uriParts[0]); // `/?admin.index` 부분에서 점으로 분리.
                 if ( count($arr) > 0 && count($arr) <= 4 ) { // 점(.) 이 1개에서 3개까지이면,
-                    $p = $uri;
+                    $p = $uriParts[0];
                 } else {
                     $p = 'home'; // `/?` 으로 시작하는데, 점이 없으면 그냥 홈
                 }
+
             } else {                                // `/?` 으로 시작하지 않고,
                 if ( $uri == '' || $uri == '/' || $uri == '/?' ) $p = 'home';     // uri 가 `/` 만 있으면, home
                 else $p = 'forum.post.view';        // 아니면, 글 페이지
