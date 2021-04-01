@@ -90,8 +90,18 @@ class InAppPurchase extends Entity {
         }
         if ( isError($res) ) return $this->error( $res );
 
+        debug_log("verifyPurchase success: ", $res);
+
         $in['status'] = SUCCESS;
         $this->create($in);
+        if ( $this->hasError ) return $this->error($this->getError());
+
+
+
+        point()->purchase(POINT_PURCHASE_AMOUNT[ $in['productID'] ]);
+
+
+
         return $this;
     }
 
@@ -255,19 +265,14 @@ class InAppPurchase extends Entity {
 
         if ($response->isValid()) {
             $json = json_encode($response->getReceipt());
+            debug_log("ios purchase: response->isValid()", $json);
             foreach ($response->getPurchases() as $purchase) {
                 $productId = $purchase->getProductId();
                 $transactionId = $purchase->getTransactionId();
             }
-
-//        $history = $this->savePurchaseHistory($in);
-//        $jewelry = $this->generatePurchasedJewelry($in['productID'], $history['ID']);
-
             return [
                 'productId' => $productId ?? '',
                 'transactionId' => $transactionId ?? '',
-//            'history' => $history,
-//            'jewelry' => $jewelry
             ];
         } else {
             return e()->receipt_invalid . ':' . $response->getResultCode();

@@ -35,6 +35,19 @@ define('POINT_REGISTER', 'POINT_REGISTER');
 define('POINT_LOGIN', 'POINT_LOGIN'); // 로그인만 해도 포인트
 define('POINT_TEST', 'POINT_TEST');
 
+define('POINT_PURCHASE', 'POINT_PURCHASE');
+define('POINT_PURCHASE_AMOUNT', [
+    'point1' => 10000,
+    'point2' => 20000,
+    'point3' => 30000,
+    'point5' => 50000,
+    'point10' => 100000,
+] );
+
+
+
+
+
 define('POINT_POST_COMMENT_ACTIONS', [POINT_POST_CREATE, POINT_POST_DELETE, POINT_COMMENT_CREATE, POINT_COMMENT_DELETE]);
 define('POINT_LIKE_ACTIONS', [POINT_LIKE, POINT_DISLIKE]);
 define('REASONS', [

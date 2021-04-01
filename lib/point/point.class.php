@@ -266,6 +266,22 @@ class Point {
 
 
     /**
+     * When user purchase point, it adds the point to the user and logs.
+     * @param int $point
+     * @return int
+     */
+    public function purchase(int $point): int
+    {
+        $applied = $this->addUserPoint(login()->idx, $point);
+       return $this->log(
+           reason: POINT_PURCHASE,
+           toUserIdx: login()->idx,
+           toUserPointApply: $applied,
+       );
+    }
+
+
+    /**
      * 글 뿐만아니라, 코멘트나 기타 posts 테이블을 사용하는 모든 것이 된다.
      * 추천이 아니라, 쓰기/삭제이기 때문에, 내가 내 자신에게만 적용한다. 그래서 다른 사람의 글이면 그냥 리턴한다.
      * 그리고 toUserIdx 와 toUserPointApply 만 업데이트 된다.

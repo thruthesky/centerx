@@ -46,6 +46,51 @@ class PointHistory extends Entity {
         if ( count($histories) ) return pointHistory($histories[0][IDX]);
         return pointHistory();
     }
+
+
+    /**
+     * @param string $select
+     * @param string $where
+     * @param string $order
+     * @param string $by
+     * @param int $page
+     * @param int $limit
+     * @param array $conds
+     * @param string $conj
+     * @return PointHistory[]
+     */
+    public function search(
+        string $select='idx',
+        string $where='1',
+        string $order='idx',
+        string $by='DESC',
+        int $page=1,
+        int $limit=10,
+        array $conds=[],
+        string $conj = 'AND',
+    ): array
+    {
+
+        $rows = parent::search(
+            select: $select,
+            where: $where,
+            order: $order,
+            by: $by,
+            page: $page,
+            limit: $limit,
+            conds: $conds,
+            conj: $conj
+        );
+
+
+        $rets = [];
+        foreach( ids($rows) as $idx ) {
+            $rets[] = pointHistory($idx);
+        }
+        return $rets;
+    }
+
+
 }
 
 
