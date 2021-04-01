@@ -21,7 +21,7 @@ $comment = $o['comment'] ?? null;
 ?>
 
 <div id="comment-edit-default-form">
-    <form enctype="multipart/form-data" action="/" method="POST">
+    <form class="m-0" enctype="multipart/form-data" action="/" method="POST">
         <input type="hidden" name="p" value="forum.comment.edit.submit">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="<?= ROOT_IDX ?>" value="<?= $post->idx ?>">

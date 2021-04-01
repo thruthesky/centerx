@@ -8,7 +8,7 @@ if ( $category->hasError && $category->getError() == e()->entity_not_found ) {
 
 
 $limit = 10;
-$conds = [PARENT_IDX => 0];
+$conds = [PARENT_IDX => 0, DELETED_AT => 0];
 if ( $category->exists() ) $conds[CATEGORY_IDX] = $category->idx;
 $posts = post()->search(page: in('page', 1), limit: $limit, conds: $conds);
 $total = post()->count(conds: $conds);

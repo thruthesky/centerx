@@ -37,17 +37,17 @@
                     <a href="/"><img class="py-3 pl-5 w-100" src="themes/itsuda/img/logo.jpg"></a>
                 </div>
             </div>
-            <div class="mt-3">
-                <a class="p-2" style="font-size: 1.4rem" href="/">다운로드</a>
+            <div class="mt-4">
+                <a class="p-2" style="font-size: 1rem" href="/">다운로드</a>
                 <?php if ( loggedIn() ) { ?>
-                    <a class="p-2" style="font-size: 1.4rem" href="/?admin.index"><?=login()->name?>(<?=login()->idx?>)</a>
-                    <a class="p-2" style="font-size: 1.4rem" href="/?user.logout.submit"><?=ln(['en' => 'Logout', 'ko' => '로그아웃'])?></a>
+                    <a class="p-2" style="font-size: 1.1rem" href="/?admin.index"><?=login()->name?>(<?=login()->idx?>)</a>
+                    <a class="p-2" style="font-size: 1.1rem" href="/?user.logout.submit"><?=ln(['en' => 'Logout', 'ko' => '로그아웃'])?></a>
                 <?php } else { ?>
-                    <a class="p-2" style="font-size: 1.4rem" href="/?user.login"><?=ln(['en' => 'Login', 'ko' => '로그인'])?></a>
+                    <a class="p-2" style="font-size: 1.1rem" href="/?user.login"><?=ln(['en' => 'Login', 'ko' => '로그인'])?></a>
                 <?php } ?>
 
-                <a class="p-2" style="font-size: 1.4rem" href="/?p=forum.post.list&categoryId=qna"><?=ln(['en' => 'QnA', 'ko' => '질문게시판'])?></a>
-                <a class="p-2" style="font-size: 1.4rem" href="/?p=forum.post.list&categoryId=discussion"><?=ln(['en' => 'Discussion', 'ko' => '자유게시판'])?></a>
+                <a class="p-2" style="font-size: 1.1rem" href="/?p=forum.post.list&categoryId=qna"><?=ln(['en' => 'QnA', 'ko' => '질문게시판'])?></a>
+                <a class="p-2" style="font-size: 1.1rem" href="/?p=forum.post.list&categoryId=discussion"><?=ln(['en' => 'Discussion', 'ko' => '자유게시판'])?></a>
             </div>
         </div>
     </div>

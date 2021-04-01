@@ -21,7 +21,7 @@ $post = post()->current();
         </div>
     </div>
 
-    <div class="fs-title mt-1">
+    <div class="mt-2">
         <h1><?= $post->title ?></h1>
     </div>
 
@@ -46,10 +46,9 @@ $post = post()->current();
     <?php if (!empty($post->comments())) { ?>
         <hr>
         <small><?= ek('Comment List', '@T Comment List') ?></small>
-
         <div class="comments mt-2">
             <?php foreach ($post->comments() as $comment) {  ?>
-                <div class="mb-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
+                <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                     <?php include widget('comment-view/comment-view-default', ['comment' => $comment]) ?>
                     <div class="mt-2">
                         <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $comment]) ?>
