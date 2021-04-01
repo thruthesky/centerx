@@ -24,16 +24,20 @@ if (in(CATEGORY_ID)) {
             <input type="hidden" name="<?= CATEGORY_ID ?>" value="<?= $category->v(ID) ?>">
             <input type="hidden" name="<?= IDX ?>" value="<?= $post->idx ?>">
             <div>
-                title:
+                <?= ek('Title', '@T Title') ?>:
                 <input class="form-control" type="text" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
             </div>
-            <div class="mt-5">
-                content:
+            <div class="mt-3">
+                <?= ek('Content', '@T Content') ?>:
                 <textarea style="min-height: 150px" class="form-control" type="text" name="<?= CONTENT ?>" value="<?= $post->v(CONTENT) ?>"></textarea>
             </div>
-            <div class="mt-3 container d-flex justify-content-between">
-                <input name="<?= USERFILE ?>" type="file" @change="onFileChange($event)" />
-                <button class="btn btn-primary" type="submit">Submit</button>
+            <div class="mt-3 d-flex justify-content-between">
+                <div style="width: 100px" class="position-relative overflow-hidden">
+                    <!-- TODO: camera icon -->
+                    <button class="btn btn-primary" type="button">Upload</button>
+                    <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" @change="onFileChange($event)" />
+                </div>
+                <button class="btn btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
             </div>
             <div class="container photos">
                 <div class="row">
