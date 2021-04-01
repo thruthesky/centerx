@@ -29,6 +29,7 @@ if ( admin() == false ) jsBack('You are not admin');
     .menu a[href*="<?=in('w')?>"] {
         color: yellow !important;
     }
+    .fs-title { font-size: 1.2rem; }
 </style>
 <section class="layout">
     <h1 class="title"><a href="/?p=admin.index"><?=ln(['ko' => '있수다! 관리자 페이지', 'en' => 'Admin Page'])?></a></h1>
