@@ -11,14 +11,21 @@ $post = post()->current();
 ?>
 
 <section class="p-3" style="border-radius: 10px; background-color: #f4f4f4;">
-    <div class="fs-title">
-        <h1><?= $post->title ?></h1>
+    <div class="row">
+        <!-- TODO: user profile photo -->
+        <div class="mx-3" style="height: 75px; width: 75px; border-radius: 50px; background-color: grey;">
+        </div>
+        <div>
+            <div class="fs-title">
+                <h1><?= $post->title ?></h1>
+            </div>
+            <small class="meta">
+                No. <?= $post->idx ?>
+                - <?= $post->user()->name ?>
+                - <?= date('r', $post->createdAt) ?>
+            </small>
+        </div>
     </div>
-    <small class="meta">
-        No. <?= $post->idx ?>
-        - <?= $post->user()->name ?>
-        - <?= date('r', $post->createdAt) ?>
-    </small>
     <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
     <hr>
     <section class="buttons mt-3">
