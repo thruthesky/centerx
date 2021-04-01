@@ -19,7 +19,7 @@ class InAppPurchaseRoute {
     }
     public function myPurchase($in): array|string
     {
-        return inAppPurchase()->myPurchase($in)->response();
+        return inAppPurchase()->myPurchase($in);
     }
 
 

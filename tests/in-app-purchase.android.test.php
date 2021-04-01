@@ -2,15 +2,17 @@
 
 include_once ROOT_DIR . 'routes/in-app-purchase.route.php';
 
+define('TEST_USER_IDX', 1);
 //testServiceAccount();
 
 //testIapLogin();
 //testIapPlatformTest();
-testIapInputTest();
+//testIapInputTest();
 //testAndroidFailure();
 //testAndroidRealData();
 //testAndroidRealData2();
 //testAndroidRealData3();
+
 
 
 
@@ -43,14 +45,13 @@ function testIapInputTest() {
     $inApp = inAppPurchase();
     $serverVerificationData = "...";
 
-    setLogin(1);
+    setLogin(TEST_USER_IDX);
 
     $inputData = [
         'platform' => 'android'
     ];
 
     $inApp->verifyPurchase($inputData);
-    d($inApp->getError());
     isTrue($inApp->getError() === e()->empty_product_id, 'Expected: ' . e()->empty_product_id);
 
     $inputData = [
@@ -142,7 +143,7 @@ function testIapInputTest() {
 
 
 function testAndroidFailure() {
-    setLogin(1);
+    setLogin(TEST_USER_IDX);
 
     $iapRoute = new InAppPurchaseRoute();
     $data = [
@@ -172,7 +173,7 @@ function testAndroidRealData() {
     /// This is a real data from Play store in-app-purchase.
     /// You can use it to verify many times.
     /// You can change the ssession id.
-    setLogin(1);
+    setLogin(TEST_USER_IDX);
     $data =[
         "productID" => "point1000",
         "purchaseID" => "GPA.3369-3869-6910-36525",
@@ -208,7 +209,7 @@ function testAndroidRealData2() {
     /// This is a real data from Play store in-app-purchase.
     /// You can use it to verify many times.
     /// You can change the session id.
-    setLogin(5);
+    setLogin(TEST_USER_IDX);
     $data =[
         "productID" => "point1000",
         "purchaseID" => "GPA.3330-4674-5099-66226",
@@ -243,7 +244,7 @@ function testAndroidRealData3() {
     /// This is a real data from Play store in-app-purchase.
     /// You can use it to verify many times.
     /// You can change the session id.
-    setLogin(5);
+    setLogin(TEST_USER_IDX);
     $data =[
         "productID" => "point1000",
         "purchaseID" => "GPA.3345-6696-2095-56231",
