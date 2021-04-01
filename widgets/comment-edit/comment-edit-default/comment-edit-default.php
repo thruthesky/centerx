@@ -31,7 +31,7 @@ $comment = $o['comment'] ?? null;
         <div class="d-flex">
             <div style="width: 100px;" class="position-relative overflow-hidden">
                 <!-- TODO: camera icon -->
-                <button class="btn btn-primary" type="button">Upload</button>
+                <button class="btn btn-primary w-100" type="button">Upload</button>
                 <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" onchange="onFileChange(event, 'files<?= $parent->idx ?>')" />
             </div>
             <textarea style="height: 40px; min-height: 40px; max-height: 150px;" class="form-control mx-2" type="text" name="<?= CONTENT ?>"></textarea>

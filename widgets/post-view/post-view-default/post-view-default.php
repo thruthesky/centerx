@@ -21,9 +21,7 @@ $post = post()->current();
         Date: <?= date('r', $post->createdAt) ?>
     </div>
     <hr>
-    <div class="content box mt-3">
-        <?= $post->content ?>
-    </div>
+    <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
     <hr>
     <section class="buttons mt-3">
         <a class="btn btn-sm btn-secondary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>">Edit</a>
@@ -48,9 +46,7 @@ $post = post()->current();
                 <div class="mb-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                     <div class="p-2" style="border-radius: 10px; background-color: #e0e0e0">
                         No.: <?= $comment->idx ?>
-                        <div>
-                            <?= $comment->content ?>
-                        </div>
+                        <div style="white-space: pre-wrap;"><?= $comment->content ?></div>
                         <div class="files">
                             <?php foreach ($comment->files() as $file) { ?>
                                 <img class="w-100" src="<?= $file->url ?>">
