@@ -117,10 +117,16 @@ class InAppPurchase extends Entity {
         if ( !isset($in['productID'] ) || empty(($in['productID'])) ) return $this->error( e()->empty_product_id);
         if ( !isset($in['purchaseID']) || empty(($in['purchaseID'])) ) $in['purchaseID'] = '';
 
+        if ( !isset($in['applicationUsername']) || empty(($in['applicationUsername'])) ) $in['applicationUsername'] = '';
+
         if ( !isset($in['price']) || empty(($in['price'])) ) $in['price'] = '';
         if ( !isset($in['title']) || empty(($in['title'])) ) $in['title'] = '';
         if ( !isset($in['description']) || empty(($in['description'])) ) $in['description'] = '';
         if ( !isset($in['transactionDate']) || empty($in['transactionDate']) ) $in['transactionDate'] = '';
+
+
+        if ( !isset($in['transactionIdentifier']) || empty(($in['transactionIdentifier'])) ) $in['transactionIdentifier'] = '';
+        if ( !isset($in['transactionTimeStamp']) || empty(($in['transactionTimeStamp'])) ) $in['transactionTimeStamp'] = '';
 
         $in['localVerificationData'] = '';
         $in['serverVerificationData'] = '';
