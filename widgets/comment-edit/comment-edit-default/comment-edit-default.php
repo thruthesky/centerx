@@ -23,7 +23,7 @@ $fileUploadIdx;
 if ($comment) {
     $fileUploadIdx = $comment->idx;
 } else {
-    $fileUploadIdx = $parent->idx;
+    $fileUploadIdx = $parent->idx . 'reply';
 }
 ?>
 
@@ -41,7 +41,7 @@ if ($comment) {
             <input type="hidden" name="<?= PARENT_IDX ?>" value="<?= $parent->idx ?>">
         <?php } ?>
 
-<textarea style="height: 40px; max-height: 150px;" class="form-control" name="<?= CONTENT ?>" placeholder="<?= ek('Reply ...', '@T Reply ...') ?>" ><?php if ($comment) echo $comment->content ?>
+        <textarea style="height: 40px; max-height: 150px;" class="form-control" name="<?= CONTENT ?>" placeholder="<?= ek('Reply ...', '@T Reply ...') ?>"><?php if ($comment) echo $comment->content ?>
 </textarea>
 
         <div class="d-flex mt-2">
@@ -56,6 +56,16 @@ if ($comment) {
             <?php } ?>
             <button class="btn btn-sm btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
         </div>
+        <!-- <div class="container photos">
+            <div class="row">
+                <div class="col-3 col-sm-2 photo" v-for="file in uploadedFiles" :key="file['idx']">
+                    <div clas="position-relative">
+                        <img class="w-100" :src="file['url']">
+                        <div class="position-absolute top left font-weight-bold" @click="onFileDelete(file['idx'])">[X]</div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
     </form>
 </div>
 
@@ -67,7 +77,7 @@ define('COMMENT_EDIT_DEFAULT_JAVASCRIPT', true);
 
 <?php includeVueOnce(); ?>
 <script>
-    const postListCreateView = Vue.createApp({
+    const commentEditDefaultForm = Vue.createApp({
         created() {
             console.log("created() for : comment-edit-default-form")
         },
@@ -84,7 +94,7 @@ define('COMMENT_EDIT_DEFAULT_JAVASCRIPT', true);
                 sessionId: '<?= login()->sessionId ?>',
             },
             function(res) {
-                console.log("success: res.path: ", res, res.path);
+                console.log("success: res.path: ", res, res.path, id);
                 const $files = document.getElementById(id);
                 $files.value = addByComma($files.value, res.idx);
             },
