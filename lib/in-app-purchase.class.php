@@ -6,9 +6,29 @@ use ReceiptValidator\iTunes\Validator as iTunesValidator;
 /**
  * Class InAppPurchase
  *
- *
+ * @property-read int $idx
+ * @property-read int $userIdx
+ * @property-read string $status
+ * @property-read string $platform
+ * @property-read string $productID
+ * @property-read string $purchaseID
+ * @property-read string $price
+ * @property-read string $title
+ * @property-read string $description
+ * @property-read string $applicationUsername
+ * @property-read int $transactionDate
+ * @property-read string $productIdentifier
+ * @property-read string $quantity
+ * @property-read string $transactionIdentifier
+ * @property-read int $transactionTimeStamp
+ * @property-read string $localVerificationData
+ * @property-read string $serverVerificationData
+ * @property-read string $localVerificationData_packageName
+ * @property-read int $createdAt
+ * @property-read int $updatedAt
  */
 class InAppPurchase extends Entity {
+
 
     public function __construct(int $idx)
     {
@@ -23,6 +43,47 @@ class InAppPurchase extends Entity {
     {
         parent::read($idx);
         return $this;
+    }
+
+
+    /**
+     * @param string $select
+     * @param string $where
+     * @param string $order
+     * @param string $by
+     * @param int $page
+     * @param int $limit
+     * @param array $conds
+     * @param string $conj
+     * @return InAppPurchase[]
+     */
+    public function search(
+        string $select='idx',
+        string $where='1',
+        string $order='idx',
+        string $by='DESC',
+        int $page=1,
+        int $limit=10,
+        array $conds=[],
+        string $conj = 'AND',
+    ): array
+    {
+        $rows = parent::search(
+            select: $select,
+            where: $where,
+            order: $order,
+            by: $by,
+            page: $page,
+            limit: $limit,
+            conds: $conds,
+            conj: $conj
+        );
+
+        $rets = [];
+        foreach( ids($rows) as $idx ) {
+            $rets[] = inAppPurchase($idx);
+        }
+        return $rets;
     }
 
 
