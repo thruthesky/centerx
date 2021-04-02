@@ -35,7 +35,7 @@ $comment = $o['comment'];
             <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
             <?php if ($comment->isMine()) { ?>
                 <a class="btn btn-sm btn-primary" onclick="showCommentEditForm(<?= $comment->idx ?>)"><?= ek('Edit', '@T Edit') ?></a>
-                <a class="btn btn-sm btn-danger"><?= ek('Delete', '@T Delete') ?></a>
+                <a class="btn btn-sm btn-danger" onclick="onCommentDelete(<?= $comment->idx ?>)"><?= ek('Delete', '@T Delete') ?></a>
             <?php } ?>
         </section>
     </div>
@@ -61,5 +61,20 @@ $comment = $o['comment'];
         document.getElementById("comment-view-" + id).style.display = "block";
         document.getElementById("comment-reply-" + id).style.display = "block";
         document.getElementById("comment-edit-" + id).style.display = "none";
+    }
+
+    function onCommentDelete(idx) {
+        const re = confirm('Are you sure you want to delete Comment no. ' + idx + '?');
+        if (re === false) return;
+        axios.post('/index.php', {
+                sessionId: '<?= login()->sessionId ?>',
+                route: 'comment.delete',
+                idx: idx,
+            })
+            .then(function(res) {
+                console.log('comment deleted, ', res);
+                location.reload();
+            })
+            .catch(alert);
     }
 </script>

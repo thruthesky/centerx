@@ -47,11 +47,13 @@ $post = post()->current();
         <hr>
         <small><?= ek('Comment List', '@T Comment List') ?></small>
         <div class="comments mt-2">
-            <?php foreach ($post->comments() as $comment) {  ?>
-                <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
-                    <?php include widget('comment-view/comment-view-default', ['comment' => $comment]) ?>
-                </div>
-            <?php } ?>
+            <?php foreach ($post->comments() as $comment) {
+                if (!$comment->deletedAt) { ?>
+                    <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
+                        <?php include widget('comment-view/comment-view-default', ['comment' => $comment]) ?>
+                    </div>
+            <?php }
+            } ?>
         </div>
     <?php } ?>
 
