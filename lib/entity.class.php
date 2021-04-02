@@ -681,6 +681,13 @@ class Entity {
      *      d( user( $user[IDX] )->profile() );
      *   }
      *
+     * 참고,
+     * 예제) 하위 entity 객체에서 search() 를 override 하는 것은 주로, search 의 결과를 객체로 변환하기 위해서이다.
+     *      객체로 변환하는 경우, 모든 필드를 다 읽어야하고, 또 클라이언트로 전달하기 위해서는 배열로 변환해야 한다.
+     *      그래서, 필요한 경우, entity(...)->search 와 같이 해서 원하는 필드만 가져온다.
+     *
+     *  entity(POINT_HISTORIES)->search(where: "fromUserIdx=$myIdx OR toUserIdx=$myIdx", limit: 200, select: 'idx,reason');
+     *
      * @todo SQL injection
      * @todo $where 에 따옴표 처리.
      */

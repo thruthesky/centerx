@@ -30,6 +30,8 @@ class PostTaxonomy extends Entity {
      * 이 함수는 글/코멘트 read() 함수와, 글/코멘트에서 포인트 업데이트 직후에 사용하면 된다.
      *
      * 참고로 PointRoute::postCreate() 에서 비슷한 코드를 사용한다.
+     *
+     * @todo 글/코멘트 작성을 할 때 획득한 포인트를 posts.pointApplied 필드에 바로 넣어주는 것을 고려한다.
      */
     public function patchPoint() {
         if ( $this->parentIdx ) $reason = POINT_COMMENT_CREATE;

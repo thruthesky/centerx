@@ -63,6 +63,9 @@ class UserRoute {
      * Returns user point history.
      *
      * Note that, it returns point histories of both that the login user made action or received point.
+     * 사용자가 로그인과 같이 직접 발생시킨 포인트와, 추천과 같이 받은 포인트, 포인트 결제 등 해당 사용자와 연관된 모든 포인트를 리턴한다.
+     *
+     * 참고, pointHistory.route.php 를 참고한다.
      *
      * @param $in
      * @return mixed
@@ -70,7 +73,7 @@ class UserRoute {
      */
     public function point($in) {
         $myIdx = login()->idx;
-        return pointHistory()->search(where: "fromUserIdx=$myIdx OR toUserIdx=$myIdx", limit: 200, select: '*');
+        return entity(POINT_HISTORIES)->search(where: "fromUserIdx=$myIdx OR toUserIdx=$myIdx", limit: 200, select: '*');
     }
 
     /**
