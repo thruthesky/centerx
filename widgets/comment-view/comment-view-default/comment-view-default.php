@@ -19,7 +19,7 @@ $comment = $o['comment'];
             <div class="meta">
                 <small>
                     No: <?= $comment->idx ?> -
-                    Date: <?= date('r', $post->createdAt) ?>
+                    Date: <?= date('r', $comment->createdAt) ?>
                 </small>
             </div>
         </div>
@@ -31,7 +31,13 @@ $comment = $o['comment'];
     <section class="buttons mt-3">
         <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
         <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
-        <a class="btn btn-sm btn-primary"><?= ek('Edit', '@T Edit') ?></a>
-        <a class="btn btn-sm btn-danger"><?= ek('Delete', '@T Delete') ?></a>
+        <?php if ($comment->isMine()) { ?>
+            <a class="btn btn-sm btn-primary" href=""><?= ek('Edit', '@T Edit') ?></a>
+            <a class="btn btn-sm btn-danger"><?= ek('Delete', '@T Delete') ?></a>
+        <?php } ?>
     </section>
+
+    <!-- EDIT  -->
+    <div class="mt-2"></div>
+    <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post, 'comment' => $comment]) ?>
 </div>

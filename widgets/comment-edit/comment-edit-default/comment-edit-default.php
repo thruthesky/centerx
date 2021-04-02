@@ -18,6 +18,13 @@ $parent = $o['parent'];
 $comment = $o['comment'] ?? null;
 
 /// when edit, $parent->idx must be changed to $comemnt->idx.
+
+$fileUploadIdx;
+if ($comment) {
+    $fileUploadIdx = $comment->idx;
+} else {
+    $fileUploadIdx = $parent->idx;
+}
 ?>
 
 <div id="comment-edit-default-form">
@@ -25,16 +32,22 @@ $comment = $o['comment'] ?? null;
         <input type="hidden" name="p" value="forum.comment.edit.submit">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="<?= ROOT_IDX ?>" value="<?= $post->idx ?>">
-        <input type="hidden" name="<?= PARENT_IDX ?>" value="<?= $parent->idx ?>">
-        <input type="hidden" name="files" id="files<?= $parent->idx ?>" value="">
+        <input type="hidden" name="files" id="files<?= $fileUploadIdx ?>" value="">
+        <?php if ($comment) { ?>
+            <!-- Update -->
+            <input type="hidden" name="<?= IDX ?>" value="<?= $comment->idx ?>">
+        <?php } else { ?>
+            <!-- Create -->
+            <input type="hidden" name="<?= PARENT_IDX ?>" value="<?= $parent->idx ?>">
+        <?php } ?>
 
         <div class="d-flex">
             <div style="width: 100px;" class="position-relative overflow-hidden">
                 <!-- TODO: camera icon -->
                 <button class="btn btn-primary w-100" type="button">Upload</button>
-                <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" onchange="onFileChange(event, 'files<?= $parent->idx ?>')" />
+                <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" onchange="onFileChange(event, 'files<?= $fileUploadIdx ?>')" />
             </div>
-            <textarea style="height: 40px; min-height: 40px; max-height: 150px;" class="form-control mx-2" type="text" name="<?= CONTENT ?>"></textarea>
+            <textarea style="height: 40px; min-height: 40px; max-height: 150px;" class="form-control mx-2" type="text" name="<?= CONTENT ?>"><?php if ($comment) echo $comment->content ?></textarea>
             <button class="btn btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
         </div>
     </form>

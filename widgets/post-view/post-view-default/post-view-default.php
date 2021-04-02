@@ -30,8 +30,10 @@ $post = post()->current();
     <section class="buttons mt-3">
         <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
         <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
-        <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
-        <a class="btn btn-sm btn-danger" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
+        <?php if ($post->isMine()) { ?>
+            <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
+            <a class="btn btn-sm btn-danger" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
+        <?php } ?>
         <a class="btn btn-sm btn-primary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ek('List', '@T list') ?></a>
     </section>
 
