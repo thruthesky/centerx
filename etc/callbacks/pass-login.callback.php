@@ -70,6 +70,6 @@ EOJ;
 ?>
 
 <?php
-pass_login_message('로그인 성공');
+//    pass_login_message('로그인 성공');
 ?>
 

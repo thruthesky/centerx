@@ -18,6 +18,20 @@ $parent = $o['parent'];
 $comment = $o['comment'] ?? null;
 
 /// when edit, $parent->idx must be changed to $comemnt->idx.
+
+/**
+ * @var File[]
+ */
+$uploadedFiles = [];
+$fileUploadIdx;
+$filesString = '';
+if ($comment) {
+    $fileUploadIdx = $comment->idx;
+    $uploadedFiles = $comment->files();
+    $filesString = $comment->v('files');
+} else {
+    $fileUploadIdx = $parent->idx . 'reply';
+}
 ?>
 
 <div id="comment-edit-default-form">
@@ -25,19 +39,46 @@ $comment = $o['comment'] ?? null;
         <input type="hidden" name="p" value="forum.comment.edit.submit">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="<?= ROOT_IDX ?>" value="<?= $post->idx ?>">
-        <input type="hidden" name="<?= PARENT_IDX ?>" value="<?= $parent->idx ?>">
-        <input type="hidden" name="files" id="files<?= $parent->idx ?>" value="">
+        <input type="hidden" name="files" id="files<?= $fileUploadIdx ?>" value="<?= $filesString ?>">
+        <?php if ($comment) { ?>
+            <!-- Update -->
+            <input type="hidden" name="<?= IDX ?>" value="<?= $comment->idx ?>">
+        <?php } else { ?>
+            <!-- Create -->
+            <input type="hidden" name="<?= PARENT_IDX ?>" value="<?= $parent->idx ?>">
+        <?php } ?>
 
-        <div class="d-flex">
+        <textarea style="height: 40px; max-height: 150px;" class="form-control" name="<?= CONTENT ?>" placeholder="<?= ek('Reply ...', '@T Reply ...') ?>"><?php if ($comment) echo $comment->content ?>
+</textarea>
+
+        <div class="d-flex mt-2">
             <div style="width: 100px;" class="position-relative overflow-hidden">
                 <!-- TODO: camera icon -->
-                <button class="btn btn-primary w-100" type="button">Upload</button>
-                <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" onchange="onFileChange(event, 'files<?= $parent->idx ?>')" />
+                <button class="btn btn-sm btn-primary w-100" type="button">Upload</button>
+                <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" onchange="onFileChange(event, 'files<?= $fileUploadIdx ?>')" />
             </div>
-            <textarea style="height: 40px; min-height: 40px; max-height: 150px;" class="form-control mx-2" type="text" name="<?= CONTENT ?>"></textarea>
-            <button class="btn btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
+            <div class="flex-grow-1"></div>
+            <?php if ($comment) { ?>
+                <button class="btn btn-sm btn-warning mr-2" type="button" onclick="hideCommentEditForm(<?= $comment->idx ?>)"><?= ek('Cancel', '@T Cancel') ?></button>
+            <?php } ?>
+            <button class="btn btn-sm btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
         </div>
     </form>
+
+    <?php if (count($uploadedFiles)) { ?>
+        <div class="container photos">
+            <div class="row">
+                <?php foreach ($uploadedFiles as $file) { ?>
+                    <div class="col-3 col-sm-2 photo" id="file-<?= $file->idx ?>">
+                        <div clas="position-relative">
+                            <img class="w-100" src="<?= $file->url ?>">
+                            <div class="position-absolute top left font-weight-bold" onclick="onClickFileDelete(<?= $file->idx ?>)">[ X ]</div>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+    <?php } ?>
 </div>
 
 
@@ -48,10 +89,10 @@ define('COMMENT_EDIT_DEFAULT_JAVASCRIPT', true);
 
 <?php includeVueOnce(); ?>
 <script>
-    const postListCreateView = Vue.createApp({
+    const commentEditDefaultForm = Vue.createApp({
         created() {
             console.log("created() for : comment-edit-default-form")
-        }
+        },
     }).mount("#comment-edit-default-form");
 </script>
 
@@ -65,7 +106,7 @@ define('COMMENT_EDIT_DEFAULT_JAVASCRIPT', true);
                 sessionId: '<?= login()->sessionId ?>',
             },
             function(res) {
-                console.log("success: res.path: ", res, res.path);
+                console.log("success: res.path: ", res, res.path, id);
                 const $files = document.getElementById(id);
                 $files.value = addByComma($files.value, res.idx);
             },
@@ -87,6 +128,8 @@ define('COMMENT_EDIT_DEFAULT_JAVASCRIPT', true);
             .then(function(res) {
                 checkCallback(res, function(res) {
                     console.log('delete success: ', res);
+                    document.getElementById('file-' + res.idx).remove();
+                    deleteByComma('files<?= $fileUploadIdx ?>', res.idx)
                 }, alert);
             })
             .catch(alert);
