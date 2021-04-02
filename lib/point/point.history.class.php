@@ -43,7 +43,7 @@ class PointHistory extends Entity {
         if ( $reason ) $q = "reason='$reason' AND ";
         $where = $q . TAXONOMY . "='$taxonomy' AND entity=$entity";
         $histories = $this->search(where: $where, limit: 1);
-        if ( count($histories) ) return pointHistory($histories[0][IDX]);
+        if ( count($histories) ) return pointHistory($histories[0]->idx);
         return pointHistory();
     }
 
