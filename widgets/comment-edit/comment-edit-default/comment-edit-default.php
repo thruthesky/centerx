@@ -19,9 +19,16 @@ $comment = $o['comment'] ?? null;
 
 /// when edit, $parent->idx must be changed to $comemnt->idx.
 
+/**
+ * @var File[]
+ */
+$uploadedFiles = [];
 $fileUploadIdx;
+$filesString = '';
 if ($comment) {
     $fileUploadIdx = $comment->idx;
+    $uploadedFiles = $comment->files();
+    $filesString = $comment->v('files');
 } else {
     $fileUploadIdx = $parent->idx . 'reply';
 }
@@ -32,7 +39,7 @@ if ($comment) {
         <input type="hidden" name="p" value="forum.comment.edit.submit">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="<?= ROOT_IDX ?>" value="<?= $post->idx ?>">
-        <input type="hidden" name="files" id="files<?= $fileUploadIdx ?>" value="">
+        <input type="hidden" name="files" id="files<?= $fileUploadIdx ?>" value="<?= $filesString ?>">
         <?php if ($comment) { ?>
             <!-- Update -->
             <input type="hidden" name="<?= IDX ?>" value="<?= $comment->idx ?>">
@@ -56,17 +63,22 @@ if ($comment) {
             <?php } ?>
             <button class="btn btn-sm btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
         </div>
-        <!-- <div class="container photos">
-            <div class="row">
-                <div class="col-3 col-sm-2 photo" v-for="file in uploadedFiles" :key="file['idx']">
-                    <div clas="position-relative">
-                        <img class="w-100" :src="file['url']">
-                        <div class="position-absolute top left font-weight-bold" @click="onFileDelete(file['idx'])">[X]</div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
     </form>
+
+    <?php if (count($uploadedFiles)) { ?>
+        <div class="container photos">
+            <div class="row">
+                <?php foreach ($uploadedFiles as $file) { ?>
+                    <div class="col-3 col-sm-2 photo" id="file-<?= $file->idx ?>">
+                        <div clas="position-relative">
+                            <img class="w-100" src="<?= $file->url ?>">
+                            <div class="position-absolute top left font-weight-bold" onclick="onClickFileDelete(<?= $file->idx ?>)">[ X ]</div>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+    <?php } ?>
 </div>
 
 
@@ -116,6 +128,8 @@ define('COMMENT_EDIT_DEFAULT_JAVASCRIPT', true);
             .then(function(res) {
                 checkCallback(res, function(res) {
                     console.log('delete success: ', res);
+                    document.getElementById('file-' + res.idx).remove();
+                    deleteByComma('files<?= $fileUploadIdx ?>', res.idx)
                 }, alert);
             })
             .catch(alert);
