@@ -25,32 +25,66 @@
         function later(fn) { window.addEventListener('load', fn); }
     </script>
 </head>
-<body>
+<body style="padding-top: 80px;">
 
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function(){
+        // Add smooth scrolling to all links
+        $("a.scroll").on('click', function(event) {
+
+            // Make sure this.hash has a value before overriding default behavior
+            if (this.hash !== "") {
+                // Prevent default anchor click behavior
+                event.preventDefault();
+
+                // Store hash
+                var hash = this.hash;
+
+
+                // Using jQuery's animate() method to add smooth page scroll
+                // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+                $('html, body').animate({
+                    scrollTop: $(hash).offset().top - 80
+                }, 300, function(){
+
+                    // Add hash (#) to URL when done scrolling (default click behavior)
+                    window.location.hash = hash;
+                });
+            } // End if
+        });
+    });
+</script>
 <?php if ( str_contains(theme()->page(), '/admin/') ) { ?>
     <?php include theme()->page(); ?>
 <?php } else { ?>
-    <div class="container">
-        <div class="d-flex justify-content-between">
-            <div>
-                <div class="d-block w-200px">
-                    <a href="/"><img class="py-3 pl-5 w-100" src="themes/itsuda/img/logo.jpg"></a>
+        <section class="header position-fixed bg-white top w-100">
+
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="d-block w-200px">
+                            <a href="/"><img class="py-3 pl-5 w-100" src="themes/itsuda/img/logo.jpg"></a>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a class="p-2" style="font-size: 1rem" href="/">다운로드</a>
+                        <a class="p-2 scroll" style="font-size: 1rem" href="/#home3">서비스소개</a>
+                        <a class="p-2 scroll" style="font-size: 1rem" href="/#home5">제휴서비스</a>
+                        <a class="p-2" style="font-size: 1rem" href="/?doc.privacy">개인정보처리방침</a>
+                        <?php if ( loggedIn() ) { ?>
+                            <?php if ( admin() ) { ?>
+                                <a class="p-2" style="font-size: 1.1rem" href="/?admin.index"><?=login()->name?>(<?=login()->idx?>)</a>
+                            <?php } ?>
+
+                            <a class="p-2" style="font-size: 1.1rem" href="/?p=forum.post.list&categoryId=qna"><?=ln(['en' => 'QnA', 'ko' => '질문게시판'])?></a>
+                            <a class="p-2" style="font-size: 1.1rem" href="/?p=forum.post.list&categoryId=discussion"><?=ln(['en' => 'Discussion', 'ko' => '자유게시판'])?></a>
+                        <?php } ?>
+
+                    </div>
                 </div>
             </div>
-            <div class="mt-4">
-                <a class="p-2" style="font-size: 1rem" href="/">다운로드</a>
-                <?php if ( loggedIn() ) { ?>
-                    <a class="p-2" style="font-size: 1.1rem" href="/?admin.index"><?=login()->name?>(<?=login()->idx?>)</a>
-                    <a class="p-2" style="font-size: 1.1rem" href="/?user.logout.submit"><?=ln(['en' => 'Logout', 'ko' => '로그아웃'])?></a>
-                <?php } else { ?>
-                    <a class="p-2" style="font-size: 1.1rem" href="/?user.login"><?=ln(['en' => 'Login', 'ko' => '로그인'])?></a>
-                <?php } ?>
-
-                <a class="p-2" style="font-size: 1.1rem" href="/?p=forum.post.list&categoryId=qna"><?=ln(['en' => 'QnA', 'ko' => '질문게시판'])?></a>
-                <a class="p-2" style="font-size: 1.1rem" href="/?p=forum.post.list&categoryId=discussion"><?=ln(['en' => 'Discussion', 'ko' => '자유게시판'])?></a>
-            </div>
-        </div>
-    </div>
+        </section>
     <div class="container">
         <?php
         include theme()->page();

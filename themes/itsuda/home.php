@@ -2,5 +2,10 @@
 
 
 ?>
-
-    <img class="w-100" src="themes/itsuda/img/home.jpg?v=2">
+<img id="home1" class="w-100" src="themes/itsuda/img/home1.jpg">
+<img id="home1" class="w-100" src="themes/itsuda/img/home2.jpg">
+<img id="home3" class="w-100" src="themes/itsuda/img/home3.jpg">
+<img id="home4" class="w-100" src="themes/itsuda/img/home4.jpg">
+<img id="home5" class="w-100" src="themes/itsuda/img/home5.jpg">
+<img id="home6" class="w-100" src="themes/itsuda/img/home6.jpg">
+<img id="home7" class="w-100" src="themes/itsuda/img/home7.jpg">
