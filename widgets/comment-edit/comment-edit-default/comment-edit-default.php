@@ -41,14 +41,20 @@ if ($comment) {
             <input type="hidden" name="<?= PARENT_IDX ?>" value="<?= $parent->idx ?>">
         <?php } ?>
 
-        <div class="d-flex">
+<textarea style="height: 40px; max-height: 150px;" class="form-control" name="<?= CONTENT ?>" placeholder="<?= ek('Reply ...', '@T Reply ...') ?>" ><?php if ($comment) echo $comment->content ?>
+</textarea>
+
+        <div class="d-flex mt-2">
             <div style="width: 100px;" class="position-relative overflow-hidden">
                 <!-- TODO: camera icon -->
-                <button class="btn btn-primary w-100" type="button">Upload</button>
+                <button class="btn btn-sm btn-primary w-100" type="button">Upload</button>
                 <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" onchange="onFileChange(event, 'files<?= $fileUploadIdx ?>')" />
             </div>
-            <textarea style="height: 40px; min-height: 40px; max-height: 150px;" class="form-control mx-2" type="text" name="<?= CONTENT ?>"><?php if ($comment) echo $comment->content ?></textarea>
-            <button class="btn btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
+            <div class="flex-grow-1"></div>
+            <?php if ($comment) { ?>
+                <button class="btn btn-sm btn-warning mr-2" type="button" onclick="hideCommentEditForm(<?= $comment->idx ?>)"><?= ek('Cancel', '@T Cancel') ?></button>
+            <?php } ?>
+            <button class="btn btn-sm btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
         </div>
     </form>
 </div>
@@ -64,7 +70,7 @@ define('COMMENT_EDIT_DEFAULT_JAVASCRIPT', true);
     const postListCreateView = Vue.createApp({
         created() {
             console.log("created() for : comment-edit-default-form")
-        }
+        },
     }).mount("#comment-edit-default-form");
 </script>
 

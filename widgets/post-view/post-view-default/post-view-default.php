@@ -6,8 +6,6 @@
 
 
 $post = post()->current();
-
-
 ?>
 
 <section class="p-3" style="border-radius: 10px; background-color: #f4f4f4;">
@@ -52,9 +50,6 @@ $post = post()->current();
             <?php foreach ($post->comments() as $comment) {  ?>
                 <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                     <?php include widget('comment-view/comment-view-default', ['comment' => $comment]) ?>
-                    <div class="mt-2">
-                        <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $comment]) ?>
-                    </div>
                 </div>
             <?php } ?>
         </div>
