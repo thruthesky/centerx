@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- 생성 시간: 21-03-13 07:47
--- 서버 버전: 10.5.9-MariaDB-1:10.5.9+maria~focal
--- PHP 버전: 8.0.3
+-- Generation Time: Apr 03, 2021 at 01:27 PM
+-- Server version: 10.5.9-MariaDB-1:10.5.9+maria~focal
+-- PHP Version: 8.0.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,18 +18,35 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 데이터베이스: `centerx`
+-- Database: `centerx`
 --
 
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_categories`
+-- Table structure for table `wc_cache`
+--
+
+CREATE TABLE `wc_cache` (
+                            `idx` int(10) UNSIGNED NOT NULL,
+                            `code` varchar(32) NOT NULL,
+                            `data` longtext NOT NULL,
+                            `createdAt` int(10) UNSIGNED NOT NULL,
+                            `updatedAt` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wc_categories`
 --
 
 CREATE TABLE `wc_categories` (
                                  `idx` int(10) UNSIGNED NOT NULL,
+                                 `userIdx` int(10) UNSIGNED NOT NULL DEFAULT 0,
                                  `id` varchar(32) NOT NULL,
+                                 `domain` varchar(32) NOT NULL DEFAULT '',
+                                 `countryCode` char(2) NOT NULL DEFAULT '',
                                  `title` varchar(255) NOT NULL DEFAULT '',
                                  `description` text NOT NULL DEFAULT '',
                                  `subcategories` text NOT NULL DEFAULT '',
@@ -45,12 +62,13 @@ CREATE TABLE `wc_categories` (
                                  `noOfPostsPerPage` smallint(5) UNSIGNED NOT NULL DEFAULT 20,
                                  `mobilePostListWidget` varchar(64) NOT NULL DEFAULT '',
                                  `mobilePostViewWidget` varchar(64) NOT NULL DEFAULT '',
-                                 `forumEditWidget` varchar(64) NOT NULL DEFAULT '',
-                                 `forumViewWidget` varchar(64) NOT NULL DEFAULT '',
-                                 `forumListHeaderWidget` varchar(64) NOT NULL DEFAULT '',
-                                 `forumListWidget` varchar(64) NOT NULL DEFAULT '',
+                                 `postEditWidget` varchar(64) NOT NULL DEFAULT '',
+                                 `postViewWidget` varchar(64) NOT NULL DEFAULT '',
+                                 `postListHeaderWidget` varchar(64) NOT NULL DEFAULT '',
+                                 `postListWidget` varchar(64) NOT NULL DEFAULT '',
                                  `paginationWidget` varchar(64) NOT NULL DEFAULT '',
                                  `noOfPagesOnNav` tinyint(64) UNSIGNED NOT NULL DEFAULT 10,
+                                 `returnToAfterPostEdit` char(1) NOT NULL DEFAULT '',
                                  `createdAt` int(10) UNSIGNED NOT NULL,
                                  `updatedAt` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -58,7 +76,7 @@ CREATE TABLE `wc_categories` (
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_files`
+-- Table structure for table `wc_files`
 --
 
 CREATE TABLE `wc_files` (
@@ -78,42 +96,57 @@ CREATE TABLE `wc_files` (
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_in_app_purchase_histories`
+-- Table structure for table `wc_in_app_purchase`
 --
 
-CREATE TABLE `wc_in_app_purchase_histories` (
-                                                `ID` int(10) UNSIGNED NOT NULL,
-                                                `user_ID` int(10) UNSIGNED NOT NULL,
-                                                `stamp` int(10) UNSIGNED NOT NULL,
-                                                `status` varchar(8) NOT NULL DEFAULT '',
-                                                `platform` varchar(7) NOT NULL,
-                                                `productID` varchar(32) NOT NULL,
-                                                `purchaseID` varchar(128) NOT NULL,
-                                                `price` varchar(32) NOT NULL,
-                                                `title` varchar(255) NOT NULL,
-                                                `description` text NOT NULL,
-                                                `applicationUsername` varchar(255) NOT NULL,
-                                                `transactionDate` bigint(20) UNSIGNED NOT NULL,
-                                                `productIdentifier` varchar(32) NOT NULL,
-                                                `quantity` smallint(5) UNSIGNED NOT NULL,
-                                                `transactionIdentifier` bigint(20) UNSIGNED NOT NULL,
-                                                `transactionTimeStamp` double UNSIGNED NOT NULL,
-                                                `localVerificationData` mediumtext NOT NULL,
-                                                `serverVerificationData` mediumtext NOT NULL,
-                                                `localVerificationData_packageName` varchar(64) NOT NULL
+CREATE TABLE `wc_in_app_purchase` (
+                                      `idx` int(10) UNSIGNED NOT NULL,
+                                      `userIdx` int(10) UNSIGNED NOT NULL,
+                                      `status` varchar(8) NOT NULL DEFAULT '',
+                                      `platform` varchar(7) NOT NULL,
+                                      `productID` varchar(32) NOT NULL,
+                                      `purchaseID` varchar(128) NOT NULL,
+                                      `price` varchar(32) NOT NULL,
+                                      `title` varchar(255) NOT NULL,
+                                      `description` text NOT NULL,
+                                      `applicationUsername` varchar(255) NOT NULL DEFAULT '',
+                                      `transactionDate` varchar(255) NOT NULL DEFAULT '',
+                                      `productIdentifier` varchar(32) NOT NULL DEFAULT '',
+                                      `quantity` varchar(255) NOT NULL DEFAULT '',
+                                      `transactionIdentifier` varchar(255) NOT NULL DEFAULT '',
+                                      `transactionTimeStamp` varchar(255) NOT NULL DEFAULT '',
+                                      `localVerificationData` mediumtext NOT NULL,
+                                      `serverVerificationData` mediumtext NOT NULL,
+                                      `localVerificationData_packageName` varchar(64) NOT NULL DEFAULT '',
+                                      `createdAt` int(10) UNSIGNED NOT NULL,
+                                      `updatedAt` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_metas`
+-- Table structure for table `wc_itsuda`
+--
+
+CREATE TABLE `wc_itsuda` (
+                             `idx` int(10) UNSIGNED NOT NULL,
+                             `userIdx` int(10) UNSIGNED NOT NULL,
+                             `healthPoint` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                             `createdAt` int(10) UNSIGNED NOT NULL,
+                             `updatedAt` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wc_metas`
 --
 
 CREATE TABLE `wc_metas` (
                             `idx` int(10) UNSIGNED NOT NULL,
                             `taxonomy` varchar(32) NOT NULL,
                             `entity` int(11) NOT NULL,
-                            `code` varchar(32) NOT NULL,
+                            `code` varchar(255) NOT NULL DEFAULT '',
                             `data` longtext NOT NULL,
                             `createdAt` int(10) UNSIGNED NOT NULL,
                             `updatedAt` int(10) UNSIGNED NOT NULL
@@ -122,7 +155,7 @@ CREATE TABLE `wc_metas` (
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_point_histories`
+-- Table structure for table `wc_point_histories`
 --
 
 CREATE TABLE `wc_point_histories` (
@@ -144,7 +177,7 @@ CREATE TABLE `wc_point_histories` (
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_posts`
+-- Table structure for table `wc_posts`
 --
 
 CREATE TABLE `wc_posts` (
@@ -164,11 +197,13 @@ CREATE TABLE `wc_posts` (
                             `files` text NOT NULL DEFAULT '',
                             `Y` int(10) UNSIGNED NOT NULL DEFAULT 0,
                             `N` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                            `code` varchar(32) NOT NULL DEFAULT '',
                             `countryCode` char(2) NOT NULL DEFAULT '',
                             `province` varchar(64) NOT NULL DEFAULT '',
                             `city` varchar(64) NOT NULL DEFAULT '',
                             `address` varchar(255) NOT NULL DEFAULT '',
                             `zipcode` varchar(16) NOT NULL DEFAULT '',
+                            `Ymd` int(10) UNSIGNED NOT NULL DEFAULT 0,
                             `createdAt` int(10) UNSIGNED NOT NULL,
                             `updatedAt` int(10) UNSIGNED NOT NULL,
                             `deletedAt` int(10) UNSIGNED NOT NULL DEFAULT 0
@@ -177,7 +212,7 @@ CREATE TABLE `wc_posts` (
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_post_vote_histories`
+-- Table structure for table `wc_post_vote_histories`
 --
 
 CREATE TABLE `wc_post_vote_histories` (
@@ -193,7 +228,7 @@ CREATE TABLE `wc_post_vote_histories` (
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_push_notification_tokens`
+-- Table structure for table `wc_push_notification_tokens`
 --
 
 CREATE TABLE `wc_push_notification_tokens` (
@@ -201,6 +236,7 @@ CREATE TABLE `wc_push_notification_tokens` (
                                                `userIdx` int(10) UNSIGNED NOT NULL,
                                                `token` varchar(255) NOT NULL,
                                                `domain` varchar(64) NOT NULL,
+                                               `rootDomain` varchar(32) NOT NULL DEFAULT '',
                                                `createdAt` int(10) UNSIGNED NOT NULL,
                                                `updatedAt` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -208,7 +244,18 @@ CREATE TABLE `wc_push_notification_tokens` (
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_shopping_mall_orders`
+-- Table structure for table `wc_search_keys`
+--
+
+CREATE TABLE `wc_search_keys` (
+                                  `searchKey` varchar(64) NOT NULL,
+                                  `createdAt` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wc_shopping_mall_orders`
 --
 
 CREATE TABLE `wc_shopping_mall_orders` (
@@ -223,7 +270,7 @@ CREATE TABLE `wc_shopping_mall_orders` (
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_translations`
+-- Table structure for table `wc_translations`
 --
 
 CREATE TABLE `wc_translations` (
@@ -238,13 +285,14 @@ CREATE TABLE `wc_translations` (
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_users`
+-- Table structure for table `wc_users`
 --
 
 CREATE TABLE `wc_users` (
                             `idx` int(10) UNSIGNED NOT NULL,
                             `email` varchar(64) NOT NULL,
                             `password` varchar(255) NOT NULL,
+                            `firebaseUid` varchar(255) NOT NULL DEFAULT '',
                             `name` varchar(32) NOT NULL DEFAULT '',
                             `nickname` varchar(32) NOT NULL DEFAULT '',
                             `point` int(10) UNSIGNED NOT NULL DEFAULT 0,
@@ -261,18 +309,27 @@ CREATE TABLE `wc_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- 덤프된 테이블의 인덱스
+-- Indexes for dumped tables
 --
 
 --
--- 테이블의 인덱스 `wc_categories`
+-- Indexes for table `wc_cache`
+--
+ALTER TABLE `wc_cache`
+    ADD PRIMARY KEY (`idx`);
+
+--
+-- Indexes for table `wc_categories`
 --
 ALTER TABLE `wc_categories`
     ADD PRIMARY KEY (`idx`),
-  ADD UNIQUE KEY `id` (`id`);
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `domain` (`domain`),
+  ADD KEY `countryCode` (`countryCode`),
+  ADD KEY `userIdx` (`userIdx`);
 
 --
--- 테이블의 인덱스 `wc_files`
+-- Indexes for table `wc_files`
 --
 ALTER TABLE `wc_files`
     ADD PRIMARY KEY (`idx`),
@@ -281,13 +338,22 @@ ALTER TABLE `wc_files`
   ADD KEY `code` (`code`);
 
 --
--- 테이블의 인덱스 `wc_in_app_purchase_histories`
+-- Indexes for table `wc_in_app_purchase`
 --
-ALTER TABLE `wc_in_app_purchase_histories`
-    ADD PRIMARY KEY (`ID`);
+ALTER TABLE `wc_in_app_purchase`
+    ADD PRIMARY KEY (`idx`),
+  ADD KEY `status` (`status`),
+  ADD KEY `userIdx` (`userIdx`),
+  ADD KEY `productID` (`productID`);
 
 --
--- 테이블의 인덱스 `wc_metas`
+-- Indexes for table `wc_itsuda`
+--
+ALTER TABLE `wc_itsuda`
+    ADD PRIMARY KEY (`idx`);
+
+--
+-- Indexes for table `wc_metas`
 --
 ALTER TABLE `wc_metas`
     ADD PRIMARY KEY (`idx`),
@@ -295,7 +361,7 @@ ALTER TABLE `wc_metas`
   ADD KEY `code` (`code`);
 
 --
--- 테이블의 인덱스 `wc_point_histories`
+-- Indexes for table `wc_point_histories`
 --
 ALTER TABLE `wc_point_histories`
     ADD PRIMARY KEY (`idx`),
@@ -304,7 +370,7 @@ ALTER TABLE `wc_point_histories`
   ADD KEY `fromUserIdx_toUserIdx_reason` (`fromUserIdx`,`toUserIdx`,`reason`) USING BTREE;
 
 --
--- 테이블의 인덱스 `wc_posts`
+-- Indexes for table `wc_posts`
 --
 ALTER TABLE `wc_posts`
     ADD PRIMARY KEY (`idx`),
@@ -317,10 +383,12 @@ ALTER TABLE `wc_posts`
   ADD KEY `parentIdx` (`parentIdx`),
   ADD KEY `rootIdx` (`rootIdx`),
   ADD KEY `path` (`path`),
-  ADD KEY `relationIdx` (`relationIdx`);
+  ADD KEY `relationIdx` (`relationIdx`),
+  ADD KEY `Ymd` (`Ymd`),
+  ADD KEY `code` (`code`);
 
 --
--- 테이블의 인덱스 `wc_post_vote_histories`
+-- Indexes for table `wc_post_vote_histories`
 --
 ALTER TABLE `wc_post_vote_histories`
     ADD PRIMARY KEY (`idx`),
@@ -328,22 +396,30 @@ ALTER TABLE `wc_post_vote_histories`
   ADD KEY `taxonomy_entity_choice` (`taxonomy`,`entity`,`choice`);
 
 --
--- 테이블의 인덱스 `wc_push_notification_tokens`
+-- Indexes for table `wc_push_notification_tokens`
 --
 ALTER TABLE `wc_push_notification_tokens`
     ADD PRIMARY KEY (`idx`),
   ADD UNIQUE KEY `token` (`token`),
-  ADD KEY `domain` (`domain`);
+  ADD KEY `domain` (`domain`),
+  ADD KEY `rootDomain` (`rootDomain`);
 
 --
--- 테이블의 인덱스 `wc_shopping_mall_orders`
+-- Indexes for table `wc_search_keys`
+--
+ALTER TABLE `wc_search_keys`
+    ADD KEY `searchKey` (`searchKey`),
+  ADD KEY `createdAt` (`createdAt`);
+
+--
+-- Indexes for table `wc_shopping_mall_orders`
 --
 ALTER TABLE `wc_shopping_mall_orders`
     ADD PRIMARY KEY (`idx`),
   ADD KEY `confirmed` (`confirmedAt`);
 
 --
--- 테이블의 인덱스 `wc_translations`
+-- Indexes for table `wc_translations`
 --
 ALTER TABLE `wc_translations`
     ADD PRIMARY KEY (`idx`),
@@ -351,7 +427,7 @@ ALTER TABLE `wc_translations`
   ADD KEY `code` (`code`);
 
 --
--- 테이블의 인덱스 `wc_users`
+-- Indexes for table `wc_users`
 --
 ALTER TABLE `wc_users`
     ADD PRIMARY KEY (`idx`),
@@ -360,74 +436,87 @@ ALTER TABLE `wc_users`
   ADD KEY `birthdate` (`birthdate`),
   ADD KEY `name` (`name`),
   ADD KEY `phoneNo` (`phoneNo`),
-  ADD KEY `countryCode` (`countryCode`);
+  ADD KEY `countryCode` (`countryCode`),
+  ADD KEY `firebaseUid` (`firebaseUid`);
 
 --
--- 덤프된 테이블의 AUTO_INCREMENT
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- 테이블의 AUTO_INCREMENT `wc_categories`
+-- AUTO_INCREMENT for table `wc_cache`
+--
+ALTER TABLE `wc_cache`
+    MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `wc_categories`
 --
 ALTER TABLE `wc_categories`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- 테이블의 AUTO_INCREMENT `wc_files`
+-- AUTO_INCREMENT for table `wc_files`
 --
 ALTER TABLE `wc_files`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- 테이블의 AUTO_INCREMENT `wc_in_app_purchase_histories`
+-- AUTO_INCREMENT for table `wc_in_app_purchase`
 --
-ALTER TABLE `wc_in_app_purchase_histories`
-    MODIFY `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `wc_in_app_purchase`
+    MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- 테이블의 AUTO_INCREMENT `wc_metas`
+-- AUTO_INCREMENT for table `wc_itsuda`
+--
+ALTER TABLE `wc_itsuda`
+    MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `wc_metas`
 --
 ALTER TABLE `wc_metas`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- 테이블의 AUTO_INCREMENT `wc_point_histories`
+-- AUTO_INCREMENT for table `wc_point_histories`
 --
 ALTER TABLE `wc_point_histories`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- 테이블의 AUTO_INCREMENT `wc_posts`
+-- AUTO_INCREMENT for table `wc_posts`
 --
 ALTER TABLE `wc_posts`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- 테이블의 AUTO_INCREMENT `wc_post_vote_histories`
+-- AUTO_INCREMENT for table `wc_post_vote_histories`
 --
 ALTER TABLE `wc_post_vote_histories`
     MODIFY `idx` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- 테이블의 AUTO_INCREMENT `wc_push_notification_tokens`
+-- AUTO_INCREMENT for table `wc_push_notification_tokens`
 --
 ALTER TABLE `wc_push_notification_tokens`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- 테이블의 AUTO_INCREMENT `wc_shopping_mall_orders`
+-- AUTO_INCREMENT for table `wc_shopping_mall_orders`
 --
 ALTER TABLE `wc_shopping_mall_orders`
     MODIFY `idx` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- 테이블의 AUTO_INCREMENT `wc_translations`
+-- AUTO_INCREMENT for table `wc_translations`
 --
 ALTER TABLE `wc_translations`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- 테이블의 AUTO_INCREMENT `wc_users`
+-- AUTO_INCREMENT for table `wc_users`
 --
 ALTER TABLE `wc_users`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
