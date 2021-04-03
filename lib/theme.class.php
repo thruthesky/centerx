@@ -117,6 +117,8 @@ class Theme
                 }
 
             } else {                                // `/?` 으로 시작하지 않고,
+                debug_log("uri: $uri"); // 여기에 log 를 기록하면, '/favicon.ico' 와 같은 기록이 되는 것을 확인 할 수 있다.
+
                 if ( $uri == '' || $uri == '/' || $uri == '/?' ) $p = 'home';     // uri 가 `/` 만 있으면, home
                 else $p = 'forum.post.view';        // 아니면, 글 페이지
             }

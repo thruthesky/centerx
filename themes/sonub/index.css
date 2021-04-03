@@ -146,3 +146,11 @@ input.focus-none:focus {
     padding-right: 0;
     padding-left: 0;
 }
+
+.ch-a-ellipsis a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+

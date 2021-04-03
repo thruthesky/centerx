@@ -86,7 +86,7 @@ class Entity {
     /**
      * 현재 entity 의 필드 값을 리턴한다.
      *
-     * 주의: 에러가 있으면 빈 배열 또는 null 이 리턴된다.
+     * 주의: 현재 객체에 에러가 설정되어져 있으면 $this->data 에 값이 있어도, 빈 배열 또는 null 이 리턴된다.
      * 따라서, 한번 에러가 발생하면, 더 이상 현재 객체를 사용하지 못한다. 그래서 같은 idx 로 새로운 객체를 만들어 다시 작업을 해야 한다.
      * 에러가 있는 상태에서, entity 삭제시, not your entity 등의 에러가 날 수 있다.
      * 이 부분에 실수 할 수 있으니 유의한다.
@@ -113,9 +113,17 @@ class Entity {
         }
     }
 
+    /**
+     * $this->data 의 특정 값을 참조한다.
+     *
+     * @param string $field
+     * @param mixed|null $default_value
+     * @return array|float|int|string|null
+     */
     public function v(string $field, mixed $default_value=null) {
         return $this->getData($field, $default_value);
     }
+
 
 
     /**
@@ -132,12 +140,46 @@ class Entity {
     }
 
 
+    /**
+     * 현재 entity 의 $data 값을 변경한다.
+     *
+     * 이렇게 하면 idx 부터 모두 바뀌므로, 완전 다른 entity 가 된다.
+     * @param array $data
+     */
     public function setData(array $data) {
         $this->data = $data;
+        if ( isset($this->data[IDX]) ) $this->idx = $this->data[IDX];
     }
+
+
+    /**
+     * 입력된 $entity 의 모든 properties 를 현재 객체의 properties  업데이트해서 리턴한다.에
+     * 즉, 현재 객체를 입력된 $entity 로 바꾸어서 리턴한다.
+     * 다시 말하면, 객체 entity $A, $B 가 있는 경우, $A 의 이전 값들을 모두 버리고, $B 의 것을 복사해서 쓰기 위한 것이다.
+     * read() 와 비슷한데, read 는 DB 로 부터 레코드를 읽어, 현재 객체에 지정하는데, 만약, 다른 객체의 레코드를 read() 해야 한다면, copyWith() 은 DB 접속을 한 번 줄일 수 있게 해 준다.
+     *
+     * 사용 예)
+     *  - $A 로 작업을 하다가, $A 에는 에러가 설정되었는데, $A 의 많은 정보를 그대로 유지하면서, $B 가 가진 모든 정보들 만 $A 로 복사해서 쓰는것이다.
+     *  - $B 를 $C 로 복사해서, $B 를 $C 로 복사(백업)한 두 개를 따로 사용 할 수 있다. 객체가 reference 로 연결되지 않고, 별개로 분리된다.
+     *
+     * @param $entity
+     * @return Entity
+     *
+     * @example tests/cache.test.php 에서 캐시 객체를 복사(백업)해서, 사용하는 예제를 볼 수 있다.
+     */
+    public function copyWith($entity): self {
+        $this->setData($entity->data);
+        $this->taxonomy = $entity->taxonomy;
+        $this->error = $entity->error;
+        return $this;
+    }
+
 
     /**
      * $this->data 배열을 업데이트한다. 키가 존재하지 않으면 추가한다.
+     *
+     * $this->setData() 는 $this->data 배열 전체를 바꾸는 것이며 $this->idx 까지 바꾼는데, 이 함수는 특정 필드 1개만 바꾼다.
+     *
      * @param $k
      * @param $v
      *
@@ -225,6 +267,8 @@ class Entity {
     /**
      * Create a entity(record) with given $in.
      *
+     * 새로운 레코드 생성 후, 전체 레코드를 읽어서, 현재 객체로 전환한다.
+     *
      *
      * entity 에 필드를 저장한다.
      *
@@ -232,6 +276,7 @@ class Entity {
      *
      * 주의: $in 배열 변수의 키와 레코드 필드 명이 동일해야합니다.
      * 참고: 만약, 레코드 필드명에 존재하지 않는 키가 있으면, meta 테이블의 code, value 에 키/값이 저장된다.
+     * 참고, 에러가 설정되어져 있으면, (이전에 에러가 있었으면) 생성을 하지 않고, 그냥 현재 객체를 리턴한다.
      *
      * 생성 후, 현재 객체에 보관한다. $this->idx 도 현재 생성된 객체로 변경된다.
      *
@@ -285,6 +330,7 @@ class Entity {
 
         if ( !$idx ) return $this->error(e()->insert_failed);
 
+
         $re = addMeta($this->taxonomy, $idx, $this->getMetaFields($in));
         if ( isError($re) ) jsAlert($re);
 
@@ -303,6 +349,7 @@ class Entity {
 
     /**
      * Update an entity.
+     * 수정 후, 전체 레코드를 읽어 들인다.
      * @attention entity.idx must be set.
      *
      * 업데이트를 하기 위해서는 `$this->idx` 가 지정되어야 하며, $in 에 업데이트 할 값을 지정하면 된다.
@@ -311,8 +358,9 @@ class Entity {
      * Taxonomy 에 존재하지 않는 필드는 meta 에 자동 저장(추가 또는 업데이트)된다.
      *
      * 참고, 업데이트 후 $this->read() 를 통해서 현재 객체의 $this->data 에 DB 로 부터 새로 데이터를 다시 읽는다.
-     * 참고, 이전에 에러가 있었으면 그냥 현재 객체를 리턴한다.
+     * 참고, 에러가 설정되어져 있으면, (이전에 에러가 있었으면) 업데이트를 하지 않고, 그냥 현재 객체를 리턴한다.
      * 참고, 에러, 퍼미션 점검은 이 함수를 호출하기 전에 미리 해야 한다.
+     * 참고, createdAt 은 업데이트하지 않는다. 하지만 cache.class.php 처럼, 원한다면, 프로그래밍적으로 직접 업데이트를 할 수 있다.
      *
      * @param $in - 연관 배열. 키/값을 바탕으로 한 사용자 추가 메타 업데이트
      *
@@ -500,11 +548,12 @@ class Entity {
 
 
     /**
-     * DB 레코드에서 idx 를 읽어서 존재하는지 아닌지 검사한다.
+     * DB 레코드에서 idx (또는 조건 배열)를 읽어서 존재하는지 아닌지 검사한다. 따라서 DB 접속을 원하지 않으면, 그냥 $this->idx 가 0 인지 아닌지 검사해도 된다.
      *
      * 참고, $conds 에 값이 넘어오면, 해당 조건에 존재하는 레코드가 있는지 확인한다.
      *  이 때, search() 함수를 사용하는데, search() 함수의 특성에 따라 $conds 조건에 맞는 여러개의 레코드가 존재 할 수 있다.
      *  만약, $conds 이 들어오지 않으면, $this->idx 로 검사하는 데, 오직 현재 레코드가 존재하는지만 검사한다.
+     *  $conds 에 값이 넘어오지 않고, $this->idx 가 0 이면, false 가 리턴된다.
      *
      * 참고, DB 접속을 매번하므로, 원격 DB의 경우 connection 시간이 걸릴 수 있다.
      *
@@ -521,14 +570,20 @@ class Entity {
      *
      * @example
      *  $found = $this->exists([EMAIL=>$in[EMAIL]]);
+     *  entity('...')->findOne([...])->exists(); // findOne() 에서 객체를 찾지 못했다면, $this->idx=0 이 되고, 에러가 설정된다. 그리고, ->exists() 에서는 false 가 리턴된다.
      */
     public function exists(array $conds = [], string $conj = 'AND'): bool {
-        if ( $conds ) {
+        if ( $conds ) { // 조건 배열이 입력되면, 조건이 맞는 레코드가 존재하는지 확인.
             $arr = self::search(conds: $conds, conj: $conj);
             return count($arr) > 0;
-        } else if ( ! $this->idx ) {
+        }
+
+
+        if ( ! $this->idx ) { // $this->idx 가 0 이면, false
             return false;
         }
+
+        // $this->idx 에 값이 있으면, 실제 DB 에서 레코드가 검사하는지 검사.
         $q = "SELECT " . IDX . " FROM " . $this->getTable() . " WHERE " . IDX . " = {$this->idx} ";
         $re = db()->get_var($q);
         if ( $re ) return true;

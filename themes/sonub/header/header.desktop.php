@@ -21,8 +21,8 @@
 
 <div class="d-flex justify-content-between l-content fs-sm">
     <div>
-        <div style="margin-top: 44px;">
-            <img class="banner-255x100" src="/themes/sonub/img/grey.png">
+        <div class="" style="margin-top: 44px;">
+            <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner.jpg">
         </div>
     </div>
     <div class="mt-3 mx-3 mx-lg-5 px-xl-5 w-100">
@@ -41,7 +41,7 @@
     </div>
     <div class="d-none d-lg-block">
         <div style="margin-top: 44px;">
-            <img class="banner-255x100" src="/themes/sonub/img/grey.png">
+            <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner2.jpg">
         </div>
     </div>
 </div>

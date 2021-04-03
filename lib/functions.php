@@ -102,16 +102,10 @@ function isMobile() {
 
 
 /**
- *
+ * Live reload 하는 자바스크립트를 실행한다.
  */
 function live_reload()
 {
-
-    /// API 콜 이라도, &reload=true 로 들어오면, live reload 한다.
-    if ( in(ROUTE) && !in('reload') ) return;
-    /// Don't display this javascript code for Mobile Web and App.
-    if ( isMobile() ) return;
-
     if ( canLiveReload() ) {
         $host = LIVE_RELOAD_HOST;
         $port = LIVE_RELOAD_PORT;
@@ -128,6 +122,27 @@ function live_reload()
 EOH;
     }
 }
+
+
+function canLiveReload(): bool {
+
+    /// API call 이면, false. 단, reload 에 값이 들어오면, reload.
+    if ( API_CALL ) {
+        if ( ! in('reload') ) return false;
+    }
+    /// CLI 에서 실행하면 false
+    if ( isCli() ) return false;
+    /// PhpThumb 이면 false
+    if ( isPhpThumb() ) return false;
+
+    /// 로컬 도메인이 아니면, false
+    if ( isLocalhost() == false ) return false;
+
+    return true;
+
+//    return !API_CALL && !isCli() && !isPhpThumb();
+}
+
 
 /**
  * 도메인을 리턴한다.
@@ -772,10 +787,6 @@ function canHandleError(): bool {
     return !API_CALL && !isCli() && !isPhpThumb();
 }
 
-function canLiveReload(): bool {
-    return !API_CALL && !isCli() && !isPhpThumb();
-}
-
 /**
  * Gets userIdx from two dimensional array and returns it in an array.
  *
@@ -1324,3 +1335,5 @@ function thumbnailUrl(int $fileIdx, int $width=200, int $height=200, int $qualit
     if ( empty($fileIdx) ) return '';
     return HOME_URL . "etc/phpThumb/phpThumb.php?src=$fileIdx&w=$width&h=$height&f=jpeg&q=$quality";
 }
+
+

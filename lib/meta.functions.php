@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * @file meta.functions.php
+ *
+ * entity class 형태가 아닌, 함수로만 작성을 했다.
+ *
+ * @todo entity class 형태로 작성하는 것을 고려한다.
+ */
 
 use function ezsql\functions\{
     eq,
@@ -63,7 +69,7 @@ function metaExists(string $taxonomy, int $entity, string $code) {
 
 
 /**
- * 값을 비교해서, entity(taxonomy record idx) 1개를 얻는다.
+ * taxonomy, code, 그리고 값을 비교해서, entity(taxonomy record idx) 1개를 얻는다.
  *
  * 현재 taxonomy 에서 code=$code AND data=$data 와 같이 비교해서, data 값이 맞으면 entity 를 리턴한다.
  * 이 때에는 현재 idx 는 사용하지 않는다(무시된다).

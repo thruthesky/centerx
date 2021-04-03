@@ -1,10 +1,13 @@
 <?php
-
-$posts = post()->latest(limit: 50);
-
-
+$o = getWidgetOptions();
+$posts = post()->latest(limit: $o['limit'] ?? 10);
+?>
+<section id="<?=$o['id']??''?>" class="post-latest-default">
+<?php
 foreach($posts as $post) {
     ?>
-    <a href="<?=$post->url?>"><?=$post->title?></a>
+    <a style="word-break: break-all" href="<?=$post->url?>"><?=$post->title?></a>
 <?php
 }
+?>
+</section>

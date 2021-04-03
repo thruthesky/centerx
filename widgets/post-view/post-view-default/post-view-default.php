@@ -20,7 +20,7 @@ $post = post()->current();
     </div>
 
     <div class="mt-2">
-        <h1><?= $post->title ?></h1>
+        <h1 style="word-break: break-all"><?= $post->title ?></h1>
     </div>
 
     <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>

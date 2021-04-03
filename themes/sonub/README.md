@@ -24,6 +24,8 @@
 * Firebase Lazy load
   - https://firebase.google.com/docs/web/setup#delay-sdks-cdn
 
+* 카페에서는 카페 개설을 작은 메뉴로만 보여준다.
+
 
 # 실제 서버 설정 및 개발환경 설정
 

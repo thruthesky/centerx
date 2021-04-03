@@ -8,6 +8,7 @@
 
 
     <div>
+        <a class="p-2" href="/?">카페개설</a>
         <?php if ( admin() ) { ?>
         <a href="/?p=admin.index">관</a>
         <?php } ?>

@@ -3,15 +3,18 @@
 define('ROOT_DIR', __DIR__ . '/');
 
 require ROOT_DIR . 'etc/preflight.php';
+require ROOT_DIR . 'etc/kill-wrong-routes.php';
 
 require ROOT_DIR . 'vendor/autoload.php';
 
 
 require_once ROOT_DIR . 'lib/functions.php';
+require_once ROOT_DIR . 'lib/defines.php';
+require_once ROOT_DIR . 'lib/theme.class.php';
+require_once ROOT_DIR . 'config.php';           // config.php 의 dependency 는 functions.php, defines.php, theme.class.php 이다.
 
 
 require_once ROOT_DIR . 'lib/entity.class.php';
-require_once ROOT_DIR . 'lib/theme.class.php';
 require_once ROOT_DIR . 'lib/config.class.php';
 require_once ROOT_DIR . 'lib/user.class.php';
 require_once ROOT_DIR . 'lib/category.class.php';
@@ -27,16 +30,12 @@ require_once ROOT_DIR . 'lib/point/point.class.php';
 require_once ROOT_DIR . 'lib/point/point.history.class.php';
 require_once ROOT_DIR . 'lib/vote-history.class.php';
 require_once ROOT_DIR . 'lib/shopping-mall-order.class.php';
-//require_once ROOT_DIR . 'lib/meta.class.php';
+require_once ROOT_DIR . 'lib/cache.class.php';
 require_once ROOT_DIR . 'lib/meta.functions.php';
 require_once ROOT_DIR . 'lib/translation.class.php';
 require_once ROOT_DIR . 'lib/firebase.php';
 require_once ROOT_DIR . 'lib/data.php';
 require_once ROOT_DIR . 'lib/in-app-purchase.class.php';
 require_once ROOT_DIR . 'lib/hook.class.php';
-require_once ROOT_DIR . 'lib/defines.php';
 
-
-
-require_once ROOT_DIR . 'config.php';
 require_once ROOT_DIR . 'etc/boot/boot.code.php';

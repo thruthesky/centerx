@@ -14,6 +14,7 @@ define('METAS', 'metas');
 define('TAXONOMY', 'taxonomy');
 define('ENTITY', 'entity');
 define('CATEGORIES', 'categories');
+define('CACHE', 'cache');
 define('USERS', 'users');
 define('IN_APP_PURCHASE', 'in_app_purchase');
 

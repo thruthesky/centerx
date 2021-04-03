@@ -13,3 +13,5 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS'
     echo ''; // No return data for preflight.
     exit;
 }
+
+

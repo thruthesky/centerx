@@ -1569,3 +1569,10 @@ $file = files()->getByCode(in('code'));
 ## Vue.js 3 로 코드 별 파일을 업로드하고, 기존에 업로드된 파일을 삭제하는 코드
 
 - widget/post-edit/itsuda-brain 을 참고한다.
+
+
+
+
+# 원하지 않는 접속 차단
+
+- etc/kill-wrong-routes.php 에서 한다.

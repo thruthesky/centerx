@@ -1,6 +1,13 @@
 <?php
 
 ?>
+<div class="p-2 fs-sm">
+    1페소 23.39원. 마닐라 맑음(23.4도), 세부 맑음(24.1도).
+</div>
+
+<img class="w-100" src="themes/sonub/tmp/banner-wide2.jpg">
+
+<img class="w-100" src="themes/sonub/tmp/main.jpg">
 
 <h1>Sonub Theme</h1>
 <?php echo get_root_domain() ?>
