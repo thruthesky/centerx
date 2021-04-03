@@ -26,7 +26,9 @@ use function ezsql\functions\{
  * @property-read bool $hasError 현재 객체(Entity instance)에 에러가 있으면 true 값을 가진다.
  * @property-read bool $ok $this->error 에 에러가 설정되지 않았으면, 즉, 아무 이상이 없으면 참을 리턴한다.
  * @property-read int $userIdx 테이블에 userIdx 가 있는 경우만 사용.
- * @property-read bool $notFound 처음 객체를 초기화 할 때, $this->idx 가 0 이거나 해당하는 레코드가 없으면 참을 리턴한다.
+ * @property-read bool $notFound 처음 객체를 초기화 할 때, $this->idx 가 0 이거나 해당하는 레코드가 없으면 참을 리턴한다. 즉, 처음 객체를 초기화 할 때, e()->entity_not_found 에러가 발생하는지 확인을 하기 위해서이다.
+ * @property-read bool $exists 현재 객체의 $this->idx 가 0 이면, false 아니면 true 이다. 주의 할 점은 함수 $this->exists() DB 에서 $this->idx 또는 조건 값을 검색해서 해당 레코드가 존재하는지 확인을 하지만, $exists 는 그냥 $this->idx 가 0 인지 아닌지만 검사한다.
+ * @property-read bool $notExists 는 $this->idx 가 0 이면 true, 아니면 false 이다. $this->notExists() 함수는 DB 에서 확인을 하는데, 이 변수는 그냥 $this->idx 값만 검사한다.
  *
  */
 
@@ -227,6 +229,8 @@ class Entity {
         if ( $name == 'ok' ) {
             return ! $this->hasError;
         }
+        if ( $name == 'exists' ) return $this->idx > 0;
+        if ( $name == 'notExists' ) return $this->idx == 0;
 
         /// 처음 객체를 초기화 했을 때,
         /// - $this->idx 가 0 이거나,
@@ -590,7 +594,11 @@ class Entity {
         else return false;
     }
 
-    /// Helper function of eixsts()
+
+    /**
+     * 검색 조건 없이 $this->idx 만으로 DB 에 레코드가 존재하는지 확인을 한다. DB 액세스를 한번 한다.
+     * @return bool
+     */
     public function notExists(): bool {
         return !$this->exists();
     }

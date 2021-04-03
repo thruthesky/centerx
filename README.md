@@ -343,14 +343,14 @@ define('DOMAIN_THEMES', [
 
 # Configuration
 
-- `co,fnfig.php` on project folder is the default configuration, and this is a starting point of centerx. 
+- `config.php` on project folder is the default configuration and it is only for configuration. It cannot query to database in `config.php`
   
 - The default `config.php` can be overwritten by theme configuration.
 
 ## Theme Configuration
 
-- `themes/[theme-name]/[theme-name].config` will be included(and run) if it exists.
-  It will run even if it is API call. (Just connect to api domain to proper theme.)
+- `themes/[theme-name]/[theme-name].config` will be included if exists.
+  It will be included even if it is triggered by API call. (Theme is determined by domain in config.php)
 
 - 주의, 테마 폴더가 abc, def 가 있는데, 이것은 도메인과 상관이 없다.
   도메인 def.com 으로 접속해도, abc 테마로 사용할 수 있는데, 이것은 config.php 에서 테마 설정을 다르게 해 주면 된다.
@@ -358,10 +358,12 @@ define('DOMAIN_THEMES', [
 - All the default configuration can be over-written by theme configuration.
   That means, each theme can use different database settings.
 
-- You can define hooks, routes, or any code for the theme inside the config.
-  If config.php gets bigger, it's a good idea to split it into different php scripts like
-  `functions.php`, `hooks.php`, `routes.php`, etc...
+- You cannot query to database inside configuration unless you do it in hooks, routes.
 
+# Functions
+
+- After configuration(including theme configuration) has been set, `theme/theme-name/theme-name.functions.php` will be called on every theme even if it's API call.
+  You can do whatever you want from here. You can query to database at this time.
   
 
 # Developer Guideline
@@ -868,15 +870,6 @@ $meta = entity(METAS)->get('code', 'topic_qna');
 $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='Y'", select: 'entity', limit: 10000);
 ```
 
-# 페이지 라우트 추가. Adding Page Route
-
-- Page route 추가하는 것은 Api route 추가하는 것과 다르다.
-  - Api route 추가는 `/?route=app.version` 과 같이 API 호출에서 사용하는 것이고,
-  - Page route 는 `/menu` 와 같이하여 `themes/theme-name/pages/**.php` 폴더 아래의 웹 페이지 스크립트를 로드하는 것이다.
-  
-```php
-
-```
 
 
 
@@ -1576,3 +1569,55 @@ $file = files()->getByCode(in('code'));
 # 원하지 않는 접속 차단
 
 - etc/kill-wrong-routes.php 에서 한다.
+
+# 캐시
+
+- 캐시가 특정 시간보다 오래되었는지 또는 시간 경과했는지는 `cache('code')->olderThan(100)` 와 같이 하면 된다. 초단위이다.
+
+- 캐시를 사용하는 예(로직)는 다음과 같다.
+
+```php
+$currency = cache('PHP_KRW'); // 캐시 객체
+if ( $currency->olderThan(10) ) { // 10 초 보다 오래 되었으면,
+    // renew() 함수를 실행해서, 캐시 갱신 작업 중이라고 알린다.
+    // 내부적으로 createdAt 을 현재 stamp 로 변경하는데, 이렇게하면, 다른 프로세서가 중복으로 갱신 작업하지 않는다. 하지만 또한 다른 프로세서는 이전 캐시를 그대로 쓸 수 있다.
+    $currency->renew();
+    
+    
+    /// 여기서 원격에서 캐시를 가져온다.
+    /// 
+    
+    /// 그리고 아래와 같이 업데잍를 한다. 그러면 다시 한번 createdAt 을 현재 stamp 로 저장한다. 모든 프로세서가 새로운 캐시 값을 쓸 수 있다.
+    $currency->set(23.39 + time());
+}
+$phpKwr = $currency->data;
+echo "현재 환율: $phpKwr";
+```
+
+
+# 카테고리 테이블
+
+- userIdx 는 게시판 관리자이다. 카페인 경우, 카페 주인이 된다.
+- domain 은 게시판의 도메인이다. 홈페이지 도메인일 수도 있고, 그냥 그룹일 수도 있다. 카페의 경우, 카페 도메인이 된다.
+- countryCode 는 국가 코드이다. 해당 게시판(또는 카페가) 어느 국가에 속해 있는지 표시를 하는 것이다.
+
+
+
+# 카페
+
+* 게시판 1개를 카페로 해서, 최소한의 기능만으로 카페 또는 전세계 교민 카페를 만든다.
+  * 카페 당 게시판 1개가 할당된다.
+  * id 에는 카페 전체 도메인. 2차 도메인 전체.
+  * domain 에는 root domain 만 저장된다.
+  * 카페의 countryCode 에 해당 국가의 countryCode 가 저장된다.
+  * 그리고 모든 국가별로 자유게시판, 질문게시판을 공통 사용 가능하도록, 각 게시글에 countryCode 를 카페의 countryCode 로 같이 쓴다.
+  * 서브 카테고리를 최대 10개까지 사용가능하도록 하며, 컴퓨터 메인 메뉴에는 필고처럼 노란색 메뉴로 총 300 px 너비만큼만 보여준다. 메뉴명을 짧게하면 많이 보여 줄 수 있다.
+  * 카페를 삭제하는 경우,
+    - 글은 그대로 남는다.
+    - 동일한 도메인으로 카페를 재 생성 할 수 있다.
+    - 카페를 삭제하면, 카테고리에 도메인이 존재하지 않는데, 화면에 에러 알림창이나 redirect 를 하지 않고, 그 페이지에서, 존재하지 않는 카페라고 작은 메시지만 표시를 한다.
+* IE 와 SEO(검색 로봇)을 위해서, 초간단 디자인 웹을 보여주고, 모던 브라우저가 접속하면, 플러터로 부팅한다.
+* 플러터 앱에서 거의 모든 것을 다 한다.
+* 단,  PC 버전 보기 옵션을 두어서, 서브도메인으로 테마를 다르게 해서 PC 버전으로 볼 수 있도록 한다. 그래서 글 쓰기 등을 편하게 할 수 있도록 한다.
+* 본인인증을 하면, 커뮤니티 글 쓰기 가능. 카카오, 네이버로 접속하면, 장터 게시판에만 글 등록할 수 있도록만 한다.
+- 카페 도메인별 PWA 설정을 할 수 있도록 한다.

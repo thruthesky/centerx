@@ -141,3 +141,6 @@ define('DEFAULT_HOME_URL', 'http://default.home.url/');
 define('SUCCESS','success');
 define('FAILURE','failure');
 define('PENDING','pending');
+
+
+define('API_CALL', in(ROUTE) != null);

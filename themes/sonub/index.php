@@ -16,9 +16,7 @@
 <?php
     include theme()->file('header');
     ?>
-<?php
-d(theme()->page());
-?>
+
 <div class="container-xl">
     <div class="row">
         <div class="d-none d-md-block col-3"><?php include theme()->file('left'); ?></div>

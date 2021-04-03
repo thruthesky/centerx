@@ -8,10 +8,12 @@ require ROOT_DIR . 'etc/kill-wrong-routes.php';
 require ROOT_DIR . 'vendor/autoload.php';
 
 
+
 require_once ROOT_DIR . 'lib/functions.php';
+
 require_once ROOT_DIR . 'lib/defines.php';
+
 require_once ROOT_DIR . 'lib/theme.class.php';
-require_once ROOT_DIR . 'config.php';           // config.php 의 dependency 는 functions.php, defines.php, theme.class.php 이다.
 
 
 require_once ROOT_DIR . 'lib/entity.class.php';
@@ -38,4 +40,35 @@ require_once ROOT_DIR . 'lib/data.php';
 require_once ROOT_DIR . 'lib/in-app-purchase.class.php';
 require_once ROOT_DIR . 'lib/hook.class.php';
 
-require_once ROOT_DIR . 'etc/boot/boot.code.php';
+// set error handler
+if ( canHandleError() ) {
+    set_error_handler("customErrorHandler");
+}
+
+// config.php 에는 theme config 도 실행되므로, 사실 모든 종류의 코드가 다 필요하다. 단, DB 에 직접 접속 할 수 없고, 정히 필요하다면, hook 이나 route 를 통해서 할 수 있다.
+// 하지만, hook 이나 route 는 theme functions.php 에 저장되는 것이 좋다.
+require_once ROOT_DIR . 'config.php';
+
+require_once ROOT_DIR . 'etc/db.php';
+
+
+/**
+ * 각 Theme 의 theme-name.functions.php 가 존재하면, 실행한다.
+ */
+$_path = theme()->file( filename: 'functions', prefixThemeName: true );
+debug_log("Theme functions path: $_path");
+if ( file_exists($_path) ) {
+    require_once $_path;
+}
+
+live_reload();
+
+
+debug_log('-- start -- boot.code.php: ', date('r'));
+debug_log('in();', in());
+
+if ( API_CALL == false ) {
+    setUserAsLogin(getProfileFromCookieSessionId());
+}
+
+

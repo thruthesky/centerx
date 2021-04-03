@@ -546,11 +546,6 @@ function getRoute(string|null $routeName): mixed
     return false;
 }
 
-$__pages = [];
-function addPage($pageName) {
-    global $__pages;
-    $__pages[$pageName] = true;
-}
 
 
 
@@ -783,9 +778,6 @@ function isPhpThumb() : bool {
     return $_phpThumb;
 }
 
-function canHandleError(): bool {
-    return !API_CALL && !isCli() && !isPhpThumb();
-}
 
 /**
  * Gets userIdx from two dimensional array and returns it in an array.
@@ -1337,3 +1329,43 @@ function thumbnailUrl(int $fileIdx, int $width=200, int $height=200, int $qualit
 }
 
 
+/**
+ * 실명 인증을 한 사용자인지 확인을 한다.
+ * CenterX 는 한국 시스템에 특화된 것으로, 패스 로그인을 했으면 실명 인증한 것으로 한다.
+ * @return bool
+ */
+function isRealNameAuthUser(): bool {
+    return !login()->v('plid');
+}
+
+
+/**
+ * Custom error handling 을 할 수 있는 상황이면, true 를 리턴한다.
+ * @return bool
+ */
+function canHandleError(): bool {
+    return !API_CALL && !isCli() && !isPhpThumb();
+}
+
+/**
+ * @param $errno
+ * @param $errstr
+ * @param $error_file
+ * @param $error_line
+ */
+function customErrorHandler($errno, $errstr, $error_file, $error_line) {
+    if ( strpos($errstr, 'metas') && strpos($errstr, "doesn't exist") ) {
+        jsGo('/etc/install/install.php');
+        return;
+    }
+    $APP_NAME = APP_NAME;
+    echo <<<EOE
+<div style="margin-bottom: 8px; padding: 16px; border-radius: 10px; background-color: #5a3764; color: white;">
+    <div>{$APP_NAME} Error</div>
+    <div style="margin-top: 16px; padding: 16px; border-radius: 10px; background-color: white; color: black;">
+        <b>Error:</b> [$errno] $errstr in $error_file at line $error_line
+    </div>
+</div>
+EOE;
+    d(debug_backtrace());
+}
