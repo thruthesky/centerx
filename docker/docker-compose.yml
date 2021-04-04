@@ -6,6 +6,7 @@ version: '3'
 services:
   nginx:
     image: nginx:1.19.7-alpine
+    container_name: docker_nginx
     volumes:
       # Guest OS 의 /root 경로를 HOST OS 의 폴더로 지정한다.
       # 이렇게 함으로서, /root/storage 폴더는 /Users/thruthesky/docker/emp/storage 폴더가 된다.
@@ -22,6 +23,7 @@ services:
 
   # PHP 의 기본 설정 파일은 컨테이너의 /usr/local/etc 에 있다.
   php:
+    container_name: docker_php
     build:
       context: .
       dockerfile: Dockerfile.php # 별도의 Dockerfile 로 이미지를 생성하고, mysqli extension 설치를 하기 때문에, Dockerfile 로 작업한다.
@@ -33,6 +35,7 @@ services:
   # 주의: 각종 계정이나 루트 비번을 설정하면, DB 에 기록된다. 그래서 나중에 다시 변경하려면 DB 에서 변경을 해야 한다.
   mariadb:
     image: mariadb:latest
+    container_name: docker_mariadb
     environment:
       - MYSQL_DATABASE=centerx # 처음 이미지 생성 후, 컨테이너 실행시, DB 를 준비한다. 덮어쓰지 않음.
       - MYSQL_USER=centerx # 컨테이너 실행시, 사용자를 지정한다.

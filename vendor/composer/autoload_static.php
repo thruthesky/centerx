@@ -21,9 +21,9 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         '0d273777b2b0d96e49fb3d800c6b0e81' => __DIR__ . '/..' . '/lcobucci/jwt/compat/json-exception-polyfill.php',
         'd6b246ac924292702635bb2349f4a64b' => __DIR__ . '/..' . '/lcobucci/jwt/compat/lcobucci-clock-polyfill.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
+        'a8d3953fd9959404dd22d3dfcd0a79f0' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
-        'a8d3953fd9959404dd22d3dfcd0a79f0' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
         '8fa1aa8cac6a43024fcfc5386df20ced' => __DIR__ . '/..' . '/ezsql/ezsql/lib/Constants.php',
         'b8b48b5f3b620f647efc2110a0a0e913' => __DIR__ . '/..' . '/ezsql/ezsql/lib/ezFunctions.php',
     );
@@ -33,10 +33,6 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         array (
             'phpseclib3\\' => 11,
             'phpDocumentor\\Reflection\\' => 25,
-        ),
-        'l' => 
-        array (
-            'libphonenumber\\' => 15,
         ),
         'e' => 
         array (
@@ -101,7 +97,6 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
             'Google\\CRC32\\' => 13,
             'Google\\Auth\\' => 12,
             'Google\\' => 7,
-            'Giggsey\\Locale\\' => 15,
         ),
         'F' => 
         array (
@@ -130,10 +125,6 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
             1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-        ),
-        'libphonenumber\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/giggsey/libphonenumber-for-php/src',
         ),
         'ezsql\\' => 
         array (
@@ -270,10 +261,6 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         'Google\\' => 
         array (
             0 => __DIR__ . '/..' . '/google/apiclient/src',
-        ),
-        'Giggsey\\Locale\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/giggsey/locale/src',
         ),
         'Firebase\\JWT\\' => 
         array (

@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [5.17.0] - 2021-03-21
+### Added
+* Helper methods to specify a message priority
+  ([Documentation](https://firebase-php.readthedocs.io/en/latest/cloud-messaging.html#message-priority))
+### Changed
+* `giggsey/libphonenumber-for-php` is now an _optional_ dependency instead of a required one. It can be used
+  to validate a phone number before sending it to the Firebase Servers, where an invalid phone number will
+  be rejected anyway. If you want to continue using the "pre"-validation, please add the library to your
+  project's direct dependencies, e.g. with `composer require "giggsey/libphonenumber-for-php:^8.9"`.
+  ([#577](https://github.com/kreait/firebase-php/discussions/577))
+
 ## [5.16.0] - 2021-03-07
 ### Fixed
 * It was not possible to send password reset emails to users belonging to a tenant. 
@@ -214,7 +225,8 @@ to upgrade from a 4.x release to 5.0 without changes to your code.**
 * Support for PHP `<7.2`
 * Deprecated methods and classes
 
-[Unreleased]: https://github.com/kreait/firebase-php/compare/5.16.0...HEAD
+[Unreleased]: https://github.com/kreait/firebase-php/compare/5.17.0...HEAD
+[5.17.0]: https://github.com/kreait/firebase-php/compare/5.16.0...5.17.0
 [5.16.0]: https://github.com/kreait/firebase-php/compare/5.15.0...5.16.0
 [5.15.0]: https://github.com/kreait/firebase-php/compare/5.14.1...5.15.0
 [5.14.1]: https://github.com/kreait/firebase-php/compare/5.14.0...5.14.1
