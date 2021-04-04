@@ -1623,3 +1623,43 @@ echo "현재 환율: $phpKwr";
 * 단,  PC 버전 보기 옵션을 두어서, 서브도메인으로 테마를 다르게 해서 PC 버전으로 볼 수 있도록 한다. 그래서 글 쓰기 등을 편하게 할 수 있도록 한다.
 * 본인인증을 하면, 커뮤니티 글 쓰기 가능. 카카오, 네이버로 접속하면, 장터 게시판에만 글 등록할 수 있도록만 한다.
 - 카페 도메인별 PWA 설정을 할 수 있도록 한다.
+
+
+# 국가 정보
+
+국가 정보를 wc_countries 테이블 에 저장 해 놓았으며, etc/sql/countries.sql 에 SQL 로 dump 해 놓았다.
+
+테이블에 들어가 있는 정보는 아래와 같다.
+
+- `CountryNameKR` 한글 국가 이름. 예) 아프가니스탄, 대한민국
+  
+- `CountryNameEN` 영문 국가 이름. 예) Japan, South Korea
+  
+- `CountryNameOriginal` 해당 국가 언어의 표기 이름. 예) 日本, الاردن , 한국
+
+- `2digitCode` 국가별 2자리 코드. 예) JP, KR
+  
+- `3digitCode` 국가별 3자리 코드. 예) JPN, KOR
+
+- `currencyCode` 통화 코드. 예) JPY, KRW
+
+- `currencyKoreanName` 한글 통화 이름(명칭). 예) 엔, 원, 유로, 달러, 페소
+
+- `currencySymbol` 통화 심볼. 예) ¥, €, ₩, HK$
+
+- `ISONumericCode` 국가별 ISO 코드
+
+- `latitude`, `longitude` 국가별 중심의 GEO Location. 국가별 수도가 특정 도시가 아닌, 국가의 토지 면적에서 중심이 되는 부분의 위/경도 값이다.
+  이 값을 활용 예)
+  사용자의 국가 정보를 알고 있으면 그 국가의 중심부의 lat, lon 을 구해서, 해당 국가의 날씨 정보를 추출 할 수 있다. 비록 그 위치가 특정 도시가 아닌, 나라 면적의 중심이지만 적어도 그 국가의 날씨 정보를 알 수 있다.
+  
+  
+
+## 국가 정보 코딩 예제
+
+- `lib/country.class.php` 와 `lib/data.php` 를 참고한다.
+
+
+# Geo IP
+
+- `get_current_country()` 함수로 현재 국가 정보 데이터를 가져 올 수 있는데, 매 접속 마다, 이 함수가 실행 될 수 있다.

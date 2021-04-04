@@ -124,6 +124,11 @@ class E {
 
 
 
+    public string $geoip_address_not_found = 'error_geoip_address_not_found';
+    public string $geoip_invalid_database = 'error_geoip_invalid_database';
+    public string $geoip_unknown = 'error_geoip_unknown';
+
+
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)

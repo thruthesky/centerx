@@ -15,6 +15,7 @@ define('TAXONOMY', 'taxonomy');
 define('ENTITY', 'entity');
 define('CATEGORIES', 'categories');
 define('CACHE', 'cache');
+define('COUNTRIES', 'countries');
 define('USERS', 'users');
 define('IN_APP_PURCHASE', 'in_app_purchase');
 

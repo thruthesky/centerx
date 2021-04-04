@@ -24,16 +24,17 @@
         <? } ?>
 </select>
  */
-function country_code($sortby='CountryNameKR') {
-    $countries = json_decode(file_get_contents(ROOT_DIR . 'etc/data/country-code.json'), true);
-    usort($countries, function($a, $b) use ($sortby) {
-        if ($a[$sortby] == $b[$sortby]) return 0;
-        else if ( $a[$sortby] > $b[$sortby] ) return 1;
-        else return -1;
-    });
-
-    return $countries;
-}
+//function country_code($sortby='CountryNameKR') {
+//
+//    $countries = json_decode(file_get_contents(ROOT_DIR . 'etc/data/country-code.json'), true);
+//    usort($countries, function($a, $b) use ($sortby) {
+//        if ($a[$sortby] == $b[$sortby]) return 0;
+//        else if ( $a[$sortby] > $b[$sortby] ) return 1;
+//        else return -1;
+//    });
+//
+//    return $countries;
+//}
 
 /**
  * 국가 코드 2자리를 입력하면, 국가명을 리턴한다.
@@ -43,8 +44,10 @@ function country_code($sortby='CountryNameKR') {
  * @return mixed
  */
 function country_name($code, $lang="CountryNameKR") {
-    $countries = json_decode(file_get_contents(ROOT_DIR . 'etc/data/country-code.json'), true);
-    return $countries[$code][$lang];
+    return country($code)->v($lang);
+
+//    $countries = json_decode(file_get_contents(ROOT_DIR . 'etc/data/country-code.json'), true);
+//    return $countries[$code][$lang];
 }
 
 
@@ -52,12 +55,12 @@ function country_name($code, $lang="CountryNameKR") {
 
 
 /**
- * 국가 코드 2 자리를 입력하면, 3자리 환율 코드를 리턴한다.
+ * 국가 코드 2 자리 또는 3 자리를 입력하면, 3자리 환율 코드를 리턴한다.
  *
- * 3자리 환율 코드는 Currency Api 등에서 사용 할 수 있다.
+ * 리턴되는 3자리 환율 코드는 Currency Api 등에서 사용 할 수 있다.
  *
  *
- * @param $country_id
+ * @param string $countryCode
  * @return string
  * - 세 자리 통화 코드
  * - 에러가 있으면 빈 문자열
@@ -74,10 +77,11 @@ function country_name($code, $lang="CountryNameKR") {
  *  $usd = country_currency_code('US') ; // UDS 리턴
  * ```
  */
-function country_currency_code($country_id): string {
-    if ( empty($country_id) ) return '';
-    $currency = json_decode(file_get_contents(ROOT_DIR . 'etc/data/country-currency-code.json'), true);
-    return $currency[$country_id]['currencyId'];
+function country_currency_code(string $countryCode): string {
+    if ( empty($countryCode) ) return '';
+    return country($countryCode)->currencyCode;
+//    $currency = json_decode(file_get_contents(ROOT_DIR . 'etc/data/country-currency-code.json'), true);
+//    return $currency[$country_id]['currencyId'];
 }
 
 /**
@@ -93,14 +97,14 @@ function country_currency_code($country_id): string {
  *
  * @return array
  */
-function country_currency_korean_letter(): array {
-    $letters = json_decode(file_get_contents(ROOT_DIR . 'etc/data/country-currency-korean-letter.json'), true);
-    return $letters;
-}
+//function country_currency_korean_letter(): array {
+//    $letters = json_decode(file_get_contents(ROOT_DIR . 'etc/data/country-currency-korean-letter.json'), true);
+//    return $letters;
+//}
 
 
 /**
- * 2 자리 또는 국가 코드를 입력하면, 한글 통화 이름을 리턴한다.
+ * 2 자리 또는 3 자리 국가 코드를 입력하면, 한글 통화 이름을 리턴한다.
  *
  * 예) KR 를 입력하면 '원', PH 를 입력하면 '페소', US 를 입력하면 '달러' 가 리턴된다.
  * 예) KRW 를 입력하면 '원' 이 리턴된다.
@@ -111,17 +115,17 @@ function country_currency_korean_letter(): array {
  * - 에러가 있으면 빈 문자열
  */
 function korean_currency_name($countryCode): string {
-
     if ( empty($countryCode) ) return '';
+    return country($countryCode, currencyCode: true)->currencyKoreanName;
 
-    if ( strlen($countryCode) == 2 ) {
-        $currency = country_currency_code($countryCode);
-    } else {
-        $currency = $countryCode;
-    }
-    if ( empty($currency) ) return '';
-    $letters = country_currency_korean_letter();
-    return $letters[$currency]['Code'];
+//    if ( strlen($countryCode) == 2 ) {
+//        $currency = country_currency_code($countryCode);
+//    } else {
+//        $currency = $countryCode;
+//    }
+//    if ( empty($currency) ) return '';
+//    $letters = country_currency_korean_letter();
+//    return $letters[$currency]['Code'];
 }
 
 
@@ -194,4 +198,26 @@ function round_currency_rate($rate) {
     else if ( $rate < 10 ) $rate = round($rate, 3);
     else $rate = round($rate, 2);
     return $rate;
+}
+
+
+/**
+ * 사용자의 접속 IP 를 바탕으로, 사용자가 있는 국가 정보를 Country 객체로 리턴한다.
+ * 에러가 있으면, 에러가 설정된 Country 객체가 리턴된다.
+ * @return Country|Entity
+ * @throws \MaxMind\Db\Reader\InvalidDatabaseException
+ */
+function get_current_country(string $ip = null) {
+    $reader = new \GeoIp2\Database\Reader(ROOT_DIR . "etc/data/GeoLite2-Country.mmdb");
+    try {
+        $record = $reader->country($ip ?? $_SERVER['REMOTE_ADDR']);
+        $code2 = $record->country->isoCode;
+        return country($code2);
+    } catch (\GeoIp2\Exception\AddressNotFoundException $e) {
+        return country()->setError(e()->geoip_address_not_found);
+    } catch (\MaxMind\Db\Reader\InvalidDatabaseException $e) {
+        return country()->setError(e()->geoip_invalid_database);
+    } catch (Exception $e) {
+        return country()->setError(e()->geoip_unknown);
+    }
 }

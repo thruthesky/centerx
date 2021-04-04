@@ -1,3 +1,6 @@
+<?php
+
+?>
 <form class="mt-3 mb-0">
     <input type="hidden" name="p" value="cafe.create.submit">
     <label class="fs-sm" for="countryCode">교민 카페 운영 국가 선택</label>
@@ -5,9 +8,9 @@
         <option selected value="">국가를 선택해주세요.</option>
         <?php
 
-        foreach( country_code() as $co ) {
+        foreach( country()->search(limit: 1000, object: true) as $co ) {
             ?>
-            <option value="<?=$co['2digitCode']?>"><?=$co['CountryNameKR']?></option>
+            <option value="<?=$co->v('2digitCode')?>"><?=$co->CountryNameKR?></option>
         <?php } ?>
     </select>
 

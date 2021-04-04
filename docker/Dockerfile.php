@@ -1,15 +1,12 @@
 # PHP 8.0.3 (최신버전) + FPM + Alpine 리눅스 조합
 #
-# 구성: PDO, MySQLi, GMP, GD, Exif
+# 구성: PDO, MySQLi, GD, Exif
 # 참고: gmp 설치를 위해서는 gmp-dev 가 필요하다.
 #
 FROM php:8.0.3-fpm-alpine
 
-# GNU MP(GMP)를 설치하기 위해 필요한 패키지. GMP 는 IP2Location 에서 필요하다. https://www.php.net/manual/en/intro.gmp.php
-RUN apk add gmp-dev
-
 # RUN docker-php-ext-install 다음에 설치하고자 하는 모듈을 주욱 적어주면 된다.
-RUN docker-php-ext-install pdo pdo_mysql mysqli exif gmp
+RUN docker-php-ext-install pdo pdo_mysql mysqli exif
 
 # GD2 설치.
 RUN apk add --no-cache \

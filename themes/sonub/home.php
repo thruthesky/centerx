@@ -19,10 +19,22 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
         $rate = round_currency_rate($currencies[$codes]);
         ?>
         1<?=$src?> <?=$rate?><?=$dst?>.
+
         <?php
+        $country = get_current_country('175.196.80.131');
+        if ( $country->exists ) {
+            echo "접속: " . $country->CountryNameKR;
+        }
+        ?>
+
+
+        <?php
+
     }
     ?>
-    마닐라 맑음(23.4도), 세부 맑음(24.1도).
+
+
+
 
 </div>
 

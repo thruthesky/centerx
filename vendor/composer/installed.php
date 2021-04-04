@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'cc6e9c9622de002bfd555251849ac604530c05ce',
+    'reference' => 'cdc7e00d0bb881f8fc72d2df5cd1553b8271fffb',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'cc6e9c9622de002bfd555251849ac604530c05ce',
+      'reference' => 'cdc7e00d0bb881f8fc72d2df5cd1553b8271fffb',
     ),
     'aporat/store-receipt-validator' => 
     array (
@@ -28,6 +28,15 @@
       array (
       ),
       'reference' => '1308f3ae570bbbfade943ea2083e1cf238400f45',
+    ),
+    'composer/ca-bundle' => 
+    array (
+      'pretty_version' => '1.2.9',
+      'version' => '1.2.9.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '78a0e288fdcebf92aa2318a8d3656168da6ac1a5',
     ),
     'doctrine/instantiator' => 
     array (
@@ -64,6 +73,15 @@
       array (
       ),
       'reference' => 'f42c9110abe98dd6cfe9053c49bc86acc70b2d23',
+    ),
+    'geoip2/geoip2' => 
+    array (
+      'pretty_version' => 'v2.11.0',
+      'version' => '2.11.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd01be5894a5c1a3381c58c9b1795cd07f96c30f7',
     ),
     'google/apiclient' => 
     array (
@@ -181,6 +199,24 @@
       array (
       ),
       'reference' => '511629a54465e89a31d3d7e4cf0935feab8b14c1',
+    ),
+    'maxmind-db/reader' => 
+    array (
+      'pretty_version' => 'v1.10.0',
+      'version' => '1.10.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '07f84d969cfc527ce49388558a366ad376f1f35c',
+    ),
+    'maxmind/web-service-common' => 
+    array (
+      'pretty_version' => 'v0.8.1',
+      'version' => '0.8.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '32f274051c543fc865e5a84d3a2c703913641ea8',
     ),
     'mobiledetect/mobiledetectlib' => 
     array (

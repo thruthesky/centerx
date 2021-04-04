@@ -72,6 +72,9 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         'M' => 
         array (
             'Monolog\\' => 8,
+            'MaxMind\\WebService\\' => 19,
+            'MaxMind\\Exception\\' => 18,
+            'MaxMind\\Db\\' => 11,
         ),
         'L' => 
         array (
@@ -97,6 +100,7 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
             'Google\\CRC32\\' => 13,
             'Google\\Auth\\' => 12,
             'Google\\' => 7,
+            'GeoIp2\\' => 7,
         ),
         'F' => 
         array (
@@ -111,6 +115,7 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         ),
         'C' => 
         array (
+            'Composer\\CaBundle\\' => 18,
             'Carbon\\' => 7,
         ),
     );
@@ -210,6 +215,18 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'MaxMind\\WebService\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maxmind/web-service-common/src/WebService',
+        ),
+        'MaxMind\\Exception\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maxmind/web-service-common/src/Exception',
+        ),
+        'MaxMind\\Db\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maxmind-db/reader/src/MaxMind/Db',
+        ),
         'Lcobucci\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/lcobucci/jwt/src',
@@ -262,6 +279,10 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         array (
             0 => __DIR__ . '/..' . '/google/apiclient/src',
         ),
+        'GeoIp2\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/geoip2/geoip2/src',
+        ),
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
@@ -281,6 +302,10 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'Composer\\CaBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/ca-bundle/src',
         ),
         'Carbon\\' => 
         array (

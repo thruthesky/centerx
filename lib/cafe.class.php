@@ -16,11 +16,12 @@
 class Cafe extends Category
 {
 
-    public function __construct()
+    public function __construct(int $idx)
     {
-        parent::__construct(0);
+        parent::__construct($idx);
         if ( $this->isMainCafe() ) {
-            $this->updateData('countryCode', CAFE_ROOT_DOMAIN[get_root_domain()]['countryCode']);
+            // 메인 카페의 경우, DB 레코드가 없다. 그래서, 향후 에러가 나지 않도록, countryCode 를 기본 설정 해 준다.
+            $this->updateData('countryCode', CAFE_COUNTRY_DOMAINS[get_root_domain()]['countryCode']);
         }
     }
 
@@ -80,7 +81,7 @@ class Cafe extends Category
      * @return string
      */
     public function name(): string {
-        if ( $this->isMainCafe() ) return CAFE_ROOT_DOMAIN[get_root_domain()]['homeButtonLabel'];
+        if ( $this->isMainCafe() ) return CAFE_COUNTRY_DOMAINS[get_root_domain()]['homeButtonLabel'];
         if ( $this->title ) return $this->title;
         else return explode('.', $this->id)[0];
     }
@@ -94,27 +95,24 @@ class Cafe extends Category
  * 해당 카페 객체를 한 번 생성하면, 그 다음 부터는 생성된 객체를 재 사용한다. 즉, Singleton 방식으로 사용한다.
  *
  *
- * @param string $domain
- *  $domain 이 입력되면, $domain 에 해당하는 카페를 찾아 현재 객체로 전환한다. 만약, 코드에 맞는 존재하지 않으면 에러가 설정된다.
- *  만약, 루트 도메인이면, $domain 을 입력하지 않으면 된다. 그러면 에러가 설정되지 않고, cafe() 로 생성된 객체를 적절하게 사용 할 수 있다.
- *
  * @return Cafe
  */
 global $__cafe;
-function cafe(string $domain=''): Cafe
+function cafe(): Cafe
 {
     global $__cafe;
     if ( isset($__cafe) && $__cafe ) {
-//        debug_log("Reuse cafe object: ");
+//        d("Reuse cafe object: ");
         return $__cafe;
     }
 
-    $__cafe = new Cafe();
 
-    if ( $domain ) {
-        $__cafe->findOne(['id' => $domain]);
-    }
+    $__cafe = new Cafe(0);      // 카페 객체 생성. 이 후, 이 코드는 두번 실행되지 않는다.
+    $domain = get_domain();     // 현재 도메인
 
+    if ( in_array($domain, CAFE_MAIN_DOMAIS) ) return $__cafe; // 현재 도메인이 메인 도메인 중 하라나면, 빈 Cafe 객체를 리턴.
+
+    $__cafe->findOne(['id' => $domain]); // 메인 도메인이 아니면, 해당 도메인의 카페를 찾아 리턴. 카페를 찾지 못하면 에러 설정 됨.
     return $__cafe;
 }
 

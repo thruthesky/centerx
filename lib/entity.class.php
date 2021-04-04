@@ -73,7 +73,7 @@ class Entity {
      * @param string $code
      * @return $this
      */
-    private function setError(string $code): self {
+    public function setError(string $code): self {
         $this->error = $code;
         return $this;
     }
