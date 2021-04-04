@@ -275,19 +275,23 @@ class User extends Entity {
     }
 
 
-
     /**
+     *
      * 사용자를 검색 후, User 객체를 배열로 리턴한다.
      *
+     * 참고, 이 함수는 기본적으로 객체를 리턴한다. 이 함수를 없애고 싶으면, entity()->search(object: false) 로 해서 를 쓰면 된다.
+     *
+     * @param string $select
      * @param string $where
-     * @param int $page
-     * @param int $limit
      * @param string $order
      * @param string $by
-     * @param string $select
+     * @param int $page
+     * @param int $limit
      * @param array $conds
      * @param string $conj
+     * @param bool $object
      * @return User[]
+     *
      */
     public function search(
         string $select='idx',
@@ -298,10 +302,10 @@ class User extends Entity {
         int $limit=10,
         array $conds=[],
         string $conj = 'AND',
+        bool $object = true,
     ): array
     {
-
-        $users = parent::search(
+        return parent::search(
             select: $select,
             where: $where,
             order: $order,
@@ -309,14 +313,9 @@ class User extends Entity {
             page: $page,
             limit: $limit,
             conds: $conds,
-            conj: $conj
+            conj: $conj,
+            object: $object
         );
-
-        $rets = [];
-        foreach( ids($users) as $idx ) {
-            $rets[] = user($idx);
-        }
-        return $rets;
     }
 
 }

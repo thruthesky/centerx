@@ -10,10 +10,6 @@ _testEntityReadAndReset();
 _testEntityMeta();
 
 
-
-
-
-
 class TestTaxonomy extends PostTaxonomy {
     public function __construct(int $idx)
     {

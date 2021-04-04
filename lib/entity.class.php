@@ -715,15 +715,16 @@ class Entity {
      * - 하나의 레코드 또는 하나의 필드를 가져오고자 할 때 사용 할 수 있다.
      *
      *
+     * @param string $select
      * @param string $where
-     * @param int $page
-     * @param int $limit
      * @param string $order
      * @param string $by
-     * @param string $select
+     * @param int $page
+     * @param int $limit
      * @param array $conds - 키/값 조건문.
      * @param string $conj - $conds 의 키/값을 연결할 조건식. 기본 AND.
-     * @return array
+     * @param bool $object
+     * @return array | self[]
      *  - empty array([]), If there is no record found.
      *
      *
@@ -763,6 +764,7 @@ class Entity {
         int $limit=10,
         array $conds=[],
         string $conj = 'AND',
+        bool $object = false,
     ): array {
         $table = $this->getTable();
         $from = ($page-1) * ($limit ? $limit : 10);
@@ -772,7 +774,20 @@ class Entity {
         }
         $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
         if ( isDebugging() ) d($q);
-        return db()->get_results($q, ARRAY_A);
+        $rows = db()->get_results($q, ARRAY_A);
+
+        /// 현재 entity 레코드를 배열로 리턴받기 원하면,
+        if ( $object == false ) return $rows;
+
+
+        /// 현재 entity 를 객체에 넣어 리턴 받기 원하면,
+        $rets = [];
+        foreach( ids($rows) as $idx ) {
+            $entity = clone $this;
+            $rets[] = $entity->read($idx);
+        }
+        return $rets;
+
     }
 
 

@@ -49,6 +49,8 @@ class PointHistory extends Entity {
 
 
     /**
+     * 검색 후, 결과를 객체로 리턴한다. (부모 결과는 기본적으로 배열로 리턴)
+     *
      * @param string $select
      * @param string $where
      * @param string $order
@@ -68,10 +70,10 @@ class PointHistory extends Entity {
         int $limit=10,
         array $conds=[],
         string $conj = 'AND',
+        bool $object = true,
     ): array
     {
-
-        $rows = parent::search(
+        return parent::search(
             select: $select,
             where: $where,
             order: $order,
@@ -79,16 +81,11 @@ class PointHistory extends Entity {
             page: $page,
             limit: $limit,
             conds: $conds,
-            conj: $conj
+            conj: $conj,
+            object: $object,
         );
-
-
-        $rets = [];
-        foreach( ids($rows) as $idx ) {
-            $rets[] = pointHistory($idx);
-        }
-        return $rets;
     }
+
 
 
 }

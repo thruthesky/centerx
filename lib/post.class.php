@@ -271,6 +271,7 @@ class Post extends PostTaxonomy {
         int $limit=10,
         array $conds=[],
         string $conj = 'AND',
+        bool $object = false,
     ): array
     {
 
@@ -285,7 +286,8 @@ class Post extends PostTaxonomy {
             page: $page,
             limit: $limit,
             conds: $conds,
-            conj: $conj
+            conj: $conj,
+            object: $object,
         );
 
 

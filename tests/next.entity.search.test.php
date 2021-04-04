@@ -1,7 +1,37 @@
 <?php
 
+_testUserSearch();
 _testEntitySearch();
 _testEntityMy();
+
+function _testUserSearch() {
+    $pw = '12345a' . time();
+    $emailA = 'userA' . time() . '@test.com';
+    $emailB = 'userB' . time() . '@test.com';
+    $emailC = 'userC' . time() . '@test.com';
+
+    $a = user()->create([EMAIL => $emailA, PASSWORD=>$pw]);
+    $b = user()->create([EMAIL => $emailB, PASSWORD=>$pw]);
+    $c = user()->create([EMAIL => $emailC, PASSWORD=>$pw]);
+
+
+    $users = user()->search(limit: 3, object: false);
+    isTrue($users[0][IDX] == $c->idx, "object: false, C idx: {$c->idx} match! C is the last one.");
+
+    $users = user()->search(limit: 3);
+    isTrue($users[0]->idx == $c->idx, "object: true, A idx: {$c->idx} match! C is the last one.");
+
+    $users = user()->search(where: "email LIKE 'user%'", object: false);
+    isTrue( count($users) >= 3, "There are more than 3 users");
+    isTrue(gettype($users[0]) == 'array', 'Default search is array');
+
+    $users = user()->search(where: "email LIKE 'user%'");
+    isTrue($users[0] instanceof User, "instanceof => User object");
+    isTrue(get_class($users[0]) == 'User',"get_class() => User object");
+
+
+
+}
 
 function _testEntitySearch() {
 

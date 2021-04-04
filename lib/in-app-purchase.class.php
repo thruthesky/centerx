@@ -47,6 +47,8 @@ class InAppPurchase extends Entity {
 
 
     /**
+     * Returns search result in objects (The parent search returns the results in array).
+     *
      * @param string $select
      * @param string $where
      * @param string $order
@@ -55,7 +57,9 @@ class InAppPurchase extends Entity {
      * @param int $limit
      * @param array $conds
      * @param string $conj
+     * @param bool $object
      * @return InAppPurchase[]
+     *
      */
     public function search(
         string $select='idx',
@@ -66,9 +70,10 @@ class InAppPurchase extends Entity {
         int $limit=10,
         array $conds=[],
         string $conj = 'AND',
+        bool $object = true,
     ): array
     {
-        $rows = parent::search(
+        return parent::search(
             select: $select,
             where: $where,
             order: $order,
@@ -76,14 +81,9 @@ class InAppPurchase extends Entity {
             page: $page,
             limit: $limit,
             conds: $conds,
-            conj: $conj
+            conj: $conj,
+            object: $object,
         );
-
-        $rets = [];
-        foreach( ids($rows) as $idx ) {
-            $rets[] = inAppPurchase($idx);
-        }
-        return $rets;
     }
 
 

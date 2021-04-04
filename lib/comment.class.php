@@ -183,10 +183,9 @@ class Comment extends PostTaxonomy {
 
 
     /**
-     * Returns posts after search and add meta datas.
+     * Returns comment objects with its meta data after search.
      *
-     * @attention Categories can be passed like  "categoryId=<apple> or categoryId='<banana>'" and it wil be converted
-     * as "categoryIdx=1 or categoryIdx='2'"
+     *
      *
      * @param string $where
      * @param int $page
@@ -196,6 +195,7 @@ class Comment extends PostTaxonomy {
      * @param string $select
      * @param array $conds
      * @param string $conj
+     * @param bool $object
      * @return Comment[]
      */
 
@@ -208,24 +208,19 @@ class Comment extends PostTaxonomy {
         int $limit=10,
         array $conds=[],
         string $conj = 'AND',
+        bool $object = true,
     ): array {
 
-        $posts = parent::search(
+        return parent::search(
             select: $select,
             where: $where,
             order: $order,
             by: $by,
             page: $page,
             limit: $limit,
+            object: $object,
         );
 
-        $rets = [];
-        foreach( $posts as $post ) {
-            $idx = $post[IDX];
-            $rets[] = comment($idx);
-        }
-
-        return $rets;
     }
 
     /**
