@@ -19,7 +19,10 @@ class Friend extends Entity {
 
     /**
      * 누군가 나를 친구 추가하면, 하나의 레코드만 생성된다.
-     * 그래서, 내 친구를 확인 하려면, myIdx 가 나의 idx 와 동일하고, 또는 otherIdx 가 나의 idx 와 동일하면 그 사용자도 나의 친구이다.
+     * 그리고 내가 친구 추가를 하지 않았으면, 상대방이 나를 친추해도, 내 목록에는 나타나지 않는다.
+     * 예) A 가 B 를 친추 했다면, A 친구 목록에는 B 가 나오지만, B 친구 목록에는 A 가 나오지 않는다.
+     *      B 도 A 를 친추해야지만, B 친구 목록에 나온다.
+     *
      * @param $in
      * @return $this|Entity|Friend
      */
@@ -58,18 +61,15 @@ class Friend extends Entity {
         return parent::update(['block' => '']);
     }
 
+    /**
+     * 내가 친구 추가한 목록
+     * @return array
+     */
     public function list() {
-        // 내가 친추한 목록
         $friends = $this->search(select: 'otherIdx', limit: 5000, conds: ['myIdx' => login()->idx, 'block' => '']);
         $rets = [];
         foreach($friends as $f) {
             $rets[] = user($f['otherIdx'])->shortProfile(firebaseUid: true);
-        }
-
-        // 다른 사람이 나를 친추한 목록
-        $friends = $this->search(select: 'myIdx', limit: 5000, conds: ['otherIdx' => login()->idx, 'block' => '']);
-        foreach($friends as $f) {
-            $rets[] = user($f['myIdx'])->shortProfile(firebaseUid: true);
         }
         return $rets;
     }
