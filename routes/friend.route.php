@@ -18,7 +18,7 @@ class FriendRoute {
         return friend()->unblock($in)->response();
     }
     public function relationship(array $in) {
-        return friend()->relationship()->response();
+        return friend()->relationship($in)->response();
     }
 
     public function list() {
