@@ -18,7 +18,10 @@ $total = user()->count(where:  $where);
         <input type="hidden" name="w" value="user/admin-user-list">
         <div class="form-row align-items-center">
             <div class="col-auto">
-                <input type="text" class="form-control mb-2" name='key' placeholder="사용자 메일 주소, 이름을 입력해주세요.">
+                <input type="text" class="form-control mb-2"
+                       name='key' placeholder="사용자 메일 주소, 이름을 입력해주세요."
+                       value="<?=$key?>"
+                >
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary mb-2">Submit</button>
@@ -39,6 +42,7 @@ $total = user()->count(where:  $where);
         <th scope="col">Email</th>
         <th scope="col">Name</th>
         <th scope="col">Phone No.</th>
+        <th scope="col">Action</th>
     </tr>
     </thead>
     <tbody>
@@ -50,6 +54,10 @@ $total = user()->count(where:  $where);
             <td><?=$user->email?></td>
             <td><?=$user->name?></td>
             <td><?=$user->phoneNo?></td>
+            <td>
+                <a class="btn btn-outline-primary"
+                        href="/?p=admin.index&w=user/admin-user-edit&userIdx=<?=$user->idx?>">🖉</a>
+            </td>
         </tr>
     <?php } ?>
     </tbody>

@@ -227,6 +227,19 @@ function jsGo($url)
 }
 
 
+function jsAlertGo($msg, $url)
+{
+    echo "
+    <script>
+        alert('$msg');
+        location.href='$url';
+    </script>
+    ";
+    exit;
+}
+
+
+
 /**
  * Javascript 로 돌아가기를 하고, PHP exit 한다.
  * @param $msg
