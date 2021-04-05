@@ -17,12 +17,19 @@ class Friend extends Entity {
         parent::__construct(FRIENDS, $idx);
     }
 
+    /**
+     * 누군가 나를 친구 추가하면, 하나의 레코드만 생성된다.
+     * 그래서, 내 친구를 확인 하려면, myIdx 가 나의 idx 와 동일하고, 또는 otherIdx 가 나의 idx 와 동일하면 그 사용자도 나의 친구이다.
+     * @param $in
+     * @return $this|Entity|Friend
+     */
     public function add($in) {
         if ( $in['otherIdx'] == login()->idx ) return $this->error(e()->cannot_add_oneself_as_friend);
         if ( user()->exists(['idx' => $in['otherIdx']]) == false ) return $this->error(e()->user_not_found_by_that_idx);
         if ( friend()->findOne(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']])->exists ) return $this->error(e()->already_added_as_friend);
 
         parent::create(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']]);
+
 
         return $this;
     }
@@ -52,10 +59,17 @@ class Friend extends Entity {
     }
 
     public function list() {
+        // 내가 친추한 목록
         $friends = $this->search(select: 'otherIdx', limit: 5000, conds: ['myIdx' => login()->idx, 'block' => '']);
         $rets = [];
         foreach($friends as $f) {
-            $rets[] = user($f['otherIdx'])->shortProfile();
+            $rets[] = user($f['otherIdx'])->shortProfile(firebaseUid: true);
+        }
+
+        // 다른 사람이 나를 친추한 목록
+        $friends = $this->search(select: 'myIdx', limit: 5000, conds: ['otherIdx' => login()->idx, 'block' => '']);
+        foreach($friends as $f) {
+            $rets[] = user($f['myIdx'])->shortProfile(firebaseUid: true);
         }
         return $rets;
     }
@@ -64,7 +78,7 @@ class Friend extends Entity {
         $friends = $this->search(select: 'otherIdx', limit: 5000, conds: ['myIdx' => login()->idx, 'block' => 'Y']);
         $rets = [];
         foreach($friends as $f) {
-            $rets[] = user($f['otherIdx'])->shortProfile();
+            $rets[] = user($f['otherIdx'])->shortProfile(firebaseUid: true);
         }
         return $rets;
     }
@@ -80,7 +94,7 @@ class Friend extends Entity {
         foreach($rows as $row) {
             $rets[] = [
                 'user' => user($row['myIdx'])->shortProfile(), // 블럭한 사용자
-                'blockedUser' => user($row['otherIdx'])->shortProfile(), // 블럭 당한 사용자
+                'blockedUser' => user($row['otherIdx'])->shortProfile(firebaseUid: true), // 블럭 당한 사용자
             ];
         }
         return $rets;
