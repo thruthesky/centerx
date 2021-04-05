@@ -62,6 +62,19 @@ class Friend extends Entity {
     }
 
     /**
+     * 내가 친추를 했거나, 내가 친추가 되었으면, 그 레코드를 리턴한다.
+     * @param array $in
+     * @return Entity|Friend
+     */
+    public function relationship(array $in) {
+        $ab = friend()->findOne(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']]);
+        if ( $ab->exists ) return $ab;
+        $ba = friend()->findOne(['myIdx' => $in['otherIdx'], 'otherIdx' => login()->idx]);
+        if ( $ba->exists ) return $ba;
+        return $this->error(e()->not_added_as_friend);
+    }
+
+    /**
      * 내가 친구 추가한 목록
      * @return array
      */
