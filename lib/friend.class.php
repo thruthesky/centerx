@@ -68,6 +68,23 @@ class Friend extends Entity {
         }
         return $rets;
     }
+
+    /**
+     * 관리자만 필요한 기능으로 관리자만 볼 수 있도록 하는 기능이 필요하다. 그리고 1천개만 목록하는데, 페이지네이션을 할 필요가 있다.
+     * @return array
+     */
+    public function reportList() {
+//        $friends = $this->search(select: '*', limit: 1000, conds: ['reason' => '']);
+        $rows = db()->get_results("SELECT * FROM " . $this->getTable() . " WHERE reason <> ''", ARRAY_A);
+        $rets = [];
+        foreach($rows as $row) {
+            $rets[] = [
+                'user' => user($row['myIdx'])->shortProfile(), // 블럭한 사용자
+                'blockedUser' => user($row['otherIdx'])->shortProfile(), // 블럭 당한 사용자
+            ];
+        }
+        return $rets;
+    }
 }
 
 

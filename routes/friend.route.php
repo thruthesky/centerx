@@ -23,6 +23,8 @@ class FriendRoute {
     }
     public function blockList() {
         return friend()->blockList();
-
+    }
+    public function reportList() {
+        return friend()->reportList();
     }
 }

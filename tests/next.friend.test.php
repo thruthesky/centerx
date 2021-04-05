@@ -82,5 +82,11 @@ isTrue(count($friends) == 1, '성공, 차단 된 친구: 1명');
 sleep(2);
 $friendRoute->block(['sessionId' => login()->sessionId, 'otherIdx' => getThirdUser()->idx, 'reason' => 'I do not like this person']);
 $friends = $friendRoute->blockList();
-isTrue(count($friends) == 2, '성공, 차단 된 친구: 1명');
+isTrue(count($friends) == 2, '성공, 차단 된 친구: 2명');
+
+
+// 신고된 사용자 목록. 관리자가 필요한 기능.
+$friends = $friendRoute->reportList();
+isTrue(count($friends) == 1, '성공, 신고된 사용자 목록: 1명');
+
 
