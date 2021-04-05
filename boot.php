@@ -42,14 +42,16 @@ require_once ROOT_DIR . 'lib/data.php';
 require_once ROOT_DIR . 'lib/in-app-purchase.class.php';
 require_once ROOT_DIR . 'lib/hook.class.php';
 
-// set error handler
-if ( canHandleError() ) {
-    set_error_handler("customErrorHandler");
-}
 
 // config.php 에는 theme config 도 실행되므로, 사실 모든 종류의 코드가 다 필요하다. 단, DB 에 직접 접속 할 수 없고, 정히 필요하다면, hook 이나 route 를 통해서 할 수 있다.
 // 하지만, hook 이나 route 는 theme functions.php 에 저장되는 것이 좋다.
 require_once ROOT_DIR . 'config.php';
+
+
+// set error handler
+if ( canHandleError() ) {
+    set_error_handler("customErrorHandler");
+}
 
 require_once ROOT_DIR . 'etc/db.php';
 
