@@ -17,12 +17,22 @@ class Friend extends Entity {
         parent::__construct(FRIENDS, $idx);
     }
 
+    /**
+     * 누군가 나를 친구 추가하면, 하나의 레코드만 생성된다.
+     * 그리고 내가 친구 추가를 하지 않았으면, 상대방이 나를 친추해도, 내 목록에는 나타나지 않는다.
+     * 예) A 가 B 를 친추 했다면, A 친구 목록에는 B 가 나오지만, B 친구 목록에는 A 가 나오지 않는다.
+     *      B 도 A 를 친추해야지만, B 친구 목록에 나온다.
+     *
+     * @param $in
+     * @return $this|Entity|Friend
+     */
     public function add($in) {
         if ( $in['otherIdx'] == login()->idx ) return $this->error(e()->cannot_add_oneself_as_friend);
         if ( user()->exists(['idx' => $in['otherIdx']]) == false ) return $this->error(e()->user_not_found_by_that_idx);
         if ( friend()->findOne(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']])->exists ) return $this->error(e()->already_added_as_friend);
 
         parent::create(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']]);
+
 
         return $this;
     }
@@ -51,11 +61,28 @@ class Friend extends Entity {
         return parent::update(['block' => '']);
     }
 
+    /**
+     * 내가 친추를 했거나, 내가 친추가 되었으면, 그 레코드를 리턴한다.
+     * @param array $in
+     * @return Entity|Friend
+     */
+    public function relationship(array $in) {
+        $ab = friend()->findOne(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']]);
+        if ( $ab->exists ) return $ab;
+        $ba = friend()->findOne(['myIdx' => $in['otherIdx'], 'otherIdx' => login()->idx]);
+        if ( $ba->exists ) return $ba;
+        return $this->error(e()->not_added_as_friend);
+    }
+
+    /**
+     * 내가 친구 추가한 목록
+     * @return array
+     */
     public function list() {
         $friends = $this->search(select: 'otherIdx', limit: 5000, conds: ['myIdx' => login()->idx, 'block' => '']);
         $rets = [];
         foreach($friends as $f) {
-            $rets[] = user($f['otherIdx'])->shortProfile();
+            $rets[] = user($f['otherIdx'])->shortProfile(firebaseUid: true);
         }
         return $rets;
     }
@@ -64,7 +91,7 @@ class Friend extends Entity {
         $friends = $this->search(select: 'otherIdx', limit: 5000, conds: ['myIdx' => login()->idx, 'block' => 'Y']);
         $rets = [];
         foreach($friends as $f) {
-            $rets[] = user($f['otherIdx'])->shortProfile();
+            $rets[] = user($f['otherIdx'])->shortProfile(firebaseUid: true);
         }
         return $rets;
     }
@@ -80,7 +107,7 @@ class Friend extends Entity {
         foreach($rows as $row) {
             $rets[] = [
                 'user' => user($row['myIdx'])->shortProfile(), // 블럭한 사용자
-                'blockedUser' => user($row['otherIdx'])->shortProfile(), // 블럭 당한 사용자
+                'blockedUser' => user($row['otherIdx'])->shortProfile(firebaseUid: true), // 블럭 당한 사용자
             ];
         }
         return $rets;
