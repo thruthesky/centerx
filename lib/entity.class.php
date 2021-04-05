@@ -86,12 +86,14 @@ class Entity {
     }
 
     /**
-     * 현재 entity 의 필드 값을 리턴한다.
+     * 현재 entity 의 필드 값 1개 또는 레코드 배열 전체를 리턴한다.
      *
      * 주의: 현재 객체에 에러가 설정되어져 있으면 $this->data 에 값이 있어도, 빈 배열 또는 null 이 리턴된다.
      * 따라서, 한번 에러가 발생하면, 더 이상 현재 객체를 사용하지 못한다. 그래서 같은 idx 로 새로운 객체를 만들어 다시 작업을 해야 한다.
      * 에러가 있는 상태에서, entity 삭제시, not your entity 등의 에러가 날 수 있다.
      * 이 부분에 실수 할 수 있으니 유의한다.
+     *
+     * 참고, $this->v() 는 내부적으로 getData() 를 사용하는 헬퍼 함수이다.
      *
      * @attention When the $field exists in $this->data, it returns the value (Event if it's null or false, it returns the value).
      *
@@ -113,6 +115,18 @@ class Entity {
             if ( $this->hasError ) return [];
             return $this->data;
         }
+    }
+
+    /**
+     * 에러가 설정되었으면, 에러 문자열을 리턴하고, 아니면, data(레코드 + meta + 기타 값) 배열 전체를 리턴한다.
+     *
+     * 사용처, 이 함수는 클라이언트로 현재 entity 의 data 값을 보내기 위해서 사용된다.
+     *
+     * @return array|string
+     */
+    public function response(): array|string {
+        if ( $this->hasError ) return $this->getError();
+        else return $this->getData();
     }
 
     /**
@@ -144,6 +158,7 @@ class Entity {
 
     /**
      * 현재 entity 의 $data 값을 변경한다.
+     * 주의, 이 함수는 메모리의 $data 변수 값만 바꾼다. DB 를 바꾸려면 `$this->update()` 를 사용해야한다.
      *
      * 이렇게 하면 idx 부터 모두 바뀌므로, 완전 다른 entity 가 된다.
      * @param array $data
@@ -179,6 +194,7 @@ class Entity {
 
     /**
      * $this->data 배열을 업데이트한다. 키가 존재하지 않으면 추가한다.
+     * 주의, 이 함수는 메모리의 $data 변수 값만 바꾼다. DB 를 바꾸려면 `$this->update()` 를 사용해야한다.
      *
      * $this->setData() 는 $this->data 배열 전체를 바꾸는 것이며 $this->idx 까지 바꾼는데, 이 함수는 특정 필드 1개만 바꾼다.
      *

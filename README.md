@@ -525,6 +525,17 @@ $result = db()->select('wc_users', 'idx', eq('idx', 77));
 d($result);
 ```
 
+
+## 친구 관리 테이블
+
+- 테이블 이름: friends
+- 친구 목록은 n:n 관계이다. 그래서 별도의 테이블이 존재해야한다.
+- myIdx 는 나의 회원 번호
+- otherIdx 는 내 친구로 등록된 (다른 사용자의) 회원 번호.
+- block 은 친구 신고를 하거나, 차단하는 경우, 'Y' 의 값을 가진다. 'N' 의 값을 가지지 않으며, 기본적으로는 빈(문자열) 값이다.
+
+
+
 # Widget System
 
 - A widget is a reusable code block like login, latest post list, and more.
@@ -1288,21 +1299,22 @@ echo Markdown::render ($md);
 - 아래와 같이 실행하면, `tests/*.test.php` PHP 스크립트(파일)을 실행한다.
 
 ```shell
-chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php"
 ```
 
 - 원한다면, 아래와 같이 테스트 파일의 일부 문자열을 포함하는 파일만 실행 할 수 있다.
   - 테스트 파일 이름에 "app" 또는 "user" 라는 문자열이 있으면 실행한다.
   
 ```shell
-chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php app"
-chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php user"
-chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php point"
-chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php shopping-mall"
-chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php getter"
-chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php purchase.android"
-chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php next"
-chokidar '**/*.php' -c "docker exec docker_php_1 php /root/tests/test.php next.entity.search"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php app"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php user"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php point"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php shopping-mall"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php getter"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php purchase.android"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php next"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php next.entity.search"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
 ```
 
 
@@ -1662,4 +1674,5 @@ echo "현재 환율: $phpKwr";
 
 # Geo IP
 
-- `get_current_country()` 함수로 현재 국가 정보 데이터를 가져 올 수 있는데, 매 접속 마다, 이 함수가 실행 될 수 있다.
+- `get_current_country()` 함수로 현재 국가 정보 데이터를 가져 올 수 있는데, 매 접속 마다, 이 함수가 실행 될 수 있으며, performance 에 영향을 줄 수 있다.
+  - 가장 좋은 방법은 SPA 를 통해서, 처음 접속시 한번만 실행하는 것이다.

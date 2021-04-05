@@ -83,4 +83,3 @@ https://local.itsuda50.com/?route=pointHistory.search&select=*&where=reason='POI
 
 ### point like search for who liked me. consdier the login user idx is 6. including all fields.
 https://local.itsuda50.com/?route=searchKey.stats&days=3
-

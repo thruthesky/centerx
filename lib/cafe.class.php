@@ -30,6 +30,14 @@ class Cafe extends Category
         return country_name($this->countryCode);
     }
 
+    /**
+     * 현재 카페가 속한 국가 정보를 리턴한다.
+     * @return Country
+     */
+    public function country(): Country {
+        return country($this->countryCode);
+    }
+
 
     /**
      * @return mixed
@@ -86,6 +94,25 @@ class Cafe extends Category
         else return explode('.', $this->id)[0];
     }
 
+
+    /**
+     * 현재 접속 사이트의 루트 도메인이 CAFE_COUNTRY_DOMAIN 이면, 참을 리턴한다.
+     *
+     * 활용, 카페 개설을 할 때, 현재 도메인이 특정 국가에 속한 도메인이라면, 국가 선택을 보여주지 않을 수 있다.
+     *
+     * @return bool
+     */
+    public function isCountryDomain(): bool {
+        return array_key_exists(get_root_domain(), CAFE_COUNTRY_DOMAINS);
+    }
+
+    /**
+     * 현재 접속 사이트의 CAFE_COUNTRY_DOMAIN 의 국가 코드를 리턴한다.
+     * @return string
+     */
+    public function countryDomainCountryCode(): string {
+        return CAFE_COUNTRY_DOMAINS[get_root_domain()]['countryCode'];
+    }
 }
 
 

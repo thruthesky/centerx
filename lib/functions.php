@@ -453,6 +453,47 @@ function setLoginAny(): User {
     return setLogin($users[0]->idx);
 }
 
+/**
+ * 테스트를 할 때에 사용되는 것으로, setLoginAny() 는 테이블에서 맨 마지막에 가입된 사용자로 로그인을 하는데,
+ * 이 함수는 2번째로 마지막에 가입된 사용자로 로그인을 한다.
+ * 주의, 로그인을 하므로, setLoginAny() 와 같은 다른 로그인과 같이 쓰면 로그인이 꼬일 수 있다.
+ * 두번 째 사용자 객체만 필요하면, getSecondUser() 함수를 사용한다.
+ * @return User
+ */
+function setLogin2ndUser(): User {
+    $users = user()->search(limit: 2);
+    return setLogin($users[1]->idx);
+}
+
+/**
+ * 맨 마지막에 가입한 사용자의 객체를 리턴한다.
+ * 테스트에 사용.
+ * @return User
+ */
+function getFirstUser(): User {
+    $users = user()->search(limit: 1, object: true);
+    return $users[0];
+}
+
+/**
+ * 맨 마지막에서 두번째(가입한) 사용자의 객체를 리턴한다.
+ * 테스트에 사용.
+ * @return User
+ */
+function getSecondUser(): User {
+    $users = user()->search(limit: 2, object: true);
+    return $users[1];
+}
+/**
+ * 맨 마지막에서 세번째(가입한) 사용자의 객체를 리턴한다.
+ * 테스트에 사용.
+ * @return User
+ */
+function getThirdUser(): User {
+    $users = user()->search(limit: 3, object: true);
+    return $users[2];
+}
+
 
 function admin(): bool {
     if ( login()->idx == 0 ) return false;

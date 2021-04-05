@@ -47,13 +47,14 @@ class Country extends Entity
  */
 function country(int|string $idx = 0, bool $currencyCode = false): Country
 {
-    if (is_string($idx) && strlen($idx) == 2 ) {
+    if (is_string($idx) && strlen($idx) == 2 ) { // 두 자리 코드
         return country()->findOne(['2digitCode' => $idx]);
-    } else if (is_string($idx) && strlen($idx) == 3 ) {
+    } else if (is_string($idx) && strlen($idx) == 3 ) { // 세 자리 코드
         if ( $currencyCode ) return country()->findOne(['currencyCode' => $idx]);
         else return country()->findOne(['3digitCode' => $idx]);
     } else {
-        return new Country($idx);
+        if ( is_numeric($idx) ) return new Country($idx); // 숫자
+        else return new Country(0); // 그 외
     }
 }
 

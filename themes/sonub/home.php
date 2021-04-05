@@ -4,6 +4,8 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
     <div class="p-2 fs-sm alert alert-warning">앗, 존재하지 않는 카페로 접속을 하였습니다. <a href="?cafe.create">카페 개설하기</a></div>
     <?php
 }
+
+
 ?>
 
 
@@ -20,8 +22,9 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
         ?>
         1<?=$src?> <?=$rate?><?=$dst?>.
 
+
         <?php
-        $country = get_current_country('175.196.80.131');
+        $country = get_current_country();
         if ( $country->exists ) {
             echo "접속: " . $country->CountryNameKR;
         }

@@ -20,6 +20,7 @@ require_once ROOT_DIR . 'lib/entity.class.php';
 require_once ROOT_DIR . 'lib/config.class.php';
 require_once ROOT_DIR . 'lib/country.class.php';
 require_once ROOT_DIR . 'lib/user.class.php';
+require_once ROOT_DIR . 'lib/friend.class.php';
 require_once ROOT_DIR . 'lib/category.class.php';
 require_once ROOT_DIR . 'lib/post-taxonomy.class.php';
 require_once ROOT_DIR . 'lib/post.class.php';

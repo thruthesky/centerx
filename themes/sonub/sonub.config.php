@@ -38,7 +38,9 @@ define('CAFE_MAIN_DOMAIS', [
  *
  * 예를 들면, philov.com 도메인을 필리핀 국가로 고정하는 경우, countryCode 를 PH 로 하고, 해당 도메인으로 접속하면, 카페 생성할 때에 국가 선택을 보여주지 않는다. 또한 각종 커스터마이징에서 필리핀으로 고정을 시킨다.
  *
- * @see README.md
+ * @주의 sonub.com 은 뺀다. sonub.com 은 특정 국가의 고정 도메인이 아니다.
+ *
+ * @see sonub/README.md
  */
 define('CAFE_COUNTRY_DOMAINS', [
     'philov.com' => [

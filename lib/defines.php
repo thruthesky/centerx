@@ -16,6 +16,7 @@ define('ENTITY', 'entity');
 define('CATEGORIES', 'categories');
 define('CACHE', 'cache');
 define('COUNTRIES', 'countries');
+define('FRIENDS', 'friends');
 define('USERS', 'users');
 define('IN_APP_PURCHASE', 'in_app_purchase');
 

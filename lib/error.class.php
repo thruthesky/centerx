@@ -124,9 +124,20 @@ class E {
 
 
 
+    /// Geo IP
     public string $geoip_address_not_found = 'error_geoip_address_not_found';
     public string $geoip_invalid_database = 'error_geoip_invalid_database';
     public string $geoip_unknown = 'error_geoip_unknown';
+
+    /// Friend
+    public string $cannot_add_oneself_as_friend = 'error_cannot_add_oneself_as_friend';
+    public string $already_added_as_friend = 'error_already_added_as_friend';
+    public string $not_added_as_friend = 'error_not_added_as_friend';
+    public string $already_blocked = 'error_already_blocked';
+    public string $not_blocked = 'error_not_blocked';
+
+
+
 
 
 
