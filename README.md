@@ -1690,5 +1690,11 @@ echo "현재 환율: $phpKwr";
 - 파이어베이스) Authentication 에 Email/password 가입 추가
 - CenterX) Service Account 를 다운로드해서 Centerx 에 연결
 - 파이어베이스) Firestore 생성 및 퍼미션 지정
-- 플레이스토어 + GCP) In app purchase 서버 사이드 verification 을 위우해서 GCP service account 생성하고, 파이어베이스에 연결
-
+- 플레이 + GCP + CenterX) In app purchase 서버 사이드 verification 을 위해서
+  - 플레이에서 API Access 클릭,
+  - GCP link 링크 선택,
+  - GCP 에서 service account 키 생성
+  - 플레이에 GCP 링크
+  - GCP service account 를 centerx 에 연결
+    - CenterX 의 android package name 과 service account path 지정
+- 

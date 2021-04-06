@@ -151,7 +151,7 @@ if ( ! defined('FIREBASE_DATABASE_URI') ) {
  * 인앱구매를 할 때에, 안드로이드 앱에서 결제 후, 서버에서 검증하기 위한 GCP service account json 파일과 package name.
  * iOS 에서는 따로 설정 할 것이 없다.
  */
-define("GCP_SERVICE_ACCOUNT_KEY_JSON_FILE_PATH", ROOT_DIR . "themes/itsuda/keys/pc-api-7100065734360067930-209-cc5b66d19c08.json");
+define("GCP_SERVICE_ACCOUNT_KEY_JSON_FILE_PATH", ROOT_DIR . "themes/itsuda/keys/gcp_service_account_key.json");
 define("ANDROID_APP_ID", "com.itsuda50.app3");
 
 
