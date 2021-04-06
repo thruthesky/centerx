@@ -46,52 +46,51 @@ foreach ($rows as $row) {
     <form method="post" action="/">
 
         <?=hiddens(in: ['p', 'w'], mode: 'submit')?>
-
-        <div class="input-group mb-3">
-            <label class="input-group-prepend" for="idx">
-                <span class="input-group-text">idx</span>
-            </label>
-            <input type="text" class="form-control" placeholder="idx" name="idx" id="idx"  value="<?=in('idx')?>">
-        </div>
-        <div class="input-group mb-3">
-            <label class="input-group-prepend" for="userIdx">
-                <span class="input-group-text">UserIdx</span>
-            </label>
-            <input type="text" class="form-control" placeholder="userIdx" name="userIdx" id="userIdx"  value="<?=in('userIdx')?>">
-        </div>
-        <div class="input-group mb-3">
-            <label class="input-group-prepend" for="platform">
-                <span class="input-group-text">Status</span>
-            </label>
-            <input type="text" class="form-control" placeholder="status" name="status" id="status"  value="<?=!empty(in('status')) ? in('status')  : 'success'?>">
-        </div>
-        <div class="input-group mb-3">
-            <label class="input-group-prepend" for="platform">
-                <span class="input-group-text">Platform</span>
-            </label>
-            <input type="text" class="form-control" placeholder="platform" name="platform" id="platform"  value="<?=in('platform')?>">
-        </div>
-        <div class="input-group mb-3">
-            <label class="input-group-prepend" for="productID">
-                <span class="input-group-text">Product ID</span>
-            </label>
-            <input type="text" class="form-control" placeholder="productID" name="productID" id="productID"  value="<?=in('productID')?>">
-        </div>
-        <div class="input-group mb-3">
-            <label class="input-group-prepend" for="limit">
-                <span class="input-group-text">Limit</span>
-            </label>
-            <input type="text" class="form-control" placeholder="limit" name="limit" id="limit"  value="<?=$limit?>">
-        </div>
-
-        <div class="input-group mb-3">
-            <label>Search by date</label>
-            <div>
-                <input name="beginDate" placeholder="Date begin(YYYYMMDD)" v-model="beginDate">
-                ~
-                <input name="endDate" placeholder="Date end(YYYYMMDD)" v-model="endDate">
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="idx">idx</label>
+                <input type="text" class="form-control" placeholder="idx" name="idx" id="idx"  value="<?=in('idx')?>">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="userIdx">UserIdx</label>
+                <input type="text" class="form-control" placeholder="userIdx" name="userIdx" id="userIdx"  value="<?=in('userIdx')?>">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="status">Status</label>
+                <select class="custom-select" id="status" name="status"   value="<?=!empty(in('status')) ? in('status')  : 'success'?>">>
+                    <option value="success">Success</option>
+                    <option value="pending">Pending</option>
+                    <option value="failure">Failure</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="platform">Platform</label>
+                <select class="custom-select" id="platform" name="platform" value="<?=in('platform')?>">
+                    <option value="">Select platform</option>
+                    <option value="android">Android</option>
+                    <option value="ios">IOS</option>
+                </select>
             </div>
         </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="productID">Product ID</label>
+                <input type="text" class="form-control" placeholder="productID" name="productID" id="productID"  value="<?=in('productID')?>">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="limit">Limit</label>
+                <input type="text" class="form-control" placeholder="limit" name="limit" id="limit"  value="<?=$limit?>">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="beginDate">Date begin</label>
+                <input class="form-control" name="beginDate" placeholder="Date begin(YYYYMMDD)" id="beginDate" v-model="beginDate">
+            </div>
+            <div class="form-group col-md-3">
+                <label for="endDate">Date End</label>
+                <input class="form-control" name="endDate" placeholder="Date end(YYYYMMDD)" id="endDate" v-model="endDate">
+            </div>
+        </div>
+
 
         <div class="d-flex justify-content-start mt-2 mb-3">
             <button type="button" class="btn btn-primary mr-3" @click="selectDateRange(7)">
@@ -120,7 +119,7 @@ foreach ($rows as $row) {
     </form>
 
     <div class="total-price mb-5">
-        <h5 @click="showTotalSummary = !showTotalSummary">Total Summary</h5>
+        <h4 @click="showTotalSummary = !showTotalSummary">Total Summary</h4>
         <div v-if="showTotalSummary">
             <div class='font-weight-bold'>Total Price Summary</div>
         <?php
