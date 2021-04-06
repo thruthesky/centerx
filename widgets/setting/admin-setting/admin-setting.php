@@ -1,7 +1,7 @@
 <?php
     if ( modeUpdate() ) {
         adminSettings()->set(in());
-        setRealtimeDatabaseDocument('/notifications/settings', ['time' => time()]);
+//        setRealtimeDatabaseDocument('/notifications/settings', ['time' => time()]);
         ?>
             <?php includeFirebase(); ?>
 <script>

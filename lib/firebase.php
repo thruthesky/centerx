@@ -18,7 +18,7 @@ use Kreait\Firebase\Messaging\AndroidConfig;
  *
  */
 function getFirebase() {
-    return (new Factory)->withServiceAccount(FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH)->withDatabaseUri(FIREBASE_DATABASE_URI);
+    return (new Factory)->withServiceAccount(FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH);
 }
 
 
@@ -192,6 +192,7 @@ function getAndroidPushData() {
 
 
 /**
+ * @deprecated Do not use firebase realtime database
  * Update the document under 'notification' in Firebase RealTime Database.
  *
  * @attention $documentPath must begin with `/`.
@@ -203,10 +204,10 @@ function getAndroidPushData() {
  *
  */
 function setRealtimeDatabaseDocument($documentPath, $data) {
-    if ( isTesting() ) return;
-    $db = getRealtimeDatabase();
-    $reference = $db->getReference($documentPath);
-    $reference->set($data);
+//    if ( isTesting() ) return;
+//    $db = getRealtimeDatabase();
+//    $reference = $db->getReference($documentPath);
+//    $reference->set($data);
 }
 
 

@@ -1,8 +1,8 @@
 <?php
 
 
-define("FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH", theme()->folder . "keys/itsuda50-firebase-adminsdk.json");
-define("FIREBASE_DATABASE_URI", "https://itsuda50-default-rtdb.firebaseio.com/");
+define("FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH", theme()->folder . "keys/itsuda50-2-firebase-adminsdk-.json");
+define("FIREBASE_DATABASE_URI", "");
 
 //define("SERVICE_ACCOUNT_LINK_TO_APP_JSON_FILE_PATH", ROOT_DIR . "themes/itsuda/keys/itsuda-gcp-iap-service-account-key.json");
 

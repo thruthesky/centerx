@@ -75,7 +75,7 @@ class Translation extends Entity
             ]);
 
         }
-        setRealtimeDatabaseDocument('/notifications/translations', ['time' => time()]);
+//        setRealtimeDatabaseDocument('/notifications/translations', ['time' => time()]);
         if ( $this->hasError ) return $this->getError();
         return $in[CODE];
     }
