@@ -234,7 +234,7 @@ class InAppPurchase extends Entity {
         $googleClient = new \Google_Client();
         $googleClient->setScopes([\Google_Service_AndroidPublisher::ANDROIDPUBLISHER]);
         $googleClient->setApplicationName('Your_Purchase_Validator_Name');
-        $googleClient->setAuthConfig(SERVICE_ACCOUNT_LINK_TO_APP_JSON_FILE_PATH);
+        $googleClient->setAuthConfig(GCP_SERVICE_ACCOUNT_KEY_JSON_FILE_PATH);
 
         $googleAndroidPublisher = new \Google_Service_AndroidPublisher($googleClient);
         $validator = new \ReceiptValidator\GooglePlay\Validator($googleAndroidPublisher);

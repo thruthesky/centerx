@@ -1676,3 +1676,25 @@ echo "현재 환율: $phpKwr";
 
 - `get_current_country()` 함수로 현재 국가 정보 데이터를 가져 올 수 있는데, 매 접속 마다, 이 함수가 실행 될 수 있으며, performance 에 영향을 줄 수 있다.
   - 가장 좋은 방법은 SPA 를 통해서, 처음 접속시 한번만 실행하는 것이다.
+  
+
+# 새로운 앱을 개발 할 때 해야하는 것
+
+- 구글 계정 준비(또는 생성)
+
+- 파이어베이스에서 프로젝트 생성
+- 파이어베이스) 안드로이드 앱 추가
+- 플러터) google-sercvies.json 파일을 다운로드하여 android/app 폴더에 저장
+- 플러터) 5개의 파일에 앱 패키지 ID 를 변경
+- 플러터) Keystore 생성 후, build.gradle 에 keystore.properties 연결
+- 파이어베이스) Authentication 에 Email/password 가입 추가
+- CenterX) Service Account 를 다운로드해서 Centerx 에 연결
+- 파이어베이스) Firestore 생성 및 퍼미션 지정
+- 플레이 + GCP + CenterX) In app purchase 서버 사이드 verification 을 위해서
+  - 플레이에서 API Access 클릭,
+  - GCP link 링크 선택,
+  - GCP 에서 service account 키 생성
+  - 플레이에 GCP 링크
+  - GCP service account 를 centerx 에 연결
+    - CenterX 의 android package name 과 service account path 지정
+- 

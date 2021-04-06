@@ -148,9 +148,13 @@ if ( ! defined('FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH') ) {
 if ( ! defined('FIREBASE_DATABASE_URI') ) {
     define("FIREBASE_DATABASE_URI", "https://itsuda50-default-rtdb.firebaseio.com/");
 }
-define("SERVICE_ACCOUNT_LINK_TO_APP_JSON_FILE_PATH", ROOT_DIR . "themes/itsuda/keys/itsuda-gcp-iap-service-account-key.json");
-define("ANDROID_APP_ID", "com.itsuda50.app");
-define("IOS_APP_ID", "com.itsuda50.app");
+/**
+ * 인앱구매를 할 때에, 안드로이드 앱에서 결제 후, 서버에서 검증하기 위한 GCP service account json 파일과 package name.
+ * iOS 에서는 따로 설정 할 것이 없다.
+ */
+define("GCP_SERVICE_ACCOUNT_KEY_JSON_FILE_PATH", ROOT_DIR . "themes/itsuda/keys/gcp_service_account_key.json");
+define("ANDROID_APP_ID", "com.itsuda50.app3");
+
 
 
 

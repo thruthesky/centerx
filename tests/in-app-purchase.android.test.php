@@ -17,7 +17,7 @@ define('TEST_USER_IDX', 1);
 
 
 function testServiceAccount() {
-    isTrue( file_exists(SERVICE_ACCOUNT_LINK_TO_APP_JSON_FILE_PATH) === true, 'Expected: service account json file exists');
+    isTrue( file_exists(GCP_SERVICE_ACCOUNT_KEY_JSON_FILE_PATH) === true, 'Expected: service account json file exists');
 }
 
 
