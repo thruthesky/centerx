@@ -5,10 +5,9 @@ if(modeSubmit()) {
     $in = in();
     unset($in['mode'],$in['p'],$in['w']);
 
-
-    $profile = user(in('idx'))->update($in);
+    $profile = user(in('idx'))->adminProfileUpdate($in)->response();
     if(isError($profile)) {
-        jsAlert('Edit Failed');
+        jsAlert('Edit Failed: ' . $profile);
         $profile = user(in('idx'))->read();
     }
 } else {
@@ -151,20 +150,11 @@ if(modeSubmit()) {
     const adminUserEdit = Vue.createApp({
         data() {
             return {
-                showTotalSummary: true,
-                beginDate: "<?=in('beginDate')?>",
-                endDate: "<?=in('endDate')?>",
+                options: {
+
+                }
             }
         },
-        methods: {
-            update(days) {
-                console.log('selectDateRange');
-                let x = new Date();
-                let newDate = new Date(x.getTime() - 1000*60*60*24*days);
-                this.beginDate = this.yyyymmddFromDate(newDate);
-                this.endDate = this.yyyymmddFromDate(x);
-            },
-        }
     }).mount("#admin-user-edit");
 </script>
 

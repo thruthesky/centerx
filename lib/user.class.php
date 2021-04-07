@@ -318,6 +318,16 @@ class User extends Entity {
         );
     }
 
+
+    function adminProfileUpdate($in): self
+    {
+        if ( isset($in[EMAIL]) ) {
+            if ( empty($in[EMAIL]) ) return $this->error(e()->email_is_empty);
+            if ($this->emailExists($in[EMAIL]) &&  $this->findOne([EMAIL => $in[EMAIL]])['idx'] != $this->idx) return $this->error(e()->email_exists);
+        }
+        return parent::update($in);
+    }
+
 }
 
 /**

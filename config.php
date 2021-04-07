@@ -21,6 +21,7 @@ define('DOMAIN_THEMES', [
     '169.254.194.6' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
     '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.
     '192.168.100.17' => 'itsuda', // Charles Ip address
+    '192.168.0.146' => 'itsuda', // Charles Ip address
 
     'philov' => 'sonub',
     'tellvi' => 'sonub',
