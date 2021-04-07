@@ -2,10 +2,8 @@
 if ( admin() == false ) jsBack('You are not admin');
 ?>
 <style>
-    .layout .content {
-        padding: 1rem;
-        border-radius: 1rem;
-        background-color: #eeede7;
+    .layout {
+       background: #CDEEF2;
     }
     .menu a[href*="<?=in('w')?>"] {
         color: yellow !important;
@@ -83,20 +81,7 @@ if ( admin() == false ) jsBack('You are not admin');
         </div>
     </div>
     <div class="container">
-
-
-        <div class="container menu mt-3">
-            <a href="/?p=admin.index&w=user/admin-user-list"><?=ln('users', ln(['en' => 'Users', 'ko' => '사용자']))?></a>
-            <a href="/?p=admin.index&w=category/admin-category-list"><?=ln('category', ln(['en' => 'Category', 'ko' => '카테고리']))?></a>
-            <a href="/?p=admin.index&w=post-list/admin-post-list"><?=ln(['en' => 'Posts', 'ko' => '글'])?></a>
-            <a
-            <a href="/?p=admin.index&w=shopping-mall/admin-shopping-mall"><?=ln(['en' => 'Shopping Mall', 'ko' => '쇼핑몰'])?></a>
-            <a
-            <a
-        </div>
-
-
-        <div class="content mt-3">
+        <div class="content py-4">
             <?php
             if ( in('w') ) include widget(in('w'));
             else include theme()->file('admin/dashboard');
