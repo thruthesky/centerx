@@ -235,21 +235,20 @@ if ( !defined('NAVER_API_URL') ) define('NAVER_API_URL', "https://nid.naver.com/
  */
 $__firebase_sdk = <<<EOH
 <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.3.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
 
 <!-- Add Firebase products like firestore -->
-<script src="https://www.gstatic.com/firebasejs/8.3.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-firestore.js"></script>
 
 <script>
   // Your web app's Firebase configuration
   var firebaseConfig = {
-    apiKey: "AIzaSyDZ8Bfuxtp2uXZxgXM7Q9Kl4-ae034GQ5o",
-    authDomain: "itsuda50.firebaseapp.com",
-    databaseURL: "https://itsuda50-default-rtdb.firebaseio.com",
-    projectId: "itsuda50",
-    storageBucket: "itsuda50.appspot.com",
-    messagingSenderId: "559371413269",
-    appId: "1:559371413269:web:23570a748e08b7b00eeb1c"
+    apiKey: "AIzaSyBx4GE4qdL1tMxPzxlhfyYlnlTdid17wig",
+    authDomain: "itsuda503.firebaseapp.com",
+    projectId: "itsuda503",
+    storageBucket: "itsuda503.appspot.com",
+    messagingSenderId: "855580642229",
+    appId: "1:855580642229:web:6df58a658839d249fd27fc"
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);

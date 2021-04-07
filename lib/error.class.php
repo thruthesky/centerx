@@ -135,6 +135,7 @@ class E {
     public string $not_added_as_friend = 'error_not_added_as_friend';
     public string $already_blocked = 'error_already_blocked';
     public string $not_blocked = 'error_not_blocked';
+    public string $no_relationship = 'error_no_relationship';
 
 
 

@@ -71,7 +71,7 @@ class Friend extends Entity {
         if ( $ab->exists ) return $ab;
         $ba = friend()->findOne(['myIdx' => $in['otherIdx'], 'otherIdx' => login()->idx]);
         if ( $ba->exists ) return $ba;
-        return $this->error(e()->not_added_as_friend);
+        return $this->error(e()->no_relationship);
     }
 
     /**
