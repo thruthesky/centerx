@@ -16,7 +16,7 @@ define('DEBUG_LOG_FILE_PATH', ROOT_DIR . 'var/logs/debug.log');
  */
 define('DOMAIN_THEMES', [
     'itsuda' => 'itsuda',
-    '127.0.0.1' => 'itsuda',
+    '127.0.0.1' => 'default',
     'localhost' => 'itsuda',
     '169.254.194.6' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
     '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.
@@ -98,7 +98,10 @@ define('META_TABLE', DB_PREFIX . 'metas');
  * 만약, 개별 설정에서 정의된 쿠키가 없으면, 자동으로 ROOT_DOMAINS 에 있는 것을 기반으로 최상위 도메인(1차) 도메인으로 지정한다.
  */
 if ( !defined('COOKIE_DOMAIN') ) {
-    define('COOKIE_DOMAIN', '.' . get_root_domain());
+    $_rootDomain = get_root_domain();
+    if ( $_rootDomain == 'localhost' || $_rootDomain == '127.0.0.1' ) $_cookieDomain = $_rootDomain;
+    else $_cookieDomain = ".$_rootDomain";
+    define('COOKIE_DOMAIN', $_cookieDomain);
 }
 
 

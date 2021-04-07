@@ -60,6 +60,7 @@ if ( $editCategory ) {
                     <th scope="col">ID</th>
                     <th scope="col">TITLE</th>
                     <th scope="col">DESCRIPTION</th>
+                    <th scope="col">[X]</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -70,6 +71,7 @@ if ( $editCategory ) {
                         <td><a href="/?p=admin.index&w=category/admin-category-list&id=<?=$category->id?>"><?=$category->id?></a></td>
                         <td><?=$category->title?></td>
                         <td><?=$category->description?></td>
+                        <td><a href="/?admin.index&w=<?=in('w')?>&mode=delete&id=<?=$category->id?>" onclick="return confirm('Delete the category?')">[X]</a></td>
                     </tr>
                 <?php } ?>
                 </tbody>

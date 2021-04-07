@@ -38,11 +38,11 @@ if ( modeSubmit() ) {
 
     <div class="box border-radius-md">
         <div class="mb-3">
-            <label class="form-label">가입 보너스</label>
+            <label class="form-label"><?=ek('Registration point', '회원 가입 포인트')?></label>
             <input type="number" class="form-control" name="POINT_REGISTER" placeholder="0" value="<?=config(POINT_REGISTER, 0)?>">
         </div>
         <div class="mb-3">
-            <label class="form-label">로그인 보너스</label>
+            <label class="form-label"><?=ek('Login point', '로그인 포인트')?></label>
             <input type="number" class="form-control" name="POINT_LOGIN" placeholder="0" value="<?=config(POINT_LOGIN, 0)?>">
         </div>
     </div>
@@ -69,40 +69,40 @@ if ( modeSubmit() ) {
 
         <div class="row">
             <div class="col">
-                <label class="form-label">추천 받는 사람 포인트</label>
+                <label class="form-label"><?=ek('Point for like receiver', '추천 받는 사람 포인트')?></label>
                 <input type="number" class="form-control" name="POINT_LIKE" placeholder="0" value="<?=config(POINT_LIKE, 0)?>">
             </div>
             <div class="col">
-                <label class="form-label">비추천 받는 사람 포인트 </label>
+                <label class="form-label"><?=ek('Point for dislike receiver', '비추천 받는 사람 포인트')?></label>
                 <input type="number" class="form-control" name="POINT_DISLIKE" placeholder="0" value="<?=config(POINT_DISLIKE, 0)?>">
             </div>
         </div>
 
         <div class="row mt-3">
             <div class="col">
-                <label class="form-label">추천하는 사람 포인트</label>
+                <label class="form-label"><?=ek('Point for like recommender', '추천하는 사람 포인트')?></label>
                 <input type="number" class="form-control" name="POINT_LIKE_DEDUCTION" placeholder="0" value="<?=config(POINT_LIKE_DEDUCTION, 0)?>">
             </div>
             <div class="col">
-                <label class="form-label">비추천 하는 사람 포인트</label>
+                <label class="form-label"><?=ek('Point for dislike recommender', '비추천 하는 사람 포인트')?></label>
                 <input type="number" class="form-control" name="POINT_DISLIKE_DEDUCTION" placeholder="0" value="<?=config(POINT_DISLIKE_DEDUCTION, 0)?>">
             </div>
         </div>
 
         <div class="row mt-3">
             <div class="col">
-                <label class="form-label">추천/비추천 포인트 증/감 시간 제한. 단위) 시간</label>
+                <label class="form-label"><?=ek('Point change limit by hour', '추천/비추천 포인트 증/감 시간 제한. 단위) 시간')?></label>
                 <input type="number" class="form-control" name="POINT_LIKE_HOUR_LIMIT" placeholder="0" value="<?=config(POINT_LIKE_HOUR_LIMIT, 0)?>">
             </div>
             <div class="col">
-                <label class="form-label">추천/비추천 포인트 증/감 회수 제한</label>
+                <label class="form-label"><?=ek('Point change limit by count for the hour', '추천/비추천 포인트 증/감 회수 제한')?></label>
                 <input type="number" class="form-control" name="POINT_LIKE_HOUR_LIMIT_COUNT" placeholder="0" value="<?=config(POINT_LIKE_HOUR_LIMIT_COUNT, 0)?>">
             </div>
         </div>
 
         <div class="row mt-3">
             <div class="col">
-                <label class="form-label">일/수 제한</label>
+                <label class="form-label"><?=ek('Point change limit by day', '일/수 제한')?></label>
                 <input type="number" class="form-control" name="POINT_LIKE_DAILY_LIMIT_COUNT" placeholder="0" value="<?=config(POINT_LIKE_DAILY_LIMIT_COUNT, 0)?>">
             </div>
         </div>

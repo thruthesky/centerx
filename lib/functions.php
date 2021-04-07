@@ -202,6 +202,7 @@ function get_root_domain(string $_domain = null): string {
     if ( $_domain == null ) $_domain = get_domain_name();
     if ( empty($_domain) ) return '';
 
+
     foreach( SUPPORTED_DOMAIN_SUFFIX as $_root ) {
         if ( stripos($_domain, $_root) !== false ) {
             $_without_root = str_ireplace($_root, '', $_domain);

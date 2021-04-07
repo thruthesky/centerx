@@ -13,20 +13,22 @@
     </style>
 </head>
 <body>
-<?php
+<?php if ( str_contains(theme()->page(), '/admin/') ) include theme()->page(); else { ?>
+    <?php
     include theme()->file('header');
     ?>
 
-<div class="container-xl">
-    <div class="row">
-        <div class="d-none d-md-block col-3"><?php include theme()->file('left'); ?></div>
-        <div class="col p-0 m-0"><?php include theme()->page(); ?></div>
-        <div class="d-none d-lg-block col-3"><?php include theme()->file('right'); ?></div>
+    <div class="container-xl">
+        <div class="row">
+            <div class="d-none d-md-block col-3"><?php include theme()->file('left'); ?></div>
+            <div class="col p-0 m-0"><?php include theme()->page(); ?></div>
+            <div class="d-none d-lg-block col-3"><?php include theme()->file('right'); ?></div>
+        </div>
     </div>
-</div>
-<?php
+    <?php
     include theme()->file('footer');
-?>
+    ?>
+<?php } ?>
 </body>
 </html>
 

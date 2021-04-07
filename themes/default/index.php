@@ -24,7 +24,6 @@
 
 
 <?php
-
     include theme()->page();
 ?>
 

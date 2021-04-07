@@ -55,6 +55,9 @@
         });
     });
 </script>
+<?php
+
+?>
 <?php if ( str_contains(theme()->page(), '/admin/') ) { ?>
     <?php include theme()->page(); ?>
 <?php } else { ?>
