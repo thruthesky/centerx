@@ -32,9 +32,9 @@ $login = user()->count(where: "updatedAt<='$now' AND updatedAt>='$ago'");
             <div><?=$login?></div>
             <div><?=config(POINT_LIKE, 0)?>/<?=config(POINT_LIKE_DEDUCTION, 0)?></div>
             <div><?=config(POINT_DISLIKE, 0)?>/<?=config(POINT_DISLIKE_DEDUCTION, 0)?></div>
-            <div><?=config(POINT_LIKE_HOUR_LIMIT, 0)?></div>
-            <div><?=config(POINT_LIKE_HOUR_LIMIT_COUNT, 0)?></div>
-            <div><?=config(POINT_LIKE_DAILY_LIMIT_COUNT, 0)?></div>
+<!--            <div>--><?//=config(POINT_LIKE_HOUR_LIMIT, 0)?><!--</div>-->
+<!--            <div>--><?//=config(POINT_LIKE_HOUR_LIMIT_COUNT, 0)?><!--</div>-->
+<!--            <div>--><?//=config(POINT_LIKE_DAILY_LIMIT_COUNT, 0)?><!--</div>-->
 
         </div>
         <div class="px-3">
@@ -42,9 +42,9 @@ $login = user()->count(where: "updatedAt<='$now' AND updatedAt>='$ago'");
             <div>- <?=ek('Login', '로그인')?></div>
             <div>- <?=ek('Like', '처럼')?></div>
             <div>- <?=ek('Dislike', '싫어함')?></div>
-            <div>- <?=ek('Hour Limit', '시간 제한')?></div>
-            <div>- <?=ek('Change/Hour', '변경 / 시간')?></div>
-            <div>- <?=ek('Daily Limit', '일일 한도')?></div>
+<!--            <div>- --><?//=ek('Hour Limit', '시간 제한')?><!--</div>-->
+<!--            <div>- --><?//=ek('Change/Hour', '변경 / 시간')?><!--</div>-->
+<!--            <div>- --><?//=ek('Daily Limit', '일일 한도')?><!--</div>-->
         </div>
     </div>
 </section>
