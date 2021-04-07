@@ -44,7 +44,8 @@ if ( admin() == false ) jsBack('You are not admin');
 
     <div class="content mt-3">
         <?php
-        include widget(in('w') ?? 'user/admin-user-list');
+        if ( in('w') ) include widget(in('w'));
+        else include theme()->file('admin/dashboard');
         ?>
     </div>
 </section>
