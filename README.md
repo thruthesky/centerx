@@ -894,7 +894,23 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 # Translation
 
+- 언어화 기능이다. 사이트나 앱에 표시되는 글을 영어, 한국어 등으로 번역해서 표현 할 수 있다.
+- 플러터에서는 Getx 의 `.tr` 기능과 연계해서 사용하면 된다.
+
+- Translation 을 언어화가 아닌 다른 용도로 사용이 가능한데, 
+  예를 들면, "앱 메뉴"에 "버전 표시"를 할지 말지 관리자 페이지에서 on/off 를 설정 해야하는 경우가 있는데,
+  이 기능을 하기 위해서는 매번 관리자 페이지(HTML 웹사이트)를 수정해서, 기능 추가/저장을 해야하는데, 번거롭게 매번 이렇게 하지 말고,
+  Translation 에 "showVersionOnDrawer" 를 추가하면, on 이 되고, 삭제하면 off 가 되는 것이다. 즉, 관리자 페이지 기능을 수정 할 필요가 없는 것이다.
+  이 처럼, Translation 을 여러가지로 활용 할 수 있다. 다만, 너무 복잡하게 사용하지 않도록 주의한다.
+  또한, "showVersionOnDrawer" 언어 코드에 대한 값을 "Y" 또는 "N" 정도로 간단하게 설정한다.
+  그래서, en: Y, ko: N 와 같이 해서, 영어에서는 보여주고, 한국어에서는 안보여 줄 수도 있다.
+  클라이언트에서 값을 확인 할 때에는 '플러터 예제 코드' `if ('showLoginOnDrawer'.t == 'Y')` 와 같이 값이 Y 또는 N 인지 비교를 해야 한다.
+  그리고 더 짧게 쓰려면 `if ('loginOnDrawer'.on)` 와 같이 할 수도 있다.
+  참고: https://github.com/thruthesky/dalgona/blob/main/lib/services/globals.dart#L52
+  
+
 - @see the phpdoc
+
 
 # Settings
 
