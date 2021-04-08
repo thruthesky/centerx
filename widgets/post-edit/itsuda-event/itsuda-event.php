@@ -67,7 +67,6 @@ if ( in(CATEGORY_ID) ) {
 </div>
 
 
-<?php includeVueOnce(); ?>
 <?php
 if ( $post->idx ) {
     $banner = files()->findOne(['entity' => $post->idx, 'code' => 'banner']);
@@ -82,6 +81,7 @@ if ( $post->idx ) {
 }
 ?>
 <script>
+    alert('fix to vu2;');
     const itsudaEventEdit = Vue.createApp({
         data() {
             return {

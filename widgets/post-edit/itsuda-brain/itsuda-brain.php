@@ -81,7 +81,7 @@ if ( in(CATEGORY_ID) ) {
     </li>
 </ul>
 
-<?php includeVueOnce(); ?>
+
 <?php
 if ( $post->idx ) {
     $android = files()->findOne(['entity' => $post->idx, 'code' => 'android']);
@@ -98,6 +98,7 @@ if ( $post->idx ) {
 }
 ?>
 <script>
+    alert('fix to vu2;');
     const itsudaBrainEdit = Vue.createApp({
         data() {
             return {

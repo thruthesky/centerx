@@ -46,6 +46,7 @@ foreach ($rows as $row) {
     <form method="post" action="/">
 
         <?=hiddens(in: ['p', 'w'], mode: 'submit')?>
+
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label for="idx">idx</label>
@@ -122,25 +123,25 @@ foreach ($rows as $row) {
         <h4 @click="showTotalSummary = !showTotalSummary">Total Summary</h4>
         <div v-if="showTotalSummary">
             <div class='font-weight-bold'>Total Price Summary</div>
-        <?php
-        foreach ($total_price as $currency => $value) {
-            echo "<div>$currency: $value</div>";
-        }
-        echo "<div class='font-weight-bold'>Individual Price Summary</div>";
-        foreach ($user_total_spend as $userIdx => $total_price) {
-            $user = user($userIdx);
-            echo "<div class='font-weight-bold'>{$user->name}({$user->idx})</div>";
+            <?php
             foreach ($total_price as $currency => $value) {
                 echo "<div>$currency: $value</div>";
             }
-        }
-        ?>
+            echo "<div class='font-weight-bold'>Individual Price Summary</div>";
+            foreach ($user_total_spend as $userIdx => $total_price) {
+                $user = user($userIdx);
+                echo "<div class='font-weight-bold'>{$user->name}({$user->idx})</div>";
+                foreach ($total_price as $currency => $value) {
+                    echo "<div>$currency: $value</div>";
+                }
+            }
+            ?>
         </div>
     </div>
 
 
 
-    <div class="custom-control custom-checkbox custom-control-inline" v-for="(option, key) in options" :key="option">
+    <div class="custom-control custom-checkbox custom-control-inline" v-for="(option, key) in options" :key="key">
         <input type="checkbox" class="custom-control-input" :id="key" v-model="options[key]">
         <label class="custom-control-label text-capitalize" :for="key">{{key}}</label>
     </div>
@@ -201,34 +202,31 @@ foreach ($rows as $row) {
     </table>
 </section>
 
-<script src="<?php echo HOME_URL?>/etc/js/vue.3.0.7.min.js"></script>
 <script>
-    const inAppPurchase = Vue.createApp({
-        data() {
-            return {
-                showTotalSummary: true,
-                beginDate: "<?=in('beginDate')?>",
-                endDate: "<?=in('endDate')?>",
-                options: {
-                    status: true,
-                    platform: true,
-                    productID: true,
-                    purchaseID: false,
-                    price: true,
-                    title: true,
-                    description: false,
-                    applicationUsername: false,
-                    transactionDate: false,
-                    productIdentifier: false,
-                    quantity: false,
-                    transactionIdentifier: false,
-                    transactionTimeStamp: false,
-                    localVerificationData: false,
-                    serverVerificationData: false,
-                    localVerificationData_packageName: false,
-                    createdAt: true,
-                    updatedAt: false,
-                }
+    mixins.push({
+        data: {
+            showTotalSummary: true,
+            beginDate: "<?=in('beginDate')?>",
+            endDate: "<?=in('endDate')?>",
+            options: {
+                status: true,
+                platform: true,
+                productID: true,
+                purchaseID: false,
+                price: true,
+                title: true,
+                description: false,
+                applicationUsername: false,
+                transactionDate: false,
+                productIdentifier: false,
+                quantity: false,
+                transactionIdentifier: false,
+                transactionTimeStamp: false,
+                localVerificationData: false,
+                serverVerificationData: false,
+                localVerificationData_packageName: false,
+                createdAt: true,
+                updatedAt: false,
             }
         },
         methods: {
@@ -255,7 +253,7 @@ foreach ($rows as $row) {
                 return y + m + d;
             }
         }
-    }).mount("#in-app-purchase");
+    });
 </script>
 
 

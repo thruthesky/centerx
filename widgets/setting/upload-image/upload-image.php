@@ -29,8 +29,8 @@ $file = files()->getByCode(in('code'));
     <div>입력값: 제목 $admin_upload_title, 내용: $admin_upload_description, 코드: in('code')</div>
 </div>
 
-<?php includeVueOnce(); /** Vue.js 가 여러번 로딩되지 않도록 한다. */ ?>
 <script>
+    alert('fix to vu2;');
     const adminUploadImage = Vue.createApp({
         data() {
             return {

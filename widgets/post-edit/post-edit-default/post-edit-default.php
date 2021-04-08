@@ -57,8 +57,8 @@ if (in(CATEGORY_ID)) {
     </div>
 </section>
 
-<?php includeVueOnce(); ?>
 <script>
+    alert('fix to vu2;');
     const postEditDefault = Vue.createApp({
         data() {
             return {
