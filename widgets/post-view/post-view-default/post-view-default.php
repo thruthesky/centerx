@@ -95,10 +95,10 @@ $post = post()->current();
 
                 console.log('form', this.form);
 
-                // axios.post('/index.php', this.form)
-                //     .then(function(res) {
-                //         console.log('create success: ', res);
-                //     });
+                axios.post('/index.php', this.form)
+                    .then(function(res) {
+                        console.log('create success: ', res);
+                    });
             }
         }
     });
