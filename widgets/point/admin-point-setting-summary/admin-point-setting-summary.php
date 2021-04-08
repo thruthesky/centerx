@@ -3,24 +3,7 @@ $registered = user()->count();
 $now = time();
 $ago = $now - 60 * 30;
 $login = user()->count(where: "updatedAt<='$now' AND updatedAt>='$ago'");
-
-
 ?>
-<style>
-    .fw-700 {
-        font-weight: 700;
-    }
-    .bg-skyblue {
-        background: #CAF9FF;
-    }
-    .color-lightblue {
-        color: #00B4CB;
-    }
-    .hw-54x54 {
-        height: 54px;
-        width: 54px;
-    }
-</style>
 
 <section class="d-flex justify-content-between py-3 px-4" id="admin-point-setting-summary">
     <div>

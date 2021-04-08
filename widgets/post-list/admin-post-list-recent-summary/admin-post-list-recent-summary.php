@@ -1,16 +1,6 @@
 <?php
 $total_post = post()->count();
-
-
-
 ?>
-
-
-<style>
-    .fw-700 {
-        font-weight: 700;
-    }
-</style>
 
 <section class="d-flex h-100 p-3" id="admin-post-list-summary">
     <div>

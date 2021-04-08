@@ -1,44 +1,7 @@
 <?php
 if ( admin() == false ) jsBack('You are not admin');
 ?>
-<style>
-    .layout {
-       background: #CDEEF2;
-    }
-    .menu a[href*="<?=in('w')?>"] {
-        color: yellow !important;
-    }
-    .fs-xs {
-        font-size: 12px;
-    }
-    .fs-sm {
-        font-size: 14px;
-    }
-    .fs-md {
-        font-size: 16px;
-    }
-    .fs-lg {
-        font-size: 28px;
-    }
-    .fs-xl {
-        font-size: 36px;
-    }
-    .fs-xxl {
-        font-size: 52px;
-    }
-    .navbar {
-        height: 52px;
-    }
-    .white {
-        color: white;
-    }
-    .white a {
-        color: white;
-    }
-    .fw-400 {
-        font-weight: 400;
-    }
-</style>
+<link rel="stylesheet" href="themes/default/admin/admin.css">
 
 <section class="layout">
     <div class="container-fluid bg-dark">
