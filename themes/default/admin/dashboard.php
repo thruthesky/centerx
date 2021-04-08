@@ -3,24 +3,19 @@
 
 
 ?>
-<style>
-    .w-33 {
-        width: 33%;
-    }
-</style>
 
-<div class="d-flex mb-3">
-    <div class="w-33 mr-3">
+<div class="row mb-3">
+    <div class="col-4">
+        <div class="bg-white rounded">
+            <?php include widget('post-list/admin-top-user-by-points'); ?>
+        </div>
+    </div>
+    <div class="col-4">
         <div class="bg-white rounded">
             <?php include widget('post-list/admin-post-list-recent-summary'); ?>
         </div>
     </div>
-    <div class="w-33 mr-3">
-        <div class="bg-white rounded">
-            <?php include widget('post-list/admin-post-list-recent-summary'); ?>
-        </div>
-    </div>
-    <div class="w-33">
+    <div class="col-4">
         <div class="mb-3 bg-white rounded">
             <?php include widget('point/admin-point-setting-summary'); ?>
         </div>
@@ -29,7 +24,16 @@
         </div>
     </div>
 </div>
-<div class="bg-white rounded">
-    <?php include widget('statistic/admin-statistic-graph'); ?>
+<div class="row mb-3">
+    <div class="col-4">
+        <div class="bg-white rounded">
+            <?php include widget('post-list/admin-post-list-top-comment'); ?>
+        </div>
+    </div>
+    <div class="col-8">
+        <div class="bg-white rounded">
+            <?php include widget('statistic/admin-statistic-graph'); ?>
+        </div>
+    </div>
 </div>
 
