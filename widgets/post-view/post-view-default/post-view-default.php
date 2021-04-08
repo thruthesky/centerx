@@ -29,13 +29,10 @@ $post = post()->current();
         <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
         <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
         <?php if ($post->isMine()) { ?>
-            <a class="btn btn-sm btn-primary"
-               href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
-            <a class="btn btn-sm btn-danger"
-               href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
+            <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
+            <a class="btn btn-sm btn-danger" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
         <?php } ?>
-        <a class="btn btn-sm btn-primary"
-           href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ek('List', '@T list') ?></a>
+        <a class="btn btn-sm btn-primary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ek('List', '@T list') ?></a>
     </section>
 
 
@@ -44,10 +41,11 @@ $post = post()->current();
 
 
 
-    <comment-form></comment-form>
+    <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
 
 
-    <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post]) ?>
+    <?php #include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post]) 
+    ?>
 
     <?php if (!empty($post->comments())) { ?>
         <hr>
@@ -58,7 +56,9 @@ $post = post()->current();
                     <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                         <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>
                     </div>
-                <?php }
+
+                    <comment-form root-idx="<?= $post->idx ?>" comment='<?= json_encode($comment) ?>'></comment-form>
+            <?php }
             } ?>
         </div>
     <?php } ?>
@@ -68,19 +68,37 @@ $post = post()->current();
 
 <script>
     Vue.component('comment-form', {
-        data: function () {
+        props: ['rootIdx', 'parentIdx', 'comment'],
+        data: function() {
             return {
-                count: 0
+                form: {
+                    session_id: '<?= login()->session_id ?>',
+                    p: 'forum.comment.edit.submit',
+                    rootIdx: this.rootIdx,
+                    content: this.comment ? this.comment.content : '',
+                }
             }
         },
-        template: '<form v-on:submit.prevent="commentFormSubmit">' +
-            '<textarea></textarea>' +
-            '<input type="submit">' +
+        template: '<form class="d-flex mt-2" v-on:submit.prevent="commentFormSubmit">' +
+            '<textarea class="form-control" v-model="form.content"></textarea>' +
+            '<input class="btn btn-primary ml-2" type="submit">' +
             '</form>',
         methods: {
             commentFormSubmit: function() {
-                console.log('form submit');
-                // axios.post('/index.php', form, options)
+
+                if (this.comment) {
+                    var comment = JSON.parse(this.comment);
+                    this.form.idx = comment.idx;
+                } else {
+                    this.form.parentIdx = this.parentIdx;
+                }
+
+                console.log('form', this.form);
+
+                // axios.post('/index.php', this.form)
+                //     .then(function(res) {
+                //         console.log('create success: ', res);
+                //     });
             }
         }
     });
