@@ -1,0 +1,75 @@
+.layout {
+    background: #CDEEF2;
+}
+.menu a[href*="<?=in('w')?>"] {
+    color: yellow !important;
+}
+
+.fs-xs {
+    font-size: 12px;
+}
+.fs-sm {
+    font-size: 14px;
+}
+.fs-md {
+    font-size: 16px;
+}
+.fs-lg {
+    font-size: 28px;
+}
+.fs-xl {
+    font-size: 36px;
+}
+.fs-xxl {
+    font-size: 52px;
+}
+
+
+.h-52px {
+    height: 52px;
+}
+
+
+
+.white {
+    color: white;
+}
+.white a {
+    color: white;
+}
+
+
+.fw-700 {
+    font-weight: 700;
+}
+.fw-400 {
+    font-weight: 400;
+}
+.hw-54x54 {
+    height: 54px;
+    width: 54px;
+}
+
+
+.border-radius-md {
+    border-radius: 16px;
+}
+.border-radius-sm {
+    border-radius: 8px;
+}
+.border-radius-xs {
+    border-radius: 4px;
+}
+
+.bg-skyblue {
+    background: #CAF9FF;
+}
+.color-lightblue {
+    color: #00B4CB;
+}
+
+.text-overflow-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
