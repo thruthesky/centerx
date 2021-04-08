@@ -8,8 +8,8 @@ $past = mktime(0,0,0, date('m',$now), date('d',$now) - 7);
 ?>
 
 <section class="p-4 overflow-hidden" id="admin-post-list-summary" style="height: 23.5rem">
-<!--    <h6 class="text-muted">Total number posts: --><?//= $count_comments ?><!--</h6>-->
-    <h5 class="mb-4">Recent Posts</h5>
+    <h6 class="text-muted">No of comments for 7 days.</h6>
+    <h5 class="mb-4">Top most users by comments</h5>
 
     <?php foreach (post()->latest(null, 1, 4) as $post) { ?>
         <div class="d-flex mb-3">
