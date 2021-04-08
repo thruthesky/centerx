@@ -23,7 +23,7 @@ if ( admin() == false ) jsBack('You are not admin');
     <div class="container-fluid bg-light">
         <div class="container d-flex justify-content-between py-3">
             <div class="mr-5">
-                <div class="fs-xl">CenterX</div>
+                <a href="/?admin.index" class="fs-xl">CenterX</a>
             </div>
             <div class="d-flex justify-content-start mr-auto">
                 <a href="/?p=admin.index&w=user/admin-user-list">
@@ -51,7 +51,10 @@ if ( admin() == false ) jsBack('You are not admin');
     <div class="container">
         <div class="content py-4">
             <?php
-            if ( in('w') ) include widget(in('w'));
+            if ( in('w') ) { ?>
+                <div class="p-3 bg-white"><?php include widget(in('w')); ?></div>
+                <?php
+            }
             else include theme()->file('admin/dashboard');
             ?>
         </div>
