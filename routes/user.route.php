@@ -93,6 +93,17 @@ class UserRoute {
         }
         return $rets;
     }
+
+    /**
+     * 내가 추천 받은 총 수를 리턴한다.
+     * @param $in
+     * @return string
+     */
+    public function heart($in): string {
+        return pointHistory()->count(conds: [REASON => POINT_LIKE, 'toUserIdx' => login()->idx]);
+    }
+
+
 }
 
 

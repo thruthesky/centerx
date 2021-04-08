@@ -112,4 +112,14 @@ class PostRoute {
         return post($in[IDX])->vote($in[CHOICE])->response();
     }
 
+
+    /**
+     * 조건에 맞는 글 수를 리턴한다. 코멘트는 제외.
+     * @param $in
+     * @return string
+     */
+    public function count($in): string {
+        //
+        return post()->count(where: $in['where']);
+    }
 }
