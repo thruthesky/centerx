@@ -56,8 +56,9 @@ $post = post()->current();
                     <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                         <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>
                     </div>
-
-                    <comment-form root-idx="<?= $post->idx ?>" comment='<?= json_encode($comment) ?>'></comment-form>
+{{ displayCommentForm }}
+                    <comment-form root-idx="<?= $post->idx ?>" comment-idx='<?= $comment->idx ?>'
+                                  v-if="displayCommentForm[<?=$comment->idx?>]"></comment-form>
             <?php }
             } ?>
         </div>
@@ -67,8 +68,23 @@ $post = post()->current();
 
 
 <script>
+    mixins.push({
+        data: function() {
+            return {
+                displayCommentForm: {'a': 'apple'}
+            };
+        },
+        created: function() {
+          console.log('created', this.displayCommentForm.a);
+        },
+       methods: {
+           onCommentEditButtonClick: function(idx) {
+               this.$set(this.displayCommentForm, idx, true);
+           },
+       }
+    });
     Vue.component('comment-form', {
-        props: ['rootIdx', 'parentIdx', 'comment'],
+        props: ['rootIdx', 'parentIdx', 'commentIdx'],
         data: function() {
             return {
                 form: {
@@ -79,9 +95,19 @@ $post = post()->current();
                 }
             }
         },
+        created: function() {
+            console.log('component: comment-form, created', this.commentIdx);
+            if ( this.commentIdx ) {
+                $this = this;
+                request('comment.get', {idx: this.commentIdx}, function(res) {
+                    $this.form.content = res.content;
+                }, alert);
+            }
+        },
         template: '<form class="d-flex mt-2" v-on:submit.prevent="commentFormSubmit">' +
             '<textarea class="form-control" v-model="form.content"></textarea>' +
             '<input class="btn btn-primary ml-2" type="submit">' +
+            '<button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()">Cancel</button>' +
             '</form>',
         methods: {
             commentFormSubmit: function() {
@@ -99,6 +125,10 @@ $post = post()->current();
                     .then(function(res) {
                         console.log('create success: ', res);
                     });
+            },
+            onCommentEditCancelButtonClick: function() {
+                console.log('onCommentEditCancelButtonClick', this.commentIdx);
+                this.$parent.displayCommentForm[this.commentIdx] = false;
             }
         }
     });

@@ -1,6 +1,14 @@
 
 
 
+function request(route, params, success, error) {
+    if ( ! params ) params = {};
+    params['route'] = route;
+    axios.post('/index.php', params).then(function(res) {
+        if (typeof res.data.response === 'string' ) error(res.data.response);
+        else success(res.data.response);
+    }).catch(error);
+}
 
 
 /**
