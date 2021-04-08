@@ -25,13 +25,14 @@ $comment = $o['comment'];
         </div>
     </div>
 
-    <div class="mt-3" id="comment-view-<?= $comment->idx ?>" style="display: block;">
+    <div class="mt-3" id="comment-view-<?= $comment->idx ?>">
         <div style="white-space: pre-wrap;"><?= $comment->content ?></div>
         <div class="files">
             <?php include widget('files-display/files-display-default', ['files' => $comment->files()]) ?>
         </div>
         <hr>
         <section class="buttons mt-3">
+            <a class="btn btn-sm btn-primary"><?= ek('Reply', '답변하기') ?></a>
             <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
             <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
             <?php if ($comment->isMine()) { ?>
@@ -41,16 +42,7 @@ $comment = $o['comment'];
         </section>
     </div>
 
-    <!-- EDIT  -->
-    <?php /*
-    <div class="mt-3" id="comment-edit-<?= $comment->idx ?>" style="display: none;">
-        <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post, 'comment' => $comment]) ?>
-    </div>
- */?>
 
-    <div id="comment-reply-<?= $comment->idx ?>" class="mt-2">
-        <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $comment]) ?>
-    </div>
 </div>
 
 <script>

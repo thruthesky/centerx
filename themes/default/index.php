@@ -32,7 +32,10 @@
 </section>
 <script src="<?=HOME_URL?>etc/js/helper.js?v=2"></script>
 <?php includeVueJs() ?>
+
 <?=get_scripts_styles()?>
+
+
 <script src="/etc/js/app.js"></script>
 </body>
 </html>

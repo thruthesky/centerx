@@ -29,19 +29,25 @@ $post = post()->current();
         <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
         <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
         <?php if ($post->isMine()) { ?>
-            <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
-            <a class="btn btn-sm btn-danger" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
+            <a class="btn btn-sm btn-primary"
+               href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
+            <a class="btn btn-sm btn-danger"
+               href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
         <?php } ?>
-        <a class="btn btn-sm btn-primary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ek('List', '@T list') ?></a>
+        <a class="btn btn-sm btn-primary"
+           href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ek('List', '@T list') ?></a>
     </section>
+
 
     <!-- FILES -->
     <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
 
-    <!-- Comment Box -->
-    <div class="mt-3">
-        <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post]) ?>
-    </div>
+
+
+    <comment-form></comment-form>
+
+
+    <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post]) ?>
 
     <?php if (!empty($post->comments())) { ?>
         <hr>
@@ -52,9 +58,30 @@ $post = post()->current();
                     <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                         <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>
                     </div>
-            <?php }
+                <?php }
             } ?>
         </div>
     <?php } ?>
 
 </section>
+
+
+<script>
+    Vue.component('comment-form', {
+        data: function () {
+            return {
+                count: 0
+            }
+        },
+        template: '<form v-on:submit.prevent="commentFormSubmit">' +
+            '<textarea></textarea>' +
+            '<input type="submit">' +
+            '</form>',
+        methods: {
+            commentFormSubmit: function() {
+                console.log('form submit');
+                // axios.post('/index.php', form, options)
+            }
+        }
+    });
+</script>

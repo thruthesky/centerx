@@ -2,7 +2,7 @@
 /**
  * @file functions.php
  */
-
+use PHPHtmlParser\Dom;
 
 
 /**
@@ -1440,7 +1440,9 @@ function end_capture_script_style()
 {
     /// Get javascript
     $content = ob_get_clean();
-    $re = preg_match_all("/\<script\>.*\<\/script\>/s", $content, $m);
+
+
+    $re = preg_match_all('/\<script(.*?)?\>(.|\s)*?\<\/script\>/i', $content, $m);
     if ($re) {
         $scripts = $m[0];
         foreach ($scripts as $script) {
