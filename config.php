@@ -137,6 +137,10 @@ define('THUMBNAILS_URL', HOME_URL . 'files/thumbnails/');
 
 /**
  * Set admin email address.
+ *
+ * It can be a single email or multiple emails separated by comma.
+ * I.e) 'thruthesky@gmail.com'
+ * I.e) 'abc@domain.com,thruthesky@gmail.com,...'
  */
 define('ADMIN_EMAIL', 'admin@itsuda50.com,thruthesky@gmail.com');
 
