@@ -31,6 +31,7 @@ if ( admin() == false ) jsBack('You are not admin');
     }
     .fs-title { font-size: 1.2rem; }
 </style>
+
 <section class="layout">
     <h1 class="title"><a href="/?p=admin.index"><?=ln(['ko' => '있수다! 관리자 페이지', 'en' => 'Admin Page'])?></a></h1>
     <div class="menu mt-3">
@@ -45,6 +46,8 @@ if ( admin() == false ) jsBack('You are not admin');
         <a href="/?p=admin.index&w=point/admin-point-history"><?=ln(['en' => 'Point history', 'ko' => '포인트 기록'])?></a>
         <a href="/?p=admin.index&w=in-app-purchase/admin-purchase-list"><?=ln(['en' => 'In App Purchase', 'ko' => '인앱 구매'])?></a>
     </div>
+
+    <?php include('top_user_by_points.php') ?>
 
     <div class="content mt-3">
         <?php
