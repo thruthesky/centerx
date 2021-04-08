@@ -1,6 +1,5 @@
 <?php
 
-
 class PostRoute {
 
     public function create($in) {
