@@ -47,8 +47,6 @@ if ( admin() == false ) jsBack('You are not admin');
         <a href="/?p=admin.index&w=in-app-purchase/admin-purchase-list"><?=ln(['en' => 'In App Purchase', 'ko' => '인앱 구매'])?></a>
     </div>
 
-    <?php include('top_user_by_points.php') ?>
-
     <div class="content mt-3">
         <?php
         if ( in('code') == 'admin.app.about.setting') {
