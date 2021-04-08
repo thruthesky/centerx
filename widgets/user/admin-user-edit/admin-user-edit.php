@@ -135,7 +135,7 @@ if(modeSubmit()) {
             </div>
             <div>
                 <a class="btn btn-outline-secondary"
-                   href="/?p=admin.index&w=user/admin-user-edit">Cancel</a>
+                   href="/?p=admin.index&w=user/admin-user-list">Cancel</a>
             </div>
         </div>
     </form>
@@ -144,18 +144,4 @@ if(modeSubmit()) {
 
 
 </section>
-
-<script src="<?php echo HOME_URL?>/etc/js/vue.3.0.7.min.js"></script>
-<script>
-    const adminUserEdit = Vue.createApp({
-        data() {
-            return {
-                options: {
-
-                }
-            }
-        },
-    }).mount("#admin-user-edit");
-</script>
-
 
