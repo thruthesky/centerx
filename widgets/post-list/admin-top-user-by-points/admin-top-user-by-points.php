@@ -1,4 +1,5 @@
-<div class="card" style="width: 18rem; height: 20rem;">
+
+<div class="card" style="height: 20rem;">
     <div class="card-body">
         <h6 class="card-subtitle mb-2 text-muted">20,423 users</h6>
         <h5 class="card-title">Top most user by points</h5>

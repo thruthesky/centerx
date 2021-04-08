@@ -12,7 +12,7 @@
 <div class="d-flex">
     <div class="w-33 mr-3">
         <div class="bg-white rounded">
-            <?php include widget('post-list/admin-post-list-recent-summary'); ?>
+            <?php include widget('post-list/admin-top-user-by-points'); ?>
         </div>
     </div>
     <div class="w-33 mr-3">
