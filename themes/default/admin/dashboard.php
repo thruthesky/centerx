@@ -9,7 +9,7 @@
     }
 </style>
 
-<div class="d-flex">
+<div class="d-flex mb-3">
     <div class="w-33 mr-3">
         <div class="bg-white rounded">
             <?php include widget('post-list/admin-post-list-recent-summary'); ?>
@@ -29,3 +29,7 @@
         </div>
     </div>
 </div>
+<div class="bg-white rounded">
+    <?php include widget('statistic/admin-statistic-graph'); ?>
+</div>
+

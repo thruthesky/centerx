@@ -138,7 +138,7 @@ define('THUMBNAILS_URL', HOME_URL . 'files/thumbnails/');
 /**
  * Set admin email address.
  */
-define('ADMIN_EMAIL', 'admin@itsuda50.com');
+define('ADMIN_EMAIL', 'admin@itsuda50.com,thruthesky@gmail.com');
 
 
 

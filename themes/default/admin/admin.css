@@ -2,7 +2,7 @@
     background: #CDEEF2;
 }
 .menu a[href*="<?=in('w')?>"] {
-    color: yellow !important;
+    color: #D10C0C !important;
 }
 
 
@@ -53,6 +53,12 @@ a:hover {
 }
 .fw-400 {
     font-weight: 400;
+}
+
+
+.hw-50x50 {
+    height: 50px;
+    width: 50px;
 }
 .hw-54x54 {
     height: 54px;
