@@ -50,7 +50,7 @@ $post = post()->current();
             <?php foreach ($post->comments() as $comment) {
                 if (!$comment->deletedAt) { ?>
                     <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
-                        <?php include widget('comment-view/comment-view-default', ['comment' => $comment]) ?>
+                        <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>
                     </div>
             <?php }
             } ?>

@@ -29,6 +29,7 @@
     include theme()->file('footer');
     ?>
 <?php } ?>
+<?php includeVueJs() ?>
 </body>
 </html>
 

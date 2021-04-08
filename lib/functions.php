@@ -1265,19 +1265,19 @@ function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): s
  *
  * 참고로, 모든 자바스크립트 관련 코드는, 웹 브라우저로 전달되기 전에, 맨 하단으로 이동 될 수 있다.
  */
-function includeVueOnce() {
-    if ( defined('VUE_JS') ) return;
-    define('VUE_JS', true);
-
-    $homeUrl = HOME_URL;
-
-    if ( isLocalhost() ) {
-        $url = "$homeUrl/etc/js/vue.3.0.7.dev.js";
-    } else {
-        $url = "$homeUrl/etc/js/vue.3.0.7.min.js";
-    }
-    echo "<script src='$url'></script>";
-}
+//function includeVueOnce() {
+//    if ( defined('VUE_JS') ) return;
+//    define('VUE_JS', true);
+//
+//    $homeUrl = HOME_URL;
+//
+//    if ( isLocalhost() ) {
+//        $url = "$homeUrl/etc/js/vue.3.0.7.dev.js";
+//    } else {
+//        $url = "$homeUrl/etc/js/vue.3.0.7.min.js";
+//    }
+//    echo "<script src='$url'></script>";
+//}
 
 
 /**
@@ -1285,15 +1285,15 @@ function includeVueOnce() {
  *
  * 참고로, 모든 자바스크립트 관련 코드는, 웹 브라우저로 전달되기 전에, 맨 하단으로 이동 될 수 있다.
  */
-function includeVue2Once() {
+function includeVueJs() {
     if ( defined('VUE_JS') ) return;
     define('VUE_JS', true);
 
     $homeUrl = HOME_URL;
     if ( isLocalhost() ) {
-        $url = "$homeUrl/etc/js/vue.2.dev.js";
+        $url = "{$homeUrl}etc/js/vue.2.dev.js";
     } else {
-        $url = "$homeUrl/etc/js/vue.2.min.js";
+        $url = "{$homeUrl}etc/js/vue.2.min.js";
     }
     echo "<script src='$url'></script>";
 }
@@ -1423,4 +1423,43 @@ function customErrorHandler($errno, $errstr, $error_file, $error_line) {
 </div>
 EOE;
     d(debug_backtrace());
+}
+
+
+global $_extracted_scripts;
+global $_extracted_styles;
+function get_scripts_styles() {
+    global $_extracted_scripts, $_extracted_styles;
+    return $_extracted_styles . $_extracted_scripts;
+}
+function begin_capture_script_style()
+{
+    ob_start();
+}
+function end_capture_script_style()
+{
+    /// Get javascript
+    $content = ob_get_clean();
+    $re = preg_match_all("/\<script\>.*\<\/script\>/s", $content, $m);
+    if ($re) {
+        $scripts = $m[0];
+        foreach ($scripts as $script) {
+            $content = str_replace($script, '', $content);
+        }
+        global $_extracted_scripts;
+        $_extracted_scripts = implode("\n", $scripts);
+    }
+    /// Get styles
+
+    $re = preg_match_all("/\<style\>[^(\<)]*\<\/style\>/s", $content, $m);
+    if ($re) {
+        $styles = $m[0];
+        foreach ($styles as $style) {
+            $content = str_replace($style, '', $content);
+        }
+        global $_extracted_styles;
+        $_extracted_styles = implode("\n", $styles);
+    }
+
+    echo $content;
 }

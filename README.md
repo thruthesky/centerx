@@ -955,6 +955,60 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
   즉, 테마 디자인을 생략하고(화면에 출력하지 않고), 곧 바로 테마 스크립트만 실행하는 것이다.
 
 
+## Using Vue.js 2
+
+- Vue.js 2 supports IE9 and above.
+- To use vue js 2, follow the structure below.
+  - `begin_capture_script_style()` and `end_capture_script_style()` will capture javascripts and styles tag inside the content.
+  - and displays the html content without them.
+  - After login vue js, it prints the captured javascripts and styles.
+  
+  This is because you cannot put `<script>` tag or `<style>` tag inside vue mounted template.
+  You can use javascript and style tag inside template by capturing this way.
+  If you don't want to put `<script>` tag and `<style>` tag, then you don't need to capture them.
+
+```html
+<head>
+  <script>
+    const mixins = [];
+    function later(fn) { window.addEventListener('load', fn); }
+  </script>
+</head>
+<section id="app">
+    <?php
+    begin_capture_script_style();
+    /// You can add whatever here. header, footer, etc.
+    include theme()->page();
+    end_capture_script_style();
+    ?>
+</section>
+<script src="<?=HOME_URL?>etc/js/helper.js?v=2"></script>
+<?php includeVueJs() ?>
+<?=get_scripts_styles()?>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            theme: 'default'
+        },
+        mixins: mixins
+    })
+</script>
+```
+
+- To add mixins, you can do the following.
+```html
+<script>
+    mixins.push({
+        created: function () {
+            console.log('postList attribute binding created!');
+        },
+    });
+</script>
+```
+
+- You may use `later()` helper function by adding it in head tag.
+
 
 ## Admin page design
 
@@ -1405,8 +1459,9 @@ if ( in(CATEGORY_ID) ) {
     </form>
 </div>
 
-<?php includeVueOnce(); ?>
+
 <script>
+  alert('fix to vu2;');
     const postEditDefault = Vue.createApp({
         data() {
             return {
@@ -1488,8 +1543,8 @@ $file = files()->getByCode(in('code'));
   </div>
 </section>
 
-<?php includeVueOnce(); /** Vue.js 가 여러번 로딩되지 않도록 한다. */ ?>
 <script>
+  alert('fix to vu2;');
   const adminUploadImage = Vue.createApp({
     data() {
       return {

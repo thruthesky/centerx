@@ -23,7 +23,7 @@ $comment = $o['comment'] ?? null;
  * @var File[]
  */
 $uploadedFiles = [];
-$fileUploadIdx;
+global $fileUploadIdx;
 $filesString = '';
 if ($comment) {
     $fileUploadIdx = $comment->idx;
@@ -34,7 +34,7 @@ if ($comment) {
 }
 ?>
 
-<div id="comment-edit-default-form">
+<div id="comment-edit-default-form<?=$fileUploadIdx?>">
     <form class="m-0" enctype="multipart/form-data" action="/" method="POST">
         <input type="hidden" name="p" value="forum.comment.edit.submit">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
@@ -55,7 +55,7 @@ if ($comment) {
             <div style="width: 100px;" class="position-relative overflow-hidden">
                 <!-- TODO: camera icon -->
                 <button class="btn btn-sm btn-primary w-100" type="button">Upload</button>
-                <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" onchange="onFileChange(event, 'files<?= $fileUploadIdx ?>')" />
+                <input class="position-absolute top left h-100" style="opacity: 0;" name="<?= USERFILE ?>" type="file" onchange="onFileChange(event, 'files<?= $fileUploadIdx ?>')" />
             </div>
             <div class="flex-grow-1"></div>
             <?php if ($comment) { ?>
@@ -80,21 +80,6 @@ if ($comment) {
         </div>
     <?php } ?>
 </div>
-
-
-<?php
-if (defined('COMMENT_EDIT_DEFAULT_JAVASCRIPT')) return;
-define('COMMENT_EDIT_DEFAULT_JAVASCRIPT', true);
-?>
-
-<?php includeVueOnce(); ?>
-<script>
-    const commentEditDefaultForm = Vue.createApp({
-        created() {
-            console.log("created() for : comment-edit-default-form")
-        },
-    }).mount("#comment-edit-default-form");
-</script>
 
 
 <script>
