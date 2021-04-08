@@ -31,7 +31,7 @@ if ( admin() == false ) jsBack('You are not admin');
                     <div class="fs-sm text-muted">recent activities</div>
                 </a>
                 <div class="divider mx-4"></div>
-                <a href="/?p=admin.index&w=post-list/admin-post-list">
+                <a href="/?p=admin.index&w=category/admin-category-list">
                     <div class="fs-lg">Forum</div>
                     <div class="fs-sm text-muted">recent posts & comments</div>
                 </a>
@@ -51,6 +51,9 @@ if ( admin() == false ) jsBack('You are not admin');
     <div class="container">
         <div class="content py-4">
             <?php
+
+
+
             if ( in('w') ) { ?>
                 <div class="p-3 bg-white"><?php include widget(in('w')); ?></div>
                 <?php

@@ -4,6 +4,7 @@ $o = getWidgetOptions();
 /**
  * @var Comment|Post $parent
  */
+$post = $o['post'];
 $comment = $o['comment'];
 
 ?>
@@ -34,16 +35,18 @@ $comment = $o['comment'];
             <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
             <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
             <?php if ($comment->isMine()) { ?>
-                <a class="btn btn-sm btn-primary" onclick="showCommentEditForm(<?= $comment->idx ?>)"><?= ek('Edit', '@T Edit') ?></a>
-                <a class="btn btn-sm btn-danger" onclick="onCommentDelete(<?= $comment->idx ?>)"><?= ek('Delete', '@T Delete') ?></a>
+                <a class="btn btn-sm btn-primary" onclick="showCommentEditForm(<?= $comment->idx ?>)"><?= ek('Edit', '수정') ?></a>
+                <a class="btn btn-sm btn-danger" onclick="onCommentDelete(<?= $comment->idx ?>)"><?= ek('Delete', '삭제') ?></a>
             <?php } ?>
         </section>
     </div>
 
     <!-- EDIT  -->
+    <?php /*
     <div class="mt-3" id="comment-edit-<?= $comment->idx ?>" style="display: none;">
         <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post, 'comment' => $comment]) ?>
     </div>
+ */?>
 
     <div id="comment-reply-<?= $comment->idx ?>" class="mt-2">
         <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $comment]) ?>
@@ -51,17 +54,17 @@ $comment = $o['comment'];
 </div>
 
 <script>
-    function showCommentEditForm(id) {
-        document.getElementById("comment-view-" + id).style.display = "none";
-        document.getElementById("comment-reply-" + id).style.display = "none";
-        document.getElementById("comment-edit-" + id).style.display = "block";
-    }
-
-    function hideCommentEditForm(id) {
-        document.getElementById("comment-view-" + id).style.display = "block";
-        document.getElementById("comment-reply-" + id).style.display = "block";
-        document.getElementById("comment-edit-" + id).style.display = "none";
-    }
+    // function showCommentEditForm(id) {
+    //     document.getElementById("comment-view-" + id).style.display = "none";
+    //     document.getElementById("comment-reply-" + id).style.display = "none";
+    //     document.getElementById("comment-edit-" + id).style.display = "block";
+    // }
+    //
+    // function hideCommentEditForm(id) {
+    //     document.getElementById("comment-view-" + id).style.display = "block";
+    //     document.getElementById("comment-reply-" + id).style.display = "block";
+    //     document.getElementById("comment-edit-" + id).style.display = "none";
+    // }
 
     function onCommentDelete(idx) {
         const re = confirm('Are you sure you want to delete Comment no. ' + idx + '?');

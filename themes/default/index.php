@@ -16,18 +16,23 @@
         .fs-desc { font-size: 0.85rem; color: #676565; }
     </style>
     <script>
+        const mixins = [];
         function later(fn) { window.addEventListener('load', fn); }
     </script>
 </head>
 <body>
 
 
-
-<?php
+<section id="app">
+    <?php
+    begin_capture_script_style();
     include theme()->page();
-?>
-
-
+    end_capture_script_style();
+    ?>
+</section>
 <script src="<?=HOME_URL?>etc/js/helper.js?v=2"></script>
+<?php includeVueJs() ?>
+<?=get_scripts_styles()?>
+<script src="/etc/js/app.js"></script>
 </body>
 </html>

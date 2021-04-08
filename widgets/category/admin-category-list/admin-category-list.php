@@ -1,7 +1,11 @@
 <?php
 
 if ( modeCreate() ) {
-    $re = category()->create([ID=>in('id')]);
+    $created = category()->create([ID=>in('id')]);
+    if ( $created->hasError ) {
+        jsBack($created->getError());
+    }
+
 } else if ( modeUpdate() ) {
     $re = category(in('id'))->update(in());
 } else if ( modeDelete() ) {
@@ -48,7 +52,7 @@ if ( $editCategory ) {
                     <input type="hidden" name="mode" value="create">
                     <div class="d-flex">
                         <input class="form-control mb-2" type="text" name='id' placeholder="카테고리 아이디 입력">
-                        <button class="btn btn-primary ml-3 mb-2 w-50" type="submit" ><?=ln(['en' => 'Create or Update', 'ko' => '생성 또는 수정'])?></button>
+                        <button class="btn btn-primary ml-3 mb-2 w-50" type="submit" ><?=ln(['en' => 'Create', 'ko' => '생성'])?></button>
                     </div>
                 </form>
             </section>
