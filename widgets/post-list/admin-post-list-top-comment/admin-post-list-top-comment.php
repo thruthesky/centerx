@@ -1,15 +1,20 @@
 <?php
-$total_post = post()->count();
 $now = time();
-$past = $now - 60*60*24*7;
+$past = mktime(0,0,0, date('m',$now), date('d',$now) - 7);
 
-$count_comments = comment()->count(where:"createdAt<=$now AND createdAt>=$past");
+//$top_comments = comment()->search(select: 'userIdx, COUNT(userIdx)' ,where:"createdAt<=$now AND createdAt>=$past GROUP BY userIdx", order: 'COUNT(userIdx)');
+
 
 ?>
 
 <section class="p-4 overflow-hidden" id="admin-post-list-summary" style="height: 23.5rem">
+<<<<<<< HEAD
     <h6 class="text-muted">Total number posts: <?= $count_comments ?></h6>
     <h5 class="mb-4">Top most users by comments</h5>
+=======
+<!--    <h6 class="text-muted">Total number posts: --><?//= $count_comments ?><!--</h6>-->
+    <h5 class="mb-4">Recent Posts</h5>
+>>>>>>> 811c8adda86778688f51770f1daa7ac26ed1c49c
 
     <?php foreach (post()->latest(null, 1, 4) as $post) { ?>
         <div class="d-flex mb-3">
