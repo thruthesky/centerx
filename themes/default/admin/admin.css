@@ -5,6 +5,15 @@
     color: yellow !important;
 }
 
+
+a {
+    color: black;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: none;
+}
+
 .fs-xs {
     font-size: 12px;
 }
@@ -72,4 +81,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.divider {
+    border: 1px solid #B0B0B0;
 }
