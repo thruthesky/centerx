@@ -82,16 +82,6 @@ if ($comment) {
 </div>
 
 
-
-    <script>
-        mixins.push({
-            created: function() {
-                console.log("created() for : comment-edit-default-form")
-            },
-        });
-    </script>
-
-
 <script>
     function onFileChange(event, id) {
         console.log(event);
