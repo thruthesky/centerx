@@ -1,5 +1,28 @@
 <?php
 
+//$now = time();
+//$past = mktime(0,0,0, date('m',$now), date('d',$now) - 7);
+
+$now = time();
+$summary = [];
+
+
+
+
+for($x=0; $x<31; $x++) {
+    $start_stamp = mktime(0,0,0, null, date('j',$now) - $x);
+    $end_stamp = $start_stamp + 60*60*24 - 1;
+
+    $summary[] = [
+            'date' => date('n/j', $start_stamp),
+            'users'=> user()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp"),
+            'posts'=> post()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp AND parentIdx=0"),
+            'comments'=> post()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp AND parentIdx!=0"),
+    ];
+}
+
+//d($summary);
+
 
 ?>
 
@@ -49,54 +72,18 @@
 
     <div class="bar-graph-container">
         <div class="bar-graph-content">
+            <?php
+            foreach ($summary as $day) {
+            ?>
             <div class="mr-1">
                 <div class="d-flex align-items-end">
                     <div class="bar-item post" style="height: 105px"></div>
                     <div class="bar-item comment" style="height: 250px"></div>
                     <div class="bar-item user" style="height: 160px"></div>
                 </div>
-                <label>4/1</label>
+                <label><?=$day['date']?></label>
             </div>
-            <div class="mr-1">
-                <div class="d-flex align-items-end">
-                    <div class="bar-item post" style="height: 105px"></div>
-                    <div class="bar-item comment" style="height: 250px"></div>
-                    <div class="bar-item user" style="height: 160px"></div>
-                </div>
-                <label>4/2</label>
-            </div>
-            <div class="mr-1">
-                <div class="d-flex align-items-end">
-                    <div class="bar-item post" style="height: 105px"></div>
-                    <div class="bar-item comment" style="height: 250px"></div>
-                    <div class="bar-item user" style="height: 160px"></div>
-                </div>
-                <label>4/3</label>
-            </div>
-            <div class="mr-1">
-                <div class="d-flex align-items-end">
-                    <div class="bar-item post" style="height: 105px"></div>
-                    <div class="bar-item comment" style="height: 250px"></div>
-                    <div class="bar-item user" style="height: 160px"></div>
-                </div>
-                <label>4/4</label>
-            </div>
-            <div class="mr-1">
-                <div class="d-flex align-items-end">
-                    <div class="bar-item post" style="height: 105px"></div>
-                    <div class="bar-item comment" style="height: 250px"></div>
-                    <div class="bar-item user" style="height: 160px"></div>
-                </div>
-                <label>4/1</label>
-            </div>
-            <div class="mr-1">
-                <div class="d-flex align-items-end">
-                    <div class="bar-item post" style="height: 105px"></div>
-                    <div class="bar-item comment" style="height: 250px"></div>
-                    <div class="bar-item user" style="height: 160px"></div>
-                </div>
-                <label>4/5</label>
-            </div>
+            <?php } ?>
         </div>
 
 
