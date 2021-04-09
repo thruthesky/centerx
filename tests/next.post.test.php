@@ -25,7 +25,6 @@ function testPostCreate() {
 
     $cat = category()->create(['id' => 'apple' . time()]);
 
-
     $p = post()->create(['categoryId' => $cat->id]);
     isTrue($p->ok, 'no error');
     isTrue($p->categoryIdx == post($p->idx)->categoryIdx, 'category idx match');
