@@ -142,8 +142,8 @@ foreach ($rows as $row) {
 
 
     <div class="custom-control custom-checkbox custom-control-inline" v-for="(option, key) in options" :key="key">
-        <input type="checkbox" class="custom-control-input" :id="key" v-model="options[key]">
-        <label class="custom-control-label text-capitalize" :for="key">{{key}}</label>
+        <input type="checkbox" class="custom-control-input" :id="key + '-option'" v-model="options[key]">
+        <label class="custom-control-label text-capitalize" :for="key + '-option'">{{key}}</label>
     </div>
 
     <table class="table">

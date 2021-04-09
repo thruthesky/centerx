@@ -1,7 +1,7 @@
 <?php
 $past7days = time() - 7 * 60 * 60 * 24;
-//$q = "SELECT userIdx, COUNT(*) as comments FROM " . DB_PREFIX . POSTS . " WHERE createdAt>$past7days AND parentIdx>0 GROUP BY userIdx ORDER BY comments DESC LIMIT 5";
-$q = "SELECT userIdx, COUNT(*) as comments FROM " . DB_PREFIX . POSTS . " WHERE createdAt>$past7days GROUP BY userIdx ORDER BY comments DESC LIMIT 5";
+$q = "SELECT userIdx, COUNT(*) as comments FROM " . DB_PREFIX . POSTS . " WHERE createdAt>$past7days AND parentIdx!=0 GROUP BY userIdx ORDER BY comments DESC LIMIT 5";
+//$q = "SELECT userIdx, COUNT(*) as comments FROM " . DB_PREFIX . POSTS . " WHERE createdAt>$past7days GROUP BY userIdx ORDER BY comments DESC LIMIT 5";
 $rows = db()->get_results($q, ARRAY_A);
 
 $users = [];
@@ -12,7 +12,7 @@ foreach( $rows as $row ) {
 }
 ?>
 
-<section class="p-4 overflow-hidden" id="admin-post-list-summary" style="height: 23.5rem">
+<section class="p-4 overflow-hidden" id="admin-post-list-top-comment" style="height: 24rem">
     <h6 class="text-muted">No of comments for 7 days.</h6>
     <h5 class="mb-4">Top most users by comments</h5>
 

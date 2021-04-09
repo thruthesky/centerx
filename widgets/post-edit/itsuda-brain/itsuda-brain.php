@@ -98,19 +98,16 @@ if ( $post->idx ) {
 }
 ?>
 <script>
-    alert('fix to vu2;');
-    const itsudaBrainEdit = Vue.createApp({
-        data() {
-            return {
+    mixins.push({
+        data: {
                 percent: 0,
                 files: '<?=$post->v('files')?>',
                 android: <?=$android?>,
                 ios: <?=$ios?>,
                 web: <?=$web?>,
                 uploadedFiles: <?=json_encode($post->files(), true)?>,
-            }
         },
-        created () {
+        created: function () {
             console.log('created() for post-edit-default');
         },
         methods: {
@@ -161,6 +158,6 @@ if ( $post->idx ) {
                 );
             },
         }
-    }).mount("#itsuda-brain-edit-default");
+    });
 </script>
 

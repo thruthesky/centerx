@@ -75,14 +75,12 @@ if (in(CATEGORY_ID)) {
 
 <script>
     mixins.push({
-        data() {
-            return {
+        data: {
                 percent: 0,
                 files: '<?= $post->v('files') ?>',
                 uploadedFiles: <?= json_encode($post->files(true), true) ?>,
-            }
         },
-        created() {
+        created: function () {
             console.log('created() for post-edit-default');
         },
         methods: {
