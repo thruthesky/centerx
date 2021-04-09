@@ -144,6 +144,7 @@ class User extends Entity {
         $this->idx = $user->idx;
         $this->update($in);
 
+        ////
         point()->login($this->profile());
         return $this;
     }
@@ -170,11 +171,15 @@ class User extends Entity {
      * 회원 정보를 클라이언트로 전달하기 위한 값을 리턴한다.
      *
      * 에러가 있으면, 에러 문자열. 아니면, 사용자 레코드와 메타를 배열로 리턴한다.
+     * 주의, 로그인을 했는지 안했는지는 검사하지 않는다.
      *
      * - sessionId 는 객체 생성시 read() 에 의해 이미 적용되어져 있다.
      * - admin 속성에 관리자이면 Y 아니면 N 이 저장되어 리턴된다.
      *
      * @return array|string
+     *
+     * - 주의, 로그인을 안해도, 여기서는 절대 빈 배열을 리턴해서는 안된다. 다른 사용자의 정보를 리턴 할 수도 있다.
+     * - 로그인을 안했거나 $this->data 에 정보가 없으면 {'admin': 'N'} 정도만 리턴된다.
      */
     public function response(): array|string {
         if ( $this->hasError ) return $this->getError();

@@ -25,7 +25,7 @@ $comment = $o['comment'];
         </div>
     </div>
 
-    <div class="mt-3" id="comment-view-<?= $comment->idx ?>">
+    <div class="mt-3" v-if="!displayCommentForm[<?=$comment->idx?>]">
         <div style="white-space: pre-wrap;"><?= $comment->content ?></div>
         <div class="files">
             <?php include widget('files-display/files-display-default', ['files' => $comment->files()]) ?>
