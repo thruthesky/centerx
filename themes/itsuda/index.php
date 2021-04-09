@@ -27,8 +27,9 @@
         function later(fn) { window.addEventListener('load', fn); }
     </script>
 </head>
-<!-- <body style="padding-top: 80px;"> -->
-<body>
+
+
+<body <?php if (! str_contains(theme()->page(), '/admin/') ) { echo 'style="padding-top: 80px;"'; } ?>>
 
 <?php begin_capture_script_style(); ?>
 <section id="app">
