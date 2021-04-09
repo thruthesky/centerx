@@ -1,27 +1,46 @@
 <?php
-
-//$now = time();
-//$past = mktime(0,0,0, date('m',$now), date('d',$now) - 7);
-
 $now = time();
 $summary = [];
-
-
-
+$highest = [
+    'users' => 0,
+    'posts'=>0,
+    'comments'=> 0
+];
 
 for($x=0; $x<31; $x++) {
     $start_stamp = mktime(0,0,0, null, date('j',$now) - $x);
     $end_stamp = $start_stamp + 60*60*24 - 1;
 
+    $usersCount = user()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp");
+    $postsCount = post()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp AND parentIdx=0");
+    $commentsCount = post()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp AND parentIdx!=0");
+
+    if ($usersCount > $highest['users']) $highest['users'] = $usersCount;
+    if ($postsCount > $highest['posts']) $highest['posts'] = $postsCount;
+    if ($commentsCount > $highest['comments']) $highest['comments'] = $commentsCount;
+
     $summary[] = [
-            'date' => date('n/j', $start_stamp),
-            'users'=> user()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp"),
-            'posts'=> post()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp AND parentIdx=0"),
-            'comments'=> post()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp AND parentIdx!=0"),
+        'date' => date('n/j', $start_stamp),
+        'users'=> $usersCount,
+        'posts'=> $postsCount,
+        'comments'=> $commentsCount,
     ];
 }
 
 //d($summary);
+
+function barHeight( $no , $max = null): int {
+    if ( !$no || $no === 0 ) {
+        return '1';
+    }
+    if ( $no < 0 ) {
+        $no = abs($no);
+    }
+    if ( $max ) {
+        return floor($no / $max * 100);
+    }
+    return floor($no);
+}
 
 
 ?>
@@ -32,7 +51,7 @@ for($x=0; $x<31; $x++) {
         display: flex;
         justify-content: flex-start;
         align-items: flex-end;
-        padding: 1.1em 1.5em 0 1em;
+        padding: 1.1em 1.5em 0 0;
         font-size: .8em;
     }
     .bar-graph-content .bar-item {
@@ -42,7 +61,7 @@ for($x=0; $x<31; $x++) {
         min-height: 1px;
         border-top-left-radius: 2px;
         border-top-right-radius: 2px;
-        border-bottom: 0.5px solid gray;
+        border-bottom: 1px solid gray;
         background-color: gray;
         text-align: center;
     }
@@ -51,41 +70,43 @@ for($x=0; $x<31; $x++) {
         font-size: 8px;
         text-align: center;
     }
-    .bar-item.post {
-        border-bottom: 1px solid green;
-        background-color: green;
+    .bar-item.posts {
+        border-bottom: 1px solid #09A021;
+        background-color: #09A021;
     }
-    .bar-item.comment {
-        border-bottom: 1px solid blue;
-        background-color: blue;
+    .bar-item.comments {
+        border-bottom: 1px solid #1E85FF;
+        background-color: #1E85FF;
     }
-    .bar-item.user {
-        border-bottom: 1px solid red;
-        background-color: red;
+    .bar-item.users {
+        border-bottom: 1px solid #ff0000;
+        background-color: #ff0000;
     }
 
 </style>
 
-<section class="p-3">
+<section class="d-flex flex-column justify-content-between p-3"  style="height: 24rem">
     <div>Recent Users, Posts, Comments (Green: post, Blue: comment, Red: user)</div>
-
-
     <div class="bar-graph-container">
         <div class="bar-graph-content">
             <?php
             foreach ($summary as $day) {
-            ?>
-            <div class="mr-1">
-                <div class="d-flex align-items-end">
-                    <div class="bar-item post" style="height: 105px"></div>
-                    <div class="bar-item comment" style="height: 250px"></div>
-                    <div class="bar-item user" style="height: 160px"></div>
+                ?>
+                <div class="mr-1">
+                    <div class="d-flex align-items-end">
+                        <div class="bar-item posts"
+                             title="Posts: <?=$day['posts']?>"
+                             style="height: <?=barHeight($day['posts'], $highest['posts'])*2.5?>px"></div>
+                        <div class="bar-item comments"
+                             title="Comments: <?=$day['comments']?>"
+                             style="height: <?=barHeight($day['comments'], $highest['comments'])*2.5?>px"></div>
+                        <div class="bar-item users"
+                             title="Users: <?=$day['users']?>"
+                             style="height: <?=barHeight($day['users'], $highest['users'])*2.5?>px"></div>
+                    </div>
+                    <label><?=$day['date']?></label>
                 </div>
-                <label><?=$day['date']?></label>
-            </div>
             <?php } ?>
         </div>
-
-
     </div>
 </section>

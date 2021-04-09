@@ -58,16 +58,13 @@ if (in(CATEGORY_ID)) {
 </section>
 
 <script>
-    alert('fix to vu2;');
-    const postEditDefault = Vue.createApp({
-        data() {
-            return {
+    mixins.push({
+        data: {
                 percent: 0,
                 files: '<?= $post->v('files') ?>',
                 uploadedFiles: <?= json_encode($post->files(), true) ?>,
-            }
         },
-        created() {
+        created: function () {
             console.log('created() for post-edit-default');
         },
         methods: {
@@ -113,5 +110,5 @@ if (in(CATEGORY_ID)) {
                     .catch(alert);
             }
         }
-    }).mount("#post-edit-default");
+    });
 </script>

@@ -81,18 +81,15 @@ if ( $post->idx ) {
 }
 ?>
 <script>
-    alert('fix to vu2;');
-    const itsudaEventEdit = Vue.createApp({
-        data() {
-            return {
+    mixins.push({
+        data: {
                 percent: 0,
                 files: '<?=$post->v('files')?>',
                 banner: <?=$banner?>,
                 content: <?=$content?>,
                 uploadedFiles: <?=json_encode($post->files(), true)?>,
-            }
         },
-        created () {
+        created: function () {
             console.log('created() for post-edit-default');
         },
         methods: {
@@ -137,12 +134,12 @@ if ( $post->idx ) {
                     },
                     alert,
                     function (p) {
-                        console.log("pregoress: ", p);
+                        console.log("progress: ", p);
                         this.percent = p;
                     }
                 );
             },
         }
-    }).mount("#itsuda-event-edit");
+    });
 </script>
 
