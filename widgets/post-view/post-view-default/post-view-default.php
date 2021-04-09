@@ -57,6 +57,8 @@ $post = post()->current();
                     <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                         <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>
                     </div>
+
+                    <!-- comment reply form -->
                     <comment-form root-idx="<?= $post->idx ?>" parent-idx='<?= $comment->idx ?>' v-if="displayCommentForm[<?=$comment->idx?>] === 'reply'"></comment-form>
                 <?php }
             } ?>
