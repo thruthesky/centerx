@@ -30,7 +30,7 @@ if (in(CATEGORY_ID)) {
                     <option value=""><?=ek('Select category', '카테고리 선택')?></option>
                     <?php foreach($category->subcategories as $cat) {
                         if ( $post->subcategory == $cat ) $selected =  'selected';
-                        else if ( $cat == in('subcategory') ) $selected = ' selected';
+                        else if ( $cat == in('lsub') ) $selected = ' selected';
                         else $selected = '';
                         ?>
                         <option value="<?=$cat?>"<?=$selected?>><?=$cat?></option>
