@@ -124,6 +124,7 @@ class PostTaxonomy extends Entity {
      * @return File[]
      */
     public function files(bool $response = false): array {
+	if ( $this->idx == 0 ) return [];
         /**
          *
          * taxonomy 와 entity 를 기반으로 첨부 파일을 가져오는데, 사진을 업로드한 순서대로 가져온다.
