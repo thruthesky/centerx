@@ -29,11 +29,12 @@
 </head>
 
 
-<body <?php if (! str_contains(theme()->page(), '/admin/') ) { echo 'style="padding-top: 80px;"'; } ?>>
+<?php $isAdminPage = str_contains(theme()->page(), '/admin/'); ?>
+<body <?php if (! $isAdminPage ) { echo 'style="padding-top: 80px;"'; } ?>>
 
 <?php begin_capture_script_style(); ?>
 <section id="app">
-<?php if ( str_contains(theme()->page(), '/admin/') ) { ?>
+<?php if ( $isAdminPage ) { ?>
 
         <?php include theme()->page(); ?>
 <?php } else { ?>
