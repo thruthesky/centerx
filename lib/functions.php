@@ -1209,7 +1209,9 @@ function separateByComma($str) {
     if ( $str ) {
         $parts = explode(",", $str);
         foreach( $parts as $part ) {
-            $rets[] = trim($part);
+            $_part = trim($part);
+            if ( empty($_part) ) continue;
+            $rets[] = $_part;
         }
     }
     return $rets;
