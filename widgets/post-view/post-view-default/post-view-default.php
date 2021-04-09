@@ -119,7 +119,7 @@ $post = post()->current();
             '       <button class="btn btn-primary mr-5" type="button">Photo</button>' +
             '       <input class="position-absolute top left fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
             '   </div>' +
-            '   <textarea class="form-control" v-model="form.content"></textarea>' +
+            '   <textarea rows="1" class="form-control" v-model="form.content"></textarea>' +
             '   <input class="btn btn-primary ml-2" type="submit">' +
             '   <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">Cancel</button>' +
             '</section>' +
