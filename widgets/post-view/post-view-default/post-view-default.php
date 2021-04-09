@@ -57,8 +57,7 @@ $post = post()->current();
                     <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                         <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>
                     </div>
-                    <comment-form root-idx="<?= $post->idx ?>" comment-idx='<?= $comment->idx ?>'
-                                  v-if="displayCommentForm[<?=$comment->idx?>]"></comment-form>
+                    <comment-form root-idx="<?= $post->idx ?>" parent-idx='<?= $comment->idx ?>' v-if="displayCommentForm[<?=$comment->idx?>] === 'reply'"></comment-form>
                 <?php }
             } ?>
         </div>
@@ -75,13 +74,13 @@ $post = post()->current();
             };
         },
         created: function() {
-            console.log('created', this.displayCommentForm.a);
+            // console.log('created', this.displayCommentForm.a);
             request('app.version', {}, console.log, console.error);
             request('user.profile', {}, console.log, console.error);
         },
         methods: {
-            onCommentEditButtonClick: function(idx) {
-                this.$set(this.displayCommentForm, idx, true);
+            onCommentEditButtonClick: function(idx, mode) {
+                this.$set(this.displayCommentForm, idx, mode);
             },
         }
     });
@@ -120,7 +119,7 @@ $post = post()->current();
             '   </div>' +
             '   <textarea class="form-control" v-model="form.content"></textarea>' +
             '   <input class="btn btn-primary ml-2" type="submit">' +
-            '   <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx">Cancel</button>' +
+            '   <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">Cancel</button>' +
             '</section>' +
             '<div class="container photos">' +
             '   <div class="row">' +
@@ -172,7 +171,8 @@ $post = post()->current();
             },
             onCommentEditCancelButtonClick: function() {
                 console.log('onCommentEditCancelButtonClick', this.commentIdx);
-                this.$parent.displayCommentForm[this.commentIdx] = false;
+                // this.$parent.displayCommentForm[this.commentIdx] = false;
+                this.$parent.displayCommentForm[this.commentIdx ?? this.parentIdx] = '';
             },
             onFileDelete(idx) {
                 const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
