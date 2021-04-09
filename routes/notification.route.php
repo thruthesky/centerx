@@ -43,7 +43,7 @@ class NotificationRoute {
         foreach($re->getItems() as $item) {
             $res[] = $item->result();
         }
-        // @todo handle invalid/unknown tokends..
+        // @todo handle invalid/unknown tokens..
         // @how to properly return response here.
         return $res;
     }

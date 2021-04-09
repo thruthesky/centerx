@@ -33,17 +33,12 @@ foreach ($rows as $row) {
 }
 //d($user_total_spend);
 ?>
+
 <h1>In app purchase</h1>
-
-<?php
-//d($rows);
-
-//d(in());
-?>
 <section id="in-app-purchase">
 
 
-    <form method="post" action="/">
+    <form ref="inAppPurchase" method="post" action="/">
 
         <?=hiddens(in: ['p', 'w'], mode: 'submit')?>
 
@@ -58,18 +53,18 @@ foreach ($rows as $row) {
             </div>
             <div class="form-group col-md-3">
                 <label for="status">Status</label>
-                <select class="custom-select" id="status" name="status"   value="<?=!empty(in('status')) ? in('status')  : 'success'?>">>
-                    <option value="success">Success</option>
-                    <option value="pending">Pending</option>
-                    <option value="failure">Failure</option>
+                <select class="custom-select" id="status" name="status">
+                    <option value="success" <?=in('status') == 'success' ? 'selected' : ''?>>Success</option>
+                    <option value="pending" <?=in('status') == 'pending' ? 'selected' : ''?>>Pending</option>
+                    <option value="failure" <?=in('status') == 'failure' ? 'selected' : ''?>>Failure</option>
                 </select>
             </div>
             <div class="form-group col-md-3">
-                <label for="platform">Platform</label>
-                <select class="custom-select" id="platform" name="platform" value="<?=in('platform')?>">
-                    <option value="">Select platform</option>
-                    <option value="android">Android</option>
-                    <option value="ios">IOS</option>
+                <label for="platform">Platform</label><?=in('platform')?>
+                <select class="custom-select" id="platform" name="platform">
+                    <option value="" <?=empty(in('platform')) ? 'selected' : ''?>>Select platform</option>
+                    <option value="android"  <?=in('platform') == 'android' ? 'selected' : ''?>>Android</option>
+                    <option value="ios" <?=in('platform') == 'ios' ? 'selected' : ''?>>IOS</option>
                 </select>
             </div>
         </div>
@@ -231,18 +226,21 @@ foreach ($rows as $row) {
         },
         methods: {
             selectDateRange(days) {
-                console.log('selectDateRange');
                 let x = new Date();
                 let newDate = new Date(x.getTime() - 1000*60*60*24*days);
                 this.beginDate = this.yyyymmddFromDate(newDate);
                 this.endDate = this.yyyymmddFromDate(x);
+                this.$nextTick( function () {
+                    this.$refs['inAppPurchase'].submit();
+                });
             },
             lastMonth() {
-                console.log('lastMonth');
                 let x = new Date();
                 this.beginDate = this.yyyymmddFromDate(new Date(x.getFullYear(), x.getMonth() - 1, 1));
                 this.endDate = this.yyyymmddFromDate(new Date(x.getFullYear(), x.getMonth(), 0));
-
+                this.$nextTick(function () {
+                    this.$refs['inAppPurchase'].submit();
+                });
             },
             yyyymmddFromDate(date) {
                 let y = date.getFullYear().toString();

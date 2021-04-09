@@ -100,7 +100,7 @@ if (in(CATEGORY_ID)) {
                     },
                     alert,
                     function(p) {
-                        console.log("pregoress: ", p);
+                        console.log("progress: ", p);
                         this.percent = p;
                     }
                 );
