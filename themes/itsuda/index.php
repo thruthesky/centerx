@@ -27,7 +27,8 @@
         function later(fn) { window.addEventListener('load', fn); }
     </script>
 </head>
-<body style="padding-top: 80px;">
+<!-- <body style="padding-top: 80px;"> -->
+<body>
 
 <?php begin_capture_script_style(); ?>
 <section id="app">
