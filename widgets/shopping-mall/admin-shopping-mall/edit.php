@@ -299,14 +299,12 @@ $category = category(SHOPPING_MALL);
 
 <script src="<?php echo HOME_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
 <script>
-    const app = Vue.createApp({
-        data() {
-            return {
+    mixins.push({
+        data: {
                 discountedPrice: 0,
                 post: <?=json_encode($post->getData())?>,
-            }
         },
-        created() {
+        created: function () {
             this.onPriceChange();
         },
         methods: {
@@ -318,5 +316,5 @@ $category = category(SHOPPING_MALL);
                 }
             },
         }
-    }).mount("#app");
+    });
 </script>

@@ -35,11 +35,11 @@ $total = user()->count(where:  $where);
         검색된 사용자: <?=$total?>
     </div>
 
-    <div class="custom-control custom-checkbox custom-control-inline" v-for="(option, key) in options" :key="option">
-        <input type="checkbox" class="custom-control-input" :id="key" v-model="options[key]">
-        <label class="custom-control-label text-capitalize" :for="key">{{key}}</label>
+    <div class="custom-control custom-checkbox custom-control-inline mb-3" v-for="(option, key) in options" :key="key">
+        <input type="checkbox" class="custom-control-input" :id="key + '-option'" v-model="options[key]">
+        <label class="custom-control-label text-capitalize" :for="key + '-option'">{{key}}</label>
     </div>
-
+    <section class="overflow-auto">
     <table class="table">
         <thead>
         <tr>
@@ -59,7 +59,7 @@ $total = user()->count(where:  $where);
             <th scope="col"  v-if="options.zipcode">zipcode</th>
             <th scope="col"  v-if="options.createdAt">createdAt</th>
             <th scope="col"  v-if="options.updatedAt">updatedAt</th>
-            <th scope="col"  v-if="options.email">Edit</th>
+            <th scope="col">Edit</th>
         </tr>
         </thead>
         <tbody>
@@ -69,21 +69,21 @@ $total = user()->count(where:  $where);
 
             <tr>
                 <th scope="row"><?=$user->idx?></th>
-                 <td v-if="options.email"><?=$user->email?></td>
-                 <td v-if="options.firebaseUid"><?=$user->firebaseUid?></td>
-                 <td v-if="options.name"><?=$user->name?></td>
-                 <td v-if="options.nickname"><?=$user->nickname?></td>
-                 <td v-if="options.point"><?=$user->point?></td>
-                 <td v-if="options.phoneNo"><?=$user->phoneNo?></td>
-                 <td v-if="options.gender"><?=$user->gender?></td>
-                 <td v-if="options.birthdate"><?=$user->birthdate?></td>
-                 <td v-if="options.countryCode"><?=$user->countryCode?></td>
-                 <td v-if="options.province"><?=$user->province?></td>
-                 <td v-if="options.city"><?=$user->city?></td>
-                 <td v-if="options.address"><?=$user->address?></td>
-                 <td v-if="options.zipcode"><?=$user->zipcode?></td>
-                 <td v-if="options.createdAt"><?=$user->createdAt?></td>
-                 <td v-if="options.updatedAt"><?=$user->updatedAt?></td>
+                <td v-if="options.email"><?=$user->email?></td>
+                <td v-if="options.firebaseUid"><?=$user->firebaseUid?></td>
+                <td v-if="options.name"><?=$user->name?></td>
+                <td v-if="options.nickname"><?=$user->nickname?></td>
+                <td v-if="options.point"><?=$user->point?></td>
+                <td v-if="options.phoneNo"><?=$user->phoneNo?></td>
+                <td v-if="options.gender"><?=$user->gender?></td>
+                <td v-if="options.birthdate"><?=$user->birthdate?></td>
+                <td v-if="options.countryCode"><?=$user->countryCode?></td>
+                <td v-if="options.province"><?=$user->province?></td>
+                <td v-if="options.city"><?=$user->city?></td>
+                <td v-if="options.address"><?=$user->address?></td>
+                <td v-if="options.zipcode"><?=$user->zipcode?></td>
+                <td v-if="options.createdAt"><?=$user->createdAt?></td>
+                <td v-if="options.updatedAt"><?=$user->updatedAt?></td>
                 <td>
                     <a class="btn btn-outline-primary"
                        href="/?p=admin.index&w=user/admin-user-edit&userIdx=<?=$user->idx?>">🖉</a>
@@ -92,6 +92,7 @@ $total = user()->count(where:  $where);
         <?php } ?>
         </tbody>
     </table>
+    </section>
 
 </section>
 
@@ -104,30 +105,27 @@ include widget('pagination/pagination-default', [
 ]);
 
 ?>
-<script src="<?php echo HOME_URL?>/etc/js/vue.3.0.7.min.js"></script>
 <script>
-    const adminUserList = Vue.createApp({
-        data() {
-            return {
-                options: {
-                    email: true,
-                    firebaseUid: false,
-                    name: true,
-                    nickname: true,
-                    point: true,
-                    phoneNo: true,
-                    gender: false,
-                    birthdate: false,
-                    countryCode: false,
-                    province: false,
-                    city: false,
-                    address: false,
-                    zipcode: false,
-                    createdAt:  false,
-                    updatedAt:  false,
-                }
+    mixins.push({
+        data: {
+            options: {
+                email: true,
+                firebaseUid: false,
+                name: true,
+                nickname: true,
+                point: true,
+                phoneNo: true,
+                gender: false,
+                birthdate: false,
+                countryCode: false,
+                province: false,
+                city: false,
+                address: false,
+                zipcode: false,
+                createdAt:  false,
+                updatedAt:  false,
             }
         },
-    }).mount("#admin-user-list");
+    });
 </script>
 

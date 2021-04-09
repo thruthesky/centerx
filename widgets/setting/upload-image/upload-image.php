@@ -30,15 +30,12 @@ $file = files()->getByCode(in('code'));
 </div>
 
 <script>
-    alert('fix to vu2;');
-    const adminUploadImage = Vue.createApp({
-        data() {
-            return {
+    mixins.push({
+        data: {
                 percent: 0,
                 src: "<?=$file->url?>"
-            }
         },
-        mounted() { console.log("admin-upload-image 마운트 완료!"); },
+        mounted: function () { console.log("admin-upload-image 마운트 완료!"); },
         methods: {
             onFileChange(event) {
                 if (event.target.files.length === 0) {
@@ -77,5 +74,5 @@ $file = files()->getByCode(in('code'));
                 );
             },
         }
-    }).mount("#admin-upload-image");
+    });
 </script>

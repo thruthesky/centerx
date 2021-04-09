@@ -30,22 +30,16 @@ if ( modeSubmit() ) {
 
     </form>
 </section>
-
-<script src="<?=HOME_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
-
 <script>
-    const attr = {
-        data() {
-            return {
+    mixins.push({
+        data: {
                 deliveryFeeFreeLimit: <?=config('deliveryFeeFreeLimit', DEFAULT_DELIVERY_FEE_FREE_LIMIT)?>,
                 deliveryFeePrice: <?=config('deliveryFeePrice', DEFAULT_DELIVERY_FEE_PRICE)?>,
-            };
         },
-        created() {
+        created: function () {
             console.log('setting created');
         }
-    };
-    const app = Vue.createApp(attr).mount('#app');
+    });
 </script>
 
 
