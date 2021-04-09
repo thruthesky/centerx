@@ -10,6 +10,7 @@ if ( $category->hasError && $category->getError() == e()->entity_not_found ) {
 $limit = 10;
 $conds = [PARENT_IDX => 0, DELETED_AT => 0];
 if ( $category->exists() ) $conds[CATEGORY_IDX] = $category->idx;
+if ( in('lsub') ) $conds['subcategory'] = in('lsub');
 $posts = post()->search(page: in('page', 1), limit: $limit, conds: $conds);
 $total = post()->count(conds: $conds);
 
@@ -22,9 +23,14 @@ include_once widget( $category->postListHeaderWidget ? $category->postListHeader
 
 include_once widget( $category->postListWidget ? $category->postListWidget : 'post-list/post-list-default', [
     'posts' => $posts,
+    'total' => $total,
+    'category' => $category,
 ] );
 
 
+$url = '/?p=forum.post.list&categoryId=' . in(CATEGORY_ID);
+if ( in('lsub') ) $url .= lsub();
+$url .= "&page={page}";
 include_once widget( $category->paginationWidget ? $category->paginationWidget : 'pagination/pagination-default', [
     'page' => in('page', 1),
     'limit' => $limit,
@@ -32,7 +38,7 @@ include_once widget( $category->paginationWidget ? $category->paginationWidget :
     'arrow' => true,
     'total' => $total,
     'no_of_posts_per_page' => $category->v('noOfPagesOnNav', 10),
-    'url' => '/?p=forum.post.list&categoryId=' . in(CATEGORY_ID) . '&page={page}',
+    'url' => $url,
 ]);
 
 

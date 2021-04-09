@@ -15,7 +15,7 @@ $post = post()->current();
         </div>
         <div class="meta">
             <div class="mt-1"><b><?= $post->user()->name ?></b> - No. <?= $post->idx ?></div>
-            <div class="mt-1"><?= date('r', $post->createdAt) ?></div>
+            <div class="mt-1"><?=$post->subcategory ? "[{$post->subcategory}] " : "" ?><?= date('r', $post->createdAt) ?></div>
         </div>
     </div>
 
@@ -33,7 +33,7 @@ $post = post()->current();
                 <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
                 <a class="btn btn-sm btn-danger" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
             <?php } ?>
-            <a class="btn btn-sm btn-primary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ek('List', '@T list') ?></a>
+            <a class="btn btn-sm btn-primary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?><?=lsub()?>"><?= ek('List', '목록') ?></a>
         </div>
 
         <!-- FILES -->

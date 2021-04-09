@@ -53,9 +53,8 @@
         </tr>
 
         <tr>
-            <td><?=ek('Subcategories', '서브 카테고리')?></td>
-            <td>
-                <input name="subcategories" value="<?= implode(',', $category->subcategories) ?>">
+            <td colspan="2">
+                <textarea class="w-100" rows="3" name="subcategories"><?= implode(',', $category->subcategories) ?></textarea>
             </td>
         </tr>
 

@@ -19,6 +19,7 @@
  * @property-read int $parentIdx;
  * @property-read int $categoryIdx;
  * @property-read int $userIdx;
+ * @property-read string $subcategory
  * @property-read string $title;
  * @property-read File[] $files;
  * @property-read string $path;
@@ -387,12 +388,15 @@ class Post extends PostTaxonomy {
 
 
     /**
-     * Return the post of current page.
+     * Return the post of current page base on the URL(Friendly URL)
      *
      * It returns the post based on current url.
      *
      * For instance, "https://local.domain.com/post-url-is-like-%ED%95%9C%EA%B8%80%EB%8F%84-%EB%90%okay",
      *  then, it will decode the url and find it in path, and return the post.
+     *
+     * Note, that it will ignore `?` and the string after it if it exists.
+     * i.e) If the URL is `https://local.itsuda50.com/banana-6?lcategory=banana` then, `?lcategory=banana` is ignored.
      *
      * @return Post
      * - error will be set into $this if post not exists.
@@ -403,6 +407,10 @@ class Post extends PostTaxonomy {
      */
     public function getFromPath(): self {
         $path = $_SERVER['REQUEST_URI'];
+        if ( str_contains($path, '?') ) {
+            $arr = explode('?', $path);
+            $path = $arr[0];
+        }
         $path = ltrim($path,'/');
         if ( empty($path) ) return $this->error(e()->post_path_is_empty);
         $path = urldecode($path);

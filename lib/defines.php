@@ -130,6 +130,7 @@ define('META_CODE_EXCEPTIONS', [
     TOKEN,
     'returnTo', // returnTo 는 더 이상 사용되지 않음. 없애도 됨.
     'userfile', // file upload form name.
+    'lsub', // category list tracking.
 ]);
 
 

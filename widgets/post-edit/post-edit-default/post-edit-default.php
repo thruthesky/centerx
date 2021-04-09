@@ -19,17 +19,33 @@ if (in(CATEGORY_ID)) {
         <form action="/" method="POST">
             <input type="hidden" name="p" value="forum.post.edit.submit">
             <input type="hidden" name="returnTo" value="post">
-            <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
             <input type="hidden" name="files" v-model="files">
             <input type="hidden" name="<?= CATEGORY_ID ?>" value="<?= $category->v(ID) ?>">
+            <input type="hidden" name="lsub" value="<?=in('lsub')?>">
             <input type="hidden" name="<?= IDX ?>" value="<?= $post->idx ?>">
+
+            <div>
+                <?= ek('Category', '카테고리') ?>:
+                <select name="subcategory">
+                    <option value=""><?=ek('Select category', '카테고리 선택')?></option>
+                    <?php foreach($category->subcategories as $cat) {
+                        if ( $post->subcategory == $cat ) $selected =  'selected';
+                        else if ( $cat == in('subcategory') ) $selected = ' selected';
+                        else $selected = '';
+                        ?>
+                        <option value="<?=$cat?>"<?=$selected?>><?=$cat?></option>
+                    <?php } ?>
+                </select>
+            </div>
+
             <div>
                 <?= ek('Title', '@T Title') ?>:
                 <input class="form-control" type="text" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
             </div>
+
             <div class="mt-3">
                 <?= ek('Content', '@T Content') ?>:
-                <textarea style="min-height: 150px" class="form-control" type="text" name="<?= CONTENT ?>" value="<?= $post->v(CONTENT) ?>"></textarea>
+                <textarea rows="10" class="form-control" type="text" name="<?= CONTENT ?>"><?= $post->v(CONTENT) ?></textarea>
             </div>
             <!-- Buttons. TODO: progress bar -->
             <div class="mt-3 d-flex">
@@ -58,13 +74,12 @@ if (in(CATEGORY_ID)) {
 </section>
 
 <script>
-    alert('fix to vu2;');
-    const postEditDefault = Vue.createApp({
+    mixins.push({
         data() {
             return {
                 percent: 0,
                 files: '<?= $post->v('files') ?>',
-                uploadedFiles: <?= json_encode($post->files(), true) ?>,
+                uploadedFiles: <?= json_encode($post->files(true), true) ?>,
             }
         },
         created() {
@@ -77,14 +92,13 @@ if (in(CATEGORY_ID)) {
                     return;
                 }
                 const file = event.target.files[0];
+                const self = this;
                 fileUpload(
-                    file, {
-                        sessionId: '<?= login()->sessionId ?>',
-                    },
+                    file, {},
                     function(res) {
                         console.log("success: res.path: ", res, res.path);
-                        postEditDefault.files = addByComma(postEditDefault.files, res.idx);
-                        postEditDefault.uploadedFiles.push(res);
+                        self.files = addByComma(self.files, res.idx);
+                        self.uploadedFiles.push(res);
                     },
                     alert,
                     function(p) {
@@ -96,22 +110,14 @@ if (in(CATEGORY_ID)) {
             onFileDelete(idx) {
                 const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
                 if (re === false) return;
-                axios.post('/index.php', {
-                        sessionId: '<?= login()->sessionId ?>',
-                        route: 'file.delete',
-                        idx: idx,
-                    })
-                    .then(function(res) {
-                        checkCallback(res, function(res) {
-                            console.log('delete success: ', res);
-                            postEditDefault.uploadedFiles = postEditDefault.uploadedFiles.filter(function(v, i, ar) {
-                                return v.idx !== res.idx;
-                            });
-                            postEditDefault.files = deleteByComma(postEditDefault.files, res.idx);
-                        }, alert);
-                    })
-                    .catch(alert);
+                const self = this;
+                request('file.delete', {idx: idx}, function(res) {
+                    self.uploadedFiles = self.uploadedFiles.filter(function(v, i, ar) {
+                        return v.idx !== res.idx;
+                    });
+                    self.files = deleteByComma(self.files, res.idx);
+                }, alert);
             }
         }
-    }).mount("#post-edit-default");
+    });
 </script>
