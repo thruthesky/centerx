@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <title>Hello, world!</title>
     <style>
         .top { top: 0; }
@@ -28,21 +29,12 @@
 </head>
 <body style="padding-top: 80px;">
 
+<?php begin_capture_script_style(); ?>
+<section id="app">
 <?php if ( str_contains(theme()->page(), '/admin/') ) { ?>
-    <section id="app">
-        <?php
-        begin_capture_script_style();
-        /// You can add whatever here. header, footer, etc.
-        include theme()->page();
-        end_capture_script_style();
-        ?>
-    </section>
-    <script src="<?=HOME_URL?>etc/js/helper.js?v=2"></script>
-<?php includeVueJs() ?>
-<?=get_scripts_styles()?>
-    <script src="/etc/js/app.js"></script>
+
+        <?php include theme()->page(); ?>
 <?php } else { ?>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         $(document).ready(function(){
             // Add smooth scrolling to all links
@@ -103,5 +95,12 @@
         ?>
     </div>
 <?php } ?>
+</section>
+
+<?php end_capture_script_style(); ?>
+<script src="<?=HOME_URL?>etc/js/helper.js?v=6"></script>
+<?php includeVueJs() ?>
+<?=get_scripts_styles()?>
+<script src="/etc/js/app.js"></script>
 </body>
 </html>

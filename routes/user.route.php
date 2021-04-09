@@ -15,6 +15,7 @@ class UserRoute {
     }
 
     public function profile($in) {
+        if ( notLoggedIn() ) return e()->not_logged_in;
         return login()->response();
     }
 

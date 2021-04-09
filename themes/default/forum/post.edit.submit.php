@@ -15,9 +15,13 @@ $category = category($categoryId);
 $category->returnToAfterPostEdit;
 
 if ( $category->returnToAfterPostEdit == 'L' ) {
-    jsGo("/?p=forum.post.list&categoryId=" . $categoryId );
+    $url = "/?p=forum.post.list&categoryId=" . $categoryId;
+    if ( in('lsub') ) $url .= lsub();
+    jsGo($url);
 } else {
-    jsGo($post->url);
+    $url = $post->url;
+    if ( in('lsub') ) $url .= lsub(true);
+    jsGo($url);
 }
 
 

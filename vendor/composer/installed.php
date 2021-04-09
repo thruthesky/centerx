@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'cdc7e00d0bb881f8fc72d2df5cd1553b8271fffb',
+    'reference' => '66d37b4f29e70c206d845077729f483d89fb6548',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'cdc7e00d0bb881f8fc72d2df5cd1553b8271fffb',
+      'reference' => '66d37b4f29e70c206d845077729f483d89fb6548',
     ),
     'aporat/store-receipt-validator' => 
     array (

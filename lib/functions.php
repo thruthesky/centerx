@@ -2,7 +2,7 @@
 /**
  * @file functions.php
  */
-
+use PHPHtmlParser\Dom;
 
 
 /**
@@ -334,17 +334,17 @@ function unsetLoginCookies() {
 }
 
 function setAppCookie($name, $value) {
-    $name = md5($name);
+//    $name = md5($name);
     setcookie ( $name , $value, time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
 }
 
 function deleteAppCookie($name) {
-    $name = md5($name);
+//    $name = md5($name);
     setcookie($name, "", time()-3600, '/', COOKIE_DOMAIN);
 }
 
 function getAppCookie($name) {
-    $name = md5($name);
+//    $name = md5($name);
     if ( !isset($_COOKIE[$name]) ) return null;
     else return $_COOKIE[$name];
 }
@@ -1440,7 +1440,9 @@ function end_capture_script_style()
 {
     /// Get javascript
     $content = ob_get_clean();
-    $re = preg_match_all("/\<script\>.*\<\/script\>/s", $content, $m);
+
+
+    $re = preg_match_all('/\<script(.*?)?\>(.|\s)*?\<\/script\>/i', $content, $m);
     if ($re) {
         $scripts = $m[0];
         foreach ($scripts as $script) {
@@ -1463,3 +1465,26 @@ function end_capture_script_style()
 
     echo $content;
 }
+
+/**
+ * @param bool $question
+ * @return string
+ */
+function lsub(bool $question=false): string {
+    if ( !in('lsub') ) return '';
+    if ( $question ) return "?lsub=" . in('lsub');
+    else return "&lsub=" . in('lsub');
+}
+function inLsub(bool $question=false) { return lsub($question); }
+function inCategoryId(bool $question=false) {
+    if ( !in('categoryId') ) return '';
+    if ( $question ) return "?categoryId=" . in('categoryId');
+    else return "&categoryId=" . in('categoryId');
+}
+function inSubcategory(bool $question=false) {
+    if ( !in('subcategroy') ) return '';
+    if ( $question ) return "?subcategroy=" . in('subcategroy');
+    else return "&subcategroy=" . in('subcategroy');
+}
+
+

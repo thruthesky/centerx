@@ -1010,6 +1010,7 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 - You may use `later()` helper function by adding it in head tag.
 
 
+
 ## Admin page design
 
 - It is recommended to write admin code as a widget.
@@ -1411,7 +1412,7 @@ chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
 
 ## Vue.js 를 사용한 예제
 
-- 아래는 글 작성(생성, 수정)을 하는 기본 예제이다. Vue.js 를 통해서 파일을 업로드한다.
+- 아래는 글 작성(생성, 수정)을 하는 기본 예제이다. Vue.js 버전 3 를 통해서 파일을 업로드한다.
 
 ```html
 <?php
@@ -1649,7 +1650,31 @@ $file = files()->getByCode(in('code'));
 - widget/post-edit/itsuda-brain 을 참고한다.
 
 
+## Vue.js 2 로 서버와 통신하는 예제
 
+- 아래의 코드는 Vue.js 3 에서 사용해도 된다.
+
+```javascript
+function request(route, params, success, error) {
+  if ( ! params ) params = {};
+  // If user has logged in, attach session id.
+  if ( Cookies.get('sessionId') ) params['sessionId'] = Cookies.get('sessionId');
+  params['route'] = route;
+  axios.post('/index.php', params).then(function(res) {
+    if (typeof res.data.response === 'string' ) error(res.data.response);
+    else success(res.data.response);
+  }).catch(error);
+}
+request('app.version', {}, console.log, console.error);
+request('user.profile', {}, console.log, console.error);
+```
+
+
+
+## Vue.js 2 로 게시글 읽기 페이지에서 코멘트와 사진을 생성하고 수정, 삭제하는 예제
+
+- Vue.js 3 가 IE11 을 지원하지 않는다. 대한민국에서는 IE 를 뺄 수 없다. Vue.js 2 에서는 IE9 부터 지원한다. 그래서 Vue.js 3 로 작업을 하다가, Vue.js 2 로 바꾸었다.
+- [vue2 브랜치 post-view-default](https://github.com/thruthesky/centerx/blob/vue2/widgets/post-view/post-view-default/post-view-default.php)참고
 
 # 원하지 않는 접속 차단
 
@@ -1769,3 +1794,18 @@ echo "현재 환율: $phpKwr";
   - GCP service account 를 centerx 에 연결
     - CenterX 의 android package name 과 service account path 지정
 - 
+
+
+# Forum & Post & Comment
+
+## Post list parameters
+
+- `subcategory` is the subcategory.
+- `lsub` is the subcategory for listing only for that subcategory.
+  - When a user creates a post under a category, you can pass `lsub` through the edit page and view page.
+    - After edit or view, the user may return post list page. And the app can show the subcategory that he selected before.
+  
+- The reason why we need the two `subcategory` parameters is that when post is edited,
+  it needs `subcategory` as input even though the user does not want list for that subcategory.
+  And when the app redirects the user to the list, the app does not know to list the whole category list or only that subcategory.
+    
