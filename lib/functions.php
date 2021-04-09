@@ -2,7 +2,7 @@
 /**
  * @file functions.php
  */
-
+use PHPHtmlParser\Dom;
 
 
 /**
@@ -334,17 +334,17 @@ function unsetLoginCookies() {
 }
 
 function setAppCookie($name, $value) {
-    $name = md5($name);
+//    $name = md5($name);
     setcookie ( $name , $value, time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
 }
 
 function deleteAppCookie($name) {
-    $name = md5($name);
+//    $name = md5($name);
     setcookie($name, "", time()-3600, '/', COOKIE_DOMAIN);
 }
 
 function getAppCookie($name) {
-    $name = md5($name);
+//    $name = md5($name);
     if ( !isset($_COOKIE[$name]) ) return null;
     else return $_COOKIE[$name];
 }
@@ -1440,7 +1440,9 @@ function end_capture_script_style()
 {
     /// Get javascript
     $content = ob_get_clean();
-    $re = preg_match_all("/\<script\>.*\<\/script\>/s", $content, $m);
+
+
+    $re = preg_match_all('/\<script(.*?)?\>(.|\s)*?\<\/script\>/i', $content, $m);
     if ($re) {
         $scripts = $m[0];
         foreach ($scripts as $script) {

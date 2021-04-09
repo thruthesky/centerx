@@ -30,9 +30,12 @@
     end_capture_script_style();
     ?>
 </section>
-<script src="<?=HOME_URL?>etc/js/helper.js?v=2"></script>
+<script src="<?=HOME_URL?>etc/js/helper.js"></script>
 <?php includeVueJs() ?>
+
 <?=get_scripts_styles()?>
+
+
 <script src="/etc/js/app.js"></script>
 </body>
 </html>
