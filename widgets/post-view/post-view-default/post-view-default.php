@@ -98,9 +98,9 @@ $post = post()->current();
         created: function() {
             console.log('component: comment-form, created', this.commentIdx);
             if ( this.commentIdx ) {
-                $this = this;
+                const self = this;
                 request('comment.get', {idx: this.commentIdx}, function(res) {
-                    $this.form.content = res.content;
+                    self.form.content = res.content;
                 }, alert);
             }
         },
