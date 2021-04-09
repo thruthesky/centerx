@@ -1010,6 +1010,24 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 - You may use `later()` helper function by adding it in head tag.
 
 
+### Communication with Backend
+
+```javascript
+function request(route, params, success, error) {
+  if ( ! params ) params = {};
+  // If user has logged in, attach session id.
+  if ( Cookies.get('sessionId') ) params['sessionId'] = Cookies.get('sessionId');
+  params['route'] = route;
+  axios.post('/index.php', params).then(function(res) {
+    if (typeof res.data.response === 'string' ) error(res.data.response);
+    else success(res.data.response);
+  }).catch(error);
+}
+request('app.version', {}, console.log, console.error);
+request('user.profile', {}, console.log, console.error);
+```
+
+
 ## Admin page design
 
 - It is recommended to write admin code as a widget.
@@ -1411,7 +1429,7 @@ chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
 
 ## Vue.js 를 사용한 예제
 
-- 아래는 글 작성(생성, 수정)을 하는 기본 예제이다. Vue.js 를 통해서 파일을 업로드한다.
+- 아래는 글 작성(생성, 수정)을 하는 기본 예제이다. Vue.js 버전 3 를 통해서 파일을 업로드한다.
 
 ```html
 <?php

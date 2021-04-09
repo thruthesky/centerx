@@ -25,59 +25,22 @@ $comment = $o['comment'];
         </div>
     </div>
 
-    <div class="mt-3" id="comment-view-<?= $comment->idx ?>" style="display: block;">
+    <div class="mt-3" v-if="!displayCommentForm[<?=$comment->idx?>]">
         <div style="white-space: pre-wrap;"><?= $comment->content ?></div>
         <div class="files">
             <?php include widget('files-display/files-display-default', ['files' => $comment->files()]) ?>
         </div>
         <hr>
         <section class="buttons mt-3">
+            <a class="btn btn-sm btn-primary"><?= ek('Reply', '답변하기') ?></a>
             <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
             <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
             <?php if ($comment->isMine()) { ?>
-                <a class="btn btn-sm btn-primary" onclick="showCommentEditForm(<?= $comment->idx ?>)"><?= ek('Edit', '수정') ?></a>
+                <a class="btn btn-sm btn-primary" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>)"><?= ek('Edit', '수정') ?></a>
                 <a class="btn btn-sm btn-danger" onclick="onCommentDelete(<?= $comment->idx ?>)"><?= ek('Delete', '삭제') ?></a>
             <?php } ?>
         </section>
     </div>
 
-    <!-- EDIT  -->
-    <?php /*
-    <div class="mt-3" id="comment-edit-<?= $comment->idx ?>" style="display: none;">
-        <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post, 'comment' => $comment]) ?>
-    </div>
- */?>
 
-    <div id="comment-reply-<?= $comment->idx ?>" class="mt-2">
-        <?php include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $comment]) ?>
-    </div>
 </div>
-
-<script>
-    // function showCommentEditForm(id) {
-    //     document.getElementById("comment-view-" + id).style.display = "none";
-    //     document.getElementById("comment-reply-" + id).style.display = "none";
-    //     document.getElementById("comment-edit-" + id).style.display = "block";
-    // }
-    //
-    // function hideCommentEditForm(id) {
-    //     document.getElementById("comment-view-" + id).style.display = "block";
-    //     document.getElementById("comment-reply-" + id).style.display = "block";
-    //     document.getElementById("comment-edit-" + id).style.display = "none";
-    // }
-
-    function onCommentDelete(idx) {
-        const re = confirm('Are you sure you want to delete Comment no. ' + idx + '?');
-        if (re === false) return;
-        axios.post('/index.php', {
-                sessionId: '<?= login()->sessionId ?>',
-                route: 'comment.delete',
-                idx: idx,
-            })
-            .then(function(res) {
-                console.log('comment deleted, ', res);
-                location.reload();
-            })
-            .catch(alert);
-    }
-</script>

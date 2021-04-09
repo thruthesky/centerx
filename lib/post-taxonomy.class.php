@@ -126,9 +126,9 @@ class PostTaxonomy extends Entity {
     public function files(bool $response = false): array {
         /**
          *
-         * taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
+         * taxonomy 와 entity 를 기반으로 첨부 파일을 가져오는데, 사진을 업로드한 순서대로 가져온다.
          */
-        $files = files()->find([TAXONOMY => POSTS, ENTITY => $this->idx]);
+        $files = files()->find([TAXONOMY => POSTS, ENTITY => $this->idx], by: 'ASC');
         if ( $response ) {
             $rets = [];
             foreach( $files as $file ) {
