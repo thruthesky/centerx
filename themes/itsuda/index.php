@@ -98,7 +98,7 @@
 </section>
 
 <?php end_capture_script_style(); ?>
-<script src="<?=HOME_URL?>etc/js/helper.js?v=<?=time()?>"></script>
+<script src="<?=HOME_URL?>etc/js/helper.js?v=6"></script>
 <?php includeVueJs() ?>
 <?=get_scripts_styles()?>
 <script src="/etc/js/app.js"></script>

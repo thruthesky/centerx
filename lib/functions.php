@@ -1465,3 +1465,26 @@ function end_capture_script_style()
 
     echo $content;
 }
+
+/**
+ * @param bool $question
+ * @return string
+ */
+function lsub(bool $question=false): string {
+    if ( !in('lsub') ) return '';
+    if ( $question ) return "?lsub=" . in('lsub');
+    else return "&lsub=" . in('lsub');
+}
+function inLsub(bool $question=false) { return lsub($question); }
+function inCategoryId(bool $question=false) {
+    if ( !in('categoryId') ) return '';
+    if ( $question ) return "?categoryId=" . in('categoryId');
+    else return "&categoryId=" . in('categoryId');
+}
+function inSubcategory(bool $question=false) {
+    if ( !in('subcategroy') ) return '';
+    if ( $question ) return "?subcategroy=" . in('subcategroy');
+    else return "&subcategroy=" . in('subcategroy');
+}
+
+
