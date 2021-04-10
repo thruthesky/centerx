@@ -1283,6 +1283,7 @@ function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): s
 
 
 /**
+ * @deprecated use `js()`
  * Vue.js 를 한번만 로드한다.
  *
  * 참고로, 모든 자바스크립트 관련 코드는, 웹 브라우저로 전달되기 전에, 맨 하단으로 이동 될 수 있다.
@@ -1430,15 +1431,15 @@ EOE;
 
 global $_extracted_scripts;
 global $_extracted_styles;
-function get_scripts_styles() {
+function get_captured_style_and_script() {
     global $_extracted_scripts, $_extracted_styles;
     return $_extracted_styles . $_extracted_scripts;
 }
-function begin_capture_script_style()
+function begin_capture_style_and_script()
 {
     ob_start();
 }
-function end_capture_script_style()
+function end_capture_style_and_script()
 {
     /// Get javascript
     $content = ob_get_clean();

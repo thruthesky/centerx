@@ -1,6 +1,7 @@
 <div class="box mb-2 border-radius-md">
     <?php
     if ( loggedIn() ) echo login()->name . '님, 어서오세요';
+    if ( admin() ) echo ' <a href="/?admin.index">[관리자]</a>';
     ?>
 </div>
 <div class="box d-flex flex-column ch-a-ellipsis">

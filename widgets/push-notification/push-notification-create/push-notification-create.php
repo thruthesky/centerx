@@ -27,7 +27,7 @@ if(modeSubmit()) {
 
 
 
-<h1>Push Notification</h1>
+<h1><?=ek('Push Notification', '@t push notification')?></h1>
 <section id="push-notification-create">
 
 

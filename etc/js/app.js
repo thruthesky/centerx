@@ -1,10 +1,8 @@
 
 
 
-var app = new Vue({
+const app = new Vue({
     el: '#app',
-    data: {
-        theme: '<?=theme()->folderName?>'
-    },
+    data: {},
     mixins: mixins
 });

@@ -1,6 +1,7 @@
 <?php
 
-include './boot.php';
+
+include './boot.php'; // load booting scripts
 if ( in(ROUTE) ) return include ROOT_DIR . 'routes/index.php';
 ob_start();
 if (str_ends_with(in('p', ''), '.submit') ) include theme()->file(in('p'));

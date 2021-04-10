@@ -4,7 +4,24 @@
 - 특징
   - 최신 PHP 버전(버전 8) 을 활용한 코드
   - OOP 를 활용한 간단하면서 견고한 디자인
-  
+
+```mermaid
+sequenceDiagram
+    participant Alice
+    participant Bob
+    Alice->>John: Hello John, how are you?
+    loop Healthcheck
+        John->>John: Fight against hypochondria
+    end
+    Note right of John: Rational thoughts <br/>prevail!
+    John-->>Alice: Great!
+    John->>Bob: How about you?
+    Bob-->>John: Jolly good!
+```
+
+# 문서 안내
+
+본 [README](https://github.com/thruthesky/centerx/) 는 CenterX 가장 기본 적인 
 
 # 목표
 
@@ -959,7 +976,7 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 - Vue.js 2 supports IE9 and above.
 - To use vue js 2, follow the structure below.
-  - `begin_capture_script_style()` and `end_capture_script_style()` will capture javascripts and styles tag inside the content.
+  - `begin_capture_style_and_script()` and `end_capture_style_and_script()` will capture javascripts and styles tag inside the content.
   - and displays the html content without them.
   - After login vue js, it prints the captured javascripts and styles.
   
@@ -976,15 +993,15 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 </head>
 <section id="app">
     <?php
-    begin_capture_script_style();
+    begin_capture_style_and_script();
     /// You can add whatever here. header, footer, etc.
     include theme()->page();
-    end_capture_script_style();
+  end_capture_style_and_script();
     ?>
 </section>
 <script src="<?=HOME_URL?>etc/js/helper.js?v=2"></script>
 <?php includeVueJs() ?>
-<?=get_scripts_styles()?>
+<?=get_captured_style_and_script()?>
 <script>
     var app = new Vue({
         el: '#app',

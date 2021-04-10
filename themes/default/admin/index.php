@@ -52,7 +52,7 @@ if ( admin() == false ) jsBack('You are not admin');
     <div class="container">
         <div class="content py-4">
             <?php
-            
+
             if ( in('w') ) { ?>
                 <div class="p-3 bg-white"><?php include widget(in('w')); ?></div>
                 <?php

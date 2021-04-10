@@ -32,7 +32,7 @@
 <?php $isAdminPage = str_contains(theme()->page(), '/admin/'); ?>
 <body <?php if (! $isAdminPage ) { echo 'style="padding-top: 80px;"'; } ?>>
 
-<?php begin_capture_script_style(); ?>
+<?php begin_capture_style_and_script(); ?>
 <section id="app">
 <?php if ( $isAdminPage ) { ?>
 
@@ -100,10 +100,10 @@
 <?php } ?>
 </section>
 
-<?php end_capture_script_style(); ?>
+<?php end_capture_style_and_script(); ?>
 <script src="<?=HOME_URL?>etc/js/helper.js?v=6"></script>
 <?php includeVueJs() ?>
-<?=get_scripts_styles()?>
+<?=get_captured_style_and_script()?>
 <script src="/etc/js/app.js"></script>
 </body>
 </html>
