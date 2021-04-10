@@ -1,38 +1,26 @@
 # CenterX
 
-- 위세너에서 개발한 LEMP 기반 백엔드.
-- 특징
-  - 최신 PHP 버전(버전 8) 을 활용한 코드
-  - OOP 를 활용한 간단하면서 견고한 디자인
+- CenterX 는 웹 및 Restful Api 를 통해서 애플리케이션을 개발할 수 있도록 하는 백엔드 프레임워크이다.
+  
+## 특징
 
-```mermaid
-sequenceDiagram
-    participant Alice
-    participant Bob
-    Alice->>John: Hello John, how are you?
-    loop Healthcheck
-        John->>John: Fight against hypochondria
-    end
-    Note right of John: Rational thoughts <br/>prevail!
-    John-->>Alice: Great!
-    John->>Bob: How about you?
-    Bob-->>John: Jolly good!
-```
+- 가장 단순하며 직관적인 플랫폼을 위해서 직접 개발
+- 성능 향상을 위해서 최신 PHP (버전 8)를 사용하고 있으며, Nginx(Apache 대체 가능)와 MariaDB(MySQL 대체 가능)를 바탕으로 하는 프레임워크
+- Container(Docker) 를 통한 배포
+
+
 
 # 문서 안내
 
-본 [README](https://github.com/thruthesky/centerx/) 는 CenterX 가장 기본 적인 
+- 본 [README](https://github.com/thruthesky/centerx/) 는 CenterX 의 공식 문서로서 처음 시작 부터 모든 정보를 포함한다.
+- 소스코드에 대한 설명은 `phpDocument` 을 통해서 문서화를 한다. 본 문서 문서화 참고
+
 
 # 목표
 
-- Nuxt.js 로 SEO 와 PWA 를 하고,
-- Flutter 로 앱을 만들기 위해서 개발한 백엔드이다.
-
-- 관리자 페이지만 PHP 와 인라인 Vue.js 3 로 작업을 하면 되며,
-  PHP 로 작성하는 웹은 실험용 또는 테스트용으로만 한다.
-  이 경우, 사진 등록에서 복잡하게 Vue.js 로 업로드된 사진을 바로 보여줄 필요 없이 대충 업로드만 되면 된다.
-  
-- 즉, 웹은 PHP 로 하지 않는다. PWA 로 하며 특히, 복잡한 기능(예: 사용자가 직접 위젯 옵션으로 디자인을 하는 그런 것)은 PWA 로만 하게 한다.
+- 간단하면서도 견고한 프레임워크 개발.
+- Headless(Restful Api) 지원이 가장 우선적인 목표.
+- PWA 개발을 쉽게 할 수 있는 기능 제공.
 
 # 해야 할 일
 
@@ -207,15 +195,20 @@ user()->by('thruthesky@gmail.com')->changePassword('12345a');
 
 - @later SQLite3 지원. 그러면 그냥 php dev web server 로 SSL 없이, localhost 로 바로 실행가능하리라 생각한다.
 
+# 설치
 
-# Primary Conception
+- 리눅스에 직접 Nginx(Apache), PHP, MariaDB(MySQL)을 설치하여 CenterX 를 운영 할 수 있겠지만 공식적으로는 도커를 통한 설치만 지원한다.
 
-- It does not use `__get()`, `__set()` magic methods to avoid ambiguety. Instead, use
-  - `post(1)->get()` to get whole record.
-  - `post(1)->value(...)` to get a field value. Or `post(1)->v(...)` for short.
+- 도커에서 
 
 
-- @next 회원 인증은 Route 에서 해야한다. 그외 입력값 검사는 각 함수에서 한다.
+# Center X 의 데이터 모델
+
+- Taxonomy 는 데이터 라이브러리(또는 데이터 그룹)이다. 데이터베이스에서 하나의 테이블이 하나의 taxonomy 라고 할 수 있다.
+
+- Entity 는 Taxonomy 의 객체이다. 데이터베이스에서는 하나의 레코드에 대한 자료를 가지고 있으며, 그 레코드에 대해 읽기, 쓰기 및 각종 동적을 한다.
+
+
 
 # 데이터 저장
 
@@ -938,7 +931,7 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 
 
-# Theme
+# 테마 Theme
 
 ## 테마 폴더 구조
 
@@ -953,9 +946,8 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
   - 예를 들어, 각 게시판의 상단에 포함될(보여질) 스크립트인 `pages/post-list-top.php` 이 존재하면, 이 PHP 스크립트가 게시판 상단에 보여진다. 만약, 이
     스크립트가 존재하지 않으면 보여지지 않는 것이다.
     이것은 훅으로 사용 할 수도 있지만, 보다 편리하게 하기 위해서 `parts` 방식으로 사용한다.
-    
 
-## 테마 페이지 로딩. Loading theme page
+## 테마 페이지 로딩. Loading theme page.
 
 - Theme page is loaded by the path of HTTP `p` variable.
   - For instance, `/index.php?p=user.login` will open `/theme/theme-name/user/login.php`.
@@ -971,46 +963,91 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 - URL 변수 `p=abc.submit` 과 같이 `.submit` 으로 끝나면, index.php 에 의해서 각 테마의 index.php 를 호출하지 않고, 바로 테마 페이지를 연다.
   즉, 테마 디자인을 생략하고(화면에 출력하지 않고), 곧 바로 테마 스크립트만 실행하는 것이다.
 
+## 인라인 스타일 태그와 자바스크립트 태그를 하단으로 이동
 
-## Using Vue.js 2
-
-- Vue.js 2 supports IE9 and above.
-- To use vue js 2, follow the structure below.
-  - `begin_capture_style_and_script()` and `end_capture_style_and_script()` will capture javascripts and styles tag inside the content.
-  - and displays the html content without them.
-  - After login vue js, it prints the captured javascripts and styles.
+- 바디 태그 사이(`<body>...</body>`)에 들어가는 인라인 스타일(`<style>...</style>`)이나 자바스크립트(`<script>...</script>`) 그리고 태그는
+  모두 HTML 페이지의 하단 (`</body>` 바로 직전)으로 이동한다. HTML 로딩 방식에서 웹브라우저가 랜더링 성능을 높이기 우해 선호하는 방식이며, 이에 따라 검색
+  엔진(구글 등)에서 높은 점수를 주어 검색이 더 잘되게 된다. 또는 Vue.js 2 에서 인라인 `<style>` 태그와 `<script>` 태그를 지원하지 않는다.
+  - 단, `<head>...</head>` 사이에 있는 `<script>` 나 `<style>` 태그는 하단으로 이동하지 않는다.
   
-  This is because you cannot put `<script>` tag or `<style>` tag inside vue mounted template.
-  You can use javascript and style tag inside template by capturing this way.
-  If you don't want to put `<script>` tag and `<style>` tag, then you don't need to capture them.
+- `index.php` 에서 인라인 `<style>` 태그나 `<script>` 태그를 모두 추출하여 하단으로 이동한다. 하지만, `<script src='...'></script>` 와 같이
+  외부 링크를 거는 경우 `js()` 함수를 통해서 호출해야 한다.
+  
 
+## 외부 Javascript 를 포함하기
+
+- 범용적이며 자주 사용되는 Javascript 는 etc/js 폴더에 저장을 한다.
+  그리고 테마에 포함 할 때에는 `js()` 함수로 하면 된다.
+  - `js()` 함수는 동일한 src 파일을 중복으로 포함해도 한번만 포함하도록 해 준다.
+  - 또한 차후에 여러가지 기능이 포함 될 수 있다.
+  - 직접 `<script src=...></script>` 와 같이 해 되지만,
+  여러가지 전 처리 기능을 하지 못할 수 있다.
+
+
+
+# Vue.js 2 사용
+
+- Vue.js 3 를 사용하다가 Vue.js 2 로 변경을 하였다.
+  - 이유는 Internet Explorer 지원때문인데, Vue.js 3 는 IE 를 지원하지 않아 꼭 필요한 부분(Create, Update, Delete)만 Vue.js 3 를 사용하고
+    글을 보여주는 부분은 Vue.js 3 를 사용하지 않으려고 했는데, 올바른 구조를 만들기가 생각보다 쉽지 않았다.
+  - 대한민국에서 IE 를 포기할 수는 없다. [2020년 9월 데스크톱에서 10.33% (참고: 나무위키)](https://namu.wiki/w/Internet%20Explorer?from=%EC%9D%B8%ED%84%B0%EB%84%B7%20%EC%9D%B5%EC%8A%A4%ED%94%8C%EB%A1%9C%EB%9F%AC#s-4) 의 점유율을 기록하고 있다.
+    점유율이 10%가 넘는 다면, 지원하는 것이 선택 사항이 아니라 필수인 것이다.
+
+- Vue.js 2 사용 예제
+  - 아래의 예제에서 `mixins` 과 `later` 함수의 사용법을 잘 설명해 주고 있다.
+  - `mixins` 는 배열이라서 얼마든지 개별 테마 페이지에서 Vue.js 2 mixin 을 추가 할 수 있다.
 ```html
+<!doctype html>
+<html lang="en">
 <head>
+  <title>...</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+  <link href="/etc/fontawesome-pro-5/css/all.css" rel="stylesheet">
+  <style>
+    <?php include theme()->css('index') ?>
+  </style>
   <script>
-    const mixins = [];
+    const mixins = []; // Vue.js 2 의 mixin 들을 담을 변수
     function later(fn) { window.addEventListener('load', fn); }
   </script>
 </head>
-<section id="app">
-    <?php
-    begin_capture_style_and_script();
-    /// You can add whatever here. header, footer, etc.
-    include theme()->page();
-  end_capture_style_and_script();
-    ?>
-</section>
-<script src="<?=HOME_URL?>etc/js/helper.js?v=2"></script>
-<?php includeVueJs() ?>
-<?=get_captured_style_and_script()?>
+<body>
 <script>
-    var app = new Vue({
-        el: '#app',
-        data: {
-            theme: 'default'
-        },
-        mixins: mixins
-    })
+  mixins.push({
+    data: function() {
+      return {
+        name: 'sonub'
+      }
+    }
+  })
+  later(function(){
+    console.log(app.name);
+  });
 </script>
+<section id="app">
+  <?php if ( str_contains(theme()->page(), '/admin/') ) include theme()->page(); else { ?>
+  <?php
+        include theme()->file('header');
+  ?>
+  <div class="container-xl">
+    <div class="row">
+      <div class="d-none d-md-block col-3"><?php include theme()->file('left'); ?></div>
+      <div class="col p-0 m-0"><?php include theme()->page(); ?></div>
+      <div class="d-none d-lg-block col-3"><?php include theme()->file('right'); ?></div>
+    </div>
+  </div>
+  <?php
+        include theme()->file('footer');
+  ?>
+  <?php } ?>
+</section>
+<?php js(HOME_URL . 'etc/js/helper.js')?>
+<?php js(HOME_URL . 'etc/js/vue.2.min.js')?>
+<?php js(HOME_URL . 'etc/js/app.js')?>
+</body>
+</html>
 ```
 
 - To add mixins, you can do the following.
@@ -1026,9 +1063,13 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 - You may use `later()` helper function by adding it in head tag.
 
+# Bootstrap 4 사용
+
+- IE 지원을 위해서 Bootstrap 4 를 사용한다. (Bootstrap 5는 IE 지원하지 않음.) Bootstrap 4 는 IE 버전 10 이상을 지원한다.
 
 
-## Admin page design
+
+# Admin page design
 
 - It is recommended to write admin code as a widget.
   And in admin page, there should be only button menus that load the widgets.
@@ -1093,7 +1134,7 @@ if ( modeCreate() ) {
 ```
 
 
-## FORM
+# FORM
 
 - FORM 은 가능한 post method 로 전송한다.
   
@@ -1103,7 +1144,7 @@ if ( modeCreate() ) {
 - 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="returnTo" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
 
 
-## 글 쓰기
+# 글 쓰기
 
 - 글 쓰기 기본 FORM 을 보고 새로운 디자인을 만들 수 있으며, 글 쓰기 FORM 이 데이터를 전송 할 때, 기본적으로 사용되는 `themes/default/post.edit.submit.php` 스크립트를 사용하면 된다.
   물론 필요에 따라 적절히 수정을 할 수 있다.

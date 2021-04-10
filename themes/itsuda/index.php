@@ -31,11 +31,8 @@
 
 <?php $isAdminPage = str_contains(theme()->page(), '/admin/'); ?>
 <body <?php if (! $isAdminPage ) { echo 'style="padding-top: 80px;"'; } ?>>
-
-<?php begin_capture_style_and_script(); ?>
 <section id="app">
 <?php if ( $isAdminPage ) { ?>
-
         <?php include theme()->page(); ?>
 <?php } else { ?>
     <script>
@@ -100,10 +97,9 @@
 <?php } ?>
 </section>
 
-<?php end_capture_style_and_script(); ?>
-<script src="<?=HOME_URL?>etc/js/helper.js?v=6"></script>
-<?php includeVueJs() ?>
-<?=get_captured_style_and_script()?>
-<script src="/etc/js/app.js"></script>
+
+<?php js(HOME_URL . 'etc/js/helper.js')?>
+<?php js(HOME_URL . 'etc/js/vue.2.min.js')?>
+<?php js(HOME_URL . 'etc/js/app.js')?>
 </body>
 </html>

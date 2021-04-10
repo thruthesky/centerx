@@ -24,6 +24,7 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
 
 
         <?php
+        // 메인 사이트가 아니면,
         $country = get_current_country();
         if ( $country->exists ) {
             echo "접속: " . $country->CountryNameKR;

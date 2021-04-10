@@ -22,24 +22,13 @@
 </head>
 <body>
 
-
 <section id="app">
     <?php
-    begin_capture_style_and_script();
     include theme()->page();
-    end_capture_style_and_script();
     ?>
 </section>
 <?php js(HOME_URL . 'etc/js/helper.js')?>
 <?php js(HOME_URL . 'etc/js/vue.2.min.js')?>
 <?php js(HOME_URL . 'etc/js/app.js')?>
-
-<script src="<?=HOME_URL?>etc/js/helper.js"></script>
-<?php includeVueJs() ?>
-
-<?=get_captured_style_and_script()?>
-
-
-<script src="/etc/js/app.js"></script>
 </body>
 </html>

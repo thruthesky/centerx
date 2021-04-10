@@ -1301,6 +1301,27 @@ function includeVueJs() {
     echo "<script src='$url'></script>";
 }
 
+global $__js;
+function js(string $src) {
+    global $__js;
+    if ( isset($__js) == false || empty($__js) ) $__js = [];
+    $__js[] = $src;
+    $__js = array_unique($__js);
+}
+
+/**
+ * @return string
+ */
+function get_javascript_tags(): string {
+
+    global $__js;
+    if ( isset($__js) == false || empty($__js) ) return '';
+    $ret = '';
+    foreach($__js as $src) {
+        $ret .= "<script src=\"$src\"></script>";
+    }
+    return $ret;
+}
 
 /**
  * Firebase 관련 Javascript 를 표시를 한다.
@@ -1429,44 +1450,45 @@ EOE;
 }
 
 
-global $_extracted_scripts;
-global $_extracted_styles;
-function get_captured_style_and_script() {
-    global $_extracted_scripts, $_extracted_styles;
-    return $_extracted_styles . $_extracted_scripts;
-}
-function begin_capture_style_and_script()
+/**
+ * $content 에서 style 과 script 를 추철하여 리턴한다. 이 때, $content 는 call by reference 로 전달되어서 원래 변수에서도 삭제된다.
+ *
+ * @param string $content
+ * @return string
+ */
+function capture_styles_and_scripts(string &$content)
 {
-    ob_start();
-}
-function end_capture_style_and_script()
-{
+    $res = '';
+
+    $pos = stripos($content, "<body>");
+    $before = substr($content, 0, $pos);
+    $after = substr($content, $pos);
+
+
     /// Get javascript
-    $content = ob_get_clean();
-
-
-    $re = preg_match_all('/\<script(.*?)?\>(.|\s)*?\<\/script\>/i', $content, $m);
+    $re = preg_match_all('/\<script(.*?)?\>(.|\s)*?\<\/script\>/i', $after, $m);
     if ($re) {
         $scripts = $m[0];
         foreach ($scripts as $script) {
-            $content = str_replace($script, '', $content);
+            $after = str_replace($script, '', $after);
         }
-        global $_extracted_scripts;
-        $_extracted_scripts = implode("\n", $scripts);
+        $res .= implode("\n", $scripts);
     }
+
     /// Get styles
 
-    $re = preg_match_all("/\<style\>[^(\<)]*\<\/style\>/s", $content, $m);
+    $re = preg_match_all("/\<style\>[^(\<)]*\<\/style\>/s", $after, $m);
     if ($re) {
         $styles = $m[0];
         foreach ($styles as $style) {
-            $content = str_replace($style, '', $content);
+            $after = str_replace($style, '', $after);
         }
-        global $_extracted_styles;
-        $_extracted_styles = implode("\n", $styles);
+        $res .= implode("\n", $styles);
     }
 
-    echo $content;
+    $content = $before . $after;
+
+    return $res;
 }
 
 /**
