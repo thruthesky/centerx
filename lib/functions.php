@@ -1433,10 +1433,6 @@ function canHandleError(): bool {
  * @param $error_line
  */
 function customErrorHandler($errno, $errstr, $error_file, $error_line) {
-    if ( strpos($errstr, 'metas') && strpos($errstr, "doesn't exist") ) {
-        jsGo('/etc/install/install.php');
-        return;
-    }
     $APP_NAME = APP_NAME;
     echo <<<EOE
 <div style="margin-bottom: 8px; padding: 16px; border-radius: 10px; background-color: #5a3764; color: white;">

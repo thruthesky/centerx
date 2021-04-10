@@ -331,7 +331,7 @@ define('DOMAIN_THEMES', [
 
 - `etc` - For etc files.
   - `etc/boot` - has all boot related code and scripts.
-  - `etc/install` - for web installation.
+  - `etc/install` - for keeping information about installation.
   - `etc/phpMyAdmin` - phpMyAdmin for managing database. Access `https://www...com/etc/phpMyAdmin/index.php`.
   - `etc/sql` - has SQL schema for installation.
   
