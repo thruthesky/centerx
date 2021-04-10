@@ -9,16 +9,11 @@ node_modules
 logs
 etc/keys
 keys
-etc/phpMyAdmin/tmp/twig/*.php
-etc/phpMyAdmin/tmp/**
-etc/phpMyAdmin/tmp
-docker/mysqldata
 
 .bash_history
 var
 files
 
 .DS_Store
-
 
 cache

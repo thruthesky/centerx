@@ -841,7 +841,7 @@ https://local.itsuda50.com/?route=point.postCreate&idx=15130
 ```
 
 
-### Displaying images
+### phpThumb Displaying images
 
 - It uses `phpThumb` for reading images and thumbnail generating.
 

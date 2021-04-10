@@ -54,7 +54,7 @@ $PHPTHUMB_CONFIG['additional_allowed_dirs']     = array(); // array of additiona
 // * Cache directory configuration (choose only one of these - leave the other lines commented-out):
 // Note: this directory must be writable (usually chmod 777 is neccesary) for caching to work.
 // If the directory is not writable no error will be generated but caching will be disabled.
-$PHPTHUMB_CONFIG['cache_directory'] = '/root/files/phpThumb-cache';
+$PHPTHUMB_CONFIG['cache_directory'] = '../../../files/phpThumb-cache';
 //$PHPTHUMB_CONFIG['cache_directory'] = __DIR__.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR;                                                            // set the cache directory relative to the phpThumb() installation
 //$PHPTHUMB_CONFIG['cache_directory'] = $PHPTHUMB_CONFIG['document_root'].DIRECTORY_SEPARATOR.'phpthumb'.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR; // set the cache directory to an absolute directory for all source images
 //$PHPTHUMB_CONFIG['cache_directory'] = '.'.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR;                                                              // set the cache directory relative to the source image - must start with '.' (will not work to cache URL- or database-sourced images, please use an absolute directory name)
