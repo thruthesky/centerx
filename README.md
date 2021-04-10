@@ -9,7 +9,6 @@
 - Container(Docker) 를 통한 배포
 
 
-
 # 문서 안내
 
 - 본 [README](https://github.com/thruthesky/centerx/) 는 CenterX 의 공식 문서로서 처음 시작 부터 모든 정보를 포함한다.
@@ -21,6 +20,16 @@
 - 간단하면서도 견고한 프레임워크 개발.
 - Headless(Restful Api) 지원이 가장 우선적인 목표.
 - PWA 개발을 쉽게 할 수 있는 기능 제공.
+
+# 수정 사항 안내
+
+- 2021년 4월 10일. 0.1.4 버전에서 많은 내용 변경.
+  - docker 와 centerx 를 분리 했다.
+  - docker 의 nginx 에 접속 도메인 별로, 홈 폴더를 다르게 설정 할 수 있도록 했다.
+    - 그로 인해, Host OS 에서 여러 도메인으로 접속을 할 때, 꼭 CenterX 프레임워크가 아니라 다른 성격의 사이트 예) Perl CGI 나 Angular, Vue.js SPA, PWA 등이 가능하게 되었다.
+    - 또한 각 홈 폴더에 centerx 를 따로 설치해서, 다른 버전의 centerx 를 운영 할 수 있다.
+  
+- `있;수다` 서버를 네이버 클라우드로 옮기고, 0.1.4 버전을 적용하도록 한다.
 
 # 해야 할 일
 
