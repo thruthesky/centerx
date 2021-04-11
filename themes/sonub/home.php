@@ -42,7 +42,16 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
 
 </div>
 
-<img class="w-100" src="themes/sonub/tmp/banner-wide2.jpg">
+<div class="mb-2">
+    <img class="w-100 border-radius-md" src="themes/sonub/tmp/banner-wide2.jpg">
+</div>
+
+<div class="mb-2 p-1 border-radius-md bg-light">
+    <?php
+    include widget('post-latest/post-latest-default', ['categoryId' => 'discussion', 'limit' => 5]);
+    ?>
+</div>
+
 
 <img class="w-100" src="themes/sonub/tmp/main.jpg">
 

@@ -4,7 +4,8 @@
     <title>소너브!</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="/etc/bootstrap-4/bootstrap-4.6.0-min.css">
+    <link rel="stylesheet" href="/themes/sonub/css/bootstrap-vue-2.21.2.min.css">
     <link href="/etc/fontawesome-pro-5/css/all.css" rel="stylesheet">
     <style>
         <?php include theme()->css('index') ?>
@@ -32,8 +33,11 @@
         ?>
     <?php } ?>
 </section>
+<!-- Load polyfills to support older browsers before loading Vue and Bootstrap Vue -->
+<script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
 <?php js(HOME_URL . 'etc/js/helper.js')?>
-<?php js(HOME_URL . 'etc/js/vue.2.min.js')?>
+<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js')?>
+<?php js(HOME_URL . 'themes/sonub/js/bootstrap-vue-2.21.2.min.js')?>
 <?php js(HOME_URL . 'etc/js/app.js')?>
 </body>
 </html>

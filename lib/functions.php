@@ -1296,7 +1296,7 @@ function includeVueJs() {
     if ( isLocalhost() ) {
         $url = "{$homeUrl}etc/js/vue.2.dev.js";
     } else {
-        $url = "{$homeUrl}etc/js/vue.2.min.js";
+        $url = "{$homeUrl}etc/js/vue-2.6.12-min.js";
     }
     echo "<script src='$url'></script>";
 }

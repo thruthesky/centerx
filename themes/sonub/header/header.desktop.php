@@ -33,8 +33,8 @@
         <form>
             <div class="position-relative">
                 <input class="focus-none pl-3 pr-5 py-1 fs-lg w-100 border-radius-md border-grey">
-                <div class="position-absolute top right mr-1 p-2 fs-lg dark">
-                    <i class="fa fa-search"></i>
+                <div class="position-absolute top right mr-1 fs-lg dark">
+                    <div style="padding: 0.6rem;"><i class="fa fa-search"></i></div>
                 </div>
             </div>
         </form>

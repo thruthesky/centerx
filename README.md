@@ -35,6 +35,8 @@
 
 # 해야 할 일
 
+- https://polyfill.io/v3/polyfill.min.js 이 IE 10 이상에서 지원되어, BootstrapVue 를 쓸 수 있는 지 확인한다.
+
 - Generate thumbnails on the fly. 썸네일으 사진 업로드 할 때 하지 말고, files/thumbnails 폴더에 저장한다.
   - /etc/image/thumbnail.php?source=...&width=..&height=.. 와 같이하는데, target 은 source 는 파일 경로 URL 이나, file.idx 일 수 있다.
   
@@ -1099,7 +1101,7 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
   <?php } ?>
 </section>
 <?php js(HOME_URL . 'etc/js/helper.js')?>
-<?php js(HOME_URL . 'etc/js/vue.2.min.js')?>
+<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js')?>
 <?php js(HOME_URL . 'etc/js/app.js')?>
 </body>
 </html>
@@ -1123,6 +1125,13 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 - IE 지원을 위해서 Bootstrap 4 를 사용한다. (Bootstrap 5는 IE 지원하지 않음.) Bootstrap 4 는 IE 버전 10 이상을 지원한다.
 
 
+# Bootstrap Vue 2.x 사용
+
+- Bootstrap 4 와 Vue 2 를 합쳐서 놓은 것이 Bootstrap Vue 2.x 이다. 이렇게 하면 jQuery 없이, Bootstrap 의 자바스크립트 기능을 사용 할 수 있다.
+- 유용한 Bootstrap 기능 중 몇 다음과 같다.
+  - Dialog, Calendar, Date Picker, Time picker, Overlay, Popover, Sidebar, Spinner, Tab, Toast, Tooltip,
+  - FORM file(drag & UI), FORM input contextual state,
+  - Scroll spy, 
 
 # Admin page design
 

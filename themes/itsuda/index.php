@@ -99,7 +99,7 @@
 
 
 <?php js(HOME_URL . 'etc/js/helper.js')?>
-<?php js(HOME_URL . 'etc/js/vue.2.min.js')?>
+<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js')?>
 <?php js(HOME_URL . 'etc/js/app.js')?>
 </body>
 </html>

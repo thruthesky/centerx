@@ -24,6 +24,7 @@ if (in(CATEGORY_ID)) {
             <input type="hidden" name="lsub" value="<?=in('lsub')?>">
             <input type="hidden" name="<?= IDX ?>" value="<?= $post->idx ?>">
 
+            <?php if ( $category->exists && $category->subcategories ) { ?>
             <div>
                 <?= ek('Category', '카테고리') ?>:
                 <select name="subcategory">
@@ -37,6 +38,7 @@ if (in(CATEGORY_ID)) {
                     <?php } ?>
                 </select>
             </div>
+            <?php } ?>
 
             <div>
                 <?= ek('Title', '@T Title') ?>:
