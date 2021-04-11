@@ -1,7 +1,7 @@
 # CenterX
 
 - CenterX 는 웹 및 Restful Api 를 통해서 애플리케이션을 개발할 수 있도록 하는 백엔드 프레임워크이다.
-  
+
 ## 특징
 
 - 가장 단순하며 직관적인 플랫폼을 위해서 직접 개발
@@ -29,7 +29,9 @@
     - 그로 인해, Host OS 에서 여러 도메인으로 접속을 할 때, 꼭 CenterX 프레임워크가 아니라 다른 성격의 사이트 예) Perl CGI 나 Angular, Vue.js SPA, PWA 등이 가능하게 되었다.
     - 또한 각 홈 폴더에 centerx 를 따로 설치해서, 다른 버전의 centerx 를 운영 할 수 있다.
   
-- `있;수다` 서버를 네이버 클라우드로 옮기고, 0.1.4 버전을 적용하도록 한다.
+- `philov` 와 `있;수다` 서버를 네이버 유로 클라우드로 옮기고, 0.1.4 버전을 적용하도록 한다.
+  - 네이버 클라우드 플랫폼을 쓴다고 김형곤 사장님에게 얘기를 한다. 비용은 조금 더 올라서, 8만8천원.
+  
 
 # 해야 할 일
 
@@ -252,16 +254,46 @@ cd etc/phpdoc
 
 - 참고로 phpDocumentor 의 태그는 https://docs.phpdoc.org/3.0/guide/references/phpdoc/tags/index.html 에 나와 있으며 Markdown 을 사용 할 수 있다.
 
-# Installation
+# 설치와 기본 설정
 
-- Install docker.
-  - And, run docker.
+우분투 서버에서 설치하는 것을 가정하고 설명한다.
+
+코어 개발자들이 개발 작업을 할 때에는 우분투 서버에서 하는 것이 아니라 윈도우즈, 맥, CentOS 등에서 도커를 설치하고 테스트 했으며 이러한 OS 에서도 문제 없이 잘 동작한다.
+
+- 먼저 도커를 설치하고 실행한다.\
+  [우분투 도커 설치 참고](https://docs.docker.com/engine/install/ubuntu/)
   
-- `git clone https://github.com/thruthesky/centerx`
+- 그리고 CenterX 실행을 위한 도커 compose 설정을 가지고 있는 git 을 클론한다.
+  - `git clone https://github.com/thruthesky/docker /docker`
+  - `cd /docker`
+  
+- 그리고 docker-compose.yml 에서 MYSQL_PASSWORD 와 MYSQL_ROOT_PASSWORD 를 적절한 비밀번호로 변경한다. 
+  
+- 그리고 아래와 같이 docker compose 를 실행한다.
+  - `docker-compose up -d`
 
-- `cd centerx/docker`, then run `docker-compose up`.
 
-- Give permission on `files` folder.
+- Nginx 서버 설정은 `/docker/etc/nginx.conf` 이며, 기본 홈페이지 경로는 `/docker/home/default` 이다.
+
+  
+- 그리고 `centerx` git 을 `/docker/home` 폴더에 clone 한다.\
+  참고, 도커 compose 설정 파일이나 실행은 루트 계정으로 해도 되지만, centerx 설치와 centerx 관련 작업은 사용자 계정으로 하길 권한다.\
+  참고, `docker` repository 의 .gitignore 에 `home` 폴더가 들어가 있다. 따라서 `/docker/home` 폴더 아래에 `centerx` repository 를
+  추가해서 작업을 하면 된다. 또한 다른 도메인을 추가하여 홈페이지 개발을 하고 싶다면, `/docker/etc/nginx.conf` 를 수정하고, 홈 경로를
+  `/docker/home` 폴더 아래로 하면 된다.\
+  `centerx` 를 `/docker/home` 에 설치하는 예제)
+  - `cd /docker/home`
+  - `cd git clone https://github.com/thruthesky/centerx centerx`
+  - `cd centerx`
+  - `chmod -R 777 files`
+
+- phpMyAdmin 을 통한 데이터베이스 테이블 설치
+  - `/docker/home/default/etc/phpMyAdmin` 에 phpMyAdmin 이 설치되어져 있다.
+    `http://0.0.0.0/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
+    데이터베이스 관리자 아이디는 root 이며, 비밀번호는 위에서 변경 한 것을 입력한다.
+  - phpMyAdmin 접속 후, `centerx/etc/install/sql` 폴더에서 최신 sql 파일의 내용을 phpMyAdmin 에 입력하고 쿼리 실행을 한다.
+    - 만약, 국가 정보를 원한다면, `wc_countries` 테이블을 삭제하고, `/centerx/etc/install/sql/countries.sql` 
+
 
 
 ## Host setting
@@ -293,6 +325,20 @@ define('DOMAIN_THEMES', [
   - You should find proper IP address to use from Emulator. If you are using Mac, `ifconfig | grep inet` command may help.
 
 - Now you are ready.
+
+
+## Nginx 설정
+
+- 기본적으로 Nginx 로 설정되어져 있다. Apache web server 를 사용하려 한다면, 직접 적절한 설정을 해야 한다.
+
+- `etc/nginx.conf` 에 nginx 설정이 있다.
+  
+- `nginx` 설정에서 루트 경로는 `docker-compose.yml` 의 설정에 따른다.
+  각종 경로만 잘 지정하면, `nginx` 설정 방법을 그대로 활용하면 된다.
+
+
+
+
 
 
 

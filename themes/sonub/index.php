@@ -15,18 +15,6 @@
     </script>
 </head>
 <body>
-<script>
-    mixins.push({
-        data: function() {
-            return {
-                name: 'sonub'
-            }
-        }
-    })
-    later(function(){
-       console.log(app.name);
-    });
-</script>
 <section id="app">
     <?php if ( str_contains(theme()->page(), '/admin/') ) include theme()->page(); else { ?>
         <?php

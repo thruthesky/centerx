@@ -5,11 +5,8 @@
         <a class="p-2" href="/?p=forum.post.list&categoryId=qna">질문게시판</a>
         <a class="p-2" href="/?p=forum.post.list&categoryId=reminder">공지사항</a>
     </div>
-
-
     <div>
         <?php if (cafe()->isMainCafe()) {?><a class="p-2" href="/?cafe.create">카페개설</a><?php } ?>
-
         <?php if ( admin() ) { ?>
         <a href="/?p=admin.index">관</a>
         <?php } ?>
@@ -20,3 +17,4 @@
         <?php } ?>
     </div>
 </div>
+
