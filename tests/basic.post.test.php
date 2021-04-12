@@ -54,11 +54,15 @@ function testPostUpdate() {
     isTrue($p->update(['title' => 'yo'])->title == 'yo', 'update yo');
 }
 
+
 function testPostDelete() {
+    setLogin1stUser();
     $cat = category()->create(['id' => 'delete' . time()]);
     $p = post()->create(['categoryId' => $cat->id]);
     isTrue($p->delete()->getError() == e()->post_delete_not_supported, 'post cannot be deleted');
-    isTrue($p->markDelete()->getError() == e()->not_your_post, 'not your post');
+    setLogin2ndUser();
+    isTrue($p->permissionCheck()->markDelete()->getError() == e()->not_your_post, "testPostDelete() => not your post");
+    setLogin1stUser();
     isTrue(post($p->idx)->markDelete()->deletedAt > 0, 'deleted');
     isTrue(post($p->idx)->markDelete()->getError() == e()->entity_deleted_already, 'deleted already');
 }

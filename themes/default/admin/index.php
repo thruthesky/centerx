@@ -1,7 +1,7 @@
 <?php
 if ( admin() == false ) jsBack('You are not admin');
 ?>
-<link rel="stylesheet" href="themes/default/admin/admin.css">
+<link rel="stylesheet" href="themes/default/admin/admin.css?v=3">
 
 <section class="layout">
     <div class="container-fluid bg-dark">

@@ -35,6 +35,8 @@
 
 # 해야 할 일
 
+- `lib/**.class.php` 에서 taxonomy 클래스 파일들은 `lib/taxonomy/user/user.taxonomy.class.php` 와 같이 파일 경로를 변경한다.
+
 - https://polyfill.io/v3/polyfill.min.js 이 IE 10 이상에서 지원되어, BootstrapVue 를 쓸 수 있는 지 확인한다.
 
 - Generate thumbnails on the fly. 썸네일으 사진 업로드 할 때 하지 말고, files/thumbnails 폴더에 저장한다.
@@ -54,7 +56,10 @@
 
 - 파일 업로드에서, 퍼미션이 없을 때, empty response 에러가 나온다. 올바른 에러가 표시되도록 할 것.
 
-
+- 퍼시면 검사는 lib/*.class.php 의 update(), delete() 에서 하지 않고,
+  `post(1)->permissionCheck()->markDelete()->getError()` 와 같이 별도의 permissionCheck() 함수를 만들어서 사용 할 수 있도록 한다.
+  - `permissionCheck()` 함수는 entity 클래스에 들어가 있어서, 모든 taxonomy 에서 사용가능하다.
+  
 - 훅시스템
   - entity()->create(), update(), delete(), get(), search() 등에서만 훅을 걸면 왠만한 것은 다 된다.
   
@@ -1040,6 +1045,21 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
   - 직접 `<script src=...></script>` 와 같이 해 되지만,
   여러가지 전 처리 기능을 하지 못할 수 있다.
 
+- `js()` 함수에는 두번째 파라메타에 priority 를 기입 할 수 있다. priority 는 최대 10 부터 0 까지이며, 주의 할 점은 인라인 자바스크립트가 priority 1
+  다음, 0 이전에 삽입된다.
+  - 예를 들면, vue.js 는 bootstrap-vue.js 보다 먼저 포함되어야 하고, 각종 인라인 스크립트는 vue.js 다음에 그리고, app.js 전에 포함되어야 한다.
+  - priority 옵션을 통해서, 이러한 점을 잘 활용하면 된다.
+
+```html
+<?php js(HOME_URL . 'etc/js/helper.js', 7)?>
+<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js', 9)?>
+<?php js(HOME_URL . 'themes/sonub/js/bootstrap-vue-2.21.2.min.js', 10)?>
+<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
+<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
+<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
+<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
+<?php js(HOME_URL . 'etc/js/app.js', 0)?>
+```
 
 
 # Vue.js 2 사용
@@ -1490,15 +1510,17 @@ echo Markdown::render ($md);
   - 그래서, 테스트 로직을 직접 작성했다.
   
 - 아래와 같이 실행하면, `tests/*.test.php` PHP 스크립트(파일)을 실행한다.
+  - php container 이름과 centerx 설치 폴더를 잘 지정하면 된다.
 
 ```shell
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php"
+chokidar '**/*.php' -c "docker exec [php_container_name] php [centerx_folder_name]/tests/test.php"
 ```
 
 - 원한다면, 아래와 같이 테스트 파일의 일부 문자열을 포함하는 파일만 실행 할 수 있다.
   - 테스트 파일 이름에 "app" 또는 "user" 라는 문자열이 있으면 실행한다.
   
 ```shell
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic."
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php app"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php user"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php point"

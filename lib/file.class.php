@@ -61,10 +61,15 @@ class File extends Entity {
         }
     }
 
+
+
+
     /**
+     * 파일 삭제
      *
      * 주의, 현재 $this->idx 에 대해서만 삭제를 한다.
      * 주의, 현재 객체에 에러가 설정되어져 있으면 그냥 현재 객체 리턴.
+     * 주의, 퍼미션 검사를 하지 않고 무조건 삭제한다. 따라서 이 함수 호출 이전에 퍼미션 검사가 되어져 있어야 한다.
      *
      * 참고, posts.files 와 같이 필드에 해당 글과 연관된 첨부 파일이 기록되는데, 여기서 글을 삭제할 때, 그 files 필드 정보를 업데이트하지 않는다.
      * 따라서, 각 글이나 entity 에 연결된 첨부 파일을 추출 할 때에는 fromIndexes() 대신, find() 함수를 쓴다.
@@ -76,9 +81,8 @@ class File extends Entity {
     public function delete(): self
     {
         if ( $this->hasError ) return $this;
-        if ( $this->exists() === false ) return $this->error(e()->file_not_exists);
-        if ( $this->isMine() === false ) return $this->error(e()->not_your_file);
 
+        if ( $this->exists() === false ) return $this->error(e()->file_not_exists);
 
         if ( file_exists($this->path) === false ) return $this->error(e()->file_not_exists);
 
@@ -87,6 +91,10 @@ class File extends Entity {
         return parent::delete();
     }
 
+    /**
+     * @param int $idx
+     * @return Entity
+     */
     public function read(int $idx = 0): Entity
     {
         parent::read($idx);

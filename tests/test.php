@@ -1,5 +1,7 @@
 <?php
-require_once '/root/boot.php';
+
+$rootDir = str_replace("/tests", "", __DIR__);
+require_once  $rootDir . '/boot.php';
 
 enableTesting();
 
@@ -36,7 +38,7 @@ function isTrue($t, string $msg = '') {
 echo "\n\n=====================================> Begin Test at: " . date('r') . "\n\n";
 
 
-foreach(glob('/root/tests/*.test.php') as $path) {
+foreach(glob($rootDir . '/tests/*.test.php') as $path) {
     if ( isset($argv[1]) ) {
         if ( strpos($path, $argv[1]) === false ) continue;
     }
