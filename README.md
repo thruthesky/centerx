@@ -54,6 +54,8 @@
 
 - 파일 업로드에서, 퍼미션이 없을 때, empty response 에러가 나온다. 올바른 에러가 표시되도록 할 것.
 
+- 퍼시면 검사는 lib/*.class.php 의 update(), delete() 에서 하지 않고,
+  `post(1)->permissionCheck()->markDelete()->getError()` 와 같이 별도의 permissionCheck() 함수를 만들어서 사용 할 수 있도록 한다.
 
 - 훅시스템
   - entity()->create(), update(), delete(), get(), search() 등에서만 훅을 걸면 왠만한 것은 다 된다.
@@ -1505,15 +1507,17 @@ echo Markdown::render ($md);
   - 그래서, 테스트 로직을 직접 작성했다.
   
 - 아래와 같이 실행하면, `tests/*.test.php` PHP 스크립트(파일)을 실행한다.
+  - php container 이름과 centerx 설치 폴더를 잘 지정하면 된다.
 
 ```shell
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php"
+chokidar '**/*.php' -c "docker exec [php_container_name] php [centerx_folder_name]/tests/test.php"
 ```
 
 - 원한다면, 아래와 같이 테스트 파일의 일부 문자열을 포함하는 파일만 실행 할 수 있다.
   - 테스트 파일 이름에 "app" 또는 "user" 라는 문자열이 있으면 실행한다.
   
 ```shell
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic."
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php app"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php user"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php point"

@@ -466,6 +466,9 @@ function setLoginAny(): User {
     $users = user()->search(limit: 1);
     return setLogin($users[0]->idx);
 }
+function setLogin1stUser(): User {
+    return setLoginAny();
+}
 
 /**
  * 테스트를 할 때에 사용되는 것으로, setLoginAny() 는 테이블에서 맨 마지막에 가입된 사용자로 로그인을 하는데,

@@ -61,8 +61,8 @@ class File extends Entity {
         }
     }
 
+
     /**
-     *
      * 주의, 현재 $this->idx 에 대해서만 삭제를 한다.
      * 주의, 현재 객체에 에러가 설정되어져 있으면 그냥 현재 객체 리턴.
      *
@@ -79,7 +79,6 @@ class File extends Entity {
         if ( $this->exists() === false ) return $this->error(e()->file_not_exists);
         if ( $this->isMine() === false ) return $this->error(e()->not_your_file);
 
-
         if ( file_exists($this->path) === false ) return $this->error(e()->file_not_exists);
 
         $re = @unlink($this->path);
@@ -87,6 +86,10 @@ class File extends Entity {
         return parent::delete();
     }
 
+    /**
+     * @param int $idx
+     * @return Entity
+     */
     public function read(int $idx = 0): Entity
     {
         parent::read($idx);
