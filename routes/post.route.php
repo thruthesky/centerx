@@ -13,6 +13,8 @@ class PostRoute {
     }
     public function delete($in) {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
+        $post = post($in[IDX]);
+        if ( $post->isMine() == false ) return  e()->not_your_post;
         return post($in[IDX])->markDelete()->response();
     }
     public function get($in) {

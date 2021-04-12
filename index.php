@@ -9,9 +9,9 @@ else include theme()->file('index');
 $html = ob_get_clean();
 
 
-$captured = capture_styles_and_scripts($html);
-$js_tags = get_javascript_tags();
-$html = str_ireplace("</body>", $captured . $js_tags . "\n</body>", $html);
+$captured_scripts_and_styles = capture_styles_and_scripts($html);
+$js_tags = get_javascript_tags($captured_scripts_and_styles);
+$html = str_ireplace("</body>", $js_tags . "\n</body>", $html);
 
 echo $html;
 

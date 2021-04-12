@@ -1,7 +1,9 @@
 <?php
 if ( in(IDX) ) {
-    $post = post(in(IDX))->update(in());
-    $categoryId = $post->categoryId();
+    $post = post(in(IDX))->permissionCheck()->update(in());
+    if ( $post->ok ) {
+        $categoryId = $post->categoryId();
+    }
 }
 else {
     $post = post()->create(in());

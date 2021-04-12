@@ -35,9 +35,9 @@
 </section>
 <!-- Load polyfills to support older browsers before loading Vue and Bootstrap Vue -->
 <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
-<?php js(HOME_URL . 'etc/js/helper.js')?>
-<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js')?>
-<?php js(HOME_URL . 'themes/sonub/js/bootstrap-vue-2.21.2.min.js')?>
-<?php js(HOME_URL . 'etc/js/app.js')?>
+<?php js(HOME_URL . 'etc/js/helper.js', 7)?>
+<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js', 2)?>
+<?php js(HOME_URL . 'themes/sonub/js/bootstrap-vue-2.21.2.min.js', 1)?>
+<?php js(HOME_URL . 'etc/js/app.js', 0)?>
 </body>
 </html>
