@@ -117,6 +117,5 @@ function category(int|string $idx = 0): Category
         // If the input is string, then it is considered as category id. And returns Category instance with its idx.
         return category()->findOne([ID => $idx]);
     }
-
     return new Category($idx);
 }

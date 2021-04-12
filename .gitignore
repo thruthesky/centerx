@@ -8,6 +8,7 @@ etc/phpdoc/docs
 node_modules
 logs
 var/logs
+
 etc/keys
 keys
 

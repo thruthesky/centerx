@@ -6,6 +6,7 @@
 
 
 $post = post()->current();
+// d($post);
 ?>
 
 <section class="p-3" style="border-radius: 10px; background-color: #f4f4f4;">
@@ -15,7 +16,7 @@ $post = post()->current();
         </div>
         <div class="meta">
             <div class="mt-1"><b><?= $post->user()->name ?></b> - No. <?= $post->idx ?></div>
-            <div class="mt-1"><?=$post->subcategory ? "[{$post->subcategory}] " : "" ?><?= date('r', $post->createdAt) ?></div>
+            <div class="mt-1"><?= $post->subcategory ? "[{$post->subcategory}] " : "" ?><?= date('r', $post->createdAt) ?></div>
         </div>
     </div>
 
@@ -26,14 +27,19 @@ $post = post()->current();
     <section class="post-body">
         <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
         <hr>
-        <div class="buttons mt-3">
-            <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
-            <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
+        <div class="d-flex buttons mt-3">
+            <div>
+                <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
+                <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
+                <a class="btn btn-sm btn-primary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?><?= lsub() ?>"><?= ek('List', '목록') ?></a>
+            </div>
+            <span class="flex-grow-1"></span>
             <?php if ($post->isMine() || admin()) { ?>
+            <div>
                 <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
                 <a class="btn btn-sm btn-danger" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
+            </div>
             <?php } ?>
-            <a class="btn btn-sm btn-primary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?><?=lsub()?>"><?= ek('List', '목록') ?></a>
         </div>
 
         <!-- FILES -->
@@ -59,8 +65,8 @@ $post = post()->current();
                     </div>
 
                     <!-- comment reply form -->
-                    <comment-form root-idx="<?= $post->idx ?>" parent-idx='<?= $comment->idx ?>' v-if="displayCommentForm[<?=$comment->idx?>] === 'reply'"></comment-form>
-                <?php }
+                    <comment-form root-idx="<?= $post->idx ?>" parent-idx='<?= $comment->idx ?>' v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'"></comment-form>
+            <?php }
             } ?>
         </div>
     <?php } ?>
@@ -72,7 +78,9 @@ $post = post()->current();
     mixins.push({
         data: function() {
             return {
-                displayCommentForm: {'a': 'apple'}
+                displayCommentForm: {
+                    'a': 'apple'
+                }
             };
         },
         created: function() {
@@ -103,9 +111,11 @@ $post = post()->current();
         },
         created: function() {
             console.log('component: comment-form, created', this.commentIdx);
-            if ( this.commentIdx ) {
+            if (this.commentIdx) {
                 const self = this;
-                request('comment.get', {idx: this.commentIdx}, function(res) {
+                request('comment.get', {
+                    idx: this.commentIdx
+                }, function(res) {
                     self.form.content = res.content;
                     // self.form = res;
                     self.uploadedFiles = res.files;
@@ -143,15 +153,14 @@ $post = post()->current();
                 const file = event.target.files[0];
                 const self = this;
                 fileUpload(
-                    file,
-                    {},
-                    function (res) {
+                    file, {},
+                    function(res) {
                         console.log("success: res.path: ", res, res.path);
                         self.form.files = addByComma(self.form.files, res.idx);
                         self.uploadedFiles.push(res);
                     },
                     alert,
-                    function (p) {
+                    function(p) {
                         console.log("pregoress: ", p);
                         this.percent = p;
                     }
@@ -169,18 +178,21 @@ $post = post()->current();
 
                 console.log('form', this.form);
 
-                request(route, this.form, function() { location.reload(); }, alert);
+                request(route, this.form, function() {
+                    location.reload();
+                }, alert);
             },
             onCommentEditCancelButtonClick: function() {
                 console.log('onCommentEditCancelButtonClick', this.commentIdx);
-                // this.$parent.displayCommentForm[this.commentIdx] = false;
                 this.$parent.displayCommentForm[this.commentIdx ?? this.parentIdx] = '';
             },
             onFileDelete(idx) {
                 const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
-                if ( re === false ) return;
+                if (re === false) return;
                 const self = this;
-                request('file.delete', {idx: idx}, function(res) {
+                request('file.delete', {
+                    idx: idx
+                }, function(res) {
                     self.uploadedFiles = self.uploadedFiles.filter(function(v, i, ar) {
                         return v.idx !== res.idx;
                     });
