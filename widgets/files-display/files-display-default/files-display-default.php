@@ -20,13 +20,13 @@ if ($fileCount) { ?>
                 <?php } else if ($fileCount == 2) {
                 foreach ($files as $file) { ?>
                     <div class="col-4 p-1">
-                        <img style="border-radius: 10px;" class="w-100" src="<?= $file->url ?>">
+                        <img style="border-radius: 10px; height: 250px;" class="w-100" src="<?= $file->url ?>">
                     </div>
                 <?php }
             } else {
                 foreach ($files as $file) { ?>
                     <div class="col-4 p-1">
-                        <img style="border-radius: 10px;" class="w-100" src="<?= $file->url ?>">
+                        <img style="border-radius: 10px; height: 250px;" class="w-100" src="<?= $file->url ?>">
                     </div>
             <?php }
             } ?>

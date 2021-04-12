@@ -14,7 +14,7 @@ if (in(CATEGORY_ID)) {
     jsBack('잘못된 접속입니다.');
 }
 ?>
-<section class="p-5" id="post-edit-default" style="background-color: #f0f0f0;">
+<section class="p-5" id="post-edit-default" style="background-color: #f0f0f0; border-radius: 10px;">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
         <input type="hidden" name="returnTo" value="post">
@@ -58,13 +58,13 @@ if (in(CATEGORY_ID)) {
                 </div>
             </div>
             <!-- SUBMIT BUTTON -->
-            <button class="btn btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
+            <button class="btn btn-success" type="submit"><?= ek('Submit', '@T Submit') ?></button>
         </div>
         <div class="px-3 row photos">
             <div class="mt-3 col-4 p-1 photo" v-for="file in uploadedFiles" :key="file['idx']">
                 <div clas="position-relative" style="height: 250px">
-                    <img class="h-100 w-100" :src="file['url']">
-                    <div class="position-absolute top left font-weight-bold" @click="onFileDelete(file['idx'])">[X]</div>
+                    <img class="h-100 w-100" :src="file['url']" style="border-radius: 10px;">
+                    <div class="p-2 position-absolute  top left font-weight-bold" @click="onFileDelete(file['idx'])" style="color: red">[X]</div>
                 </div>
             </div>
         </div>
