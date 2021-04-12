@@ -154,35 +154,6 @@ class Post extends PostTaxonomy {
 
 
     /**
-     * Check if the login user has permission on the post.
-     *
-     * If the user has no permission, or for other errors, error code will be set.
-     *
-     *
-     *
-     * @return Post
-     *
-     * @note the following errors will be set,
-     * `not_logged_in` for not logged in,
-     * `idx_is_empty` for idx is empty.
-     * `not_your_post` for user does not own the post. and the user is not admin.
-     *
-     * @example
-     * ```
-     *   $post = post(in(IDX))->permissionCheck()->update(in()); // update if user has permission.
-     *   if ( $post->ok ) { // update was ok with permission check.
-     *     $categoryId = $post->categoryId();
-     *   }
-     * ```
-     */
-    public function permissionCheck(): self {
-        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
-        if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
-        if ( $this->isMine() == false && admin() == false ) return $this->error ( e()->not_your_post );
-        return $this;
-    }
-
-    /**
      * @attention The entity.idx must be set. That means, it can only be called with `post(123)->update()`.
      *
      * 참고, 프로그램적으로 타인의 글을 업데이트 할 수 있다. 예를 들어, 추천을 할 때, 추천 수를 증가시켜야 한다.

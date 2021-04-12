@@ -35,6 +35,8 @@
 
 # 해야 할 일
 
+- `lib/**.class.php` 에서 taxonomy 클래스 파일들은 `lib/taxonomy/user/user.taxonomy.class.php` 와 같이 파일 경로를 변경한다.
+
 - https://polyfill.io/v3/polyfill.min.js 이 IE 10 이상에서 지원되어, BootstrapVue 를 쓸 수 있는 지 확인한다.
 
 - Generate thumbnails on the fly. 썸네일으 사진 업로드 할 때 하지 말고, files/thumbnails 폴더에 저장한다.
@@ -56,7 +58,8 @@
 
 - 퍼시면 검사는 lib/*.class.php 의 update(), delete() 에서 하지 않고,
   `post(1)->permissionCheck()->markDelete()->getError()` 와 같이 별도의 permissionCheck() 함수를 만들어서 사용 할 수 있도록 한다.
-
+  - `permissionCheck()` 함수는 entity 클래스에 들어가 있어서, 모든 taxonomy 에서 사용가능하다.
+  
 - 훅시스템
   - entity()->create(), update(), delete(), get(), search() 등에서만 훅을 걸면 왠만한 것은 다 된다.
   

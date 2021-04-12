@@ -921,6 +921,36 @@ class Entity {
         return array_filter( $in, fn($v, $k) => in_array($k, $diffs), ARRAY_FILTER_USE_BOTH );
     }
 
+
+    /**
+     * Check if the login user has permission on the entity.
+     *
+     * If the user has no permission, or for other errors occurs, error will be set to the entity.
+     *
+     *
+     *
+     * @return self
+     *
+     * @note the following errors will be set,
+     * `not_logged_in` for not logged in,
+     * `idx_is_empty` for idx is empty.
+     * `not_your_post` for user does not own the post. and the user is not admin.
+     *
+     * @example
+     * ```
+     *   $post = post(in(IDX))->permissionCheck()->update(in()); // update if user has permission.
+     *   if ( $post->ok ) { // update was ok with permission check.
+     *     $categoryId = $post->categoryId();
+     *   }
+     * ```
+     */
+    public function permissionCheck(): self {
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
+        if ( $this->isMine() == false && admin() == false ) return $this->error ( e()->not_your_post );
+        return $this;
+    }
+
 }
 
 
