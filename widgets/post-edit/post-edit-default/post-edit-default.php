@@ -57,6 +57,8 @@ if (in(CATEGORY_ID)) {
                     <div class="progress-bar" role="progressbar" :style="{ 'width': percent + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
+            
+            <button class="btn btn-warning mr-3" type="button" @click="window.history.back()"><?= ek('Cancel', '@T Cancel') ?></button>
             <!-- SUBMIT BUTTON -->
             <button class="btn btn-success" type="submit"><?= ek('Submit', '@T Submit') ?></button>
         </div>
