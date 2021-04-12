@@ -1,5 +1,5 @@
 .layout {
-    background: #CDEEF2;
+    background: #ecf1f3;
 }
 .menu a[href*="<?=in('w')?>"] {
     color: #D10C0C !important;
