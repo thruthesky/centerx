@@ -1,6 +1,10 @@
-
-
-
+/**
+ *
+ * @param route
+ * @param params
+ * @param success
+ * @param error
+ */
 function request(route, params, success, error) {
     if ( ! params ) params = {};
     // If user has logged in, attach session id.
