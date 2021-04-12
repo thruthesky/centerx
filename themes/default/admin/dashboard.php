@@ -11,10 +11,10 @@
     </div>
     <div class="col-4">
         <div class="d-flex flex-column justify-content-between h-100">
-            <div class="bg-white rounded">
+            <div class="bg-white rounded mb-4">
                 <?php include widget('point/admin-point-setting-summary'); ?>
             </div>
-            <div class="bg-white rounded">
+            <div class="bg-white rounded h-100">
                 <?php include widget('post-list/admin-post-list-summary', ['categoryId' => 'qna', 'limit' => 7]); ?>
             </div>
         </div>
