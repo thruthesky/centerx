@@ -1302,24 +1302,43 @@ function includeVueJs() {
 }
 
 global $__js;
-function js(string $src) {
+function js(string $src, int $priority=0) {
     global $__js;
     if ( isset($__js) == false || empty($__js) ) $__js = [];
-    $__js[] = $src;
-    $__js = array_unique($__js);
+    if ( $priority > 10 ) $priority = 10;
+    $__js[$priority][] = $src;
 }
 
 /**
  * @return string
  */
-function get_javascript_tags(): string {
+function get_javascript_tags(string $scripts_and_styles): string {
 
     global $__js;
     if ( isset($__js) == false || empty($__js) ) return '';
     $ret = '';
-    foreach($__js as $src) {
-        $ret .= "<script src=\"$src\"></script>";
+
+    /// Get Javascript from priority 10 to 1.
+    $compile = [];
+    for($i=10; $i>=1; $i--) {
+        if ( isset($__js[$i]) ) $compile = [ ...$compile, ...$__js[$i]];
     }
+    $compile = array_unique($compile);
+    foreach($compile as $src) {
+        $ret .= "<script src=\"$src\"></script>\n";
+    }
+
+    /// Add captured scripts and styles.
+    $ret .= $scripts_and_styles;
+
+    // Get Javascripts for priority 0.
+    if ( isset($__js[0]) ) {
+        $compile = array_unique($__js[0]);
+        foreach($compile as $src) {
+            $ret .= "<script src=\"$src\"></script>\n";
+        }
+    }
+
     return $ret;
 }
 
@@ -1462,7 +1481,9 @@ function capture_styles_and_scripts(string &$content)
 
 
     /// Get javascript
-    $re = preg_match_all('/\<script(.*?)?\>(.|\s)*?\<\/script\>/i', $after, $m);
+    /// 자바스크립트가 <script src=...></script> 와 같이 되면, 아래의 + 옵션에 맞지 않으므로, 추출되지 않는다.
+    /// 즉, <script src=...> 와 같이 외부 import 는 하단으로 이동되지 않는다.
+    $re = preg_match_all('/\<script(.*?)?\>(.|\s)+?\<\/script\>/i', $after, $m);
     if ($re) {
         $scripts = $m[0];
         foreach ($scripts as $script) {

@@ -1040,6 +1040,21 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
   - 직접 `<script src=...></script>` 와 같이 해 되지만,
   여러가지 전 처리 기능을 하지 못할 수 있다.
 
+- `js()` 함수에는 두번째 파라메타에 priority 를 기입 할 수 있다. priority 는 최대 10 부터 0 까지이며, 주의 할 점은 인라인 자바스크립트가 priority 1
+  다음, 0 이전에 삽입된다.
+  - 예를 들면, vue.js 는 bootstrap-vue.js 보다 먼저 포함되어야 하고, 각종 인라인 스크립트는 vue.js 다음에 그리고, app.js 전에 포함되어야 한다.
+  - priority 옵션을 통해서, 이러한 점을 잘 활용하면 된다.
+
+```html
+<?php js(HOME_URL . 'etc/js/helper.js', 7)?>
+<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js', 9)?>
+<?php js(HOME_URL . 'themes/sonub/js/bootstrap-vue-2.21.2.min.js', 10)?>
+<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
+<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
+<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
+<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
+<?php js(HOME_URL . 'etc/js/app.js', 0)?>
+```
 
 
 # Vue.js 2 사용

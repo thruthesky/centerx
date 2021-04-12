@@ -152,6 +152,36 @@ class Post extends PostTaxonomy {
         return $this;
     }
 
+
+    /**
+     * Check if the login user has permission on the post.
+     *
+     * If the user has no permission, or for other errors, error code will be set.
+     *
+     *
+     *
+     * @return Post
+     *
+     * @note the following errors will be set,
+     * `not_logged_in` for not logged in,
+     * `idx_is_empty` for idx is empty.
+     * `not_your_post` for user does not own the post. and the user is not admin.
+     *
+     * @example
+     * ```
+     *   $post = post(in(IDX))->permissionCheck()->update(in()); // update if user has permission.
+     *   if ( $post->ok ) { // update was ok with permission check.
+     *     $categoryId = $post->categoryId();
+     *   }
+     * ```
+     */
+    public function permissionCheck(): self {
+        if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
+        if ( $this->isMine() == false && admin() == false ) return $this->error ( e()->not_your_post );
+        return $this;
+    }
+
     /**
      * @attention The entity.idx must be set. That means, it can only be called with `post(123)->update()`.
      *
@@ -161,8 +191,13 @@ class Post extends PostTaxonomy {
      * @param array $in
      * @return Post - `post()->get()` 에 대한 결과를 리턴한다. 즉, url 등의 값이 들어가 있다.
      * - `post()->get()` 에 대한 결과를 리턴한다. 즉, url 등의 값이 들어가 있다.
+     *
+     * @warning permission check must be done before calling this method. This method will just update the post even if
+     *  the login user has no permission.
      */
     public function update(array $in): self {
+        if ( $this->hasError ) return $this;
+
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
@@ -186,12 +221,16 @@ class Post extends PostTaxonomy {
      * 참고, 글 삭제에 필요한 각종 검사를 이 함수에서 한다. 특히, 퍼미션이 있는지도 검사를 한다.
      * 참고, 글과 내용을 없애고, 나머지 정보는 유지한다.
      *
+     * @warning the permission must be checked before calling this method.
+     *
      * @return self
      */
     public function markDelete(): self {
+
+        if ( $this->hasError ) return $this;
+
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
-        if ( $this->isMine() == false ) return $this->error(e()->not_your_post);
 
         parent::markDelete();
         parent::update([TITLE => '', CONTENT => '']);

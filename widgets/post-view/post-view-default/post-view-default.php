@@ -29,7 +29,7 @@ $post = post()->current();
         <div class="buttons mt-3">
             <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
             <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
-            <?php if ($post->isMine()) { ?>
+            <?php if ($post->isMine() || admin()) { ?>
                 <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
                 <a class="btn btn-sm btn-danger" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
             <?php } ?>
