@@ -69,6 +69,7 @@ class Friend extends Entity {
             // 내가, 친구 초대를 안 했다. (상대방은 나를 친구 초대 했을 수 있음)
             // 그렇다면, 친구 추가를 하고, 블럭을 한다. 이론적으로, 친구 추가된 레코드에 block=Y 를 해야하므로, 친구 추가는 필수이다.
             $this->add(['otherIdx' => $in['otherIdx']]);
+            $this->resetError();
         }
 
 
