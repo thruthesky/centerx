@@ -81,6 +81,7 @@ if ( $post->idx ) {
 }
 ?>
 <script>
+    Vue.component();
     mixins.push({
         data: {
                 percent: 0,

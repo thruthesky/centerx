@@ -35,8 +35,18 @@
 
 # 해야 할 일
 
-- SQL Injection 공격 빌미를 없애기 위해서 검색을 할 때, WHERE 구문 처럼 SQL 구문을 직접 받지 않도록 한다.
-  $cond 처럼, 필드와 검색 표현, 값만 입력 받아서, SQL 쿼리로 하지 않고, statement prepare 와 statement exec 로 실행을 한다.
+- SQL Injection 공격 빌미를 없애기 위해서 SELECT 검색을 할 때, WHERE 에 SQL 구문을 직접 받는 대신,
+  Prepared statement 를 쓰도록 한다.
+  
+  예)
+  where: "phone = ? OR id != ?",
+  params: ['01012345678', 5]
+  
+  와 같이 입력 받아서, SQL injection 가능성을 줄인다.
+  
+- 필고를 보고, security 체크를 한다. security 패턴 검사를 관리자 페이지에서 입력 할 수 있도록 한다.
+  - SELECT SQL 쿼리 word filtering 을 따로 두고, (글 추출 및 각종 해킹 시도. entity.class.php 에서 read, search 등에서 사용. )
+  - INSERT/UPDATE 쿼리 word filtering 을 따로 둔다. (글 쓰기, 코멘트 쓰기용 필터링, 욕설 등록 및 기타, entity.class.php 에서 insert 에서 사용.)
   
 - SQL 문장에서 쿼리 시간을 제한 할 수 있도록, config.php 에 설정을 한다.
   
@@ -1671,7 +1681,14 @@ if ( in(CATEGORY_ID) ) {
 </script>
 ```
 
-## Vue.js 로 특정 코드로 이미지를 업로드하고 관리하는 방법
+## Vue.js 2 로 하나의 글에 코드 별 여러 사진(파일) 업로드 & 컴포넌트로 작성
+
+
+
+
+
+
+## Vue.js 3 로 특정 코드로 이미지를 업로드하고 관리하는 방법
 
 - 아래의 예제는 PHP 와 연동하여, 특정 코드에 사진을 업로드하고, 관리자 설정에 file.idx 를 저장한다. 그래서 나중에 재 활용 할 수 있도록 한다.
 

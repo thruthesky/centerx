@@ -1,4 +1,7 @@
 <?php
+/**
+ * @type admin
+ */
 $past7days = time() - 7 * 60 * 60 * 24;
 $q = "SELECT userIdx, COUNT(*) as comments FROM " . DB_PREFIX . POSTS . " WHERE createdAt>$past7days AND parentIdx!=0 GROUP BY userIdx ORDER BY comments DESC LIMIT 5";
 //$q = "SELECT userIdx, COUNT(*) as comments FROM " . DB_PREFIX . POSTS . " WHERE createdAt>$past7days GROUP BY userIdx ORDER BY comments DESC LIMIT 5";

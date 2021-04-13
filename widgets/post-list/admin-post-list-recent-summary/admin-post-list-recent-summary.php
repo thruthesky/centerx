@@ -1,3 +1,8 @@
+<?php
+/**
+ * @type admin
+ */
+?>
 <section class="p-4 overflow-hidden" id="admin-post-list-recent-summary" style="height: 24rem">
     <h6 class="text-muted">Total number posts: <?= post()->count() ?></h6>
     <h5 class="mb-4">Recent Posts</h5>
