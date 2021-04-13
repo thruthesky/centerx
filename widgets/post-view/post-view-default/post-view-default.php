@@ -28,17 +28,18 @@ $post = post()->current();
         <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
         <hr>
         <div class="d-flex buttons mt-3">
-            <div>
-                <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
-                <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a>
+            <div class="d-flex">
+            <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->n ?>"></vote-buttons>
+                <!-- <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
+                <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a> -->
                 <a class="btn btn-sm btn-primary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?><?= lsub() ?>"><?= ek('List', '목록') ?></a>
             </div>
             <span class="flex-grow-1"></span>
             <?php if ($post->isMine() || admin()) { ?>
-            <div>
-                <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
-                <a class="btn btn-sm btn-danger" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
-            </div>
+                <div>
+                    <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
+                    <a class="btn btn-sm btn-danger" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
+                </div>
             <?php } ?>
         </div>
 
@@ -48,7 +49,7 @@ $post = post()->current();
     </section>
 
 
-    <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
+    <comment-form is-post="true" root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
 
 
     <?php #include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post])
@@ -199,6 +200,35 @@ $post = post()->current();
                     self.form.files = deleteByComma(self.form.files, res.idx);
                 }, alert);
             }
+        }
+    });
+</script>
+<script>
+    Vue.component('vote-buttons', {
+        props: ['isPost', 'parentIdx', 'y', 'n'],
+        data: function() {
+            return {
+                Y: this.y,
+                N: this.n,
+            }
+        },
+        template: '<div class="d-flex">' +
+            '<a class="btn btn-sm btn-primary mr-2" @click="onVote(\'Y\')"><?= ek('Like', '@T Like') ?> <span v-if="Y != \'0\'">{{ Y }}</span></a>' +
+            '<a class="btn btn-sm btn-primary mr-2" @click="onVote(\'N\')"><?= ek('Dislike', '@T Dislike') ?> <span v-if="N != \'0\'">{{ N }}</span></a>' +
+            '</div>',
+        methods: {
+            onVote(choice) {
+                console.log(choice);
+                const self = this;
+                request(this.isPost ? 'post.vote' : 'comment.vote', {
+                    idx: this.parentIdx,
+                    choice: choice
+                }, function(res) {
+                    console.log(res);
+                    self.N = res['N'];
+                    self.Y = res['Y'];
+                }, alert);
+            },
         }
     });
 </script>
