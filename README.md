@@ -35,6 +35,11 @@
 
 # 해야 할 일
 
+- SQL Injection 공격 빌미를 없애기 위해서 검색을 할 때, WHERE 구문 처럼 SQL 구문을 직접 받지 않도록 한다.
+  $cond 처럼, 필드와 검색 표현, 값만 입력 받아서, SQL 쿼리로 하지 않고, statement prepare 와 statement exec 로 실행을 한다.
+  
+- SQL 문장에서 쿼리 시간을 제한 할 수 있도록, config.php 에 설정을 한다.
+  
 - `lib/**.class.php` 에서 taxonomy 클래스 파일들은 `lib/taxonomy/user/user.taxonomy.class.php` 와 같이 파일 경로를 변경한다.
 
 - https://polyfill.io/v3/polyfill.min.js 이 IE 10 이상에서 지원되어, BootstrapVue 를 쓸 수 있는 지 확인한다.

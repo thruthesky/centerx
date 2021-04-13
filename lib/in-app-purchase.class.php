@@ -47,47 +47,6 @@ class InAppPurchase extends Entity {
 
 
     /**
-     * Returns search result in objects (The parent search returns the results in array).
-     *
-     * @param string $select
-     * @param string $where
-     * @param string $order
-     * @param string $by
-     * @param int $page
-     * @param int $limit
-     * @param array $conds
-     * @param string $conj
-     * @param bool $object
-     * @return InAppPurchase[]
-     *
-     */
-    public function search(
-        string $select='idx',
-        string $where='1',
-        string $order='idx',
-        string $by='DESC',
-        int $page=1,
-        int $limit=10,
-        array $conds=[],
-        string $conj = 'AND',
-        bool $object = true,
-    ): array
-    {
-        return parent::search(
-            select: $select,
-            where: $where,
-            order: $order,
-            by: $by,
-            page: $page,
-            limit: $limit,
-            conds: $conds,
-            conj: $conj,
-            object: $object,
-        );
-    }
-
-
-    /**
      * @param array $in
      * @return InAppPurchase
      */
@@ -203,7 +162,11 @@ class InAppPurchase extends Entity {
         return $this->create($in);
     }
 
-    public function myPurchase(): array|string
+    /**
+     * @param array $in
+     * @return array|string
+     */
+    public function myPurchase(array $in): array|string
     {
         if ( notLoggedIn() ) return e()->not_logged_in;
 
