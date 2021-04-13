@@ -1565,6 +1565,8 @@ chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
 - For like and dislike, the history is saved under `post_vote_histories` but that has no information about who liked who.
 
 
+
+
 # 사진업로드
 
 - 파일 업로드를 할 때, Vue 를 사용 할 수 있고, 그냥 Vanilla Javascript 를 사용 할 수 있다.
@@ -1683,8 +1685,140 @@ if ( in(CATEGORY_ID) ) {
 
 ## Vue.js 2 로 하나의 글에 코드 별 여러 사진(파일) 업로드 & 컴포넌트로 작성
 
+- 아래의 코드는 게시글을 작성 할 때, 코드 별로 사진을 업로드하는 예제이다.
+  
+- 쇼핑몰과 같이 이미지를 특별한 용도 별로 업로드하고자 할 때 유용하게 사용 할 수 있다.
 
+- 아래의 코드에서 `photo-upload` 는 아주 유용한 코드여서, `app.js` 에 `upload-by-code` 로 추가되어져 있다.
+  따라서, 그냥 `mixins.push({ })` 에서 `files` 변수만 reactivity 하게 하면 된다.
+  그리고, 이런 방식은 `widgets/post-edit/post-edit-upload-by-code.php` 에서 멋지게 사용된다.
 
+```html
+<?php
+$post = post(in(IDX, 0));
+
+if ( in(CATEGORY_ID) ) {
+    $category = category( in(CATEGORY_ID) );
+} else if (in(IDX)) {
+    $category = category( $post->v(CATEGORY_IDX) );
+} else {
+    jsBack('잘못된 접속입니다.');
+}
+?>
+<style>
+    .size-80 { width: 80px; height: 80px; }
+</style>
+<div id="itsuda-event-edit" class="p-5">
+    <form action="/" method="POST">
+        <input type="hidden" name="p" value="forum.post.edit.submit">
+        <input type="hidden" name="returnTo" value="post">
+        <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
+        <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
+        <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">
+        <input type="hidden" name="files" v-model="files">
+
+        <div class="form-group">
+            <small id="" class="form-text text-muted">이벤트 제목을 적어주세요.</small>
+            <label for="">제목</label>
+            <div>
+                <input class="w-100" type="text" name="title" value="<?=$post->title?>">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <small id="" class="form-text text-muted">이벤트 내용을 적어주세요.</small>
+            <small class="form-text text-muted">이벤트 날짜, 담청자 목록 등을 적을 수 있습니다.</small>
+            <label for="">내용</label>
+            <div>
+                <textarea class="w-100" rows="10" type="text" name="content"><?=$post->content?></textarea>
+            </div>
+        </div>
+        <hr>
+        <photo-upload post-idx="<?=$post->idx?>" code="banner" label="배너 사진" tip="배너 사진을 등록해 주세요. 너비 4, 높이 1 비율로 업로드해 주세요."></photo-upload>
+        <photo-upload post-idx="<?=$post->idx?>" code="content" label="내용 사진" tip="내용 사진을 업로드 해 주세요."></photo-upload>
+
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    Vue.component('photo-upload', {
+        props: ['postIdx', 'code', 'label', 'tip'],
+        data: function() {
+            return {
+                percent: 0,
+                file: {},
+            }
+        },
+        created: function() {
+            console.log('created for', this.postIdx, this.code);
+            if ( this.postIdx ) {
+                const self = this;
+                request('file.byPostCode', {idx: this.postIdx, code: this.code}, function(res) {
+                    console.log('byPostCode: ', res);
+                    self.file = Object.assign({}, self.file, res);
+                }, alert);
+            }
+        },
+        template: '' +
+            '<section class="form-group">' +
+            '   <small class="form-text text-muted">{{tip}}</small>' +
+            '   <label>{{label}}</label>' +
+            '   <img class="mb-2 w-100" :src="file.url">' +
+            '   <div>' +
+            '       <input type="file" @change="onFileChange($event, \'banner\')">' +
+            '   </div>' +
+            '</section>',
+
+        methods: {
+            onFileChange: function (event) {
+                if (event.target.files.length === 0) {
+                    console.log("User cancelled upload");
+                    return;
+                }
+                const file = event.target.files[0];
+                const self = this;
+
+                // 이전에 업로드된 사진이 있는가?
+                if ( this.file.idx ) {
+                    // 그렇다면, 이전 업로드된 파일이 쓰레기로 남지 않도록 삭제한다.
+                    console.log('going to delete');
+                    request('file.delete', {idx: self.file.idx}, function(res) {
+                        console.log('deleted: res: ', res);
+                        self.$parent.$data.files = deleteByComma(self.$parent.$data.files, res.idx);
+                    }, alert);
+                }
+
+                // 새로운 사진을 업로드한다.
+                fileUpload(
+                    file,
+                    {
+                        code: self.code
+                    },
+                    function (res) {
+                        console.log("success: res.path: ", res, res.path);
+                        self.$parent.$data.files = addByComma(self.$parent.$data.files, res.idx);
+                        self.file = res;
+                    },
+                    alert,
+                    function (p) {
+                        console.log("("+self.code+")pregoress: ", p);
+                        this.percent = p;
+                    }
+                );
+            },
+        },
+    });
+
+    mixins.push({
+        data: {
+            files: '<?=$post->v('files')?>',
+        },
+    });
+</script>
+```
 
 
 
@@ -1974,4 +2108,34 @@ echo "현재 환율: $phpKwr";
 - The reason why we need the two `subcategory` parameters is that when post is edited,
   it needs `subcategory` as input even though the user does not want list for that subcategory.
   And when the app redirects the user to the list, the app does not know to list the whole category list or only that subcategory.
-    
+  
+
+# 관리자 페이지
+
+## 게시판 관리
+
+### 글 생성 위젯 옵션
+
+글 생성 위젯 옵션에는 PHP INI 방식으로 내용을 입력 할 수 있다. `2차원 배열` 까지 정보를 입력 할 수 있다.
+
+특히, 사진을 코드별로 업로드하는 위젯에서 `[upload-by-code]` 를 php.ini 방식의 입력을 통해서 여러개 사진을 업로드 할 수 있다.
+
+
+
+# 위젯
+
+## 글 쓰기 위젯
+
+### post-edit-upload-by-code
+
+- 관리자 페이지의 위젯 옵션에서 아래와 같이 입력하면, 여러 가지 사진을 코드 별로 업로드 할 수 있다.
+
+```ini
+[upload-by-code]
+banner[label]=배너
+banner[tip]=배너입니다.
+primary[label]=대표사진
+primary[tip]=대표사진입니다.
+content[label]=내용사진
+content[tip]=내용사진입니다.
+```

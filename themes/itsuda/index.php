@@ -100,6 +100,6 @@
 
 <?php js(HOME_URL . 'etc/js/helper.js?v=1', 10)?>
 <?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js', 3)?>
-<?php js(HOME_URL . 'etc/js/app.js')?>
+<?php js(HOME_URL . 'etc/js/app.js?v=1')?>
 </body>
 </html>

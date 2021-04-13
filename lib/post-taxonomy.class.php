@@ -113,7 +113,7 @@ class PostTaxonomy extends Entity {
 
 
     /**
-     * 현재 글/코멘트에 연결된 첨부 파일 객체를 배열로 리턴한다.
+     * 현재 글/코멘트에 연결된 첨부 파일들을 레코드 배열 또는 객체를 배열로 리턴한다.
      *
      * ```
      * foreach( $post->files() as $file ) { ... }
@@ -121,6 +121,7 @@ class PostTaxonomy extends Entity {
      *
      *
      * @param bool $response
+     *  이 값이 참이면 file 레코드를 배열로 리턴한다.
      * @return File[]
      */
     public function files(bool $response = false): array {
