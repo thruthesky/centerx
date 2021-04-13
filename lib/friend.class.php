@@ -18,6 +18,8 @@ class Friend extends Entity {
     }
 
     /**
+     * 친구 추가
+     *
      * 누군가 나를 친구 추가하면, 하나의 레코드만 생성된다.
      * 그리고 내가 친구 추가를 하지 않았으면, 상대방이 나를 친추해도, 내 목록에는 나타나지 않는다.
      * 예) A 가 B 를 친추 했다면, A 친구 목록에는 B 가 나오지만, B 친구 목록에는 A 가 나오지 않는다.
@@ -59,14 +61,20 @@ class Friend extends Entity {
 
         // 레코드가 존재하는가?
         if ( $this->exists ) {
-            if ( $this->block ) return $this->error(e()->already_blocked); // 이미 블럭되어 있으면 에러.
+            // 이미 블럭되어 있으면 에러.
+            if ( $this->block ) {
+                return $this->error(e()->already_blocked);
+            }
         } else {
             // 내가, 친구 초대를 안 했다. (상대방은 나를 친구 초대 했을 수 있음)
-            // 그냥 통과.
+            // 그렇다면, 친구 추가를 하고, 블럭을 한다. 이론적으로, 친구 추가된 레코드에 block=Y 를 해야하므로, 친구 추가는 필수이다.
+            $this->add(['otherIdx' => $in['otherIdx']]);
         }
+
 
         // 블럭을 한다. 내가 친구 추가를 안 했어도, 블럭을 할 수 있다. 즉, 친구 추가하지 않고, 미리 블럭을 하는 것이다.
         return parent::update(['block' => 'Y', 'reason' => $in['reason'] ?? '']);
+
     }
 
 
