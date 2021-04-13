@@ -172,21 +172,22 @@ function testAndroidFailure() {
 function testAndroidRealData() {
     /// This is a real data from Play store in-app-purchase.
     /// You can use it to verify many times.
-    /// You can change the ssession id.
+    /// You can change the session id.
     setLogin(TEST_USER_IDX);
     $data =[
-        "productID" => "point1000",
-        "purchaseID" => "GPA.3369-3869-6910-36525",
-        "price" => "₩1,000",
-        "title" => "1000 points (있수다)",
-        "description" => "1000 points",
-        "transactionDate" => "1617094334951",
-        "localVerificationData" => '{"orderId":"GPA.3369-3869-6910-36525","packageName":"com.itsuda50.app","productId":"point1000","purchaseTime":1617094334951,"purchaseState":0,"purchaseToken":"nfpjmjdplclocdocelbbaakg.AO-J1OyiXKWb5EKBRfKsTPyh3apot90P7De0GNUxrzoces1jp9VOYFHmyqRxs_V8HxEOpkfusmrgOVrEG4uaqsQWEDK3GymZ0w","acknowledged":false}',
-        "serverVerificationData" => "nfpjmjdplclocdocelbbaakg.AO-J1OyiXKWb5EKBRfKsTPyh3apot90P7De0GNUxrzoces1jp9VOYFHmyqRxs_V8HxEOpkfusmrgOVrEG4uaqsQWEDK3GymZ0w",
+        "productID" => "point1",
+        "purchaseID" => "GPA.3375-6251-2358-30115",
+        "price" => "₱43.00",
+        "title" => "Point One (있수다)",
+        "description" => "First price of the list",
+        "transactionDate" => "1618220370451",
+        "localVerificationData" => '{"orderId":"GPA.3375-6251-2358-30115","packageName":"com.itsuda50.app3","productId":"point1","purchaseTime":1618220370451,"purchaseState":0,"purchaseToken":"nkfeknhkpeeaojjakehbdabj.AO-J1Oy9nACH6LRGaoHg9XkWp0gAMtqFkJcaKWJLEvEgOvLD2gAngfgf5I2HoNIusPggK3GR-JsRWF1d3SL8cn1XKm8YKjXfqQ","acknowledged":false}',
+        "serverVerificationData" => "nkfeknhkpeeaojjakehbdabj.AO-J1Oy9nACH6LRGaoHg9XkWp0gAMtqFkJcaKWJLEvEgOvLD2gAngfgf5I2HoNIusPggK3GR-JsRWF1d3SL8cn1XKm8YKjXfqQ",
         "platform" => "android",
         "route" => "in-app-purchase.verifyPurchase",
         "sessionId" => login()->sessionId,
     ];
+
     $iap = inAppPurchase()->verifyPurchase($data)->response();
 
     isTrue($iap['idx'] > 0, 'Expect idx > 0');
@@ -211,19 +212,20 @@ function testAndroidRealData2() {
     /// You can change the session id.
     setLogin(TEST_USER_IDX);
     $data =[
-        "productID" => "point1000",
-        "purchaseID" => "GPA.3330-4674-5099-66226",
+        "productID" => "point1",
+        "purchaseID" => "GPA.3331-2106-6893-67729",
         "price" => "₱43.00",
-        "title" => "1000 points (있수다)",
-        "description" => "1000 points",
-        "transactionDate" => "1617165610775",
-        "localVerificationData" => '{"orderId":"GPA.3330-4674-5099-66226","packageName":"com.itsuda50.app","productId":"point1000","purchaseTime":1617165610775,"purchaseState":0,"purchaseToken":"mpmbckfmbkfoffjeldlafami.AO-J1OwZQN-Ry4x0fyN8Md6cOdNLSkDNZmsd3SlCj0L7CKx1xMwKw04ymETYC6ufVNW4-9aejdN0Q7Rvl3ycB2AuGu6A_KyG1A","acknowledged":false}',
-        "serverVerificationData" => "mpmbckfmbkfoffjeldlafami.AO-J1OwZQN-Ry4x0fyN8Md6cOdNLSkDNZmsd3SlCj0L7CKx1xMwKw04ymETYC6ufVNW4-9aejdN0Q7Rvl3ycB2AuGu6A_KyG1A",
+        "title" => "Point One (있수다)",
+        "description" => "First price of the list",
+        "transactionDate" => "1618221367376",
+        "localVerificationData" => '{"orderId":"GPA.3331-2106-6893-67729","packageName":"com.itsuda50.app3","productId":"point1","purchaseTime":1618221367376,"purchaseState":0,"purchaseToken":"lfidbcbbjpefjjncbinanchj.AO-J1OweqjeVCo-bwLeGIvFlsELeTlFug3AtgDfR93fd_knX0jJJmkZLHZpoFeN56w9KYe-aguRC0SZEmgnLlbRaRUxuz6vOyQ","acknowledged":false}',
+        "serverVerificationData" => "lfidbcbbjpefjjncbinanchj.AO-J1OweqjeVCo-bwLeGIvFlsELeTlFug3AtgDfR93fd_knX0jJJmkZLHZpoFeN56w9KYe-aguRC0SZEmgnLlbRaRUxuz6vOyQ",
         "platform" => "android",
         "route" => "in-app-purchase.verifyPurchase",
         "sessionId" => login()->sessionId,
     ];
     $iap = inAppPurchase()->verifyPurchase($data)->response();
+
 
     isTrue($iap['idx'] > 0, 'Expect idx > 0');
     isTrue($iap['status'] == 'success', 'Expect status == success');
@@ -246,18 +248,19 @@ function testAndroidRealData3() {
     /// You can change the session id.
     setLogin(TEST_USER_IDX);
     $data =[
-        "productID" => "point1000",
-        "purchaseID" => "GPA.3345-6696-2095-56231",
-        "price" => "₱43.00",
-        "title" => "1000 points (있수다)",
-        "description" => "1000 points",
-        "transactionDate" => "1617166686512",
-        "localVerificationData" => '{"orderId":"GPA.3345-6696-2095-56231","packageName":"com.itsuda50.app","productId":"point1000","purchaseTime":1617166686512,"purchaseState":0,"purchaseToken":"kgbbangopllminbjjegifnkg.AO-J1OyPvXidBJZfp6eaKDXxhCchVtSgvJGphDZUCbnp4yyXHZrV0qxHFedEivsR5NaLWBCGRoKT7u35F2RcioGSls1PXmALnQ","acknowledged":false}',
-        "serverVerificationData" => "kgbbangopllminbjjegifnkg.AO-J1OyPvXidBJZfp6eaKDXxhCchVtSgvJGphDZUCbnp4yyXHZrV0qxHFedEivsR5NaLWBCGRoKT7u35F2RcioGSls1PXmALnQ",
+        "productID" => "point2",
+        "purchaseID" => "GPA.3321-1085-2237-12529",
+        "price" => "₱87.00",
+        "title" => "Point Two (있수다)",
+        "description" => "Second price of the payment list",
+        "transactionDate" => "1618223530042",
+        "localVerificationData" => '{"orderId":"GPA.3321-1085-2237-12529","packageName":"com.itsuda50.app3","productId":"point2","purchaseTime":1618223530042,"purchaseState":0,"purchaseToken":"dejckkbpbifhkcobepmdpglb.AO-J1OxuVN-F8BhMmwM9XDt9Na0tSLC1rLLbaIJXXdp2G2dxHfCZMIhs2Mt3oEVGFrXucxjM-txL0Tfc57zVYqClKm0YAy7KQA","acknowledged":false}',
+        "serverVerificationData" => "dejckkbpbifhkcobepmdpglb.AO-J1OxuVN-F8BhMmwM9XDt9Na0tSLC1rLLbaIJXXdp2G2dxHfCZMIhs2Mt3oEVGFrXucxjM-txL0Tfc57zVYqClKm0YAy7KQA",
         "platform" => "android",
         "route" => "in-app-purchase.verifyPurchase",
         "sessionId" => login()->sessionId,
     ];
+
     $iap = inAppPurchase()->verifyPurchase($data)->response();
 
     isTrue($iap['idx'] > 0, 'Expect idx > 0');
