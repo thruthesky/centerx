@@ -48,9 +48,24 @@ class Friend extends Entity {
         return parent::delete();
     }
 
+    /**
+     * 블럭을 한다.
+     * @param array $in
+     * @return Entity|Friend
+     */
     public function block(array $in) {
-        if ( $this->findOne(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']])->exists == false ) return $this->error(e()->not_added_as_friend);
-        if ( $this->block ) return $this->error(e()->already_blocked);
+        // 레코드를 찾는다. 내가 해당 친구($in['otherIdx'])를 추가한 레코드
+        $this->findOne(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']]);
+
+        // 레코드가 존재하는가?
+        if ( $this->exists ) {
+            if ( $this->block ) return $this->error(e()->already_blocked); // 이미 블럭되어 있으면 에러.
+        } else {
+            // 내가, 친구 초대를 안 했다. (상대방은 나를 친구 초대 했을 수 있음)
+            // 그냥 통과.
+        }
+
+        // 블럭을 한다. 내가 친구 추가를 안 했어도, 블럭을 할 수 있다. 즉, 친구 추가하지 않고, 미리 블럭을 하는 것이다.
         return parent::update(['block' => 'Y', 'reason' => $in['reason'] ?? '']);
     }
 
@@ -86,6 +101,7 @@ class Friend extends Entity {
         }
         return $rets;
     }
+
 
     public function blockList() {
         $friends = $this->search(select: 'otherIdx', limit: 5000, conds: ['myIdx' => login()->idx, 'block' => 'Y']);
