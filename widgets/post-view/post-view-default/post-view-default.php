@@ -29,7 +29,7 @@ $post = post()->current();
         <hr>
         <div class="d-flex buttons mt-3">
             <div class="d-flex">
-            <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->n ?>"></vote-buttons>
+                <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->n ?>"></vote-buttons>
                 <!-- <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
                 <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a> -->
                 <a class="btn btn-sm btn-primary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?><?= lsub() ?>"><?= ek('List', '목록') ?></a>
@@ -49,7 +49,7 @@ $post = post()->current();
     </section>
 
 
-    <comment-form is-post="true" root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
+    <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
 
 
     <?php #include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post])
@@ -205,7 +205,7 @@ $post = post()->current();
 </script>
 <script>
     Vue.component('vote-buttons', {
-        props: ['isPost', 'parentIdx', 'y', 'n'],
+        props: ['parentIdx', 'y', 'n'],
         data: function() {
             return {
                 Y: this.y,
@@ -218,9 +218,8 @@ $post = post()->current();
             '</div>',
         methods: {
             onVote(choice) {
-                console.log(choice);
                 const self = this;
-                request(this.isPost ? 'post.vote' : 'comment.vote', {
+                request('post.vote', {
                     idx: this.parentIdx,
                     choice: choice
                 }, function(res) {
