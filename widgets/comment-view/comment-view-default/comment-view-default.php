@@ -33,7 +33,7 @@ $comment = $o['comment'];
         <hr>
         <section class="d-flex buttons mt-3">
             <a class="btn btn-sm btn-primary mr-2" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'reply')"><?= ek('Reply', '답변하기') ?></a>
-            <vote-buttons is-post="false" n="<?= $comment->N ?>" y="<?= $comment->Y ?>" parent-idx="<?= $comment->idx ?>"></vote-buttons>
+            <vote-buttons n="<?= $comment->N ?>" y="<?= $comment->Y ?>" parent-idx="<?= $comment->idx ?>"></vote-buttons>
             <span class="flex-grow-1"></span>
             <?php if ($comment->isMine()) { ?>
                 <a class="btn btn-sm btn-primary mr-2" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'update')"><?= ek('Edit', '수정') ?></a>
