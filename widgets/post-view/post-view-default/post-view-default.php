@@ -223,7 +223,6 @@ $post = post()->current();
                     idx: this.parentIdx,
                     choice: choice
                 }, function(res) {
-                    console.log(res);
                     self.N = res['N'];
                     self.Y = res['Y'];
                 }, alert);
