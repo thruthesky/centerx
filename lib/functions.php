@@ -976,9 +976,9 @@ function select_list_widgets($categoryIdx,  $widget_type, $setting_name) {
 
 function select_list_widgets_option($type, $default_selected) {
     foreach( glob(ROOT_DIR . "/widgets/$type/**/*.php") as $file ) {
-
         $info = parseDocBlock(file_get_contents($file));
         if ( isset($info['type']) && $info['type'] == 'admin' ) continue;
+
         $arr = explode('/', $file);
         array_pop($arr);
         $widget_folder_name = array_pop($arr);

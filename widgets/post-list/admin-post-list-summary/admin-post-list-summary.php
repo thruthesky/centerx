@@ -1,4 +1,7 @@
 <?php
+/**
+ * @type admin
+ */
 $o = getWidgetOptions();
 ?>
 <section id="admin-post-list-summary">

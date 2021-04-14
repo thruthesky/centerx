@@ -186,6 +186,19 @@
         </tr>
 
 
+        <tr class="table-light">
+            <td colspan="2">
+                <div class="hint">
+                    <?=ek('Input post edit widget options', '글 생성/수정 옵션을 입력하세요.')?>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <textarea class="w-100" rows="5" name="postEditWidgetOption"><?=$category->postEditWidgetOption?></textarea>
+            </td>
+        </tr>
         <tr>
             <td><?=ek('Post View Widget', '글 읽기 위젯')?></td>
             <td>

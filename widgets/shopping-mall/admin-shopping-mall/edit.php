@@ -2,7 +2,7 @@
 if ( modeDelete() ) {
     $post = post(in(IDX))->markDelete();
     if ( $post->hasError ) {
-        bsAlert("삭제 실패: $re");
+        bsAlert("삭제 실패: " . $post->getError());
     } else {
         jsGo("/?p=" . in('p') . "&w=" . in('w'));
     }
@@ -32,10 +32,10 @@ $category = category(SHOPPING_MALL);
     <form method="post" action="/">
 
         <?=hiddens(in: ['p', 'w', 'cw'], mode: 'submit', kvs: ['idx' => $post->idx])?>
-
+        <input type="hidden" name="files" v-model="files">
 
         <div class="form-group mb-3">
-            <label for="post_title">카테고리</label>
+            <label for="post_title">추천 카테고리</label>
             <select name="subcategory" class="custom-select">
                 <option value="">카테고리 선택</option>
                 <?php foreach( $category->subcategories as $subcategory ) { ?>
@@ -47,7 +47,7 @@ $category = category(SHOPPING_MALL);
 
 
         <div class="form-group mb-3">
-            <label for="post_title">카테고리</label>
+            <label for="post_title">인기 카테고리</label>
 
             <select name="subcategory" class="custom-select">
                 <option value="">카테고리 선택</option>
@@ -55,6 +55,13 @@ $category = category(SHOPPING_MALL);
                     <option value="<?=$subcategory?>" <?php if ( $subcategory == ($post->subcategory ?? '') ) echo "selected"; ?>><?=$subcategory?></option>
                 <?php } ?>
             </select>
+        </div>
+
+
+        <div class="form-group mb-3">
+            <label for="post_title">코드</label>
+            <div class="hint">배너 코드 등을 입력 할 수 있습니다. 자세한 사항은 관리 문서를 참고 해 주세요.</div>
+            <input type="text" class="form-control" name="code" value="<?=$post->code ?? ''?>">
         </div>
 
 
@@ -173,7 +180,7 @@ $category = category(SHOPPING_MALL);
 
 
 
-<?php /*
+        <?php /*
         <div class="form-group mb-3">
             <label for="deliveryFee">배송비</label>
             <input type="number" class="form-control" id="deliveryFee" name="deliveryFee" value="<?=$post['deliveryFee']??''?>">
@@ -205,42 +212,10 @@ $category = category(SHOPPING_MALL);
             사진은 .gif(애니메이션 가능) 또는 .jpg, .png 으로 업로드 가능하며, 업로드된 사진을 클릭하면, 삭제 할 수 있습니다.
         </div>
 
-        <?php
-        $images = [
-            ['field' => 'primaryPhoto', 'title' => '대표 사진', 'desc' => '상품 페이지 맨 위에 나오는 사진'],
-            ['field' => 'widgetPhoto', 'title' => '위젯 사진', 'desc' => '각종 위젯에 표시'],
-            ['field' => 'detailPhoto', 'title' => '설명 사진', 'desc' => '상품을 정보/설명/컨텐츠를 보여주는 사진'],
-        ]
-        ?>
-        <?php foreach( $images as $image ) { ?>
-
-                <input type="hidden" name="<?=$image['field']?>" id="<?=$image['field']?>" value="<?=$post->v($image['field'])?>">
-        <div class="mb-3 of-hidden">
-            <div class="position-relative d-flex align-items-center p-2 bg-light">
-                <div>
-                    <i class="fa fa-file-image fs-xl"></i>
-                </div>
-                <div class="ms-2">
-                    <?=$image['title']?>
-                </div>
-                <input class="position-absolute cover fs-xxl opacity-0" type="file" onchange="onFileChange(event, '<?=$image["field"]?>')">
-            </div>
-            <div class="hint"><?=$image['desc']?></div>
-
-            <?php
-            $src = '';
-            $file = files();
-            if ( $post->v($image['field']) ) {
-                $file = files($post->v($image['field']));
-            }
-            ?>
-
-            <div class="position-relative">
-                <img id="<?=$image['field']?>Src" src="<?=$file?->url?>" class="mw-100" onclick="onClickFileDelete(<?=$file?->idx?>, '<?=$image["field"]?>');">
-            </div>
-
-        </div>
-        <?php } ?>
+        <upload-by-code post-idx="<?=$post->idx?>" code="primaryPhoto" label="대표 사진" tip="상품 페이지 맨 위에 나오는 사진"></upload-by-code>
+        <upload-by-code post-idx="<?=$post->idx?>" code="widgetPhoto" label="위젯 사진" tip="각종 위젯에 표시"></upload-by-code>
+        <upload-by-code post-idx="<?=$post->idx?>" code="detailPhoto" label="설명 사진" tip="상품을 정보/설명/컨텐츠를 보여주는 사진"></upload-by-code>
+        <upload-by-code post-idx="<?=$post->idx?>" code="bannerPhoto" label="배너 사진" tip="배너로 보여질 사진. 관리 문서 참고."></upload-by-code>
 
 
         <div class="d-flex justify-content-between mt-2 mb-3">
@@ -256,53 +231,15 @@ $category = category(SHOPPING_MALL);
     </form>
 </section>
 
-<script>
-    function onFileChange(event, id) {
-        const file = event.target.files[0];
-        fileUpload(
-            file,
-            {
-                sessionId: '<?=login()->sessionId?>',
-            },
-            function (res) {
-                console.log("success: res.path: ", res, res.path);
-                const $input = document.getElementById(id);
-                $input.value = res.idx;
-                const $img = document.getElementById(id + 'Src');
-                $img.src = res.url;
-            },
-            alert,
-            function (p) {
-                console.log("pregoress: ", p);
-            }
-        );
-    }
-
-    function onClickFileDelete(idx, id) {
-        const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
-        if ( re === false ) return;
-        axios.post('/index.php', {
-            sessionId: '<?=login()->sessionId?>',
-            route: 'file.delete',
-            idx: idx,
-        })
-            .then(function (res) {
-                const $input = document.getElementById(id);
-                $input.value = '';
-                const $img = document.getElementById(id + 'Src');
-                $img.src = '';
-            })
-            .catch(alert);
-    }
-</script>
 
 
-<script src="<?php echo HOME_URL?>/etc/js/vue.3.0.7.global.prod.min.js"></script>
+
 <script>
     mixins.push({
         data: {
-                discountedPrice: 0,
-                post: <?=json_encode($post->getData())?>,
+            discountedPrice: 0,
+            post: <?=json_encode($post->getData())?>,
+            files: '<?=$post->v('files')?>',
         },
         created: function () {
             this.onPriceChange();

@@ -10,6 +10,10 @@ class FriendRoute {
         return friend()->delete($in)->response();
     }
 
+    /**
+     * @param array $in
+     * @return array|string
+     */
     public function block(array $in) {
         return friend()->block($in)->response();
     }

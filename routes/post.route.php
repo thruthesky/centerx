@@ -17,6 +17,11 @@ class PostRoute {
         if ( $post->isMine() == false ) return  e()->not_your_post;
         return post($in[IDX])->markDelete()->response();
     }
+
+    /**
+     * @param $in
+     * @return array|string
+     */
     public function get($in) {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
         return post($in[IDX])->response();

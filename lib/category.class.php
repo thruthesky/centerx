@@ -18,6 +18,7 @@
  * @property-read string POINT_DAILY_LIMIT_COUNT
  * @property-read string BAN_ON_LIMIT
  * @property-read string postEditWidget
+ * @property-read string postEditWidgetOption
  * @property-read string postViewWidget
  * @property-read string postListHeaderWidget
  * @property-read string postListWidget

@@ -1,3 +1,8 @@
+<?php
+/**
+ * @type admin
+ */
+?>
 <section class="p-4 overflow-hidden" id="admin-top-user-by-point" style="height: 24rem">
     <h6 class="text-muted"><?=number_format(user()->count())?> users</h6>
     <h5 class="mb-4">Top most user by points</h5>
