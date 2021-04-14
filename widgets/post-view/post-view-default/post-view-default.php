@@ -29,7 +29,7 @@ $post = post()->current();
         <hr>
         <div class="d-flex buttons mt-3">
             <div class="d-flex">
-                <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->n ?>"></vote-buttons>
+                <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->N ?>"></vote-buttons>
                 <!-- <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
                 <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a> -->
                 <a class="btn btn-sm btn-primary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?><?= lsub() ?>"><?= ek('List', '목록') ?></a>
