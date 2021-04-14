@@ -7,6 +7,7 @@
 - 가장 단순하며 직관적인 플랫폼을 위해서 직접 개발
 - 성능 향상을 위해서 최신 PHP (버전 8)를 사용하고 있으며, Nginx(Apache 대체 가능)와 MariaDB(MySQL 대체 가능)를 바탕으로 하는 프레임워크
 - Container(Docker) 를 통한 배포
+- IE10+ 지원. 대한민국의 데스크톱에서 10% 이상이 IE 를 사용한다. IE 지원은 필수이다. 그래서 Vue.js 2 와 Bootstrap 4 를 기준으로 작업을 한다.
 
 
 # 문서 안내
@@ -43,6 +44,10 @@
   params: ['01012345678', 5]
   
   와 같이 입력 받아서, SQL injection 가능성을 줄인다.
+
+  기존 search() 의 where: 에 값이 들어오면, params 의 값이 필수적으로 들어오도록 한다.
+  참고: https://github.com/ezSQL/ezsql#example-for-using-prepare-statements-directly-no-shortcut-sql-methods-used
+  
   
 - 필고를 보고, security 체크를 한다. security 패턴 검사를 관리자 페이지에서 입력 할 수 있도록 한다.
   - SELECT SQL 쿼리 word filtering 을 따로 두고, (글 추출 및 각종 해킹 시도. entity.class.php 에서 read, search 등에서 사용. )
