@@ -19,7 +19,15 @@ class InAppPurchaseRoute {
     }
     public function myPurchase($in): array|string
     {
-        return inAppPurchase()->myPurchase($in);
+        $rows = inAppPurchase()->myPurchase($in);
+	/// Remove local & server verification data to reduce the size of return to client.
+	$rets = [];
+	foreach( $rows as $row ) {
+		unset($row['localVerificationData']);
+		unset($row['serverVerificationData']);
+		$rets[] = $row;
+	}
+	return $rets;
     }
 
 

@@ -86,16 +86,52 @@ class Friend extends Entity {
     }
 
     /**
-     * 내가 친추를 했거나, 내가 친추가 되었으면, 그 레코드를 리턴한다.
+     * 친구 관계
+     *
+     * 일방 친구와 쌍방 친구가 있을 수 있으며,
+     * 일방 친구 차단과 쌍방 친구 차단이 있을 수 있다.
+     *
+     * 내가 친추를 했거나, 내가 친추가 되었으면, 그 레코드를 리턴한다. 즉, 일방 친구 상태이면, 일반 친구 상태를 쌍방 모두에게 알림.
+     * 예) A 가 B 를 친구 추가한 경우, B 에게 그 사실을 알림.
+     * 예) A 와 B 쌍방 친구인 경우, 각자의 레코드를 리턴.
+     *
+     * 차단의 경우, 일방 차단이라고 해도, 쌍방 모두 대화를 할 수 없도록 한다.
+     *
      * @param array $in
      * @return Entity|Friend
      */
     public function relationship(array $in) {
-        $ab = friend()->findOne(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']]);
-        if ( $ab->exists ) return $ab;
-        $ba = friend()->findOne(['myIdx' => $in['otherIdx'], 'otherIdx' => login()->idx]);
-        if ( $ba->exists ) return $ba;
-        return $this->error(e()->no_relationship);
+
+
+        // 내가 친추를 했다면, 그 레코드 리턴.
+        $aB = friend()->findOne(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']]);
+//        if ( $aB->exists ) return $aB;
+
+        // 상대방이 나를 친추 했다면, 그 레코드를 리턴.
+        $bA = friend()->findOne(['myIdx' => $in['otherIdx'], 'otherIdx' => login()->idx]);
+//        if ( $bA->exists ) return $bA;
+
+        // 쌍방 친구인 경우,
+        if ( $aB->exists && $bA->exists ) {
+            // 둘 중 하나가 블럭인가?
+            if ( $aB->block == 'Y' || $bA->block == 'Y' ) {
+                // 그렇다면, 나의 레코드에 block 상태를 표시해서 리턴.
+                $aB->updateData('block', 'Y');
+                return $aB;
+            } else {
+                // 둘 다 블럭이 아니면, 나의 레코드를 리턴.
+                return $aB;
+            }
+        } else if ( $aB->exists ) {
+            // 내가 친추한 경우,
+            return $aB;
+        } else if ( $bA->exists ) {
+            // (나는 친추를 안했는데,) 상대방이 나를 친추한 경우,
+            return $bA;
+        } else {
+            // 친추 상태가 아닌 경우,
+            return $this->error(e()->no_relationship);
+        }
     }
 
     /**
