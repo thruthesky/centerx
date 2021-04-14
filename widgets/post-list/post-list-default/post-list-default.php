@@ -31,11 +31,20 @@ $category = $o['category'];
 
 
     <?php foreach ($posts as $post) {
+    $user = user($post->userIdx)->shortProfile();
     ?>
         <hr>
-        <a href="<?= $post->url ?><?= lsub(true) ?>">
-            No. <?= $post->idx ?> <?= $post->title ?>
-        </a>
+        <div class="d-flex">
+            <?php if ($user['photoUrl']) { ?>
+                <img class="mr-3" style="height: 50px; width: 50px; border-radius: 50px;" src="<?= $user['photoUrl'] ?>" />
+            <?php } else { ?>
+                <div class="mr-3" style="height: 50px; width: 50px; border-radius: 50px; background-color: grey"> </div>
+            <?php } ?>
+            <div>
+                <a href="<?= $post->url ?><?= lsub(true) ?>">No. <?= $post->idx ?> <?= $post->title ?></a>
+                <div class="mt-1"><?= $post->subcategory ? "[{$post->subcategory}] " : "" ?><?= date('r', $post->createdAt) ?></div>
+            </div>
+        </div>
     <?php } ?>
 
 </section>
