@@ -53,7 +53,8 @@ Vue.component('upload-by-code', {
                     code: self.code
                 },
                 function (res) {
-                    console.log("success: res.path: ", res, res.path);
+                    // console.log("success: res.path: ", res, res.path, 'parent files: ', self.$parent.$data.files);
+                    // debugger;
                     self.$parent.$data.files = addByComma(self.$parent.$data.files, res.idx);
                     self.file = res;
                 },

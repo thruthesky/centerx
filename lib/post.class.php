@@ -516,17 +516,32 @@ class Post extends PostTaxonomy {
 }
 
 
-
-
 /**
- * User 는 uid 를 입력 받으므로 항상 새로 생성해서 리턴한다.
+ * 글 객체 리턴
  *
- * $_COOKIE[SESSION_ID] 에 값이 있으면, 사용자가 로그인을 확인을 해서, 로그인이 맞으면 해당 사용자의 idx 를 기본 사용한다.
- * @param int $idx
+ *
+ *
+ * @param int|string $idx - 숫자이면 글번호로 인식. 아니면, 코드로 인식하여 글 객체를 리턴한다.
  * @return Post
  */
-function post(int $idx=0): Post
+function post(int|string $idx=0): Post
 {
-    return new Post($idx);
+    if ( $idx == 0 ) return new Post(0); // 0 이면, 빈 글 객체 리턴.
+    else if ( is_numeric($idx) && $idx > 0 ) return new Post($idx); // 숫자이고 0 보다 크면, 해당 글 객체 리턴.
+    else return postByCode($idx); // 숫자가 아니면, 코드로 인식해서, 해당 글 객체 리턴.
 }
+
+/**
+ * 코드를 입력 받아, 글 객체를 리턴한다.
+ *
+ * 참고, 동일한 코드가 여러개 있다면, 그 중 하나만 리턴한다. 모든 코드의 글을 다 가져오려면, `search` 함수를 사용한다.
+ *
+ * @param string $code
+ * @return Post
+ */
+function postByCode(string $code): Post {
+    return post()->findOne(['code' => $code]);
+}
+
+
 

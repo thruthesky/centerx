@@ -2128,7 +2128,29 @@ echo "현재 환율: $phpKwr";
 
 특히, 사진을 코드별로 업로드하는 위젯에서 `[upload-by-code]` 를 php.ini 방식의 입력을 통해서 여러개 사진을 업로드 할 수 있다.
 
+# Vue.js 2 component
 
+## upload-by-code
+
+- Example of the usage of `upload-by-code`
+- It needs `files` as hidden tag binded with `files` string.
+
+```html
+
+<input type="hidden" name="files" v-model="files">
+
+<upload-by-code post-idx="<?=$post->idx?>" code="primaryPhoto" label="대표 사진" tip="상품 페이지 맨 위에 나오는 사진"></upload-by-code>
+<upload-by-code post-idx="<?=$post->idx?>" code="widgetPhoto" label="위젯 사진" tip="각종 위젯에 표시"></upload-by-code>
+<upload-by-code post-idx="<?=$post->idx?>" code="detailPhoto" label="설명 사진" tip="상품을 정보/설명/컨텐츠를 보여주는 사진"></upload-by-code>
+
+<script>
+    mixins.push({
+        data: {
+            files: '<?=$post->v('files')?>',
+        },
+    });
+</script>
+```
 
 # 위젯
 
