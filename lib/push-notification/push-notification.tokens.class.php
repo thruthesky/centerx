@@ -83,6 +83,7 @@ function sanitizedInput($in): array {
     if ( !isset($in[BODY])) $in[BODY] = '';
     if ( !isset($in[CLICK_ACTION])) $in[CLICK_ACTION] = '/';
     if ( !isset($in[IMAGE_URL])) $in[IMAGE_URL] = '';
+    if ( !isset($in[SOUND])) $in[SOUND] = 'default';
     if ( !isset($in[DATA])) $in[DATA] = [];
     $in[DATA]['senderIdx'] = login()->idx;
     return $in;
@@ -131,7 +132,7 @@ function send_message_to_users($in): array|string
     /// if no token to send then simply return empty array.
     if (empty($all_tokens)) return [];
     $in = sanitizedInput($in);
-    $re = sendMessageToTokens($all_tokens, $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL]);
+    $re = sendMessageToTokens($all_tokens, $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL], $in[SOUND]);
     $res = [];
     foreach($re->getItems() as $item) {
         $res[] = $item->result();
