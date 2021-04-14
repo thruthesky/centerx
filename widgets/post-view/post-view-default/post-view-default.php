@@ -6,19 +6,11 @@
 
 
 $post = post()->current();
-// d($post);
 ?>
 
 <section class="p-3" style="border-radius: 10px; background-color: #f4f4f4;">
-    <div class="d-flex">
-        <!-- TODO: user profile photo -->
-        <div class="mr-3" style="height: 60px; width: 60px; border-radius: 50px; background-color: grey;">
-        </div>
-        <div class="meta">
-            <div class="mt-1"><b><?= $post->user()->name ?></b> - No. <?= $post->idx ?></div>
-            <div class="mt-1"><?= $post->subcategory ? "[{$post->subcategory}] " : "" ?><?= date('r', $post->createdAt) ?></div>
-        </div>
-    </div>
+
+    <?php include widget('forum/post-meta-default', ['post' => $post]) ?>
 
     <div class="mt-2">
         <h1 style="word-break: break-all"><?= $post->title ?></h1>
