@@ -70,6 +70,8 @@ a:hover {
 .hw-50x50 {
   min-height: 50px;
   min-width: 50px;
+  max-height: 50px;
+  max-width: 50px;
 }
 .hw-54x54 {
   min-height: 54px !important;

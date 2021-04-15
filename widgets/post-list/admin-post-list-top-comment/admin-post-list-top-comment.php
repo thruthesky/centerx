@@ -10,7 +10,7 @@ $rows = db()->get_results($q, ARRAY_A);
 
 $users = [];
 foreach ($rows as $row) {
-    $user = user($row[USER_IDX])->profile();
+    $user = user($row[USER_IDX])->shortProfile();
     $user[COMMENTS] = $row[COMMENTS];
     $users[] = $user;
 }
@@ -23,10 +23,14 @@ foreach ($rows as $row) {
 
     <?php foreach ($users as $user) { ?>
         <div class="d-flex mb-3">
-            <div class="mr-3 hw-50x50 border-radius-50" style="background-color: grey"> </div>
-            <div class="text-overflow-ellipsis ml-3">
-                <span><strong><?= $user[NAME] ?>(<?= $user[IDX] ?>)</strong></span><br>
-                <span><?= $user[COMMENTS] ?> comments</span>
+            <?php if ($user['photoUrl']) { ?>
+                <img class="mr-3 hw-50x50 border-radius-50" src="<?= $user['photoUrl'] ?>" />
+            <?php } else { ?>
+                <div class="mr-3 hw-50x50 border-radius-50" style="background-color: grey"> </div>
+            <?php } ?>
+            <div class="text-overflow-ellipsis ml-2">
+                <div><strong><?= $user[NAME] ?>(<?= $user[IDX] ?>)</strong></div>
+                <div class="mt-1"><?= $user[COMMENTS] ?> comments</div>
             </div>
         </div>
     <?php } ?>

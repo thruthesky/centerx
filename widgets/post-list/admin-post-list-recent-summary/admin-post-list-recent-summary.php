@@ -10,12 +10,11 @@
     <h6 class="mt-2 mb-4 fw-700">Recent Posts</h6>
 
     <?php foreach (post()->latest(null, 1, 4) as $post) {
-        $user = user($post->userIdx);
-
+        $user = user($post->userIdx)->shortProfile();
     ?>
         <div class="d-flex mb-3">
-            <?php if ($user->photoUrl) { ?>
-                <img class="mr-3 hw-50x50 border-radius-50" src="<?= $user->photoUrl ?>" />
+            <?php if ($user['photoUrl']) { ?>
+                <img class="mr-3 hw-50x50 border-radius-50" src="<?= $user['photoUrl'] ?>" />
             <?php } else { ?>
                 <div class="mr-3 hw-50x50 border-radius-50" style="background-color: grey"> </div>
             <?php } ?>
