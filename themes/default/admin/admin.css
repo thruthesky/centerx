@@ -59,6 +59,10 @@ a:hover {
   font-weight: 500;
 }
 
+.fw-600 {
+  font-weight: 600;
+}
+
 .fw-400 {
   font-weight: 400;
 }
@@ -72,10 +76,9 @@ a:hover {
   min-width: 54px !important;
 }
 
-
 .border-radius-50 {
-    border-radius: 50%;
-  }
+  border-radius: 50%;
+}
 
 .border-radius-md {
   border-radius: 16px;
@@ -120,8 +123,9 @@ a:hover {
 }
 
 .sub-menu-title {
-  font-size: 1.2rem !important;
+  font-size: .95rem !important;
 }
+
 .sub-menu-desc {
   font-size: 13px !important;
   color: #b5b5c3 !important;

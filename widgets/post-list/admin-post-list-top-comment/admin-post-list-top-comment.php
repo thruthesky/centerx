@@ -19,14 +19,14 @@ foreach ($rows as $row) {
 <section class="p-4 overflow-hidden" id="admin-post-list-top-comment" style="height: 24rem; overflow: auto">
 
     <div class="text-muted fs-sm">No of comments for 7 days</div>
-    <h5 class="mb-4 fw-700">Top most users by comments</h5>
+    <h6 class="mt-2 mb-4 fw-700">Top most users by comments</h6>
 
     <?php foreach ($users as $user) { ?>
         <div class="d-flex mb-3">
             <div class="mr-3 hw-50x50 border-radius-50" style="background-color: grey"> </div>
             <div class="text-overflow-ellipsis ml-3">
                 <span><strong><?= $user[NAME] ?>(<?= $user[IDX] ?>)</strong></span><br>
-                <span><?= $user[COMMENTS] ?></span>
+                <span><?= $user[COMMENTS] ?> comments</span>
             </div>
         </div>
     <?php } ?>

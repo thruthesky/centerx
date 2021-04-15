@@ -6,7 +6,7 @@
 ?>
 <section class="p-4 overflow-hidden" id="admin-top-user-by-point" style="height: 24rem">
     <div class="text-muted fs-sm"><?= number_format(user()->count()) ?> users</div>
-    <h5 class="mb-4 fw-700">Top most user by points</h5>
+    <h6 class="mt-2 mb-4 fw-700">Top most user by points</h6>
     <?php
     foreach (user()->search(where: "point>0", order: 'point', limit: 4) as $user) {
     ?>
