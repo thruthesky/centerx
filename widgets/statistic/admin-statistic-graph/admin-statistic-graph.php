@@ -86,7 +86,8 @@ function barHeight( $no , $max = null): int {
 </style>
 
 <section class="d-flex flex-column justify-content-between p-3"  style="height: 24rem">
-    <div>Recent Users, Posts, Comments (Green: post, Blue: comment, Red: user)</div>
+    <h6 class="mt-2 fw-700">Recent Users, Posts, Comments</h6>
+    <div> *<i>Green</i> - post, *<i>Blue</i> - comment, *<i>Red</i> - user</div>
     <div class="bar-graph-container">
         <div class="bar-graph-content">
             <?php
