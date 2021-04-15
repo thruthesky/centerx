@@ -64,13 +64,18 @@ a:hover {
 }
 
 .hw-50x50 {
-  height: 50px;
-  width: 50px;
+  min-height: 50px;
+  min-width: 50px;
 }
 .hw-54x54 {
   min-height: 54px !important;
   min-width: 54px !important;
 }
+
+
+.border-radius-50 {
+    border-radius: 50%;
+  }
 
 .border-radius-md {
   border-radius: 16px;

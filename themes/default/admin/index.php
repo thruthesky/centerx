@@ -4,8 +4,8 @@ if (admin() == false) jsBack('You are not admin');
 <link rel="stylesheet" href="themes/default/admin/admin.css?v=3">
 
 <section class="layout" style="background-color: #cceef2;">
-    <div class="container-fluid bg-dark">
-        <nav class="container navbar white fs-xs py-0">
+    <div class="container-fluid" style="background-color: #181c32;">
+        <nav class="container navbar white fs-sm fw-700 py-0" style="height: 65px;">
             <div class="white py-3">
                 <a class="mr-2 py-3" href="/?p=admin.index"><?= ek('Dashboard', 'Dashboard') ?></a>
                 <a class="ml-2 py-3" href="/"><?= ek('Home', 'Home') ?></a>
@@ -22,7 +22,7 @@ if (admin() == false) jsBack('You are not admin');
     </div>
 
     <div class="container-fluid bg-light">
-        <div class="container d-flex justify-content-between align-items-center sub-menu" style="height: 100px;">
+        <div class="container d-flex justify-content-between align-items-center sub-menu" style="height: 80px;">
             <div class="mr-5">
                 <a href="/?admin.index" class="fs-xl">CenterX</a>
             </div>
