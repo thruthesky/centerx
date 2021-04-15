@@ -1,4 +1,8 @@
 <?php
+
+require_once('../../boot.php');
+?>
+<?php
 /**
  * @file pass-login-callback.php
  * @desc
@@ -6,7 +10,6 @@
 
 
 
-require_once('../../boot.php');
 require_once('pass-login.lib.php');
 
 
@@ -58,13 +61,33 @@ if ( $_REQUEST['state'] === 'openHome' ) {
     jsGo('/');
 }
 
+?>
+
+<button style="padding: 4rem;" type="button" onclick="self.close();">로그인을 하였습니다. 앱으로 돌아가기</button>
+<hr>
+<button type="button" onclick="window.close();">Close current window if possible</button>
+<?php
+
 /**
  * 자바스크립트로 메시지 전송
  */
 $json = json_encode($profile);
-echo <<<EOJ
+?>
+<?php includeFirebase(); ?>
 <script>
-    messageHandler.postMessage('$json');
+const db = firebase.firestore();
+db.collection('notifications').doc('<?=in('state')?>').set({time: (new Date).getTime(), sessionId: '<?=$profile['sessionId']?>'});
+</script>
+<?
+echo <<<EOJ
+Login ... !
+<script>
+//    messageHandler.postMessage('$json');
+//alert("로그인을 하였습니다.");
+//alert(window);
+
+//window.open('','_self').close()
+//window.close();
 </script>
 EOJ;
 ?>
