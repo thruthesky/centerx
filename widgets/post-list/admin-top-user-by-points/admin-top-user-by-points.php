@@ -14,7 +14,7 @@
             <div class="rounded-circle hw-50x50" style="background-color: grey;">
             </div>
             <div class="text-overflow-ellipsis ml-4">
-                <div><strong><?= empty($user->name) ? 'No name' : $user->name ?> (<?= $user->idx ?>)</strong></div>
+                <div><strong><?= empty($user->name) ? 'No name' : $user->name ?></strong> <small>(ID. <?= $user->idx ?>)</small></div>
                 <div class="mt-1"><?= $user->point ?> <?= ek('Points', '@T Points') ?></div>
             </div>
         </div>
