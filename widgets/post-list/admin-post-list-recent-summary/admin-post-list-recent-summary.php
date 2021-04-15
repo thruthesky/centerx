@@ -6,8 +6,8 @@
 ?>
 <section class="p-4 overflow-hidden" id="admin-post-list-recent-summary" style="height: 24rem">
 
-    <div class="text-muted fs-sm">Total number posts: <?= post()->count() ?></div>
-    <h6 class="mt-2 mb-4 fw-700">Recent Posts</h6>
+    <div class="text-muted fs-sm"><?= ek('Total number posts', '@T Total number posts') ?>: <?= post()->count() ?></div>
+    <h6 class="mt-2 mb-4 fw-700"><?= ek('Recent Posts', '@T Recent Posts') ?></h6>
 
     <?php foreach (post()->latest(null, 1, 4) as $post) {
         $user = user($post->userIdx)->shortProfile();
