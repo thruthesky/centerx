@@ -5,28 +5,41 @@
  */
 
 require_once('../../boot.php');
-require_once('pass-login.lib.php');
-
-// 인증
-$user = pass_login_callback($_REQUEST);
-if ( isError($user) ) {
-    pass_login_message($user);
-    exit;
-}
-
-$profile = pass_login_or_register($user);
-
-if ( isError($profile) ) {
-//    debug_log("pass-login-callback-php:: error code: $profile");
-    echo "<h1>ERROR: $profile</h1>";
-    exit;
-}
-/**
- * 여기까지 오면 로그인 성공
- */
 ?>
-<?php includeFirebase(); ?>
-<script>
-const db = firebase.firestore();
-db.collection('passlogin').doc('<?=in('state')?>').set({time: (new Date).getTime(), sessionId: '<?=$profile['sessionId']?>'});
-</script>
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <title>있;수다! 패스 로그인</title>
+    <style>
+        body {
+            background-color: #ffcb27;
+        }
+        .fs-lg { font-size: 1.25rem; }
+    </style>
+</head>
+<body>
+
+<div class="mt-5 pt-5 d-flex justify-content-center w-100">
+    <div class="text-center">
+        <h1>있;수다!</h1>
+        <div class="mt-3">로그인 성공</div>
+        <div class="mt-2 fs-lg">
+            브라우저를 닫고 있;수다! 앱을 열어주세요.
+        </div>
+    </div>
+</div>
+
+<?php
+require_once('pass-login.lib.php');
+require_once('pass-login.do.php');
+?>
+
+</body>
+</html>
