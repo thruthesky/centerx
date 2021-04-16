@@ -56,7 +56,16 @@ function getRealtimeDatabase() {
  * @throws \Kreait\Firebase\Exception\FirebaseException
  * @throws \Kreait\Firebase\Exception\MessagingException
  */
-function sendMessageToTokens(string $tokens,string $title,string $body, string $click_action,array $data = [],string $imageUrl="",string $sound = "default", string $channel = '') {
+function sendMessageToTokens(
+    string $tokens,
+    string $title,
+    string $body,
+    string $click_action,
+    array $data = [],
+    string $imageUrl="",
+    string $sound = "default",
+    string $channel = ''
+) {
 //    if ( get_phpunit_mode() ) return null;
     $message = CloudMessage::fromArray([
         'notification' => getNotificationData($title, $body, $click_action, $data, $imageUrl),
@@ -84,7 +93,16 @@ function sendMessageToTokens(string $tokens,string $title,string $body, string $
  * @throws \Kreait\Firebase\Exception\FirebaseException
  * @throws \Kreait\Firebase\Exception\MessagingException
  */
-function sendMessageToTopic(string $topic,string $title,string $body, string $click_action,array $data = [],string $imageUrl="",string $sound = "default", string $channel = ''): array {
+function sendMessageToTopic(
+    string $topic,
+    string $title,
+    string $body,
+    string $click_action,
+    array $data = [],
+    string $imageUrl="",
+    string $sound = "default",
+    string $channel = ''
+): array {
     /// If it's phpunit test mode, then don't send it.
     if ( isTesting() ) return [];
     $message = CloudMessage::fromArray([
@@ -210,6 +228,12 @@ function getIosPushData($title, $body, $sound): ApnsConfig
         ],
     ])->withSound($sound);
 }
+
+/**
+ * @param $channel
+ * @param $sound
+ * @return AndroidConfig
+ */
 function getAndroidPushData($channel, $sound): AndroidConfig
 {
     $data = [
