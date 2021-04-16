@@ -84,6 +84,7 @@ function sanitizedInput($in): array {
     if ( !isset($in[CLICK_ACTION])) $in[CLICK_ACTION] = '/';
     if ( !isset($in[IMAGE_URL])) $in[IMAGE_URL] = '';
     if ( !isset($in[SOUND])) $in[SOUND] = 'default';
+    if ( !isset($in[CHANNEL])) $in[CHANNEL] = '';
     if ( !isset($in[DATA])) $in[DATA] = [];
     $in[DATA]['senderIdx'] = login()->idx;
     return $in;

@@ -105,6 +105,7 @@ define('BODY', 'body');
 define('CLICK_ACTION', 'click_action');
 define('IMAGE_URL', 'imageUrl');
 define('SOUND', 'sound');
+define('CHANNEL', 'channel');
 
 
 define('USERFILE', 'userfile');

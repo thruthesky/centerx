@@ -51,21 +51,24 @@ function getRealtimeDatabase() {
  * @param array $data
  * @param string $imageUrl
  * @param string $sound
+ * @param string $channel
  * @return \Kreait\Firebase\Messaging\MulticastSendReport
  * @throws \Kreait\Firebase\Exception\FirebaseException
  * @throws \Kreait\Firebase\Exception\MessagingException
  */
-function sendMessageToTokens(string $tokens,string $title,string $body, string $click_action,array $data = [],string $imageUrl="",string $sound = "default") {
+function sendMessageToTokens(string $tokens,string $title,string $body, string $click_action,array $data = [],string $imageUrl="",string $sound = "default", string $channel = '') {
 //    if ( get_phpunit_mode() ) return null;
     $message = CloudMessage::fromArray([
         'notification' => getNotificationData($title, $body, $click_action, $data, $imageUrl),
         'webpush' => getWebPushData($title, $body, $click_action, $data, $imageUrl),
-        'android' => getAndroidPushData()->withSound($sound),
-        'apns' => getIosPushData($title, $body)->withSound($sound)->withBadge(11)->jsonSerialize(),
+        'android' => getAndroidPushData($channel, $sound),
+        'apns' => getIosPushData($title, $body, $sound)->withBadge(1)->jsonSerialize(),
         'data' => $data,
     ]);
-    debug_log($message);
-    return getMessaging()->sendMulticast($message, $tokens);
+//    debug_log($message);
+
+    $arrTokens = explode(',', $tokens);
+    return getMessaging()->sendMulticast($message, $arrTokens);
 }
 
 /**
@@ -76,19 +79,20 @@ function sendMessageToTokens(string $tokens,string $title,string $body, string $
  * @param array $data
  * @param string $imageUrl
  * @param string $sound
+ * @param string $channel
  * @return array
  * @throws \Kreait\Firebase\Exception\FirebaseException
  * @throws \Kreait\Firebase\Exception\MessagingException
  */
-function sendMessageToTopic(string $topic,string $title,string $body, string $click_action,array $data = [],string $imageUrl="",string $sound = "default"): array {
+function sendMessageToTopic(string $topic,string $title,string $body, string $click_action,array $data = [],string $imageUrl="",string $sound = "default", string $channel = ''): array {
     /// If it's phpunit test mode, then don't send it.
     if ( isTesting() ) return [];
     $message = CloudMessage::fromArray([
         'topic' => $topic,
         'notification' => getNotificationData($title, $body, $click_action, $data, $imageUrl),
         'webpush' => getWebPushData($title, $body, $click_action, $data, $imageUrl),
-        'android' => getAndroidPushData()->withSound($sound),
-        'apns' => getIosPushData($title, $body)->withSound($sound)->withBadge(11)->jsonSerialize(),
+        'android' => getAndroidPushData($channel, $sound),
+        'apns' => getIosPushData($title, $body, $sound)->withBadge(11)->jsonSerialize(),
         'data' => $data,
     ]);
 
@@ -190,7 +194,7 @@ function getWebPushData($title, $body, $clickUrl, $data, $imageUrl) {
 }
 
 
-function getIosPushData($title, $body): ApnsConfig
+function getIosPushData($title, $body, $sound): ApnsConfig
 {
     return ApnsConfig::fromArray([
         'headers' => [
@@ -204,15 +208,19 @@ function getIosPushData($title, $body): ApnsConfig
                 ],
             ],
         ],
-    ]);
+    ])->withSound($sound);
 }
-function getAndroidPushData(): AndroidConfig
+function getAndroidPushData($channel, $sound): AndroidConfig
 {
-    return AndroidConfig::fromArray([
+    $data = [
         'notification' => [
             'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+            'channel_id' => 'PUSH_NOTIFICATION', // channel_id is the same as the id you register on the channelMap
+            'notification_count' => 1
         ],
-    ]);
+    ];
+    if (!empty($channel)) $data['channel_id'] = $channel;
+    return AndroidConfig::fromArray($data)->withSound($sound);
 }
 
 

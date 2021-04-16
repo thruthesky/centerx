@@ -1,13 +1,13 @@
 <?php
 
 include_once ROOT_DIR . 'routes/notification.route.php';
-d(in());
+//d(in());
 
 if(modeSubmit()) {
 //    d(in());
     $push = new NotificationRoute();
 
-    $in = in();
+//    $in = in();
     $res = null;
     if (in('notify') == 'all' ) {
         $in[TOPIC] = DEFAULT_TOPIC;
@@ -26,17 +26,24 @@ if(modeSubmit()) {
         }
     }
 
-    d($res);
+//    d($res);
 
-    /// success response
-    /// Topic: projects/itsuda503/messages/423723940489572686
+    if ($res) {
 
-//    if (is_string($res)) jsAlert("Error::" . $res);
-//    else jsAlert('Send Success');
+        if( in('notify') === 'tokens') {
+            if (count($res['success']) > 0) {
+                jsAlert('Success Sending push notification to tokens.');
+            } else if (count($res['error']) > 0){
+                jsAlert('Error Sending push notification to tokens. ' . $res['error'][0]);
+            } else {
+                jsAlert('Api Error on sending to tokens.');
+            }
+        } else {
+            jsAlert('Success Sending push notification to topic.');
+        }
+
+    }
 }
-
-
-//d(login()->sessionId);
 
 
 ?>
@@ -91,6 +98,11 @@ if(modeSubmit()) {
         <div class="form-group">
             <label for="idx"><?=ek('Sound', '소리')?></label>
             <input type="text" class="form-control" placeholder="<?=ek('Sound', '소리')?>" name="sound" id="sound" v-model="sound">
+            <div class="text-muted">Make sure to include the file extension. It will not work on IOS if it dont have file extension.</div>
+        </div>
+        <div class="form-group">
+            <label for="idx"><?=ek('Channel Id', '채널 ID')?></label>
+            <input type="text" class="form-control" placeholder="<?=ek('Channel Id', '채널 ID')?>" name="channel" id="channel" v-model="channel">
         </div>
 
         <div class="d-flex justify-content-between mt-2 mb-3">
@@ -120,6 +132,7 @@ if(modeSubmit()) {
             click_action: "<?=in('click_action')?>",
             imageUrl: "<?=in('imageUrl')?>",
             sound: "<?=in('sound', 'default')?>",
+            channel: "<?=in('channel', 'PUSH_NOTIFICATION')?>",
         },
         created: function (){
             console.log('created');
@@ -167,6 +180,18 @@ if(modeSubmit()) {
                 axios.post('/index.php', data).then(function(res) {
                     console.log(res);
                     console.log(res.data.response);
+                    if( app.$data.notify === 'tokens') {
+                        if (res.data.response['success'].length > 0) {
+                            alert('Success Sending push notification to tokens.')
+                        } else if (res.data.response['error'].length > 0){
+                            alert('Error Sending push notification to tokens. ' + res.data.response['error'][0])
+                        } else {
+                            alert('Api Error on sending to tokens.')
+                        }
+                    } else {
+                        alert('Success Sending push notification to topic.')
+                    }
+
                 }).catch(alert);
 
 
