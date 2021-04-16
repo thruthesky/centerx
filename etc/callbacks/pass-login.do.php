@@ -19,5 +19,5 @@ if ( isError($profile) ) {
 <?php includeFirebase(); ?>
 <script>
     const db = firebase.firestore();
-    db.collection('notifications').doc('<?=in('state')?>').set({time: (new Date).getTime(), sessionId: '<?=$profile['sessionId']?>'});
+    db.collection('passlogin').doc('<?=in('state')?>').set({time: (new Date).getTime(), sessionId: '<?=$profile['sessionId']?>'});
 </script>
