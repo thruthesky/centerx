@@ -189,7 +189,7 @@ function pass_login_or_register(array $user): array
 
 function pass_login_message($msg) {
     echo <<<EOH
-<div style="margin: 4em auto; max-width: 800px;">
+<div style="margin: 4em auto; max-width: 800px; text-align: center;">
     <h1>패스 휴대폰번호 로그인</h1>
     <h3>$msg</h3>
 </div>
