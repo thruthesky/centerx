@@ -34,7 +34,7 @@ if ($comment) {
 }
 ?>
 
-<div id="comment-edit-default-form<?=$fileUploadIdx?>">
+<div id="comment-edit-default-form<?= $fileUploadIdx ?>">
     <form class="m-0" enctype="multipart/form-data" action="/" method="POST">
         <input type="hidden" name="p" value="forum.comment.edit.submit">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
@@ -63,20 +63,20 @@ if ($comment) {
             <?php } ?>
             <button class="btn btn-sm btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
         </div>
+
+        <div class="progress-bar" role="progressbar" :style="{ 'width': percent + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
     </form>
 
     <?php if (count($uploadedFiles)) { ?>
-        <div class="container photos">
-            <div class="row">
-                <?php foreach ($uploadedFiles as $file) { ?>
-                    <div class="col-3 col-sm-2 photo" id="file-<?= $file->idx ?>">
-                        <div clas="position-relative">
-                            <img class="w-100" src="<?= $file->url ?>">
-                            <div class="position-absolute top left font-weight-bold" onclick="onClickFileDelete(<?= $file->idx ?>)">[ X ]</div>
-                        </div>
+        <div class="px-3 row photos">
+            <?php foreach ($uploadedFiles as $file) { ?>
+                <div class="col-4 photo" id="file-<?= $file->idx ?>">
+                    <div clas="position-relative" style="height: 250px">
+                        <img class="h-100 w-100" src="<?= $file->url ?>" style="border-radius: 10px;">
+                        <div class="p-2 position-absolute top left font-weight-bold" onclick="onClickFileDelete(<?= $file->idx ?>)" style="color: red">[ X ]</div>
                     </div>
-                <?php } ?>
-            </div>
+                </div>
+            <?php } ?>
         </div>
     <?php } ?>
 </div>

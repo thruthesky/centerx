@@ -118,12 +118,11 @@ $post = post()->current();
             '      <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">Cancel</button>' +
             '   </div>' +
             '</section>' +
-            '<div class="container photos">' +
-            '   <div class="row">' +
-            '       <div class="col-3 col-sm-2 photo" v-for="file in uploadedFiles" :key="file.idx">' +
-            '           <div class="position-relative">' +
-            '               <img class="w-100" :src="file.url">' +
-            '               <div class="position-absolute top left font-weight-bold" v-on:click="onFileDelete(file.idx)">[X]</div>' +
+            '   <div class="mt-2 row photos">' +
+            '       <div class="col-3 photo" v-for="file in uploadedFiles" :key="file.idx">' +
+            '           <div clas="position-relative" style="height: 200px">' +
+            '               <img class="h-100 w-100" :src="file.url" style="border-radius: 10px;">' +
+            '               <div class="px-3 py-2 position-absolute top left font-weight-bold" v-on:click="onFileDelete(file.idx)" style="color: red">[X]</div>' +
             '           </div>' +
             '       </div>' +
             '   </div>' +
