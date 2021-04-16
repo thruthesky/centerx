@@ -14,7 +14,9 @@ $category = $o['category'];
     }
 </style>
 
-<div class="d-flex align-items-center p-2 mb-2 bg-skyblue white">
+<div class="d-flex align-items-center p-2 bg-skyblue white" 
+    style="border-top-left-radius: 8px; 
+    border-top-right-radius: 8px;">
     <div class="mr-2"><?= ek('Categories:', '@T Categories:') ?></div>
     <?php if ($category->exists) { ?>
         <div>

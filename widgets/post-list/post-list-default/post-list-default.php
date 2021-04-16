@@ -15,7 +15,7 @@ $category = $o['category'];
 
     if (!empty($posts)) {
         foreach ($posts as $post) {
-        $user = user($post->userIdx)->shortProfile();
+            $user = user($post->userIdx)->shortProfile();
     ?>
             <div class="d-flex w-100">
                 <?php if ($user['photoUrl']) { ?>
@@ -23,18 +23,17 @@ $category = $o['category'];
                 <?php } else { ?>
                     <div class="mr-3" style="height: 50px; min-width: 50px; border-radius: 50px; background-color: grey"> </div>
                 <?php } ?>
-                <div class="w-100">
-                    <a href="<?= $post->url ?><?= lsub(true) ?>">No. <?= $post->idx ?> <?= $post->title ?></a>
-                    <div class="mt-1">
-                        <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?> <?= date('r', $post->createdAt) ?>
+                <a href="<?= $post->url ?><?= lsub(true) ?>" class="w-100" style="text-decoration: none">
+                    <div style="color: black; font-weight: 500">No. <?= $post->idx ?> - <?= $post->title ?></div>
+                    <div class="mt-1 text-muted">
+                        <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?>
+                        <?= date('r', $post->createdAt) ?>
                     </div>
-                </div>
+                </a>
             </div>
             <hr>
-    <?php }
+        <?php }
     } else { ?>
-    
-    <div class="pb-3 d-flex justify-content-center">No posts yet ..</div>
-
+        <div class="pb-3 d-flex justify-content-center">No posts yet ..</div>
     <?php } ?>
 </section>

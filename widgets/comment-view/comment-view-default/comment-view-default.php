@@ -15,7 +15,7 @@ $comment = $o['comment'];
         <div class="mr-3" style="height: 50px; width: 50px; border-radius: 50px; background-color: grey;">
         </div>
         <div>
-            <b><?= $comment->user()->name ?></b>
+            <b><?= $comment->user()->name !== '' ? $comment->user()->name : 'No name' ?></b>
             <div class="meta">
                 <small>
                     No: <?= $comment->idx ?> -
@@ -32,11 +32,12 @@ $comment = $o['comment'];
         </div>
         <hr>
         <section class="d-flex buttons mt-3">
-            <a class="btn btn-sm btn-primary mr-2" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'reply')"><?= ek('Reply', '답변하기') ?></a>
+            <a class="btn btn-sm mr-2" v-if="displayCommentForm[<?= $comment->idx ?>] !== 'reply'" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'reply')"><?= ek('Reply', '답변하기') ?></a>
+            <a class="btn btn-sm mr-2" v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, '')"><?= ek('Cancel', '@T Cancel') ?></a>
             <vote-buttons n="<?= $comment->N ?>" y="<?= $comment->Y ?>" parent-idx="<?= $comment->idx ?>"></vote-buttons>
             <span class="flex-grow-1"></span>
             <?php if ($comment->isMine()) { ?>
-                <a class="btn btn-sm btn-primary mr-2" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'update')"><?= ek('Edit', '수정') ?></a>
+                <a class="btn btn-sm btn-primary mr-1" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'update')"><?= ek('Edit', '수정') ?></a>
                 <a class="btn btn-sm btn-danger" onclick="onCommentDelete(<?= $comment->idx ?>)"><?= ek('Delete', '삭제') ?></a>
             <?php } ?>
         </section>
