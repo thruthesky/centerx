@@ -37,14 +37,17 @@ class NotificationRoute {
     public function sendMessageToTokens($in): array|string {
         if ( !isset($in[TOKENS]) ) return e()->tokens_is_empty;
         $in = sanitizedInput($in);
-        $re = sendMessageToTokens($in[TOKENS], $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL]);
+        $re = sendMessageToTokens($in[TOKENS], $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL], $in[SOUND], $in[CHANNEL]);
 //        d($re->getItems());exit;
-        $res = [];
+        $res = [
+            'success' => [],
+            'error' => []
+        ];
         foreach($re->getItems() as $item) {
-            $res[] = $item->result();
+            if ($item->isSuccess()) $res['success'][] = $item->result();
+            else if ($item->isFailure()) $res['error'][] = $item->error()->getMessage();
         }
-        // @todo handle invalid/unknown tokens..
-        // @how to properly return response here.
+
         return $res;
     }
 
@@ -64,7 +67,7 @@ class NotificationRoute {
     public function sendMessageToTopic($in): array|string {
         if ( !isset($in[TOPIC]) ) return e()->topic_is_empty;
         $in = sanitizedInput($in);
-        return sendMessageToTopic($in[TOPIC], $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL]);
+        return sendMessageToTopic($in[TOPIC], $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL], $in[SOUND], $in[CHANNEL]);
     }
 
 

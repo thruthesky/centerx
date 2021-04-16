@@ -5,6 +5,7 @@
 
 use Kreait\Firebase\Database;
 use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\ApnsConfig;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
 use Kreait\Firebase\Messaging\AndroidConfig;
@@ -42,47 +43,58 @@ function getRealtimeDatabase() {
 }
 
 
-
-
 /**
- * @param $tokens
- * @param $title
- * @param $body
- * @param $click_action
+ * @param string $tokens
+ * @param string $title
+ * @param string $body
+ * @param string $click_action
  * @param array $data
  * @param string $imageUrl
+ * @param string $sound
+ * @param string $channel
  * @return \Kreait\Firebase\Messaging\MulticastSendReport
+ * @throws \Kreait\Firebase\Exception\FirebaseException
+ * @throws \Kreait\Firebase\Exception\MessagingException
  */
-function sendMessageToTokens($tokens, $title, $body, $click_action, $data = [], $imageUrl="") {
+function sendMessageToTokens(string $tokens,string $title,string $body, string $click_action,array $data = [],string $imageUrl="",string $sound = "default", string $channel = '') {
 //    if ( get_phpunit_mode() ) return null;
     $message = CloudMessage::fromArray([
         'notification' => getNotificationData($title, $body, $click_action, $data, $imageUrl),
         'webpush' => getWebPushData($title, $body, $click_action, $data, $imageUrl),
-        'android' => getAndroidPushData(),
+        'android' => getAndroidPushData($channel, $sound),
+        'apns' => getIosPushData($title, $body, $sound)->withBadge(1)->jsonSerialize(),
         'data' => $data,
-    ])->withDefaultSounds();
-    return getMessaging()->sendMulticast($message, $tokens);
+    ]);
+//    debug_log($message);
+
+    $arrTokens = explode(',', $tokens);
+    return getMessaging()->sendMulticast($message, $arrTokens);
 }
 
 /**
- * @param $topic
- * @param $title
- * @param $body
- * @param $click_action
+ * @param string $topic
+ * @param string $title
+ * @param string $body
+ * @param string $click_action
  * @param array $data
  * @param string $imageUrl
+ * @param string $sound
+ * @param string $channel
  * @return array
+ * @throws \Kreait\Firebase\Exception\FirebaseException
+ * @throws \Kreait\Firebase\Exception\MessagingException
  */
-function sendMessageToTopic($topic, $title, $body, $click_action, $data = [], $imageUrl=""): array {
+function sendMessageToTopic(string $topic,string $title,string $body, string $click_action,array $data = [],string $imageUrl="",string $sound = "default", string $channel = ''): array {
     /// If it's phpunit test mode, then don't send it.
     if ( isTesting() ) return [];
     $message = CloudMessage::fromArray([
         'topic' => $topic,
         'notification' => getNotificationData($title, $body, $click_action, $data, $imageUrl),
         'webpush' => getWebPushData($title, $body, $click_action, $data, $imageUrl),
-        'android' => getAndroidPushData(),
+        'android' => getAndroidPushData($channel, $sound),
+        'apns' => getIosPushData($title, $body, $sound)->withBadge(11)->jsonSerialize(),
         'data' => $data,
-    ])->withDefaultSounds();
+    ]);
 
     return getMessaging()->send($message);
 }
@@ -182,12 +194,33 @@ function getWebPushData($title, $body, $clickUrl, $data, $imageUrl) {
 }
 
 
-function getAndroidPushData() {
-    return AndroidConfig::fromArray([
+function getIosPushData($title, $body, $sound): ApnsConfig
+{
+    return ApnsConfig::fromArray([
+        'headers' => [
+            'apns-priority' => '10',
+        ],
+        'payload' => [
+            'aps' => [
+                'alert' => [
+                    'title' => $title,
+                    'body' => $body,
+                ],
+            ],
+        ],
+    ])->withSound($sound);
+}
+function getAndroidPushData($channel, $sound): AndroidConfig
+{
+    $data = [
         'notification' => [
             'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+            'channel_id' => 'PUSH_NOTIFICATION', // channel_id is the same as the id you register on the channelMap
+            'notification_count' => 1
         ],
-    ]);
+    ];
+    if (!empty($channel)) $data['channel_id'] = $channel;
+    return AndroidConfig::fromArray($data)->withSound($sound);
 }
 
 
