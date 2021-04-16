@@ -11,8 +11,11 @@
     foreach (user()->search(where: "point>0", order: 'point', limit: 4) as $user) {
     ?>
         <div class="d-flex mb-3">
-            <div class="rounded-circle hw-50x50" style="background-color: grey;">
-            </div>
+            <?php if (user($user->idx)->shortProfile()['photoUrl']) { ?>
+                <img class="mr-3 hw-50x50 border-radius-50" src="<?= user($user->idx)->shortProfile()['photoUrl'] ?>" />
+            <?php } else { ?>
+                <div class="mr-3 hw-50x50 border-radius-50" style="background-color: grey"> </div>
+            <?php } ?>
             <div class="text-overflow-ellipsis ml-4">
                 <div><strong><?= empty($user->name) ? 'No name' : $user->name ?></strong> <small>(ID. <?= $user->idx ?>)</small></div>
                 <div class="mt-1"><?= $user->point ?> <?= ek('Points', '@T Points') ?></div>

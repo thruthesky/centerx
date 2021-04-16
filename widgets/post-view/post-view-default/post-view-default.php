@@ -8,16 +8,15 @@
 $post = post()->current();
 ?>
 
-<section class="p-3" style="border-radius: 10px; background-color: #f4f4f4;">
-
-    <?php include widget('forum/post-meta-default', ['post' => $post]) ?>
-
-    <div class="mt-2">
-        <h1 style="word-break: break-all"><?= $post->title ?></h1>
+<section class="p-3" style="border-radius: 16px; background-color: #f4f4f4;">
+    <div style="word-break: break-all">
+        <h2><?= $post->title ?></h2>
     </div>
-
+    <?php include widget('forum/post-meta-default', ['post' => $post]) ?>
     <section class="post-body">
         <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
+        <!-- FILES -->
+        <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
         <hr>
         <div class="d-flex buttons mt-3">
             <div class="d-flex">
@@ -34,15 +33,10 @@ $post = post()->current();
                 </div>
             <?php } ?>
         </div>
-
-        <!-- FILES -->
-        <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
-
     </section>
-
-
-    <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
-
+    <div class="pt-2">
+        <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
+    </div>
 
     <?php #include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post])
     ?>
@@ -62,8 +56,9 @@ $post = post()->current();
             <?php }
             } ?>
         </div>
+    <?php } else { ?>
+        <p class="mt-2 mb-0"><small><?= ek('No comments yet ..', '@T No comments yet ..') ?></small></p>
     <?php } ?>
-
 </section>
 
 
