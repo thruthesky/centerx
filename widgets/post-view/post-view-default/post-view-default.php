@@ -8,25 +8,22 @@
 $post = post()->current();
 ?>
 
-<section class="p-3" style="border-radius: 10px; background-color: #f4f4f4;">
-
-    <?php include widget('forum/post-meta-default', ['post' => $post]) ?>
-
-    <div class="mt-2">
-        <h1 style="word-break: break-all"><?= $post->title ?></h1>
+<section class="p-3" style="border-radius: 16px; background-color: #f4f4f4;">
+    <div class="pb-1" style="word-break: normal">
+        <h3><?= $post->title ?></h3>
     </div>
-
+    <?php include widget('forum/post-meta-default', ['post' => $post]) ?>
     <section class="post-body">
         <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
-        <hr>
-        <div class="d-flex buttons mt-3">
+        <!-- FILES -->
+        <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
+        <hr class="my-1">
+        <div class="d-flex buttons mt-2">
             <div class="d-flex">
                 <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->N ?>"></vote-buttons>
-                <!-- <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
-                <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a> -->
-                <a class="btn btn-sm btn-primary" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?><?= lsub() ?>"><?= ek('List', '목록') ?></a>
             </div>
             <span class="flex-grow-1"></span>
+            <a class="btn btn-sm btn-primary mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?><?= lsub() ?>"><?= ek('List', '목록') ?></a>
             <?php if ($post->isMine() || admin()) { ?>
                 <div>
                     <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
@@ -34,22 +31,14 @@ $post = post()->current();
                 </div>
             <?php } ?>
         </div>
-
-        <!-- FILES -->
-        <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
-
     </section>
-
-
-    <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
-
-
-    <?php #include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post])
-    ?>
+    <div class="pt-2">
+        <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
+    </div>
 
     <?php if (!empty($post->comments())) { ?>
-        <hr>
-        <small><?= ek('Comment List', '@T Comment List') ?></small>
+        <hr class="mb-1">
+        <small class="text-muted"><?= count($post->comments()) . ' ' . ek('Comments', '@T Comments') ?></small>
         <div class="comments mt-2">
             <?php foreach ($post->comments() as $comment) {
                 if (!$comment->deletedAt) { ?>
@@ -62,8 +51,9 @@ $post = post()->current();
             <?php }
             } ?>
         </div>
+    <?php } else { ?>
+        <p class="mt-2 mb-0 text-muted"><small><?= ek('No comments yet ..', '@T No comments yet ..') ?></small></p>
     <?php } ?>
-
 </section>
 
 
@@ -119,19 +109,20 @@ $post = post()->current();
             '<input type="hidden" name="files" v-model="form.files">' +
             '<section class="d-flex">' +
             '   <div class="position-relative overflow-hidden">' +
-            '       <button class="btn btn-primary mr-5" type="button">Photo</button>' +
+            '       <button class="btn btn-primary mr-4" type="button"><?= ek('Photo', '@T Photo') ?></button>' +
             '       <input class="position-absolute top left fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
             '   </div>' +
             '   <textarea rows="1" class="form-control" v-model="form.content"></textarea>' +
-            '   <input class="btn btn-primary ml-2" type="submit">' +
-            '   <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">Cancel</button>' +
+            '   <div class="d-flex" v-if="form.content || uploadedFiles.length">' +
+            '      <button class="btn btn-primary ml-2" type="submit"><?= ek('Submit', '@T Submit') ?></button>' +
+            '      <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">Cancel</button>' +
+            '   </div>' +
             '</section>' +
-            '<div class="container photos">' +
-            '   <div class="row">' +
-            '       <div class="col-3 col-sm-2 photo" v-for="file in uploadedFiles" :key="file.idx">' +
-            '           <div class="position-relative">' +
-            '               <img class="w-100" :src="file.url">' +
-            '               <div class="position-absolute top left font-weight-bold" v-on:click="onFileDelete(file.idx)">[X]</div>' +
+            '   <div class="mt-2 row photos">' +
+            '       <div class="col-3 photo" v-for="file in uploadedFiles" :key="file.idx">' +
+            '           <div clas="position-relative" style="height: 200px">' +
+            '               <img class="h-100 w-100" :src="file.url" style="border-radius: 10px;">' +
+            '               <div class="px-3 py-2 position-absolute top left font-weight-bold" v-on:click="onFileDelete(file.idx)" style="color: red">[X]</div>' +
             '           </div>' +
             '       </div>' +
             '   </div>' +
@@ -205,8 +196,10 @@ $post = post()->current();
             }
         },
         template: '<div class="d-flex">' +
-            '<a class="btn btn-sm btn-primary mr-2" @click="onVote(\'Y\')"><?= ek('Like', '@T Like') ?> <span v-if="Y != \'0\'">{{ Y }}</span></a>' +
-            '<a class="btn btn-sm btn-primary mr-2" @click="onVote(\'N\')"><?= ek('Dislike', '@T Dislike') ?> <span v-if="N != \'0\'">{{ N }}</span></a>' +
+            '<a class="btn btn-sm mr-2" @click="onVote(\'Y\')" style="color: green">' +
+            '<?= ek('Like', '@T Like') ?> <span class="badge badge-success badge-pill" v-if="Y != \'0\'">{{ Y }}</span></a>' +
+            '<a class="btn btn-sm mr-2" @click="onVote(\'N\')" style="color: red">' +
+            '<?= ek('Dislike', '@T Dislike') ?> <span  class="badge badge-danger badge-pill" v-if="N != \'0\'">{{ N }}</span></a>' +
             '</div>',
         methods: {
             onVote(choice) {

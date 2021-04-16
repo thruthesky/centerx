@@ -54,10 +54,10 @@ function _url($no) {
 
 ?>
 
-<div style='padding: 10px 20px 0px; border-top: dotted 1px #CCC;'>
+<div class="d-flex justify-content-center mb-2" style='padding: 10px 20px 0px; border-top: dotted 1px #CCC;'>
     <strong>Page <?php echo $page." of ".$total_no_of_pages; ?></strong>
 </div>
-<nav aria-label="Page navigation" style="display: inline-block">
+<nav class="d-flex justify-content-center" aria-label="Page navigation" style="display: inline-block">
     <ul class="pagination">
         <?php
         if($page > 1) {

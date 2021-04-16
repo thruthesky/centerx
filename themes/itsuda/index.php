@@ -62,7 +62,7 @@
             });
         });
     </script>
-    <section class="header position-fixed bg-white top w-100">
+    <section class="header position-fixed bg-white top w-100" style="z-index: 999">
 
         <div class="container">
             <div class="d-flex justify-content-between">

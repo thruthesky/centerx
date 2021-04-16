@@ -1,20 +1,24 @@
 <?php
+
 /**
  * @type admin
  */
 ?>
 <section class="p-4 overflow-hidden" id="admin-top-user-by-point" style="height: 24rem">
-    <h6 class="text-muted"><?=number_format(user()->count())?> users</h6>
-    <h5 class="mb-4">Top most user by points</h5>
+    <div class="text-muted fs-sm"><?= number_format(user()->count()) ?> <?= ek('users', '@T users') ?></div>
+    <h6 class="mt-2 mb-4 fw-700"><?= ek('Top most user by points', '@T Top most user by points') ?></h6>
     <?php
     foreach (user()->search(where: "point>0", order: 'point', limit: 4) as $user) {
-        ?>
+    ?>
         <div class="d-flex mb-3">
-            <div class="rounded-circle hw-54x54" style="background-color: grey;">
-            </div>
-            <div class="text-overflow-ellipsis ml-3">
-                <span><strong><?=$user->name?>(<?=$user->idx?>)</strong></span><br>
-                <span><?=$user->point?></span>
+            <?php if (user($user->idx)->shortProfile()['photoUrl']) { ?>
+                <img class="mr-3 hw-50x50 border-radius-50" src="<?= user($user->idx)->shortProfile()['photoUrl'] ?>" />
+            <?php } else { ?>
+                <div class="mr-3 hw-50x50 border-radius-50" style="background-color: grey"> </div>
+            <?php } ?>
+            <div class="text-overflow-ellipsis ml-4">
+                <div><strong><?= empty($user->name) ? 'No name' : $user->name ?></strong> <small>(ID. <?= $user->idx ?>)</small></div>
+                <div class="mt-1"><?= $user->point ?> <?= ek('Points', '@T Points') ?></div>
             </div>
         </div>
     <?php } ?>

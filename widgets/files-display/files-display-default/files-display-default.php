@@ -11,8 +11,9 @@ $files =  $o['files'];
 $fileCount = count($files);
 
 if ($fileCount) { ?>
-
-    <div class="container photos mt-3">
+    <hr class="mb-0">
+    <div class="text-muted ml-1"><small><?= ek('Attached Files', '@T Attached Files') ?></small></div>
+    <div class="container photos" style="border-radius: 12px">
         <div class="row">
             <?php
             if ($fileCount == 1) { ?>
