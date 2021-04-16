@@ -18,21 +18,18 @@ require_once('../../boot.php');
 
     <title>있;수다! 패스 로그인</title>
     <style>
-        body {
-            background-color: #ffcb27;
-        }
         .fs-lg { font-size: 1.25rem; }
     </style>
 </head>
 <body>
 
 <div class="mt-5 pt-5 d-flex justify-content-center w-100">
-    <div class="text-center">
+    <div class="mt-5 text-center">
         <h1>있;수다!</h1>
         <div class="mt-3">로그인 성공</div>
-        <div class="mt-2 fs-lg">
-            브라우저를 닫고 있;수다! 앱을 열어주세요.
-        </div>
+<!--        <div class="mt-2 fs-lg">-->
+<!--            브라우저를 닫고 있;수다! 앱을 열어주세요.-->
+<!--        </div>-->
     </div>
 </div>
 
