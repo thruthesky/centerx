@@ -21,8 +21,6 @@ $post = post()->current();
         <div class="d-flex buttons mt-3">
             <div class="d-flex">
                 <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->N ?>"></vote-buttons>
-                <!-- <a class="btn btn-sm btn-primary"><?= ek('Like', '@T Like') ?></a>
-                <a class="btn btn-sm btn-primary"><?= ek('Dislike', '@T Dislike') ?></a> -->
             </div>
             <span class="flex-grow-1"></span>
             <a class="btn btn-sm btn-primary mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?><?= lsub() ?>"><?= ek('List', '목록') ?></a>
@@ -37,9 +35,6 @@ $post = post()->current();
     <div class="pt-2">
         <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
     </div>
-
-    <?php #include widget('comment-edit/comment-edit-default', ['post' => $post, 'parent' => $post])
-    ?>
 
     <?php if (!empty($post->comments())) { ?>
         <hr class="mb-1">
