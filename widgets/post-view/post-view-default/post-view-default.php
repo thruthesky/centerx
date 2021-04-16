@@ -198,9 +198,9 @@ $post = post()->current();
         },
         template: '<div class="d-flex">' +
             '<a class="btn btn-sm mr-2" @click="onVote(\'Y\')" style="color: green">' +
-            '<?= ek('Like', '@T Like') ?> <span class="badge badge-dark badge-pill" v-if="Y != \'0\'">{{ Y }}</span></a>' +
+            '<?= ek('Like', '@T Like') ?> <span class="badge badge-success badge-pill" v-if="Y != \'0\'">{{ Y }}</span></a>' +
             '<a class="btn btn-sm mr-2" @click="onVote(\'N\')" style="color: red">' +
-            '<?= ek('Dislike', '@T Dislike') ?> <span  class="badge badge-dark badge-pill" v-if="N != \'0\'">{{ N }}</span></a>' +
+            '<?= ek('Dislike', '@T Dislike') ?> <span  class="badge badge-danger badge-pill" v-if="N != \'0\'">{{ N }}</span></a>' +
             '</div>',
         methods: {
             onVote(choice) {
