@@ -17,8 +17,8 @@ $post = post()->current();
         <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
         <!-- FILES -->
         <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
-        <hr>
-        <div class="d-flex buttons mt-3">
+        <hr class="my-1">
+        <div class="d-flex buttons mt-2">
             <div class="d-flex">
                 <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->N ?>"></vote-buttons>
             </div>
