@@ -55,7 +55,7 @@ if ($comment) {
             <div style="width: 100px;" class="position-relative overflow-hidden">
                 <!-- TODO: camera icon -->
                 <button class="btn btn-sm btn-primary w-100" type="button">Upload</button>
-                <input class="position-absolute top left h-100" style="opacity: 0;" name="<?= USERFILE ?>" type="file" onchange="onFileChange(event, 'files<?= $fileUploadIdx ?>')" />
+                <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" onchange="onFileChange(event, 'files<?= $fileUploadIdx ?>')" />
             </div>
             <div class="flex-grow-1"></div>
             <?php if ($comment) { ?>

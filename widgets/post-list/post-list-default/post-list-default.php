@@ -12,17 +12,11 @@ $category = $o['category'];
 ?>
 <section style="padding: 1rem 1rem 0 1rem; background-color: #efefef;">
     <?php
-
     if (!empty($posts)) {
         foreach ($posts as $post) {
-            $user = user($post->userIdx)->shortProfile();
     ?>
             <div class="d-flex w-100">
-                <?php if ($user['photoUrl']) { ?>
-                    <img class="mr-3" style="height: 50px; min-width: 50px; border-radius: 50px;" src="<?= $user['photoUrl'] ?>" />
-                <?php } else { ?>
-                    <div class="mr-3" style="height: 50px; min-width: 50px; border-radius: 50px; background-color: grey"> </div>
-                <?php } ?>
+                <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->shortProfile()['photoUrl'], 'size' => '50']) ?>
                 <a href="<?= $post->url ?><?= lsub(true) ?>" class="w-100" style="text-decoration: none">
                     <div style="color: black; font-weight: 500">No. <?= $post->idx ?> - <?= $post->title ?></div>
                     <div class="mt-1 text-muted">

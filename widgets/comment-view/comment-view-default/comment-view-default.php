@@ -6,14 +6,11 @@ $o = getWidgetOptions();
  */
 $post = $o['post'];
 $comment = $o['comment'];
-
 ?>
 
 <div class="p-3" style="border-radius: 10px; background-color: #e0e0e0">
     <div class="d-flex">
-        <!-- TODO: user profile photo -->
-        <div class="mr-3" style="height: 50px; width: 50px; border-radius: 50px; background-color: grey;">
-        </div>
+        <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->shortProfile()['photoUrl'], 'size' => '50']) ?>
         <div>
             <b><?= $comment->user()->name !== '' ? $comment->user()->name : 'No name' ?></b>
             <div class="meta">

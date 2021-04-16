@@ -5,17 +5,12 @@ $o = getWidgetOptions();
  * @var Comment|Post $parent
  */
 $post = $o['post'];
-$user = user($post->userIdx)->shortProfile();
 ?>
 
 
 <div class="d-flex">
     <!-- TODO: user profile photo -->
-    <?php if ($user['photoUrl']) { ?>
-        <img class="mr-3" style="height: 70px; width: 70px; border-radius: 50px;" src="<?= $user['photoUrl'] ?>" />
-    <?php } else { ?>
-        <div class="mr-3" style="height: 70px; width: 70px; border-radius: 50px; background-color: grey"> </div>
-    <?php } ?>
+    <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->shortProfile()['photoUrl'], 'size' => '70']) ?>
     <div class="meta">
         <div><b><?= $post->user()->name == null ? 'No name' : $post->user()->name ?></b></div>
         <div class="text-muted">
