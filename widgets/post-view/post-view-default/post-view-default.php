@@ -108,11 +108,10 @@ $post = post()->current();
         template: '<form class="mt-2" v-on:submit.prevent="commentFormSubmit">' +
             '<input type="hidden" name="files" v-model="form.files">' +
             '<section class="d-flex">' +
-            '   <div class="position-relative overflow-hidden">' +
+            '   <div class="position-relative overflow-hidden" style="min-width: 80px;">' +
             '       <button class="btn btn-primary mr-4" type="button"><?= ek('Photo', '@T Photo') ?></button>' +
             '       <input class="position-absolute top left fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
             '   </div>' +
-            // '<span class="textarea" role="textbox" contenteditable v-model="form.content"></span>' +
             '   <textarea :rows=" commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control" v-model="form.content"></textarea>' +
             '   <div><div class="d-flex" v-if="form.content || uploadedFiles.length">' +
             '      <button class="btn btn-primary ml-2" type="submit"><?= ek('Submit', '@T Submit') ?></button>' +
