@@ -299,9 +299,9 @@ cd etc/phpdoc
 
 ## 설치 요약
 
-- CenterX 구동을 위한 docker compose 설정을 GitHub 에서 다운로드 또는 clone 한다.
+- CenterX 구동을 위한 docker compose 설정을 GitHub 에서 다운로드 또는 clone(또는 fork) 한다.
 - `docker-compose up` 과 같이 실행을 하고,
-- `home` 폴더 아래에 `git clone https://github.com/thruthesky/centerx` 와 같이 하면 된다.
+- `home` 폴더 아래에 `git clone https://github.com/thruthesky/centerx` 와 같이 하면 된다. Fork 후 clone 을 해도 좋다.
 
 
 ## 설치 상세 설명
@@ -345,7 +345,7 @@ cd etc/phpdoc
 
 ## Host setting
 
-- To work with real domain(for example, `itsuda50.com`), add a fake domain like `local.itsuda50.com` on `hosts` file to develop with a real(fake) domain.
+- To work with real domain(for example, `itsuda50.com`), add a fake domain like `local.itsuda50.com` on `hosts` file.
   - So, when you access `www.itsuda50.com` it goes to real domain. And `local.itsuda50.com` goes local host.
 
 ```text
