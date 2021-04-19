@@ -193,6 +193,7 @@ class Entity {
 
 
     /**
+     * @deprecated Use updateMemory().
      * $this->data 배열을 업데이트한다. 키가 존재하지 않으면 추가한다.
      * 주의, 이 함수는 메모리의 $data 변수 값만 바꾼다. DB 를 바꾸려면 `$this->update()` 를 사용해야한다.
      *
@@ -206,10 +207,27 @@ class Entity {
      * category(123)->updateData('subcategories', separateByComma($this->subcategories));
      */
     public function updateData($k, $v): self {
+        return $this->updateMemory($k, $v);
+    }
+
+    /**
+     * 현재 객체의 속성을 담은 $this->data 배열을 업데이트한다. 키가 존재하지 않으면 추가한다.
+     *
+     * 주의, 이 함수는 메모리의 $data 변수 값만 바꾼다. DB 를 바꾸려면 `$this->update()` 를 사용해야한다.
+     *
+     * $this->setData() 는 $this->data 배열 전체를 바꾸는 것이며 $this->idx 까지 바꾼는데, 이 함수는 특정 필드 1개만 바꾼다.
+     *
+     * @param $k
+     * @param $v
+     *
+     * @return self
+     * @example
+     * category(123)->updateData('subcategories', separateByComma($this->subcategories));
+     */
+    public function updateMemory($k, $v): self {
         $this->data[$k] = $v;
         return $this;
     }
-
 
 
 
@@ -369,7 +387,10 @@ class Entity {
 
     /**
      * Update an entity.
+     *
      * 수정 후, 전체 레코드를 읽어 들인다.
+     * 주의, 기존의 $this->data 변수가 모두 리셋된다. 즉, 메모리 변수의 값 전체가 사라지고, 새로 DB 에서 읽어들인다. 이것은 $this->read() 때문에 그렇다.
+     *
      * @attention entity.idx must be set.
      *
      * 업데이트를 하기 위해서는 `$this->idx` 가 지정되어야 하며, $in 에 업데이트 할 값을 지정하면 된다.
