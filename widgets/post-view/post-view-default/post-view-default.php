@@ -8,7 +8,7 @@
 $post = post()->current();
 ?>
 
-<section class="p-3" style="border-radius: 16px; background-color: #f4f4f4;">
+<section class="p-3 mb-5" style="border-radius: 16px; background-color: #f4f4f4;">
     <div class="pb-1" style="word-break: normal">
         <h3><?= $post->title ?></h3>
     </div>
@@ -112,11 +112,12 @@ $post = post()->current();
             '       <button class="btn btn-primary mr-4" type="button"><?= ek('Photo', '@T Photo') ?></button>' +
             '       <input class="position-absolute top left fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
             '   </div>' +
-            '   <textarea rows="1" class="form-control" v-model="form.content"></textarea>' +
-            '   <div class="d-flex" v-if="form.content || uploadedFiles.length">' +
+            // '<span class="textarea" role="textbox" contenteditable v-model="form.content"></span>' +
+            '   <textarea :rows=" commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control" v-model="form.content"></textarea>' +
+            '   <div><div class="d-flex" v-if="form.content || uploadedFiles.length">' +
             '      <button class="btn btn-primary ml-2" type="submit"><?= ek('Submit', '@T Submit') ?></button>' +
             '      <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">Cancel</button>' +
-            '   </div>' +
+            '   </div></div>' +
             '</section>' +
             '   <div class="mt-2 row photos">' +
             '       <div class="col-3 photo" v-for="file in uploadedFiles" :key="file.idx">' +

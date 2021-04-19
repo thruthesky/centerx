@@ -16,21 +16,11 @@ if ($fileCount) { ?>
     <div class="container photos" style="border-radius: 12px">
         <div class="row">
             <?php
-            if ($fileCount == 1) { ?>
-                <img style="border-radius: 10px;" class="w-100" src="<?= $files[0]->url ?>" />
-                <?php } else if ($fileCount == 2) {
-                foreach ($files as $file) { ?>
-                    <div class="col-4 p-1">
-                        <img style="border-radius: 10px; height: 250px;" class="w-100" src="<?= $file->url ?>">
-                    </div>
-                <?php }
-            } else {
-                foreach ($files as $file) { ?>
-                    <div class="col-4 p-1">
-                        <img style="border-radius: 10px; height: 250px;" class="w-100" src="<?= $file->url ?>">
-                    </div>
-            <?php }
-            } ?>
+            foreach ($files as $file) { ?>
+                <!-- <div class="col-4 p-1"> -->
+                    <img class="mb-1" style="border-radius: 10px; width: 100%;" class="w-100" src="<?= $file->url ?>">
+                <!-- </div> -->
+            <?php } ?>
         </div>
     </div>
 
