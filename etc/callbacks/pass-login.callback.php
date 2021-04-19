@@ -27,9 +27,9 @@ require_once('../../boot.php');
     <div class="mt-5 text-center">
         <h1>있;수다!</h1>
         <div class="mt-3">로그인 성공</div>
-<!--        <div class="mt-2 fs-lg">-->
-<!--            브라우저를 닫고 있;수다! 앱을 열어주세요.-->
-<!--        </div>-->
+        <div class="mt-5" style="font-size: 1rem;">
+           브라우저를 닫아주세요.
+        </div>
     </div>
 </div>
 
