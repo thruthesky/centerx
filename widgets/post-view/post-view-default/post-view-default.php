@@ -111,7 +111,8 @@ $post = post()->current();
             '       <button class="btn btn-primary mr-4" type="button"><?= ek('Photo', '@T Photo') ?></button>' +
             '       <input class="position-absolute top left fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
             '   </div>' +
-            '   <textarea :rows=" commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control" v-model="form.content"></textarea>' +
+            '   <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
+            '   </textarea>' +
             '   <div><div class="d-flex" v-if="form.content || uploadedFiles.length">' +
             '      <button class="btn btn-primary ml-2" type="submit"><?= ek('Submit', '@T Submit') ?></button>' +
             '      <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">Cancel</button>' +
@@ -181,6 +182,10 @@ $post = post()->current();
                     });
                     self.form.files = deleteByComma(self.form.files, res.idx);
                 }, alert);
+            },
+            autoResize(event) {
+                event.target.style.height = 'auto';
+                event.target.style.height = event.target.scrollHeight + 'px';
             }
         }
     });
