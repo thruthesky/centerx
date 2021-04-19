@@ -36,6 +36,10 @@
 
 # 해야 할 일
 
+- 버전 체계. 년-월-일 로 5자리로 한다. 2021 이 1 이다. 4월 19일 버전이면, 10419 가 된다.
+
+- 이전 버전과 호환되는 작업이 어렵다. 왜냐하면, user_activities 가 기존의 포인트 시스템을 완전히 바꾸기 때문이다. 그래서 기존 main 브랜치를 10420 로 변경해 놓고, next 브랜치에서 새로운 작업을 한다.
+
 - SQL Injection 공격 빌미를 없애기 위해서 SELECT 검색을 할 때, WHERE 에 SQL 구문을 직접 받는 대신,
   Prepared statement 를 쓰도록 한다.
   
@@ -242,11 +246,6 @@ user()->by('thruthesky@gmail.com')->changePassword('12345a');
 
 - @later SQLite3 지원. 그러면 그냥 php dev web server 로 SSL 없이, localhost 로 바로 실행가능하리라 생각한다.
 
-# 설치
-
-- 리눅스에 직접 Nginx(Apache), PHP, MariaDB(MySQL)을 설치하여 CenterX 를 운영 할 수 있겠지만 공식적으로는 도커를 통한 설치만 지원한다.
-
-- 도커에서 
 
 
 # Center X 의 데이터 모델
@@ -254,6 +253,7 @@ user()->by('thruthesky@gmail.com')->changePassword('12345a');
 - Taxonomy 는 데이터 라이브러리(또는 데이터 그룹)이다. 데이터베이스에서 하나의 테이블이 하나의 taxonomy 라고 할 수 있다.
 
 - Entity 는 Taxonomy 의 객체이다. 데이터베이스에서는 하나의 레코드에 대한 자료를 가지고 있으며, 그 레코드에 대해 읽기, 쓰기 및 각종 동적을 한다.
+
 
 
 
@@ -292,9 +292,20 @@ cd etc/phpdoc
 
 # 설치와 기본 설정
 
-우분투 서버에서 설치하는 것을 가정하고 설명한다.
+우분투 서버에서 도커로 설치하는 방벙에 대해 설명한다.
 
-코어 개발자들이 개발 작업을 할 때에는 우분투 서버에서 하는 것이 아니라 윈도우즈, 맥, CentOS 등에서 도커를 설치하고 테스트 했으며 이러한 OS 에서도 문제 없이 잘 동작한다.
+코어 개발자들이 개발 작업을 할 때에는 우분투 서버에서 작업을 하는 것이 아니라 윈도우즈, 맥, CentOS 등에서 도커를 설치하고 테스트 했으며 이러한 OS 에서도 문제
+없이 잘 동작한다. 또한 도커를 사용하지 않고 직접 Nginx(Apache), PHP, MariaDB(MySQL)을 설치하여 CenterX 를 운영 할 수 있다.
+
+## 설치 요약
+
+- CenterX 구동을 위한 docker compose 설정을 GitHub 에서 다운로드 또는 clone 한다.
+- `docker-compose up` 과 같이 실행을 하고,
+- `home` 폴더 아래에 `git clone https://github.com/thruthesky/centerx` 와 같이 하면 된다.
+
+
+## 설치 상세 설명
+
 
 - 먼저 도커를 설치하고 실행한다.\
   [우분투 도커 설치 참고](https://docs.docker.com/engine/install/ubuntu/)
