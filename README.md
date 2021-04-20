@@ -36,6 +36,10 @@
 
 # 해야 할 일
 
+- 버전 체계. 년-월-일 로 5자리로 한다. 2021 이 1 이다. 4월 19일 버전이면, 10419 가 된다.
+
+- 이전 버전과 호환되는 작업이 어렵다. 왜냐하면, user_activities 가 기존의 포인트 시스템을 완전히 바꾸기 때문이다. 그래서 기존 main 브랜치를 10420 로 변경해 놓고, next 브랜치에서 새로운 작업을 한다.
+
 - SQL Injection 공격 빌미를 없애기 위해서 SELECT 검색을 할 때, WHERE 에 SQL 구문을 직접 받는 대신,
   Prepared statement 를 쓰도록 한다.
   
@@ -54,7 +58,13 @@
   - INSERT/UPDATE 쿼리 word filtering 을 따로 둔다. (글 쓰기, 코멘트 쓰기용 필터링, 욕설 등록 및 기타, entity.class.php 에서 insert 에서 사용.)
   
 - SQL 문장에서 쿼리 시간을 제한 할 수 있도록, config.php 에 설정을 한다.
-  
+
+- point_hitories 를 user_activities 로 변경한다.
+  - 현재 기능은, 글/코멘트 추천, 반대, 글/코멘트 쓰기, 삭제, 회원 가입, 로그인 인데,
+    이 뿐만아니라, 신고, 다른 사람의 프로필 추천 등 여러가지 다양한 회원 활동이 있을 수 있다.
+    그런데, 신고의 경우, 포인트가 증/감하지 않지만, 기록이 되어야 한다.
+    즉, 포인트의 모든 활동 뿐만아니라, 각종 회원 활동까지, 그리고 차후 확장성 까지 생각해서, 모두 한곳에 저장을 하는 것이다.
+
 - `lib/**.class.php` 에서 taxonomy 클래스 파일들은 `lib/taxonomy/user/user.taxonomy.class.php` 와 같이 파일 경로를 변경한다.
 
 - https://polyfill.io/v3/polyfill.min.js 이 IE 10 이상에서 지원되어, BootstrapVue 를 쓸 수 있는 지 확인한다.
@@ -65,6 +75,9 @@
 - docker 에서 php 설정, short_open_tag On 이 동작하지 않음.
 
 - pass login
+
+- `boot_complete` 훅 추가. 이 훅은 `boot.php` 맨 마지막에서 호출 되는 것으로 각종 입력 값이나 각종 보안 관련 훅을 추가 할 수 있도록 한다.
+  예를 들면, 특정 라우트나 페이지에서는 특정 HTTP 입력 값만 허용하도록 하고, 다른 값이 들어오면 에러가 나도록 한다. 그리고 각 값의 문자열 길이나, 타입을 검사해서, 잘못된 입력을 가려 낼 수 있도록 한다.
   
 - 쇼핑몰 옵션 페이지를 만들고, 배송비와 배송비 무료 제한 금액을 지정한다. mall.options 라우터도 수정한다.
   
@@ -233,11 +246,6 @@ user()->by('thruthesky@gmail.com')->changePassword('12345a');
 
 - @later SQLite3 지원. 그러면 그냥 php dev web server 로 SSL 없이, localhost 로 바로 실행가능하리라 생각한다.
 
-# 설치
-
-- 리눅스에 직접 Nginx(Apache), PHP, MariaDB(MySQL)을 설치하여 CenterX 를 운영 할 수 있겠지만 공식적으로는 도커를 통한 설치만 지원한다.
-
-- 도커에서 
 
 
 # Center X 의 데이터 모델
@@ -245,6 +253,7 @@ user()->by('thruthesky@gmail.com')->changePassword('12345a');
 - Taxonomy 는 데이터 라이브러리(또는 데이터 그룹)이다. 데이터베이스에서 하나의 테이블이 하나의 taxonomy 라고 할 수 있다.
 
 - Entity 는 Taxonomy 의 객체이다. 데이터베이스에서는 하나의 레코드에 대한 자료를 가지고 있으며, 그 레코드에 대해 읽기, 쓰기 및 각종 동적을 한다.
+
 
 
 
@@ -283,9 +292,20 @@ cd etc/phpdoc
 
 # 설치와 기본 설정
 
-우분투 서버에서 설치하는 것을 가정하고 설명한다.
+우분투 서버에서 도커로 설치하는 방벙에 대해 설명한다.
 
-코어 개발자들이 개발 작업을 할 때에는 우분투 서버에서 하는 것이 아니라 윈도우즈, 맥, CentOS 등에서 도커를 설치하고 테스트 했으며 이러한 OS 에서도 문제 없이 잘 동작한다.
+코어 개발자들이 개발 작업을 할 때에는 우분투 서버에서 작업을 하는 것이 아니라 윈도우즈, 맥, CentOS 등에서 도커를 설치하고 테스트 했으며 이러한 OS 에서도 문제
+없이 잘 동작한다. 또한 도커를 사용하지 않고 직접 Nginx(Apache), PHP, MariaDB(MySQL)을 설치하여 CenterX 를 운영 할 수 있다.
+
+## 설치 요약
+
+- CenterX 구동을 위한 docker compose 설정을 GitHub 에서 다운로드 또는 clone(또는 fork) 한다.
+- `docker-compose up` 과 같이 실행을 하고,
+- `home` 폴더 아래에 `git clone https://github.com/thruthesky/centerx` 와 같이 하면 된다. Fork 후 clone 을 해도 좋다.
+
+
+## 설치 상세 설명
+
 
 - 먼저 도커를 설치하고 실행한다.\
   [우분투 도커 설치 참고](https://docs.docker.com/engine/install/ubuntu/)
@@ -325,7 +345,7 @@ cd etc/phpdoc
 
 ## Host setting
 
-- To work with real domain(for example, `itsuda50.com`), add a fake domain like `local.itsuda50.com` on `hosts` file to develop with a real(fake) domain.
+- To work with real domain(for example, `itsuda50.com`), add a fake domain like `local.itsuda50.com` on `hosts` file.
   - So, when you access `www.itsuda50.com` it goes to real domain. And `local.itsuda50.com` goes local host.
 
 ```text
@@ -617,9 +637,14 @@ $result = db()->select('wc_users', 'idx', eq('idx', 77));
 d($result);
 ```
 
-## 게시글 테이블
+## 게시글 테이블. posts 테이블
+
+
 
 - `code` 는 게시글에 부여되는 특별한 코드이고, 그 코드를 바탕으로 글을 추출 할 수 있다.
+- `report` 는 신고된 회 수를 저장한다. 신고가 될 때마다 1씩 증가한다.
+
+
 
 ## 친구 관리 테이블
 

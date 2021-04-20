@@ -119,6 +119,13 @@ class PostRoute {
     }
 
 
+    public function report($in): array|string {
+        if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
+        $post = post($in[IDX]);
+        return $post->update(['report' => $post->report + 1])->response();
+    }
+
+
     /**
      * 조건에 맞는 글 수를 리턴한다. 코멘트는 제외.
      * @param $in

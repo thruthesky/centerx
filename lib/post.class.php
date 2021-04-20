@@ -27,6 +27,7 @@
  * @property-read string $url;
  * @property-read int $y;
  * @property-read int $n;
+ * @property-read int $report;
  * @property-read string $countryCode;
  * @property-read string $province;
  * @property-read string $city;
@@ -157,6 +158,7 @@ class Post extends PostTaxonomy {
      * @attention The entity.idx must be set. That means, it can only be called with `post(123)->update()`.
      *
      * 참고, 프로그램적으로 타인의 글을 업데이트 할 수 있다. 예를 들어, 추천을 할 때, 추천 수를 증가시켜야 한다.
+     * 단, 로그인은 해야 한다.
      * 단, Api 호출에서는 못하게 한다. 즉, 미리 Api 호출에서 검사를 해야 한다.
      *
      * @param array $in
