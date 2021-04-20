@@ -8,7 +8,7 @@
 $post = post()->current();
 ?>
 
-<section class="p-3" style="border-radius: 16px; background-color: #f4f4f4;">
+<section class="p-3 mb-5" style="border-radius: 16px; background-color: #f4f4f4;">
     <div class="pb-1" style="word-break: normal">
         <h3><?= $post->title ?></h3>
     </div>
@@ -44,10 +44,9 @@ $post = post()->current();
                 if (!$comment->deletedAt) { ?>
                     <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                         <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>
+                        <!-- comment reply form -->
+                        <comment-form root-idx="<?= $post->idx ?>" parent-idx='<?= $comment->idx ?>' v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'"></comment-form>
                     </div>
-
-                    <!-- comment reply form -->
-                    <comment-form root-idx="<?= $post->idx ?>" parent-idx='<?= $comment->idx ?>' v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'"></comment-form>
             <?php }
             } ?>
         </div>
@@ -108,15 +107,16 @@ $post = post()->current();
         template: '<form class="mt-2" v-on:submit.prevent="commentFormSubmit">' +
             '<input type="hidden" name="files" v-model="form.files">' +
             '<section class="d-flex">' +
-            '   <div class="position-relative overflow-hidden">' +
+            '   <div class="position-relative overflow-hidden" style="min-width: 80px;">' +
             '       <button class="btn btn-primary mr-4" type="button"><?= ek('Photo', '@T Photo') ?></button>' +
             '       <input class="position-absolute top left fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
             '   </div>' +
-            '   <textarea rows="1" class="form-control" v-model="form.content"></textarea>' +
-            '   <div class="d-flex" v-if="form.content || uploadedFiles.length">' +
+            '   <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
+            '   </textarea>' +
+            '   <div><div class="d-flex" v-if="form.content || uploadedFiles.length">' +
             '      <button class="btn btn-primary ml-2" type="submit"><?= ek('Submit', '@T Submit') ?></button>' +
             '      <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">Cancel</button>' +
-            '   </div>' +
+            '   </div></div>' +
             '</section>' +
             '   <div class="mt-2 row photos">' +
             '       <div class="col-3 photo" v-for="file in uploadedFiles" :key="file.idx">' +
@@ -182,6 +182,10 @@ $post = post()->current();
                     });
                     self.form.files = deleteByComma(self.form.files, res.idx);
                 }, alert);
+            },
+            autoResize(event) {
+                event.target.style.height = 'auto';
+                event.target.style.height = event.target.scrollHeight + 'px';
             }
         }
     });

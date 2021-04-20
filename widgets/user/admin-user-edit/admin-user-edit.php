@@ -5,9 +5,9 @@ if(modeSubmit()) {
     $in = in();
     unset($in['mode'],$in['p'],$in['w']);
 
-    $profile = user(in('idx'))->adminProfileUpdate($in)->response();
-    if(isError($profile)) {
-        jsAlert('Edit Failed: ' . $profile);
+    $profile = user(in('idx'))->adminProfileUpdate($in);
+    if($profile->hasError) {
+        jsAlert('Edit Failed: ' . $profile->getError());
         $profile = user(in('idx'))->read();
     }
 } else {
