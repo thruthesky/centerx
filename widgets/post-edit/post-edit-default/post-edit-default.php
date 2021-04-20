@@ -40,9 +40,9 @@ if (in(CATEGORY_ID)) {
             <?php } ?>
         </div>
 
-        <input class="mt-3 form-control" placeholder="<?= ek('Title', '@T Title') ?>" type="text" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
+        <input class="mt-3 form-control" placeholder="<?= ek('Title', '제목') ?>" type="text" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
 
-        <textarea class="mt-3 form-control" rows="10" placeholder="<?= ek('Content', '@T Content') ?>" type="text" name="<?= CONTENT ?>"><?= $post->v(CONTENT) ?></textarea>
+        <textarea class="mt-3 form-control" rows="10" placeholder="<?= ek('Content', '내용') ?>" type="text" name="<?= CONTENT ?>"><?= $post->v(CONTENT) ?></textarea>
         <!-- Buttons. TODO: progress bar -->
         <div class="mt-3 d-flex">
             <!-- UPLOAD BUTTON -->
@@ -58,9 +58,9 @@ if (in(CATEGORY_ID)) {
                 </div>
             </div>
             
-            <button class="btn btn-warning mr-3" type="button" @click="window.history.back()"><?= ek('Cancel', '@T Cancel') ?></button>
+            <button class="btn btn-warning mr-3" type="button" @click="window.history.back()"><?= ek('Cancel', '취소') ?></button>
             <!-- SUBMIT BUTTON -->
-            <button class="btn btn-success" type="submit"><?= ek('Submit', '@T Submit') ?></button>
+            <button class="btn btn-success" type="submit"><?= ek('Submit', '전송') ?></button>
         </div>
         <div class="px-3 row photos">
             <div class="mt-3 col-4 p-1 photo" v-for="file in uploadedFiles" :key="file['idx']">

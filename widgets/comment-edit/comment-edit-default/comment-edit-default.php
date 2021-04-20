@@ -48,7 +48,7 @@ if ($comment) {
             <input type="hidden" name="<?= PARENT_IDX ?>" value="<?= $parent->idx ?>">
         <?php } ?>
 
-        <textarea style="height: 40px; max-height: 150px;" class="form-control" name="<?= CONTENT ?>" placeholder="<?= ek('Reply ...', '@T Reply ...') ?>"><?php if ($comment) echo $comment->content ?>
+        <textarea style="height: 40px; max-height: 150px;" class="form-control" name="<?= CONTENT ?>" placeholder="<?= ek('Reply ...', '덧글쓰기 ...') ?>"><?php if ($comment) echo $comment->content ?>
 </textarea>
 
         <div class="d-flex mt-2">
@@ -59,9 +59,9 @@ if ($comment) {
             </div>
             <div class="flex-grow-1"></div>
             <?php if ($comment) { ?>
-                <button class="btn btn-sm btn-warning mr-2" type="button" onclick="hideCommentEditForm(<?= $comment->idx ?>)"><?= ek('Cancel', '@T Cancel') ?></button>
+                <button class="btn btn-sm btn-warning mr-2" type="button" onclick="hideCommentEditForm(<?= $comment->idx ?>)"><?= ek('Cancel', '취소') ?></button>
             <?php } ?>
-            <button class="btn btn-sm btn-primary" type="submit"><?= ek('Submit', '@T Submit') ?></button>
+            <button class="btn btn-sm btn-primary" type="submit"><?= ek('Submit', '저장') ?></button>
         </div>
 
         <div class="progress-bar" role="progressbar" :style="{ 'width': percent + '%' }" aria-valuemin="0" aria-valuemax="100"></div>

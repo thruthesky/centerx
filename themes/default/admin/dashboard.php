@@ -36,7 +36,7 @@
 <div class="row mb-4">
     <div class="col-12">
         <div class="bg-white border-radius-sm">
-            <?php include widget('statistic/admin-statistic-records'); ?>
+<!--            --><?php //include widget('statistic/admin-statistic-records'); ?>
         </div>
     </div>
 </div>
