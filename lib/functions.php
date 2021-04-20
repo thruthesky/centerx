@@ -1479,7 +1479,7 @@ function capture_styles_and_scripts(string &$content)
 {
     $res = '';
 
-    $pos = stripos($content, "<body>");
+    $pos = stripos($content, "<body"); // <body ...> 와 같이 속성이 들어 갈 수 있음.
     $before = substr($content, 0, $pos);
     $after = substr($content, $pos);
 
@@ -1495,6 +1495,7 @@ function capture_styles_and_scripts(string &$content)
         }
         $res .= implode("\n", $scripts);
     }
+
 
     /// Get styles
 
