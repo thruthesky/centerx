@@ -17,7 +17,7 @@ $category = $o['category'];
 <div class="d-flex align-items-center p-2 bg-skyblue white" 
     style="border-top-left-radius: 8px; 
     border-top-right-radius: 8px;">
-    <div class="mr-2"><?= ek('Categories:', '@T Categories:') ?></div>
+    <div class="mr-2"><?= ek('Categories:', '카테고리:') ?></div>
     <?php if ($category->exists) { ?>
         <div>
             <a class="btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>">All</a>

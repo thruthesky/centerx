@@ -7,8 +7,8 @@ $login = user()->count(where: "updatedAt<='$now' AND updatedAt>='$ago'");
 
 <section class="d-flex justify-content-between py-3 px-4" id="admin-point-setting-summary">
     <div>
-        <div class="d-flex justify-content-center align-items-center hw-54x54 rounded-circle bg-skyblue color-lightblue fw-700"><?= ek('Point', '@T Point') ?></div>
-        <a href="/?p=admin.index&w=point/admin-point-setting" class="btn btn-sm btn-info mt-2"><?= ek('Setting', '@T Setting') ?></a>
+        <div class="d-flex justify-content-center align-items-center hw-54x54 rounded-circle bg-skyblue color-lightblue fw-700"><?= ek('Point', '포인트') ?></div>
+        <a href="/?p=admin.index&w=point/admin-point-setting" class="btn btn-sm btn-info mt-2"><?= ek('Setting', '설정') ?></a>
     </div>
     <div class="d-flex">
         <div class="text-right fw-700">

@@ -26,8 +26,8 @@ $post = post()->current();
             <a class="btn btn-sm btn-primary mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?><?= lsub() ?>"><?= ek('List', '목록') ?></a>
             <?php if ($post->isMine() || admin()) { ?>
                 <div>
-                    <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '@T Edit') ?></a>
-                    <a class="btn btn-sm btn-danger" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '@T Delete') ?></a>
+                    <a class="btn btn-sm btn-primary" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '수정') ?></a>
+                    <a class="btn btn-sm btn-danger" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>"><?= ek('Delete', '삭제') ?></a>
                 </div>
             <?php } ?>
         </div>
@@ -38,7 +38,7 @@ $post = post()->current();
 
     <?php if (!empty($post->comments())) { ?>
         <hr class="mb-1">
-        <small class="text-muted"><?= count($post->comments()) . ' ' . ek('Comments', '@T Comments') ?></small>
+        <small class="text-muted"><?= count($post->comments()) . ' ' . ek('Comments', '개의 코멘트') ?></small>
         <div class="comments mt-2">
             <?php foreach ($post->comments() as $comment) {
                 if (!$comment->deletedAt) { ?>
@@ -51,7 +51,7 @@ $post = post()->current();
             } ?>
         </div>
     <?php } else { ?>
-        <p class="mt-2 mb-0 text-muted"><small><?= ek('No comments yet ..', '@T No comments yet ..') ?></small></p>
+        <p class="mt-2 mb-0 text-muted"><small><?= ek('No comments yet ..', '작성된 코멘트가 없습니다.') ?></small></p>
     <?php } ?>
 </section>
 
@@ -108,13 +108,13 @@ $post = post()->current();
             '<input type="hidden" name="files" v-model="form.files">' +
             '<section class="d-flex">' +
             '   <div class="position-relative overflow-hidden" style="min-width: 80px;">' +
-            '       <button class="btn btn-primary mr-4" type="button"><?= ek('Photo', '@T Photo') ?></button>' +
+            '       <button class="btn btn-primary mr-4" type="button"><?= ek('Photo', '사진') ?></button>' +
             '       <input class="position-absolute top left fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
             '   </div>' +
             '   <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
             '   </textarea>' +
             '   <div><div class="d-flex" v-if="form.content || uploadedFiles.length">' +
-            '      <button class="btn btn-primary ml-2" type="submit"><?= ek('Submit', '@T Submit') ?></button>' +
+            '      <button class="btn btn-primary ml-2" type="submit"><?= ek('Submit', '전송') ?></button>' +
             '      <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">Cancel</button>' +
             '   </div></div>' +
             '</section>' +
@@ -201,9 +201,9 @@ $post = post()->current();
         },
         template: '<div class="d-flex">' +
             '<a class="btn btn-sm mr-2" @click="onVote(\'Y\')" style="color: green">' +
-            '<?= ek('Like', '@T Like') ?> <span class="badge badge-success badge-pill" v-if="Y != \'0\'">{{ Y }}</span></a>' +
+            '<?= ek('Like', '좋아요') ?> <span class="badge badge-success badge-pill" v-if="Y != \'0\'">{{ Y }}</span></a>' +
             '<a class="btn btn-sm mr-2" @click="onVote(\'N\')" style="color: red">' +
-            '<?= ek('Dislike', '@T Dislike') ?> <span  class="badge badge-danger badge-pill" v-if="N != \'0\'">{{ N }}</span></a>' +
+            '<?= ek('Dislike', '싫어요') ?> <span  class="badge badge-danger badge-pill" v-if="N != \'0\'">{{ N }}</span></a>' +
             '</div>',
         methods: {
             onVote(choice) {

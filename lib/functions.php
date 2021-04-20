@@ -914,6 +914,7 @@ function ln(array|string $code, mixed $default_value=''): string
     if ( FIX_LANGUAGE ) $language = FIX_LANGUAGE;
     else $language = get_user_language();
 
+
     if ( is_string($code) ) {
         $re = translation()->text($language, $code);
     } else {
