@@ -168,9 +168,14 @@ $post = post()->current();
             },
             onCommentEditCancelButtonClick: function() {
                 console.log('onCommentEditCancelButtonClick', this.commentIdx);
-                this.$parent.displayCommentForm[this.commentIdx ?? this.parentIdx] = '';
+                var idx = this.commentIdx;
+                if (this.commentIdx === null) {
+                    idx = this.parentIdx;
+                }
+
+                this.$parent.displayCommentForm[idx] = '';
             },
-            onFileDelete(idx) {
+            onFileDelete: function(idx) {
                 const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
                 if (re === false) return;
                 const self = this;
@@ -183,7 +188,7 @@ $post = post()->current();
                     self.form.files = deleteByComma(self.form.files, res.idx);
                 }, alert);
             },
-            autoResize(event) {
+            autoResize: function(event) {
                 event.target.style.height = 'auto';
                 event.target.style.height = event.target.scrollHeight + 'px';
             }
@@ -206,7 +211,7 @@ $post = post()->current();
             '<?= ek('Dislike', '@T Dislike') ?> <span  class="badge badge-danger badge-pill" v-if="N != \'0\'">{{ N }}</span></a>' +
             '</div>',
         methods: {
-            onVote(choice) {
+            onVote: function(choice) {
                 const self = this;
                 request('post.vote', {
                     idx: this.parentIdx,

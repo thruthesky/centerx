@@ -67,9 +67,12 @@ function fileUpload(file, params, successCallback, errorCallback, progressCallba
     form.append('route', 'file.upload');
     // If user has logged in, attach session id.
     if ( Cookies.get('sessionId') ) form.append('sessionId', Cookies.get('sessionId'));
-    for(var key of Object.keys(params) ) {
+    for(var key in params ) {
         form.append(key, params[key]);
     }
+    // for(var key of Object.keys(params) ) {
+    //     form.append(key, params[key]);
+    // }
     form.append('userfile', file);
     const options = {
         onUploadProgress: function (progressEvent) {
