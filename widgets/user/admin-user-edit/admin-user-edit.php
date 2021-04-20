@@ -76,15 +76,15 @@ if(modeSubmit()) {
                 <label for="gender">gender</label>
                 <select class="custom-select" id="gender" name="gender">
                     <option value="" <?=$profile->gender == '' ? 'selected': ''?>>Select Gender</option>
-                    <option value="m" <?=$profile->gender == 'm' ? 'selected': ''?>>Male</option>
-                    <option value="f" <?=$profile->gender == 'f' ? 'selected': ''?>>Female</option>
+                    <option value="M" <?=$profile->gender == 'M' ? 'selected': ''?>>Male</option>
+                    <option value="F" <?=$profile->gender == 'F' ? 'selected': ''?>>Female</option>
                 </select>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-6">
                 <label for="birthdate">birthdate</label>
-                <input type="text" class="form-control" placeholder="birthdate" name="birthdate" id="birthdate"  value="<?=$profile->birthdate?>">
+                <input type="text" class="form-control" placeholder="YYMMDD" name="birthdate" id="birthdate"  value="<?=$profile->birthdate?>">
             </div>
 
             <div class="form-group col-6">

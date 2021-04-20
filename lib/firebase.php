@@ -44,7 +44,7 @@ function getRealtimeDatabase() {
 
 
 /**
- * @param string $tokens
+ * @param string|array $tokens
  * @param string $title
  * @param string $body
  * @param string $click_action
@@ -57,7 +57,7 @@ function getRealtimeDatabase() {
  * @throws \Kreait\Firebase\Exception\MessagingException
  */
 function sendMessageToTokens(
-    string $tokens,
+    string|array $tokens,
     string $title,
     string $body,
     string $click_action,
@@ -76,8 +76,8 @@ function sendMessageToTokens(
     ]);
 //    debug_log($message);
 
-    $arrTokens = explode(',', $tokens);
-    return getMessaging()->sendMulticast($message, $arrTokens);
+    if (gettype($tokens) == 'string') $tokens = explode(',', $tokens);
+    return getMessaging()->sendMulticast($message, $tokens);
 }
 
 /**
