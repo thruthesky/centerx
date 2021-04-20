@@ -92,7 +92,7 @@ function sendMessageToTopic(string $topic,string $title,string $body, string $cl
         'notification' => getNotificationData($title, $body, $click_action, $data, $imageUrl),
         'webpush' => getWebPushData($title, $body, $click_action, $data, $imageUrl),
         'android' => getAndroidPushData($channel, $sound),
-        'apns' => getIosPushData($title, $body, $sound)->withBadge(11)->jsonSerialize(),
+        'apns' => getIosPushData($title, $body, $sound)->withBadge(1)->jsonSerialize(),
         'data' => $data,
     ]);
 
@@ -216,7 +216,7 @@ function getAndroidPushData($channel, $sound): AndroidConfig
         'notification' => [
             'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
             'channel_id' => 'PUSH_NOTIFICATION', // channel_id is the same as the id you register on the channelMap
-            'notification_count' => 1
+//            'notification_count' => 1
         ],
     ];
     if (!empty($channel)) $data['channel_id'] = $channel;

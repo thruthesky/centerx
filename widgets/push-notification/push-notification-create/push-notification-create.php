@@ -131,7 +131,7 @@ if(modeSubmit()) {
             body: "<?=in('body')?>",
             click_action: "<?=in('click_action')?>",
             imageUrl: "<?=in('imageUrl')?>",
-            sound: "<?=in('sound', 'default')?>",
+            sound: "<?=in('sound', 'telephoneringwav.wav')?>",
             channel: "<?=in('channel', 'PUSH_NOTIFICATION')?>",
         },
         created: function (){
