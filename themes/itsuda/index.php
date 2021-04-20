@@ -10,6 +10,7 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <title>있수다</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/themes/itsuda/favicon.ico"/>
     <style>
         .top { top: 0; }
         .left { left: 0; }
