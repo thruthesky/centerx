@@ -51,11 +51,14 @@ class Friend extends Entity {
     }
 
     /**
-     * 블럭을 한다.
+     * 사용자 블럭을 한다.
      * @param array $in
      * @return Entity|Friend
      */
     public function block(array $in) {
+        $otherUser = user($in['otherIdx']);
+        if ( $otherUser->hasError ) return $this->error( $otherUser->getError() );
+
         // 레코드를 찾는다. 내가 해당 친구($in['otherIdx'])를 추가한 레코드
         $this->findOne(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']]);
 
@@ -66,11 +69,12 @@ class Friend extends Entity {
                 return $this->error(e()->already_blocked);
             }
         } else {
+            $this->resetError();
             // 내가, 친구 초대를 안 했다. (상대방은 나를 친구 초대 했을 수 있음)
             // 그렇다면, 친구 추가를 하고, 블럭을 한다. 이론적으로, 친구 추가된 레코드에 block=Y 를 해야하므로, 친구 추가는 필수이다.
             $this->add(['otherIdx' => $in['otherIdx']]);
-            $this->resetError();
         }
+
 
 
         // 블럭을 한다. 내가 친구 추가를 안 했어도, 블럭을 할 수 있다. 즉, 친구 추가하지 않고, 미리 블럭을 하는 것이다.

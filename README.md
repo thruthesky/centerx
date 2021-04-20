@@ -30,11 +30,11 @@
     - 그로 인해, Host OS 에서 여러 도메인으로 접속을 할 때, 꼭 CenterX 프레임워크가 아니라 다른 성격의 사이트 예) Perl CGI 나 Angular, Vue.js SPA, PWA 등이 가능하게 되었다.
     - 또한 각 홈 폴더에 centerx 를 따로 설치해서, 다른 버전의 centerx 를 운영 할 수 있다.
   
-- `philov` 와 `있;수다` 서버를 네이버 유로 클라우드로 옮기고, 0.1.4 버전을 적용하도록 한다.
-  - 네이버 클라우드 플랫폼을 쓴다고 김형곤 사장님에게 얘기를 한다. 비용은 조금 더 올라서, 8만8천원.
   
 
 # 해야 할 일
+
+- next branch 에서 작업 중.
 
 - 버전 체계. 년-월-일 로 5자리로 한다. 2021 이 1 이다. 4월 19일 버전이면, 10419 가 된다.
 
@@ -67,84 +67,51 @@
 
 - `lib/**.class.php` 에서 taxonomy 클래스 파일들은 `lib/taxonomy/user/user.taxonomy.class.php` 와 같이 파일 경로를 변경한다.
 
+
 - https://polyfill.io/v3/polyfill.min.js 이 IE 10 이상에서 지원되어, BootstrapVue 를 쓸 수 있는 지 확인한다.
 
-- Generate thumbnails on the fly. 썸네일으 사진 업로드 할 때 하지 말고, files/thumbnails 폴더에 저장한다.
-  - /etc/image/thumbnail.php?source=...&width=..&height=.. 와 같이하는데, target 은 source 는 파일 경로 URL 이나, file.idx 일 수 있다.
-  
-- docker 에서 php 설정, short_open_tag On 이 동작하지 않음.
-
-- pass login
+- pass login 재 정리
 
 - `boot_complete` 훅 추가. 이 훅은 `boot.php` 맨 마지막에서 호출 되는 것으로 각종 입력 값이나 각종 보안 관련 훅을 추가 할 수 있도록 한다.
   예를 들면, 특정 라우트나 페이지에서는 특정 HTTP 입력 값만 허용하도록 하고, 다른 값이 들어오면 에러가 나도록 한다. 그리고 각 값의 문자열 길이나, 타입을 검사해서, 잘못된 입력을 가려 낼 수 있도록 한다.
   
-- 쇼핑몰 옵션 페이지를 만들고, 배송비와 배송비 무료 제한 금액을 지정한다. mall.options 라우터도 수정한다.
-  
-- backend 의 코드를 복사 할 것.
-- 기본 코어 말고, plugin 은 관리자 모드에서 설치 과정을 진행하도록 한다. 워드프레스와 동일하게 한다.
-  - 이 때, plugins 폴더를 두고, 외부 개발자가 플러그인을 추가 할 수 있도록 한다.
-  
-- 설치 과정을 backend/model 에서 가져와서 그대로 사용 할 것.
-
 - 파일 업로드에서, 퍼미션이 없을 때, empty response 에러가 나온다. 올바른 에러가 표시되도록 할 것.
 
-- 퍼시면 검사는 lib/*.class.php 의 update(), delete() 에서 하지 않고,
+- 퍼미션 검사는 lib/*.class.php 의 update(), delete() 에서 하지 않고,
   `post(1)->permissionCheck()->markDelete()->getError()` 와 같이 별도의 permissionCheck() 함수를 만들어서 사용 할 수 있도록 한다.
   - `permissionCheck()` 함수는 entity 클래스에 들어가 있어서, 모든 taxonomy 에서 사용가능하다.
   
 - 훅시스템
   - entity()->create(), update(), delete(), get(), search() 등에서만 훅을 걸면 왠만한 것은 다 된다.
   
-- subcategories of the category.
-- SQL injection block on `where` in search function.
-- Wordpress style, Friendly URL. There might be no title, so, posts may have url of numbers only.
-  - `this-is-title.`, `this-is-title-2`.
-
-- posts 테이블에 countryCode 필드를 두어서, 교민 카페 만들 때, 국가별 검색 가능하도록.
-  - name, password, email, gender, address1, address2, zipcode, 등 기타 필드 다 생성.
-- phpunit 을 host os 에서 실행 할 수 있도록 할 것. https://hub.docker.com/r/phpunit/phpunit/ 에 host os 에서 실행하는 방법 설명.
-  
-- https://domain.com/qna 와 같이 짧은 URL 을 지원 할 것.
+- Friendly URL 에 테마 스크립트 페이지 지정.
+  https://domain.com/qna 와 같이 짧은 URL 을 지원 할 것.
   기본적으로 모든 category 는 최 상위 슬래시(/) 다음에 기록 할 수 있도록 한다.
+  예) `addPage('abc')` 와 같이 하면 `https://domain.com/abc` 와 같이 접속을 할 수 있고, `themes/../abc.php` 가 로드 될 수 있도록 한다.
+  게시판의 경우 기본적으로 지원을 한다. 예) `https://domain.com/qna` 와 같이 접속하면, `/?forum.post.list&categoryId=qna` 와 같도록 한다.
+  그리고 이것은 각 테마에서 직접 코딩을 할 수 있도록 한다.
 
-- .gitignore 에 기본적으로 widgets 폴더를 빼고, 원하는 위젯만 -f 로 넣을 것.
+- 배포
+  .gitignore 에 기본적으로 widgets 폴더를 빼고, 배포를 원하는 위젯만 -f 로 넣을 것.
   
-- git 에서 추가된 특정 폴더나 파일을 빼는 방법을 배울 것.
 
-- @todo when categoryIdx of post changes, categoryIdx of children must be changes.
-
-- meta 에 int, string, double(float) 은 serialize/unserialize 하지 말 것. 그래서 바로 검색이 되도록 한다.
+- 카테고리
+  카테고리 및 서브카테고리 변경 기능.
 
 - file upload error handling. https://www.php.net/manual/en/features.file-upload.errors.php
 - 파일에 taxonomy 와 entity 추가
 
 
-- search(): where 에 SQL Inject 검사를 하도록 한다.
-  drop, select, replace, insert, update 와 같은 단어를 넣지 못한다.
-  하지만, in 은 그 자체로 조건식에 들어가야하므로, 가능하다.
-  
-- search() 함수의 where: 에 메타 검색을 같이 지원한다.
-  where: "a='apple' or (b='banana' and meta.c='cherry') or meta.d=1"
-  SQL query 에 `meta.` 이라는 것이 들어가면 무조건 meta 검색으로 인식한다. 따라서 검색 조건에 `meta.` 라는 단어가 들어가면 안된다.
+
+- @doc
+  meta 에 int, string, double(float) 은 serialize/unserialize 하지 말 것. 그래서 바로 검색이 되도록 한다.
+
 
 - @doc
   `https://local.itsuda50.com/?route=comment.get&idx=15224` 와 같이 글이나 코멘트를 가져올 때, 글/코멘트 생성시, 작성자에게 추가된 포인트가 `appliedPoint` 로 클라이언트에게 전달된다.
 
 - README 에 최소한의 정보만 두고, 모두 phpDocument 화 한다.
   
-- next 를 main 에 merge 또는 이동 계획
-  - 먼저, next 브랜치로 작업이 잘 되는지, 확인을 한다.
-    - 플러터와 CenterX 모두 main branch 는 놔 두고,
-    - 플러터에서도 next 브랜치를 만들고, CenterX next branch 로 바로 접속 하도록 한다.
-  - 작업이 잘 되면, main 을 0.2 로 백업하고, next 를 main 으로 바꾼다.
-    - 먼저, 그동안 변경된 사항을, https://github.com/thruthesky/centerx/commits/main 에서 확인해서, 변경된 내용을 적용한다.
-    - branch 이름 변경하기 참고: https://docs.google.com/document/d/1OV1FYLwBBloQU_H8wUkZLnzCLtFdVLiRtXPZXNa5Bkw/edit#heading=h.fbs4ukt4a7lj
-
-- 앱 설정 및 언어화 실시간 업데이트를 php 와 realtime database 로 했는데, 그냥 자바스크립트로해서 Firestore 로 할 것.
-
-- comment-edit-default 작업 중. 모든 코멘트 쓰기/수정/삭제/ 파일 업로드에 기본적으로 적용한다.
-
 - API 보안.
   - CenterX 는 공개 소스이고, 프로토콜이 공개되어져 있으므로 누구든지, API 를 통해서 악의적으로 반복된 DB 액세스를 하여, DOS 공격을 할 수 있다.
   따라서, 허용된 클라이언트만 읽고 쓰도록 허용 할 수 방법을 강구해야한다.
@@ -155,20 +122,6 @@
     쓰기는 1분에 10회, 10분에 20회, 60분에 30회로 제한한다.
     총 용량은 60분에 글 1M 로 제한, 사진 20M 로 제한.
     이것을 관리자 페이지에서 변경 할 수 있도록 한다.
-
-- 관리자 페이지 작업.
-
-  - 플러터 웹으로 만든다.  
-
-  - 카테고리 페이지 업데이트
-  - 게시글 페이지 업데이트
-  - 세팅 페이지 업데이트
-  - 언어화 페이지 업데이트
-  - 상품 등록 페이지에서, File 업로드 테스트
-
-- 플러터에서 next 브랜치 테스트
-
-- next 브랜치를 main 으로 변경
 
 - @doc 게시판 설정에서, 글 편집 후 이동 옵션에서, 글 읽기 페이지를 선택하면, 글을 작성하고 난 다음에 글 읽기 페이지로 간다.
   글 목록 페이지를 선택하면, 글 쓴 후, 글 목록 페이지로 한다.
@@ -182,18 +135,6 @@
 - @doc 클라이언트로 전달하는 경우가 아니면 `->hasError` 로 에러가 있는지 없는지 검사해야 한다.
 
 
-
-- @later meta 에 동일한 키를 여러개 입력 할 수 없지만, 배열이나 기타 여러 값을 저장하면, serialized 되어 저장된다.
-  이점을 활용해서,
-  기본 meta 함수명 addMeta(), getMeta(), updateMeta(), deleteMeta() 에,
-  addMetaDataSet(...) 을 하면, Type SET 형식으로 배열인데, 고유한 값을 유지하는 배열에 값을 추가하는 함수를 만든다.
-  deleteMetaDataSet(...) 을 하면 삭제를 한다.
-  addMetaDataAssoc($key, $value) 를 하면, 메타 데이터의 값이 연관 배열인데, 연관 배열의 값을 추가하다록 한다.
-  deleteMetaDataAssoc($key) 와 같이 하면 삭제를 한다.
-
-  getMeta() 에서 taxonomy 와 entity 까지만 입력하면, 배열로 해당 entity 에 속만 메타가 모두 리턴된다.
-
-
 - @doc 비밀번호 변경하기
 
 간단하게 아래와 같이 코딩을 해서, 어디서든 실행을 한번 하면 된다.
@@ -201,7 +142,6 @@
 ```php
 user()->by('thruthesky@gmail.com')->changePassword('12345a');
 ```
-
 
 - @doc entity 는 실제 존재하는 taxonomy 에 대해서만 작업을 한다. 즉, table 이 존재하지 않으면 안된다.
 

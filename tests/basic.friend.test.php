@@ -28,13 +28,19 @@ isTrue($res == e()->already_added_as_friend, '실패. 추가한 친구를 다시
 $res = $friendRoute->delete(['sessionId' => login()->sessionId, 'otherIdx' => 123456789]);
 isTrue($res == e()->not_added_as_friend, '실패 예상. 추가되지 않은 친구를 삭제 할 수 없음.');
 
-// 성공. 친구 삭제.
+// 성공. 친구 삭제. 2nd 사용자 친구 삭제.
 $res = $friendRoute->delete(['sessionId' => login()->sessionId, 'otherIdx' => getSecondUser()->idx]);
 isTrue($res['idx'] > 0, '성공. 친구 삭제.');
 
-// 실패. 친구로 추가된 사용자만 차단 가능.
+// 실패. 존재하지 않는 사용자 차단.
 $res = $friendRoute->block(['sessionId' => login()->sessionId, 'otherIdx' => 1234567890]);
-isTrue($res == e()->not_added_as_friend, '실패 예상. 추가되지 않은 친구를 차단 할 수 없음.');
+isTrue($res == e()->entity_not_found, '실패 예상. 존재하지 않는 사용자를 차단 할 수 없음.');
+
+// 성공. 친구가 아닌 사용자를 차단.
+$res = $friendRoute->block(['sessionId' => login()->sessionId, 'otherIdx' => getSecondUser()->idx]);
+isTrue($res['idx'] > 0, '성공. 친구가 아닌 사용자를 차단.');
+$res = $friendRoute->delete(['sessionId' => login()->sessionId, 'otherIdx' => getSecondUser()->idx]);
+
 
 // 성공. 친구 추가 후, 차단
 $res = $friendRoute->add(['sessionId' => login()->sessionId, 'otherIdx' => getSecondUser()->idx]);
@@ -50,9 +56,6 @@ $res = $friendRoute->unblock(['sessionId' => login()->sessionId, 'otherIdx' => g
 isTrue($res['idx'] > 0, '성공. 차단 해제');
 
 
-// 실패. 추가되지 않은 친구를 차단 해제 할 수 없음.
-$res = $friendRoute->block(['sessionId' => login()->sessionId, 'otherIdx' => 1234567890]);
-isTrue($res == e()->not_added_as_friend, '실패 예상. 추가되지 않은 친구를 차단 할 수 없음.');
 
 // 실패. 차단되지 않은 친구를 차단 해제 할 수 없음.
 $res = $friendRoute->unblock(['sessionId' => login()->sessionId, 'otherIdx' => getSecondUser()->idx]);
@@ -66,8 +69,6 @@ $friends = $friendRoute->list();
 isTrue(count($friends) == 2, '성공, 친구: 2명');
 $friends = $friendRoute->blockList();
 isTrue(count($friends) == 0, '성공, 차단 된 친구: 0명');
-
-
 
 // 차단된 목록. 1명 차단.
 $friendRoute->block(['sessionId' => login()->sessionId, 'otherIdx' => getSecondUser()->idx]);
