@@ -37,7 +37,7 @@ $file = files()->getByCode(in('code'));
         },
         mounted: function () { console.log("admin-upload-image 마운트 완료!"); },
         methods: {
-            onFileChange(event) {
+            onFileChange: function(event) {
                 if (event.target.files.length === 0) {
                     console.log("User cancelled upload");
                     return;

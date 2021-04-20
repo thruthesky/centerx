@@ -225,7 +225,7 @@ foreach ($rows as $row) {
             }
         },
         methods: {
-            selectDateRange(days) {
+            selectDateRange: function(days) {
                 let x = new Date();
                 let newDate = new Date(x.getTime() - 1000*60*60*24*days);
                 this.beginDate = this.yyyymmddFromDate(newDate);
@@ -234,7 +234,7 @@ foreach ($rows as $row) {
                     this.$refs['inAppPurchase'].submit();
                 });
             },
-            lastMonth() {
+            lastMonth: function() {
                 let x = new Date();
                 this.beginDate = this.yyyymmddFromDate(new Date(x.getFullYear(), x.getMonth() - 1, 1));
                 this.endDate = this.yyyymmddFromDate(new Date(x.getFullYear(), x.getMonth(), 0));
@@ -242,7 +242,7 @@ foreach ($rows as $row) {
                     this.$refs['inAppPurchase'].submit();
                 });
             },
-            yyyymmddFromDate(date) {
+            yyyymmddFromDate: function(date) {
                 let y = date.getFullYear().toString();
                 let m = (date.getMonth() + 1).toString();
                 let d = date.getDate().toString();
