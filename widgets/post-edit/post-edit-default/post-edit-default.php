@@ -86,7 +86,7 @@ if (in(CATEGORY_ID)) {
             console.log('created() for post-edit-default');
         },
         methods: {
-            onFileChange(event) {
+            onFileChange: function(event) {
                 if (event.target.files.length === 0) {
                     console.log("User cancelled upload");
                     return;
@@ -108,7 +108,7 @@ if (in(CATEGORY_ID)) {
                     }
                 );
             },
-            onFileDelete(idx) {
+            onFileDelete: function(idx) {
                 const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
                 if (re === false) return;
                 const self = this;

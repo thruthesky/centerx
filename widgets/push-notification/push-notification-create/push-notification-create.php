@@ -139,7 +139,7 @@ if(modeSubmit()) {
             this.loadPostIdx();
         },
         methods: {
-            loadPostIdx() {
+            loadPostIdx: function() {
                 console.log(this.idx);
                 if (this.idx === '') return;
                 axios.post('/index.php', {
@@ -158,7 +158,7 @@ if(modeSubmit()) {
                     }
                 }).catch(alert);
             },
-            sendPushNotification() {
+            sendPushNotification: function() {
                 const data = {
                     route: "notification.sendMessageToTopic",
                     title: this.title,
