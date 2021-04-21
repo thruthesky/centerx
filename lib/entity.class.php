@@ -756,6 +756,7 @@ class Entity {
      *
      * @param string $select
      * @param string $where
+     * @param array $params
      * @param string $order
      * @param string $by
      * @param int $page
@@ -763,7 +764,7 @@ class Entity {
      * @param array $conds - 키/값 조건문.
      * @param string $conj - $conds 의 키/값을 연결할 조건식. 기본 AND.
      * @param bool $object
-     * @return array | self[]
+     * @return array - empty array([]), If there is no record found.
      *  - empty array([]), If there is no record found.
      *
      *

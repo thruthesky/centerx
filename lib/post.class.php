@@ -260,20 +260,20 @@ class Post extends PostTaxonomy {
      * }
      * ```
      *
+     * @param string $select
      * @param string $where
-     * @param int $page
-     * @param int $limit
      * @param string $order
      * @param string $by
-     * @param string $select
+     * @param int $page
+     * @param int $limit
      * @param array $conds
      * @param string $conj
+     * @param bool $object
      * @return Post[]
      *
      * @example
      *  $where = "userIdx=$userIdx AND categoryIdx=$categoryIdx AND createdAt>=$beginStamp AND createdAt<=$endStamp";
      *  $posts = post()->search(where: $where);
-     *
      */
     public function search(
         string $select='idx',
