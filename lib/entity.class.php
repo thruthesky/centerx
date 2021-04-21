@@ -809,6 +809,7 @@ class Entity {
         $table = $this->getTable();
         $from = ($page-1) * ($limit ? $limit : 10);
 
+
         if ( $conds ) {
             $where = sqlCondition($conds, $conj);
         }
