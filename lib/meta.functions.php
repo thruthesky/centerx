@@ -51,6 +51,7 @@ function getMeta(string $taxonomy, int $entity, string $code = null): mixed {
 
 
 
+
 /**
  * meta 가 존재하면 true 아니면, false 를 리턴한다.
  *

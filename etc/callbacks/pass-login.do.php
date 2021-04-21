@@ -17,7 +17,7 @@ if ( isError($profile) ) {
  * DB 에 기록을 남기는 이유는 Flutter 에서 In-app-browser 를 종료하면, 곧 바로 서버에 접속해서, 로그인 정보를 가져오기 위해서이다.
  * 참고로, Firestore 와 통신이 안되는 경우가 있는 것 같다.
  */
-user($profile[IDX])->update(['state' => in('state')]);
+user($profile[IDX])->update([in('state') => $profile[SESSION_ID]]);
 ?>
 <?php includeFirebase(); ?>
 <script>

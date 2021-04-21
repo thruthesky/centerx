@@ -52,6 +52,7 @@
   기존 search() 의 where: 에 값이 들어오면, params 의 값이 필수적으로 들어오도록 한다.
   참고: https://github.com/ezSQL/ezsql#example-for-using-prepare-statements-directly-no-shortcut-sql-methods-used
   
+- meta 함수들을 meta entity 로 대체한다.
   
 - 필고를 보고, security 체크를 한다. security 패턴 검사를 관리자 페이지에서 입력 할 수 있도록 한다.
   - SELECT SQL 쿼리 word filtering 을 따로 두고, (글 추출 및 각종 해킹 시도. entity.class.php 에서 read, search 등에서 사용. )
