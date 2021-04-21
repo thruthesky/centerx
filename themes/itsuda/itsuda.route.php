@@ -85,6 +85,9 @@ addRoute('health.myRank', function($in) {
 });
 
 
+addRoute('meta.login', function($in) {
+	return entity('metas')->findOne(['code' => $in['code']])->response();
+});
 
 
 
