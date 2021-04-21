@@ -89,7 +89,7 @@ hook()->add('admin-setting', function($settings) {
     <div class="hint">
         쇼핑몰에 표시 될 무통장 정보 중 은행 이름을 입력해주세요. 예) 기업 은행
     </div>
-    <input type="text" class="form-control mb-2" name='account_info_bank' value="$account_info_no" placeholder="계좌번호">
+    <input type="text" class="form-control mb-2" name='account_info_no' value="$account_info_no" placeholder="계좌번호">
     <div class="hint">
         쇼핑몰에 표시 될 무통장 정보 중 계좌번호를 입력해주세요. 예) 1234-xxxx-5678
     </div>
