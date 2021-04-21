@@ -13,11 +13,16 @@ if ( isError($profile) ) {
 }
 
 /**
- * 여기까지 오면 로그인 성공
+ * 여기까지 오면 로그인 성공. DB 에 기록을 남기고, Firestore 에 기록을 남긴다.
+ * DB 에 기록을 남기는 이유는 Flutter 에서 In-app-browser 를 종료하면, 곧 바로 서버에 접속해서, 로그인 정보를 가져오기 위해서이다.
+ * 참고로, Firestore 와 통신이 안되는 경우가 있는 것 같다.
  */
+user($profile[IDX])->update(['state' => in('state')]);
 ?>
 <?php includeFirebase(); ?>
 <script>
     const db = firebase.firestore();
-    db.collection('passlogin').doc('<?=in('state')?>').set({time: (new Date).getTime(), sessionId: '<?=$profile['sessionId']?>'});
+    db.collection('passlogin').doc('<?=in('state')?>')
+        .set({time: (new Date).getTime(), sessionId: '<?=$profile['sessionId']?>'})
+    ;
 </script>
