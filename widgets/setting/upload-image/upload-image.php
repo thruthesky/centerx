@@ -55,17 +55,19 @@ $file = files()->getByCode(in('code'));
                         console.log("파일 업로드 성공: res.path: ", res, res.path);
                         self.src = res.url;
                         self.percent = 0;
-                        axios({ // 파일 업로드 후, file.idx 를 관리자 설정에 추가.
-                            method: 'post',
-                            url: '/index.php',
-                            data: {
-                                route: 'app.setConfig',
-                                code: '<?=in('code')?>',
-                                data: res.idx
-                            }
-                        })
-                            .then(function(res) { console.log('app.setConfig success:', res); })
-                            .catch(function(e) { conslole.log('app.setConfig error: ', e); })
+                        request('app.setConfig', {code: '<?=in('code')?>', data: res.idx}, console.log, alert);
+                        //
+                        //axios({ // 파일 업로드 후, file.idx 를 관리자 설정에 추가.
+                        //    method: 'post',
+                        //    url: '/index.php',
+                        //    data: {
+                        //        route: 'app.setConfig',
+                        //        code: '<?//=in('code')?>//',
+                        //        data: res.idx
+                        //    }
+                        //})
+                        //    .then(function(res) { console.log('app.setConfig success:', res); })
+                        //    .catch(function(e) { conslole.log('app.setConfig error: ', e); })
                     },
                     alert, // 에러가 있으면 화면에 출력.
                     function (p) { // 업로드 프로그레스바 표시 함수.
