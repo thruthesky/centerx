@@ -1254,13 +1254,53 @@ if ( modeCreate() ) {
 
 # Hook System
 
+* 훅을 실행하고 싶은 곳에서 `hook()->run('name', 'vars')` 와 같이 하면 된다.
+* 훅 함수들은 `hook()->add(function() {})` 와 같이 정의하면 된다.
+
+예제) widgets/setting/admin-setting/admin-setting.php
+```html
+<?=hook()->run('admin-setting', $ms)?>
+```
+
+예제) themes/itsuda/itsuda.hooks.php
+```php
+hook()->add('admin-setting', function($settings) {
+$account_info = $settings['account_info'] ?? '';
+echo <<<EOH
+<h2>쇼핑몰 입금 통장 번호</h2>
+<input type="text" class="form-control mb-2" name='account_info' value="$account_info" placeholder="예금주 은행 계좌번호">
+<div class="hint">
+  쇼핑몰에 표시 될 무통장 입금 정보를 입력해주세요. 예) 주식회사 위드플랜잇 국민은행 XXXX-XXXX-XXXX
+</div>
+EOH;
+```
+
+
+* Hook 함수는 각 테마 별로 config.php 에서 정의하면 되고, hook 코드가 커지면 `[theme-name].hooks.php` 로 따로 모으면 된다.
+* 동일한 hook 이름에 여러개 훅을 지정 할 수 있다.
+* 훅 함수에는 변수를 얼마든지 마음데로 지정 할 수 있으며 모두 reference 로 전달된다.
+* `posts_before_create` 훅 함수가 에러 문자열을 리턴하면 다른 훅은 모두 실행이 안되고, 글/코멘트 생성이 중지된다.
+
+* 모든 훅 함수는 값을 리턴하거나 파라메타로 받은 레퍼런스 변수를 수정하는 것이 원칙이다.
+  * 가능한, 어떤 값을 화면으로 출력하지 않도록 해야하지만,
+  * 글 쓰기에서 권한이 없는 경우, 미리 체크를 해야하지만, 그렇지 못한 경우 훅에서 검사해서
+    Javascript 로 goBack() 하고 exit 할 수 있다.
+    이 처럼 꼭 필요한 경우에는 직접 HTML 출력을 한다.
+
+* 훅의 목적은 가능한 기본 코드를 재 사용하되, 원하는 기능 또는 UI/UX 로 적용하기 위한 것이다.
+  * 예를 들면, 게시판 목록의 기본 widget 을 사용하되, 사용자 화면에 보이거나, 알림 등의 재 활용 할 수 있도록 하는 것이다.
+
+
+
+## Entity hooks
+
 * entity CRUD 에 대해서, 훅을 발생시킨다.
 
 * 예를 들어, `posts_before_create` 이나 `posts_after_create` 훅은 posts enitty 생성 직전과 직후에 발생한다.
   글/코멘트가 posts entity 이며, 쇼핑몰이나 기타 여러가지 기능을 posts entity 로 사용 할 수 있다.
   이러한 모든 것들에 대해서 생성을 하고자 할 때, hook 을 통해서 원하는 작업을 할 수 있다. 만약, 작업이 올바르지 않으면 에러를 내서, entity 생성을 못하게 할 수도 있다.
 
-## Entity Create 훅
+### Entity Create 훅
 
 - 대표적인 것으로 `posts_before_create` 와 `posts_after_create` 가 있다.
   `posts_before_create` 훅 함수로 전달되는 값은 생성 직전의 record 와 전에 입력 값이다.
@@ -1288,20 +1328,6 @@ hook()->add('posts_before_create', function($record, $in) {
 });
 ```
 
-
-* Hook 함수는 각 테마 별로 config.php 에서 정의하면 되고, hook 코드가 커지면 `[theme-name].hooks.php` 로 따로 모으면 된다.
-* 동일한 hook 이름에 여러개 훅을 지정 할 수 있다.
-* 훅 함수에는 변수를 얼마든지 마음데로 지정 할 수 있으며 모두 reference 로 전달된다.
-* `posts_before_create` 훅 함수가 에러 문자열을 리턴하면 다른 훅은 모두 실행이 안되고, 글/코멘트 생성이 중지된다.
-
-* 모든 훅 함수는 값을 리턴하거나 파라메타로 받은 레퍼런스 변수를 수정하는 것이 원칙이다.
-  * 가능한, 어떤 값을 화면으로 출력하지 않도록 해야하지만,
-  * 글 쓰기에서 권한이 없는 경우, 미리 체크를 해야하지만, 그렇지 못한 경우 훅에서 검사해서
-    Javascript 로 goBack() 하고 exit 할 수 있다.
-    이 처럼 꼭 필요한 경우에는 직접 HTML 출력을 한다.
-
-* 훅의 목적은 가능한 기본 코드를 재 사용하되, 원하는 기능 또는 UI/UX 로 적용하기 위한 것이다.
-  * 예를 들면, 게시판 목록의 기본 widget 을 사용하되, 사용자 화면에 보이거나, 알림 등의 재 활용 할 수 있도록 하는 것이다.
 
 
 
@@ -1439,6 +1465,18 @@ EOS;
   만약, 23시 59분에 10개를 쓰고, 그 다음을 0시 0분에 또 10개를 쓸 수 있다. 즉, 20개를 연달아 쓸 수 있다.
 
 - 게시판에는 Ymd 필드에 글 쓴 날짜의 YYYYMMDD 형식의 날자 값이 저장된다. 이 값은 글 쓰기에서 제한이 되지 않는다.
+
+## 포인트 시스템 활용도
+
+- 예를 들어, 방명록 또는 출석부에 글 쓰는 경우, 200 포인트씩 증가하는데, 하루에 한번만 충전하게 하고 싶다면,
+  attendance 게시판에, 일/수 제한으로 1을 하고, 글 쓰기 포인트에 200 으로 입력하면 된다.
+
+- 예를 들어, 그림 짝 맞추기 게임을 성공하는 경우, 100 포인트 씩 하루에 5번까지만 포인트 충전이 되게하고 싶다면,
+  game 게시판에 글 쓰기 포인트 100 포인트를 입력하고, 일/수에 5를 입력한다.
+  그리고 게임에서 짝 맞추기 성공하면, 게시판에 글을 하나 쓰면 되는 것이다.
+  그리고 게임은 계속 할 수 있어도, 포인트는 5번만 증가한다.
+  
+
 
 
 # 파이어베이스

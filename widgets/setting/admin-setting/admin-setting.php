@@ -26,13 +26,13 @@
                 <input type="hidden" name="w" value="<?=in('w')?>">
                 <input type="hidden" name="mode" value="update">
                 <input type="text" class="form-control mb-2" name='siteName' value="<?=$ms['siteName'] ?? ''?>" placeholder="사이트 이름">
-                <div class="form-text">
+                <div class="hint">
                     웹 브라우저 상단 제목이나 검색 엔진에 색인 될 사이트 이름입니다.
                     가능한 특수 문자를 입력하지 마세요.
                 </div>
 
                 <input type="text" class="form-control mb-2" name='siteDescription' value="<?=$ms['siteDescription'] ?? ''?>" placeholder="사이트 설명">
-                <div class="form-text">
+                <div class="hint">
                     검색 엔진에 색인 될 기본 사이트 설명입니다. 가능한 특수 문자를 입력하지마세요.
                     각 글 읽기 페이지는 글 내용에 대한 설명이 색인됩니다.
                 </div>
@@ -45,7 +45,7 @@
                 <div>
                     <label for="search_categories" class="form-label"><?=ln("Search Categories", "검색 가능한 카테고리")?></label>
                     <input class="form-control" id="search_categories" type="text" name="search_categories" value="<?=$ms['search_categories'] ?? ''?>">
-                    <div class="form-text">
+                    <div class="hint">
                         여기에 기록하는 카테고리만 검색이 됩니다. 공백으로 구분해서 입력 가능. 예) qna,job<br>
                         검색을 할 때, 전체 게시판 검색을 할 수 있게 하려면, 공백으로 두세요.
                     </div>
@@ -109,9 +109,9 @@
 
                     </div>
                 </div>
-
                 <hr>
 
+                <?=hook()->run('admin-setting', $ms)?>
 
 
                 <div>
