@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [5.18.0] - 2021-04-19
+### Added
+* Added support for more public keys from Google that ID Tokens could have been signed with. 
+
+## [5.17.1] - 2021-04-13
+### Fixed
+* [5.16.0] introduced a check for reserved words and prefixes in FCM Data Payloads - although stated
+  otherwise in the official documentation, the keyword `notification` is _not_ be rejected by the
+  Firebase API, causing projects to break that used it and updated the SDK. This release removes
+  the check for this key.
+
 ## [5.17.0] - 2021-03-21
 ### Added
 * Helper methods to specify a message priority
@@ -225,7 +236,9 @@ to upgrade from a 4.x release to 5.0 without changes to your code.**
 * Support for PHP `<7.2`
 * Deprecated methods and classes
 
-[Unreleased]: https://github.com/kreait/firebase-php/compare/5.17.0...HEAD
+[Unreleased]: https://github.com/kreait/firebase-php/compare/5.18.0...HEAD
+[5.18.0]: https://github.com/kreait/firebase-php/compare/5.17.1...5.18.0
+[5.17.1]: https://github.com/kreait/firebase-php/compare/5.17.0...5.17.1
 [5.17.0]: https://github.com/kreait/firebase-php/compare/5.16.0...5.17.0
 [5.16.0]: https://github.com/kreait/firebase-php/compare/5.15.0...5.16.0
 [5.15.0]: https://github.com/kreait/firebase-php/compare/5.14.1...5.15.0

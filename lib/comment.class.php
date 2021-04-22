@@ -202,6 +202,7 @@ class Comment extends PostTaxonomy {
     public function search(
         string $select='idx',
         string $where='1',
+        array $params = [],
         string $order='idx',
         string $by='DESC',
         int $page=1,
@@ -214,6 +215,7 @@ class Comment extends PostTaxonomy {
         return parent::search(
             select: $select,
             where: $where,
+            params: $params,
             order: $order,
             by: $by,
             page: $page,

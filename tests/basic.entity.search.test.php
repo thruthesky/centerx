@@ -3,6 +3,28 @@
 _testUserSearch();
 _testEntitySearch();
 _testEntityMy();
+_testEntityPrepareStatement();
+
+function _testEntityPrepareStatement() {
+    $res = entity(USERS)->search(where: "email LIKE ?", params: ['user%']);
+    isTrue(count($res) >= 3, '_testEntityPrepareStatement: count($res) >= 3');
+    isTrue($res[0][IDX] > 0, '_testEntityPrepareStatement: $res[IDX] > 0');
+
+
+    $res = entity(USERS)->search(select: 'idx, email', where: "email LIKE ?", params: ['user%']);
+    isTrue($res[0][EMAIL] != '', "_testEntityPrepareStatement: {$res[0][EMAIL]}");
+
+
+
+    $res = entity(USERS)->search(select: 'idx, email', where: "idx > ? AND email LIKE ?", params: [2, 'user%'], object: true);
+    isTrue($res[0]->email != '', "_testEntityPrepareStatement: {$res[0]->email}");
+    isTrue($res[0]->createdAt > 0, "_testEntityPrepareStatement: {$res[0]->createdAt} > 0");
+    isTrue($res[0]->idx > 2, 'User idx is bigger than 2');
+
+
+}
+
+
 
 function _testUserSearch() {
     $pw = '12345a' . time();

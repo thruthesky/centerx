@@ -6,6 +6,7 @@
 
 use function ezsql\functions\{
     eq,
+    get_results
 };
 
 
@@ -798,6 +799,7 @@ class Entity {
     public function search(
         string $select='idx',
         string $where='1',
+        array $params = [],
         string $order='idx',
         string $by='DESC',
         int $page=1,
@@ -810,18 +812,37 @@ class Entity {
         $from = ($page-1) * ($limit ? $limit : 10);
 
 
-        if ( $conds ) {
-            $where = sqlCondition($conds, $conj);
+        if ( $params ) { // prepare statement if $params is set.
+            $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
+            try {
+                if ( isDebugging() ) { d($q); d($params); }
+                /// @TODO remove the '@' sign after 'warning' bug fixed.
+                @db()->query_prepared($q, $params);
+
+                $rows = get_results(ARRAY_A, db());
+            } catch(Exception $e) {
+                // Error.
+                $this->setError($e->getCode());
+                return [];
+            }
+        } else {
+            if ( $conds ) {
+                $where = sqlCondition($conds, $conj);
+            }
+            $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
+
+            if ( isDebugging() ) d($q);
+            $rows = db()->get_results($q, ARRAY_A);
         }
-        $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
-        if ( isDebugging() ) d($q);
-        $rows = db()->get_results($q, ARRAY_A);
+
 
         /// 현재 entity 레코드를 배열로 리턴받기 원하면,
         if ( $object == false ) return $rows;
 
 
         /// 현재 entity 를 객체에 넣어 리턴 받기 원하면,
+        /// Note, if the return data of should be entity objects, then it will load all the record and its meta into the entity object.
+        /// So, 'select' is ignored.
         $rets = [];
         foreach( ids($rows) as $idx ) {
             $entity = clone $this;
@@ -849,7 +870,7 @@ class Entity {
      * @return array
      */
     public function my($select='*', int $page=1, string $order='idx', string $by='DESC', int $limit=10 ): array {
-        return $this->search($select, "userIdx=" . login()->idx, $order, $by, $page, $limit);
+        return $this->search($select, "userIdx=" . login()->idx, order: $order, by: $by, page: $page, limit: $limit);
     }
 
 

@@ -40,7 +40,7 @@
 
 - 이전 버전과 호환되는 작업이 어렵다. 왜냐하면, user_activities 가 기존의 포인트 시스템을 완전히 바꾸기 때문이다. 그래서 기존 main 브랜치를 10420 로 변경해 놓고, next 브랜치에서 새로운 작업을 한다.
 
-- SQL Injection 공격 빌미를 없애기 위해서 SELECT 검색을 할 때, WHERE 에 SQL 구문을 직접 받는 대신,
+- @done SQL Injection 공격 빌미를 없애기 위해서 SELECT 검색을 할 때, WHERE 에 SQL 구문을 직접 받는 대신,
   Prepared statement 를 쓰도록 한다.
   
   예)
@@ -51,6 +51,8 @@
 
   기존 search() 의 where: 에 값이 들어오면, params 의 값이 필수적으로 들어오도록 한다.
   참고: https://github.com/ezSQL/ezsql#example-for-using-prepare-statements-directly-no-shortcut-sql-methods-used
+  
+- 다음 버전에서, `entity()->search()` 에서 where 옵션을 사용하면, 반드시 params 옵션도 같이 사용하도록 한다.
   
 - meta 함수들을 meta entity 로 대체한다.
   

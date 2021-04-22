@@ -64,6 +64,7 @@ class PointHistory extends Entity {
     public function search(
         string $select='idx',
         string $where='1',
+        array $params = [],
         string $order='idx',
         string $by='DESC',
         int $page=1,
