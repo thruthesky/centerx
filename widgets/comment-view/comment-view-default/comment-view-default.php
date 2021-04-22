@@ -35,7 +35,7 @@ $comment = $o['comment'];
             <span class="flex-grow-1"></span>
             <?php if ($comment->isMine()) { ?>
                 <a class="btn btn-sm mr-1" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'update')"><?= ek('Edit', '수정') ?></a>
-                <a class="btn btn-sm" onclick="onCommentDelete(<?= $comment->idx ?>)"><?= ek('Delete', '삭제') ?></a>
+                <a class="btn btn-sm" onclick="onCommentDelete(<?= $comment->idx ?>)" style="color: red;"><?= ek('Delete', '삭제') ?></a>
             <?php } ?>
         </section>
 
@@ -47,3 +47,20 @@ $comment = $o['comment'];
 
 
 </div>
+
+<script>
+    function onCommentDelete(idx) {
+        const re = confirm('Are you sure you want to delete Comment no. ' + idx + '?');
+        if (re === false) return;
+        axios.post('/index.php', {
+                sessionId: '<?= login()->sessionId ?>',
+                route: 'comment.delete',
+                idx: idx,
+            })
+            .then(function(res) {
+                console.log('comment deleted, ', res);
+                location.reload();
+            })
+            .catch(alert);
+    }
+</script>

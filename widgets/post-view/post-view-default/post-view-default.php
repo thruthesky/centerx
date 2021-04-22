@@ -27,7 +27,9 @@ $post = post()->current();
             <?php if ($post->isMine() || admin()) { ?>
                 <div>
                     <a class="btn btn-sm" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '수정') ?></a>
-                    <a class="btn btn-sm" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>" style="color: red"><?= ek('Delete', '삭제') ?></a>
+                    <a class="btn btn-sm" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>" style="color: red" onclick="return confirm('<?= ek('Delete Post?', '@T Delete Post') ?>')">
+                        <?= ek('Delete', '삭제') ?>
+                    </a>
                 </div>
             <?php } ?>
         </div>
