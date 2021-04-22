@@ -812,6 +812,8 @@ class Entity {
         $from = ($page-1) * ($limit ? $limit : 10);
 
 
+        // @TODO [on next version] make an error if $params is empty when $where is not.
+
         if ( $params ) { // prepare statement if $params is set.
             $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
             try {
