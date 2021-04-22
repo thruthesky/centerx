@@ -12,28 +12,5 @@
 <img id="home4" class="w-100" src="themes/itsuda/img/home4.jpg">
 <img id="home5" class="w-100" src="themes/itsuda/img/home5.jpg">
 <img id="home6" class="w-100" src="themes/itsuda/img/home6.jpg">
-<img id="home7" class="w-100" src="themes/itsuda/img/home7.jpg?v=4">
+<img id="home7" class="w-100 mb-5" src="themes/itsuda/img/home7.jpg?v=5">
 
-<div class="my-5 p-5 bg-light">
-
-    <div>
-        주식회사 위드플랜잇 | 대표이사 김건호
-    </div>
-    <div>
-        사업자 번호: 683-88-02096 | 통신판매업신고번호: 제 2021-서울강남-02310 호
-    </div>
-    <div>
-        소재지: 서울특별시 강남구 언주로 118 (도곡동, 우성캐릭터199), 7층 1712호
-    </div>
-
-    <div>
-
-        연락처 010-8693-4225 thruthesky@gmail.com
-    </div>
-
-    <hr>
-
-    <div>
-        Copyright(c)2002 by 위드플랜잇
-    </div>
-</div>
