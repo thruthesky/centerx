@@ -43,6 +43,7 @@ $file = files()->getByCode(in('code'));
                     return;
                 }
                 const file = event.target.files[0];
+                const self = this;
                 fileUpload( // 파일 업로드 함수로 파일 업로드
                     file,
                     {
@@ -52,24 +53,26 @@ $file = files()->getByCode(in('code'));
                     },
                     function (res) {
                         console.log("파일 업로드 성공: res.path: ", res, res.path);
-                        adminUploadImage.src = res.url;
-                        adminUploadImage.percent = 0;
-                        axios({ // 파일 업로드 후, file.idx 를 관리자 설정에 추가.
-                            method: 'post',
-                            url: '/index.php',
-                            data: {
-                                route: 'app.setConfig',
-                                code: '<?=in('code')?>',
-                                data: res.idx
-                            }
-                        })
-                            .then(function(res) { console.log('app.setConfig success:', res); })
-                            .catch(function(e) { conslole.log('app.setConfig error: ', e); })
+                        self.src = res.url;
+                        self.percent = 0;
+                        request('app.setConfig', {code: '<?=in('code')?>', data: res.idx}, console.log, alert);
+                        //
+                        //axios({ // 파일 업로드 후, file.idx 를 관리자 설정에 추가.
+                        //    method: 'post',
+                        //    url: '/index.php',
+                        //    data: {
+                        //        route: 'app.setConfig',
+                        //        code: '<?//=in('code')?>//',
+                        //        data: res.idx
+                        //    }
+                        //})
+                        //    .then(function(res) { console.log('app.setConfig success:', res); })
+                        //    .catch(function(e) { conslole.log('app.setConfig error: ', e); })
                     },
                     alert, // 에러가 있으면 화면에 출력.
                     function (p) { // 업로드 프로그레스바 표시 함수.
                         console.log("업로드 퍼센티지: ", p);
-                        adminUploadImage.percent = p;
+                        self.percent = p;
                     }
                 );
             },

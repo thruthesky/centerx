@@ -36,11 +36,20 @@
 
 - next branch 에서 작업 중.
 
+- 폴더 구조
+  library/taxonomy/ 폴더에 각종 taxonomy 를 둔다. user.php, post.php, comment.php, meta.php 등으로 한다. 
+  post 와 comment 는 같은 table 을 쓰지만, 용도가 크게 다르다. 그래서 taxonomy 로 따로 분류한다.
+  
+  library/utility/mysqli.php 에서 DB 쿼리를 담당한다. 기존의 EzSQL 은 버린다. 복잡하고, 문제가 있는 데 해결이 안된다.
+  library/model/entity.php 는 taxonomy 가 아니다. 그래서 model 폴더에 넣는다.
+  library/model/taxonomy.php 는 taxonomy 역활을 하는 클래스이다. entity 의 하위 클래스이고, 모든 taxonomy 들이 이 클래스를 상속한다.
+  
+
 - 버전 체계. 년-월-일 로 5자리로 한다. 2021 이 1 이다. 4월 19일 버전이면, 10419 가 된다.
 
 - 이전 버전과 호환되는 작업이 어렵다. 왜냐하면, user_activities 가 기존의 포인트 시스템을 완전히 바꾸기 때문이다. 그래서 기존 main 브랜치를 10420 로 변경해 놓고, next 브랜치에서 새로운 작업을 한다.
 
-- SQL Injection 공격 빌미를 없애기 위해서 SELECT 검색을 할 때, WHERE 에 SQL 구문을 직접 받는 대신,
+- @done SQL Injection 공격 빌미를 없애기 위해서 SELECT 검색을 할 때, WHERE 에 SQL 구문을 직접 받는 대신,
   Prepared statement 를 쓰도록 한다.
   
   예)
@@ -51,6 +60,8 @@
 
   기존 search() 의 where: 에 값이 들어오면, params 의 값이 필수적으로 들어오도록 한다.
   참고: https://github.com/ezSQL/ezsql#example-for-using-prepare-statements-directly-no-shortcut-sql-methods-used
+  
+- 다음 버전에서, `entity()->search()` 에서 where 옵션을 사용하면, 반드시 params 옵션도 같이 사용하도록 한다.
   
 - meta 함수들을 meta entity 로 대체한다.
   
@@ -1548,6 +1559,7 @@ chokidar '**/*.php' -c "docker exec [php_container_name] php [centerx_folder_nam
   
 ```shell
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic."
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.entity.search"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php app"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php user"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php point"

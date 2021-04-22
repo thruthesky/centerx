@@ -260,24 +260,25 @@ class Post extends PostTaxonomy {
      * }
      * ```
      *
+     * @param string $select
      * @param string $where
-     * @param int $page
-     * @param int $limit
      * @param string $order
      * @param string $by
-     * @param string $select
+     * @param int $page
+     * @param int $limit
      * @param array $conds
      * @param string $conj
+     * @param bool $object
      * @return Post[]
      *
      * @example
      *  $where = "userIdx=$userIdx AND categoryIdx=$categoryIdx AND createdAt>=$beginStamp AND createdAt<=$endStamp";
      *  $posts = post()->search(where: $where);
-     *
      */
     public function search(
         string $select='idx',
         string $where='1',
+        array $params = [],
         string $order='idx',
         string $by='DESC',
         int $page=1,
@@ -288,12 +289,14 @@ class Post extends PostTaxonomy {
     ): array
     {
 
+
         // Parse category
         $where = $this->parseCategory($where);
 
         $posts = parent::search(
             select: $select,
             where: $where,
+            params: $params,
             order: $order,
             by: $by,
             page: $page,

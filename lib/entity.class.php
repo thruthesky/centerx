@@ -6,6 +6,7 @@
 
 use function ezsql\functions\{
     eq,
+    get_results
 };
 
 
@@ -756,6 +757,7 @@ class Entity {
      *
      * @param string $select
      * @param string $where
+     * @param array $params
      * @param string $order
      * @param string $by
      * @param int $page
@@ -763,7 +765,7 @@ class Entity {
      * @param array $conds - 키/값 조건문.
      * @param string $conj - $conds 의 키/값을 연결할 조건식. 기본 AND.
      * @param bool $object
-     * @return array | self[]
+     * @return array - empty array([]), If there is no record found.
      *  - empty array([]), If there is no record found.
      *
      *
@@ -797,6 +799,7 @@ class Entity {
     public function search(
         string $select='idx',
         string $where='1',
+        array $params = [],
         string $order='idx',
         string $by='DESC',
         int $page=1,
@@ -808,18 +811,40 @@ class Entity {
         $table = $this->getTable();
         $from = ($page-1) * ($limit ? $limit : 10);
 
-        if ( $conds ) {
-            $where = sqlCondition($conds, $conj);
+
+        // @TODO [on next version] make an error if $params is empty when $where is not.
+
+        if ( $params ) { // prepare statement if $params is set.
+            $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
+            try {
+                if ( isDebugging() ) { d($q); d($params); }
+                /// @TODO remove the '@' sign after 'warning' bug fixed.
+                @db()->query_prepared($q, $params);
+
+                $rows = get_results(ARRAY_A, db());
+            } catch(Exception $e) {
+                // Error.
+                $this->setError($e->getCode());
+                return [];
+            }
+        } else {
+            if ( $conds ) {
+                $where = sqlCondition($conds, $conj);
+            }
+            $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
+
+            if ( isDebugging() ) d($q);
+            $rows = db()->get_results($q, ARRAY_A);
         }
-        $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
-        if ( isDebugging() ) d($q);
-        $rows = db()->get_results($q, ARRAY_A);
+
 
         /// 현재 entity 레코드를 배열로 리턴받기 원하면,
         if ( $object == false ) return $rows;
 
 
         /// 현재 entity 를 객체에 넣어 리턴 받기 원하면,
+        /// Note, if the return data of should be entity objects, then it will load all the record and its meta into the entity object.
+        /// So, 'select' is ignored.
         $rets = [];
         foreach( ids($rows) as $idx ) {
             $entity = clone $this;
@@ -847,7 +872,7 @@ class Entity {
      * @return array
      */
     public function my($select='*', int $page=1, string $order='idx', string $by='DESC', int $limit=10 ): array {
-        return $this->search($select, "userIdx=" . login()->idx, $order, $by, $page, $limit);
+        return $this->search($select, "userIdx=" . login()->idx, order: $order, by: $by, page: $page, limit: $limit);
     }
 
 

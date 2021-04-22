@@ -122,6 +122,26 @@ class Google_Service_DisplayVideo_Resource_AdvertisersLineItems extends Google_S
     return $this->call('delete', array($params), "Google_Service_DisplayVideo_DisplayvideoEmpty");
   }
   /**
+   * Creates a new line item with settings (including targeting) inherited from
+   * the insertion order and an `ENTITY_STATUS_DRAFT` entity_status. Returns the
+   * newly created line item if successful. There are default values based on the
+   * three fields: * The insertion order's insertion_order_type * The insertion
+   * order's automation_type * The given line_item_type
+   * (lineItems.generateDefault)
+   *
+   * @param string $advertiserId Required. The ID of the advertiser this line item
+   * belongs to.
+   * @param Google_Service_DisplayVideo_GenerateDefaultLineItemRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_DisplayVideo_LineItem
+   */
+  public function generateDefault($advertiserId, Google_Service_DisplayVideo_GenerateDefaultLineItemRequest $postBody, $optParams = array())
+  {
+    $params = array('advertiserId' => $advertiserId, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('generateDefault', array($params), "Google_Service_DisplayVideo_LineItem");
+  }
+  /**
    * Gets a line item. (lineItems.get)
    *
    * @param string $advertiserId Required. The ID of the advertiser this line item

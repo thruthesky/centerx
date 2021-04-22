@@ -102,12 +102,15 @@ class InAppPurchase extends Entity {
 
         debug_log("verifyPurchase", $in);
 
-        if ( $in['platform'] == 'ios' ) {
+        if ( $in['platform'] == 'ios' ) { // iOS
             $res = $this->verifyIOSPurchase($in);
-        } else {
+            $pointToCredit = IOS_POINT_PURCHASE_AMOUNT[ $in['productID'] ];
+        } else { // Android
             $in["localVerificationData_packageName"] = ANDROID_APP_ID;
             $res = $this->verifyAndroidPurchase($in);
+            $pointToCredit = ANDROID_POINT_PURCHASE_AMOUNT[ $in['productID'] ];
         }
+
         if ( isError($res) ) return $this->error( $res );
 
         debug_log("verifyPurchase success: ", $res);
@@ -118,7 +121,7 @@ class InAppPurchase extends Entity {
 
 
 
-        point()->purchase(POINT_PURCHASE_AMOUNT[ $in['productID'] ]);
+        point()->purchase( $pointToCredit );
 
 
 

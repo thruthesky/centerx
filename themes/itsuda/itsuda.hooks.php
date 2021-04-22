@@ -76,12 +76,22 @@ hook()->add('posts-create-point', function($data) {
 
 
 hook()->add('admin-setting', function($settings) {
-    $account_info = $settings['account_info'] ?? '';
+    $account_info_name = $settings['account_info_name'] ?? '';
+    $account_info_bank = $settings['account_info_bank'] ?? '';
+    $account_info_no = $settings['account_info_no'] ?? '';
    echo <<<EOH
-    <h2>쇼핑몰 입금 통장 번호</h2>
-    <input type="text" class="form-control mb-2" name='account_info' value="$account_info" placeholder="예금주 은행 계좌번호">
+    <h2>쇼핑몰 입금 통장 정보</h2>
+    <input type="text" class="form-control mb-2" name='account_info_name' value="$account_info_name" placeholder="예금주">
     <div class="hint">
-        쇼핑몰에 표시 될 무통장 입금 정보를 입력해주세요. 예) 주식회사 위드플랜잇 국민은행 XXXX-XXXX-XXXX
+        쇼핑몰에 표시 될 무통장 정보 중 예금주를 입력해주세요. 예) 주식회사 위드플랜잇
+    </div>
+    <input type="text" class="form-control mb-2" name='account_info_bank' value="$account_info_bank" placeholder="은행이름">
+    <div class="hint">
+        쇼핑몰에 표시 될 무통장 정보 중 은행 이름을 입력해주세요. 예) 기업 은행
+    </div>
+    <input type="text" class="form-control mb-2" name='account_info_no' value="$account_info_no" placeholder="계좌번호">
+    <div class="hint">
+        쇼핑몰에 표시 될 무통장 정보 중 계좌번호를 입력해주세요. 예) 1234-xxxx-5678
     </div>
 EOH;
 
