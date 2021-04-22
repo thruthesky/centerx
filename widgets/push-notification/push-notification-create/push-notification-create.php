@@ -7,7 +7,7 @@ if(modeSubmit()) {
 //    d(in());
     $push = new NotificationRoute();
 
-//    $in = in();
+    $in = in();
     $res = null;
     if (in('notify') == 'all' ) {
         $in[TOPIC] = DEFAULT_TOPIC;
@@ -107,10 +107,10 @@ if(modeSubmit()) {
 
         <div class="d-flex justify-content-between mt-2 mb-3">
             <div>
-                <button type="submit" class="btn btn-primary">
-                    <?=ek('Send Notification php', '알림 보내기')?>
-                </button>
-                <button type="button" class="btn btn-primary ml-5" @click="sendPushNotification()">
+<!--                <button type="submit" class="btn btn-primary mr-5">-->
+<!--                    --><?//=ek('Send Notification php', '알림 보내기')?>
+<!--                </button>-->
+                <button type="button" class="btn btn-primary" @click="sendPushNotification()">
                     <?=ek('Send Notification vue', '알림 보내기')?>
                 </button>
             </div>
@@ -168,6 +168,7 @@ if(modeSubmit()) {
                     click_action: this.click_action,
                     imageUrl: this.imageUrl,
                     sound: this.sound,
+                    channel: this.channel,
                 };
                 if (this.notify === 'all' ) {
                     data['topic'] = "<?=DEFAULT_TOPIC?>";

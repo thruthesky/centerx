@@ -240,10 +240,9 @@ function getAndroidPushData($channel, $sound): AndroidConfig
         'notification' => [
             'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
             'channel_id' => 'PUSH_NOTIFICATION', // channel_id is the same as the id you register on the channelMap
-//            'notification_count' => 1
         ],
     ];
-    if (!empty($channel)) $data['channel_id'] = $channel;
+    if (!empty($channel)) $data['notification']['channel_id'] = $channel;
     return AndroidConfig::fromArray($data)->withSound($sound);
 }
 
