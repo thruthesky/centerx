@@ -16,7 +16,7 @@ $comment = $o['comment'];
             <div class="meta">
                 <small>
                     No: <?= $comment->idx ?> -
-                    Date: <?= date('r', $comment->createdAt) ?>
+                    <?= date('r', $comment->createdAt) ?>
                 </small>
             </div>
         </div>
@@ -34,8 +34,8 @@ $comment = $o['comment'];
             <vote-buttons n="<?= $comment->N ?>" y="<?= $comment->Y ?>" parent-idx="<?= $comment->idx ?>"></vote-buttons>
             <span class="flex-grow-1"></span>
             <?php if ($comment->isMine()) { ?>
-                <a class="btn btn-sm btn-primary mr-1" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'update')"><?= ek('Edit', '수정') ?></a>
-                <a class="btn btn-sm btn-danger" onclick="onCommentDelete(<?= $comment->idx ?>)"><?= ek('Delete', '삭제') ?></a>
+                <a class="btn btn-sm mr-1" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'update')"><?= ek('Edit', '수정') ?></a>
+                <a class="btn btn-sm" onclick="onCommentDelete(<?= $comment->idx ?>)"><?= ek('Delete', '삭제') ?></a>
             <?php } ?>
         </section>
 
