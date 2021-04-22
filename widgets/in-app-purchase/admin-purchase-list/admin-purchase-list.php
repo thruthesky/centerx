@@ -16,7 +16,7 @@ if(modeSubmit()) {
 $where = implode(" AND ", $conds);
 //d($where);
 
-$rows = inAppPurchase()->search(where: $where, limit: intVal($limit));
+$rows = inAppPurchase()->search(where: $where, limit: intVal($limit), object: true);
 
 $total_price = [];
 $user_total_spend = [];
