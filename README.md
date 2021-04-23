@@ -34,53 +34,32 @@
 
 # 해야 할 일
 
-- next branch 에서 작업 중.
+- work on next branch
 
-- 폴더 구조
-  library/taxonomy/ 폴더에 각종 taxonomy 를 둔다. user.php, post.php, comment.php, meta.php 등으로 한다. 
-  post 와 comment 는 같은 table 을 쓰지만, 용도가 크게 다르다. 그래서 taxonomy 로 따로 분류한다.
-  
-  library/utility/mysqli.php 에서 DB 쿼리를 담당한다. 기존의 EzSQL 은 버린다. 복잡하고, 문제가 있는 데 해결이 안된다.
-  library/model/entity.php 는 taxonomy 가 아니다. 그래서 model 폴더에 넣는다.
-  library/model/taxonomy.php 는 taxonomy 역활을 하는 클래스이다. entity 의 하위 클래스이고, 모든 taxonomy 들이 이 클래스를 상속한다.
+- refactor folder structure.
+
+- develop own mysql connectivity class instead of using ezSQL
+
+- change `point_histories` to `user_activities`.
+  `point_histories` handles only for point related activities like point changes among crud, vote, register, login, etc.
+  `user_activiies` includes all the actions/works of `point_histories` and it includes all the user activities like
+  `search`, `report`, `block user`, `add friend`, `like on user profile`, and other activities evens if that are not related in point increase/decrease.
+  And, of course, it the record will have point change information if point changes.
+
+- In `entity()->search()`, `params` is mandatory if `where` is provided.
+
+- rewrite `meta` functions to use `mata.taxonomy`
+
+
   
 
-- 버전 체계. 년-월-일 로 5자리로 한다. 2021 이 1 이다. 4월 19일 버전이면, 10419 가 된다.
-
-- 이전 버전과 호환되는 작업이 어렵다. 왜냐하면, user_activities 가 기존의 포인트 시스템을 완전히 바꾸기 때문이다. 그래서 기존 main 브랜치를 10420 로 변경해 놓고, next 브랜치에서 새로운 작업을 한다.
-
-- @done SQL Injection 공격 빌미를 없애기 위해서 SELECT 검색을 할 때, WHERE 에 SQL 구문을 직접 받는 대신,
-  Prepared statement 를 쓰도록 한다.
-  
-  예)
-  where: "phone = ? OR id != ?",
-  params: ['01012345678', 5]
-  
-  와 같이 입력 받아서, SQL injection 가능성을 줄인다.
-
-  기존 search() 의 where: 에 값이 들어오면, params 의 값이 필수적으로 들어오도록 한다.
-  참고: https://github.com/ezSQL/ezsql#example-for-using-prepare-statements-directly-no-shortcut-sql-methods-used
-  
-- 다음 버전에서, `entity()->search()` 에서 where 옵션을 사용하면, 반드시 params 옵션도 같이 사용하도록 한다.
-  
-- meta 함수들을 meta entity 로 대체한다.
-  
 - 필고를 보고, security 체크를 한다. security 패턴 검사를 관리자 페이지에서 입력 할 수 있도록 한다.
   - SELECT SQL 쿼리 word filtering 을 따로 두고, (글 추출 및 각종 해킹 시도. entity.class.php 에서 read, search 등에서 사용. )
   - INSERT/UPDATE 쿼리 word filtering 을 따로 둔다. (글 쓰기, 코멘트 쓰기용 필터링, 욕설 등록 및 기타, entity.class.php 에서 insert 에서 사용.)
   
 - SQL 문장에서 쿼리 시간을 제한 할 수 있도록, config.php 에 설정을 한다.
 
-- point_hitories 를 user_activities 로 변경한다.
-  - 현재 기능은, 글/코멘트 추천, 반대, 글/코멘트 쓰기, 삭제, 회원 가입, 로그인 인데,
-    이 뿐만아니라, 신고, 다른 사람의 프로필 추천 등 여러가지 다양한 회원 활동이 있을 수 있다.
-    그런데, 신고의 경우, 포인트가 증/감하지 않지만, 기록이 되어야 한다.
-    즉, 포인트의 모든 활동 뿐만아니라, 각종 회원 활동까지, 그리고 차후 확장성 까지 생각해서, 모두 한곳에 저장을 하는 것이다.
 
-- `lib/**.class.php` 에서 taxonomy 클래스 파일들은 `lib/taxonomy/user/user.taxonomy.class.php` 와 같이 파일 경로를 변경한다.
-
-
-- https://polyfill.io/v3/polyfill.min.js 이 IE 10 이상에서 지원되어, BootstrapVue 를 쓸 수 있는 지 확인한다.
 
 - pass login 재 정리
 
@@ -89,10 +68,6 @@
   
 - 파일 업로드에서, 퍼미션이 없을 때, empty response 에러가 나온다. 올바른 에러가 표시되도록 할 것.
 
-- 퍼미션 검사는 lib/*.class.php 의 update(), delete() 에서 하지 않고,
-  `post(1)->permissionCheck()->markDelete()->getError()` 와 같이 별도의 permissionCheck() 함수를 만들어서 사용 할 수 있도록 한다.
-  - `permissionCheck()` 함수는 entity 클래스에 들어가 있어서, 모든 taxonomy 에서 사용가능하다.
-  
 - 훅시스템
   - entity()->create(), update(), delete(), get(), search() 등에서만 훅을 걸면 왠만한 것은 다 된다.
   
@@ -366,7 +341,12 @@ define('DOMAIN_THEMES', [
   - 먼저 `node live-reload.js` 와 같이 socket.io 서버를 실행.
   - etc/boot.code.php 에서 live_reload() 함수 호출
   - lib/functions.php::live_reload() 함수에서 live-reload.js 서버로 접속해서, 변경 이벤트가 있으면 reload
-  
+
+
+# Versioning
+
+- 버전 체계. 년-월-일 로 5자리로 한다. 2021 이 1 이다. 4월 19일 버전이면, 10419 가 된다.
+
 
 # Component
 
@@ -390,8 +370,6 @@ define('DOMAIN_THEMES', [
   - `etc/phpMyAdmin` - phpMyAdmin for managing database. Access `https://www...com/etc/phpMyAdmin/index.php`.
   - `etc/sql` - has SQL schema for installation.
   
-- `lib` has system library files like class files and function files.
-  
 - `routes` 폴더에는 각종 라우트가 저장된다.
 
 - `storage` is for all the uploaded files.
@@ -401,6 +379,18 @@ define('DOMAIN_THEMES', [
 - `vendor` is for compose files.
   
 - `widgets` is for widgets.
+
+- `library` folder has the system library scripts.
+  -`library/taxonomy` folder has all kinds of taxonomy scripts like `user.taxonomy.php`, `post.taxonomy.php`,
+    `comment.taxonomy.php`, `meta.taxonomy.php`, and others.
+  
+    - post and comment are using same table but their usages are different. So, the taxonomies are divided.
+  
+  - `library/utility` folder has utility scripts for the system like `library/utility/mysqli.php` that provides database connectivity.
+    
+  - `library/model/entity.php` is a model class for each taxonomy.
+  - `library/model/taxonomy.php` is the taxonomy class that extends entity class and is the parent of all taxonomy classes.
+    
 
 
 
@@ -1168,6 +1158,15 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
   - Dialog, Calendar, Date Picker, Time picker, Overlay, Popover, Sidebar, Spinner, Tab, Toast, Tooltip,
   - FORM file(drag & UI), FORM input contextual state,
   - Scroll spy, 
+  
+예제) 아래와 같이 polyfill.min.js 를 포함해야 IE10+ 이상이 지원된다.
+
+```html
+<!-- Load polyfills to support older browsers before loading Vue and Bootstrap Vue -->
+<script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
+<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js', 2)?>
+<?php js(HOME_URL . 'etc/js/bootstrap-vue-2.21.2.min.js', 1)?>
+```
 
 # Admin page design
 
@@ -2203,7 +2202,7 @@ echo "현재 환율: $phpKwr";
   - 가장 좋은 방법은 SPA 를 통해서, 처음 접속시 한번만 실행하는 것이다.
   
 
-# 새로운 앱을 개발 할 때 해야하는 것
+# 플러터로 새로운 앱을 개발 할 때 해야하는 것
 
 - 구글 계정 준비(또는 생성)
 
@@ -2222,7 +2221,16 @@ echo "현재 환율: $phpKwr";
   - 플레이에 GCP 링크
   - GCP service account 를 centerx 에 연결
     - CenterX 의 android package name 과 service account path 지정
-- 
+
+
+# 퍼미션 검사
+
+
+- 퍼미션 검사는 lib/*.class.php 의 update(), delete() 에서 하지 않고,
+  `post(1)->permissionCheck()->markDelete()->getError()` 와 같이 별도의 permissionCheck() 함수를 만들어서 사용 할 수 있도록 한다.
+  - `permissionCheck()` 함수는 entity 클래스에 들어가 있어서, 모든 taxonomy 에서 사용가능하다.
+
+
 
 
 # Forum & Post & Comment

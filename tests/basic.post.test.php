@@ -56,12 +56,16 @@ function testPostUpdate() {
 
 
 function testPostDelete() {
-    setLogin1stUser();
-    $cat = category()->create(['id' => 'delete' . time()]);
-    $p = post()->create(['categoryId' => $cat->id]);
-    isTrue($p->delete()->getError() == e()->post_delete_not_supported, 'post cannot be deleted');
-    setLogin2ndUser();
-    isTrue($p->permissionCheck()->markDelete()->getError() == e()->not_your_post, "testPostDelete() => not your post");
+    setLogin1stUser(); // login 1st user
+    $cat = category()->create(['id' => 'delete' . time()]); // create category
+    $p = post()->create(['categoryId' => $cat->id]); // create post
+    isTrue($p->delete()->getError() == e()->post_delete_not_supported, 'post cannot be deleted'); // post delete failed.
+
+
+    setLogin2ndUser(); // login 2nd user.
+    $p1 = post($p->idx); // get the post that 1st user wrote.
+    isTrue($p1->permissionCheck()->markDelete()->getError() == e()->not_your_entity, "testPostDelete() => not_your_entity");
+
     setLogin1stUser();
     isTrue(post($p->idx)->markDelete()->deletedAt > 0, 'deleted');
     isTrue(post($p->idx)->markDelete()->getError() == e()->entity_deleted_already, 'deleted already');
