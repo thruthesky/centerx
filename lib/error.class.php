@@ -21,7 +21,6 @@ class E {
     public string $wrong_session_id = 'error_wrong_session_id';
     public string $user_not_found_by_that_session_id = 'error_user_not_found_by_that_session_id';
 
-
     public string $malformed_route = 'error_malformed_route';
     public string $route_file_not_found = 'error_route_file_not_found';
     public string $route_function_not_found = 'error_route_function_not_found';
