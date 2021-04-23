@@ -58,6 +58,8 @@ class User extends Entity {
         $data = $this->getData();
         $data[SESSION_ID] = getSessionId($this->getData());
         $this->setData($data);
+        $one = files()->findOne([TAXONOMY => 'photoUrl', USER_IDX => $this->idx]);
+        if ( $one->exists ) $this->updateMemory('photoIdx', $one->idx);
         return $this;
     }
 
