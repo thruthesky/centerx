@@ -48,8 +48,8 @@ function _testUserSearch() {
     isTrue(gettype($users[0]) == 'array', 'Default search is array');
 
     $users = user()->search(where: "email LIKE 'user%'");
-    isTrue($users[0] instanceof User, "instanceof => User object");
-    isTrue(get_class($users[0]) == 'User',"get_class() => User object");
+    isTrue($users[0] instanceof UserTaxonomy, "instanceof => User object");
+    isTrue(get_class($users[0]) == 'UserTaxonomy',"get_class() => User object");
 
 
 

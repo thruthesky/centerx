@@ -37,8 +37,22 @@
 - work on next branch
 
 - refactor folder structure.
+  1. copy the script in `lib` folder into `library/taxonomy/**/**.taxonomy.php`
+  2. rename the script file under `lib` folder.
+  3. rename the class name into `**Taxonomy` and change its types in other scripts.
+  4. change the path in `boot.php`
+  5. run tests.
+  
+- move
+  - `lib/defines.php` to `etc/defines.php`
+  - `lib/functions.php` to `library/functions.php`
+  - `lib/theme.class.php` to `library/utility/theme.php`
+  - `lib/hook.class.php` to `library/utility/hook.php`
+  - `data.php`, `firebase.php`, 
 
-- develop own mysql connectivity class instead of using ezSQL
+- develop own mysql connectivity class instead of using ezSQL.
+  1. create `library/utility/mysqli.php`
+  2. write tests.
 
 - change `point_histories` to `user_activities`.
   `point_histories` handles only for point related activities like point changes among crud, vote, register, login, etc.

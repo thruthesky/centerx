@@ -444,9 +444,9 @@ global $__login_user_profile;
  * @attention, it does not save login information into cookies. It only set the user login in current session.
  *
  * @param int|array $profile
- * @return User
+ * @return UserTaxonomy
  */
-function setUserAsLogin(int|array $profile): User {
+function setUserAsLogin(int|array $profile): UserTaxonomy {
     global $__login_user_profile;
     if ( is_int($profile) ) $profile = user($profile)->getData();
     $__login_user_profile = $profile;
@@ -454,7 +454,7 @@ function setUserAsLogin(int|array $profile): User {
 }
 
 // Alias of setUserAsLogin
-function setLogin(int|array $profile): User {
+function setLogin(int|array $profile): UserTaxonomy {
     return setUserAsLogin($profile);
 }
 function setLogout() {
@@ -462,11 +462,11 @@ function setLogout() {
     $__login_user_profile = [];
 }
 // Login any user. It could be root user. Use it only for test.
-function setLoginAny(): User {
+function setLoginAny(): UserTaxonomy {
     $users = user()->search(limit: 1);
     return setLogin($users[0]->idx);
 }
-function setLogin1stUser(): User {
+function setLogin1stUser(): UserTaxonomy {
     return setLoginAny();
 }
 
@@ -475,9 +475,9 @@ function setLogin1stUser(): User {
  * 이 함수는 2번째로 마지막에 가입된 사용자로 로그인을 한다.
  * 주의, 로그인을 하므로, setLoginAny() 와 같은 다른 로그인과 같이 쓰면 로그인이 꼬일 수 있다.
  * 두번 째 사용자 객체만 필요하면, getSecondUser() 함수를 사용한다.
- * @return User
+ * @return UserTaxonomy
  */
-function setLogin2ndUser(): User {
+function setLogin2ndUser(): UserTaxonomy {
     $users = user()->search(limit: 2);
     return setLogin($users[1]->idx);
 }
@@ -485,19 +485,20 @@ function setLogin2ndUser(): User {
 /**
  * 맨 마지막에 가입한 사용자의 객체를 리턴한다.
  * 테스트에 사용.
- * @return User
+ * @return UserTaxonomy
  */
-function getFirstUser(): User {
+function getFirstUser(): UserTaxonomy {
     $users = user()->search(limit: 1, object: true);
     return $users[0];
 }
 
+
 /**
  * 맨 마지막에서 두번째(가입한) 사용자의 객체를 리턴한다.
  * 테스트에 사용.
- * @return User
+ * @return UserTaxonomy
  */
-function getSecondUser(): User {
+function getSecondUser(): UserTaxonomy {
     $users = user()->search(limit: 2, object: true);
     return $users[1];
 }
@@ -506,7 +507,7 @@ function getSecondUser(): User {
  * 테스트에 사용.
  * @return User
  */
-function getThirdUser(): User {
+function getThirdUser(): UserTaxonomy {
     $users = user()->search(limit: 3, object: true);
     return $users[2];
 }
