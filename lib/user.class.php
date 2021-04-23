@@ -31,6 +31,7 @@
  * @property-read string $provider -  social login
  * @property-read string $plid - pass login
  * @property-read string $ci - pass login
+ * @property-read string photoUrl
  */
 class User extends Entity {
 

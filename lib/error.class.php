@@ -60,6 +60,8 @@ class E {
     public string $not_your_file = 'error_not_your_file';
     public string $file_delete_failed = 'error_file_delete_failed';
 
+    public string $not_your_entity = 'error_not_your_entity';
+
     public string $option_is_empty = 'error_option_is_empty';
     public string $token_is_empty = 'error_token_is_empty';
     public string $tokens_is_empty = 'error_tokens_is_empty';
