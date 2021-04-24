@@ -220,10 +220,12 @@ cd etc/phpdoc
 
 # 설치와 기본 설정
 
-우분투 서버에서 도커로 설치하는 방벙에 대해 설명한다.
+본 문서에서는 우분투 서버에서 도커를 통해 centerx 설치하는 방벙에 대해 설명한다.
 
-코어 개발자들이 개발 작업을 할 때에는 우분투 서버에서 작업을 하는 것이 아니라 윈도우즈, 맥, CentOS 등에서 도커를 설치하고 테스트 했으며 이러한 OS 에서도 문제
-없이 잘 동작한다. 또한 도커를 사용하지 않고 직접 Nginx(Apache), PHP, MariaDB(MySQL)을 설치하여 CenterX 를 운영 할 수 있다.
+코어 개발자들이 개발 작업을 할 때에는 우분투 서버에서 작업을 하는 것이 아니라 윈도우즈, 맥, CentOS 등 여러 시스템에서 도커를 설치하고 테스트 개발을 한다.
+즉, 우분투 뿐만아니라 도커가 실행되는 환경이면 centerx 가 잘 운영된다.
+다만, 실제 서비스를 할 때에는 우분투 서버(또는 CentoOS 서버)를 추천한다.
+도커를 사용하지 않고 직접 Nginx(Apache), PHP, MariaDB(MySQL)을 설치하여 CenterX 를 운영 할 수 있다.
 
 ## 설치 요약
 
@@ -235,10 +237,11 @@ cd etc/phpdoc
 ## 설치 상세 설명
 
 
+
 - 먼저 도커를 설치하고 실행한다.\
   [우분투 도커 설치 참고](https://docs.docker.com/engine/install/ubuntu/)
   
-- 그리고 CenterX 실행을 위한 도커 compose 설정을 가지고 있는 git 을 클론한다.
+- 그리고 CenterX 실행을 위한 도커 compose 설정을 가지고 있는 git repo 를 (루트 계정으로) /docker 에 (fork 후) clone 한다.
   - `git clone https://github.com/thruthesky/docker /docker`
   - `cd /docker`
   
@@ -246,25 +249,31 @@ cd etc/phpdoc
   
 - 그리고 아래와 같이 docker compose 를 실행한다.
   - `docker-compose up -d`
-
-
+  
 - Nginx 서버 설정은 `/docker/etc/nginx.conf` 이며, 기본 홈페이지 경로는 `/docker/home/default` 이다.
 
+- 그리고 `centerx` 를 `/docker/home` 폴더 아래에 fork 후 clone 한다.\
+  참고, 도커 실행을 위한 docker-compose 설정은 루트 계정으로 `/docker` 폴더에 하지만, centerx 설치와 centerx 관련 작업은 사용자 계정으로 하는 것이
+  좋다.
+  참고로,
+    - `/docker` repo 의 .gitignore 에 `home` 폴더가 들어가 있어서
+    - `/docker/home` 폴더 아래에 `centerx` repo 를 추가해도,
+    - `/docker` repo 에 추가되지 않는다.
   
-- 그리고 `centerx` git 을 `/docker/home` 폴더에 clone 한다.\
-  참고, 도커 compose 설정 파일이나 실행은 루트 계정으로 해도 되지만, centerx 설치와 centerx 관련 작업은 사용자 계정으로 하길 권한다.\
-  참고, `docker` repository 의 .gitignore 에 `home` 폴더가 들어가 있다. 따라서 `/docker/home` 폴더 아래에 `centerx` repository 를
-  추가해서 작업을 하면 된다. 또한 다른 도메인을 추가하여 홈페이지 개발을 하고 싶다면, `/docker/etc/nginx.conf` 를 수정하고, 홈 경로를
-  `/docker/home` 폴더 아래로 하면 된다.\
-  `centerx` 를 `/docker/home` 에 설치하는 예제)
-  - `cd /docker/home`
-  - `cd git clone https://github.com/thruthesky/centerx centerx`
-  - `cd centerx`
-  - `chmod -R 777 files`
+  그리고 다른 도메인으로 다른 홈페이지를 추가 개발을 하고 싶다면, `/docker/etc/nginx.conf` 를 수정하여, 홈 경로를 `/docker/home` 폴더 아래로 하면 된다.
+  
+- `centerx` 를 `/docker/home` 에 설치하는 예제)
+  - `# useradd -m -d /docker/home/centerx centerx` 와 같이 하면 사용자 계정 centerx 의 홈 폴더가 `/docker/home/centerx` 가 된다. 계정과 폴더는 원하는데로 변경 가능.
+  - `# su - centerx`
+    - `$ git init`
+    - `$ git remote add origin https://github.com/thruthesky/centerx`
+    - `$ git fetch`
+    - `$ git checkout main`
+    - `$ chmod -R 777 files`
 
 - phpMyAdmin 을 통한 데이터베이스 테이블 설치
   - `/docker/home/default/etc/phpMyAdmin` 에 phpMyAdmin 이 설치되어져 있다.
-    `http://0.0.0.0/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
+    접속은 IP 주소를 이용하여, `http://0.0.0.0/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
     데이터베이스 관리자 아이디는 root 이며, 비밀번호는 위에서 변경 한 것을 입력한다.
   - phpMyAdmin 접속 후, `centerx/etc/install/sql` 폴더에서 최신 sql 파일의 내용을 phpMyAdmin 에 입력하고 쿼리 실행을 한다.
     - 만약, 국가 정보를 원한다면, `wc_countries` 테이블을 삭제하고, `/centerx/etc/install/sql/countries.sql` 

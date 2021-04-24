@@ -74,10 +74,10 @@ if ( file_exists($_path) ) {
 
 define('APP_NAME', 'CenterX');
 
-define('DB_USER', 'centerx');
-define('DB_PASS', 'Wc~Cx7');
-define('DB_NAME', 'centerx');
-define('DB_HOST', 'mariadb');
+if ( !defined('DB_USER') ) define('DB_USER', 'centerx');
+if ( !defined('DB_PASS') ) define('DB_PASS', 'Wc~Cx7');
+if ( !defined('DB_NAME') ) define('DB_NAME', 'centerx');
+if ( !defined('DB_HOST') ) define('DB_HOST', 'mariadb');
 
 
 define('DB_PREFIX', 'wc_');
