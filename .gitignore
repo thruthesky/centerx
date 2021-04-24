@@ -19,3 +19,8 @@ files
 .DS_Store
 
 cache
+
+.bash_logout
+.bashrc
+.profile
+.viminfo
