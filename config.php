@@ -217,9 +217,9 @@ date_default_timezone_set('Asia/Seoul');
 
 
 // Kakao Javascript Api 키
-if ( !defined('KAKAO_CLIENT_ID') ) define('KAKAO_CLIENT_ID', '6f8d49d406555f69828891821ea56c8b');
+if ( !defined('JAVASCRIPT_KAKAO_CLIENT_ID') ) define('JAVASCRIPT_KAKAO_CLIENT_ID', '6f8d49d406555f69828891821ea56c8b');
 // Kakao Redirect URI
-if ( !defined('KAKAO_CALLBACK_URL') ) define('KAKAO_CALLBACK_URL', 'https://main.philov.com/wp-content/themes/sonub/callbacks/kakao-login.callback.php');
+if ( !defined('JAVASCRIPT_KAKAO_CALLBACK_URL') ) define('JAVASCRIPT_KAKAO_CALLBACK_URL', '/etc/callbacks/kakao/kakao-login.callback.php');
 
 
 

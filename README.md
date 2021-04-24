@@ -34,6 +34,8 @@
 
 # 해야 할 일
 
+- [CenterX Git Project](https://github.com/thruthesky/centerx/projects/2)
+
 - work on next branch
 
 - refactor folder structure.
@@ -546,6 +548,30 @@ config()->updateMetas(ADMIN_SETTINGS, in()); // ADMIN_SETTINGS is defined as 1.
 ```php
 d( config(3)->getMetas() );
 ```
+
+# 카카오 로그인
+
+카카오톡을 통해서 로그인을 하는 기능으로서 웹에서 카카오 로그인에 대한 코드는 이미 준비되어져 있다.
+참고로, 모바일웹/앱에서 사용하는 경우는 아직 테스트 되지 않았다.
+
+- config.php 에서 전체 설정을 할 수 있고, theme/theme-name/config.php 에서 테마별 설정을 할 수 있다.
+  - 그리고 하나의 테마에서 여러 도메인을 사용하는 경우, 도메인 별로 카카오 프로젝트를 만들 필요 없이, 최대 10 개 도메인까지 사용 가능하다.
+  - 그래서, theme/theme-name/config.php 에서 설정을 하는 경우, 도메인 별 옵션 처리를 할 필요가 없다.
+    - 카카오톡 프로젝트 하나로 사이트 10개, Redirect URL 도 10개 등록 가능하다.
+
+- 개발
+  - 플랫폼에서 웹을 선택하는 경우, 로그인 방식이 `Javascript` 와 `Restful Api` 두가지가 있다.
+  - 공식 문서에서 `REST API로 개발하는 경우 (Redirect URL 을)필수로 설정해야 합니다.` 와 같이 나온다.
+  - 즉, 카카오톡 로그인 버튼을 눌렀을 때, 자바스크립트로 새 창을 띄워서 하는 경우, 로그인 성공 콜백 함수가 나오고 원하는데로 처리를 하면 된다.
+    따라서, Redirect URL 을 설정 할 필요가 없다.
+  
+- 설정
+  - `JAVASCRIPT_KAKAO_CLIENT_ID` 는 자바스크립트 로그인 용 키이다.
+  - `` 는 자바스크립트로 로그인을 한 다음 이동 할 페이지이다. 자바스크립트에서 로그인을 할 때에는 프로그램적으로 원하는 곳으로 이동 할 수 있다.
+
+
+# 네이버 로그인
+
 
 
 # Admin

@@ -11,7 +11,7 @@
 <script type='text/javascript'>
     //<![CDATA[
     // 사용할 앱의 JavaScript 키를 설정해 주세요.
-    Kakao.init( "<?=KAKAO_CLIENT_ID?>" );
+    Kakao.init( "<?=JAVASCRIPT_KAKAO_CLIENT_ID?>" );
     function loginWithKakao() {
         // 로그인 창을 띄웁니다.
         Kakao.Auth.login({
@@ -22,7 +22,7 @@
                     url: '/v2/user/me',
                     success: function(res) {
                         console.log(res);
-                        const url = "<?=KAKAO_CALLBACK_URL?>?kakao_id=" + res.id;
+                        const url = "<?=JAVASCRIPT_KAKAO_CALLBACK_URL?>?kakao_id=" + res.id;
                         console.log(url);
                         location.href = url;
                     },
