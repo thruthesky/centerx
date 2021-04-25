@@ -1,4 +1,5 @@
 <?php
 
 login()->update(in());
-jsGo('/');
+jsGo( in(RETURN_URL, '/'));
+

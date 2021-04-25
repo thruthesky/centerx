@@ -149,9 +149,9 @@ class PostTaxonomy extends Entity {
      *
      * 참고로 현재 글/코멘트 객체가 올바른지는 이 함수 호출 전에 검사를 해야 한다.
      *
-     * @return User
+     * @return UserTaxonomy
      */
-    public function user(): User {
+    public function user(): UserTaxonomy {
         return user($this->userIdx);
     }
 

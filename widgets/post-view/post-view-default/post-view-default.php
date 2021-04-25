@@ -6,9 +6,10 @@
 
 
 $post = post()->current();
+$comments = $post->comments();
 ?>
 
-<section class="p-3 mb-5" style="border-radius: 16px; background-color: #f4f4f4;">
+<section class="post-view-default p-3 mb-5" style="border-radius: 16px; background-color: #f4f4f4;">
     <div class="pb-1" style="word-break: normal">
         <h3><?= $post->title ?></h3>
     </div>
@@ -38,11 +39,11 @@ $post = post()->current();
         <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
     </div>
 
-    <?php if (!empty($post->comments())) { ?>
+    <?php if ( $comments ) { ?>
         <hr class="mb-1">
-        <small class="text-muted"><?= count($post->comments()) . ' ' . ek('Comments', '개의 코멘트') ?></small>
+        <small class="text-muted"><?= count($comments) . ' ' . ek('Comments', '개의 코멘트') ?></small>
         <div class="comments mt-2">
-            <?php foreach ($post->comments() as $comment) {
+            <?php foreach ($comments as $comment) {
                 if (!$comment->deletedAt) { ?>
                     <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                         <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>

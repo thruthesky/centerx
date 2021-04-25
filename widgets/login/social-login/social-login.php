@@ -21,9 +21,9 @@
                 Kakao.API.request({
                     url: '/v2/user/me',
                     success: function(res) {
-                        console.log(res);
-                        const url = "<?=JAVASCRIPT_KAKAO_CALLBACK_URL?>?kakao_id=" + res.id;
-                        console.log(url);
+                        let url = "<?=JAVASCRIPT_KAKAO_CALLBACK_URL?>?kakao_id=" + res.id;
+                        if ( res.properties && res.properties.nickname ) url += "&nickname=" + res.properties.nickname;
+                        if ( res.properties && res.properties.profile_image ) url += "&profile_image=" + res.properties.profile_image;
                         location.href = url;
                     },
                     fail: function(error) {

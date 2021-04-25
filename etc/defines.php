@@ -162,4 +162,7 @@ define('VERIFIER_PASSLOGIN', 'passlogin');
 define('VERIFIER_DANAL', 'danal');
 define('VERIFIERS', [VERIFIER_DANAL, VERIFIER_PASSLOGIN]);
 
+define('RETURN_URL', 'return_url');
+
+
 

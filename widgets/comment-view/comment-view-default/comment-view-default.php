@@ -5,14 +5,17 @@ $o = getWidgetOptions();
  * @var Comment|Post $parent
  */
 $post = $o['post'];
+/**
+ * @var Comment $comment
+ */
 $comment = $o['comment'];
 ?>
 
-<div class="p-3" style="border-radius: 10px; background-color: #e0e0e0">
+<div class="comment-view-default p-3" style="border-radius: 10px; background-color: #e0e0e0">
     <div class="d-flex">
         <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->shortProfile()['photoUrl'], 'size' => '50']) ?>
         <div>
-            <b><?= $comment->user()->name !== '' ? $comment->user()->name : 'No name' ?></b>
+            <b><?= $comment->user()->nicknameOrName ?></b>
             <div class="meta">
                 <small>
                     No: <?= $comment->idx ?> -

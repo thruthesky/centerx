@@ -6,7 +6,7 @@ define("FIREBASE_DATABASE_URI", "https://sonub-version-2020.firebaseio.com/");
 
 /// Kakao Login API 키
 /// 카카오 프로젝트 1개의 도메인 10개, Redirect URL 10 개를 사용 할 수 있다.
-if ( !defined('KAKAO_CLIENT_ID') ) define('KAKAO_CLIENT_ID', '6f8d49d406555f69828891821ea56c8b');
+if ( !defined('JAVASCRIPT_KAKAO_CLIENT_ID') ) define('JAVASCRIPT_KAKAO_CLIENT_ID', '937af10cf8688bd9a7554cf088b2ac3e');
 // Kakao Redirect URI
 if ( !defined('JAVASCRIPT_KAKAO_CALLBACK_URL') ) define('JAVASCRIPT_KAKAO_CALLBACK_URL', '/etc/callbacks/kakao/kakao-login.callback.php');
 

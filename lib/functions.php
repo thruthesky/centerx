@@ -1368,11 +1368,20 @@ function includeFirebase() {
  * HTML FORM 에서 input 태그 중 hidden 으로 지정되는 값들 보다 편하게 하기 위한 함수.
  *
  * @param array $in
- *  이 값이 ['p', 'w'] 와 같이 입력되면, <input type=hidden name=p value=in('p')> 와 같이 각 요소를 name 으로 하고, in() 함수의 키로 값을 채운다.
+ *  이 값이 ['p', 'w'] 와 같이 입력되면, HTTP PARAM 의 키 p, w 와 그 값을 그대로 hidden tag 로 만든다.
+ *  예) in:['p'] 와 같이 전달되면, <input type=hidden name=p value=in('p')> 와 같이 각 name 을 p 로 하고, in('p')  값을 채운다.
  * @param string $mode
  *  <input type=hidden name=mode value=...> 와 같이 form submit mode 를 지정한다.
  * @param array $kvs
  *  추적으로 지정할 name 과 value 를 지정한다.
+ *  예) hiddens(kvs: ['p' => 'user.profile.submit']) 와 같이 호출하면, 아래와 같이 된다.
+ *
+ *      <input type='hidden' name='p' value='user.profile.submit'>
+ *
+ * @param string $p FORM 값을 넘길 페이지.
+ * @param string $return_url 돌아갈 URL 지정
+ *
+ *
  * @return string
  *
  * 호출 예)
@@ -1385,8 +1394,11 @@ function includeFirebase() {
  *  <input type='hidden' name='s' value='edit'>
  *  <input type='hidden' name='idx' value='0'>
  */
-function hiddens(array $in=[], string $mode='', array $kvs=[]): string {
+function hiddens(array $in=[], string $mode='', array $kvs=[], string $p="", string $return_url=""): string {
     $str = '';
+    if ( $p ) {
+        $str .= "<input type='hidden' name='p' value='$p'>\n";
+    }
     if ( $mode ) {
         $str .= "<input type='hidden' name='mode' value='$mode'>\n";
     }
@@ -1399,6 +1411,9 @@ function hiddens(array $in=[], string $mode='', array $kvs=[]): string {
         foreach( $kvs as $k => $v ) {
             $str .= "<input type='hidden' name='$k' value='$v'>\n";
         }
+    }
+    if ( $return_url ) {
+        $str .= "<input type='hidden' name='".RETURN_URL."' value='$return_url'>\n";
     }
     return $str;
 }

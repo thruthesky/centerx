@@ -154,3 +154,22 @@ input.focus-none:focus {
 }
 
 
+.list-tile {
+    position: relative;
+    margin-bottom: .5rem;
+    padding: .6rem;
+    border-radius: 5px;
+    background-color: #f3f3f3;
+}
+.list-tile .caption {
+    font-size: .85em;
+}
+.list-tile .text {
+    font-size: 1.1em;
+}
+.list-tile .trailing {
+    position: absolute;
+    font-size: .9em;
+    bottom: .75rem;
+    right: .6rem;
+}

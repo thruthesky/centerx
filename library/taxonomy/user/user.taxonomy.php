@@ -10,6 +10,7 @@
  * @property-read string $firebaseUid
  * @property-read string $name
  * @property-read string $nickname
+ * @property-read string $nicknameOrName - 실제 DB 에 존재하지 않는 필드. 닉네임 또는 이름을 리턴한다.
  * @property-read int $photoIdx
  * @property-read string $phoneNo
  * @property-read string $gender
@@ -50,6 +51,10 @@ class UserTaxonomy extends Entity {
     public function __get($name): mixed {
         if ( $name == 'verified' ) {
             return $this->verifier;
+        } else if ( $name == 'nicknameOrName' ) {
+            if ( $this->nickname ) return $this->nickname;
+            else if ( $this->name ) return $this->name;
+            else return 'No nickname or name';
         } else {
             return parent::__get($name);
         }

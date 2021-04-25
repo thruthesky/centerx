@@ -41,19 +41,18 @@
 - refactor folder structure.
   1. copy the script in `lib` folder into `library/taxonomy/**/**.taxonomy.php`
   2. rename the script file under `lib` folder.
-  3. rename the class name into `**Taxonomy` and change its types in other scripts.
   4. change the path in `boot.php`
   5. run tests.
   
 - move
   - `lib/defines.php` to `etc/defines.php`
   - `lib/functions.php` to `library/functions.php`
-  - `lib/theme.class.php` to `library/utility/theme.php`
-  - `lib/hook.class.php` to `library/utility/hook.php`
+  - `lib/theme.class.php` to `library/core/theme.php`
+  - `lib/hook.class.php` to `library/core/hook.php`
   - `data.php`, `firebase.php`, 
 
 - develop own mysql connectivity class instead of using ezSQL.
-  1. create `library/utility/mysqli.php`
+  1. create `library/core/mysqli.php`
   2. write tests.
 
 - change `point_histories` to `user_activities`.
@@ -568,6 +567,7 @@ d( config(3)->getMetas() );
 
 
 - 참고, 카카오로그인과 네이버로그인 모두 서브 도메인은 자동으로 무한대로 사용가능하다.
+- 참고, 소셜 로그인을 하는 경우, DB 의 닉네임이 빈 값이 아니면, 닉네임을 덮어쓰지 않는다. 즉, 웹/앱에서 변경 하는 경우에도, 덮어쓰지를 않는다.
 
 ## 카카오 로그인
 

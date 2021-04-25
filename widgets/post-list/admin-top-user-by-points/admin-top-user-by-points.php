@@ -17,7 +17,7 @@
                 <div class="mr-3 hw-50x50 border-radius-50" style="background-color: grey"> </div>
             <?php } ?>
             <div class="text-overflow-ellipsis ml-4">
-                <div><strong><?= empty($user->name) ? 'No name' : $user->name ?></strong> <small>(ID. <?= $user->idx ?>)</small></div>
+                <div><strong><?=$user->nicknameOrName?></strong> <small>(ID. <?= $user->idx ?>)</small></div>
                 <div class="mt-1"><?= $user->point ?> <?= ek('Points', '포인트') ?></div>
             </div>
         </div>
