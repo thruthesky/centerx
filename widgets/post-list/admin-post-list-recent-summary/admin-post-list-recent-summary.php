@@ -9,7 +9,7 @@
     <div class="text-muted fs-sm"><?= ek('Total number posts', '전체 글 수') ?>: <?= post()->count() ?></div>
     <h6 class="mt-2 mb-4 fw-700"><?= ek('Recent Posts', '최근 글 목록') ?></h6>
 
-    <?php foreach (post()->latest(null, 1, 4) as $post) {
+    <?php foreach (post()->latest(limit: 4) as $post) {
         $user = user($post->userIdx)->shortProfile();
     ?>
         <div class="d-flex mb-3">

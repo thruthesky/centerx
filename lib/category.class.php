@@ -107,13 +107,14 @@ class Category extends Entity {
 
 
 /**
- * @param int|string $idx
+ * @param int|string $idx - 카테고리 번호 또는 문자열.
  * @return Category
  *
  * @attention admin permission check must be done before calling this method.
  */
 function category(int|string $idx = 0): Category
 {
+    // 문자열로 입력되었으면, 카테고리 ID 로 찾아 리턴한다.
     if ( $idx && !is_numeric($idx) ) {
         // If the input is string, then it is considered as category id. And returns Category instance with its idx.
         return category()->findOne([ID => $idx]);

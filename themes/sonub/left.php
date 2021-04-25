@@ -4,7 +4,7 @@
     if ( admin() ) echo ' <a href="/?admin.index">[관리자]</a>';
     ?>
 </div>
-<div class="box d-flex flex-column ch-a-ellipsis">
+<div class="box d-flex flex-column children-a-ellipsis">
     <h1 class="p-1">최근 글</h1>
     <?php include widget('post-latest/post-latest-default', ['id' => 'left-latest']) ?>
 </div>

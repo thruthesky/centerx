@@ -303,33 +303,33 @@ class UserTaxonomy extends Entity {
 
 
     /**
-     *
-     * 사용자를 검색 후, UserTaxonomy 객체를 배열로 리턴한다.
+     * 사용자를 검색 후, UserTaxonomy *객체 배열*로 리턴한다.
+     * 부모 함수와 차이점은, 기본 리턴 값이 객체 배열이라는 것이다.
      *
      * 참고, 이 함수는 기본적으로 객체를 리턴한다. 이 함수를 없애고 싶으면, entity()->search(object: false) 로 해서 를 쓰면 된다.
      *
      * @param string $select
      * @param string $where
+     * @param array $params
+     * @param array $conds
+     * @param string $conj
      * @param string $order
      * @param string $by
      * @param int $page
      * @param int $limit
-     * @param array $conds
-     * @param string $conj
      * @param bool $object
      * @return UserTaxonomy[]
-     *
      */
     public function search(
         string $select='idx',
         string $where='1',
         array $params = [],
+        array $conds=[],
+        string $conj = 'AND',
         string $order='idx',
         string $by='DESC',
         int $page=1,
         int $limit=10,
-        array $conds=[],
-        string $conj = 'AND',
         bool $object = true,
     ): array
     {
@@ -337,12 +337,12 @@ class UserTaxonomy extends Entity {
             select: $select,
             where: $where,
             params: $params,
+            conds: $conds,
+            conj: $conj,
             order: $order,
             by: $by,
             page: $page,
             limit: $limit,
-            conds: $conds,
-            conj: $conj,
             object: $object
         );
     }

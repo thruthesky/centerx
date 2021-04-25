@@ -65,24 +65,24 @@ class PointHistory extends Entity {
         string $select='idx',
         string $where='1',
         array $params = [],
+        array $conds=[],
+        string $conj = 'AND',
         string $order='idx',
         string $by='DESC',
         int $page=1,
         int $limit=10,
-        array $conds=[],
-        string $conj = 'AND',
         bool $object = true,
     ): array
     {
         return parent::search(
             select: $select,
             where: $where,
+            conds: $conds,
+            conj: $conj,
             order: $order,
             by: $by,
             page: $page,
             limit: $limit,
-            conds: $conds,
-            conj: $conj,
             object: $object,
         );
     }

@@ -147,7 +147,7 @@ input.focus-none:focus {
     padding-left: 0;
 }
 
-.ch-a-ellipsis a {
+.children-a-ellipsis a {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -172,4 +172,12 @@ input.focus-none:focus {
     font-size: .9em;
     bottom: .75rem;
     right: .6rem;
+}
+
+.light {
+    color: #e9e9e9;
+}
+
+.border-light {
+    border-color: #e9e9e9 !important;
 }

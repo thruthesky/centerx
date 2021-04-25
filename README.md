@@ -38,6 +38,15 @@
 
 - work on next branch
 
+- develop mysqli class
+
+  - https://www.codewall.co.uk/php-mysqli-examples-the-ultimate-tutorial/
+  - see https://devjunky.com/Creating-a-MySqli-Database-Class-in-PHP/
+  - https://codeshack.io/super-fast-php-mysql-database-class/
+    https://github.com/voku/simple-mysqli/blob/master/src/voku/db/DB.php
+  - https://johnmorrisonline.com/simple-php-class-prepared-statements-mysqli/
+  
+
 - refactor folder structure.
   1. copy the script in `lib` folder into `library/taxonomy/**/**.taxonomy.php`
   2. rename the script file under `lib` folder.

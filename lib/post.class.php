@@ -279,12 +279,12 @@ class Post extends PostTaxonomy {
         string $select='idx',
         string $where='1',
         array $params = [],
+        array $conds=[],
+        string $conj = 'AND',
         string $order='idx',
         string $by='DESC',
         int $page=1,
         int $limit=10,
-        array $conds=[],
-        string $conj = 'AND',
         bool $object = false,
     ): array
     {
@@ -297,12 +297,12 @@ class Post extends PostTaxonomy {
             select: $select,
             where: $where,
             params: $params,
+            conds: $conds,
+            conj: $conj,
             order: $order,
             by: $by,
             page: $page,
             limit: $limit,
-            conds: $conds,
-            conj: $conj,
             object: $object,
         );
 
@@ -328,6 +328,7 @@ class Post extends PostTaxonomy {
     }
 
     /**
+     * @deprecated Don't use this.
      * @param string $where
      * @return string
      */
@@ -357,10 +358,23 @@ class Post extends PostTaxonomy {
      * @example
      *  $posts = post()->latest();
      */
-    public function latest(string $categoryId=null, int $page=1, int $limit=10): array {
+    public function latest(
+        int $categoryIdx = 0,
+        string $categoryId=null,
+        int $limit=10
+    ): array {
+
+        $conds = [PARENT_IDX => 0, DELETED_AT => 0];
+
+        if ( $categoryIdx == 0 ) {
+            if ( $categoryId ) {
+                $categoryIdx = category($categoryId)->idx;
+            }
+        }
+        if ( $categoryIdx ) $conds[CATEGORY_IDX] = $categoryIdx;
+
         return $this->search(
-            where: $categoryId ? "parentIdx=0 AND categoryId=<$categoryId>" : "parentIdx=0",
-            page: $page,
+            conds: $conds,
             limit: $limit,
         );
     }

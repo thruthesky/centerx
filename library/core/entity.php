@@ -800,16 +800,17 @@ class Entity {
         string $select='idx',
         string $where='1',
         array $params = [],
+        array $conds=[],
+        string $conj = 'AND',
         string $order='idx',
         string $by='DESC',
         int $page=1,
         int $limit=10,
-        array $conds=[],
-        string $conj = 'AND',
         bool $object = false,
     ): array {
         $table = $this->getTable();
         $from = ($page-1) * ($limit ? $limit : 10);
+
 
 
         // @TODO [on next version] make an error if $params is empty when $where is not.

@@ -203,12 +203,12 @@ class Comment extends PostTaxonomy {
         string $select='idx',
         string $where='1',
         array $params = [],
+        array $conds=[],
+        string $conj = 'AND',
         string $order='idx',
         string $by='DESC',
         int $page=1,
         int $limit=10,
-        array $conds=[],
-        string $conj = 'AND',
         bool $object = true,
     ): array {
 

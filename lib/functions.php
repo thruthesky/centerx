@@ -651,7 +651,7 @@ function safeFilename(string $name) {
  * Ex) 'Hotels in Buenos Aires' => 'hotels-in-buenos-aires'
  *
  *    - converts all alpha chars to lowercase
- *    - not allow two "-" chars continued, converte them into only one single "-"
+ *    - not allow two "-" chars continued, convert them into only one single "-"
  *
  * @param string $s
  * @return string
@@ -664,15 +664,19 @@ function seoFriendlyString(string $s): string {
 
     $s = strip_tags($s);
 
+
+    // 모두 소문자로 변경한다.
     $s = strtolower($s);
 
-    /// Remove special chars ( or replace with - )
+    // 여러개의 --- 를 한개의 - 로 변경한다.
     $s = preg_replace('~-+~', '-', $s);
 
-    /// Make it only one space.
-
+    // 여러개의 공백을 한개의 공백으로 변경한다.
     $s = preg_replace('/ +/', ' ', $s);
-    $s = str_replace(" ","-", strtolower($s));
+
+    // 특수 문자를 없애거나 - 로 대체한다.
+
+    $s = str_replace("+"," ", $s); // 특히, + 문자는 문제를 일으킬 소지가 많다. 그렇다고 + 를 - 로 변경하면 의미가 크게 변경 될 수 있다. 그래서 공백으로 변경을 한다.
     $s = str_replace('`', '', $s);
     $s = str_replace('~', ' ', $s);
     $s = str_replace('!', ' ', $s);
@@ -1247,25 +1251,54 @@ function postCategoryId(int $categoryIdx): string {
  *
  * 예) [a => apple, b => banana] 로 입력되면, "a=apple AND b=banana" 로 리턴.
  *
+ * 조건 식 사용법
+ * 필드는 공백이 들어갈 수 없다는 점을 착안해서, 필드에 공백을 넣고, 다음에 조건식을 넣을 수 있도록 한다.
+ *  - ['abc >' => 0] 과 같이 하면, "abc > 0" 으로 된다.
+ *  - ['abc !=' => ''] 와 같이 하면 "abc != ''" 와 같이 된다.
+ *
+ * 값이 문자열이면 따옴표로 둘러싼다.
+ *
+ *
  * @param array $conds - 키/값을 가지는 배열
  * @param string $conj - 'AND' 또는 'OR' 등의 연결 expression
- * @param string $field
+ * @param string $field - 이 파라메타에 값이 들어가면, $conds 에는 값만 들어간다. 즉, $field 를 필드로 해서, $conds 의 값을 사용해서 비교한다.
+ *  예를 들어, 특정 필드에 여러 값 중 하나가 있는지 검사를 하기 위해서 사용 할 수 있다. 이 대, $field 에는 연산자를 지원하지 않는다.
  * @return string
  *
  * @example
  *  sqlCondition([a => apple, b => banana], $conj); // returns `a='apple' AND b='banana'`
  *  sqlCondition(['apple', 'banana'], 'OR', REASON); // returns `reason='apple' OR reason='banana'`
+ *
+ * @example tests/basic.sql.php
  */
 function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): string
 {
     $arc = [];
     if ( $field ) {
-        foreach( $conds as $v ) $arc[] = "$field='$v'";
+        foreach( $conds as $v ) {
+            if ( is_string($v) ) $v = "'$v'";
+            $arc[] = "$field=$v";
+        }
     } else {
-        foreach($conds as $k => $v )  $arc[] = "`$k`='$v'";
+        foreach($conds as $k => $v )  {
+            $k = trim($k);
+            if ( is_string($v) ) $v = "'$v'";
+            if ( str_contains($k, ' ')) {
+                $ke = explode(' ', $k, 2);
+                $arc[] = "`$ke[0]` $ke[1] $v";
+            }
+            else {
+                $arc[] = "`$k`=$v";
+            }
+        }
     }
     return implode(" $conj ", $arc);
 }
+
+
+
+
+
 
 
 

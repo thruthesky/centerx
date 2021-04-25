@@ -22,7 +22,6 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
         ?>
         1<?=$src?> <?=$rate?><?=$dst?>.
 
-
         <?php
         // 메인 사이트가 아니면,
         $country = get_current_country();
@@ -42,15 +41,23 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
 
 </div>
 
-<div class="mb-2">
+<div class="mb-2 mx-2 mx-lg-0">
     <img class="w-100 border-radius-md" src="themes/sonub/tmp/banner-wide2.jpg">
 </div>
 
-<div class="mb-2 p-1 border-radius-md bg-light">
+<div class="mb-2 mx-2 mx-lg-0 p-2 border-radius-md bg-light children-a-ellipsis">
     <?php
-    include widget('post-latest/post-latest-default', ['categoryId' => 'discussion', 'limit' => 5]);
+    include widget('post-latest/post-latest-default', ['categoryId' => 'discussion', 'limit' => 5, 'separator' => "<hr class='my-1 border-light'>"]);
     ?>
 </div>
+
+<div class="mb-2 mx-2 mx-lg-0 p-2 border-radius-md bg-light children-a-ellipsis">
+    <?php
+    post()->search(where: "files != ?", params: ['0']);
+    ?>
+</div>
+
+
 
 
 <img class="w-100" src="themes/sonub/tmp/main.jpg">
