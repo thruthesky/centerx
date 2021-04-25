@@ -1,5 +1,5 @@
 <?php
-require_once('../../boot.php');
+require_once('../../../boot.php');
 
 $code = $_GET["code"];
 $state = $_GET["state"];
@@ -44,15 +44,14 @@ if($status_code == 200 && isset($re['access_token'])) {
 
         $user_id = $data['response']['id'];
         $user = user()->loginOrRegister([
-            'email' => md5($user_id) . '@naver.com',
+            'email' => "naver$user_id@naver.com",
             'password' => LOGIN_PASSWORD_SALT,
             'provider' => 'naver',
-            'id' => $user_id,
         ]);
         if ( $user->hasError ) displayWarning($user->getError());
         else {
             setLoginCookies($user->profile());
-            jsGo('/');
+            jsGo("https://$state");
         }
 
 

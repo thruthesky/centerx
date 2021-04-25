@@ -74,10 +74,10 @@ if ( file_exists($_path) ) {
 
 define('APP_NAME', 'CenterX');
 
-define('DB_USER', 'centerx');
-define('DB_PASS', 'Wc~Cx7');
-define('DB_NAME', 'centerx');
-define('DB_HOST', 'mariadb');
+if ( !defined('DB_USER') ) define('DB_USER', 'centerx');
+if ( !defined('DB_PASS') ) define('DB_PASS', 'Wc~Cx7');
+if ( !defined('DB_NAME') ) define('DB_NAME', 'centerx');
+if ( !defined('DB_HOST') ) define('DB_HOST', 'mariadb');
 
 
 define('DB_PREFIX', 'wc_');
@@ -200,7 +200,7 @@ if ( ! defined('FIX_LANGUAGE') ) define('FIX_LANGUAGE', '');
 /**
  * 각종 로그인(패스로그인, 카카오로그인, 등) 할 때, 사용되는 비밀번호.
  */
-define('LOGIN_PASSWORD_SALT', 'Random_Salt_oO^.^7Oo_S.0.48.PM,*, Once set, should not be changed!'); // This is any random (secret) string.
+if ( !defined('LOGIN_PASSWORD_SALT') ) define('LOGIN_PASSWORD_SALT', 'Random_Salt_oO^.^7Oo_S.0.48.PM,*, Once set, should not be changed!'); // This is any random (secret) string.
 
 /**
  * PASS_LOGIN_MOBILE_PREFIX 은 회원 가입을 할 때, 전화번호로 하는데, 'm010123456789@passlogin.com' 와 같이 기록하기 위한 prefix 이다.
@@ -217,9 +217,9 @@ date_default_timezone_set('Asia/Seoul');
 
 
 // Kakao Javascript Api 키
-if ( !defined('KAKAO_CLIENT_ID') ) define('KAKAO_CLIENT_ID', '6f8d49d406555f69828891821ea56c8b');
+if ( !defined('JAVASCRIPT_KAKAO_CLIENT_ID') ) define('JAVASCRIPT_KAKAO_CLIENT_ID', '6f8d49d406555f69828891821ea56c8b');
 // Kakao Redirect URI
-if ( !defined('KAKAO_CALLBACK_URL') ) define('KAKAO_CALLBACK_URL', 'https://main.philov.com/wp-content/themes/sonub/callbacks/kakao-login.callback.php');
+if ( !defined('JAVASCRIPT_KAKAO_CALLBACK_URL') ) define('JAVASCRIPT_KAKAO_CALLBACK_URL', '/etc/callbacks/kakao/kakao-login.callback.php');
 
 
 

@@ -34,6 +34,8 @@
 
 # 해야 할 일
 
+- [CenterX Git Project](https://github.com/thruthesky/centerx/projects/2)
+
 - work on next branch
 
 - refactor folder structure.
@@ -234,10 +236,12 @@ cd etc/phpdoc
 
 # 설치와 기본 설정
 
-우분투 서버에서 도커로 설치하는 방벙에 대해 설명한다.
+본 문서에서는 우분투 서버에서 도커를 통해 centerx 설치하는 방벙에 대해 설명한다.
 
-코어 개발자들이 개발 작업을 할 때에는 우분투 서버에서 작업을 하는 것이 아니라 윈도우즈, 맥, CentOS 등에서 도커를 설치하고 테스트 했으며 이러한 OS 에서도 문제
-없이 잘 동작한다. 또한 도커를 사용하지 않고 직접 Nginx(Apache), PHP, MariaDB(MySQL)을 설치하여 CenterX 를 운영 할 수 있다.
+코어 개발자들이 개발 작업을 할 때에는 우분투 서버에서 작업을 하는 것이 아니라 윈도우즈, 맥, CentOS 등 여러 시스템에서 도커를 설치하고 테스트 개발을 한다.
+즉, 우분투 뿐만아니라 도커가 실행되는 환경이면 centerx 가 잘 운영된다.
+다만, 실제 서비스를 할 때에는 우분투 서버(또는 CentoOS 서버)를 추천한다.
+도커를 사용하지 않고 직접 Nginx(Apache), PHP, MariaDB(MySQL)을 설치하여 CenterX 를 운영 할 수 있다.
 
 ## 설치 요약
 
@@ -249,10 +253,11 @@ cd etc/phpdoc
 ## 설치 상세 설명
 
 
+
 - 먼저 도커를 설치하고 실행한다.\
   [우분투 도커 설치 참고](https://docs.docker.com/engine/install/ubuntu/)
   
-- 그리고 CenterX 실행을 위한 도커 compose 설정을 가지고 있는 git 을 클론한다.
+- 그리고 CenterX 실행을 위한 도커 compose 설정을 가지고 있는 git repo 를 (루트 계정으로) /docker 에 (fork 후) clone 한다.
   - `git clone https://github.com/thruthesky/docker /docker`
   - `cd /docker`
   
@@ -260,25 +265,32 @@ cd etc/phpdoc
   
 - 그리고 아래와 같이 docker compose 를 실행한다.
   - `docker-compose up -d`
-
-
+  
 - Nginx 서버 설정은 `/docker/etc/nginx.conf` 이며, 기본 홈페이지 경로는 `/docker/home/default` 이다.
 
+- 그리고 `centerx` 를 `/docker/home` 폴더 아래에 fork 후 clone 한다.\
+  참고, 도커 실행을 위한 docker-compose 설정은 루트 계정으로 `/docker` 폴더에 하지만, centerx 설치와 centerx 관련 작업은 사용자 계정으로 하는 것이
+  좋다.
+  참고로,
+    - `/docker` repo 의 .gitignore 에 `home` 폴더가 들어가 있어서
+    - `/docker/home` 폴더 아래에 `centerx` repo 를 추가해도,
+    - `/docker` repo 에 추가되지 않는다.
   
-- 그리고 `centerx` git 을 `/docker/home` 폴더에 clone 한다.\
-  참고, 도커 compose 설정 파일이나 실행은 루트 계정으로 해도 되지만, centerx 설치와 centerx 관련 작업은 사용자 계정으로 하길 권한다.\
-  참고, `docker` repository 의 .gitignore 에 `home` 폴더가 들어가 있다. 따라서 `/docker/home` 폴더 아래에 `centerx` repository 를
-  추가해서 작업을 하면 된다. 또한 다른 도메인을 추가하여 홈페이지 개발을 하고 싶다면, `/docker/etc/nginx.conf` 를 수정하고, 홈 경로를
-  `/docker/home` 폴더 아래로 하면 된다.\
-  `centerx` 를 `/docker/home` 에 설치하는 예제)
-  - `cd /docker/home`
-  - `cd git clone https://github.com/thruthesky/centerx centerx`
-  - `cd centerx`
-  - `chmod -R 777 files`
+  그리고 다른 도메인으로 다른 홈페이지를 추가 개발을 하고 싶다면, `/docker/etc/nginx.conf` 를 수정하여, 홈 경로를 `/docker/home` 폴더 아래로 하면 된다.
+  
+- `centerx` 를 `/docker/home` 에 설치하는 예제)
+  - `# useradd -m -d /docker/home/centerx centerx` 와 같이 하면 사용자 계정 centerx 의 홈 폴더가 `/docker/home/centerx` 가 된다. 계정과 폴더는 원하는데로 변경 가능.
+  - `# su - centerx`
+    - `$ git init`
+    - `$ git remote add origin https://github.com/thruthesky/centerx`
+    - `$ git fetch`
+    - `$ git checkout main`
+    - `$ chmod -R 777 files`
+    - `$ chmod -R 777 var/logs`
 
 - phpMyAdmin 을 통한 데이터베이스 테이블 설치
   - `/docker/home/default/etc/phpMyAdmin` 에 phpMyAdmin 이 설치되어져 있다.
-    `http://0.0.0.0/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
+    접속은 IP 주소를 이용하여, `http://0.0.0.0/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
     데이터베이스 관리자 아이디는 root 이며, 비밀번호는 위에서 변경 한 것을 입력한다.
   - phpMyAdmin 접속 후, `centerx/etc/install/sql` 폴더에서 최신 sql 파일의 내용을 phpMyAdmin 에 입력하고 쿼리 실행을 한다.
     - 만약, 국가 정보를 원한다면, `wc_countries` 테이블을 삭제하고, `/centerx/etc/install/sql/countries.sql` 
@@ -551,6 +563,53 @@ config()->updateMetas(ADMIN_SETTINGS, in()); // ADMIN_SETTINGS is defined as 1.
 ```php
 d( config(3)->getMetas() );
 ```
+
+# 로그인
+
+
+- 참고, 카카오로그인과 네이버로그인 모두 서브 도메인은 자동으로 무한대로 사용가능하다.
+
+## 카카오 로그인
+
+카카오톡을 통해서 로그인을 하는 기능으로서 웹에서 카카오 로그인에 대한 코드는 이미 준비되어져 있다.
+참고로, 모바일웹/앱에서 사용하는 경우는 아직 테스트 되지 않았다.
+
+- config.php 에서 전체 설정을 할 수 있고, theme/theme-name/config.php 에서 테마별 설정을 할 수 있다.
+  - 그리고 하나의 테마에서 여러 도메인을 사용하는 경우, 도메인 별로 카카오 프로젝트를 만들 필요 없이, 최대 10 개 도메인까지 사용 가능하다.
+  - 그래서, theme/theme-name/config.php 에서 설정을 하는 경우, 도메인 별 옵션 처리를 할 필요가 없다.
+    - 카카오톡 프로젝트 하나로 사이트 10개, Redirect URL 도 10개 등록 가능하다.
+
+- 개발
+  - 플랫폼에서 웹을 선택하는 경우, 로그인 방식이 `Javascript` 와 `Restful Api` 두가지가 있다.
+  - 공식 문서에서 `REST API로 개발하는 경우 (Redirect URL 을)필수로 설정해야 합니다.` 와 같이 나온다.
+  - 즉, 카카오톡 로그인 버튼을 눌렀을 때, 자바스크립트로 새 창을 띄워서 하는 경우, 로그인 성공 콜백 함수가 나오고 원하는데로 처리를 하면 된다.
+    따라서, Redirect URL 을 설정 할 필요가 없다.
+  
+- 설정
+  - `JAVASCRIPT_KAKAO_CLIENT_ID` 는 자바스크립트 로그인 용 키이다.
+  - `JAVASCRIPT_KAKAO_CALLBACK_URL` 는 자바스크립트로 로그인을 한 다음 이동 할 페이지이다. 자바스크립트에서 로그인을 할 때에는 프로그램적으로 원하는 곳으로 이동 할 수 있다.
+    - Rest API 를 사용하지 않으므로, Redirect URL 일 필요가 없다.
+  
+- 동작
+  - 아이폰에서는 로그인 후, 홈페이지로 돌아가지 않는다. 사용자가 앱으로 돌아가기 버튼을 눌러야하는 번거로 움이 있다.
+  - 안드로이드폰에서는 로그인 후, 홈페이지로 돌아간다.
+  
+
+## 네이버 로그인
+
+카카오 로그인은 10개 도메인과 10개 Redirect URL 을 제공해서, 어느 정도 활용성이 높고, 또 자바스크립트로 로그인을 하는 경우는 아예 Redirect URL 이 필요 없다.
+
+하지만, 네이버의 경우, 하나의 네이버 프로젝트에 최대 2개의 도메인만 사용가능하다. 또한 각 도메인당 최대 5개의 Redirect URL 만 사용 가능하다.
+10개 도메인을 사용한다면, 네이버의 경우 프로젝트당 2개의 도메인이 가능하므로, 5개의 프로젝트가 필요하다.
+참고로 PC 웹과 Mobile 웹 두가지 슬롯이 있는데, 거의 완벽하게 동일한 것이다. 따라서 도메인을 2개 사용하면 된다.
+이 경우, 서브 도메인이 많다면, Redirect URL 을 메인으로 두고, state 코드를 넘겨, 해당 서브도메인으로 돌아 올 수 있도록 해야 한다.
+
+그래서, 여러 도메인을 사용하는 경우, 네이버 API KEY 가 도메인 별로 다를 수 있다. 따라서 config.php 에서 도메인 별로 옵션 처리가 되어야 할 수 있다.
+
+
+
+
+
 
 
 # Admin

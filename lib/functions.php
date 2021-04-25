@@ -270,6 +270,8 @@ function jsAlert($msg)
 
 /**
  * 문자열을 암호화한다.
+ * MD5 가 아니라, 더 복잡한 암호화를 한다.
+ *
  * @param $str
  * @return false|string|null
  */
