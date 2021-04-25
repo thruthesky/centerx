@@ -11,7 +11,7 @@ require ROOT_DIR . 'vendor/autoload.php';
 
 require_once ROOT_DIR . 'lib/functions.php';
 
-require_once ROOT_DIR . 'lib/defines.php';
+require_once ROOT_DIR . 'etc/defines.php';
 
 require_once ROOT_DIR . 'lib/theme.class.php';
 

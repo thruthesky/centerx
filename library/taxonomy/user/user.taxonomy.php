@@ -28,7 +28,9 @@
  * @property-read string $zipcode
  * @property-read string $createdAt
  * @property-read string $updatedAt
- * @property-read string $provider -  social login
+ * @property-read string $provider - 소셜 로그인을 했을 때, 로그인 제공자. 예) naver, kakao
+ * @property-read string $verifier - 본인 인증을 했을 때, 인증 제공자. 예) passlogin, danal.
+ * @property-read string $verified - 본인 인증을 했으면 true 를 리턴. 아니면, false 를 리턴.
  * @property-read string $plid - pass login
  * @property-read string $ci - pass login
  * @property-read string photoUrl
@@ -40,6 +42,18 @@ class UserTaxonomy extends Entity {
         parent::__construct(USERS, $idx);
     }
 
+    /**
+     * getter 에 verified 를 추가.
+     * @param $name
+     * @return mixed
+     */
+    public function __get($name): mixed {
+        if ( $name == 'verified' ) {
+            return $this->verifier;
+        } else {
+            return parent::__get($name);
+        }
+    }
 
 
     /**

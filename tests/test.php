@@ -35,6 +35,17 @@ function isTrue($t, string $msg = '') {
 }
 
 
+/**
+ * Create a test user or login the test user that has just created for the test session.
+ * @return UserTaxonomy
+ */
+function createTestUser(): UserTaxonomy {
+    $email = 'user-register' . time() . '@test.com';
+    $pw = '12345a';
+    return user()->loginOrRegister([EMAIL=>$email, PASSWORD=>$pw, 'color' => 'blue']);
+}
+
+
 
 echo "\n\n=====================================> Begin Test at: " . date('r') . "\n\n";
 

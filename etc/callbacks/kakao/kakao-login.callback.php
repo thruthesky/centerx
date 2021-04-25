@@ -2,9 +2,9 @@
 require_once('../../../boot.php');
 if ( in('kakao_id') ) {
     $user = user()->loginOrRegister([
-        'email' => md5(in('kakao_id')) . '@kakao.com',
+        'email' => 'kakao' . in('kakao_id') . '@kakao.com',
         'password' => LOGIN_PASSWORD_SALT,
-        'provider' => 'kakao'
+        'provider' => PROVIDER_KAKAO
     ]);
     setLoginCookies($user->profile());
     jsGo('/');

@@ -150,3 +150,16 @@ define('PENDING','pending');
 
 
 define('API_CALL', in(ROUTE) != null);
+
+
+
+define('PROVIDER_NAVER', 'naver');
+define('PROVIDER_KAKAO', 'kakao');
+
+define('PROVIDERS', [PROVIDER_NAVER, PROVIDER_KAKAO]);
+
+define('VERIFIER_PASSLOGIN', 'passlogin');
+define('VERIFIER_DANAL', 'danal');
+define('VERIFIERS', [VERIFIER_DANAL, VERIFIER_PASSLOGIN]);
+
+

@@ -7,6 +7,8 @@ testUserRegisterIsMine();
 testUserRegisterLoginWithMeta();
 testUserLoginOrRegister();
 testUserBy();
+testUserVerification();
+
 
 
 function testUserRegister() {
@@ -71,4 +73,15 @@ function testUserBy() {
     $pw = '12345a';
     $registered = user()->register([EMAIL=>$email, PASSWORD=>$pw, 'color' => 'green']);
     isTrue($registered->idx == user()->by($email)->idx, 'user by');
+}
+
+function testUserVerification() {
+    $testUser = createTestUser();
+    isTrue($testUser->provider == '', 'no provider');
+    isTrue($testUser->verified == false, 'not verified');
+    $testUser->update(['provider' => PROVIDER_NAVER]);
+    isTrue($testUser->provider == 'naver', 'has provider: naver');
+    $testUser->update(['verifier' => VERIFIER_PASSLOGIN]);
+    isTrue($testUser->verified == true, 'verified');
+
 }
