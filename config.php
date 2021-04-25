@@ -200,7 +200,7 @@ if ( ! defined('FIX_LANGUAGE') ) define('FIX_LANGUAGE', '');
 /**
  * 각종 로그인(패스로그인, 카카오로그인, 등) 할 때, 사용되는 비밀번호.
  */
-define('LOGIN_PASSWORD_SALT', 'Random_Salt_oO^.^7Oo_S.0.48.PM,*, Once set, should not be changed!'); // This is any random (secret) string.
+if ( !defined('LOGIN_PASSWORD_SALT') ) define('LOGIN_PASSWORD_SALT', 'Random_Salt_oO^.^7Oo_S.0.48.PM,*, Once set, should not be changed!'); // This is any random (secret) string.
 
 /**
  * PASS_LOGIN_MOBILE_PREFIX 은 회원 가입을 할 때, 전화번호로 하는데, 'm010123456789@passlogin.com' 와 같이 기록하기 위한 prefix 이다.
