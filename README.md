@@ -41,6 +41,7 @@
 - develop mysqli class
 
   - https://www.codewall.co.uk/php-mysqli-examples-the-ultimate-tutorial/
+    https://www.php.net/manual/en/mysqli-driver.report-mode.php
   - see https://devjunky.com/Creating-a-MySqli-Database-Class-in-PHP/
   - https://codeshack.io/super-fast-php-mysql-database-class/
     https://github.com/voku/simple-mysqli/blob/master/src/voku/db/DB.php
