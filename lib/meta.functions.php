@@ -13,6 +13,7 @@
 
 
 /**
+ * @deprecated
  * 현재 taxonomy 에서 meta 값을 리턴한다.
  * Returns a meta value of the taxonomy and entity.
  *

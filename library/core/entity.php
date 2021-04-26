@@ -353,31 +353,29 @@ class Entity {
         $record[CREATED_AT] = time();
         $record[UPDATED_AT] = time();
 
-
-        // Entity 생성 전 훅
+        // Hook before entity create
         $re = hook()->run("{$this->taxonomy}-before-create", $record, $in);
-//        debug_log("훅 리턴 값:", $re);
+        // If there is error after hook, then return error.
         if ( isError($re) ) return $this->error($re);
 
         debug_log("db()->insert(table: ", $this->getTable());
         debug_log("db()->insert(record: ", $record);
-        if ( isDebugging() ) db()->debugOn();
-        $idx = db()->insert( $this->getTable(), $record );
-        if ( isDebugging() ) db()->debug();
 
-//        debug_log("IDX", $idx);
+        $idx = db()->insert( $this->getTable(), $record );
 
         if ( !$idx ) return $this->error(e()->insert_failed);
 
 
-        $re = addMeta($this->taxonomy, $idx, $this->getMetaFields($in));
-        if ( isError($re) ) jsAlert($re);
+        meta()->creates($this->taxonomy, $idx, $this->getMetaFields($in));
 
-        /// 현재 객체에 정보 저장.
+
+
+        // read entity
         $this->read($idx);
 
-        // Entity 생성 후 훅
+        // Hook after entity create
         $re = hook()->run("{$this->taxonomy}-after-create", $this->data, $in);
+        // If there is error after hook, then return error.
         if ( isError($re) ) return $this->error($re);
 
         return $this;
@@ -525,24 +523,28 @@ class Entity {
      */
     public function read(int $idx = 0): self {
 
+
         if ( $this->hasError ) return $this;
 
         if ( ! $idx ) $idx = $this->idx;
 
-        $q = "SELECT * FROM {$this->getTable()} WHERE idx=?";
+        $q = "SELECT * FROM {$this->getTable()} WHERE idx = ?";
 
-        if ( isDebugging() ) d("read() q: $q");
 
-        $record = db()->row($q, 'i', $idx);
+//        d("read() q: $q");
+
+        $record = db()->row($q, $idx);
 
         if ( $record ) {
-            $meta = getMeta($this->taxonomy, $record['idx']);
+
+            $meta = meta()->get($this->taxonomy, $idx);
             $this->setData(array_merge($record, $meta));
             $this->idx = $this->data['idx'];
         } else {
             $this->error( e()->entity_not_found );
             $this->setData([]);
         }
+
 
         return $this;
     }
@@ -627,11 +629,18 @@ class Entity {
             return false;
         }
 
-        // $this->idx 에 값이 있으면, 실제 DB 에서 레코드가 검사하는지 검사.
-        $q = "SELECT " . IDX . " FROM " . $this->getTable() . " WHERE " . IDX . " = {$this->idx} ";
-        $re = db()->get_var($q);
+
+        // Search the record.
+        $rows = self::search(conds: [IDX => $this->idx]);
+        return count($rows) > 0;
+
+/*
+        // Get the record of the idx.
+        $q = "SELECT " . IDX . " FROM " . $this->getTable() . " WHERE " . IDX . " = ? ";
+        $re = db()->column($q, $this->idx);
         if ( $re ) return true;
         else return false;
+        */
     }
 
 
@@ -813,35 +822,21 @@ class Entity {
         $table = $this->getTable();
         $from = ($page-1) * ($limit ? $limit : 10);
 
-        if ( $where != '1' ) {
-            if ( empty($params) ) die("entity::search() params must NOT set to empty when [where] is set.");
+        if ( $conds ) {
+            list( $fields, $placeholders, $values ) = db()->parseRecord($conds, 'select', $conj);
+            $q = " SELECT $select FROM $table WHERE $placeholders ORDER BY $order $by LIMIT $from, $limit ";
+            $rows = db()->rows($q, ...$values);
+        } else if ( $params ) { // prepare statement if $params is set.
+            $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
+            $rows = db()->rows($q, ...$params);
         }
-
-
-
-        // @TODO [on next version] make an error if $params is empty when $where is not.
-
-        if ( $params ) { // prepare statement if $params is set.
+        else if ( $where == '1' ) {
             $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
-            try {
-                if ( isDebugging() ) { d($q); d($params); }
-                /// @TODO remove the '@' sign after 'warning' bug fixed.
-                @db()->query_prepared($q, $params);
-
-                $rows = get_results(ARRAY_A, db());
-            } catch(Exception $e) {
-                // Error.
-                $this->setError($e->getCode());
-                return [];
-            }
-        } else {
-            if ( $conds ) {
-                $where = sqlCondition($conds, $conj);
-            }
-            $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
-
-            if ( isDebugging() ) d($q);
-            $rows = db()->get_results($q, ARRAY_A);
+            $rows = db()->rows($q);
+        }
+        else  {
+            debug_print_backtrace();
+            die("Entity::search() wrong paramters");
         }
 
 
@@ -942,13 +937,15 @@ class Entity {
     public function getTableFieldNames(): array {
         $table = $this->getTable();
         if ( isset($this->fields[$table]) ) return $this->fields[$table];
-        $q = "SELECT column_name FROM information_schema.columns WHERE table_schema = '".DB_NAME."' AND table_name = '$table'";
-        $rows = db()->get_results($q, ARRAY_A);
-        $names = [];
-        foreach($rows as $row) {
-            $names[] = $row['column_name'];
-        }
-        $this->fields[$table] = $names;
+//        $q = "SELECT column_name FROM information_schema.columns WHERE table_schema = '".DB_NAME."' AND table_name = '$table'";
+//        $rows = db()->rows($q);
+//        $names = [];
+//        foreach($rows as $row) {
+//            $names[] = $row['column_name'];
+//        }
+//        $this->fields[$table] = $names;
+
+        $this->fields[$table] = db()->fieldNames($table);
         return $this->fields[$table];
     }
 

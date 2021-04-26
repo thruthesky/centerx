@@ -16,12 +16,10 @@ function insertMetaTest() {
     $code = 'code' . time();
     $data = 'data' . time();
 
-    $re = meta()->addMeta($taxonomy, $entityOne, $code, $data);
+    $re = meta()->create([ TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code, DATA => $data]);
     isTrue($re == '', "should be success");
-    $re = meta()->addMeta($taxonomy, $entityTwo, $code, $data);
+    $re = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityTwo, CODE => $code, DATA => $data]);
     isTrue($re == '', "should be success");
-
-
 
 }
 
@@ -39,9 +37,9 @@ function getMetaTest() {
     $code = 'code' . time();
     $data = 'data' . time();
 
-    $re = meta()->addMeta($taxonomy, $entityOne, $code, $data);
+    $re = meta()->create([ TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code, DATA => $data]);
     isTrue($re == '', "should be success");
-    $re = meta()->addMeta($taxonomy, $entityTwo, $code, $data);
+    $re = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityTwo, CODE => $code, DATA => $data]);
     isTrue($re == '', "should be success");
 
     $re = meta()->get($taxonomy, $entityOne);
@@ -78,14 +76,14 @@ function updateMetaTest() {
     $code = 'code' . time();
     $data = 'data' . time();
 
-    $re = meta()->addMeta($taxonomy, $entityOne, $code, $data);
+    $re = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code, DATA => $data]);
     isTrue($re == '', "updateMetaTest addMeta should be success");
-    $re = meta()->addMeta($taxonomy, $entityTwo, $code, $data);
+    $re = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityTwo, CODE => $code, DATA => $data]);
     isTrue($re == '', "updateMetaTest addMeta should be success");
 
-    $re = meta()->updateMeta($taxonomy, $entityOne, $code, $data . 'updated');
+    $re = meta()->update([TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code, DATA => $data . 'updated']);
     isTrue($re == '', "updateMetaTest updateMeta should be success");
-    $re = meta()->updateMeta($taxonomy, $entityTwo, $code, $data . 'updatedForTwo');
+    $re = meta()->update([TAXONOMY => $taxonomy, ENTITY => $entityTwo, CODE => $code, DATA => $data . 'updatedForTwo']);
     isTrue($re == '', "updateMetaTest updateMeta should be success");
 
     $re = meta()->get($taxonomy, $entityOne, $code);
@@ -102,6 +100,7 @@ function updateMetaTest() {
     isTrue($re[$code] == $data . "updatedForTwo", "code data should exist");
 
 }
+
 function deleteMetaTest() {
 
 }

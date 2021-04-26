@@ -6,6 +6,10 @@ insertTest();
 rowTest();
 rowsTest();
 columnTest();
+entitySearchTest();
+fieldNamesTest();
+
+
 
 
 
@@ -45,7 +49,6 @@ function insertTest() {
     ]);
 
     isTrue($idx > 0, "user insert");
-
 
 }
 
@@ -102,3 +105,39 @@ function columnTest() {
 }
 
 
+
+
+function entitySearchTest() {
+    $t = time();
+    /// insert two user
+    $idx = db()->insert(DB_PREFIX.'users', [
+        'email' => 'select-1'.$t.'@test.com',
+        'password' => 'insert'.$t.'@test.com',
+        'createdAt' =>$t,
+        'updatedAt' => $t,
+    ]);
+
+    $idx = db()->insert(DB_PREFIX.'users', [
+        'email' => 'select-2'.$t.'@test.com',
+        'password' => 'insert'.$t.'@test.com',
+        'createdAt' =>$t,
+        'updatedAt' => $t,
+    ]);
+
+    $rows = entity(USERS)->search(conds: ["idx >" => 1, "email LIKE" => "select%" ]);
+    isTrue(count($rows) >= 2, "search records");
+
+    $newRows = entity(USERS)->search(where: "idx > ? AND email LIKE ?", params: [1, "select%"]);
+    isTrue(count($newRows) >= 2, "search records");
+
+    $allRows = entity(USERS)->search();
+    isTrue(count($allRows) >= 2, "search records");
+
+}
+
+function fieldNamesTest() {
+    $names = db()->fieldNames(DB_PREFIX . 'search_keys');
+    isTrue(count($names) == 2, 'Two fields');
+    isTrue($names[0] == 'searchKey' && $names[1] == 'createdAt', 'Two fields');
+
+}

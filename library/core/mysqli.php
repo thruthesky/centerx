@@ -117,7 +117,7 @@ class MySQLiDatabase {
      * @param $sql
      * @param mixed ...$values
      * @return array
-     *  - empty row if there is no value (or there is an error)
+     *  - empty row if there is no record (or there is an error)
      */
     public function row($sql, ...$values): array {
         try {
@@ -155,18 +155,34 @@ class MySQLiDatabase {
         return $rets;
     }
 
+
     /**
      * Returns many records
      *
      * @attention If the result set are more than 1,000 records, you may need to collect only id of the records and get the record of the id separately.
+     * @attention It prevents a common mistake passing array as the second parameter *
+     * ```
+     * $rows = db()->rows($q, ['value', 1, 2, 3]); // This is error. It must be unpacked (or spread).
+     * ```
      *
+     * @attention We don't use binary as values. If binary data in $values had delivered, then it must be a mistake.
      * @param string $sql
      * @param mixed ...$values
+     *  - If this is a empty (or no parameters), then it does not bind params. Just executes the statement.
      * @return array
      */
     public function rows(string $sql, ...$values): array {
         $stmt = $this->connection->prepare($sql);
-        $stmt->bind_param($this->types($values), ...$values);
+        if ( $values ) {
+            if ( is_array($values[0]) || is_object($values[0]) ) {
+                die("MySQLiDatabase::rows(). The first value in \$values is not a scalar! It must be a mistake. Wrong parameter format.");
+            }
+            $types = $this->types($values);
+            if ( $types == 'b' ) {
+                die("MySQLiDatabase::rows() types == 'b'. We don't use binary as values.");
+            }
+            $stmt->bind_param($types, ...$values);
+        }
         $stmt->execute();
         $result = $stmt->get_result(); // get the mysqli result
         /* fetch associative array */
@@ -208,10 +224,21 @@ class MySQLiDatabase {
      *
      * Gets an array of fields and values and returns 'fields', 'placeholders', 'values' for statement execution.
      * @param array $record
+     *  - Record can have field, expression, value.
+     *     If the record has an array of "['count >' => 5]", then, the placeholder will be "count > ?".
+     *  - There must be a blank when the key has expression.
+     *
      * @param string $type
      * @return array
+     *
+     * @example
+     *  $record = ['a' => 'apple', 'b' => 'banana', 'count >' => 5],
+     *  return
+     *      ['a', 'b', 'c'],
+     *      ['a=?', 'b=?', 'count>?'],
+     *      ['apple', 'banana', 5],
      */
-    private function parseRecord(array $record, string $type='insert') {
+    public function parseRecord(array $record, string $type='', string $glue=',') {
         $fields = [];
         $placeholders = [];
         $values = [];
@@ -219,16 +246,29 @@ class MySQLiDatabase {
 
         // Loop through $data and build $fields, $placeholders, and $values
         foreach ( $record as $field => $value ) {
-            $fields[] = $field;
+
             $values[] = $value;
             if ( $type == 'update') {
+                $fields[] = $field;
                 $placeholders[] = $field . '=?';
+            } else if ( $type == 'select') {
+                if ( str_contains($field, ' ')) {
+                    $ke = explode(' ', $field, 2);
+                    $field = $ke[0];
+                    $fields[] = $field;
+                    $exp = $ke[1];
+                } else {
+                    $fields[] = $field;
+                    $exp = "=";
+                }
+                $placeholders[] = $field . ' ' . $exp . ' ?';
             } else {
+                $fields[] = $field;
                 $placeholders[] = '?';
             }
         }
 
-        return array( implode(",", $fields), implode(",", $placeholders), $values );
+        return array( implode(",", $fields), implode(' ' . $glue . ' ', $placeholders), $values );
 
 
     }
@@ -256,5 +296,20 @@ class MySQLiDatabase {
         return $type;
     }
 
+
+    /**
+     * Returns the fields names of the table.
+     * @param string $table
+     * @return array
+     */
+    public function fieldNames(string $table): array {
+        $q = "SELECT column_name FROM information_schema.columns WHERE table_schema = '".DB_NAME."' AND table_name = '$table'";
+        $rows = db()->rows($q);
+        $names = [];
+        foreach($rows as $row) {
+            $names[] = $row['column_name'];
+        }
+        return $names;
+    }
 
 }

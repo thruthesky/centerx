@@ -77,7 +77,8 @@
 - rewrite `meta` functions to use `mata.taxonomy`
 
 
-  
+- @doc
+  meta function may try to create child meta even if its taxonomy is meta. It only happens on testing.
 
 - 필고를 보고, security 체크를 한다. security 패턴 검사를 관리자 페이지에서 입력 할 수 있도록 한다.
   - SELECT SQL 쿼리 word filtering 을 따로 두고, (글 추출 및 각종 해킹 시도. entity.class.php 에서 read, search 등에서 사용. )
