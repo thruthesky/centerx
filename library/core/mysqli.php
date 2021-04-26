@@ -1,6 +1,6 @@
 <?php
 
-mysqli_report(MYSQLI_REPORT_ALL);
+mysqli_report(MYSQLI_REPORT_ALL ^  MYSQLI_REPORT_INDEX);
 
 
 
@@ -64,8 +64,43 @@ class MySQLiDatabase {
         }
     }
 
-
     /**
+     * @param string $table
+     * @param array $record
+     * @param string $where
+     * @param array $where_values
+     * @return int
+     */
+    public function update(string $table, array $record, string $where, array $where_values): int
+    {
+        if (empty($table) || empty($record)) return 0;
+        list($fields, $placeholders, $values) = $this->parseRecord($record, 'update');
+
+        try {
+            $prepare = "UPDATE {$table} SET {$placeholders} WHERE $where";
+            $newValues = array_merge($values, $where_values);
+            $stmt = $this->connection->prepare($prepare);
+            $types = $this->types($newValues);
+            $stmt->bind_param($types, ...$newValues);
+
+            // Execute the query
+            $stmt->execute();
+            // Check for successful insertion
+            if ( $stmt->affected_rows ) {
+                $id = $this->connection->insert_id;
+                if ( $id ) return $id;
+                else return 1;
+            } else {
+                return 0;
+            }
+        } catch (mysqli_sql_exception $e) {
+            $this->handleError($e->__toString());
+            return 0;
+        }
+    }
+
+
+        /**
      * @deprecated - Use $this->row();
      * @param $q
      * @param string $_ - for backward compatibility.
@@ -79,6 +114,8 @@ class MySQLiDatabase {
     /**
      * Returns a record.
      *
+     * @param $sql
+     * @param mixed ...$values
      * @return array
      *  - empty row if there is no value (or there is an error)
      */
@@ -88,6 +125,9 @@ class MySQLiDatabase {
             $stmt->bind_param($this->types($values), ...$values);
             $stmt->execute();
             $result = $stmt->get_result(); // get the mysqli result
+
+            if( $result->num_rows == 0) return []; // if the fetch data is empty return empty array
+
             return $result->fetch_assoc(); // fetch data
         } catch(mysqli_sql_exception $e) {
             $this->handleError($e->__toString(), $sql);
@@ -157,6 +197,7 @@ class MySQLiDatabase {
      */
     public function column(string $sql, ...$values): mixed {
         $row = $this->row($sql, ...$values);
+
         if ( ! $row ) return null;
         $firstKey = array_key_first($row);
         return $row[$firstKey];
