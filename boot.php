@@ -15,6 +15,8 @@ require_once ROOT_DIR . 'etc/defines.php';
 
 require_once ROOT_DIR . 'lib/theme.class.php';
 
+require_once ROOT_DIR . 'library/core/mysqli.php';
+
 
 require_once ROOT_DIR . 'library/core/entity.php';
 require_once ROOT_DIR . 'lib/config.class.php';

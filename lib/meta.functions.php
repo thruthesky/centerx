@@ -7,9 +7,9 @@
  * @todo entity class 형태로 작성하는 것을 고려한다.
  */
 
-use function ezsql\functions\{
-    eq,
-};
+//use function ezsql\functions\{
+//    eq,
+//};
 
 
 /**
@@ -28,25 +28,26 @@ use function ezsql\functions\{
  * - 값 1개를 리턴 할 때, 값이 있으면, 값 1개를 리턴한다.
  * - 값을 여러개 리턴 할 때, 값이 없으면 빈 배열 [] 을 리턴한다.
  *
- * @todo 더 많은 테스트 코드를 작성 할 것.
+ * @todo move it to meta()->get()
  */
 function getMeta(string $taxonomy, int $entity, string $code = null): mixed {
-    if ( $code ) {
-        $q = "SELECT data FROM " . META_TABLE . " WHERE taxonomy='$taxonomy' AND entity=$entity AND code='$code'";
-//          echo("Q: $q\n");
-        $data = db()->get_var($q);
-        if ( ! $data ) return null;
-        $un = _unserialize($data);
-        return $un;
-    } else {
-        $q = "SELECT code, data FROM " . entity(METAS)->getTable() . " WHERE taxonomy='$taxonomy' AND entity=$entity";
-        $rows = db()->get_results($q, ARRAY_A);
-        $rets = [];
-        foreach($rows as $row) {
-            $rets[$row['code']] = _unserialize($row['data']);
-        }
-        return $rets;
-    }
+    return meta()->get($taxonomy, $entity, $code);
+//
+//    if ( $code ) {
+//        $q = "SELECT data FROM " . META_TABLE . " WHERE taxonomy=? AND entity=? AND code=?";
+//        $data = db()->column($q, [$taxonomy, $entity, $code]);
+//        if ( ! $data ) return null;
+//        $un = _unserialize($data);
+//        return $un;
+//    } else {
+//        $q = "SELECT code, data FROM " . entity(METAS)->getTable() . " WHERE taxonomy=? AND entity=?";
+//        $rows = db()->rows($q, [$taxonomy, $entity]);
+//        $rets = [];
+//        foreach($rows as $row) {
+//            $rets[$row['code']] = _unserialize($row['data']);
+//        }
+//        return $rets;
+//    }
 }
 
 
@@ -54,6 +55,8 @@ function getMeta(string $taxonomy, int $entity, string $code = null): mixed {
 
 /**
  * meta 가 존재하면 true 아니면, false 를 리턴한다.
+ *
+ * @deprecated Use meta()->exists()
  *
  * @param string $taxonomy
  * @param int $entity
@@ -70,6 +73,7 @@ function metaExists(string $taxonomy, int $entity, string $code) {
 
 
 /**
+ * @deprecated use meta()->entity()
  * taxonomy, code, 그리고 값을 비교해서, entity(taxonomy record idx) 1개를 얻는다.
  *
  * 현재 taxonomy 에서 code=$code AND data=$data 와 같이 비교해서, data 값이 맞으면 entity 를 리턴한다.

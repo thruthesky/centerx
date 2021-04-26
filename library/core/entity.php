@@ -529,10 +529,12 @@ class Entity {
 
         if ( ! $idx ) $idx = $this->idx;
 
-        $q = "SELECT * FROM {$this->getTable()} WHERE idx=$idx";
-//        debug_log("read: $q");
+        $q = "SELECT * FROM {$this->getTable()} WHERE idx=?";
+
         if ( isDebugging() ) d("read() q: $q");
-        $record = db()->get_row($q, ARRAY_A);
+
+        $record = db()->row($q, 'i', $idx);
+
         if ( $record ) {
             $meta = getMeta($this->taxonomy, $record['idx']);
             $this->setData(array_merge($record, $meta));
@@ -810,6 +812,10 @@ class Entity {
     ): array {
         $table = $this->getTable();
         $from = ($page-1) * ($limit ? $limit : 10);
+
+        if ( $where != '1' ) {
+            if ( empty($params) ) die("entity::search() params must NOT set to empty when [where] is set.");
+        }
 
 
 

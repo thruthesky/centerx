@@ -41,6 +41,7 @@
 - develop mysqli class
 
   - https://www.codewall.co.uk/php-mysqli-examples-the-ultimate-tutorial/
+    https://www.php.net/manual/en/book.mysqli.php
     https://www.php.net/manual/en/mysqli-driver.report-mode.php
   - see https://devjunky.com/Creating-a-MySqli-Database-Class-in-PHP/
   - https://codeshack.io/super-fast-php-mysql-database-class/
@@ -1747,6 +1748,7 @@ chokidar '**/*.php' -c "docker exec [php_container_name] php [centerx_folder_nam
   
 ```shell
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic."
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.db."
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.entity.search"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php app"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php user"
@@ -2381,4 +2383,14 @@ primary[label]=대표사진
 primary[tip]=대표사진입니다.
 content[label]=내용사진
 content[tip]=내용사진입니다.
+```
+
+
+
+# PhpStorm Settings
+
+- PhpStorm requires 'ext-mysqli' extension in composer.json for better inspection. As soon as adding it to `composer.json` (without installation), it works.
+
+```
+"ext-mysqli": "*"
 ```
