@@ -5,7 +5,12 @@ insertMetaTest();
 checkMetaTest();
 getMetaTest();
 updateMetaTest();
-deleteMetaTest();
+deleteMetaTestViaIdx();
+deleteMetaTestViaTaxonomyEntityCode();
+deleteMetaTestViaTaxonomyEntity();
+deleteMetaTestViaTaxonomyCode();
+deleteMetaTestViaEntity();
+deleteMetaTestViaCode();
 serializeTest();
 serializeObjectTest();
 
@@ -109,31 +114,38 @@ function updateMetaTest() {
 
 }
 
-function deleteMetaTest() {
-
-
+function deleteMetaTestViaIdx()
+{
     $taxonomy = 'test';
     $entityOne = 1;
     $entityTwo = 2;
-    $code = 'code-delete' . time();
+    $code = 'code-delete-idx' . time();
     $data = 'data' . time();
-
-
     $m1 = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code, DATA => $data]);
     isTrue($m1->idx > 0, "create code: entityOne + $code");
 
     // delete via idx
     $d1 = meta($m1->idx)->delete();
     isTrue($d1->hasError == false, "delete success");
-    isTrue( $d1->idx > 0, 'deleted remain only on memory.');
-    isTrue( $d1->idx == $m1->idx, 'idx will be remain only on memory.');
-    $find = meta()->findOne([IDX=>$m1->idx]);
-    isTrue( $find->getError() == e()->entity_not_found, 'not found after delete');
+    isTrue($d1->idx > 0, 'deleted remain only on memory.');
+    isTrue($d1->idx == $m1->idx, 'idx will be remain only on memory.');
+    $find = meta()->findOne([IDX => $m1->idx]);
+    isTrue($find->getError() == e()->entity_not_found, 'not found after delete');
 
 
     $m1 = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code, DATA => $data]);
     isTrue($m1->idx > 0, "create code: entityOne + $code");
 
+
+}
+function deleteMetaTestViaTaxonomyEntityCode()
+{
+
+    $taxonomy = 'test';
+    $entityOne = 1;
+    $entityTwo = 2;
+    $code = 'code-delete-tec' . time();
+    $data = 'data' . time();
     // delete via taxonomy, entity, code
     $d1 = meta()->delete();
     isTrue($d1->hasError, "delete test must fail");
@@ -146,7 +158,14 @@ function deleteMetaTest() {
     $d1 = meta()->delete(taxonomy: $taxonomy, entity: $entityOne, code: $code);
     isTrue($d1->hasError == false, "delete success with taxonomy, entity, code");
 
-
+}
+function deleteMetaTestViaTaxonomyEntity()
+{
+    $taxonomy = 'test';
+    $entityOne = 1;
+    $entityTwo = 2;
+    $code = 'code-delete-te' . time();
+    $data = 'data' . time();
     // delete via taxonomy and entity
     $m1 = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code, DATA => $data . "entity"]);
     isTrue($m1->idx > 0, "create code: entityOne + $code");
@@ -154,13 +173,28 @@ function deleteMetaTest() {
     $d1 = meta()->delete(taxonomy: $taxonomy, entity: $entityOne);
     isTrue($d1->hasError == false, "delete success taxonomy, entity");
 
-
+}
+function deleteMetaTestViaTaxonomyCode()
+{
+    $taxonomy = 'test';
+    $entityOne = 1;
+    $entityTwo = 2;
+    $code = 'code-delete-tc' . time();
+    $data = 'data' . time();
     // delete via taxonomy and code
     $m1 = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code, DATA => $data . "code"]);
     isTrue($m1->idx > 0, "create code: entityOne + $code");
 
-    $d1 = meta()->delete(taxonomy: $taxonomy,  code: $code);
+    $d1 = meta()->delete(taxonomy: $taxonomy, code: $code);
     isTrue($d1->hasError == false, "delete success taxonomy, code");
+}
+function deleteMetaTestViaCode()
+{
+    $taxonomy = 'test';
+    $entityOne = 1;
+    $entityTwo = 2;
+    $code = 'code-delete-c' . time();
+    $data = 'data' . time();
 
     // delete via code
     $c1 = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code . 1, DATA => $data . "entityOne"]);
@@ -168,7 +202,7 @@ function deleteMetaTest() {
     $c2 = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code . 2, DATA => $data . "entityOne"]);
     isTrue($c2->idx > 0, "create code: entityOne + $code");
 
-    $meta1 = meta()->get(taxonomy: $taxonomy,entity: $entityOne);
+    $meta1 = meta()->get(taxonomy: $taxonomy, entity: $entityOne);
     isTrue(count($meta1) > 0, "meta should exist");
     isTrue($meta1[$code . 1] = $data . "entityOne", "meta code1 should exist");
     isTrue($meta1[$code . 2] = $data . "entityOne", "meta code2 should exist");
@@ -178,25 +212,33 @@ function deleteMetaTest() {
     $c2 = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityTwo, CODE => $code . 2, DATA => $data . "entityTwo"]);
     isTrue($c2->idx > 0, "create code: entityOne + $code");
 
-    $meta2 = meta()->get(taxonomy: $taxonomy,entity: $entityTwo);
+    $meta2 = meta()->get(taxonomy: $taxonomy, entity: $entityTwo);
     isTrue(count($meta2) > 0, "meta should exist");
     isTrue($meta2[$code . 1] = $data . "entityTwo", "meta code1 should exist");
     isTrue($meta2[$code . 2] = $data . "entityTwo", "meta code2 should exist");
 
     // all code same code will be
-    $d1 = meta()->delete(code: $code . 1 );
+    $d1 = meta()->delete(code: $code . 1);
     isTrue($d1->hasError == false, "delete success code");
-    $d1 = meta()->delete(code: $code . 2 );
+    $d1 = meta()->delete(code: $code . 2);
     isTrue($d1->hasError == false, "delete success code");
     $m1 = meta()->get(taxonomy: $taxonomy, entity: $entityOne);
 
-    isTrue( !isset($m1[$code . 1]) , "meta code1 should not exist for entity $entityOne");
-    isTrue( !isset($m1[$code . 2]) , "meta code2 should not exist for entity $entityOne");
+    isTrue(!isset($m1[$code . 1]), "meta code1 should not exist for entity $entityOne");
+    isTrue(!isset($m1[$code . 2]), "meta code2 should not exist for entity $entityOne");
 
     $m2 = meta()->get(taxonomy: $taxonomy, entity: $entityTwo);
-    isTrue( !isset($m2[$code . 1]) , "meta code1 should not exist for entity $entityTwo");
-    isTrue( !isset($m2[$code . 2]) , "meta code2 should not exist for entity $entityTwo");
+    isTrue(!isset($m2[$code . 1]), "meta code1 should not exist for entity $entityTwo");
+    isTrue(!isset($m2[$code . 2]), "meta code2 should not exist for entity $entityTwo");
+}
 
+function deleteMetaTestViaEntity()
+{
+    $taxonomy = 'test';
+    $entityOne = 1;
+    $entityTwo = 2;
+    $code = 'code-delete-e' . time();
+    $data = 'data' . time();
     // delete via entity
     $c1 = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code . 1, DATA => $data . "delete via entityOne"]);
     isTrue($c1->idx > 0, "create code: entityOne + $code");
@@ -211,16 +253,15 @@ function deleteMetaTest() {
     $d1 = meta()->delete(entity: $entityOne);
     isTrue($d1->hasError == false, "delete success entity");
     $e1 = meta()->get(taxonomy: $taxonomy, entity: $entityOne);
-
     isTrue( count($e1) == 0 , "entity $entityOne should have 0 meta");
     isTrue( empty($e1), "entity $entityOne should have empty meta");
 
     $d2 = meta()->delete(entity: $entityTwo);
-    isTrue($d1->hasError == false, "delete success entity");
+    isTrue($d2->hasError == false, "delete success entity");
     $e2 = meta()->get(taxonomy: $taxonomy, entity: $entityOne);
 
-    isTrue( count($e1) == 0 , "entity $entityTwo should have 0 meta");
-    isTrue( empty($e1), "entity $entityTwo should have empty meta");
+    isTrue( count($e2) == 0 , "entity $entityTwo should have 0 meta");
+    isTrue( empty($e2), "entity $entityTwo should have empty meta");
 
 }
 

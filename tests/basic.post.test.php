@@ -4,10 +4,10 @@ setLogout();
 
 testPostEntity();
 testPostCreate();
-testPostRead();
-testPostUpdate();
-testPostDelete();
-testPostResponse();
+//testPostRead();
+//testPostUpdate();
+//testPostDelete();
+//testPostResponse();
 
 
 function testPostEntity() {
