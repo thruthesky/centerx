@@ -118,6 +118,7 @@ function getMetaEntities(array $conds, string $conj='AND', int $limit=1000 ): ar
 
 
 /**
+ * @deprecated
  * taxonomy 의 $entity 에 연결되는 meta code/data 를 추가 또는 업데이트한다.
  *
  *

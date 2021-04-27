@@ -22,7 +22,11 @@ class MySQLiDatabase {
     private function handleError(string $msg, string $sql='') {
         $this->error = "$msg\n";
         if ( $sql ) $this->error .= "SQL: $sql\n";
-        if ( $this->displayError ) d($this->error);
+        if ( $this->displayError ) {
+            d($msg);
+            d($sql);
+            debug_print_backtrace();
+        }
         debug_log($this->error);
     }
 
@@ -36,22 +40,22 @@ class MySQLiDatabase {
      *       It might be last insert id.
      *       Or it might be 1 if there is no insert id(auto generated id).
      *  - zero(0) on failure.
+     *  - It only returns integer(insert_id) when the record is actually created.
      */
     public function insert(string $table, array $record): int {
         if ( empty($table) || empty($record) ) return 0;
         list( $fields, $placeholders, $values ) = $this->parseRecord($record);
 
-
         try {
-            $prepare = "INSERT INTO {$table} ({$fields}) VALUES ({$placeholders})";
-            $stmt = $this->connection->prepare($prepare);
+            $sql = "INSERT INTO {$table} ({$fields}) VALUES ({$placeholders})";
+            $stmt = $this->connection->prepare($sql);
             $types = $this->types($values);
             $stmt->bind_param($types, ...$values);
 
             // Execute the query
             $stmt->execute();
             // Check for successful insertion
-            if ( $stmt->affected_rows ) {
+            if ( $stmt->affected_rows > 0 ) {
                 $id = $this->connection->insert_id;
                 if ( $id ) return $id;
                 else return 1;
@@ -59,7 +63,8 @@ class MySQLiDatabase {
                 return 0;
             }
         } catch (mysqli_sql_exception $e) {
-            $this->handleError($e->__toString());
+            // This is critical SQL error.
+            $this->handleError($e->__toString(), $sql);
             return 0;
         }
     }
@@ -67,40 +72,64 @@ class MySQLiDatabase {
     /**
      * @param string $table
      * @param array $record
-     * @param string $where
-     * @param array $where_values
-     * @return int
+     * @param array $conds - condition must be set. That means, you cannot update the whole records of a table.
+     * @param string $conj
+     * @return bool
+     *  - returns true as long as the statement executed. It does not matter on any of the rows are updated or not.
      */
-    public function update(string $table, array $record, string $where, array $where_values): int
+    public function update(string $table, array $record, array $conds, string $conj = 'AND'): bool
     {
-        if (empty($table) || empty($record)) return 0;
-        list($fields, $placeholders, $values) = $this->parseRecord($record, 'update');
+        if (empty($table) || empty($record) || empty($conds)) return false;
+        list($fields, $updates, $record_values) = $this->parseRecord($record, 'update');
+        list($fields, $wheres, $where_values) = $this->parseRecord($conds, 'where', $conj);
 
         try {
-            $prepare = "UPDATE {$table} SET {$placeholders} WHERE $where";
-            $newValues = array_merge($values, $where_values);
-            $stmt = $this->connection->prepare($prepare);
+            $sql = "UPDATE $table SET $updates WHERE $wheres";
+            $stmt = $this->connection->prepare($sql);
+
+            $newValues = [...$record_values, ...$where_values ];
             $types = $this->types($newValues);
+
+
             $stmt->bind_param($types, ...$newValues);
 
             // Execute the query
-            $stmt->execute();
-            // Check for successful insertion
-            if ( $stmt->affected_rows ) {
-                $id = $this->connection->insert_id;
-                if ( $id ) return $id;
-                else return 1;
-            } else {
-                return 0;
-            }
+            return $stmt->execute();
+
         } catch (mysqli_sql_exception $e) {
-            $this->handleError($e->__toString());
-            return 0;
+            // This is critical SQL error.
+            $this->handleError($e->__toString(), $sql);
+            return false;
         }
     }
 
 
-        /**
+    /**
+     * @param string $table
+     * @param array $conds - condition must be set. That means, you cannot delete the whole records of a table.
+     *  You may delete by providing condition like ['idx >' => 0]
+     * @param string $conj
+     * @return bool
+     *  - returns true as long as the statement executed. It does not matter on any of the rows are deleted or not.
+     */
+    public function delete(string $table, array $conds, string $conj = 'AND' ): bool {
+        if (empty($table) || empty($conds)) return false;
+        list($fields, $wheres, $where_values) = $this->parseRecord($conds, 'where', $conj);
+        try {
+            $sql = "DELETE FROM $table WHERE $wheres";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bind_param($this->types($where_values), ...$where_values);
+            return $stmt->execute();
+        } catch (mysqli_sql_exception $e) {
+            // This is critical SQL error.
+            $this->handleError($e->__toString(), $sql);
+            return false;
+        }
+
+    }
+
+
+    /**
      * @deprecated - Use $this->row();
      * @param $q
      * @param string $_ - for backward compatibility.
@@ -114,14 +143,26 @@ class MySQLiDatabase {
     /**
      * Returns a record.
      *
-     * @param $sql
+     * @param string $sql
      * @param mixed ...$values
      * @return array
      *  - empty row if there is no record (or there is an error)
      */
-    public function row($sql, ...$values): array {
+    public function row(string $sql, ...$values): array {
+
         try {
             $stmt = $this->connection->prepare($sql);
+            if ( $values ) {
+                if ( is_array($values[0]) || is_object($values[0]) ) {
+                    die("MySQLiDatabase::row() - The first value in \$values is not a scalar! It must be a mistake. Wrong parameter format.");
+                }
+                $types = $this->types($values);
+                if ( $types == 'b' ) {
+                    die("MySQLiDatabase::row() - types == 'b'. We don't use binary as values.");
+                }
+                $stmt->bind_param($types, ...$values);
+            }
+
             $stmt->bind_param($this->types($values), ...$values);
             $stmt->execute();
             $result = $stmt->get_result(); // get the mysqli result
@@ -130,10 +171,12 @@ class MySQLiDatabase {
 
             return $result->fetch_assoc(); // fetch data
         } catch(mysqli_sql_exception $e) {
+            // This is critical SQL error.
             $this->handleError($e->__toString(), $sql);
             return [];
         }
     }
+
 
 
 
@@ -172,25 +215,35 @@ class MySQLiDatabase {
      * @return array
      */
     public function rows(string $sql, ...$values): array {
-        $stmt = $this->connection->prepare($sql);
-        if ( $values ) {
-            if ( is_array($values[0]) || is_object($values[0]) ) {
-                die("MySQLiDatabase::rows(). The first value in \$values is not a scalar! It must be a mistake. Wrong parameter format.");
+
+        try {
+
+            $stmt = $this->connection->prepare($sql);
+            if ( $values ) {
+                if ( is_array($values[0]) || is_object($values[0]) ) {
+                    debug_print_backtrace();
+                    die("MySQLiDatabase::rows() - The first value in \$values is not a scalar! It must be a mistake. Wrong parameter format.");
+                }
+                $types = $this->types($values);
+                if ( $types == 'b' ) {
+                    debug_print_backtrace();
+                    die("MySQLiDatabase::rows() - types == 'b'. We don't use binary as values.");
+                }
+                $stmt->bind_param($types, ...$values);
             }
-            $types = $this->types($values);
-            if ( $types == 'b' ) {
-                die("MySQLiDatabase::rows() types == 'b'. We don't use binary as values.");
+            $stmt->execute();
+            $result = $stmt->get_result(); // get the mysqli result
+            /* fetch associative array */
+            $rets = [];
+            while ($row = $result->fetch_assoc()) {
+                $rets[] = $row;
             }
-            $stmt->bind_param($types, ...$values);
+            return $rets;
+        } catch(mysqli_sql_exception $e) {
+            // This is critical SQL error.
+            $this->handleError($e->__toString(), $sql);
+            return [];
         }
-        $stmt->execute();
-        $result = $stmt->get_result(); // get the mysqli result
-        /* fetch associative array */
-        $rets = [];
-        while ($row = $result->fetch_assoc()) {
-            $rets[] = $row;
-        }
-        return $rets;
     }
 
     /**
@@ -229,6 +282,10 @@ class MySQLiDatabase {
      *  - There must be a blank when the key has expression.
      *
      * @param string $type
+     *
+     *  if type is 'select' or 'where', the record key can have expression for `WHERE` clause.
+     *  if type is 'update', the placeholders will be `SET` clause.
+     *
      * @return array
      *
      * @example
@@ -251,7 +308,7 @@ class MySQLiDatabase {
             if ( $type == 'update') {
                 $fields[] = $field;
                 $placeholders[] = $field . '=?';
-            } else if ( $type == 'select') {
+            } else if ( $type == 'select' || $type == 'where' ) {
                 if ( str_contains($field, ' ')) {
                     $ke = explode(' ', $field, 2);
                     $field = $ke[0];

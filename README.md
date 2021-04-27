@@ -77,6 +77,8 @@
 - rewrite `meta` functions to use `mata.taxonomy`
 
 
+- make admin page settings dynamically crud just like translation.
+
 - @doc
   meta function may try to create child meta even if its taxonomy is meta. It only happens on testing.
 

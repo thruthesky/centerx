@@ -8,6 +8,9 @@ rowsTest();
 columnTest();
 entitySearchTest();
 fieldNamesTest();
+updateTest();
+deleteTest();
+
 
 
 
@@ -105,8 +108,6 @@ function columnTest() {
 }
 
 
-
-
 function entitySearchTest() {
     $t = time();
     /// insert two user
@@ -139,5 +140,38 @@ function fieldNamesTest() {
     $names = db()->fieldNames(DB_PREFIX . 'search_keys');
     isTrue(count($names) == 2, 'Two fields');
     isTrue($names[0] == 'searchKey' && $names[1] == 'createdAt', 'Two fields');
+}
+
+
+function updateTest() {
+
+    /// insert a search key
+    $table = DB_PREFIX . 'search_keys';
+    $t = time();
+    $key = 'update-' . $t;
+    db()->insert($table, ['searchKey' => $key, 'createdAt' => $t]);
+    isTrue( db()->update($table, [CREATED_AT => 33], []) == false, "Update fails with empty conds");
+    db()->displayError = false;
+    isTrue( db()->update($table, [CREATED_AT => 33], ['abc' => 'def']) == false, "Update fails with wrong fields in conds");
+    db()->displayError = true;
+
+    isTrue( db()->update($table, [CREATED_AT => 33], ['searchKey' => $key, CREATED_AT => $t]), "Update createdAt to 33" );
+
+    $re = db()->row("SELECT * FROM $table WHERE searchKey=? AND createdAt=?", ...[$key, 33]);
+    isTrue($re['searchKey'] == $key && $re[CREATED_AT] == 33, "createdAt must be 33.");
+
+}
+
+function deleteTest() {
+    $table = DB_PREFIX . 'search_keys';
+    $t = time();
+    $key = 'delete-' . $t;
+    db()->insert($table, ['searchKey' => $key, 'createdAt' => $t]);
+    $re = db()->row("SELECT * FROM $table WHERE searchKey=? AND createdAt=?", $key, $t);
+    isTrue($re['searchKey'] == $key, "searchKey $key exists");
+
+    db()->delete($table, ['searchKey' => $key, 'createdAt' => $t]);
+    $re = db()->row("SELECT * FROM $table WHERE searchKey=? AND createdAt=?", $key, $t);
+    isTrue($re == [], "searchKey $key deleted");
 
 }

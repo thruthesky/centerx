@@ -49,6 +49,7 @@ class Entity {
      * Entity constructor.
      * @param string $taxonomy
      * @param int $idx - 테이블(taxonomy)의 레코드(entity) idx. 예를 들어, 사용자의 경우, 사용자 번호.
+     *  - $idx may be set dynamically.
      */
     public function __construct(public string $taxonomy, public int $idx)
     {
@@ -430,18 +431,21 @@ class Entity {
         // 레코드에 있는 필드들을 업데이트
         $up = $this->getRecordFields($in);
         $up[UPDATED_AT] = time();
-        $re = db()->update($this->getTable(), $up, eq(IDX, $this->idx ));
+
+        $re = db()->update($this->getTable(), $up, [IDX => $this->idx]);
         if ( $re === false ) return $this->error(e()->update_failed);
 
         // 레코드에 없는 필드들은 메타에 업데이트
 //        debug_log("update: tax: {$this->taxonomy}, entity: {$this->idx}, meta fields: ", $this->getMetaFields($in));
-        updateMeta($this->taxonomy, $this->idx, $this->getMetaFields($in));
+//        updateMeta($this->taxonomy, $this->idx, $this->getMetaFields($in));
+        meta()->updates($this->taxonomy, $this->idx, $this->getMetaFields($in));
 
         return $this->read();
     }
 
     /**
      * 레코드 삭제
+     * Delete records.
      *
      * 참고, 이전에 에러가 발생했으면, 삭제하지 않고, 그냥 현재 객체를 리턴한다.
      * 참고, 삭제 후, $this->data 는 빈 배열로 되지만, $this->idx 값은 유지한다.
@@ -591,6 +595,20 @@ class Entity {
     }
 
 
+    /**
+     * Returns idx based on the $conds
+     * @param array $conds
+     * @param string $conj
+     * @return int
+     *  - integer if a record is found.
+     *  - 0 if no record found.
+     */
+    public function getIdx(array $conds, string $conj = 'AND'): int
+    {
+        $arr = self::search(conds: $conds, conj: $conj);
+        if ( count($arr) ) return $arr[0][IDX];
+        else return 0;
+    }
 
 
     /**
@@ -620,8 +638,9 @@ class Entity {
      */
     public function exists(array $conds = [], string $conj = 'AND'): bool {
         if ( $conds ) { // 조건 배열이 입력되면, 조건이 맞는 레코드가 존재하는지 확인.
-            $arr = self::search(conds: $conds, conj: $conj);
-            return count($arr) > 0;
+            return self::getIdx($conds, $conj) > 0;
+//            $arr = self::search(conds: $conds, conj: $conj);
+//            return count($arr) > 0;
         }
 
 
@@ -1000,6 +1019,7 @@ class Entity {
         if ( $this->isMine() == false && admin() == false ) return $this->error ( e()->not_your_entity );
         return $this;
     }
+
 
 }
 
