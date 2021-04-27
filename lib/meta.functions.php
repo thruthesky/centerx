@@ -213,6 +213,8 @@ function addMetaIfNotExists(string $taxonomy, int $entity, mixed $code, mixed $d
 }
 
 /**
+ * Serializing and Un-serializing an array of object to save into data field.
+ * 
  * Return serialized string if the input $v is not an int, string, or double, or any falsy value.
  * @attention if the input $v is null, then, empty string will be returned to prevent null error on inserting into database record field.
  * @param $v
