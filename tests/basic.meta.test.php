@@ -1,12 +1,13 @@
 <?php
 
 
-//insertMetaTest();
-//checkMetaTest();
-//getMetaTest();
-//updateMetaTest();
+insertMetaTest();
+checkMetaTest();
+getMetaTest();
+updateMetaTest();
 deleteMetaTest();
-
+serializeTest();
+serializeObjectTest();
 
 
 function insertMetaTest() {
@@ -45,8 +46,11 @@ function getMetaTest() {
     $code = 'code-1' . time();
     $data = 'data' . time();
 
+
     $m1 = meta()->create([ TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code, DATA => $data]);
     isTrue($m1->idx > 0, "m1 should be success");
+    isTrue($m1->getData(TAXONOMY) == $taxonomy, "m1 should be success");
+
     $m2 = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityTwo, CODE => $code, DATA => $data]);
     isTrue($m2->idx > 0 && $m2->exists, "m2 should be success");
 
@@ -65,9 +69,9 @@ function getMetaTest() {
 
 
     $re = meta()->get($taxonomy, $entityOne, $code);
-    isTrue($re['data'] == $data, "Data test of entityOne");
+    isTrue($re == $data, "Data test of entityOne");
     $re = meta()->get($taxonomy, $entityTwo, $code);
-    isTrue($re['data'] == $data, "Data test of entityTwo");
+    isTrue($re == $data, "Data test of entityTwo");
 
     $re = meta()->get($taxonomy, $entityThree, $code);
     isTrue($re == null, "No record found by the code - entityTree");
@@ -158,8 +162,6 @@ function deleteMetaTest() {
     $d1 = meta()->delete(taxonomy: $taxonomy,  code: $code);
     isTrue($d1->hasError == false, "delete success taxonomy, code");
 
-
-
     // delete via code
     $c1 = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code . 1, DATA => $data . "entityOne"]);
     isTrue($c1->idx > 0, "create code: entityOne + $code");
@@ -177,10 +179,9 @@ function deleteMetaTest() {
     isTrue($c2->idx > 0, "create code: entityOne + $code");
 
     $meta2 = meta()->get(taxonomy: $taxonomy,entity: $entityTwo);
-    isTrue(count($meta1) > 0, "meta should exist");
+    isTrue(count($meta2) > 0, "meta should exist");
     isTrue($meta2[$code . 1] = $data . "entityTwo", "meta code1 should exist");
     isTrue($meta2[$code . 2] = $data . "entityTwo", "meta code2 should exist");
-
 
     // all code same code will be
     $d1 = meta()->delete(code: $code . 1 );
@@ -188,14 +189,13 @@ function deleteMetaTest() {
     $d1 = meta()->delete(code: $code . 2 );
     isTrue($d1->hasError == false, "delete success code");
     $m1 = meta()->get(taxonomy: $taxonomy, entity: $entityOne);
+
     isTrue( !isset($m1[$code . 1]) , "meta code1 should not exist for entity $entityOne");
     isTrue( !isset($m1[$code . 2]) , "meta code2 should not exist for entity $entityOne");
 
     $m2 = meta()->get(taxonomy: $taxonomy, entity: $entityTwo);
     isTrue( !isset($m2[$code . 1]) , "meta code1 should not exist for entity $entityTwo");
     isTrue( !isset($m2[$code . 2]) , "meta code2 should not exist for entity $entityTwo");
-
-
 
     // delete via entity
     $c1 = meta()->create([TAXONOMY => $taxonomy, ENTITY => $entityOne, CODE => $code . 1, DATA => $data . "delete via entityOne"]);
@@ -207,7 +207,6 @@ function deleteMetaTest() {
     isTrue(count($meta1) > 0, "meta should exist");
     isTrue($meta1[$code . 1] = $data . "entityOne", "meta code1 should exist and will be deleted via entity");
     isTrue($meta1[$code . 2] = $data . "entityOne", "meta code2 should exist and will be deleted via entity");
-
 
     $d1 = meta()->delete(entity: $entityOne);
     isTrue($d1->hasError == false, "delete success entity");
@@ -225,3 +224,31 @@ function deleteMetaTest() {
 
 }
 
+
+
+function serializeTest() {
+
+    isTrue( meta()->unserializeData( meta()->serializeData(0) ) === 0, "0 to be 0" );
+    isTrue( meta()->unserializeData( meta()->serializeData(null) ) === null, "null must be null" );
+    isTrue( meta()->unserializeData( meta()->serializeData(true) ) === true, "true to be true" );
+    isTrue( meta()->unserializeData( meta()->serializeData(false) ) === false, "false to be false" );
+    isTrue( meta()->unserializeData( meta()->serializeData([]) ) === [], "[] to be []" );
+    $obj = new stdClass();
+    $obj->a = 'apple';
+    isTrue( meta()->unserializeData( meta()->serializeData($obj) )->a === $obj->a, "stdClass to be stdClass" );
+}
+
+function serializeObjectTest() {
+    $tax = 'serializing' . time();
+    $obj = new stdClass();
+    $obj->a = 'apple';
+    $obj->b = 'ba';
+
+    $m = meta()->create([TAXONOMY => $tax, ENTITY => 0, CODE => 'obj', DATA => $obj]);
+    $u = meta()->get($tax, 0);
+    isTrue($u['obj']->b == $obj->b, "data serialized");
+
+    $f = meta()->findOne([TAXONOMY => $tax, ENTITY => 0, CODE => 'obj']);
+
+    isTrue($f->idx == $m->idx && $f->data->a == 'apple', 'found serialized data');
+}

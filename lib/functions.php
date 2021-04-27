@@ -1234,7 +1234,7 @@ function separateByComma($str) {
  * @return int
  */
 function postCategoryIdx($rootIdx): int {
-    return post()->getVar(CATEGORY_IDX, [IDX => $rootIdx]);
+    return post()->queryData(CATEGORY_IDX, [IDX => $rootIdx]);
 }
 /**
  * category.idx 를 입력받아 category.id 를 리턴한다.
@@ -1242,7 +1242,7 @@ function postCategoryIdx($rootIdx): int {
  * @return int
  */
 function postCategoryId(int $categoryIdx): string {
-    return category()->getVar(ID, [IDX => $categoryIdx]);
+    return category()->queryData(ID, [IDX => $categoryIdx]);
 }
 
 

@@ -76,7 +76,7 @@ class UserTaxonomy extends Entity {
         parent::read($idx);
         $data = $this->getData();
         $data[SESSION_ID] = getSessionId($this->getData());
-        $this->setData($data);
+        $this->setMemoryData($data);
         $one = files()->findOne([TAXONOMY => 'photoUrl', USER_IDX => $this->idx]);
         if ( $one->exists ) $this->updateMemory('photoIdx', $one->idx);
         return $this;
@@ -275,7 +275,7 @@ class UserTaxonomy extends Entity {
         if ( $cache ) {
             return $this->getData()['point'];
         } else {
-            return $this->getVar(POINT, [IDX => $this->idx]);
+            return $this->queryData(POINT, [IDX => $this->idx]);
         }
     }
 

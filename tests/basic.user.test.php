@@ -2,13 +2,14 @@
 
 
 testUserRegister();
+testEmailExists();
 testUserRegisterResponse();
 testUserRegisterIsMine();
 testUserRegisterLoginWithMeta();
+
 testUserLoginOrRegister();
 testUserBy();
 testUserVerification();
-
 
 
 function testUserRegister() {
@@ -16,10 +17,14 @@ function testUserRegister() {
     $pw = '12345a';
     $user = user()->register([EMAIL=>$email, PASSWORD=>$pw]);
     isTrue($user->ok, 'no error on create user');
+}
 
-    $user = user()->register([EMAIL=>$email, PASSWORD=>$pw]);
-    isTrue($user->hasError == true, 'error on same email');
-    isTrue($user->getError() == e()->email_exists, 'email exists');
+function testEmailExists() {
+    $email = 'exist' . time() . '@test.com';
+    $user = user()->register([EMAIL=>$email, PASSWORD=>'1345a']);
+    $ex = user()->register([EMAIL=>$email, PASSWORD=>'1345a']);
+    isTrue($ex->hasError == true, 'error on same email');
+    isTrue($ex->getError() == e()->email_exists, 'email exists');
 }
 
 function testUserRegisterResponse() {
@@ -49,10 +54,12 @@ function testUserRegisterLoginWithMeta() {
     $pw = '12345a';
     $registered = user()->register([EMAIL=>$email, PASSWORD=>$pw, 'color' => 'blue']);
     isTrue($registered->color == 'blue', 'color blue');
-    $logged = user()->login([EMAIL=>$email, PASSWORD=>$pw, 'color' => 'yellow']);
 
+    $logged = user()->login([EMAIL=>$email, PASSWORD=>$pw, 'color' => 'yellow']);
     isTrue($registered->color == 'blue', 'color blue');
+
     isTrue($logged->color == 'yellow', 'color yellow');
+
 }
 
 function testUserLoginOrRegister() {

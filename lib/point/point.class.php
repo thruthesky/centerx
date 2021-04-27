@@ -170,6 +170,7 @@ class Point {
 
 //        d("userIdx: $userIdx, point: $point, userPoint: $userPoint, savingPoint: $savingPoint");
 
+
         // 저장되려는 포인트가 0 보다 작으면,
         if ( $savingPoint < 0 ) {
             // 0 을 저장하고,

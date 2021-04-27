@@ -5,7 +5,10 @@
 /**
  * Class MetaTaxonomy
  *
+ * It automatically serialize and unserialize for non-scalar values. @see tests/basic.meta.test.php for sample code.
+ *
  * @attention $this->taxonomy will be 'metas'. If you want to get taxonomy of the record, use $this->getData()
+ *
  *
  * @property-read int $entity
  * @property-read string $code
@@ -28,22 +31,22 @@ class MetaTaxonomy extends Entity {
      * @return mixed
      *  - null on string $code, if there is no record.
      *  - empty array on array $code, if there is no record.
-     *  - single value of scalar of object on string $code.
+     *  - single value of scala on string $code.
      *  - array of scalar or object on array $code.
      */
     function get(string $taxonomy, int $entity, string $code = null): mixed {
         if ( $code ) {
             $q = "SELECT data FROM " . $this->getTable() . " WHERE taxonomy=? AND entity=? AND code=?";
-            $data = db()->row($q, $taxonomy, $entity, $code);
-            if ( ! $data ) return null;
-            $un = _unserialize($data);
+            $row = db()->row($q, $taxonomy, $entity, $code);
+            if ( ! $row ) return null;
+            $un = $this->unserializeData($row[DATA]);
             return $un;
         } else {
             $q = "SELECT code, data FROM " . $this->getTable() . " WHERE taxonomy=? AND entity=?";
             $rows = db()->rows($q, $taxonomy, $entity);
             $rets = [];
             foreach($rows as $row) {
-                $rets[$row['code']] = _unserialize($row['data']);
+                $rets[$row['code']] = $this->unserializeData($row['data']);
             }
             return $rets;
         }
@@ -69,6 +72,7 @@ class MetaTaxonomy extends Entity {
     public function create(array $in): self {
         if ( in_array($in[CODE], META_CODE_EXCEPTIONS) ) return $this;
 
+        $in[DATA] = $this->serializeData($in[DATA]);
         return parent::create($in);
     }
 
@@ -82,13 +86,16 @@ class MetaTaxonomy extends Entity {
     public function creates(string $taxonomy, int $idx, array $kvs): void
     {
         foreach( $kvs as $k => $v ) {
-            $re = meta()->create([TAXONOMY => $this->taxonomy, ENTITY => $idx, CODE => $k, DATA => $v ]);
+            $re = meta()->create([TAXONOMY => $taxonomy, ENTITY => $idx, CODE => $k, DATA => $v ]);
             if ( isError($re) ) {
                 // there is an error. continue though,
                 continue;
             }
         }
     }
+
+
+
 
     /**
      * Updates a meta
@@ -109,10 +116,11 @@ class MetaTaxonomy extends Entity {
     function update(array $in): self {
         if ( in_array($in[CODE], META_CODE_EXCEPTIONS) ) return $this;
         if ( ! $this->idx ) {
-            $idx = parent::getIdx([TAXONOMY => $in[TAXONOMY], ENTITY => $in[ENTITY], CODE => $in[CODE]]);
+            $idx = parent::queryIdx([TAXONOMY => $in[TAXONOMY], ENTITY => $in[ENTITY], CODE => $in[CODE]]);
             if ( $idx == 0 ) return $this->error( e()->entity_not_found );
             $this->idx = $idx;
         }
+        $in[DATA] = $this->serializeData($in[DATA]);
         return parent::update($in);
     }
 
@@ -127,7 +135,7 @@ class MetaTaxonomy extends Entity {
     public function updates(string $taxonomy, int $entity, array $codeDataArray)
     {
         foreach( $codeDataArray as $k => $v ) {
-            $re = meta()->update([TAXONOMY => $this->taxonomy, ENTITY => $entity, CODE => $k, DATA => $v ]);
+            $re = meta()->update([TAXONOMY => $taxonomy, ENTITY => $entity, CODE => $k, DATA => $v ]);
             if ( isError($re) ) {
                 // there is an error. continue though,
                 continue;
@@ -150,6 +158,8 @@ class MetaTaxonomy extends Entity {
      * @param string $code
      *
      * @return $this
+     *
+     * @example tests/basic.meta.test.php
      */
     public function delete( string $taxonomy = '', int $entity = 0, string $code = '' ): self {
         if ( $this->hasError ) return $this;
@@ -168,6 +178,52 @@ class MetaTaxonomy extends Entity {
         if ( $re === false ) return $this->error(e()->delete_failed);
         return $this;
     }
+
+
+    /**
+     * Find one record and unserialize its data.
+     * @param array $conds
+     * @param string $conj
+     * @return $this
+     */
+    public function findOne(array $conds, string $conj = 'AND'): self {
+        $arr = self::search(conds: $conds, conj: $conj, limit: 1);
+        if ( ! $arr ) return $this->error(e()->entity_not_found);
+        $idx = $arr[0][IDX];
+        $this->read($idx);
+        $this->setMemoryData([DATA => $this->unserializeData($this->data)]);
+        return $this;
+    }
+
+
+
+
+    /**
+     * Serializing and Un-serializing an array of object to save into data field.
+     *
+     * Return serialized string if the input $v is not an int, string, or double, or any falsy value.
+     * @attention if the input $v is null, then, empty string will be returned to prevent null error on inserting into database record field.
+     * @param $v
+     * @return mixed
+     */
+    public function serializeData(mixed $v): mixed {
+        if ( is_int($v) || is_numeric($v) || is_float($v) || is_string($v) ) return $v;
+        else return serialize($v);
+    }
+
+    /**
+     * @param mixed $v
+     * @return mixed
+     */
+    public function unserializeData(mixed $v): mixed {
+        if ( is_serialized($v) ) return unserialize($v);
+        else return $v;
+    }
+
+
+
+
+
 }
 
 

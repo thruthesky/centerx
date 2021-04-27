@@ -100,6 +100,7 @@ function getMetaEntity(string $taxonomy, string $code, mixed $data ): int {
 }
 
 /**
+ * @deprecated
  * 검색 조건을 입력 받아, 일치하는 레코드에서 entity (레코드 번호) 값을 리턴한다.
  *
  * @return array
@@ -172,6 +173,7 @@ function updateMeta(string $taxonomy, int $entity, array|string $code, mixed $da
 
 
 /**
+ * @deprecated
  * 참고, updateMeta() 함수의 alias 이다.
  *
  * 기존에 존재하면 업데이트하고, 존재하지 않으면 추가한다.
@@ -200,6 +202,7 @@ function addMeta(string $taxonomy, int $entity, mixed $code, mixed $data=null): 
 }
 
 /**
+ * @deprecated
  * 메타 레코드가 존재하지 않으면, 새로운 메타를 추가한다.
  * @param string $taxonomy
  * @param int $entity
@@ -213,8 +216,9 @@ function addMetaIfNotExists(string $taxonomy, int $entity, mixed $code, mixed $d
 }
 
 /**
+ * @deprecated
  * Serializing and Un-serializing an array of object to save into data field.
- * 
+ *
  * Return serialized string if the input $v is not an int, string, or double, or any falsy value.
  * @attention if the input $v is null, then, empty string will be returned to prevent null error on inserting into database record field.
  * @param $v
@@ -225,6 +229,12 @@ function _serialize(mixed $v): mixed {
     if ( is_int($v) || is_numeric($v) || is_float($v) || is_string($v) || empty($v) ) return $v;
     else return serialize($v);
 }
+
+/**
+ * @deprecated
+ * @param mixed $v
+ * @return mixed
+ */
 function _unserialize(mixed $v): mixed {
     if ( is_serialized($v) ) return unserialize($v);
     else return $v;

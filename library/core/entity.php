@@ -159,13 +159,15 @@ class Entity {
 
 
     /**
+     * Set memory data. It does not change database.
+     *
      * 현재 entity 의 $data 값을 변경한다.
      * 주의, 이 함수는 메모리의 $data 변수 값만 바꾼다. DB 를 바꾸려면 `$this->update()` 를 사용해야한다.
      *
      * 이렇게 하면 idx 부터 모두 바뀌므로, 완전 다른 entity 가 된다.
      * @param array $data
      */
-    public function setData(array $data) {
+    public function setMemoryData(array $data) {
         $this->data = $data;
         if ( isset($this->data[IDX]) ) $this->idx = $this->data[IDX];
     }
@@ -187,7 +189,7 @@ class Entity {
      * @example tests/cache.test.php 에서 캐시 객체를 복사(백업)해서, 사용하는 예제를 볼 수 있다.
      */
     public function copyWith($entity): self {
-        $this->setData($entity->data);
+        $this->setMemoryData($entity->data);
         $this->taxonomy = $entity->taxonomy;
         $this->error = $entity->error;
         return $this;
@@ -542,11 +544,11 @@ class Entity {
         if ( $record ) {
 
             $meta = meta()->get($this->taxonomy, $idx);
-            $this->setData(array_merge($record, $meta));
+            $this->setMemoryData(array_merge($record, $meta));
             $this->idx = $this->data['idx'];
         } else {
             $this->error( e()->entity_not_found );
-            $this->setData([]);
+            $this->setMemoryData([]);
         }
 
 
@@ -596,19 +598,53 @@ class Entity {
 
 
     /**
-     * Returns idx based on the $conds
+     * Get idx
+     *
+     * Query to database based on the $conds and return idx.
      * @param array $conds
      * @param string $conj
      * @return int
      *  - integer if a record is found.
      *  - 0 if no record found.
      */
-    public function getIdx(array $conds, string $conj = 'AND'): int
+    public function queryIdx(array $conds, string $conj = 'AND'): int
     {
         $arr = self::search(conds: $conds, conj: $conj);
         if ( count($arr) ) return $arr[0][IDX];
         else return 0;
     }
+
+
+
+    /**
+     * Get field value
+     *
+     * Query to database and return a field value of a record based on the $conds.
+     * If you don't need to query to database, then user $this->getData() to get the data from memory.
+     *
+     * 현재 Taxonomy 에서 1개의 레코드를 검색해서, 1개의 필드 값을 리턴한다.
+     *
+     * @param string $select - 1개의 필드만 입력해야 한다. 그 필드의 값을 리턴한다.
+     * @param array $conds
+     * @param string $conj
+     * @return mixed
+     *  - the value of the field.
+     *  - or `null` if no record found.
+     *
+     * 예제) 현재 글(코멘트)의 루트 글의 카테고리 값 얻기
+     *  post()->getVar(CATEGORY_IDX, [IDX => $rootIdx]);
+     *
+     * 예제) 현재 객체(예: 사용자 entity)의 point 필드의 값 얻기. 사용자의 포인트 값을 얻을 때 사용.
+     *  $this->getVar(POINT, [IDX => $this->idx]);
+     */
+    public function queryData(string $select, array $conds, string $conj='AND'): mixed {
+        $arr = self::search(select: $select, conds: $conds, conj: $conj, limit: 1);
+        if ( ! $arr ) return null;
+        return $arr[0][$select];
+    }
+
+
+
 
 
     /**
@@ -638,7 +674,7 @@ class Entity {
      */
     public function exists(array $conds = [], string $conj = 'AND'): bool {
         if ( $conds ) { // 조건 배열이 입력되면, 조건이 맞는 레코드가 존재하는지 확인.
-            return self::getIdx($conds, $conj) > 0;
+            return self::queryIdx($conds, $conj) > 0;
 //            $arr = self::search(conds: $conds, conj: $conj);
 //            return count($arr) > 0;
         }
@@ -723,7 +759,7 @@ class Entity {
      * @return self[]
      */
     public function find(array $conds, string $conj = 'AND', string $order='idx', string $by='DESC', int $limit=100): array {
-        $rows = self::search(order: $order, by: $by, limit: $limit, conds: $conds, conj: $conj); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
+        $rows = self::search( conds: $conds, conj: $conj, order: $order, by: $by, limit: $limit); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
         $rets = [];
         foreach( $rows as $row ) {
             $rets[] = clone $this->read($row[IDX]);
@@ -731,27 +767,6 @@ class Entity {
         return $rets;
     }
 
-
-
-    /**
-     * 현재 Taxonomy 에서 1개의 레코드를 검색해서, 1개의 필드 값을 리턴한다.
-     *
-     * @param string $select - 1개의 필드만 입력해야 한다. 그 필드의 값을 리턴한다.
-     * @param array $conds
-     * @param string $conj
-     * @return mixed
-     *
-     * 예제) 현재 글(코멘트)의 루트 글의 카테고리 값 얻기
-     *  post()->getVar(CATEGORY_IDX, [IDX => $rootIdx]);
-     *
-     * 예제) 현재 객체(예: 사용자 entity)의 point 필드의 값 얻기. 사용자의 포인트 값을 얻을 때 사용.
-     *  $this->getVar(POINT, [IDX => $this->idx]);
-     */
-    public function getVar(string $select, array $conds, string $conj='AND'): mixed {
-        $arr = self::search(select: $select, limit: 1, conds: $conds, conj: $conj);
-        if ( ! $arr ) return $this->error(e()->entity_not_found);
-        return $arr[0][$select];
-    }
 
 
 
