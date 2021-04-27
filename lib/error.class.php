@@ -102,6 +102,7 @@ class E {
 
     public string $point_must_be_0_or_lower_than_0 = 'error_point_must_be_0_or_lower_than_0';
 
+    public string $entity_or_code_not_set = 'error_entity_or_code_not_set';
 
 
     public string $empty_platform = 'error_empty_platform';

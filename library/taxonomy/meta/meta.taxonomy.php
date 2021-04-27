@@ -152,13 +152,27 @@ class MetaTaxonomy extends Entity {
      * @return $this
      */
     public function delete( string $taxonomy = '', int $entity = 0, string $code = '' ): self {
+        if ( $this->hasError ) return $this;
 
+        $data = [];
+        if ( empty($taxonomy) && empty($entity) && empty($code)) {
+            if ( ! $this->idx ) return $this->error(e()->idx_not_set);
+            $data[IDX] = $this->idx;
+        } else {
+            if ( !empty($taxonomy) && ( empty($entity) && empty($code) ) ) return $this->error(e()->entity_or_code_not_set);
+            if ( !empty($taxonomy) )  $data[TAXONOMY] = $taxonomy;
+            if ( !empty($entity) ) $data[ENTITY] = $entity;
+            if ( !empty($code) ) $data[CODE] = $code;
+        }
+        $re = db()->delete($this->getTable(), $data);
+        if ( $re === false ) return $this->error(e()->delete_failed);
         return $this;
     }
 }
 
 
-function meta() {
-    return new MetaTaxonomy(0);
+function meta(int $idx=0): MetaTaxonomy
+{
+    return new MetaTaxonomy($idx);
 }
 
