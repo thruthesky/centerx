@@ -870,7 +870,7 @@ class Entity {
         }
         else  {
             debug_print_backtrace();
-            die("Entity::search() wrong paramters");
+            die("\n-------------------- die() - Execution dead due to: Entity::search() wrong parameters\n");
         }
 
 

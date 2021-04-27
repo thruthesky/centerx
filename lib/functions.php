@@ -1082,10 +1082,10 @@ function getCommentAncestors(int $idx): array
  *  get the tokens of the users_id and filtering those who want to get comment notification
  *
  *
- * @param Comment|Post $cp
+ * @param CommentTaxonomy|PostTaxonomy $cp
  * @throws Exception
  */
-function onCommentCreateSendNotification(Comment|Post $cp)
+function onCommentCreateSendNotification(CommentTaxonomy|PostTaxonomy $cp)
 {
 
     $post = post($cp->rootIdx);
@@ -1170,7 +1170,8 @@ function onCommentCreateSendNotification(Comment|Post $cp)
  */
 function getForumSubscribers(string $topic): array
 {
-    return getMetaEntities([CODE => $topic, DATA => ON], limit: 10000);
+    return meta()->entities([CODE => $topic, DATA => ON], limit: 10000);
+//    return getMetaEntities([CODE => $topic, DATA => ON], limit: 10000);
 }
 
 

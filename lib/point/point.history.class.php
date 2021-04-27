@@ -39,54 +39,17 @@ class PointHistory extends Entity {
      * @return PointHistory
      */
     public function last($taxonomy, $entity, $reason=''): PointHistory {
-        $q = '';
-        if ( $reason ) $q = "reason='$reason' AND ";
-        $where = $q . TAXONOMY . "='$taxonomy' AND entity=$entity";
-        $histories = $this->search(where: $where, limit: 1);
+//        $q = '';
+//        if ( $reason ) $q = "reason='$reason' AND ";
+//        $where = $q . TAXONOMY . "='$taxonomy' AND entity=$entity";
+
+        $conds = [ TAXONOMY => $taxonomy, ENTITY => $entity ];
+        if ( $reason ) $conds[REASON] = $reason;
+
+        $histories = $this->search(conds: $conds, limit: 1, object: true);
         if ( count($histories) ) return pointHistory($histories[0]->idx);
         return pointHistory();
     }
-
-
-    /**
-     * 검색 후, 결과를 객체로 리턴한다. (부모 결과는 기본적으로 배열로 리턴)
-     *
-     * @param string $select
-     * @param string $where
-     * @param string $order
-     * @param string $by
-     * @param int $page
-     * @param int $limit
-     * @param array $conds
-     * @param string $conj
-     * @return PointHistory[]
-     */
-    public function search(
-        string $select='idx',
-        string $where='1',
-        array $params = [],
-        array $conds=[],
-        string $conj = 'AND',
-        string $order='idx',
-        string $by='DESC',
-        int $page=1,
-        int $limit=10,
-        bool $object = true,
-    ): array
-    {
-        return parent::search(
-            select: $select,
-            where: $where,
-            conds: $conds,
-            conj: $conj,
-            order: $order,
-            by: $by,
-            page: $page,
-            limit: $limit,
-            object: $object,
-        );
-    }
-
 
 
 }

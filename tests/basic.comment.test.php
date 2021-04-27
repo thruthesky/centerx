@@ -10,7 +10,7 @@ testCommentCrud();
 
 
 function testCommentEntity() {
-    isTrue( get_class(comment()) == 'Comment', 'is post');
+    isTrue( get_class(comment()) == 'CommentTaxonomy', 'is CommentTaxonomy');
 }
 
 

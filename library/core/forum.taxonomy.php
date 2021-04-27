@@ -4,7 +4,7 @@
  */
 
 /**
- * Class PostTaxonomy
+ * Class ForumTaxonomy
  *
  * 글과 관련된 작업을 하는 Taxonomy.
  * 글이라면 단순히 게시글 뿐만아니라, 코멘트, 블로그 글, 쇼핑몰 상품 글 등 posts 테이블에 저장되는 모든 것을 말한다.
@@ -16,7 +16,7 @@
  * @property-read int parentIdx
  * @property-read string files
  */
-class PostTaxonomy extends Entity {
+class ForumTaxonomy extends Entity {
 
     public function __construct(int $idx)
     {
@@ -188,11 +188,11 @@ class PostTaxonomy extends Entity {
 /**
  *
  * @param int $idx
- * @return PostTaxonomy
+ * @return ForumTaxonomy
  */
-function postTaxonomy(int $idx=0): PostTaxonomy
+function ForumTaxonomy(int $idx=0): ForumTaxonomy
 {
-    return new PostTaxonomy($idx);
+    return new ForumTaxonomy($idx);
 }
 
 

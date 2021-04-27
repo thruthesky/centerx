@@ -3,9 +3,9 @@
  * @file comment.class.php
  */
 /**
- * Class Comment
+ * Class CommentTaxonomy
  *
- * 코멘트는 Post 와 동일한 테이블을 사용한다. 따라서 Post 클래스와 비슷한 부분이 많다.
+ * 코멘트는 PostTaxonomy 와 동일한 테이블을 사용한다. 따라서 PostTaxonomy 클래스와 비슷한 부분이 많다.
  *
  * @property-read int $rootIdx
  * @property-read int $parentIdx
@@ -18,7 +18,7 @@
  * @property-read int $createdAt
  * @property-read int $deletedAt
  */
-class Comment extends PostTaxonomy {
+class CommentTaxonomy extends ForumTaxonomy {
 
     /**
      * depth 는 재귀적 함수 호출에 의해서 결정되므로, DB 에 없는 필드이다. 따라서 재귀적 함수 호출 후에 설정을 해 주어야 한다.
@@ -45,7 +45,7 @@ class Comment extends PostTaxonomy {
     /**
      * @param array $in
      *
-     * @return Comment
+     * @return self
      */
     public function create(array $in): self
     {
@@ -112,7 +112,7 @@ class Comment extends PostTaxonomy {
      *
      * @param array $in
      *
-     * @return Comment
+     * @return self
      */
     public function update(array $in): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
@@ -196,7 +196,7 @@ class Comment extends PostTaxonomy {
      * @param array $conds
      * @param string $conj
      * @param bool $object
-     * @return Comment[]
+     * @return self[]
      */
 
     public function search(
@@ -228,23 +228,23 @@ class Comment extends PostTaxonomy {
     /**
      * 현재 코멘트의 (최상위) 글을 객체로 리턴한다.
      *
-     * @return Post
+     * @return PostTaxonomy
      */
-    public function post(): Post {
+    public function post(): PostTaxonomy {
         return post($this->rootIdx);
     }
 }
 
 
 /**
- * Returns Comment instance.
+ * Returns CommentTaxonomy instance.
  *
- * @param int $idx - The `idx` is the field of `posts` table. Comment uses the same table of posts.
- * @return Comment
+ * @param int $idx - The `idx` is the field of `posts` table. CommentTaxonomy uses the same table of posts.
+ * @return CommentTaxonomy
  */
-function comment(int $idx=0): Comment
+function comment(int $idx=0): CommentTaxonomy
 {
-    return new Comment($idx);
+    return new CommentTaxonomy($idx);
 }
 
 

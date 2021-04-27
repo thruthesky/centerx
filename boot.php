@@ -26,7 +26,7 @@ require_once ROOT_DIR . 'library/taxonomy/user/user.taxonomy.php';
 require_once ROOT_DIR . 'library/taxonomy/meta/meta.taxonomy.php';
 require_once ROOT_DIR . 'lib/friend.class.php';
 require_once ROOT_DIR . 'library/taxonomy/category/category.taxonomy.php';
-require_once ROOT_DIR . 'library/core/post.taxonomy.php';
+require_once ROOT_DIR . 'library/core/forum.taxonomy.php';
 require_once ROOT_DIR . 'library/taxonomy/post/post.taxonomy.php';
 require_once ROOT_DIR . 'library/taxonomy/comment/comment.taxonomy.php';
 require_once ROOT_DIR . 'lib/push-notification/push-notification.tokens.class.php';

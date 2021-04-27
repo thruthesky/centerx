@@ -2,11 +2,11 @@
 
 
 /**
- * Class Post
+ * Class PostTaxonomy
  *
  * 글을 관리하는 Taxonomy 객체
  *
- * 글을 하나의 객체로 만들 때, new Post(123) 또는 post(123) 과 같이 할 수 있다. 이 때, 해당 글에 대해서만 데이터를 초기화 한다. 이 말은 post(1) 과
+ * 글을 하나의 객체로 만들 때, new PostTaxonomy(123) 또는 post(123) 과 같이 할 수 있다. 이 때, 해당 글에 대해서만 데이터를 초기화 한다. 이 말은 post(1) 과
  * 같이 할 때, 글이 저장된 레코드와 메타에는 url 정보가 존재하지 않는데, 처음 객체를 생성하거나 객체에 대한 변경 작업을 할 때, url 값을 초기화 한다.
  * 하지만, 현재 글이 아닌 것, 예를 들면 글 쓴이 정보, 첨부 파일 정보, 코멘트 정보, 카테고리 정보 등등은 초기화를 하지 않는다.
  * 따라서, 그러한 정보를 얻기 위해서는 $post->user(), $post->files(), $post->comments(), $post->category() 와 같은 함수를 호출해서 해당
@@ -38,7 +38,7 @@
  * @property-read int $updatedAt;
  * @property-read int $deletedAt;
  */
-class Post extends PostTaxonomy {
+class PostTaxonomy extends ForumTaxonomy {
 
     public function __construct(int $idx)
     {
@@ -75,7 +75,7 @@ class Post extends PostTaxonomy {
 
     /**
      * @param array $in
-     * @return Post
+     * @return self
      */
     public function create( array $in ): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
@@ -110,7 +110,7 @@ class Post extends PostTaxonomy {
         // @todo check if too many comment creation.
 
         // Update path for SEO friendly.
-        $in[PATH] = $this->getPath($in['title'] ?? '');
+        $in[PATH] = $this->getSeoPath($in['title'] ?? '');
         $in['Ymd'] = date('Ymd');
         parent::create($in);
         if ( $this->hasError ) return $this;
@@ -162,7 +162,7 @@ class Post extends PostTaxonomy {
      * 단, Api 호출에서는 못하게 한다. 즉, 미리 Api 호출에서 검사를 해야 한다.
      *
      * @param array $in
-     * @return Post - `post()->get()` 에 대한 결과를 리턴한다. 즉, url 등의 값이 들어가 있다.
+     * @return self - `post()->get()` 에 대한 결과를 리턴한다. 즉, url 등의 값이 들어가 있다.
      * - `post()->get()` 에 대한 결과를 리턴한다. 즉, url 등의 값이 들어가 있다.
      *
      * @warning permission check must be done before calling this method. This method will just update the post even if
@@ -251,7 +251,7 @@ class Post extends PostTaxonomy {
      * as "categoryIdx=1 or categoryIdx='2'"
      *
      *
-     * Post 객체를 배열로 리턴한다. 그래서 아래와 같이 코딩을 할 수 있다.
+     * PostTaxonomy 객체를 배열로 리턴한다. 그래서 아래와 같이 코딩을 할 수 있다.
      *
      * ```
      * $posts = post()->search(where: "userIdx != " . login()->idx);
@@ -269,7 +269,7 @@ class Post extends PostTaxonomy {
      * @param array $conds
      * @param string $conj
      * @param bool $object
-     * @return Post[]
+     * @return PostTaxonomy[]
      *
      * @example
      *  $where = "userIdx=$userIdx AND categoryIdx=$categoryIdx AND createdAt>=$beginStamp AND createdAt<=$endStamp";
@@ -352,7 +352,7 @@ class Post extends PostTaxonomy {
      * @param string|null $categoryId
      * @param int $page
      * @param int $limit
-     * @return Post[]
+     * @return PostTaxonomy[]
      * @throws Exception
      *
      * @example
@@ -386,7 +386,7 @@ class Post extends PostTaxonomy {
      * @param string $categoryId
      * @param int $page
      * @param int $limit
-     * @return Post[]
+     * @return PostTaxonomy[]
      */
     public function list(string $categoryId, int $page=1, int $limit=10): array
     {
@@ -405,8 +405,12 @@ class Post extends PostTaxonomy {
     private array $__rets = [];
     public function getComments(int $parentIdx, int $depth=1) {
         global $__rets;
-        $q = "SELECT idx, rootIdx, parentIdx FROM " . $this->getTable() . " WHERE parentIdx=$parentIdx";
-        $rows = db()->get_results($q, ARRAY_A);
+//        $q = "SELECT idx, rootIdx, parentIdx FROM " . $this->getTable() . " WHERE parentIdx=$parentIdx";
+//        $rows = db()->get_results($q, ARRAY_A);
+
+        $sql = "SELECT idx, rootIdx, parentIdx FROM " . $this->getTable() . " WHERE parentIdx=?";
+        $rows = db()->rows($sql, $parentIdx);
+
         foreach($rows as $row) {
             $row[DEPTH] = $depth;
             $__rets[] = $row;
@@ -427,7 +431,7 @@ class Post extends PostTaxonomy {
      * Note, that it will ignore `?` and the string after it if it exists.
      * i.e) If the URL is `https://local.itsuda50.com/banana-6?lcategory=banana` then, `?lcategory=banana` is ignored.
      *
-     * @return Post
+     * @return self
      * - error will be set into $this if post not exists.
      * - or post object
      *
@@ -447,7 +451,7 @@ class Post extends PostTaxonomy {
     }
 
     /**
-     * @return Post
+     * @return self
      */
     public function current(): self {
         return $this->getFromPath();
@@ -476,7 +480,7 @@ class Post extends PostTaxonomy {
      *
      * @return string
      */
-    private function getPath(string $title=''): string {
+    private function getSeoPath(string $title=''): string {
         if ( empty($title) ) {
             if ( $this->parentIdx ) return '';
             $title = empty($this->title) ? $this->idx : $this->title;
@@ -503,7 +507,7 @@ class Post extends PostTaxonomy {
      * 참고: getComments() 는 하위 코멘트의 구조만 담고 있다.
      *
      * @param bool $response - false 이면 객체로 리턴. true 이면 배열로 리턴.
-     * @return Comment[]
+     * @return CommentTaxonomy[]
      */
     public function comments(bool $response = false): array {
 
@@ -541,12 +545,12 @@ class Post extends PostTaxonomy {
  *
  *
  * @param int|string $idx - 숫자이면 글번호로 인식. 아니면, 코드로 인식하여 글 객체를 리턴한다.
- * @return Post
+ * @return PostTaxonomy
  */
-function post(int|string $idx=0): Post
+function post(int|string $idx=0): PostTaxonomy
 {
-    if ( $idx == 0 ) return new Post(0); // 0 이면, 빈 글 객체 리턴.
-    else if ( is_numeric($idx) && $idx > 0 ) return new Post($idx); // 숫자이고 0 보다 크면, 해당 글 객체 리턴.
+    if ( $idx == 0 ) return new PostTaxonomy(0); // 0 이면, 빈 글 객체 리턴.
+    else if ( is_numeric($idx) && $idx > 0 ) return new PostTaxonomy($idx); // 숫자이고 0 보다 크면, 해당 글 객체 리턴.
     else return postByCode($idx); // 숫자가 아니면, 코드로 인식해서, 해당 글 객체 리턴.
 }
 
@@ -556,9 +560,9 @@ function post(int|string $idx=0): Post
  * 참고, 동일한 코드가 여러개 있다면, 그 중 하나만 리턴한다. 모든 코드의 글을 다 가져오려면, `search` 함수를 사용한다.
  *
  * @param string $code
- * @return Post
+ * @return PostTaxonomy
  */
-function postByCode(string $code): Post {
+function postByCode(string $code): PostTaxonomy {
     return post()->findOne(['code' => $code]);
 }
 

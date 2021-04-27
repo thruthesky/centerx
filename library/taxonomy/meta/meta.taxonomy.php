@@ -54,7 +54,7 @@ class MetaTaxonomy extends Entity {
 
 
     /**
-     * Returns the value of the entity field based on the params.
+     * Returns the entity of the record based on the params.
      * @param string $taxonomy
      * @param string $code
      * @param mixed $data
@@ -63,6 +63,18 @@ class MetaTaxonomy extends Entity {
     function entity(string $taxonomy, string $code, mixed $data ): int {
         $row = $this->search(select: 'entity', conds: [TAXONOMY => $taxonomy, CODE => $code, DATA => $data]);
         return $row[ENTITY];
+    }
+
+    /**
+     * Returns an array of entities based on the input.
+     * @param array $conds
+     * @param string $conj
+     * @param int $limit
+     * @return array
+     */
+    function entities(array $conds, string $conj='AND', int $limit=1000) {
+        $rows = $this->search(select: ENTITY, conds: $conds, conj: $conj, limit: $limit);
+        return ids($rows, ENTITY);
     }
 
     /**

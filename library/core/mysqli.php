@@ -189,7 +189,8 @@ class MySQLiDatabase {
      * @return array
      */
     public function get_results($q, $_=''): array {
-        die("Do not use db()->get_result()");
+        debug_print_backtrace();
+        die("\ndie() - Do not use db()->get_result()");
         $rets = [];
         $result = $this->connection->query($q);
         while ($row = $result->fetch_assoc()) {
