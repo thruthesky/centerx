@@ -18,13 +18,14 @@ require_once ROOT_DIR . 'lib/theme.class.php';
 require_once ROOT_DIR . 'library/core/mysqli.php';
 
 
+
 require_once ROOT_DIR . 'library/core/entity.php';
 require_once ROOT_DIR . 'lib/config.class.php';
 require_once ROOT_DIR . 'lib/country.class.php';
 require_once ROOT_DIR . 'library/taxonomy/user/user.taxonomy.php';
 require_once ROOT_DIR . 'library/taxonomy/meta/meta.taxonomy.php';
 require_once ROOT_DIR . 'lib/friend.class.php';
-require_once ROOT_DIR . 'lib/category.class.php';
+require_once ROOT_DIR . 'library/taxonomy/category/category.taxonomy.php';
 require_once ROOT_DIR . 'library/core/post.taxonomy.php';
 require_once ROOT_DIR . 'lib/post.class.php';
 require_once ROOT_DIR . 'lib/comment.class.php';
@@ -37,7 +38,7 @@ require_once ROOT_DIR . 'lib/point/point.class.php';
 require_once ROOT_DIR . 'lib/point/point.history.class.php';
 require_once ROOT_DIR . 'lib/vote-history.class.php';
 require_once ROOT_DIR . 'lib/shopping-mall-order.class.php';
-//require_once ROOT_DIR . 'library/taxonomy/cache/cache.taxonomy.php';
+require_once ROOT_DIR . 'library/taxonomy/cache/cache.taxonomy.php';
 require_once ROOT_DIR . 'lib/meta.functions.php';
 require_once ROOT_DIR . 'lib/translation.class.php';
 require_once ROOT_DIR . 'lib/firebase.php';

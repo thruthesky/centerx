@@ -6,9 +6,10 @@ testCategoryUpdate();
 testCategoryDelete();
 
 
+
 function testCategory() {
     $cat = category();
-    isTrue( get_class($cat) === 'Category', 'category() returns Category' );
+    isTrue( get_class($cat) === 'CategoryTaxonomy', 'category() returns CategoryTaxonomy' );
 }
 
 function testCategoryCreate() {
@@ -23,11 +24,16 @@ function testCategoryUpdate() {
 }
 
 function testCategoryDelete() {
+    // create
     $id = 'category-delete' . time();
     $cat = category()->create([ID=>$id, 'no' => '123']);
+
+    // delete
     isTrue( $cat->delete()->hasError == false, 'deleted');
     isTrue( $cat->idx > 0, 'deleted');
     isTrue( $cat->id == $id, 'id will be remain only on memory.');
-    $find = category()->findOne([ID=>$id]);
+
+    // check if deleted
+    $find = category()->findOne([ID => $id]);
     isTrue( $find->getError() == e()->entity_not_found, 'not found after delete');
 }

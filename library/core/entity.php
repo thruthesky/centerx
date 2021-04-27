@@ -464,7 +464,7 @@ class Entity {
     public function delete(): self {
         if ( $this->hasError ) return $this;
         if ( ! $this->idx ) return $this->error(e()->idx_not_set);
-        $re = db()->delete($this->getTable(), eq(IDX, $this->idx));
+        $re = db()->delete($this->getTable(), [IDX => $this->idx]);
         if ( $re === false ) return $this->error(e()->delete_failed);
         return $this;
     }
