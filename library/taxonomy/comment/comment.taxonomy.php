@@ -72,7 +72,7 @@ class CommentTaxonomy extends ForumTaxonomy {
 
 
 
-        // 업로드된 파일의 taxonomy 와 enttity 수정
+        // 업로드된 파일의 taxonomy 와 entity 수정
         $this->fixUploadedFiles($in);
 
         $category = category($categoryIdx);
