@@ -49,6 +49,10 @@ https://local.itsuda50.com/?route=post.search&where=(categoryId=<qna> or categor
 
 
 ###
+https://itsuda50.com/?route=post.search&where=categoryId=<info> AND parentIdx=0&page=1&limit=20&order=idx&by=DESC
+
+
+###
 https://local.itsuda50.com/?route=comment.create&sessionId=5592-52f7119495484c1d56cf8629e9664001&content=A&rootIdx=11044&parentIdx=11044
 
 

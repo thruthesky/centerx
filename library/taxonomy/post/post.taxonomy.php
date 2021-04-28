@@ -21,6 +21,7 @@
  * @property-read int $userIdx;
  * @property-read string $subcategory
  * @property-read string $title;
+ * @property-read int $noOfComments;
  * @property-read File[] $files;
  * @property-read string $path;
  * @property-read string $content;
