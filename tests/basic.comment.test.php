@@ -45,8 +45,8 @@ function testCommentRead() {
     // create comment on the post above
     $comment = comment()->create([ ROOT_IDX => $p->idx, CONTENT => 'comment content read' ]);
     isTrue($comment->idx > 0, 'comment create success');
-    isTrue($comment->rootIdx =  $p->idx, 'comment rootIdx should be equal to post idx');
-    isTrue($comment->parentIdx =  $p->idx, 'comment parentIdx should be equal to post idx');
+    isTrue($comment->rootIdx ==  $p->idx, 'comment rootIdx should be equal to post idx');
+    isTrue($comment->parentIdx ==  $p->idx, 'comment parentIdx should be equal to post idx');
 
     // check if comment exist in the post
     $p_res = $p->response();
@@ -75,14 +75,15 @@ function testCommentOnComment(){
     // create comment on the post above
     $comment = comment()->create([ ROOT_IDX => $p->idx, CONTENT => 'comment on comment' ]);
     isTrue($comment->idx > 0, 'first comment create');
-    isTrue($comment->rootIdx =  $p->idx, 'comment rootIdx should be equal to post idx');
-    isTrue($comment->parentIdx =  $p->idx, 'comment parentIdx should be equal to post idx');
+    isTrue($comment->rootIdx ==  $p->idx, 'comment rootIdx should be equal to post idx');
+    isTrue($comment->parentIdx ==  $p->idx, 'comment parentIdx should be equal to post idx');
+
 
     // create comment on the comment above
     $commentChild = comment()->create([ ROOT_IDX => $p->idx, PARENT_IDX => $comment->idx, CONTENT => "Child of $comment->idx" ]);
     isTrue($commentChild->idx > 1, '2nd comment create');
-    isTrue($comment->rootIdx =  $p->idx, 'comment rootIdx should be equal to post idx');
-    isTrue($comment->parentIdx =  $comment->idx, 'comment parentIdx should be equal to parent comment idx');
+    isTrue($comment->rootIdx ==  $p->idx, 'comment rootIdx should be equal to post idx');
+    isTrue($comment->parentIdx ==  $comment->idx, 'comment parentIdx should be equal to parent comment idx');
 
     // check if 2nd comment exist in the post
     $p_res = $p->response();

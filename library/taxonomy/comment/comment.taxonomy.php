@@ -32,8 +32,13 @@ class CommentTaxonomy extends ForumTaxonomy {
     }
 
 
-    /// 글 읽기
-    public function read(int $idx = 0): Entity
+    /**
+     * Load comments
+     *
+     * @param int $idx
+     * @return self
+     */
+    public function read(int $idx = 0): self
     {
         parent::read($idx);
 
@@ -46,6 +51,7 @@ class CommentTaxonomy extends ForumTaxonomy {
      * @param array $in
      *
      * @return self
+     * @throws Exception
      */
     public function create(array $in): self
     {
