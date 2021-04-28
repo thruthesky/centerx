@@ -53,16 +53,21 @@ class Comment extends PostTaxonomy {
         if ( !isset($in[ROOT_IDX]) ) return $this->error(e()->root_idx_is_empty);
         $in[USER_IDX] = login()->idx;
 
-        /**
-         * @todo when categoryIdx of post changes, categoryIdx of children must be changes.
-         */
+
+        // get post of the comment.
+        $post = post($in[ROOT_IDX]);
+
+        // get category idx of the comment. it might be replaced with $categoryIdx = $post->idx
         $categoryIdx = postCategoryIdx($in[ROOT_IDX]);
+
 
         $in[CATEGORY_IDX] = $categoryIdx;
         $in['Ymd'] = date('Ymd'); // 오늘 날짜
         parent::create($in);
         if ( $this->hasError ) return $this;
 
+        // update no of comment. There is no delete on comments. It's only marking as deleted.
+        $post->update(['noOfComments' => $post->noOfComments + 1]);
 
         // 업로드된 파일의 taxonomy 와 enttity 수정
         $this->fixUploadedFiles($in);
