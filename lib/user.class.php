@@ -221,7 +221,7 @@ class User extends Entity {
             'birthdate' => $this->birthdate,
             'point' => $this->point,
             'photoIdx' => $this->photoIdx ?? 0,
-            'photoUrl' => thumbnailUrl($this->photoIdx ?? 0, 100, 100),
+            'photoUrl' =>  $this->photoUrl ?? thumbnailUrl($this->photoIdx ?? 0, 100, 100),
 
         ];
         if ( $firebaseUid ) {
