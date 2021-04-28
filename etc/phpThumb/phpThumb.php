@@ -18,13 +18,15 @@ ini_set('display_errors', '1');
 if (isset($_GET['src']) && is_numeric($_GET['src']) ) {
     require_once '../../boot.php';
     $_GET['src']  = files($_GET['src'])->path;
+debug_log('phpThumb;', $_GET);
+debug_log('src;', $_GET['src']);
 } else if ( isset( $_GET['code']) &&  $_GET['code'] ) {
     require_once '../../boot.php';
     $_GET['src']  = files()->findOne([CODE => $_GET[CODE]])->path;
-}
-
 debug_log('phpThumb;', $_GET);
 debug_log('src;', $_GET['src']);
+}
+
 /**
  * 썸네일하려는 이미지가 GIF 이면, 썸네일하지 않는다.
  */
