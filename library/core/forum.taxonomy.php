@@ -83,7 +83,6 @@ class ForumTaxonomy extends Entity {
                 CHOICE => $Yn
             ]);
 //            d("$Yn");
-
             point()->vote($this, $Yn);
         }
 

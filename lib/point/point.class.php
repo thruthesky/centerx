@@ -427,21 +427,24 @@ class Point {
         if ( $categoryIdx ) $q_categoryIdx = "AND categoryIdx=$categoryIdx";
 
         $last_stamp = time() - $stamp;
+
         if ( $fromUserIdx ) {
-            $user = "fromUserIdx=$fromUserIdx";
+            $user = "fromUserIdx=?";
+            $userIdx = $fromUserIdx;
         } else {
-            $user = "toUserIdx=" . login()->idx;
+            $user = "toUserIdx=?";
+            $userIdx = login()->idx;
         }
 
-        $q = "SELECT COUNT(*) FROM ".entity(POINT_HISTORIES)->getTable()." WHERE createdAt > $last_stamp AND $user $q_categoryIdx AND $reason_ors";
+        $q = "SELECT COUNT(*) FROM ".entity(POINT_HISTORIES)->getTable()." WHERE createdAt > ? AND $user $q_categoryIdx AND $reason_ors";
 //        d($q);
         if ( isDebugging() ) d( $q );
-        return db()->get_var($q);
+        return db()->column($q, $last_stamp, $userIdx);
     }
 
 
 
-    public function vote(PostTaxonomy $post, $Yn) {
+    public function vote(ForumTaxonomy $post, $Yn) {
 
         // 내 글/코멘트이면 리턴. 내 글/코멘트에 추천하는 경우, 포인트 증감 없으며, 포인트 기록도 하지 않는다.
         if ( $post->isMine() ) return;

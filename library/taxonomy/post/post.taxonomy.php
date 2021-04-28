@@ -37,6 +37,7 @@
  * @property-read int $createdAt;
  * @property-read int $updatedAt;
  * @property-read int $deletedAt;
+ * @property-read Comment[] $comments;
  */
 class PostTaxonomy extends ForumTaxonomy {
 
@@ -410,7 +411,6 @@ class PostTaxonomy extends ForumTaxonomy {
 
         $sql = "SELECT idx, rootIdx, parentIdx FROM " . $this->getTable() . " WHERE parentIdx=?";
         $rows = db()->rows($sql, $parentIdx);
-
         foreach($rows as $row) {
             $row[DEPTH] = $depth;
             $__rets[] = $row;

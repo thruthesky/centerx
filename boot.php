@@ -36,7 +36,7 @@ require_once ROOT_DIR . 'lib/error.class.php';
 require_once ROOT_DIR . 'lib/point/point.defines.php';
 require_once ROOT_DIR . 'lib/point/point.class.php';
 require_once ROOT_DIR . 'lib/point/point.history.class.php';
-require_once ROOT_DIR . 'lib/vote-history.class.php';
+require_once ROOT_DIR . 'library/taxonomy/vote/vote-history.taxonomy.php';
 require_once ROOT_DIR . 'lib/shopping-mall-order.class.php';
 require_once ROOT_DIR . 'library/taxonomy/cache/cache.taxonomy.php';
 require_once ROOT_DIR . 'lib/meta.functions.php';

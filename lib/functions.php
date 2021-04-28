@@ -60,10 +60,11 @@ function get_JSON_input()
 
 
 
-function d($obj) {
+function d($obj, $msg = null) {
 //    print_r(debug_backtrace());
     if ( isCli() || isTesting() ) echo "\nd(): ";
     else echo "<xmp>";
+    if ($msg) echo "\n$msg\n";
     print_r($obj);
     if ( isCli() || isTesting() ) echo "\n";
     else echo "</xmp>";

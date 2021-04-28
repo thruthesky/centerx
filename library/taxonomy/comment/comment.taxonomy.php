@@ -51,6 +51,9 @@ class CommentTaxonomy extends ForumTaxonomy {
     {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( !isset($in[ROOT_IDX]) ) return $this->error(e()->root_idx_is_empty);
+
+        if ( !isset($in[PARENT_IDX]) ) $in[PARENT_IDX] = $in[ROOT_IDX]; // if parent idx is not set, set it same as root idx
+
         $in[USER_IDX] = login()->idx;
 
         /**
