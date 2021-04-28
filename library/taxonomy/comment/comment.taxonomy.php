@@ -53,15 +53,20 @@ class CommentTaxonomy extends ForumTaxonomy {
         if ( !isset($in[ROOT_IDX]) ) return $this->error(e()->root_idx_is_empty);
         $in[USER_IDX] = login()->idx;
 
-        /**
-         * @todo when categoryIdx of post changes, categoryIdx of children must be changes.
-         */
-        $categoryIdx = postCategoryIdx($in[ROOT_IDX]);
+
+        $post = post($in[ROOT_IDX]);
+//        $categoryIdx = postCategoryIdx($in[ROOT_IDX]);
+        $categoryIdx = $post->categoryIdx;
 
         $in[CATEGORY_IDX] = $categoryIdx;
         $in['Ymd'] = date('Ymd'); // 오늘 날짜
         parent::create($in);
         if ( $this->hasError ) return $this;
+
+
+        // update no of comment. There is no delete on comments. It's only marking as deleted.
+        $post->update(['noOfComments' => $post->noOfComments + 1]);
+
 
 
         // 업로드된 파일의 taxonomy 와 enttity 수정
