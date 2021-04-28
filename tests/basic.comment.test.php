@@ -83,11 +83,10 @@ function testCommentOnComment(){
     $commentChild = comment()->create([ ROOT_IDX => $p->idx, PARENT_IDX => $comment->idx, CONTENT => "Child of $comment->idx" ]);
     isTrue($commentChild->idx > 1, '2nd comment create');
     isTrue($comment->rootIdx ==  $p->idx, 'comment rootIdx should be equal to post idx');
-    isTrue($comment->parentIdx ==  $comment->idx, 'comment parentIdx should be equal to parent comment idx');
+    isTrue($comment->idx ==  $commentChild->parentIdx, 'comment parentIdx should be equal to parent comment idx');
 
     // check if 2nd comment exist in the post
     $p_res = $p->response();
-    d($p_res);
     isTrue(count($p_res[COMMENTS]) == 2, 'post must have 2 comment');
     isTrue($p_res[COMMENTS][0][IDX] == $comment->idx, 'post 1st comment must be same to the newly created comment');
     isTrue($p_res[COMMENTS][0][DEPTH] == 1, 'comment must have 1 depth');
