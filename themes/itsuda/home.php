@@ -3,7 +3,7 @@
 
 ?>
 <div class="mb-3 d-flex justify-content-end">
-    <img style="width: 240px;" src="themes/itsuda/img/android-download.png">
+    <a href="https://play.google.com/store/apps/details?id=com.itsuda50.app3" target="_blank"><img style="width: 240px;" src="themes/itsuda/img/android-download.png"></a>
 </div>
 
 <img id="home1" class="w-100" src="themes/itsuda/img/home1.jpg">

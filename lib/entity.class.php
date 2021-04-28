@@ -993,7 +993,11 @@ class Entity {
     public function permissionCheck(): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
-        if ( $this->isMine() == false && admin() == false ) return $this->error ( e()->not_your_entity );
+	if ( $this->isMine() == false && admin() == false ) {
+		if ( $this->exists() )
+		return $this->error ( e()->not_your_entity );
+		else return $this->error( e()->entity_not_exists );
+	}
         return $this;
     }
 
