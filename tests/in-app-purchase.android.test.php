@@ -3,8 +3,8 @@
 include_once ROOT_DIR . 'routes/in-app-purchase.route.php';
 
 define('TEST_USER_IDX', 1);
-//testServiceAccount();
-
+testServiceAccount();
+//
 //testIapLogin();
 //testIapPlatformTest();
 //testIapInputTest();
