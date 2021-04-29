@@ -176,13 +176,14 @@ class InAppPurchase extends Entity {
         $myIdx = login()->idx;
         $rows = $this->search(select: "*", where: "userIdx='$myIdx' AND status='success'", limit: 1000);
 
-        // TODO add more information or summary
-//        $rets = [];
-//        foreach ($rows as $row) {
-//            $rets['total'] = $row
-//        }
-//        d($rows);
-        return $rows;
+        /// Remove local & server verification data to reduce the size of return to client.
+        $rets = [];
+        foreach( $rows as $row ) {
+            unset($row['localVerificationData']);
+            unset($row['serverVerificationData']);
+            $rets[] = $row;
+        }
+        return $rets;
     }
 
 
