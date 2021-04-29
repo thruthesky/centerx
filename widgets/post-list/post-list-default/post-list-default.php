@@ -16,12 +16,14 @@ $category = $o['category'];
         foreach ($posts as $post) {
     ?>
             <div class="d-flex w-100">
-                <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->shortProfile()['photoUrl'], 'size' => '50']) ?>
+                <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->shortProfile()['photoUrl'], 'size' => '75']) ?>
                 <a href="<?= $post->url ?><?= lsub(true) ?>" class="w-100" style="text-decoration: none">
-                    <div style="color: black; font-weight: 500">No. <?= $post->idx ?> - <?= $post->title ?></div>
-                    <div class="mt-1 text-muted">
+                    <div style="color: black; font-weight: 500; font-size: 1.2rem"><?= $post->title ?></div>
+                    <div style="color: black; font-weight: 500"><?= empty($post->user()->shortProfile()['name']) ? 'No name' : $post->user()->shortProfile()['name'] ?></div>
+                    <div class="text-muted">
                         <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?>
-                        <?= date('r', $post->createdAt) ?>
+                        <?= ' - ' . 'No. ' . $post->idx ?>
+                        <?= ' - ' . date('r', $post->createdAt) ?>
                     </div>
                 </a>
             </div>

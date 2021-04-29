@@ -10,7 +10,7 @@ $comment = $o['comment'];
 
 <div class="p-3" style="border-radius: 10px; background-color: #e0e0e0">
     <div class="d-flex">
-        <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->shortProfile()['photoUrl'], 'size' => '50']) ?>
+        <?php include widget('user/user-avatar', ['photoUrl' => $comment->user()->shortProfile()['photoUrl'], 'size' => '50']) ?>
         <div>
             <b><?= $comment->user()->name !== '' ? $comment->user()->name : 'No name' ?></b>
             <div class="meta">
