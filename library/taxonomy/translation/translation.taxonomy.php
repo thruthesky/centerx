@@ -65,6 +65,7 @@ class TranslationTaxonomy extends Entity
      */
     public function createCode($in): string {
         if ( !isset($in['code']) || empty($in['code']) ) return e()->empty_code;
+        if ( $this->exists([CODE => $in[CODE]]) ) return e()->code_exists;
         foreach( SUPPORTED_LANGUAGES as $ln ) {
 
             $this->create([
@@ -100,13 +101,15 @@ class TranslationTaxonomy extends Entity
 
     /**
      * 코드 삭제
-     * @param $code
+     * @param string $code
+     * @return string $code
      */
-    public function deleteCode($code) {
-        $idxes = $this->search(where: "code='$code'");
+    public function deleteCode(string $code): string {
+        $idxes = $this->search(where: "code=?", params: [$code]);
         foreach(ids($idxes) as $idx) {
             translation($idx)->delete();
         }
+        return $code;
     }
 
     /**
@@ -153,7 +156,7 @@ class TranslationTaxonomy extends Entity
      * @return mixed|string
      */
     public function text(string $language, string $code) {
-        $rows = $this->search(select: 'language, code, text', where: "language='$language' AND code='$code'");
+        $rows = $this->search(select: 'language, code, text', where: "language=? AND code=?", params: [$language, $code]);
         if ( count($rows) ) {
             return $rows[0]['text'];
         }

@@ -61,6 +61,7 @@ define('TYPE', 'type');
 
 define('PHONE_NO', 'phoneNo');
 define('CODE', 'code');
+define('CURRENT_CODE_NAME', 'currentCodeName');
 define('DATA', 'data');
 define('CREATED_AT', 'createdAt');
 define('UPDATED_AT', 'updatedAt');
