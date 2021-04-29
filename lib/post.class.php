@@ -392,7 +392,7 @@ class Post extends PostTaxonomy {
     private array $__rets = [];
     public function getComments(int $parentIdx, int $depth=1) {
         global $__rets;
-        $q = "SELECT idx, rootIdx, parentIdx FROM " . $this->getTable() . " WHERE parentIdx=$parentIdx";
+        $q = "SELECT idx, rootIdx, parentIdx FROM " . $this->getTable() . " WHERE parentIdx=$parentIdx AND deletedAt=0";
         $rows = db()->get_results($q, ARRAY_A);
         foreach($rows as $row) {
             $row[DEPTH] = $depth;
