@@ -9,8 +9,6 @@ testCommentUpdate();
 testCommentDelete();
 
 
-//testCommentCrud();
-
 function testCommentEntity() {
     isTrue( get_class(comment()) == 'CommentTaxonomy', 'is CommentTaxonomy');
 }
@@ -53,11 +51,13 @@ function testCommentRead() {
     isTrue(count($p_res[COMMENTS]) > 0, 'post must have comment');
     isTrue($p_res[COMMENTS][0][IDX] == $comment->idx, 'post 1st comment must be same to the newly created comment');
 
+    // initiate comment via idx comment(IDX)
     $r1 = comment($comment->idx);
     isTrue($r1->idx == $comment->idx, 'idx must be equal');
     isTrue($r1->content == $comment->content, 'content must be same');
     isTrue($r1->rootIdx == $p->idx, 'comment root idx must be equal to post idx');
 
+    // read comment via comment()->read(IDX)
     $r2 = comment()->read($comment->idx);
     isTrue($r2->idx == $comment->idx, 'idx must be equal on read');
     isTrue($r2->content == $r1->content, 'content must be same on read');
@@ -83,7 +83,7 @@ function testCommentOnComment(){
     $commentChild = comment()->create([ ROOT_IDX => $p->idx, PARENT_IDX => $comment->idx, CONTENT => "Child of $comment->idx" ]);
     isTrue($commentChild->idx > 1, '2nd comment create');
     isTrue($comment->rootIdx ==  $p->idx, 'comment rootIdx should be equal to post idx');
-    isTrue($comment->idx ==  $commentChild->parentIdx, 'comment parentIdx should be equal to parent comment idx');
+    isTrue($comment->idx == $commentChild->parentIdx, 'comment parentIdx should be equal to parent comment idx');
 
     // check if 2nd comment exist in the post
     $p_res = $p->response();
@@ -109,6 +109,7 @@ function testCommentUpdate() {
 
     // update comment content
     $update = comment($comment->idx)->update([ CONTENT => 'Updated comment' ])->read();
+    isTrue($update->idx == $comment->idx, 'comment updated should still be the same comment');
     isTrue($update->content != 'comment create read update', 'comment updated');
     isTrue($update->content == 'Updated comment', 'comment updated');
 }
@@ -129,42 +130,5 @@ function testCommentDelete() {
     $delete = comment($comment->idx)->delete();
     isTrue($delete->hasError, 'comment delete error');
     isTrue($delete->getError() == e()->comment_delete_not_supported, 'comment delete not supported');
-//    d($delete);
 }
-
-
-
-//function testCommentCrud() {
-//    // 로그인
-//    setLoginAny();
-//
-//    // 카테고리 생성
-//
-//    $cat = category()->create(['id' => 'comment-create' . time()]);
-//
-//    // 글 생성
-//    $p = post()->create(['categoryId' => $cat->id, 'title' => 'comment create']);
-//    isTrue($p->ok, 'must have no error');
-//
-//    $comment = comment()->create([ ROOT_IDX => $p->idx, CONTENT => 'comment content' ]);
-//    isTrue($comment->idx > 0, 'comment create');
-//    isTrue($comment->content == 'comment content', 'comment content match');
-//
-//    isTrue($comment->update(['content' => 'yo.'])->content == 'yo.', 'comment updated');
-//
-//    isTrue(comment($comment->idx)->content == 'yo.', 'comment read');
-//
-//    isTrue(isError($comment->response()) == false, 'comment response');
-//    isTrue($comment->response()[IDX] == $comment->idx, 'comment response idx match');
-//
-//
-//    isTrue($comment->delete()->getError() == e()->comment_delete_not_supported, 'comment cannot be deleted');
-//    isTrue($comment->reset($comment->idx)->markDelete()->deletedAt > 0, 'comment marked as deleted');
-//
-//}
-
-
-
-
-
 
