@@ -42,7 +42,7 @@ require_once ROOT_DIR . 'library/taxonomy/cache/cache.taxonomy.php';
 require_once ROOT_DIR . 'library/taxonomy/translation/translation.taxonomy.php';
 require_once ROOT_DIR . 'lib/firebase.php';
 require_once ROOT_DIR . 'lib/data.php';
-require_once ROOT_DIR . 'lib/in-app-purchase.class.php';
+require_once ROOT_DIR . 'library/taxonomy/in-app-purchase/in-app-purchase.taxonomy.php';
 require_once ROOT_DIR . 'lib/hook.class.php';
 
 

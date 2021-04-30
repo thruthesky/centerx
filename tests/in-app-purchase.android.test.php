@@ -3,16 +3,21 @@
 include_once ROOT_DIR . 'routes/in-app-purchase.route.php';
 
 define('TEST_USER_IDX', 1);
+testTranslationEntity();
 testServiceAccount();
 //
-//testIapLogin();
-//testIapPlatformTest();
-//testIapInputTest();
-//testAndroidFailure();
+testIapLogin();
+testIapPlatformTest();
+testIapInputTest();
+testAndroidFailure();
 //testAndroidRealData();
 //testAndroidRealData2();
 //testAndroidRealData3();
 
+
+function testTranslationEntity() {
+    isTrue( get_class(inAppPurchase()) == 'InAppPurchaseTaxonomy', 'is InAppPurchaseTaxonomy');
+}
 
 
 
@@ -54,16 +59,18 @@ function testIapInputTest() {
     $inApp->verifyPurchase($inputData);
     isTrue($inApp->getError() === e()->empty_product_id, 'Expected: ' . e()->empty_product_id);
 
+    $productID =  array_key_first(ANDROID_POINT_PURCHASE_AMOUNT);
+
     $inputData = [
         'platform' => 'android',
-        'productID' => 'product_ID_101',
+        'productID' =>$productID,
     ];
     $inApp->verifyPurchase($inputData);
     isTrue($inApp->getError() === e()->empty_purchase_id,e()->empty_purchase_id);
 
     $inputData = [
         'platform' => 'android',
-        'productID' => 'product_ID_101',
+        'productID' =>$productID,
         'purchaseID' => 'purchase_ID_abcd',
     ];
     $inApp->verifyPurchase($inputData);
@@ -71,7 +78,7 @@ function testIapInputTest() {
 
     $inputData = [
         'platform' => 'android',
-        'productID' => 'product_ID_101',
+        'productID' =>$productID,
         'purchaseID' => 'purchase_ID_abcd',
         'price' => 'P1000',
     ];
@@ -80,7 +87,7 @@ function testIapInputTest() {
 
     $inputData = [
         'platform' => 'android',
-        'productID' => 'product_ID_101',
+        'productID' =>$productID,
         'purchaseID' => 'purchase_ID_abcd',
         'price' => 'P1000',
         'title' => 'One Thousand Pesos',
@@ -90,7 +97,7 @@ function testIapInputTest() {
 
     $inputData = [
         'platform' => 'android',
-        'productID' => 'product_ID_101',
+        'productID' =>$productID,
         'purchaseID' => 'purchase_ID_abcd',
         'price' => 'P1000',
         'title' => '1k Item',
@@ -101,7 +108,7 @@ function testIapInputTest() {
 
     $inputData = [
         'platform' => 'android',
-        'productID' => 'product_ID_101',
+        'productID' =>$productID,
         'purchaseID' => 'purchase_ID_abcd',
         'price' => 'P1000',
         'title' => '1k Item',
@@ -114,7 +121,7 @@ function testIapInputTest() {
 
     $inputData = [
         'platform' => 'android',
-        'productID' => 'product_ID_101',
+        'productID' =>$productID,
         'purchaseID' => 'purchase_ID_abcd',
         'price' => 'P1000',
         'title' => '1k Item',
@@ -127,7 +134,7 @@ function testIapInputTest() {
 
     $inputData = [
         'platform' => 'android',
-        'productID' => 'product_ID_101',
+        'productID' =>$productID,
         'purchaseID' => 'purchase_ID_abcd',
         'price' => 'P1000',
         'title' => '1k Item',

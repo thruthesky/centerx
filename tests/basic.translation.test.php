@@ -5,9 +5,8 @@ testTranslationCreateCode();
 testTranslationRead();
 testTranslationUpdateCode();
 testTranslationDeleteCode();
-
-
 testTranslationText();
+testLoadByLanguage();
 
 
 
@@ -63,13 +62,13 @@ function testTranslationUpdateCode() {
 
 
 function testTranslationDeleteCode() {
-    $code = 'Read' . time();
+    $code = 'delete' . time();
     // create code
     isTrue(  translation()->createCode([
             CODE => $code,
             'en' => 'e',
             'ko'=> 'k',
-        ]) == $code, 'success return code');
+        ]) == $code, 'testTranslationDeleteCode create');
 
     // check if code was created
     $c = translation()->load();
@@ -91,7 +90,7 @@ function testTranslationText() {
             CODE => $code,
             'en' => 'eee',
             'ko'=> 'kkk',
-        ]) == $code, 'success return code');
+        ]) == $code, 'success create for text test');
 
     $en = translation()->text('en', $code);
     isTrue($en == 'eee', 'must be eee');
@@ -103,3 +102,15 @@ function testTranslationText() {
 }
 
 
+function testLoadByLanguage() {
+    $t = translation()->loadByLanguageCode();
+    $code = 'loadByLanguage' . time();
+    isTrue(  translation()->createCode([
+            CODE => $code,
+            'en' => 'english',
+            'ko'=> 'korean',
+        ]) == $code, 'success create for load language');
+
+    isTrue(count($t) == count(SUPPORTED_LANGUAGES), "Supported language");
+    isTrue(count($t[SUPPORTED_LANGUAGES[0]]) > 0, "first supported language has data");
+}
