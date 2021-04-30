@@ -23,8 +23,8 @@ $category = $o['category'];
                             <div style="color: black; font-weight: 500; font-size: 1.2rem"><?= $post->title ?></div>
                             <div style="color: black; font-weight: 500"><?= empty($post->user()->shortProfile()['name']) ? 'No name' : $post->user()->shortProfile()['name'] ?></div>
                             <div class="text-muted">
-                                <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?>
-                                <?= ' - ' . 'No. ' . $post->idx ?>
+                                <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span> - " : "" ?>
+                                <?= 'No. ' . $post->idx ?>
                                 <?= ' - ' . date('r', $post->createdAt) ?>
                             </div>
                         </a>
