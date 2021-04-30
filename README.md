@@ -77,6 +77,12 @@
 
 - rewrite `meta` functions to use `mata.taxonomy`
 
+- Each client(whether it is webbrowser or app) must have its own `clientId` to track just like philgo.
+  For app, it will save in local storage, for web it will save into cookie.
+  And for each activity it will be saved in `user_activities` table with `postIdx`.
+
+- `noOfView` - to count how many poeple have seen that post. For client, there must be a route to increase the value of `noOfView`.
+  There must be a logic not to increment `noOfView` if one user refreshes(or reviews) the same post. This should be done with `clientId`.
 
 - make admin page settings dynamically crud just like translation.
 
@@ -2404,3 +2410,10 @@ content[tip]=내용사진입니다.
 ```
 "ext-mysqli": "*"
 ```
+
+
+# Post list
+
+- For listing posts under a category, it requires `category.idx`. Whether the client is using SQL or prepared params,
+  `category.idx` must be used, instead of `category.id`.
+  - Client app should load the forum configuration at startup and cache for the next boot. So, they can use `category.idx`.

@@ -10,6 +10,7 @@ if ( $category->exists() == false ) {
 }
 
 
+
 // 글 생성
 $p1 = post()->create([ CATEGORY_ID => 'test', 'title' => 'yo' ]);
 

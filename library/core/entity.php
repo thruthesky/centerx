@@ -890,6 +890,39 @@ class Entity {
 
     }
 
+    /**
+     * @param string $where
+     * @param array $conds
+     * @param string $conj
+     * @return int
+     */
+    public function count(string $where='1',
+                          array $params = [],
+                          array $conds=[],
+                          string $conj = 'AND'): int {
+        $table = $this->getTable();
+        $select = "COUNT(*)";
+
+        if ( $conds ) {
+            list( $fields, $placeholders, $values ) = db()->parseRecord($conds, 'select', $conj);
+            $q = " SELECT $select FROM $table WHERE $placeholders";
+            $count = db()->column($q, ...$values);
+        } else if ( $params ) { // prepare statement if $params is set.
+            $q = " SELECT $select FROM $table WHERE $where";
+            $count = db()->column($q, ...$params);
+        }
+        else if ( $where == '1' ) {
+            $q = " SELECT $select FROM $table WHERE $where";
+            $count = db()->column($q);
+        }
+        else  {
+            debug_print_backtrace();
+            die("\n-------------------- die() - Execution dead due to: Entity::search() wrong parameters\n");
+        }
+
+        return $count;
+    }
+
 
 
 
@@ -911,18 +944,6 @@ class Entity {
         return $this->search($select, "userIdx=" . login()->idx, order: $order, by: $by, page: $page, limit: $limit);
     }
 
-
-    /**
-     * @param string $where
-     * @param array $conds
-     * @param string $conj
-     * @return int
-     */
-    public function count(string $where='1', array $conds=[], string $conj = 'AND'): int {
-        $table = $this->getTable();
-        if ( $conds ) $where = sqlCondition($conds, $conj);
-        return db()->get_var(" SELECT COUNT(*) FROM $table WHERE $where");
-    }
 
 
     /**

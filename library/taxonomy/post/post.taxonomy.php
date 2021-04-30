@@ -277,76 +277,61 @@ class PostTaxonomy extends ForumTaxonomy {
      *  $where = "userIdx=$userIdx AND categoryIdx=$categoryIdx AND createdAt>=$beginStamp AND createdAt<=$endStamp";
      *  $posts = post()->search(where: $where);
      */
-    public function search(
-        string $select='idx',
-        string $where='1',
-        array $params = [],
-        array $conds=[],
-        string $conj = 'AND',
-        string $order='idx',
-        string $by='DESC',
-        int $page=1,
-        int $limit=10,
-        bool $object = false,
-    ): array
-    {
+//    public function search(
+//        string $select='idx',
+//        string $where='1',
+//        array $params = [],
+//        array $conds=[],
+//        string $conj = 'AND',
+//        string $order='idx',
+//        string $by='DESC',
+//        int $page=1,
+//        int $limit=10,
+//        bool $object = false,
+//    ): array
+//    {
+//
+//        $posts = parent::search(
+//            select: $select,
+//            where: $where,
+//            params: $params,
+//            conds: $conds,
+//            conj: $conj,
+//            order: $order,
+//            by: $by,
+//            page: $page,
+//            limit: $limit,
+//            object: $object,
+//        );
+//
+//
+//        $rets = [];
+//        foreach( ids($posts) as $idx ) {
+//            $rets[] = post($idx);
+//        }
+//        return $rets;
+//    }
+
+//    /**
+//     * @deprecated Don't use this.
+//     * @param string $where
+//     * @return string
+//     */
+//    private function parseCategory(string $where): string {
+//
+//        $count = preg_match_all("/<([^>]+)>/", $where, $ms);
+//        if ( $count ) {
+//            for( $i = 0; $i < $count; $i ++ ) {
+//                $cat = $ms[1][$i];
+//                $idx = category($cat)->idx;
+//                $where = str_replace($ms[0][$i], $idx, $where);
+//            }
+//            $where = str_replace('categoryId', CATEGORY_IDX, $where);
+//        }
+//        return $where;
+//    }
 
 
-        // Parse category
-        $where = $this->parseCategory($where);
-
-        $posts = parent::search(
-            select: $select,
-            where: $where,
-            params: $params,
-            conds: $conds,
-            conj: $conj,
-            order: $order,
-            by: $by,
-            page: $page,
-            limit: $limit,
-            object: $object,
-        );
-
-
-        $rets = [];
-        foreach( ids($posts) as $idx ) {
-            $rets[] = post($idx);
-        }
-        return $rets;
-    }
-
-
-
-    /**
-     * @param string $where
-     * @param array $conds
-     * @param string $conj
-     * @return int
-     */
-    public function count(string $where='1', array $conds=[], string $conj = 'AND'): int {
-        $where = $this->parseCategory($where);
-        return parent::count($where, $conds, $conj);
-    }
-
-    /**
-     * @deprecated Don't use this.
-     * @param string $where
-     * @return string
-     */
-    private function parseCategory(string $where): string {
-
-        $count = preg_match_all("/<([^>]+)>/", $where, $ms);
-        if ( $count ) {
-            for( $i = 0; $i < $count; $i ++ ) {
-                $cat = $ms[1][$i];
-                $idx = category($cat)->idx;
-                $where = str_replace($ms[0][$i], $idx, $where);
-            }
-            $where = str_replace('categoryId', CATEGORY_IDX, $where);
-        }
-        return $where;
-    }
 
 
     /**
