@@ -104,6 +104,18 @@ class UserRoute {
         return pointHistory()->count(conds: [REASON => POINT_LIKE, 'toUserIdx' => login()->idx]);
     }
 
+    public function search($in) {
+
+        $name = $in[NAME] ?? '';;
+        if ( empty($name) ) return e()->empty_name;
+        $rows = db()->get_results("SELECT idx FROM " . entity(USERS)->getTable() . " WHERE name='$name' OR nickname='$name'", ARRAY_A);
+        $rets = [];
+        foreach( $rows as $row ) {
+            $idx = $row[IDX];
+            $rets[] = user($idx)->shortProfile(firebaseUid: true);
+        }
+        return $rets;
+    }
 
 }
 
