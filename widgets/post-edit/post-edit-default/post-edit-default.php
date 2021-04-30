@@ -24,7 +24,7 @@ if (in(CATEGORY_ID)) {
         <input type="hidden" name="<?= IDX ?>" value="<?= $post->idx ?>">
 
         <div class="d-flex align-items-center">
-            <h3>Category: <?= $category->id ?></h3>
+            <h3><?= ek('Category', '@T Category') ?>: <?= $category->id ?></h3>
             <span class="flex-grow-1"></span>
 
 
