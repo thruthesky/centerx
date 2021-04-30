@@ -150,6 +150,41 @@ $category = category(SHOPPING_MALL);
             </div>
         </div>
 
+        <div class="form-group mb-3">
+            <label for="food_kind">식품유형</label>
+            <input type="text" class="form-control" id="food_kind" name="food_kind" value="<?=$post->food_kind?>">
+            <div class="form-text">
+                식품 유형을 입력하세요.
+            </div>
+        </div>
+
+
+        <div class="form-group mb-3">
+            <label for="origin">생산지</label>
+            <input type="text" class="form-control" id="origin" name="origin" value="<?=$post->origin?>">
+            <div class="form-text">
+                생산지(원산지)를 입력하세요.
+            </div>
+        </div>
+
+
+        <div class="form-group mb-3">
+            <label for="allergy">알레르기 정보</label>
+            <input type="text" class="form-control" id="allergy" name="allergy" value="<?=$post->allergy?>">
+            <div class="form-text">
+                알레르기 정보를 입력하세요.
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="nutritive_components">영양성분표시</label>
+            <input type="text" class="form-control" id="nutritive_components" name="nutritive_components" value="<?=$post->nutritive_components?>">
+            <div class="form-text">
+                영양성분표시를 입력하세요.
+            </div>
+        </div>
+
+
         <div class="form-group mb-2">
             <label for="short_title"><a href="https://docs.google.com/document/d/1JnEIoytM1MgS35emOju90qeDoIH963VeMHLaqvOhA7o/edit#heading=h.inp7ewl4tmv3" target="_blank">옵션 [?]</a></label>
             <input type="text" class="form-control" id="options" name="options" value="<?=$post->options?>">
