@@ -14,7 +14,7 @@ if (in(CATEGORY_ID)) {
     jsBack('잘못된 접속입니다.');
 }
 ?>
-<section class="p-5" id="post-edit-default" style="background-color: #f0f0f0; border-radius: 10px;">
+<section class="card p-4" id="post-edit-default">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
         <input type="hidden" name="returnTo" value="post">
@@ -23,11 +23,13 @@ if (in(CATEGORY_ID)) {
         <input type="hidden" name="lsub" value="<?= in('lsub') ?>">
         <input type="hidden" name="<?= IDX ?>" value="<?= $post->idx ?>">
 
-        <div class="d-flex">
+        <div class="d-flex align-items-center">
             <h3>Category: <?= $category->id ?></h3>
             <span class="flex-grow-1"></span>
+
+
             <?php if ($category->exists && $category->subcategories) { ?>
-                <select class="form-select form-select-lg mt-2" name="subcategory">
+                <select class="form-control" name="subcategory" style="width: 200px;">
                     <option value=""><?= ek('Select Sub category', '카테고리 선택') ?></option>
                     <?php foreach ($category->subcategories as $cat) {
                         if ($post->subcategory == $cat) $selected =  'selected';
@@ -40,9 +42,9 @@ if (in(CATEGORY_ID)) {
             <?php } ?>
         </div>
 
-        <input class="mt-3 form-control" placeholder="<?= ek('Title', '제목') ?>" type="text" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
+        <input class="mt-4 form-control" placeholder="<?= ek('Title', '제목') ?>" type="text" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
 
-        <textarea class="mt-3 form-control" rows="10" placeholder="<?= ek('Content', '내용') ?>" type="text" name="<?= CONTENT ?>"><?= $post->v(CONTENT) ?></textarea>
+        <textarea class="mt-4 form-control" rows="10" placeholder="<?= ek('Content', '내용') ?>" type="text" name="<?= CONTENT ?>"><?= $post->v(CONTENT) ?></textarea>
         <!-- Buttons. TODO: progress bar -->
         <div class="mt-3 d-flex">
             <!-- UPLOAD BUTTON -->
