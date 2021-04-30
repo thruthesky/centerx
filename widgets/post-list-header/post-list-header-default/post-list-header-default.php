@@ -16,7 +16,7 @@ $category = $o['category'];
 <div class="d-flex align-items-center p-2 bg-skyblue white" 
     style="border-top-left-radius: 8px; 
     border-top-right-radius: 8px;">
-    <h4 class="mr-2"><?= strtoupper($category->id) . ' :' ?></h4>
+    <h5 class="mb-0 mr-2"><?= strtoupper($category->id) . ' :' ?></h5>
     <?php if ($category->exists) { ?>
         <div>
             <a class="btn btn-sm <?= empty(in('lsub')) ? 'btn-info' : ''?>" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>">All</a>
