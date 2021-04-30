@@ -2,21 +2,21 @@
     <form action="./">
         <input type="hidden" name="p" value="user.profile.submit">
         <div class="form-group">
-            <label>Email address</label>
+            <label><?= ek('Email Address', '@T Email Address') ?></label>
             <div><?=login()->email?></div>
         </div>
         <div class="form-group">
-            <label>Name</label>
+            <label><?= ek('Name', '@T Name') ?></label>
             <input type="text" class="form-control" name="name" value="<?=login()->name?>">
         </div>
         <div class="form-group">
-            <label>Phone No</label>
+            <label><?= ek('Phone number', '@T Phone number') ?></label>
             <input type="text" class="form-control" name="<?=PHONE_NO?>" value="<?=login()->phoneNo?>">
         </div>
         <div class="form-group">
             <label>Your favorite color</label>
             <input type="text" class="form-control" name="color" value="<?=login()->color?>">
         </div>
-        <button type="submit" class="btn btn-primary">Profile Update</button>
+        <button type="submit" class="btn btn-primary"><?= ek('Update', '@T Update') ?></button>
     </form>
 </section>

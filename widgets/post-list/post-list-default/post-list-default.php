@@ -32,7 +32,7 @@ $category = $o['category'];
                 </div>
             <?php }
         } else { ?>
-            <div class="mt-5 pb-3 d-flex justify-content-center">No posts yet ..</div>
+            <div class="mt-5 pb-3 d-flex justify-content-center"><?= ek('No posts yet ..', '@T No posts yet ..') ?></div>
         <?php } ?>
     </section>
 

@@ -2,12 +2,12 @@
     <form action="./">
         <input type="hidden" name="p" value="user.login.submit">
         <div class="form-group">
-            <label>Email address</label>
+            <label><?= ek('Email Address', '@T Email Address') ?></label>
             <input type="email" class="form-control" name="email" aria-describedby="Input email">
             <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
         </div>
         <div class="form-group">
-            <label>Password</label>
+            <label><?= ek('Password', '@T Passowrd') ?></label>
             <input type="password" class="form-control" name="password">
         </div>
 
