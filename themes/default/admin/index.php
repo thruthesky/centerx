@@ -5,13 +5,13 @@ if (admin() == false) jsBack('You are not admin');
 
 <section class="layout" style="background-color: #cceef2;">
     <div class="container-fluid" style="background-color: #181c32;">
-        <nav class="container navbar white py-0" style="height: 70px;">
-            <div class="white py-3">
+        <nav class="container navbar py-0" style="height: 70px;">
+            <div class="py-3">
                 <a class="btn fw-700 fs-sm" href="/?p=admin.index"><?= ek('Dashboard', 'Dashboard') ?></a>
                 <a class="btn fw-700 fs-sm" href="/"><?= ek('Home', 'Home') ?></a>
             </div>
-            <div class="ml-auto white">
-                <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-setting"><?= ln(['en' => 'Settings', 'ko' => '설정']) ?></a>
+            <div class="ml-auto">
+                <a class="btn btn-outline-light fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-setting"><?= ln(['en' => 'Settings', 'ko' => '설정']) ?></a>
                 <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/upload-image&code=admin.app.about.setting"><?= ln(['en' => 'About', 'ko' => '어바웃 설정']) ?></a>
                 <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=point/admin-point-setting"><?= ln(['en' => 'Point Setting', 'ko' => '포인트 설정']) ?></a>
                 <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-translation"><?= ln(['en' => 'Translations', 'ko' => '언어화']) ?></a>

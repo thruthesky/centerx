@@ -5,7 +5,6 @@ $o = getWidgetOptions();
  * @name Default Post List Header
  */
 $category = $o['category'];
-
 ?>
 
 <style>
@@ -17,12 +16,12 @@ $category = $o['category'];
 <div class="d-flex align-items-center p-2 bg-skyblue white" 
     style="border-top-left-radius: 8px; 
     border-top-right-radius: 8px;">
-    <div class="mr-2"><?= ek('Categories:', '카테고리:') ?></div>
+    <h4 class="mr-2"><?= strtoupper($category->id) . ' :' ?></h4>
     <?php if ($category->exists) { ?>
         <div>
-            <a class="btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>">All</a>
+            <a class="btn btn-sm <?= empty(in('lsub')) ? 'btn-info' : ''?>" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>">All</a>
             <?php foreach ($category->subcategories as $cat) { ?>
-                <a class="btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>&subcategory=<?= $cat ?>&lsub=<?= $cat ?>"><?= $cat ?></a>
+                <a class="btn btn-sm  <?= in('lsub') == $cat ? 'btn-info' : ''?>" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>&subcategory=<?= $cat ?>&lsub=<?= $cat ?>"><?= $cat ?></a>
             <?php } ?>
         </div>
     <?php } ?>
