@@ -35,7 +35,7 @@ $category = category(SHOPPING_MALL);
         <input type="hidden" name="files" v-model="files">
 
         <div class="form-group mb-3">
-            <label for="post_title">추천 카테고리</label>
+            <label for="post_title">상품 카테고리</label>
             <select name="subcategory" class="custom-select">
                 <option value="">카테고리 선택</option>
                 <?php foreach( $category->subcategories as $subcategory ) { ?>
@@ -45,7 +45,7 @@ $category = category(SHOPPING_MALL);
         </div>
 
 
-
+<?php /*
         <div class="form-group mb-3">
             <label for="post_title">인기 카테고리</label>
 
@@ -56,7 +56,7 @@ $category = category(SHOPPING_MALL);
                 <?php } ?>
             </select>
         </div>
-
+*/?>
 
         <div class="form-group mb-3">
             <label for="post_title">코드</label>
