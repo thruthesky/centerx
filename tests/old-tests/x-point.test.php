@@ -1,5 +1,5 @@
 <?php
-$rows = user()->search(limit: 5);
+$rows = user()->search(limit: 5, object: true);
 
 define('A', $rows[0][IDX]);
 define('B', $rows[1][IDX]);

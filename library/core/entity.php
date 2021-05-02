@@ -637,7 +637,7 @@ class Entity {
      * 예제) 현재 객체(예: 사용자 entity)의 point 필드의 값 얻기. 사용자의 포인트 값을 얻을 때 사용.
      *  $this->getVar(POINT, [IDX => $this->idx]);
      */
-    public function queryData(string $select, array $conds, string $conj='AND'): mixed {
+    public function column(string $select, array $conds, string $conj='AND'): mixed {
         $arr = self::search(select: $select, conds: $conds, conj: $conj, limit: 1);
         if ( ! $arr ) return null;
         return $arr[0][$select];

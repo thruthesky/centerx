@@ -8,7 +8,7 @@
     <div class="text-muted fs-sm"><?= ek(' ', '사용자 수: ') ?><?= number_format(user()->count()) ?> <?= ek('users', ' ') ?></div>
     <h6 class="mt-2 mb-4 fw-700"><?= ek('Top most user by points', '포인트가 많은 사용자 수') ?></h6>
     <?php
-    foreach (user()->search(where: "point>0", order: 'point', limit: 4) as $user) {
+    foreach (user()->search(where: "point>0", order: 'point', limit: 4, object: true) as $user) {
     ?>
         <div class="d-flex mb-3">
             <?php if (user($user->idx)->shortProfile()['photoUrl']) { ?>

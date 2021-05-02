@@ -466,7 +466,7 @@ function setLogout() {
 }
 // Login any user. It could be root user. Use it only for test.
 function setLoginAny(): UserTaxonomy {
-    $users = user()->search(limit: 1);
+    $users = user()->search(limit: 1, object: true);
     return setLogin($users[0]->idx);
 }
 function setLogin1stUser(): UserTaxonomy {
@@ -481,7 +481,7 @@ function setLogin1stUser(): UserTaxonomy {
  * @return UserTaxonomy
  */
 function setLogin2ndUser(): UserTaxonomy {
-    $users = user()->search(limit: 2);
+    $users = user()->search(limit: 2, object: true);
     return setLogin($users[1]->idx);
 }
 
@@ -1236,7 +1236,7 @@ function separateByComma($str) {
  * @return int
  */
 function postCategoryIdx($rootIdx): int {
-    return post()->queryData(CATEGORY_IDX, [IDX => $rootIdx]);
+    return post()->column(CATEGORY_IDX, [IDX => $rootIdx]);
 }
 /**
  * category.idx 를 입력받아 category.id 를 리턴한다.
@@ -1244,7 +1244,7 @@ function postCategoryIdx($rootIdx): int {
  * @return int
  */
 function postCategoryId(int $categoryIdx): string {
-    return category()->queryData(ID, [IDX => $categoryIdx]);
+    return category()->column(ID, [IDX => $categoryIdx]);
 }
 
 
