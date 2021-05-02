@@ -1,4 +1,6 @@
-
+/**
+ * @see readme
+ */
 Vue.component('upload-by-code', {
     props: ['postIdx', 'code', 'label', 'tip'],
     data: function() {
