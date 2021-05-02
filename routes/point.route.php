@@ -47,6 +47,8 @@ class PointRoute {
         $toUser = user($post->userIdx);
         if ( $toUser->hasError ) return e()->user_not_found;
 
+        if ( $loginUser->idx == $toUser->idx ) return e()->point_move_for_same_user;
+
 
         $userPoint = $loginUser->getPoint();
         if ( is_numeric($userPoint) == false ) {
