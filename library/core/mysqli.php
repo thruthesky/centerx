@@ -32,6 +32,8 @@ class MySQLiDatabase {
 
 
     /**
+     * @deprecated Do not use this method. it is not safe. Use it only for test or debug.
+     *
      * Performs a query on the database
      *
      * @warning Security warning: SQL injection @see https://www.php.net/manual/en/mysqli.query.php
