@@ -12,8 +12,7 @@ class PointRoute {
         return ['point' => pointHistory()->last(POSTS, $in[IDX], $reason)->toUserPointApply];
     }
 
-
-
+    
 
     /**
      * 포인트 이동 기능
