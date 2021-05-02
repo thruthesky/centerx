@@ -117,6 +117,11 @@ class UserRoute {
         return $rets;
     }
 
+
+    public function myPointRank() {
+
+return	    db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE point >= (SELECT point FROM wc_users WHERE idx=".login()->idx.")");
+    }
 }
 
 
