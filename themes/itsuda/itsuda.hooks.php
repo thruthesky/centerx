@@ -79,7 +79,14 @@ hook()->add('admin-setting', function($settings) {
     $account_info_name = $settings['account_info_name'] ?? '';
     $account_info_bank = $settings['account_info_bank'] ?? '';
     $account_info_no = $settings['account_info_no'] ?? '';
+    $star_points = $settings['star_points'] ?? '';
    echo <<<EOH
+    <h2>별쏘기 포인트 단위</h2>
+    <input type="text" class="form-control mb-2" name='star_points' value="$star_points" placeholder="별 쏘기 포인트 단위">
+    <div class="hint">
+        별 쏘기에서 포인트 단위를 입력하세요. 예) 100,300,500,1000
+    </div>
+    
     <h2>쇼핑몰 입금 통장 정보</h2>
     <input type="text" class="form-control mb-2" name='account_info_name' value="$account_info_name" placeholder="예금주">
     <div class="hint">

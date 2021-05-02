@@ -94,3 +94,25 @@ https://local.itsuda50.com/?route=user.search&name=관리자
 ### 사용자 검색.
 https://local.itsuda50.com/?route=user.search&name=로컬
 
+
+
+### 별쏘기. Expect: error_empty_post_idx
+https://local.itsuda50.com/?route=point.move
+
+### 별쏘기. Expect: error_empty_point
+https://local.itsuda50.com/?route=point.move&postIdx=3942
+
+### 별쏘기. Expect: error_point_must_be_bigger_than_0
+https://local.itsuda50.com/?route=point.move&postIdx=3942&point=-5
+
+### 별쏘기. Expect: error_not_logged_in
+https://local.itsuda50.com/?route=point.move&postIdx=3942&point=4
+
+### 별쏘기. Expect: error_lack_of_point
+https://local.itsuda50.com/?route=point.move&postIdx=3942&point=123456789000&sessionId=1-1709d6e3c4f10eac83953ce6ed2ffd43
+
+### 별쏘기. Expect: success
+https://local.itsuda50.com/?route=point.move&postIdx=3942&point=1&sessionId=1-1709d6e3c4f10eac83953ce6ed2ffd43
+
+### 별쏘기. Expect: success
+https://local.itsuda50.com/?route=point.move&postIdx=3942&point=10&sessionId=1-1709d6e3c4f10eac83953ce6ed2ffd43

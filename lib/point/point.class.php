@@ -151,6 +151,11 @@ class Point {
      * 리턴 값이 양수이면, 증가된 값, 음수이면, 감소한 값이다.
      *
      * 주의: 포인트가 음수로 입력되어 사용자의 포인트를 차감하려고 하는 경우, 사용자의 포인트를 음수로 DB 에 저장하지 않고, 최소 0으로 저장한다.
+     *      즉, 포인트가 모자라도, 정상적인 값을 리턴한다.
+     *      예) -100 을 차감하는데, 가진 포인트가 80 밖에 없다면, DB 에는 0을 저장하고, -80을 리턴한다.
+     *      따라서, 포인트가 모자란 경우, 에러를 내야한다면, 이 함수를 호출하기 전에 에러 체크를 해야 한다.
+     *
+     * 주의: 로그는 $this->log() 함수를 호출해서, 따로 기록을 해야 한다.
      *
      * @param $user_ID
      * @param $point
@@ -166,6 +171,7 @@ class Point {
         if ( !$point ) return 0;
         $user = user($userIdx);
         $userPoint = $user->getPoint();
+
         $savingPoint = $userPoint + $point;
 
 //        d("userIdx: $userIdx, point: $point, userPoint: $userPoint, savingPoint: $savingPoint");
@@ -486,6 +492,32 @@ class Point {
                 fromUserPointApply: $fromUserPointApply,
             );
         }
+    }
+
+    /**
+     * 사용자 포인트를 이동한다.
+     *
+     * @param int $fromUserIdx
+     * @param int $toUserIdx
+     * @param int $postIdx
+     * @param int $point
+     * @return int
+     * - 실패시, 0을 리턴한다. 이 때, $fromUserIdx 의 포인트가 차감되었을 가능성이 있음.
+     * - 성공시, log 번호를 리턴한다.
+     */
+    public function move(int $fromUserIdx, int $toUserIdx, int $postIdx, int $point): int {
+        $fromUserPointApply = $this->addUserPoint($fromUserIdx, -$point);
+        if ( $point != abs($fromUserPointApply) ) return 0;
+        $toUserPointApply = $this->addUserPoint($toUserIdx, $point);
+        return $this->log(
+            POINT_STAR,
+            toUserIdx: $toUserIdx,
+            fromUserIdx: $fromUserIdx,
+            toUserPointApply: $toUserPointApply,
+            fromUserPointApply: $fromUserPointApply,
+            taxonomy: POSTS,
+            entity: $postIdx,
+        );
     }
 
 

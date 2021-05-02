@@ -9,6 +9,8 @@ class E {
     public string $wrong_password = 'error_wrong_password';
     public string $empty_password = 'error_empty_password';
     public string $empty_param = 'error_empty_param';
+    public string $empty_post_idx = 'error_empty_post_idx';
+    public string $empty_point = 'error_empty_point';
     public string $wrong_params = 'error_wrong_params';
     public string $idx_must_not_set = 'error_idx_must_not_set';
     public string $insert_failed = 'error_insert_failed';
@@ -103,6 +105,8 @@ class E {
     public string $you_are_not_admin = 'error_you_are_not_admin';
 
     public string $point_must_be_0_or_lower_than_0 = 'error_point_must_be_0_or_lower_than_0';
+    public string $point_must_be_bigger_than_0 = 'error_point_must_be_bigger_than_0';
+
 
 
 

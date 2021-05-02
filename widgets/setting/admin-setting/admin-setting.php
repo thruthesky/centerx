@@ -1,4 +1,5 @@
 <?php
+
     if ( modeUpdate() ) {
         adminSettings()->set(in());
 //        setRealtimeDatabaseDocument('/notifications/settings', ['time' => time()]);
