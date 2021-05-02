@@ -2,15 +2,17 @@
 $o = getWidgetOptions();
 
 /**
- * @var Comment|Post $post
+ * @var CommentTaxonomy|PostTaxonomy $post
  */
 $post = $o['post'];
+
+d($post->user()->photoUrl);
 ?>
 
 
-<div class="d-flex">
+<div class="post-meta-default d-flex">
     <!-- TODO: user profile photo -->
-    <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->shortProfile()['photoUrl'], 'size' => '70']) ?>
+    <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->photoUrl, 'size' => '70']) ?>
     <div class="meta">
         <div><b><?=$post->user()->nicknameOrName?></b></div>
         <div class="text-muted">

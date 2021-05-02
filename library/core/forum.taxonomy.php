@@ -160,9 +160,9 @@ class ForumTaxonomy extends Entity {
     /**
      * 현재 글/코멘트의 카테고리를 객체로 리턴한다.
      *
-     * @return Category
+     * @return CategoryTaxonomy
      */
-    public function category(): Category {
+    public function category(): CategoryTaxonomy {
         return category($this->categoryIdx);
     }
 

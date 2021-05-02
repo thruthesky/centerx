@@ -135,6 +135,10 @@ define('THUMBNAILS_URL', HOME_URL . 'files/thumbnails/');
 
 
 
+
+
+
+
 /**
  * Set admin email address.
  *

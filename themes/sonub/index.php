@@ -38,6 +38,7 @@
 <?php js(HOME_URL . 'etc/js/helper.js', 7)?>
 <?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js', 2)?>
 <?php js(HOME_URL . 'etc/js/bootstrap-vue-2.21.2.min.js', 1)?>
-<?php js(HOME_URL . 'etc/js/app.js', 0)?>
+<?php js(theme()->url . 'js/data.js', 1)?>
+<?php js(theme()->url . 'js/app.js', 0)?>
 </body>
 </html>

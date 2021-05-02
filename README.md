@@ -127,6 +127,8 @@
 - 게시판 별 추천, 비추천 옵션 선택.
 
 
+- 소셜 로그인 시, 프로필 사진 URL 경로가 https:// 이면, http:// 로 변경한다.
+
 
 - @doc
   meta 에 int, string, double(float) 은 serialize/unserialize 하지 말 것. 그래서 바로 검색이 되도록 한다.
@@ -442,6 +444,28 @@ define('DOMAIN_THEMES', [
     
 
 
+# Boot flow
+
+- index.php
+  - boot.php
+    - prelight.php
+    - etc/kill-wrong-routes.php
+    - library/core/functions.php
+    - library/core/theme.php
+    - library/core/mysqli.php
+    - ... taxonomy files ...
+    - library/core/hook.php
+    - ROOT_DIR/config.php
+    - THEME_DIR/config.php
+    - etc/db.php for connection database
+    - THEME_DIR/functions.php
+    - live_reload()
+    - setUserAsLogin(getProfileFromCookieSessionId());
+  - routes/index.php for API call.
+    - exit
+  - theme/theme-name/index.php
+    - inject Javascript & styles at the bottom
+
 
 
 
@@ -691,11 +715,14 @@ d($result);
 - `verification` 은 사용자 인증을 제공하는 업체 코드이다. `passlogin`, `danal` 등과 같이 들어가면 된다.
 
 
-### 사용자 프로필 사진
+### 사용자 사진, 프로필 사진
 
-- 사용자가 사진을 올릴 때, `file.taxonomy` 에 `photoUrl` 이라고 입력하면, 해당 사진은 그 사용자의 프로필 사진이 된다.
+- 사용자가 사진을 올릴 때, `file.userIdx` 에 회원 번호, `file.code` 에 `photoUrl` 이라고 입력하면, 해당 사진은 그 사용자의 프로필 사진이 된다.
+  주의: 1.0.x 에서는 `file.code` 가 아닌 `file.taxonomy` 에 `photoUrl` 이라고 저장했다.
+  회원 사진을 사진을 업로드 할 때나 변경 할 때, `file.code` 값이 `photoUrl` 인 것을 사용하면 된다.
+  
   회원 정보를 클라이언트로 전달 할 때, `photoIdx` 에 그 `file.idx` 가 전달된다.
-  사용자 프로필 사진을 삭제할 때, `file.taxonomy = 'photoUrl' AND file.userIdx='사용자번호'` 조건에 맞는 사진을 삭제 할 수 있다.
+  사용자 프로필 사진을 삭제할 때, `file.code = 'photoUrl' AND file.userIdx='사용자번호'` 조건에 맞는 사진을 삭제 할 수 있다.
   물론 `file.idx=photoIdx` 인 것을 삭제해도 된다.
   
 - `photoUrl` 은 meta 값을 저장되는 것이다. 이것은 users 테이블에 존재하지 않으며, meta 값으로 저장되지 않을 수도 있다.
@@ -988,11 +1015,23 @@ https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d802387
 
 - 파일을 업로드 할 때, 기존의 파일을 삭제해야하는 경우가 있다.
   예를 들어, 하나의 글에 하나의 사진만 올릴 수 있도록 하는 경우, 사용자가 사진을 변경하면 기존의 사진은 자동으로 삭제가 되어야한다.
-  이 때, file upload 를 할 때,
+  이 때, file upload 를 할 때, 두 가지 방법으로 할 수 있다.
+  하나는 아래와 같이 taxonomy 와 entity 로 값을 삭제할 수 있으며,
+  {
   deletePreviousUpload: Y
   taxonomy:
   entity:
-  에 값이 들어오면, 백엔드에서 삭제를 한다.
+  }
+
+  또는 아래와 같이 하나는 code 만으로 기존 파일을 삭제 할 수 있다.
+  이 때, code 만으로 기존 파일을 삭제하는 경우는 해당 파일이 로그인을 한 사용자의 파일이어야 한다.
+  
+  {
+    deletePreviousUpload: Y
+    code:
+  }
+  
+  본 항목의 사용자 사진 참고
   Flutter Firelamp api.controller.dart 의 takeUploadFile() 과 uploadFile() 함수를 참고.
 
 

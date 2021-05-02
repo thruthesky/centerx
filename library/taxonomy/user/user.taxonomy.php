@@ -77,8 +77,15 @@ class UserTaxonomy extends Entity {
         $data = $this->getData();
         $data[SESSION_ID] = getSessionId($this->getData());
         $this->setMemoryData($data);
-        $one = files()->findOne([TAXONOMY => 'photoUrl', USER_IDX => $this->idx]);
+        $one = files()->findOne([CODE => 'photoUrl', USER_IDX => $this->idx]);
         if ( $one->exists ) $this->updateMemory('photoIdx', $one->idx);
+        $this->updateMemory('photoUrl', $one->url);
+
+//        if ( str_contains($this->photoUrl, 'kakao.') ) {
+//            $src = urlencode($this->photoUrl);
+//            $this->updateMemory('photoUrl', HOME_URL . "etc/phpThumb/phpThumb.php?src=$src");
+//        }
+
         return $this;
     }
 
