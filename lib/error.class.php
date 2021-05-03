@@ -145,8 +145,10 @@ class E {
     public string $already_blocked = 'error_already_blocked';
     public string $not_blocked = 'error_not_blocked';
     public string $no_relationship = 'error_no_relationship';
+    public string $blocked = 'error_blocked';
 
 
+    public string $user_cannot_update_point = 'user_cannot_update_point';
 
 
 

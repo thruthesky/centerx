@@ -20,6 +20,7 @@
  * 그래서, DB 에서 변경된, 새로운 point 값이 필요한 경우, 이 변수를 사용하지 말고, DB 에서 직접 가져오는 getPoint() 를 사용해야 한다.
  * @property-read string $point
  *
+ * @property-read string $block
  * @property-read int $birthdate
  * @property-read string $countryCode
  * @property-read string $province
@@ -332,11 +333,30 @@ class User extends Entity {
     }
 
 
-    function adminProfileUpdate($in): self
+    /**
+     * User update.
+     *
+     * User's can update his own data. And admin can use this method, or even it can update user information programmatically.
+     *
+     * Note, this method must be the only method for users(not admin) to update their record.
+     *
+     * Note, this method prevent user to update this own point.
+     *
+     *
+     *
+     * @param $in
+     * @return $this
+     */
+    function update($in): self
     {
+        // If email has passed, it can update(change) user's email.
         if ( isset($in[EMAIL]) ) {
             if ( empty($in[EMAIL]) ) return $this->error(e()->email_is_empty);
             if ($this->emailExists($in[EMAIL]) &&  $this->findOne([EMAIL => $in[EMAIL]])->idx != $this->idx) return $this->error(e()->email_exists);
+        }
+
+        if ( isset($in[POINT] ) && admin() == false ) {
+            return $this->error(e()->user_cannot_update_point);
         }
         return parent::update($in);
     }

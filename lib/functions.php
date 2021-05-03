@@ -514,6 +514,7 @@ function getThirdUser(): User {
 }
 
 
+
 function admin(): bool {
     if ( login()->idx == 0 ) return false;
     if ( str_contains(ADMIN_EMAIL, login()->email) ) return true;

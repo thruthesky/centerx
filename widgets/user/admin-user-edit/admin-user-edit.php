@@ -5,7 +5,11 @@ if(modeSubmit()) {
     $in = in();
     unset($in['mode'],$in['p'],$in['w']);
 
-    $profile = user(in('idx'))->adminProfileUpdate($in);
+//    $profile = user(in('idx'))->adminProfileUpdate($in);
+
+    $in['block'] = $in['block'] ?? '';
+
+    $profile = user(in('idx'))->update($in);
     if($profile->hasError) {
         jsAlert('Edit Failed: ' . $profile->getError());
         $profile = user(in('idx'))->read();
@@ -36,7 +40,7 @@ if(modeSubmit()) {
 
             <div class="form-group col-6">
                 <label for="point">point</label>
-                <input type="text" class="form-control" placeholder="point" name="point" id="point"  value="<?=$profile->point?>" disabled>
+                <input type="text" class="form-control" placeholder="point" name="point" id="point"  value="<?=$profile->point?>">
             </div>
         </div>
 
@@ -125,8 +129,25 @@ if(modeSubmit()) {
                 <label for="updatedAt">updatedAt</label>
                 <input type="text" class="form-control" placeholder="updatedAt" name="updatedAt" id="updatedAt"  value="<?=date('Y/m/d H:i', $profile->updatedAt)?>" disabled>
             </div>
+        </div>
+
+
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="block"><?=ek('Block', '차단')?></label>
+
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="block" name="block" value="Y" <?=$profile->block == 'Y' ? 'checked' : ''?>>
+                    <label class="custom-control-label" for="block"><?=ek('Block user for posting','사용자 글 쓰기 차단')?></label>
+                </div>
+
+
+            </div>
 
         </div>
+
+
+
         <div class="d-flex justify-content-start mt-2 mb-3">
             <div class=" mr-5">
                 <button type="submit" class="btn btn-primary">

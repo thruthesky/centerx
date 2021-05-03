@@ -31,6 +31,10 @@ class UserRoute {
         }
     }
 
+    /**
+     * @param $in
+     * @return array|string
+     */
     public function update($in) {
         if ( notLoggedIn() ) return e()->not_logged_in;
         return login()->update($in)->response();

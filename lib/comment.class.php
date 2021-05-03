@@ -50,6 +50,7 @@ class Comment extends PostTaxonomy {
     public function create(array $in): self
     {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( login()->block == 'Y' ) return $this->error(e()->blocked);
         if ( !isset($in[ROOT_IDX]) ) return $this->error(e()->root_idx_is_empty);
         $in[USER_IDX] = login()->idx;
 
@@ -121,6 +122,7 @@ class Comment extends PostTaxonomy {
      */
     public function update(array $in): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( login()->block == 'Y' ) return $this->error(e()->blocked);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->isMine() == false ) return $this->error(e()->not_your_comment);
 

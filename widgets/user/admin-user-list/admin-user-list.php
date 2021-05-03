@@ -4,7 +4,7 @@ $limit = 15;
 $key = in('key');
 $where = '1';
 if ( $key ) {
-    $where = "name LIKE '%$key%' OR email LIKE '%$key%' OR phoneNo LIKE '%$key%'";
+    $where = "name LIKE '%$key%' OR nickname LIKE '%$key%' OR email LIKE '%$key%' OR phoneNo LIKE '%$key%'";
 }
 $users = user()->search(where: $where, order: IDX, by: 'DESC', page: $page, limit: $limit);
 $total = user()->count(where:  $where);
@@ -32,9 +32,12 @@ $total = user()->count(where:  $where);
 
 
     <div class="mb-3">
-        검색된 사용자: <?=$total?>
+        <?=ek('No of Users', '검색된 사용자')?>: <?=$total?>
     </div>
 
+
+    <hr>
+    <div class="fs-sm">Display Options:</div>
     <div class="custom-control custom-checkbox custom-control-inline mb-3" v-for="(option, key) in options" :key="key">
         <input type="checkbox" class="custom-control-input" :id="key + '-option'" v-model="options[key]">
         <label class="custom-control-label text-capitalize" :for="key + '-option'">{{key}}</label>
