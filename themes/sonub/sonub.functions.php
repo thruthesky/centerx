@@ -1,5 +1,7 @@
 <?php
-require_once ROOT_DIR . 'lib/cafe.class.php';
+//require_once ROOT_DIR . 'lib/cafe.class.php';
+require_once theme()->folder . 'cafe.class.php';
+
 
 //
 //$_domain = get_domain();

@@ -32,6 +32,26 @@ class MySQLiDatabase {
 
 
     /**
+     * @deprecated Do not use this method. it is not safe. Use it only for test or debug.
+     *
+     * Performs a query on the database
+     *
+     * @warning Security warning: SQL injection @see https://www.php.net/manual/en/mysqli.query.php
+     * @warning Due to the security reason, this method must be used only internally. It is important to avoid querying
+     *  with user data from HTTP input.
+     * @warning Avoid to use this method with "SELECT", "UPDATE", "DELETE".
+     *
+     * @return mixed
+     *  Returns false on failure. For successful queries which produce a result set, such as SELECT, SHOW, DESCRIBE or
+     *  EXPLAIN, mysqli_query() will return a mysqli_result object. For other successful queries, mysqli_query() will
+     *  return true.
+     */
+    public function query($sql): mixed {
+        return $this->connection->query($sql);
+    }
+
+
+    /**
      * @param string $table
      * @param array $record
      * @return int
@@ -145,6 +165,7 @@ class MySQLiDatabase {
      *
      * @param string $sql
      * @param mixed ...$values
+     *  ...$values can be a empty variable format. It work without any SQL condition. Like `SELECT COUNT(*) FROM TABLE`.
      * @return array
      *  - empty row if there is no record (or there is an error)
      */
@@ -254,6 +275,8 @@ class MySQLiDatabase {
      * @return mixed
      */
     public function get_var($q): mixed {
+
+        debug_print_backtrace();
         die("Do not use db()->get_var()");
         return $this->get_row($q)[0];
     }

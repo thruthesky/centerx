@@ -242,111 +242,7 @@ class PostTaxonomy extends ForumTaxonomy {
         return $post;
     }
 
-    /**
-     * Returns post objects after search and add meta data.
-     *
-     *
-     * - 게시글 목록을 클라이언트로 리턴 할 때, response() 함수를 호출해야하는데, 이 search() 함수로 먼저 post 객체(들)를 얻어서 foreach() 루프를
-     *   돌려, response() 를 호출 한 다음 리턴해야 한다.
-     *
-     * @attention Categories can be passed like  "categoryId=<apple> or categoryId='<banana>'" and it wil be converted
-     * as "categoryIdx=1 or categoryIdx='2'"
-     *
-     *
-     * PostTaxonomy 객체를 배열로 리턴한다. 그래서 아래와 같이 코딩을 할 수 있다.
-     *
-     * ```
-     * $posts = post()->search(where: "userIdx != " . login()->idx);
-     * foreach( $posts as $post ) {
-     *   $post->vote('N');
-     * }
-     * ```
-     *
-     * @param string $select
-     * @param string $where
-     * @param string $order
-     * @param string $by
-     * @param int $page
-     * @param int $limit
-     * @param array $conds
-     * @param string $conj
-     * @param bool $object
-     * @return PostTaxonomy[]
-     *
-     * @example
-     *  $where = "userIdx=$userIdx AND categoryIdx=$categoryIdx AND createdAt>=$beginStamp AND createdAt<=$endStamp";
-     *  $posts = post()->search(where: $where);
-     */
-    public function search(
-        string $select='idx',
-        string $where='1',
-        array $params = [],
-        array $conds=[],
-        string $conj = 'AND',
-        string $order='idx',
-        string $by='DESC',
-        int $page=1,
-        int $limit=10,
-        bool $object = false,
-    ): array
-    {
 
-
-        // Parse category
-        $where = $this->parseCategory($where);
-
-        $posts = parent::search(
-            select: $select,
-            where: $where,
-            params: $params,
-            conds: $conds,
-            conj: $conj,
-            order: $order,
-            by: $by,
-            page: $page,
-            limit: $limit,
-            object: $object,
-        );
-
-
-        $rets = [];
-        foreach( ids($posts) as $idx ) {
-            $rets[] = post($idx);
-        }
-        return $rets;
-    }
-
-
-
-    /**
-     * @param string $where
-     * @param array $conds
-     * @param string $conj
-     * @return int
-     */
-    public function count(string $where='1', array $conds=[], string $conj = 'AND'): int {
-        $where = $this->parseCategory($where);
-        return parent::count($where, $conds, $conj);
-    }
-
-    /**
-     * @deprecated Don't use this.
-     * @param string $where
-     * @return string
-     */
-    private function parseCategory(string $where): string {
-
-        $count = preg_match_all("/<([^>]+)>/", $where, $ms);
-        if ( $count ) {
-            for( $i = 0; $i < $count; $i ++ ) {
-                $cat = $ms[1][$i];
-                $idx = category($cat)->idx;
-                $where = str_replace($ms[0][$i], $idx, $where);
-            }
-            $where = str_replace('categoryId', CATEGORY_IDX, $where);
-        }
-        return $where;
-    }
 
 
     /**
@@ -378,6 +274,7 @@ class PostTaxonomy extends ForumTaxonomy {
         return $this->search(
             conds: $conds,
             limit: $limit,
+            object: true
         );
     }
 

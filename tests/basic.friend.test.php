@@ -8,7 +8,9 @@ db()->query("TRUNCATE " . friend()->getTable());
 $friendRoute = new FriendRoute();
 setLoginAny();
 
+
 // 실패. 존재하지 않는 회원 번호.
+// Expect failure. non-existent user idx.
 $res = $friendRoute->add(['sessionId' => login()->sessionId, 'otherIdx' => 123456789]);
 isTrue($res == e()->user_not_found_by_that_idx, '실패 예상. 회원번호가 너무 큼. 존재하지 않는 번호.');
 
@@ -87,7 +89,8 @@ isTrue(count($friends) == 2, '성공, 차단 된 친구: 2명');
 
 
 // 신고된 사용자 목록. 관리자가 필요한 기능.
+// List users who are reported by other user. Admin may need this functionality.
 $friends = $friendRoute->reportList();
-isTrue(count($friends) == 1, '성공, 신고된 사용자 목록: 1명');
+isTrue(count($friends) == 1, 'Expect success. No of reported users: 1.'); // 성공, 신고된 사용자 목록: 1명
 
 

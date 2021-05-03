@@ -6,6 +6,9 @@
 /**
  * Class ForumTaxonomy
  *
+ * This is a special taxonomy and is the parent taxonomy of all taxonomies that uses `posts` table.
+ * This taxonomy script files resides under `library/core` folder unlike other taxonomies that live under `library/taxonomy`.
+ *
  * 글과 관련된 작업을 하는 Taxonomy.
  * 글이라면 단순히 게시글 뿐만아니라, 코멘트, 블로그 글, 쇼핑몰 상품 글 등 posts 테이블에 저장되는 모든 것을 말한다.
  * 각 글 타입마다 클래스가 따로 있을 수 있는데(예: Post, Comment), 그런 경우 이 클래스를 상속해야 한다. 이 클래스에는 추천과 같은 범용적인 코드를 가지고
@@ -156,9 +159,9 @@ class ForumTaxonomy extends Entity {
     /**
      * 현재 글/코멘트의 카테고리를 객체로 리턴한다.
      *
-     * @return Category
+     * @return CategoryTaxonomy
      */
-    public function category(): Category {
+    public function category(): CategoryTaxonomy {
         return category($this->categoryIdx);
     }
 

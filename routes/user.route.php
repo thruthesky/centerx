@@ -87,6 +87,7 @@ class UserRoute {
             order: 'point',
             page: $in['page'] ?? 1,
             limit: $in['limit'],
+            object: true
         );
         $rets = [];
         foreach( $users as $user ) {

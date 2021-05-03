@@ -168,7 +168,9 @@ class FriendTaxonomy extends Entity {
      */
     public function reportList() {
 //        $friends = $this->search(select: '*', limit: 1000, conds: ['reason' => '']);
-        $rows = db()->get_results("SELECT * FROM " . $this->getTable() . " WHERE reason <> ''", ARRAY_A);
+//        $rows = db()->get_results("SELECT * FROM " . $this->getTable() . " WHERE reason <> ''", ARRAY_A);
+
+        $rows = db()->rows("SELECT * FROM " . $this->getTable() . " WHERE reason <> ? ", '');
         $rets = [];
         foreach($rows as $row) {
             $rets[] = [

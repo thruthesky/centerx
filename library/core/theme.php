@@ -1,15 +1,37 @@
 <?php
 
+/**
+ * Class Theme
+ *
+ * @property-read string $url
+ */
 class Theme
 {
 
     public string $folderName;
+    /**
+     * @var string 현재 테마의 폴더. 객체 초기화를 할 때 지정된다.
+     */
     public string $folder;
 
     public function __construct()
     {
         $this->parseDomainTheme();
     }
+
+
+    /**
+     * @param $name
+     * @return mixed
+     */
+    public function __get($name): mixed {
+        if ( $name == 'url' ) {
+            return HOME_URL . 'themes/' . $this->folderName . '/';
+        } else {
+            return null;
+        }
+    }
+
 
 
     /**
@@ -24,10 +46,10 @@ class Theme
      * @return string
      *
      * 예제)
-     *  theme()->file('index'); // 결과: /root/themes/sonub/index.php
-     *  theme()->file('docs.privacy-policy'); // 결과: /root/themes/sonub/docs/privacy-policy.php
-     *  theme()->file( filename: 'config' ); // 결과: /root/themes/sonub/config.php
-     *  theme()->file( filename: 'config', prefixThemeName: true ); // 결과: /root/themes/sonub/sonub.config.php
+     *  theme()->file('index'); // 결과: /root/themes/theme-name/index.php
+     *  theme()->file('docs.privacy-policy'); // 결과: /root/themes/theme-name/docs/privacy-policy.php
+     *  theme()->file( filename: 'config' ); // 결과: /root/themes/theme-name/config.php
+     *  theme()->file( filename: 'config', prefixThemeName: true ); // 결과: /root/themes/theme-name/sonub.config.php
      *
      *  theme()->file('index', extension: 'css'); // 결과 테마 폴더에서 index.css 를 로드한다.
      *

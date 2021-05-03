@@ -1,4 +1,9 @@
 <section class="m-5">
+
+    <?php
+    include widget('user/profile-photo-update');
+
+    ?>
     <form action="/" method="post">
         <?=hiddens(p: 'user.profile.submit', return_url: '/?user.profile')?>
 

@@ -1,7 +1,7 @@
 <?php
 
 
-$users = user()->search();
+$users = user()->search(object: true);
 
 $topicQnA = 'qna' . time();
 $topicDiscussion = 'discussion' . time();

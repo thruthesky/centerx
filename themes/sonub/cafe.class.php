@@ -13,7 +13,7 @@
  *
  *
  */
-class Cafe extends Category
+class Cafe extends CategoryTaxonomy
 {
 
     public function __construct(int $idx)

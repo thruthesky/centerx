@@ -493,6 +493,33 @@ class Point {
     }
 
 
+    /**
+     * 사용자 포인트를 이동한다.
+     *
+     * @param int $fromUserIdx
+     * @param int $toUserIdx
+     * @param int $postIdx
+     * @param int $point
+     * @return int
+     * - 실패시, 0을 리턴한다. 이 때, $fromUserIdx 의 포인트가 차감되었을 가능성이 있음.
+     * - 성공시, log 번호를 리턴한다.
+     */
+    public function move(int $fromUserIdx, int $toUserIdx, int $postIdx, int $point): int {
+        $fromUserPointApply = $this->addUserPoint($fromUserIdx, -$point);
+        if ( $point != abs($fromUserPointApply) ) return 0;
+        $toUserPointApply = $this->addUserPoint($toUserIdx, $point);
+        return $this->log(
+            POINT_STAR,
+            toUserIdx: $toUserIdx,
+            fromUserIdx: $fromUserIdx,
+            toUserPointApply: $toUserPointApply,
+            fromUserPointApply: $fromUserPointApply,
+            taxonomy: POSTS,
+            entity: $postIdx,
+        );
+    }
+
+
 }
 
 

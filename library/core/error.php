@@ -79,6 +79,18 @@ class E {
     public string $lack_of_point = 'error_lack_of_point';
 
 
+    public string $point_must_be_0_or_lower_than_0 = 'error_point_must_be_0_or_lower_than_0';
+    public string $point_must_be_bigger_than_0 = 'error_point_must_be_bigger_than_0';
+    public string $point_move_for_same_user = 'error_point_move_for_same_user';
+
+
+
+    public string $empty_post_idx = 'error_empty_post_idx';
+    public string $empty_point = 'error_empty_point';
+
+
+
+
     public string $order_not_exists = 'error_order_not_exists';
     public string $not_your_order = 'error_not_your_order';
     public string $order_confirmed = 'error_order_confirmed';
@@ -102,7 +114,6 @@ class E {
     public string $ids_is_empty = 'error_ids_is_empty';
     public string $you_are_not_admin = 'error_you_are_not_admin';
 
-    public string $point_must_be_0_or_lower_than_0 = 'error_point_must_be_0_or_lower_than_0';
 
     public string $entity_or_code_not_set = 'error_entity_or_code_not_set';
 

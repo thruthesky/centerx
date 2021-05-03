@@ -637,7 +637,7 @@ class Entity {
      * 예제) 현재 객체(예: 사용자 entity)의 point 필드의 값 얻기. 사용자의 포인트 값을 얻을 때 사용.
      *  $this->getVar(POINT, [IDX => $this->idx]);
      */
-    public function queryData(string $select, array $conds, string $conj='AND'): mixed {
+    public function column(string $select, array $conds, string $conj='AND'): mixed {
         $arr = self::search(select: $select, conds: $conds, conj: $conj, limit: 1);
         if ( ! $arr ) return null;
         return $arr[0][$select];
@@ -890,6 +890,39 @@ class Entity {
 
     }
 
+    /**
+     * @param string $where
+     * @param array $conds
+     * @param string $conj
+     * @return int
+     */
+    public function count(string $where='1',
+                          array $params = [],
+                          array $conds=[],
+                          string $conj = 'AND'): int {
+        $table = $this->getTable();
+        $select = "COUNT(*)";
+
+        if ( $conds ) {
+            list( $fields, $placeholders, $values ) = db()->parseRecord($conds, 'select', $conj);
+            $q = " SELECT $select FROM $table WHERE $placeholders";
+            $count = db()->column($q, ...$values);
+        } else if ( $params ) { // prepare statement if $params is set.
+            $q = " SELECT $select FROM $table WHERE $where";
+            $count = db()->column($q, ...$params);
+        }
+        else if ( $where == '1' ) {
+            $q = " SELECT $select FROM $table WHERE $where";
+            $count = db()->column($q);
+        }
+        else  {
+            debug_print_backtrace();
+            die("\n-------------------- die() - Execution dead due to: Entity::search() wrong parameters\n");
+        }
+
+        return $count;
+    }
+
 
 
 
@@ -911,18 +944,6 @@ class Entity {
         return $this->search($select, "userIdx=" . login()->idx, order: $order, by: $by, page: $page, limit: $limit);
     }
 
-
-    /**
-     * @param string $where
-     * @param array $conds
-     * @param string $conj
-     * @return int
-     */
-    public function count(string $where='1', array $conds=[], string $conj = 'AND'): int {
-        $table = $this->getTable();
-        if ( $conds ) $where = sqlCondition($conds, $conj);
-        return db()->get_var(" SELECT COUNT(*) FROM $table WHERE $where");
-    }
 
 
     /**

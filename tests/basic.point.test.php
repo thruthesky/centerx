@@ -1,7 +1,7 @@
 <?php
 
 // 다섯명의 사용자 준비
-$rows = user()->search(limit: 5);
+$rows = user()->search(limit: 5, object: true);
 
 define('A', $rows[0]->idx);
 define('B', $rows[1]->idx);
