@@ -38,7 +38,7 @@
  * @property-read int $createdAt;
  * @property-read int $updatedAt;
  * @property-read int $deletedAt;
- * @property-read Comment[] $comments;
+ * @property-read CommentTaxonomy[] $comments;
  */
 class PostTaxonomy extends ForumTaxonomy {
 
