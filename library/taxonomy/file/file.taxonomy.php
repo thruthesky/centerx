@@ -6,13 +6,14 @@
  * @property-read string path - file path
  * @property-read string url
  */
-class File extends Entity {
+class FileTaxonomy extends Entity {
 
 
     public function __construct(int $idx)
     {
         parent::__construct(FILES, $idx);
     }
+
 
 
     /**
@@ -120,7 +121,7 @@ class File extends Entity {
      * 참고로, 글의 첨부 파일은 1,2,3 과 같이 저장되어져 있다.
      * @param string $idxes
      * @param bool $object - true 이면 객체로 리턴하고, false 이면 response 배열로 리턴한다.
-     * @return File[]
+     * @return self[]
      * - 만약, 파일이 없으면 빈 배열이 리턴된다.
      */
     public function fromIdxes(string $idxes, bool $object = true): array {
@@ -178,11 +179,11 @@ class File extends Entity {
  * @note the function name is `files` since `file` exists as in PHP built-in function.
  *
  * @param array|int $idx - The `posts.idx` which is considered as comment idx. Or an array of the comment record.
- * @return File
+ * @return FileTaxonomy
  */
-function files(array|int $idx=0): File
+function files(array|int $idx=0): FileTaxonomy
 {
-    if ( is_array($idx) ) return new File($idx[IDX]);
-    else return new File($idx);
+    if ( is_array($idx) ) return new FileTaxonomy($idx[IDX]);
+    else return new FileTaxonomy($idx);
 }
 

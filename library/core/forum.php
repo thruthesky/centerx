@@ -4,12 +4,11 @@
  */
 
 /**
- * Class ForumTaxonomy
+ * Class Forum
  *
- * This is a special taxonomy and is the parent taxonomy of all taxonomies that uses `posts` table.
- * This taxonomy script files resides under `library/core` folder unlike other taxonomies that live under `library/taxonomy`.
- *
- * 글과 관련된 작업을 하는 Taxonomy.
+ * This is a special class and is the parent class of post taxonomy, comment taxonomy, and all taxonomies that uses `posts` table.
+
+ * 글과 관련된 작업을 하는 class.
  * 글이라면 단순히 게시글 뿐만아니라, 코멘트, 블로그 글, 쇼핑몰 상품 글 등 posts 테이블에 저장되는 모든 것을 말한다.
  * 각 글 타입마다 클래스가 따로 있을 수 있는데(예: Post, Comment), 그런 경우 이 클래스를 상속해야 한다. 이 클래스에는 추천과 같은 범용적인 코드를 가지고
  * 있다.
@@ -19,7 +18,7 @@
  * @property-read int parentIdx
  * @property-read string files
  */
-class ForumTaxonomy extends Entity {
+class Forum extends Entity {
 
     public function __construct(int $idx)
     {
@@ -123,7 +122,7 @@ class ForumTaxonomy extends Entity {
      *
      * @param bool $response
      *  이 값이 참이면 file 레코드를 배열로 리턴한다.
-     * @return File[]
+     * @return FileTaxonomy[]
      */
     public function files(bool $response = false): array {
 	if ( $this->idx == 0 ) return [];
@@ -189,11 +188,11 @@ class ForumTaxonomy extends Entity {
 /**
  *
  * @param int $idx
- * @return ForumTaxonomy
+ * @return Forum
  */
-function ForumTaxonomy(int $idx=0): ForumTaxonomy
+function Forum(int $idx=0): Forum
 {
-    return new ForumTaxonomy($idx);
+    return new Forum($idx);
 }
 
 

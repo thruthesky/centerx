@@ -18,7 +18,7 @@
  * @property-read int $createdAt
  * @property-read int $deletedAt
  */
-class CommentTaxonomy extends ForumTaxonomy {
+class CommentTaxonomy extends Forum {
 
     /**
      * depth 는 재귀적 함수 호출에 의해서 결정되므로, DB 에 없는 필드이다. 따라서 재귀적 함수 호출 후에 설정을 해 주어야 한다.
@@ -197,49 +197,6 @@ class CommentTaxonomy extends ForumTaxonomy {
         return $comment;
     }
 
-
-    /**
-     * Returns comment objects with its meta data after search.
-     *
-     *
-     *
-     * @param string $where
-     * @param int $page
-     * @param int $limit
-     * @param string $order
-     * @param string $by
-     * @param string $select
-     * @param array $conds
-     * @param string $conj
-     * @param bool $object
-     * @return self[]
-     */
-
-    public function search(
-        string $select='idx',
-        string $where='1',
-        array $params = [],
-        array $conds=[],
-        string $conj = 'AND',
-        string $order='idx',
-        string $by='DESC',
-        int $page=1,
-        int $limit=10,
-        bool $object = true,
-    ): array {
-
-        return parent::search(
-            select: $select,
-            where: $where,
-            params: $params,
-            order: $order,
-            by: $by,
-            page: $page,
-            limit: $limit,
-            object: $object,
-        );
-
-    }
 
     /**
      * 현재 코멘트의 (최상위) 글을 객체로 리턴한다.

@@ -7,12 +7,17 @@ $past7days = time() - 7 * 60 * 60 * 24;
 // $q = "SELECT userIdx, COUNT(*) as comments FROM " . DB_PREFIX . POSTS . " WHERE createdAt>$past7days AND parentIdx!=0 GROUP BY userIdx ORDER BY comments DESC LIMIT 5";
 // $q = "SELECT userIdx, COUNT(*) as comments FROM " . DB_PREFIX . POSTS . " WHERE createdAt>$past7days GROUP BY userIdx ORDER BY comments DESC LIMIT 5";
 // $rows = db()->get_results($q, ARRAY_A);
-$rows = comment()->search(where: "createdAt>? AND parentIdx!=?", params: [$past7days, 0], limit: 5);
+$rows = comment()->search(
+        select: "userIdx, COUNT(*) as noOfComments",
+        where: "createdAt>? AND parentIdx>? GROUP BY userIdx",
+        params: [$past7days, 0],
+        order: "noOfComments",
+        limit: 5);
 
 $users = [];
 foreach ($rows as $row) {
-    $user = user($row->userIdx)->shortProfile();
-    $user[COMMENTS] = $row->comments;
+    $user = user($row['userIdx'])->shortProfile();
+    $user[COMMENTS] = $row['noOfComments'];
     $users[] = $user;
 }
 ?>

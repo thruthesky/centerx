@@ -40,7 +40,7 @@
  * @property-read int $deletedAt;
  * @property-read CommentTaxonomy[] $comments;
  */
-class PostTaxonomy extends ForumTaxonomy {
+class PostTaxonomy extends Forum {
 
     public function __construct(int $idx)
     {

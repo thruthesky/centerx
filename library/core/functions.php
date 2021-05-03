@@ -1119,12 +1119,12 @@ function onCommentCreateSendNotification(CommentTaxonomy|PostTaxonomy $cp)
     $topic_subscribers = getForumSubscribers(NOTIFY_COMMENT . $cat->id);
 
     /**
-     * remove users_id that are registered to comment topic
+     * remove users_id that are registered to comment topic. So, one user will not have two messages.
      */
     $usersIdx = array_diff($usersIdx, $topic_subscribers);
 
     /**
-     * get token of user that are not registered to forum comment topic and want to get notification on user settings
+     * Get tokens of users that are not registered to forum comment topic and want to get notification on user settings
      */
     $tokens = getTokensFromUserIDs($usersIdx, NEW_COMMENT_ON_MY_POST_OR_COMMENT);
 
@@ -1139,6 +1139,7 @@ function onCommentCreateSendNotification(CommentTaxonomy|PostTaxonomy $cp)
         }
     }
 
+    // prepare message data.
     $body               = $cp->content;
     $click_url          = $cp->path;
     $data               = [

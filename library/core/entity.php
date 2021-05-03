@@ -132,6 +132,7 @@ class Entity {
     }
 
     /**
+     * Alias of $this->getData()
      * $this->data 의 특정 값을 참조한다.
      *
      * @param string $field
@@ -769,9 +770,7 @@ class Entity {
         }
         return $rets;
     }
-
-
-
+    
 
     /**
      * Returns true if the entity is belong to the login user.
@@ -791,6 +790,7 @@ class Entity {
 
         return $this->userIdx == login()->idx;
     }
+
 
 
     /**
@@ -813,6 +813,11 @@ class Entity {
      * @param array $conds - 키/값 조건문.
      * @param string $conj - $conds 의 키/값을 연결할 조건식. 기본 AND.
      * @param bool $object
+     *  If this is set to true, then it will return entities of the result records. And $select will be ignored since,
+     *  the returned entity will load all the data into entity.
+     *
+     *
+     *
      * @return array - empty array([]), If there is no record found.
      *  - empty array([]), If there is no record found.
      *
@@ -841,8 +846,19 @@ class Entity {
      *
      *  entity(POINT_HISTORIES)->search(where: "fromUserIdx=$myIdx OR toUserIdx=$myIdx", limit: 200, select: 'idx,reason');
      *
+     * @example Below is a good example on how you can use GROUP BY to count and order.
+     * ```
+     * $rows = comment()->search(
+     *      select: "userIdx, COUNT(*) as noOfComments",
+     *      where: "createdAt>? AND parentIdx>? GROUP BY userIdx",
+     *      params: [$past7days, 0],
+     *      order: "noOfComments",
+     *      limit: 5);
+     * ```
      * @todo SQL injection
      * @todo $where 에 따옴표 처리.
+     *
+     *
      */
     public function search(
         string $select='idx',

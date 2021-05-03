@@ -1,7 +1,7 @@
 <?php
 use Kreait\Firebase\Messaging\MulticastSendReport;
 
-class PushNotificationTokens extends Entity {
+class PushNotificationTokenTaxonomy extends Entity {
     public function __construct(public int $idx = 0)
     {
         parent::__construct(PUSH_NOTIFICATION_TOKENS, $idx);
@@ -12,7 +12,7 @@ class PushNotificationTokens extends Entity {
      * @attention To update, entity.idx must be set properly.
      *
      * @param array $in
-     * @return PushNotificationTokens
+     * @return PushNotificationTokenTaxonomy
      */
     public function update(array $in): self {
 
@@ -50,7 +50,7 @@ class PushNotificationTokens extends Entity {
      */
     function getTokens(int $userIdx) :array
     {
-        $rows = parent::search(where: "userIdx=$userIdx", select: 'token');
+        $rows = parent::search(select: 'token', where: "userIdx=?", params: [$userIdx]);
         return ids($rows, 'token');
     }
 
@@ -64,18 +64,19 @@ class PushNotificationTokens extends Entity {
 }
 
 
+
 /**
  * @param int|string $idx
- * @return PushNotificationTokens
+ * @return PushNotificationTokenTaxonomy
  */
-function token(int|string $idx=0): PushNotificationTokens
+function token(int|string $idx=0): PushNotificationTokenTaxonomy
 {
-    if ( is_numeric($idx) ) return new PushNotificationTokens($idx);
-    return (new PushNotificationTokens())->findOne([TOKEN => $idx]);
+    if ( is_numeric($idx) ) return new PushNotificationTokenTaxonomy($idx);
+    return (new PushNotificationTokenTaxonomy())->findOne([TOKEN => $idx]);
 
 //    $record = entity(PUSH_NOTIFICATION_TOKENS, 0)->get(TOKEN, $idx);
-//    if ( ! $record ) return new PushNotificationTokens(0);
-//    return new PushNotificationTokens($record[IDX]);
+//    if ( ! $record ) return new PushNotificationTokenTaxonomy(0);
+//    return new PushNotificationTokenTaxonomy($record[IDX]);
 }
 
 function sanitizedInput($in): array {
@@ -146,7 +147,15 @@ function send_message_to_users($in): array|string
 }
 
 
-
+/**
+ * Return user tokens of the users who want to have notifications based on their settings.
+ * If a user does not want get notification, then the tokens of the user will not be returned.
+ *
+ * @param array $idxs
+ * @param null $filter
+ * @return array
+ * @throws Exception
+ */
 function getTokensFromUserIDs($idxs = [], $filter = null): array
 {
     $tokens = [];

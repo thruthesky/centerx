@@ -7,7 +7,7 @@
  *
  * There is no `config` taxonomy. Read the readme.
  */
-class Config {
+class ConfigTaxonomy {
 
 
     /**
@@ -34,17 +34,20 @@ class Config {
     /**
      * 설정을 저장(또는 업데이트)한다. 설정은 metas 테이블에 저장되며, taxonomy=config, entity=0 이 된다.
      * @param array|string $code - 문자열이면 1개의 값, 배열이면 여러개의 값을 저장한다.
+     *  if $code is an array, then it updates multiple settings.
      * @param mixed $value
-     * @return string
+     * @return void
      */
-    public function set(array|string $code, mixed $value=null): string {
+    public function set(array|string $code, mixed $value=null): void {
         if ( is_array($code) ) {
-            return meta()->update([TAXONOMY => $this->taxonomy, ENTITY => $this->entity, CODE =>$code]);
+            meta()->updates($this->taxonomy, $this->entity, $code);
         } else {
-            return meta()->update([TAXONOMY => $this->taxonomy, ENTITY => $this->entity, CODE => [ $code => $value ]]);
+            meta()->update([TAXONOMY => $this->taxonomy, ENTITY => $this->entity, CODE => $code, DATA => $value ]);
         }
     }
 }
+
+
 
 
 /**
@@ -55,31 +58,30 @@ class Config {
  * @param string $code
  *  - if $code is set, it returns the value of the config meta.
  * @param mixed|null $default_value
- * @return Config|int|string|array|null
+ * @return ConfigTaxonomy|int|string|array|null
  *
  * @example
  *  config(POINT_REGISTER, 0)
  *  config()->get(POINT_REGISTER);
  *  d( config(3)->getMetas() );
  */
-function config(string $code='', mixed $default_value=null): Config|int|string|array|null
+function config(string $code='', mixed $default_value=null): ConfigTaxonomy|int|string|array|null
 {
     if ( $code ) {
         $data = config()->get($code);
         if ( $data === null ) return $default_value;
         else return $data;
     }
-    return new Config('config');
+    return new ConfigTaxonomy('config');
 }
-
-
 
 
 /**
- * @return Config
+ * @return ConfigTaxonomy
  */
-function adminSettings(): Config {
-    return new Config('config', ADMIN_SETTINGS);
+function adminSettings(): ConfigTaxonomy {
+    return new ConfigTaxonomy('config', ADMIN_SETTINGS);
 }
+
 
 

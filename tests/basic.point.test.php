@@ -56,6 +56,7 @@ function testPointRegisterAndLogin() {
 
 }
 
+
 function testPointBasics() {
 
     global $post1, $post2, $post3, $email, $pw;
@@ -367,7 +368,7 @@ function testLikeHourlyLimit(): void
     // 포인트 시간/수 제한 없음.
     user(B)->setPoint(10000);
 
-    $posts = post()->search(where: "userIdx != " . login()->idx);
+    $posts = post()->search(where: "userIdx != ?", params: [login()->idx], object: true );
     foreach( $posts as $post ) {
         $post->vote('N');
     }
