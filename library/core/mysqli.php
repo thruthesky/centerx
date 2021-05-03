@@ -184,7 +184,7 @@ class MySQLiDatabase {
                 $stmt->bind_param($types, ...$values);
             }
 
-            
+
             $stmt->execute();
             $result = $stmt->get_result(); // get the mysqli result
 
@@ -199,6 +199,8 @@ class MySQLiDatabase {
     }
 
 
+
+    
 
 
     /**

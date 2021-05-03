@@ -141,6 +141,8 @@ class E {
     public string $receipt_invalid = 'error_receipt_invalid';
 
 
+    public string $user_cannot_update_point = 'error_user_cannot_update_point';
+
 
     /// Geo IP
     public string $geoip_address_not_found = 'error_geoip_address_not_found';

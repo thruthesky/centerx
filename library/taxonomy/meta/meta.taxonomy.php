@@ -80,6 +80,7 @@ class MetaTaxonomy extends Entity {
     /**
      * @param array $in
      * @return $this
+     * @todo check input. for meta create, only taxonomy, entity, code, data are allowed as input.
      */
     public function create(array $in): self {
         if ( in_array($in[CODE], META_CODE_EXCEPTIONS) ) return $this;
@@ -94,6 +95,7 @@ class MetaTaxonomy extends Entity {
      * @param string $taxonomy
      * @param int $idx
      * @param array $kvs
+     *
      */
     public function creates(string $taxonomy, int $idx, array $kvs): void
     {
@@ -124,12 +126,17 @@ class MetaTaxonomy extends Entity {
      *
      * @param array $in
      * @return $this
+     *
+     * @todo check input. for meta update, only taxonomy, entity, code, data are allowed as input.
      */
     function update(array $in): self {
         if ( in_array($in[CODE], META_CODE_EXCEPTIONS) ) return $this;
-        if ( ! $this->idx ) {
-            $idx = parent::queryIdx([TAXONOMY => $in[TAXONOMY], ENTITY => $in[ENTITY], CODE => $in[CODE]]);
-            if ( $idx == 0 ) return $this->error( e()->entity_not_found );
+        if ( ! $this->idx ) { // if $this->idx is not set? then fine one.
+            $idx = parent::getIdxFromDB([TAXONOMY => $in[TAXONOMY], ENTITY => $in[ENTITY], CODE => $in[CODE]]);
+            if ( $idx == 0 ) { // if no entity found, then, create one
+                return $this->create($in);
+            }
+            // entity found, set it as current.
             $this->idx = $idx;
         }
         $in[DATA] = $this->serializeData($in[DATA]);

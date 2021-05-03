@@ -440,6 +440,8 @@ class Entity {
         // 레코드에 없는 필드들은 메타에 업데이트
 //        debug_log("update: tax: {$this->taxonomy}, entity: {$this->idx}, meta fields: ", $this->getMetaFields($in));
 //        updateMeta($this->taxonomy, $this->idx, $this->getMetaFields($in));
+
+
         meta()->updates($this->taxonomy, $this->idx, $this->getMetaFields($in));
 
         return $this->read();
@@ -606,8 +608,9 @@ class Entity {
      * @return int
      *  - integer if a record is found.
      *  - 0 if no record found.
+     *
      */
-    public function queryIdx(array $conds, string $conj = 'AND'): int
+    public function getIdxFromDB(array $conds, string $conj = 'AND'): int
     {
         $arr = self::search(conds: $conds, conj: $conj);
         if ( count($arr) ) return $arr[0][IDX];
@@ -674,7 +677,7 @@ class Entity {
      */
     public function exists(array $conds = [], string $conj = 'AND'): bool {
         if ( $conds ) { // 조건 배열이 입력되면, 조건이 맞는 레코드가 존재하는지 확인.
-            return self::queryIdx($conds, $conj) > 0;
+            return self::getIdxFromDB($conds, $conj) > 0;
 //            $arr = self::search(conds: $conds, conj: $conj);
 //            return count($arr) > 0;
         }
@@ -871,7 +874,7 @@ class Entity {
         }
         else  {
             debug_print_backtrace();
-            die("\n-------------------- die() - Execution dead due to: Entity::search() wrong parameters\n");
+            die("\n\n-------------------- die on Entity::search() => Wrong parameters. is \$params properly?\n\n");
         }
 
 
@@ -932,19 +935,27 @@ class Entity {
      * Returns login user's records in array.
      *
      * Helper class for search().
-     * It does very much the same as search(), but returns login user's record only.
+     * It does very much the same as search(), but returns the login user's record only.
      *
      *
      * @param int $page
      * @param int $limit
      * @param string $order
      * @param string $by
-     * @param string $select
      * @return array
      */
-    public function my($select='*', int $page=1, string $order='idx', string $by='DESC', int $limit=10 ): array {
-        return $this->search($select, "userIdx=" . login()->idx, order: $order, by: $by, page: $page, limit: $limit);
+    public function my(int $page=1, string $order='idx', string $by='DESC', int $limit=10 ): array {
+        return $this->search(
+            where: "userIdx=?", params: [ login()->idx ],
+            order: $order,
+            by: $by,
+            page: $page,
+            limit: $limit,
+            object: true
+        );
     }
+
+
 
 
 

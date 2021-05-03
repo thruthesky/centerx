@@ -43,11 +43,11 @@ function _testUserSearch() {
     $users = user()->search(limit: 3, object: true);
     isTrue($users[0]->idx == $c->idx, "object: true, A idx: {$c->idx} match! C is the last one.");
 
-    $users = user()->search(where: "email LIKE 'user%'", object: false);
+    $users = user()->search(where: "email LIKE ?", params: ['user%'], object: false);
     isTrue( count($users) >= 3, "There are more than 3 users");
     isTrue(gettype($users[0]) == 'array', 'Default search is array');
 
-    $users = user()->search(where: "email LIKE 'user%'", object: true);
+    $users = user()->search(where: "email LIKE ?", params: ['user%'], object: true);
     isTrue($users[0] instanceof UserTaxonomy, "instanceof => User object");
     isTrue(get_class($users[0]) == 'UserTaxonomy',"get_class() => User object");
 

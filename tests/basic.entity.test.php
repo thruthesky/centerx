@@ -1,13 +1,17 @@
 <?php
 
 
-testEntityTree();
-testEntityCreateWithMeta();
-testEntityErrorHandling();
+//testEntityTree();
+//testEntityCreateWithMeta();
+//testEntityErrorHandling();
 
 _testEntityCrud();
-_testEntityReadAndReset();
-_testEntityMeta();
+
+_testEntityUpdate();
+//_testEntityReadAndReset();
+//_testEntityMeta();
+
+
 
 
 class TestTaxonomy extends PostTaxonomy {
@@ -67,7 +71,7 @@ function testEntityTree() {
 function _testEntityCrud() {
 
     $pw = '12345a';
-    db()->hide_errors();
+    db()->displayError = false;
     // 생성
     $email = 'test'.time().'@email.com';
     $user = entity(USERS)->create(['email' => $email, 'password' => $pw]);
@@ -90,11 +94,10 @@ function _testEntityCrud() {
     $b = entity(USERS, 1234567890);
     isTrue($b->email === null, 'wrong user email');
 
-    // 업데이트
-    $emailA = 'a'.time().'@email.com';
-    // 성공
-    isTrue(entity(USERS)->create(['email' => $emailA, 'password' => '12345a'])->update(['color' => 'blue'])->color === 'blue', 'color must be blue');
 
+
+
+    $emailA = 'aColorUpdate2'.time().'@email.com';
     // 실패. 존재하는 메일 주소로 업데이트 시도
     // @doc 아래 처럼
     // ->create()->update()->getError()
@@ -102,7 +105,7 @@ function _testEntityCrud() {
     // 등과 같이 끝 없이 체이닝을 할 수 있다.
     isTrue(entity(USERS)->create(['email' => '2' . $emailA, 'password' => '12345a'])->update(['email' => $a->email])->getError() === e()->update_failed, 'update failed');
 
-    db()->show_errors();
+    db()->displayError = true;
 
     // 삭제
     $emailB = 'b' . time() . '@email.com';
@@ -113,6 +116,24 @@ function _testEntityCrud() {
     isTrue(entity(USERS, $deleted->idx)->getData() === [], 'no more data for deleted user');
 
 }
+
+
+
+
+function _testEntityUpdate() {
+
+    // Update
+    $emailA = 'aColorUpdate'.time().'@email.com';
+    $created = entity(USERS)->create(['email' => $emailA, 'password' => '12345a']);
+    $created->update(['name' => 'newName', 'color' => 'blue']);
+
+
+
+    // Expect. Success
+    isTrue($created->color === 'blue', 'color must be blue' );
+
+}
+
 
 function _testEntityReadAndReset() {
     $aEmail = 'a' . time() . '@read.com';

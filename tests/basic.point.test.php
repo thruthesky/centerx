@@ -10,9 +10,10 @@ define('D', $rows[3]->idx);
 define('E', $rows[4]->idx);
 
 // 글 3개 준비
-$post1 = new Post(0);
-$post2 = new Post(0);
-$post3 = new Post(0);
+$post1 = new PostTaxonomy(0);
+$post2 = new PostTaxonomy(0);
+$post3 = new PostTaxonomy(0);
+
 
 
 //d(date('r', mktime(0, 0, 0, date('m'), date('d'), date('Y'))));
@@ -63,6 +64,7 @@ function testPointBasics() {
     setLogin(A);
     user(A)->setPoint(500);
     isTrue(user(A)->getPoint() == 500, 'A point must be 500. but: ' . user(A)->getPoint());
+
 
 // 사용자 가입 포인트
     clearTestPoint();
