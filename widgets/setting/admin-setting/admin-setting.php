@@ -1,11 +1,18 @@
 <?php
+$siteSettings = ['siteName', 'siteDescription', 'search_categories', 'forum_like', 'forum_dislike', 'terms_and_conditions', 'privacy_policy'];
 
 if (modeCreate()) {
     adminSettings()->set(in('code'), in('data'));
 } else if (modeUpdate()) {
     adminSettings()->set(in());
     //        setRealtimeDatabaseDocument('/notifications/settings', ['time' => time()]);
-?>
+} else if (modeDelete()) {
+    if (!in_array(in('code'), $siteSettings)) {
+        adminSettings()->deleteCode(in('code'));
+    }
+}
+
+if ( modeAny() ) { ?>
     <?php includeFirebase(); ?>
     <script>
         later(function() {
@@ -16,12 +23,7 @@ if (modeCreate()) {
         })
     </script>
 <?php
-} else if (modeDelete()) {
-    adminSettings()->deleteCode(in('code'));
-}
 
-
-$siteSettings = ['siteName', 'siteDescription', 'search_categories', 'forum_like', 'forum_dislike', 'terms_and_conditions', 'privacy_policy'];
 $ms = adminSettings()->get();
 
 ?>
@@ -49,7 +51,7 @@ $ms = adminSettings()->get();
             </form>
 
 
-            <?php foreach ($ms as $k => $v) { 
+            <?php foreach ($ms as $k => $v) {
                 if (in_array($k, $siteSettings)) continue; ?>
                 <form>
                     <input type="hidden" name="p" value="admin.index">
