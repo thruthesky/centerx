@@ -45,6 +45,18 @@ class ConfigTaxonomy {
             meta()->update([TAXONOMY => $this->taxonomy, ENTITY => $this->entity, CODE => $code, DATA => $value ]);
         }
     }
+
+    /**
+     * @param string $code
+     * @return string $code
+     */
+    public function deleteCode(string $code): string {
+        $idxes = meta()->search(where: "code=?", params: [$code]);
+        foreach(ids($idxes) as $idx) {
+            meta($idx)->delete();
+        }
+        return $code;
+    }
 }
 
 
