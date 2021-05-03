@@ -99,7 +99,7 @@
 
 
         <tr class="table-dark">
-            <td colspan="2"><?=ek('Limitation settings', '제한 설정')?></td>
+            <td colspan="2"><?=ek('Limitation by Hour/Day', '시간/일 글 쓰기 제한 설정')?></td>
         </tr>
         <tr class="table-light">
             <td colspan="2">
@@ -146,6 +146,47 @@
                 </label>
             </td>
         </tr>
+
+
+
+
+        <tr class="table-dark">
+            <td colspan="2"><?=ek('Limitation by Point', '포인트 별 글 쓰기 제한 설정')?></td>
+        </tr>
+        <tr class="table-light">
+            <td colspan="2">
+                <div class="hint">
+                    <?=ek('Limits based on how much point the user own. For instance, if 10,000 is set for post creation, then the user must have more than or equal to 10,000 to create a post. You may input big number to ban on all users.',
+                        '포인트 보유량에 따라 글 쓰기 제한. 예를 들어, 글 쓰기 제한에 1만 포인트를 적으면, 1만 포인트 이상인 사람만 글 쓰기 가능. 전체 사용자에게 글 쓰기 방지를 위해서, 큰 숫자를 입력 할 수 있음.')?>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td><?=ek('Post create limit', '글 쓰기 허용 포인트 보유량')?></td>
+            <td>
+                <input name="CREATE_POST" value="<?= $category->CREATE_POST ?>">
+            </td>
+        </tr>
+
+
+        <tr>
+            <td><?=ek('Comment creation limit', '코멘트 쓰기 허용 포인트 보유량')?></td>
+            <td>
+                <input name="CREATE_COMMENT" value="<?= $category->CREATE_COMMENT ?>">
+            </td>
+        </tr>
+
+
+        <tr>
+            <td><?=ek('Post/comment read limit', '글/코멘트 읽기 허용 포인트 보유량')?></td>
+            <td>
+                <input name="READ_POST" value="<?= $category->READ_POST ?>">
+            </td>
+        </tr>
+
+
+
 
 
         <tr class="table-dark">

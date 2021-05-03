@@ -3,7 +3,12 @@
 if ( modeCreate() ) {
     $created = category()->create([ID=>in('id')]);
     if ( $created->hasError ) {
-        jsBack($created->getError());
+        if ( $created->getError() == e()->category_exists ) {
+
+        }
+        else {
+            jsBack($created->getError());
+        }
     }
 
 } else if ( modeUpdate() ) {

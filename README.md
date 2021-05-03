@@ -627,33 +627,28 @@ config()->set('admin', 'thruthesky@gmail.com');
 d(config()->get('admin'));
 ```
 
+## Admin Settings
+
+### Custom Settings
+
+Admin can set custom settings that apply to the web/app, but it needs extra work to do.
+For instance, `Site name` setting is a setting that is supported by the system.
+But when admin adds custom settings, that is not supported.
+You may add `loginOnWeb` option to tell the web to show login option to user, but the system does not support it. So,
+the developer must work on it.
+
+Another setting that may often be used is app download setting. Admin may put `androidLatestVersion` in custom setting
+with the latest android version, but the developer must code on the android app.
+
+
+
+
 # 데이터베이스
 
 - 모든 테이블에는 idx, createdAt, updatedAt 이 존재한다.(존재 해야 한다.)
 - 레코드가 사용자의 소유를 나타낼 때에는 추가적으로 userIdx 가 존재해야 한다.
 
 
-
-## EzSQL 을 통한 DB 관리
-
-- WordPress 에서 사용하는 것과 동일한 것이다.
-  
-- 조건을 배열로 하지 않고, db()->where(eq(), eq()) 와 같이 한다.
-
-- eq() 와 같은 글로벌 함수는 따로 import 해야 한다.
-  
-- 예제)
-```php
-  db()->debugOn(); // 디버깅 시작
-  $re = db()->update($this->getTable(), ['field' => 'value'], db()->where( eq(IDX, $this->idx) ));
-  db()->debug(); // SQL 출력
-```
-
-- 예제)
-```php
-$result = db()->select('wc_users', 'idx', eq('idx', 77));
-d($result);
-```
 
 ## 게시글 테이블. posts 테이블
 
@@ -682,6 +677,23 @@ d($result);
 - `photoUrl` 은 meta 값을 저장되는 것이다. 이것은 users 테이블에 존재하지 않으며, meta 값으로 저장되지 않을 수도 있다.
   즉, 사용자 마다 이 값이 있을 수 있고 없을 수도 있다. 예를 들어 카카오톡 로그인을 하는 경우, 사용자 사진이 있으면 이 값에 그 URL 이 저장된다.
   따라서, 클라이언트에서 적절히 옵션 처리를 해서 사용하면 된다.
+
+## User Activity
+
+This logs all user activities.
+This class does not check the input from http params or whether the user logged in or not, but it checks if the user
+have enough point to create post, or anything that has point related work including banning users who reached the
+day/hour creation limit.
+
+- user registration,
+- user login
+- likes, dislikes,
+- post/comment crud,
+- file uploads,
+
+
+
+
 
 ## 친구 관리 테이블
 

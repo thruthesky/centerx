@@ -81,9 +81,7 @@ class PostTaxonomy extends Forum {
      */
     public function create( array $in ): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
-
         if ( login()->block == 'Y' ) return $this->error(e()->blocked);
-
         if ( !isset($in[CATEGORY_ID]) ) return $this->error(e()->category_id_is_empty);
         $category = category($in[CATEGORY_ID]);
         if ( $category->notFound ) return $this->error(e()->category_not_exists);
@@ -97,22 +95,27 @@ class PostTaxonomy extends Forum {
         // 회원 번호
         $in[USER_IDX] = login()->idx;
 
-        // 제한에 걸렸으면, 에러 리턴.
+
+        // 제한에 걸렸으면, 에러 리턴. error on limit.
         if ( $category->BAN_ON_LIMIT == 'Y' ) {
             $re = point()->checkCategoryLimit($category->idx);
             if ( isError($re) ) return $this->error($re);
         }
 
-        // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
+        // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러. error if user is lack of point.
         $pointToCreate = point()->getPostCreate($category->idx);
         if ( $pointToCreate < 0 ) {
             if ( login()->getPoint() < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
         }
 
 
-        // @todo check if user has permission
-        // @todo check if too many post creation.
-        // @todo check if too many comment creation.
+        act()->can(CREATE_POST, categoryIdx: $category->idx);
+
+
+
+
+
+
 
         // Update path for SEO friendly.
         $in[PATH] = $this->getSeoPath($in['title'] ?? '');

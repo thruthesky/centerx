@@ -48,15 +48,17 @@ class ConfigTaxonomy {
 
     /**
      * @param string $code
-     * @return string $code
+     * @return string
+     *  - error code on error.
+     *  - empty string('') on success.
      */
-    public function deleteCode(string $code): string {
-        $idxes = meta()->search(where: "code=?", params: [$code]);
-        foreach(ids($idxes) as $idx) {
-            meta($idx)->delete();
-        }
-        return $code;
+    public function delete(string $code): string {
+        $meta = meta()->delete($this->taxonomy, $this->entity, $code);
+        if ( $meta->hasError ) return $meta->getError();
+        else return '';
     }
+
+
 }
 
 

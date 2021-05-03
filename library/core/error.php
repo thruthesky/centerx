@@ -52,6 +52,7 @@ class E {
     public string $entity_not_found = 'error_entity_not_found';
 
     public string $category_id_is_empty = 'error_category_id_is_empty';
+    public string $empty_category_idx = 'error_empty_category_idx';
     public string $root_idx_is_empty = 'error_root_idx_is_empty';
 
     public string $entity_deleted_already = 'error_entity_deleted_already';
@@ -156,6 +157,10 @@ class E {
     public string $already_blocked = 'error_already_blocked';
     public string $not_blocked = 'error_not_blocked';
     public string $no_relationship = 'error_no_relationship';
+
+
+
+    public string $wrong_activity = 'error_wrong_activity';
 
 
 
