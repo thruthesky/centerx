@@ -862,6 +862,7 @@ class Entity {
             $rows = db()->rows($q, ...$values);
         } else if ( $params ) { // prepare statement if $params is set.
             $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
+            d($q);
             $rows = db()->rows($q, ...$params);
         }
         else if ( $where == '1' ) {
@@ -892,13 +893,14 @@ class Entity {
 
     /**
      * @param string $where
+     * @param array $params
      * @param array $conds
      * @param string $conj
      * @return int
      */
     public function count(string $where='1',
                           array $params = [],
-                          array $conds=[],
+                          array $conds =[],
                           string $conj = 'AND'): int {
         $table = $this->getTable();
         $select = "COUNT(*)";
