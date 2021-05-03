@@ -39,6 +39,16 @@
 
 - work on next branch
 
+- user activities
+  - leave all histories including point changes.
+  - vote point, post/comment crud point setting for each category.
+    
+  - `act()->canCreate($categoryIdx, $postIdx)`, `act()->canDelete()`,
+  - `act()->on(POST_CREATE, post: $post, comment: $comment)`, `act()->on(LOGIN)`, `act()->on(POST_VOTE)`,
+    act()->on(POINT_TRANSFER, fromUserIdx: idx, fromUserPoint: -10, toUserIdx: 123, toUserPoint: 20);
+    act()->on(POST_LIKE)
+    
+  - Leave a record on the same method of point change.
 
 - @doc
   meta function may try to create child meta even if its taxonomy is meta. It only happens on testing.

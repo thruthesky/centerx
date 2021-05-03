@@ -74,10 +74,11 @@ class PostTaxonomy extends Forum {
     }
 
 
-
     /**
      * @param array $in
      * @return self
+     * @throws \Kreait\Firebase\Exception\FirebaseException
+     * @throws \Kreait\Firebase\Exception\MessagingException
      */
     public function create( array $in ): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
@@ -102,6 +103,7 @@ class PostTaxonomy extends Forum {
             $re = point()->checkCategoryLimit($category->idx);
             if ( isError($re) ) return $this->error($re);
         }
+
 
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
         $pointToCreate = point()->getPostCreate($category->idx);

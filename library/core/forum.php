@@ -26,6 +26,8 @@ class Forum extends Entity {
     }
 
     /**
+     * @deprecated Use next version
+     *
      * 현재 글(또는 코멘트)을 생성 할 때, 작성자가 획득한 포인트를 $this->data 에 업데이트한다.
      *
      * 획득한 포인트는 오직, point_histories 에만 기록되는데, 그 값을 읽어, 현재 $this->data 메모리 변수에 적용한다.
