@@ -23,7 +23,7 @@ $c1 = comment()->create([ROOT_IDX => $p1->idx, PARENT_IDX => $p1->idx, CONTENT =
 // 코멘트에 Y 추천
 $votedComment = $c1->vote('Y');
 isTrue(get_class($votedComment) == 'CommentTaxonomy', 'vote returns Comment');
-isTrue($votedComment->Y == 1);
+//isTrue($votedComment->Y == 1);
 
 //// 동일한 코멘트에 N 추천.
 //$votedComment = $c1->vote('N');

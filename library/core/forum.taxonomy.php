@@ -61,7 +61,6 @@ class ForumTaxonomy extends Entity {
         if ( $Yn != 'Y'  && $Yn != 'N' ) return $this->error(e()->empty_wrong_choice);// ERROR_WRONG_INPUT;
 
         $vote = voteHistory()->by(login()->idx, POSTS, $this->idx);
-
         // 추천을 이미 했는가?
         if ( $vote->exists() ) {
             if ( $vote->choice == $Yn ) {
