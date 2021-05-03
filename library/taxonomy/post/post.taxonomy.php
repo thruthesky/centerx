@@ -293,7 +293,11 @@ class PostTaxonomy extends Forum {
      */
     public function list(string $categoryId, int $page=1, int $limit=10): array
     {
-        return $this->search( where: "categoryId=<$categoryId> AND parentIdx=0 AND deletedAt=0", page: $page, limit: $limit);
+        return $this->search(
+            where: "categoryId=<$categoryId> AND parentIdx=0 AND deletedAt=0",
+            page: $page,
+            limit: $limit
+        );
     }
 
     /**

@@ -3,20 +3,18 @@ $limit = !empty(in('limit')) ? in('limit') : 100;
 $conds=[];
 if(modeSubmit()) {
     $status = !empty(in('status')) ? in('status')  : 'success';
-    $conds[] = "status='" . $status . "'";
-    if(in('idx')) $conds[] = "idx='" . in("idx") . "'";
-    if(in('userIdx')) $conds[] = "userIdx='" . in("userIdx") . "'";
-    if(in('platform')) $conds[] = "platform='" . in("platform") . "'";
-    if(in('productID')) $conds[] = "productID='" . in("productID") . "'";
-    if (in('beginDate')) $conds[] = "createdAt>='" . strtotime(in('beginDate')) . "'";
-    if (in('endDate')) $conds[] = "createdAt<'" . strtotime(in('endDate')) + 24 * 60 * 60 . "'";
+    $conds["status"] = $status;
+    if (in('idx')) $conds["idx"] = in("idx");
+    if (in('userIdx')) $conds["userIdx"] = in("userIdx");
+    if (in('platform')) $conds["platform"] = in("platform");
+    if (in('productID')) $conds["productID"] = in("productID");
+    if (in('beginDate')) $conds["createdAt >="] = strtotime(in('beginDate'));
+    if (in('endDate')) $conds["createdAt <"] = strtotime(in('endDate')) + 24 * 60 * 60;
 } else {
-    $conds[] = "status='success'";
+    $conds["status"] = "success";
 }
-$where = implode(" AND ", $conds);
-//d($where);
 
-$rows = inAppPurchase()->search(where: $where, limit: intVal($limit), object: true);
+$rows = inAppPurchase()->search(conds: $conds, limit: intVal($limit), object: true);
 
 $total_price = [];
 $user_total_spend = [];
@@ -31,7 +29,7 @@ foreach ($rows as $row) {
     $total_price[$price_prefix] += floatval($price);
     $user_total_spend[$row->userIdx][$price_prefix] += floatval($price);
 }
-//d($user_total_spend);
+
 ?>
 
 <h1>In app purchase</h1>
