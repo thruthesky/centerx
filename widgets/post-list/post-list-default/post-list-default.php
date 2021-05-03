@@ -15,9 +15,11 @@ $category = $o['category'];
         <?php
         if (!empty($posts)) {
             foreach ($posts as $post) {
-                ?>
+                $post = post(idx: $post['idx']);
+                $user = user(idx: $post->userIdx);
+        ?>
                 <div class="d-flex w-100">
-                    <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->shortProfile()['photoUrl'], 'size' => '50']) ?>
+                    <?php include widget('user/user-avatar', ['photoUrl' => $user->shortProfile()['photoUrl'], 'size' => '50']) ?>
                     <a href="<?= $post->url ?><?= lsub(true) ?>" class="w-100" style="text-decoration: none">
                         <div style="color: black; font-weight: 500">No. <?= $post->idx ?> - <?= $post->title ?></div>
                         <div class="mt-1 text-muted">
