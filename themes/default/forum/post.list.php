@@ -11,7 +11,7 @@ $limit = 10;
 $conds = [PARENT_IDX => 0, DELETED_AT => 0];
 if ($category->exists()) $conds[CATEGORY_IDX] = $category->idx;
 if (in('lsub')) $conds['subcategory'] = in('lsub');
-$posts = post()->search(page: in('page', 1), limit: $limit, conds: $conds);
+$posts = post()->search(page: in('page', 1), limit: $limit, conds: $conds, object: true);
 $total = post()->count(conds: $conds);
 
 

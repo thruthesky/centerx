@@ -15,7 +15,7 @@ $category = $o['category'];
         <?php
         if (!empty($posts)) {
             foreach ($posts as $post) {
-                $post = post(idx: $post['idx']);
+                $post = post(idx: $post->idx);
                 $user = user(idx: $post->userIdx);
         ?>
                 <div class="d-flex w-100">

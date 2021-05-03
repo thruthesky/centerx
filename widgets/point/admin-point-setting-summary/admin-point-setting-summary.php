@@ -2,7 +2,7 @@
 $registered = user()->count();
 $now = time();
 $ago = $now - 60 * 30;
-$login = user()->count(where: "updatedAt<='$now' AND updatedAt>='$ago'");
+$login = user()->count(where: "updatedAt<=? AND updatedAt>=?", params: [$now, $ago]);
 ?>
 
 <section class="d-flex justify-content-between py-3 px-4" id="admin-point-setting-summary">

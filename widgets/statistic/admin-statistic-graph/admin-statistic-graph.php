@@ -11,9 +11,9 @@ for ($x = 0; $x < 31; $x++) {
     $start_stamp = mktime(0, 0, 0, null, date('j', $now) - $x);
     $end_stamp = $start_stamp + 60 * 60 * 24 - 1;
 
-    $usersCount = user()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp");
-    $postsCount = post()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp AND parentIdx=0");
-    $commentsCount = post()->count(where: "createdAt>=$start_stamp AND createdAt<=$end_stamp AND parentIdx!=0");
+    $usersCount = user()->count(where: "createdAt>=? AND createdAt<=?", params: [$start_stamp, $end_stamp]);
+    $postsCount = post()->count(where: "createdAt>=? AND createdAt<=? AND parentIdx=?", params: [$start_stamp, $end_stamp, 0]);
+    $commentsCount = post()->count(where: "createdAt>=? AND createdAt<=? AND parentIdx!=?", params: [$start_stamp, $end_stamp, 0]);
 
     if ($usersCount > $highest['users']) $highest['users'] = $usersCount;
     if ($postsCount > $highest['posts']) $highest['posts'] = $postsCount;
