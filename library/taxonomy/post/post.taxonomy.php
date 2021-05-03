@@ -81,6 +81,9 @@ class PostTaxonomy extends ForumTaxonomy {
      */
     public function create( array $in ): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+
+        if ( login()->block == 'Y' ) return $this->error(e()->blocked);
+
         if ( !isset($in[CATEGORY_ID]) ) return $this->error(e()->category_id_is_empty);
         $category = category($in[CATEGORY_ID]);
         if ( $category->notFound ) return $this->error(e()->category_not_exists);
@@ -174,6 +177,7 @@ class PostTaxonomy extends ForumTaxonomy {
         if ( $this->hasError ) return $this;
 
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( login()->block == 'Y' ) return $this->error(e()->blocked);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
 

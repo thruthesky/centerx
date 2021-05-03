@@ -26,6 +26,9 @@ class E {
     public string $route_function_not_found = 'error_route_function_not_found';
     public string $not_logged_in = 'error_not_logged_in';
 
+    public string $blocked = 'error_blocked';
+
+
     public string $id_is_empty = 'error_id_is_empty';
     public string $idx_is_empty = 'error_idx_is_empty';
 

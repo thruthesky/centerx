@@ -56,6 +56,7 @@ class CommentTaxonomy extends ForumTaxonomy {
     public function create(array $in): self
     {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( login()->block == 'Y' ) return $this->error(e()->blocked);
         if ( !isset($in[ROOT_IDX]) ) return $this->error(e()->root_idx_is_empty);
 
         if ( !isset($in[PARENT_IDX]) ) $in[PARENT_IDX] = $in[ROOT_IDX]; // if parent idx is not set, set it same as root idx
@@ -130,6 +131,7 @@ class CommentTaxonomy extends ForumTaxonomy {
      */
     public function update(array $in): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+        if ( login()->block == 'Y' ) return $this->error(e()->blocked);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->isMine() == false ) return $this->error(e()->not_your_comment);
 
