@@ -22,7 +22,7 @@ if ( modeAny() ) { ?>
             });
         })
     </script>
-<?php
+<?php }
 
 $ms = adminSettings()->get();
 
