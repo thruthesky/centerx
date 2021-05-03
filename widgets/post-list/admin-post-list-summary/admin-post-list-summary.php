@@ -11,7 +11,7 @@ $o = getWidgetOptions();
         </div>
         <div class="py-3 overflow-hidden">
             <?php
-            foreach( post()->search(where: "categoryId=<$o[categoryId]>", limit: $o['limit']) as $post ) {
+            foreach( post()->search(where: "categoryIdx=?", params:[$o['categoryIdx']], limit: $o['limit'], object: true) as $post ) {
                 ?>
                     <div class="text-overflow-ellipsis">
                         <?=$post->title?>

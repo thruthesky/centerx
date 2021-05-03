@@ -15,7 +15,7 @@
                 <?php include widget('point/admin-point-setting-summary'); ?>
             </div>
             <div class="bg-white border-radius-sm h-100">
-                <?php include widget('post-list/admin-post-list-summary', ['categoryId' => 'qna', 'limit' => 7]); ?>
+                <?php include widget('post-list/admin-post-list-summary', ['categoryIdx' => 1, 'limit' => 7]); ?>
             </div>
         </div>
     </div>

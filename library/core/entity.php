@@ -862,7 +862,7 @@ class Entity {
             $rows = db()->rows($q, ...$values);
         } else if ( $params ) { // prepare statement if $params is set.
             $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
-            d($q);
+            // d($q);
             $rows = db()->rows($q, ...$params);
         }
         else if ( $where == '1' ) {
