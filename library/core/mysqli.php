@@ -179,12 +179,12 @@ class MySQLiDatabase {
                 }
                 $types = $this->types($values);
                 if ( $types == 'b' ) {
-                    die("MySQLiDatabase::row() - types == 'b'. We don't use binary as values.");
+                    die("MySQLiDatabase::row() - types == 'b'. We don't use binary as values in statement prepare.");
                 }
                 $stmt->bind_param($types, ...$values);
             }
 
-//            $stmt->bind_param($this->types($values), ...$values);  /// values is empty, this create errors.
+            
             $stmt->execute();
             $result = $stmt->get_result(); // get the mysqli result
 
