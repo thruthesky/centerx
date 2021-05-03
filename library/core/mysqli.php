@@ -184,7 +184,7 @@ class MySQLiDatabase {
                 $stmt->bind_param($types, ...$values);
             }
 
-            $stmt->bind_param($this->types($values), ...$values);
+//            $stmt->bind_param($this->types($values), ...$values);  /// values is empty, this create errors.
             $stmt->execute();
             $result = $stmt->get_result(); // get the mysqli result
 

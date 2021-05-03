@@ -4,11 +4,12 @@ $limit = 15;
 $key = in('key');
 $where = '1';
 if ( $key ) {
-    $where = "name LIKE '%$key%' OR nickname LIKE '%$key%' OR email LIKE '%$key%' OR phoneNo LIKE '%$key%'";
+    $where = "name LIKE '%?%' OR nickname LIKE '%?%' OR email LIKE '%?%' OR phoneNo LIKE '%?%'";
+    $users = user()->search(where: $where, params: [$key,$key,$key,$key], page: $page, limit: $limit, object: true);
+} else {
+    $users = user()->search(page: $page, limit: $limit, object: true);
 }
-$users = user()->search(where: $where, order: IDX, by: 'DESC', page: $page, limit: $limit, object: true);
-$total = user()->count(where:  $where);
-
+$total = user()->count();
 ?>
 
 <section id="admin-user-list">
@@ -97,12 +98,12 @@ $total = user()->count(where:  $where);
 </section>
 
 <?php
-include widget('pagination/pagination-default', [
-    'total' => $total,
-    'page' => $page,
-    'limit' => $limit,
-    'url' => "/?p=admin.index&w=user/admin-user-list&page={page}&key=$key"
-]);
+//include widget('pagination/pagination-default', [
+//    'total' => $total,
+//    'page' => $page,
+//    'limit' => $limit,
+//    'url' => "/?p=admin.index&w=user/admin-user-list&page={page}&key=$key"
+//]);
 
 ?>
 <script>
