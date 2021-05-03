@@ -4,7 +4,7 @@ $limit = 15;
 $key = in('key');
 $where = '1';
 if ( $key ) {
-    $where = "name LIKE '%$key%' OR email LIKE '%$key%' OR phoneNo LIKE '%$key%'";
+    $where = "name LIKE '%$key%' OR nickname LIKE '%$key%' OR email LIKE '%$key%' OR phoneNo LIKE '%$key%'";
 }
 $users = user()->search(where: $where, order: IDX, by: 'DESC', page: $page, limit: $limit, object: true);
 $total = user()->count(where:  $where);
