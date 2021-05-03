@@ -33,7 +33,7 @@ $total = user()->count();
 
 
     <div class="mb-3">
-        검색된 사용자: <?=$total?>
+        <?=ek('No of Users', '검색된 사용자')?>: <?=$total?>
     </div>
 
     <div class="custom-control custom-checkbox custom-control-inline mb-3" v-for="(option, key) in options" :key="key">
@@ -98,12 +98,12 @@ $total = user()->count();
 </section>
 
 <?php
-//include widget('pagination/pagination-default', [
-//    'total' => $total,
-//    'page' => $page,
-//    'limit' => $limit,
-//    'url' => "/?p=admin.index&w=user/admin-user-list&page={page}&key=$key"
-//]);
+include widget('pagination/pagination-default', [
+    'total' => $total,
+    'page' => $page,
+    'limit' => $limit,
+    'url' => "/?p=admin.index&w=user/admin-user-list&page={page}&key=$key"
+]);
 
 ?>
 <script>

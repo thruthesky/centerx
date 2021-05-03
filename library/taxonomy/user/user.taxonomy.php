@@ -310,11 +310,15 @@ class UserTaxonomy extends Entity {
     }
 
 
-    function adminProfileUpdate($in): self
+    function update($in): self
     {
+        // If email has passed, it can update(change) user's email.
         if ( isset($in[EMAIL]) ) {
             if ( empty($in[EMAIL]) ) return $this->error(e()->email_is_empty);
             if ($this->emailExists($in[EMAIL]) &&  $this->findOne([EMAIL => $in[EMAIL]])->idx != $this->idx) return $this->error(e()->email_exists);
+        }
+        if ( isset($in[POINT] ) && admin() == false ) {
+            return $this->error(e()->user_cannot_update_point);
         }
         return parent::update($in);
     }
