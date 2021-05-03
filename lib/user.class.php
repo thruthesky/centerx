@@ -355,9 +355,9 @@ class User extends Entity {
             if ($this->emailExists($in[EMAIL]) &&  $this->findOne([EMAIL => $in[EMAIL]])->idx != $this->idx) return $this->error(e()->email_exists);
         }
 
-        if ( isset($in[POINT] ) && admin() == false ) {
-            return $this->error(e()->user_cannot_update_point);
-        }
+//        if ( isset($in[POINT] ) && admin() == false ) {
+//            return $this->error(e()->user_cannot_update_point);
+//        }
         return parent::update($in);
     }
 
