@@ -78,6 +78,9 @@ class UserRoute {
     }
 
     /**
+     * Returns user list order by point rank.
+     *
+     * Use this to display users on the order of point rank to show who are the most high ranks.
      * @param $in
      * @return array
      */
@@ -94,6 +97,18 @@ class UserRoute {
             $rets[] = $user->shortProfile();
         }
         return $rets;
+    }
+
+
+    /**
+     * Return login user's rank no of point.
+     *
+     * Use this to display what number is the login user in of the point rank.
+     *
+     * @return bool|int|mixed|null
+     */
+    public function myPointRank() {
+        return db()->column("SELECT COUNT(*) as raking FROM wc_users WHERE point >= (SELECT point FROM wc_users WHERE idx=".login()->idx.")");
     }
 
     /**
