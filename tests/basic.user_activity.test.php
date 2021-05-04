@@ -1,50 +1,88 @@
 <?php
 
-testPointSet();
+if (category(POINT)->exists() == false) category()->create([ID => POINT]); // create POINT category if not exists.
+db()->query('truncate ' . act()->getTable()); // empty table
+db()->query('truncate ' . voteHistory()->getTable()); // emtpy table
+
+testUserPointSet();
+testPointSettings();
 testUserRegisterPoint();
 testUserLoginPoint();
+testLikePoint();
 
-
-function testPointSet() {
+function testUserPointSet() {
+    resetPoints();
     setLogin1stUser()->setPoint(500);
     isTrue(login()->getPoint() == 500, 'A point must be 500. but: ' . login()->getPoint());
 }
 
+function testPointSettings() {
+    resetPoints();
+    act()->setPostCreatePoint(POINT, 1000);
+    act()->setPostDeletePoint(POINT, -1200);
+    act()->setCommentCreatePoint(POINT, 200);
+    act()->setCommentDeletePoint(POINT, -300);
+
+    isTrue(act()->getPostCreatePoint(POINT) == 1000);
+    isTrue(act()->getPostDeletePoint(POINT) == -1200);
+    isTrue(act()->getCommentCreatePoint(POINT) == 200);
+    isTrue(act()->getCommentDeletePoint(POINT) == -300);
+
+    act()->setLikePoint(100);
+    isTrue(act()->getLikePoint() == 100);
+    act()->setLikeDeductionPoint(-20);
+    isTrue(act()->getLikeDeductionPoint() == -20);
+    act()->setDislikePoint(-50);
+    isTrue(act()->getDislikePoint() == -50);
+    act()->setDislikeDeductionPoint(-30);
+    isTrue(act()->getDislikeDeductionPoint() == -30);
+
+}
+
 function testUserRegisterPoint() {
-    clearUserActivities();
+    resetPoints();
 
     /// TEST register point
-    act()->setRegister(1000);
-    $user = generateUser();
-    isTrue($user->getPoint() == act()->getRegister(), "user's register point: " . $user->getPoint());
+    act()->setRegisterPoint(1000);
+    $user = registerUser();
+    isTrue($user->getPoint() == act()->getRegisterPoint(), "user's register point: " . $user->getPoint());
 }
 
 function testUserLoginPoint() {
-    clearUserActivities();
+    resetPoints(); // set point to 0.
+    $user = registerUser(); // register, but point is 0.
 
-    $user = generateUser();
-    act()->setLogin(333);
+    act()->setLoginPoint(333); //
     $login = user()->login([EMAIL => $user->email, PASSWORD => '12345a']);
-
-    isTrue($login->getPoint() == act()->getLogin(), "user's point: " . $login->getPoint());
+    isTrue($login->getPoint() == 333, "user's point: " . $login->getPoint());
 }
 
 
-function clearUserActivities()
+function testLikePoint() {
+
+    resetPoints();
+    $user = registerUser();
+    isTrue($user->getPoint() == 0, 'Newly registered user point must be 0.');
+
+    createPost()->like();
+    isTrue(login()->getPoint() == 0, 'Newly registered user point after vote should be 0, but ' . login()->getPoint());
+
+    act()->setLikePoint(123);
+    createPost()->like();
+    isTrue(login()->getPoint() == 123, 'Like point is 123. and user point must be 123 after vote, but ' . login()->getPoint());
+
+
+}
+
+function resetPoints()
 {
 
-    global $post1, $post2, $post3;
-
-    db()->query('truncate ' . act()->getTable());
-    db()->query('truncate ' . voteHistory()->getTable());
-
-
-    act()->setRegister(0);
-    act()->setLogin(0);
-    act()->setLike(0);
-    act()->setDislike(0);
-    act()->setLikeDeduction(0);
-    act()->setDislikeDeduction(0);
+    act()->setRegisterPoint(0);
+    act()->setLoginPoint(0);
+    act()->setLikePoint(0);
+    act()->setDislikePoint(0);
+    act()->setLikeDeductionPoint(0);
+    act()->setDislikeDeductionPoint(0);
 
     act()->setLikeDailyLimitCount(0);
     act()->setLikeHourLimit(0);
@@ -53,18 +91,12 @@ function clearUserActivities()
     // POINT is the test forum.
     if (category(POINT)->exists() == false) category()->create([ID => POINT]);
 
-    act()->setPostCreate(category(POINT)->idx, 0);
-    act()->setCommentCreate(category(POINT)->idx, 0);
-    act()->setPostDelete(category(POINT)->idx, 0);
-    act()->setCommentDelete(category(POINT)->idx, 0);
+    act()->setPostCreatePoint(category(POINT)->idx, 0);
+    act()->setCommentCreatePoint(category(POINT)->idx, 0);
+    act()->setPostDeletePoint(category(POINT)->idx, 0);
+    act()->setCommentDeletePoint(category(POINT)->idx, 0);
     act()->setCategoryDailyLimitCount(category(POINT)->idx, 0);
     act()->setCategoryHour(category(POINT)->idx, 0);
     act()->setCategoryHourLimitCount(category(POINT)->idx, 0);
-
-
-    $post1 = post()->create([CATEGORY_ID => POINT, TITLE => TITLE, CONTENT => CONTENT]);
-    $post2 = post()->create([CATEGORY_ID => POINT, TITLE => TITLE, CONTENT => CONTENT]);
-    $post3 = post()->create([CATEGORY_ID => POINT, TITLE => TITLE, CONTENT => CONTENT]);
-
 
 }

@@ -45,14 +45,14 @@ testChangeDate();
 
 
 function testPointRegisterAndLogin() {
-    clearTestPoint();
-    point()->setRegister(1);
-    point()->setLogin(2);
-    $registered = user()->register(['email' => 'register' . time() . '@gmail.com', 'password' => '12345a']);
-    isTrue($registered->getPoint() == 1, 'register point 1');
-
-    user()->login(['email' => $registered->email, 'password' => '12345a']);
-    isTrue($registered->getPoint() == 3, 'register point 3');
+//    clearTestPoint();
+//    point()->setRegister(1);
+//    point()->setLogin(2);
+//    $registered = user()->register(['email' => 'register' . time() . '@gmail.com', 'password' => '12345a']);
+//    isTrue($registered->getPoint() == 1, 'register point 1');
+//
+//    user()->login(['email' => $registered->email, 'password' => '12345a']);
+//    isTrue($registered->getPoint() == 3, 'register point 3');
 
 }
 
@@ -62,33 +62,33 @@ function testPointBasics() {
     global $post1, $post2, $post3, $email, $pw;
 
 
-    setLogin(A);
-    user(A)->setPoint(500);
-    isTrue(user(A)->getPoint() == 500, 'A point must be 500. but: ' . user(A)->getPoint());
+//    setLogin(A);
+//    user(A)->setPoint(500);
+//    isTrue(user(A)->getPoint() == 500, 'A point must be 500. but: ' . user(A)->getPoint());
 
 
 // 사용자 가입 포인트
-    clearTestPoint();
-    point()->setRegister(1000);
-    $user = user()->register([EMAIL => $email, PASSWORD => $pw]);
-    isTrue($user->getPoint() == point()->getRegister(), "user's register point: " . $user->getPoint());
+//    clearTestPoint();
+//    point()->setRegister(1000);
+//    $user = user()->register([EMAIL => $email, PASSWORD => $pw]);
+//    isTrue($user->getPoint() == point()->getRegister(), "user's register point: " . $user->getPoint());
 
 
 // 로그인 포인트 테스트
-    clearTestPoint();
-    user()->by($email)->setPoint(0);
-    point()->setLogin(333);
-
-    $login = user()->login([EMAIL => $email, PASSWORD => $pw]);
-    isTrue($login->getPoint() == point()->getLogin(), "user's point: " . $login->getPoint());
+//    clearTestPoint();
+//    user()->by($email)->setPoint(0);
+//    point()->setLogin(333);
+//
+//    $login = user()->login([EMAIL => $email, PASSWORD => $pw]);
+//    isTrue($login->getPoint() == point()->getLogin(), "user's point: " . $login->getPoint());
 
 
 // 추천 차감 포인트
-    clearTestPoint();
-    point()->setLike(100);
-    point()->setLikeDeduction(-20);
-    point()->setDislike(-50);
-    point()->setDislikeDeduction(-30);
+//    clearTestPoint();
+//    point()->setLike(100);
+//    point()->setLikeDeduction(-20);
+//    point()->setDislike(-50);
+//    point()->setDislikeDeduction(-30);
 
 //print("D point: " . user(D)->getPoint() . "\n");
 
@@ -303,15 +303,15 @@ function testPostCreateDelete(): void
 {
     clearTestPoint();
 
-    point()->setPostCreate(POINT, 1000);
-    point()->setPostDelete(POINT, -1200);
-    point()->setCommentCreate(POINT, 200);
-    point()->setCommentDelete(POINT, -300);
-
-    isTrue(point()->getPostCreate(POINT) == 1000);
-    isTrue(point()->getPostDelete(POINT) == -1200);
-    isTrue(point()->getCommentCreate(POINT) == 200);
-    isTrue(point()->getCommentDelete(POINT) == -300);
+//    point()->setPostCreate(POINT, 1000);
+//    point()->setPostDelete(POINT, -1200);
+//    point()->setCommentCreate(POINT, 200);
+//    point()->setCommentDelete(POINT, -300);
+//
+//    isTrue(point()->getPostCreate(POINT) == 1000);
+//    isTrue(point()->getPostDelete(POINT) == -1200);
+//    isTrue(point()->getCommentCreate(POINT) == 200);
+//    isTrue(point()->getCommentDelete(POINT) == -300);
 
     setLogin(A);
 
