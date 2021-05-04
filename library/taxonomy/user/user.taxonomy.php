@@ -113,7 +113,8 @@ class UserTaxonomy extends Entity {
 
         $this->create($in);
 
-        point()->register($this->profile());
+        act()->register($this);
+//        point()->register($this->profile());
 
         return $this;
     }
@@ -338,9 +339,12 @@ function user(int $idx=0): UserTaxonomy
 }
 
 /**
- * Returns User class instance of the login user. Or optionally, returns meta value of user field.
+ * Returns User class instance of the login user.
+ * Or returns meta value if user field is given.
+ *
  *
  * Note, that it returns Not Only user's field, but also user's meta field.
+ * Note, once user login object is created, it is reused.
  *
  * 만약, 로그인이 안된 상태에서 이 함수를 호출하면, login()->idx 의 값은 0 이 된다.
  *
@@ -348,8 +352,8 @@ function user(int $idx=0): UserTaxonomy
  * @return UserTaxonomy|int|string|array|null
  *
  * Example)
- *  d(user()->profile()); // Result. error_idx_not_set
- *  d(login()->profile()); // Result. it will return user profile if the user has logged in or error.
+ *  login()->update(['a' => 'apple']);
+ *  login()->a == 'apple'
  *
  * You may check if user had logged in before calling this method.
  *
@@ -357,8 +361,9 @@ function user(int $idx=0): UserTaxonomy
  *  login('color', false); // returns color meta.
  *  login()->color; // returns color meta also.
  */
+$__login_user_object = user(0); // memory cache
 function login(string $field=null): UserTaxonomy|int|string|array|null {
-    global $__login_user_profile;
+    global $__login_user_profile, $__login_user_object;
     $profile = $__login_user_profile;
     if ( $field ) {             // Want to get only 1 field?
         if ( $profile ) {       // Logged in?
@@ -371,10 +376,13 @@ function login(string $field=null): UserTaxonomy|int|string|array|null {
             return null;        // Not logged in to get a field.
         }
     } else {
-        return new UserTaxonomy($profile[IDX] ?? 0);
+        if ( $__login_user_object->idx && $__login_user_object->idx == ($profile[IDX] ?? 0) ) return $__login_user_object;
+        $__login_user_object = new UserTaxonomy($profile[IDX] ?? 0);
+        return $__login_user_object;
     }
-
 }
+
+
 
 
 

@@ -519,8 +519,6 @@ class Point {
             entity: $postIdx,
         );
     }
-
-
 }
 
 

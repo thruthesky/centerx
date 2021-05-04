@@ -45,6 +45,20 @@ class ConfigTaxonomy {
             meta()->update([TAXONOMY => $this->taxonomy, ENTITY => $this->entity, CODE => $code, DATA => $value ]);
         }
     }
+
+    /**
+     * @param string $code
+     * @return string
+     *  - error code on error.
+     *  - empty string('') on success.
+     */
+    public function delete(string $code): string {
+        $meta = meta()->delete($this->taxonomy, $this->entity, $code);
+        if ( $meta->hasError ) return $meta->getError();
+        else return '';
+    }
+
+
 }
 
 
