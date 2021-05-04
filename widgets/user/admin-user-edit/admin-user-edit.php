@@ -62,7 +62,7 @@ if(modeSubmit()) {
 
             <div class="form-group col-6">
                 <label for="nickname"><?=ek('Nickname', '별명')?></label>
-                <input data-cy="user-edit-form-nickname" type="text" class="form-control" placeholder="<?=ek('Nickname', '별명')?>" name="nickname" id="nickname"  value="<?=$profile->nickname?>">
+                <input data-cy="user-edit-nickname" type="text" class="form-control" placeholder="<?=ek('Nickname', '별명')?>" name="nickname" id="nickname"  value="<?=$profile->nickname?>">
             </div>
         </div>
 
@@ -70,12 +70,12 @@ if(modeSubmit()) {
         <div class="form-row">
             <div class="form-group col-6">
                 <label for="phoneNo"><?=ek('Phone Number', '전화 번호')?></label>
-                <input type="text" class="form-control" placeholder="<?=ek('Phone Number', '전화 번호')?>" name="phoneNo" id="phoneNo"  value="<?=$profile->phoneNo?>">
+                <input data-cy="user-edit-phone-number" type="text" class="form-control" placeholder="<?=ek('Phone Number', '전화 번호')?>" name="phoneNo" id="phoneNo"  value="<?=$profile->phoneNo?>">
             </div>
 
             <div class="form-group col-6">
                 <label for="gender"><?=ek('Gender', '성별')?></label>
-                <select class="custom-select" id="gender" name="gender">
+                <select data-cy="user-edit-gender-select" class="custom-select" id="gender" name="gender">
                     <option value="" <?=$profile->gender == '' ? 'selected': ''?>><?=ek('Select Gender', '성별을 선택하세요')?></option>
                     <option value="M" <?=$profile->gender == 'M' ? 'selected': ''?>><?=ek('Male', '남성')?></option>
                     <option value="F" <?=$profile->gender == 'F' ? 'selected': ''?>><?=ek('Female', '여자')?></option>
@@ -141,7 +141,7 @@ if(modeSubmit()) {
 
         <div class="d-flex justify-content-start mt-2 mb-3">
             <div class=" mr-5">
-                <button data-cy="user-edit-form-submit" type="submit" class="btn btn-primary">
+                <button data-cy="user-edit-submit" type="submit" class="btn btn-primary">
                     <?=ek('Save', '저장')?>
                 </button>
             </div>

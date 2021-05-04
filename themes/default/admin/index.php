@@ -7,7 +7,7 @@ if (admin() == false) jsBack('You are not admin');
     <div class="container-fluid" style="background-color: #181c32;">
         <nav class="container navbar white py-0" style="height: 70px;">
             <div class="white py-3">
-                <a class="btn fw-700 fs-sm" href="/?p=admin.index"><?= ek('Dashboard!', '관리자페이지') ?></a>
+                <a class="btn fw-700 fs-sm" href="/?p=admin.index"><?= ek('Dashboard', '관리자페이지') ?></a>
                 <a class="btn fw-700 fs-sm" href="/"><?= ek('Home', '홈') ?></a>
             </div>
             <div class="ml-auto white">

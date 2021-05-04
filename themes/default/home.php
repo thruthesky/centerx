@@ -26,7 +26,7 @@
         <a class="btn btn-primary" href="/?p=forum.post.list&categoryId=reminder">Reminder</a>
 
         <?php if ( admin() ) { ?>
-            <a class="btn btn-primary" href="/?p=admin.index"><?=ln(['en' => 'Admin', 'ko' => '관리자'])?></a>
+            <a data-cy="home-admin-button" class="btn btn-primary" href="/?p=admin.index"><?=ln(['en' => 'Admin', 'ko' => '관리자'])?></a>
         <?php } ?>
         <form action="/">
             <input type="hidden" name="p" value="setting.language.submit">

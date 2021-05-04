@@ -57,7 +57,7 @@ if ( $editCategory ) {
                     <input type="hidden" name="mode" value="create">
                     <div class="d-flex">
                         <input data-cy="category-input" class="form-control mb-2" type="text" name='id' placeholder="카테고리 아이디 입력">
-                        <button class="btn btn-primary ml-3 mb-2 w-50" type="submit" ><?=ln(['en' => 'Create', 'ko' => '생성'])?></button>
+                        <button data-cy="category-submit" class="btn btn-primary ml-3 mb-2 w-50" type="submit" ><?=ln(['en' => 'Create', 'ko' => '생성'])?></button>
                     </div>
                 </form>
             </section>
