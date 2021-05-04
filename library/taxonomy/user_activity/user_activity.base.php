@@ -2,6 +2,90 @@
 
 class UserActivityBase extends Entity {
 
+
+    /**
+     * Returns true if the records of $actions are more than the number of $count.
+     * For instance, $count is set to 3, and $stamp is for 5 hours, and $actions are set to [login, createPost],
+     *  then if there are more than 3 of login or createPost, it will return true.
+     *
+     * 포인트 기록 테이블에서 $stamp 시간 내에 $reason 들을 찾아 그 수가 $count 보다 많으면 true 를 리턴한다.
+     * 예를 들어,
+     *   - 추천/비추천을 1시간 이내에 5번으로 제한을 하려고 할 때,
+     *   - 글 쓰기를 하루에 몇번으로 제한 할 때 등에 사용 할 수 있다.
+     *
+     * @param array $actions
+     * @param int $stamp
+     * @param int $count
+     * @param int $fromUserIdx
+     * @param int $categoryIdx
+     * @return bool
+     *
+     * @example
+     *
+     * // 추천/비추천 시간/수 제한
+     * if ( $re = count_over(
+     * [ POINT_LIKE, POINT_DISLIKE ], // 추천/비추천을
+     * get_like_hour_limit() * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
+     * get_like_hour_limit_count() // count 회 수 이상 했으면,
+     * ) ) return ERROR_HOURLY_LIMIT; // 에러 리턴
+     */
+    function countOver(array $actions, int $stamp, int $count, int $fromUserIdx=0, int $categoryIdx=0): bool {
+        if ( $count ) {
+//            d("countOver: $categoryIdx");
+            $total = $this->countActions( actions: $actions, stamp: $stamp, fromUserIdx: $fromUserIdx, categoryIdx: $categoryIdx );
+            if ( $total >= $count ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    /**
+     * Returns the number of records of $actions for the last period of $stamp.
+     *
+     * 포인트 기록 테이블에서, $stamp 시간 내의 입력된 $actions 의 레코드를 수를 찾아 리턴한다.
+     *
+     * 주의, 추천/비추천과 같이 행동을 하는(포인트를 주는) 주체가 나 인경우, fromUser 에서 제한한다.
+     * 그 외(가입, 로그인 글 쓰기)는 toUser 에서 제한한다.
+     * 이 때에는 $fromUserIdx 에 값이 들어와야 한다.
+     *
+     * @param int $stamp
+     * @param array $actions
+     * @param int $fromUserIdx - user.idx to find records of
+     *  - If $fromUserIdx is not set, then it will search for the login user's record.
+     *    만약 fromUserIdx 가 지정되지 않으면, 로그인한 사용자의 idx 를 toUserIdx 로 사용한다.
+     * @param int $categoryIdx
+     *  Finds records for that specific category.idx
+     * @return int|string|null
+     */
+    function countActions(array $actions, int $stamp, int $fromUserIdx=0, int $categoryIdx=0): int|string|null
+    {
+        if ( ! $stamp ) return 0;
+        $reason_ors = "(" . sqlCondition($actions, 'OR', 'action') . ")";
+
+        $q_categoryIdx = '';
+        if ( $categoryIdx ) $q_categoryIdx = "AND categoryIdx=$categoryIdx";
+
+        $last_stamp = time() - $stamp;
+
+        if ( $fromUserIdx ) {
+            $user = "fromUserIdx=?";
+            $userIdx = $fromUserIdx;
+        } else {
+            $user = "toUserIdx=?";
+            $userIdx = login()->idx;
+        }
+
+        $q = "SELECT COUNT(*) FROM ". $this->getTable() ." WHERE createdAt > $last_stamp AND $user $q_categoryIdx AND $reason_ors";
+//        d($q);
+
+        return db()->column($q);
+    }
+
+
+
     /**
      * Records user action
      *
@@ -17,7 +101,7 @@ class UserActivityBase extends Entity {
      * @param int $fromUserPoint - the point to apply to $fromUserIdx
      * @param int $toUserIdx - the user that will receive point.
      * @param int $toUserPoint - the point to apply to $toUserIdx.
-     * @return int
+     * @return int|string
      *
      * - 적용된 포인트를 음/양의 값으로 리턴한다. 이 리턴되는 값을 from_user_point_apply 또는 to_user_point_apply 에 넣으면 된다.
      * - 입력된 $point 가 올바르지 않거나, 증가되지 않으면 0을 리턴한다.
@@ -27,12 +111,15 @@ class UserActivityBase extends Entity {
         string $taxonomy = '',
         int $entity = 0,
         int $categoryIdx = 0,
-    ): int {
+    ): int|string {
+        d("recordAction( action: $action, fromUserIdx: $fromUserIdx, toUserIdx: $toUserIdx, toUserPoint: $toUserPoint");
         // prepare
         $toUser = user($toUserIdx);
         $fromUserPointApply = 0;
         $fromUserPointAfter = 0;
+        $toUserPointApply = 0;
 
+        if ( ! $toUserIdx ) return e()->user_activity_record_action_to_user_idx_is_empty;
 
         if ( $fromUserIdx ) {
             $fromUser = user($fromUserIdx);
@@ -41,9 +128,10 @@ class UserActivityBase extends Entity {
         }
 
 
-        $toUserPointApply  = $this->changeUserPoint($toUserIdx, $toUserPoint);
+        if ( $toUserPoint ) {
+            $toUserPointApply  = $this->changeUserPoint($toUserIdx, $toUserPoint);
+        }
         $toUserPointAfter = $toUser->getPoint();
-
 
 
         $record = [

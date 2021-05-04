@@ -100,11 +100,19 @@ function registerUser(): UserTaxonomy {
     $email = "random-$__generateUserCount-" . time() . "@test.com";
     $user = user()->register([EMAIL => $email, PASSWORD => '12345a']);
 
-    setLogin($user->idx);
-
     return $user;
-
 }
+
+/**
+ * Registers with random email and logs into the system.
+ * @return UserTaxonomy
+ */
+function registerAndLogin(): UserTaxonomy {
+    $user = registerUser();
+    setLogin($user->idx);
+    return $user;
+}
+
 
 
 

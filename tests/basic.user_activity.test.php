@@ -9,12 +9,14 @@ testPointSettings();
 testUserRegisterPoint();
 testUserLoginPoint();
 testLikePoint();
+testDislikePoint();
+testDislikePointForMinusPoint();
 
 
 function testUserPointSet() {
     resetPoints();
-    registerUser()->setPoint(500);
-    isTrue(login()->getPoint() == 500, 'A point must be 500. but: ' . login()->getPoint());
+    $user = registerUser()->setPoint(500);
+    isTrue($user->getPoint() == 500, 'A point must be 500. but: ' . $user->getPoint());
 }
 
 
@@ -63,17 +65,51 @@ function testUserLoginPoint() {
 function testLikePoint() {
 
     resetPoints();
-    $user = registerUser();
-    isTrue($user->getPoint() == 0, 'Newly registered user point must be 0.');
+    $user1 = registerUser();
+    isTrue($user1->getPoint() == 0, 'Newly registered user point must be 0.');
 
-    createPost()->like();
-    isTrue(login()->getPoint() == 0, 'Newly registered user point after vote should be 0, but ' . login()->getPoint());
+    setLogin($user1->idx);
+    $post1 = createPost()->like();
+    isTrue($user1->getPoint() == 0, 'Newly registered user point after vote should be 0, but ' . $user1->getPoint());
 
     act()->setLikePoint(123);
-    createPost()->like();
-    isTrue(login()->getPoint() == 123, 'Like point is 123. and user point must be 123 after vote, but ' . login()->getPoint());
+    $post2 = createPost()->like();
+    isTrue($user1->getPoint() == 0, 'The point must be 0 since the post belongs to the voter., but ' . $user1->getPoint());
 
+    $anotherUser = registerUser();
+    setLogin($anotherUser->idx);
+    $post2->like();
+    isTrue($anotherUser->getPoint() == 0, 'Another user registered, logged, voted. And the point of another user must be 0, but ' . $anotherUser->getPoint());
+
+    isTrue($user1->getPoint() == 123, 'user1 point must be 123, but ' . $user1->getPoint());
 }
+
+function testDislikePoint() {
+    resetPoints();
+    $A = registerAndLogin(); // login A
+    act()->setDislikePoint(111); // set dislike point.
+    $post1 = createPost(); // create a post.
+    registerAndLogin(); // login to another user.
+    $post1->dislike(); // dislike A's post.
+    // So, A gets 111.
+    isTrue($A->getPoint() == 111, "User post was disliked. post must be 111, but" . $A->getPoint());
+}
+
+function testDislikePointForMinusPoint() {
+    resetPoints();
+    $A = registerAndLogin();
+    $A->setPoint(100);
+    act()->setDislikePoint(-33);
+    $post = createPost();
+
+    registerAndLogin();
+    $post->dislike();
+
+    // So, A get -33. And he has 77 point left.
+    isTrue($A->getPoint() == 67, "User post was disliked. post must be 111, but: " . $A->getPoint());
+}
+
+
 
 function resetPoints()
 {

@@ -50,6 +50,7 @@
     act()->on(POST_LIKE)
     
   - Leave a record on the same method of point change.
+  - Change POINT_POST_CREATE to pointCreatePost and all others with the format.
 
 - @doc
   meta function may try to create child meta even if its taxonomy is meta. It only happens on testing.

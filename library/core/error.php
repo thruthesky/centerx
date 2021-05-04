@@ -161,6 +161,8 @@ class E {
 
 
     public string $wrong_activity = 'error_wrong_activity';
+    public string $user_activity_record_action_to_user_idx_is_empty = 'error_user_activity_record_action_to_user_idx_is_empty';
+
 
 
 

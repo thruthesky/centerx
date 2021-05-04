@@ -65,7 +65,7 @@ class Forum extends Entity {
         if ( $Yn != 'Y'  && $Yn != 'N' ) return $this->error(e()->empty_wrong_choice);// ERROR_WRONG_INPUT;
 
         $vote = voteHistory()->by(login()->idx, POSTS, $this->idx);
-        // 추천을 이미 했는가?
+        // Already voted? 추천을 이미 했는가?
         if ( $vote->exists() ) {
             if ( $vote->choice == $Yn ) {
                 // 동일한 추천을 이미 했음. 포인트 변화 없이, 추천을 없애준다.
@@ -77,9 +77,9 @@ class Forum extends Entity {
             }
         } else {
 //            act()->can(Activity::$vote, postIdx: $this->idx);
-            // 처음 추천
-            // 처음 추천하는 경우에만 포인트 지정.
-            // 추천 기록 남김. 포인트 증/감 유무와 상관 없음.
+            // Do actions for first vote. 처음 추천
+            // Change point for first vote only. 처음 추천하는 경우에만 포인트 지정.
+            // Leave vote history. 추천 기록 남김. 포인트 증/감 유무와 상관 없음.
             voteHistory()->create([
                 USER_IDX => login()->idx,
                 TAXONOMY => POSTS,
@@ -87,9 +87,11 @@ class Forum extends Entity {
                 CHOICE => $Yn
             ]);
 //            d("$Yn");
-            point()->vote($this, $Yn);
-        }
+//            point()->vote($this, $Yn);
 
+//            d($this);
+            act()->vote($this, $Yn);
+        }
 
         // 해당 글 또는 코멘트의 총 vote 수를 업데이트 한다.
         $Y = voteHistory()->count(conds: [TAXONOMY => POSTS, ENTITY => $this->idx, CHOICE => 'Y']);

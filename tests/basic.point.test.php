@@ -95,9 +95,9 @@ function testPointBasics() {
 
 
 // B 포인트가 0 인데, -20 만큼 감소를 해도, 0 이하로 저장되지 않으므로 0 이다.
-    setLogin(B);
-    $post1->vote('Y');
-    isTrue(login()->getPoint() == 0, 'B point should be 0, but ' . login()->getPoint());
+//    setLogin(B);
+//    $post1->vote('Y');
+//    isTrue(login()->getPoint() == 0, 'B point should be 0, but ' . login()->getPoint());
 
 
 
