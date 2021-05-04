@@ -10,11 +10,13 @@ testUserRegisterPoint();
 testUserLoginPoint();
 testLikePoint();
 
+
 function testUserPointSet() {
     resetPoints();
-    setLogin1stUser()->setPoint(500);
+    registerUser()->setPoint(500);
     isTrue(login()->getPoint() == 500, 'A point must be 500. but: ' . login()->getPoint());
 }
+
 
 function testPointSettings() {
     resetPoints();

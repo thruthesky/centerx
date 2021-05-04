@@ -69,9 +69,11 @@ class PostTaxonomy extends Forum {
             $this->updateData('url', $url);
         }
 
-        $this->patchPoint();
+        d("@todo patchPoint()");
+//        $this->patchPoint();
         return $this;
     }
+
 
 
     /**
@@ -132,10 +134,13 @@ class PostTaxonomy extends Forum {
 
 
         // 포인트 충전
-        point()->forum(POINT_POST_CREATE, $this->idx);
+        d('@todo point change for post create');
+//        point()->forum(POINT_POST_CREATE, $this->idx);
 
         // 포인트를 현재 객체의 $this->data 에 업데이트
-        $this->patchPoint();
+
+        d('@todo patch point after post create');
+//        $this->patchPoint();
 
         /// 글/코멘트에 포인트를 적용 한 후, 훅
         $data = $this->getData();
