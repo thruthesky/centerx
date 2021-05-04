@@ -70,8 +70,7 @@ function testLikePoint() {
     act()->setLikePoint(123);
     createPost()->like();
     isTrue(login()->getPoint() == 123, 'Like point is 123. and user point must be 123 after vote, but ' . login()->getPoint());
-
-
+    
 }
 
 function resetPoints()
