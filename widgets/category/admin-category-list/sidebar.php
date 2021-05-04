@@ -78,7 +78,7 @@
             </td>
         </tr>
         <tr>
-            <td><?=ek('Point Delete Point', '글 삭제 포인트')?></td>
+            <td><?=ek('Post Delete Point', '글 삭제 포인트')?></td>
             <td>
                 <input type="number" name="<?=POINT_POST_DELETE?>" value="<?= $category->POINT_POST_DELETE ?>">
             </td>

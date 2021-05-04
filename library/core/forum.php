@@ -26,6 +26,8 @@ class Forum extends Entity {
     }
 
     /**
+     * @deprecated Use next version
+     *
      * 현재 글(또는 코멘트)을 생성 할 때, 작성자가 획득한 포인트를 $this->data 에 업데이트한다.
      *
      * 획득한 포인트는 오직, point_histories 에만 기록되는데, 그 값을 읽어, 현재 $this->data 메모리 변수에 적용한다.
@@ -57,7 +59,7 @@ class Forum extends Entity {
      * @example
      *  $re = api_vote(['post_ID' => 1, 'choice' => 'Y']);
      */
-    public function vote($Yn): self {
+    public function vote(string $Yn): self {
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
         if ( !$Yn ) return $this->error(e()->empty_vote_choice);// ERROR_EMPTY_CHOICE;
         if ( $Yn != 'Y'  && $Yn != 'N' ) return $this->error(e()->empty_wrong_choice);// ERROR_WRONG_INPUT;
@@ -74,7 +76,7 @@ class Forum extends Entity {
                 $vote->update([CHOICE => $Yn]);
             }
         } else {
-            act()->can(Activity::$vote, postIdx: $this->idx);
+//            act()->can(Activity::$vote, postIdx: $this->idx);
             // 처음 추천
             // 처음 추천하는 경우에만 포인트 지정.
             // 추천 기록 남김. 포인트 증/감 유무와 상관 없음.
@@ -98,6 +100,14 @@ class Forum extends Entity {
 //        $record = entity(POSTS, $this->idx)->update($data);
 //        return $record;
     }
+
+    public function like(): self {
+        return $this->vote('Y');
+    }
+    public function dislike(): self {
+        return $this->vote('N');
+    }
+
 
 
 

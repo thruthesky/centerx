@@ -323,6 +323,7 @@ class Point {
     }
 
     /**
+     * @deprecated Use next version
      * 게시판 글/코멘트 쓰기 제한에 걸렸으면 에러 문자열을 리턴한다. 제한에 걸리지 않았으면 false 를 리턴한다.
      * @param int|string $category
      * @return false|string
