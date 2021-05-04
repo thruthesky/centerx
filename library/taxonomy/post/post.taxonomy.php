@@ -109,7 +109,7 @@ class PostTaxonomy extends Forum {
         }
 
 
-        act()->can(CREATE_POST, categoryIdx: $category->idx);
+        act()->canCreatePost($category);
 
 
 
@@ -448,8 +448,10 @@ class PostTaxonomy extends Forum {
 
 
 /**
+ * Returns post object.
  * 글 객체 리턴
  *
+ * Note, that it might be a comment or something else as long as it users 'posts' table. Meaning, you can get post object of a comment.
  *
  *
  * @param int|string $idx - 숫자이면 글번호로 인식. 아니면, 코드로 인식하여 글 객체를 리턴한다.

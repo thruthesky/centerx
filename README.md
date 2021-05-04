@@ -681,16 +681,34 @@ with the latest android version, but the developer must code on the android app.
 ## User Activity
 
 This logs all user activities.
-This class does not check the input from http params or whether the user logged in or not, but it checks if the user
-have enough point to create post, or anything that has point related work including banning users who reached the
-day/hour creation limit.
 
-- user registration,
-- user login
-- likes, dislikes,
-- post/comment crud,
-- file uploads,
 
+
+* To record an activity (or to program an acitivy)
+  
+  * add activity name as a static member variable in Actions class.
+  * add a routine to 'canXxxx()' method if it needs to check the permission on the activity.
+  * add a routine to record the action in 'xxxx()' method.
+    * If it needs to deduct point, deduct the point in this method.
+
+  for instance, 'UserActivityTaxonomy::canRegister()' checkes if the user can register, and 'UserActivityTaxonomy::register()' method records.
+
+
+
+
+
+- User activities are recorded in the `user_activities`.
+  The actions may be user register, login, post create, delete, like, dislike, and more.
+
+  - When an entity of `posts` is created, taxonomy is `posts`, and the entity is the idx of the record, and categoryIdx is the category.idx.
+    An entity of `posts` may be a post, a comment, or any record in `posts` table.
+
+  - `fromUserIdx` is the user who trigger the action.
+  - `toUserIdx` is the user who takes the benefit.
+  - If the values of `fromUserIdx` and `toUserIdx` are same, then, `fromUserIdx` may be 0. Like user register, login, post create, delete, comment create, delete.
+  - Note that, when a user like or dislike on his own post or comment, there will be no point history.
+
+- For like and dislike, the history is saved under `post_vote_histories` but that has no information about who liked who.
 
 
 
@@ -1781,24 +1799,6 @@ chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php next"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php next.entity.search"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
 ```
-
-
-
-# User Activity
-
-- Most of user actions are recorded in the `point_histories`.
-  The actions are user register, login, post create, delete, like, dislike, and more.
-  
-  - When an entity of `posts` is created, taxonomy is `posts`, and the entity is the idx of the record, and categoryIdx is the category.idx.
-    An entity of `posts` may be a post, a comment, or any record in `posts` table.
-    
-  - `fromUserIdx` is the user who trigger the action.
-  - `toUserIdx` is the user who takes the benefit.
-  - If the values of `fromUserIdx` and `toUserIdx` are same, then, `fromUserIdx` may be 0. Like user register, login, post create, delete, comment create, delete.
-  - Note that, when a user like or dislike on his own post or comment, there will be no point history.
-  
-- For like and dislike, the history is saved under `post_vote_histories` but that has no information about who liked who.
-
 
 
 

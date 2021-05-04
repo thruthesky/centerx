@@ -74,6 +74,7 @@ class Forum extends Entity {
                 $vote->update([CHOICE => $Yn]);
             }
         } else {
+            act()->can(Activity::$vote, postIdx: $this->idx);
             // 처음 추천
             // 처음 추천하는 경우에만 포인트 지정.
             // 추천 기록 남김. 포인트 증/감 유무와 상관 없음.
