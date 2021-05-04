@@ -78,7 +78,7 @@ function _testEntitySearch() {
 
 function _testEntityMy() {
 
-    $email = 'my'.time().'@email.com';
+    $email = 'testEntityMy'.time().'@email.com';
     $user = entity(USERS)->create(['email' => $email, 'password' => '12345a']);
 
     entity(POSTS)->create([CATEGORY_IDX => 1, USER_IDX => $user->idx]);
@@ -87,5 +87,5 @@ function _testEntityMy() {
 
     setLogin($user->idx);
     $re = entity(POSTS)->my();
-    isTrue(count($re) == 3);
+    isTrue(count($re) == 3, 'count should be 3');
 }

@@ -19,6 +19,7 @@ define('COUNTRIES', 'countries');
 define('FRIENDS', 'friends');
 define('USERS', 'users');
 define('IN_APP_PURCHASE', 'in_app_purchase');
+define('USER_ACTIVITIES', 'user_activities');
 
 /**
  * The `comments` is the same taxonomy as `posts`.
