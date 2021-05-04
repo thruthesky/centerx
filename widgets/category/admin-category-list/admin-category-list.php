@@ -56,7 +56,7 @@ if ( $editCategory ) {
                     <input type="hidden" name="w" value="category/admin-category-list">
                     <input type="hidden" name="mode" value="create">
                     <div class="d-flex">
-                        <input class="form-control mb-2" type="text" name='id' placeholder="카테고리 아이디 입력">
+                        <input data-cy="category-input" class="form-control mb-2" type="text" name='id' placeholder="카테고리 아이디 입력">
                         <button class="btn btn-primary ml-3 mb-2 w-50" type="submit" ><?=ln(['en' => 'Create', 'ko' => '생성'])?></button>
                     </div>
                 </form>
@@ -76,11 +76,11 @@ if ( $editCategory ) {
                 <?php foreach( ids(category()->search( limit: 200 )) as $idx ) { $category = category($idx) ?>
 
                     <tr>
-                        <th scope="row"><a href="/?p=forum.post.list&categoryId=<?=$category->id?>" target="_blank"><?=$category->idx?></a></th>
+                        <th scope="row"><a data-cy="<?=$category->id?>" href="/?p=forum.post.list&categoryId=<?=$category->id?>" target="_blank"><?=$category->idx?></a></th>
                         <td><a href="/?p=admin.index&w=category/admin-category-list&id=<?=$category->id?>"><?=$category->id?></a></td>
-                        <td><?=$category->title?></td>
-                        <td><?=$category->description?></td>
-                        <td><a href="/?admin.index&w=<?=in('w')?>&mode=delete&id=<?=$category->id?>" onclick="return confirm('Delete the category?')">[X]</a></td>
+                        <td><span data-cy="category-<?=$category->id?>-title" ><?=$category->title?></span></td>
+                        <td><span data-cy="category-<?=$category->id?>-description" ><?=$category->description?></span></td>
+                        <td><a data-cy="<?=$category->id?>-delete" href="/?admin.index&w=<?=in('w')?>&mode=delete&id=<?=$category->id?>" onclick="return confirm('Delete the category?')">[X]</a></td>
                     </tr>
                 <?php } ?>
                 </tbody>
