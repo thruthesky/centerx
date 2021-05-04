@@ -3,7 +3,7 @@ describe("Forum", function () {
     cy.login();
   });
 
-  it("Checks admin forum page", function () {
+  it("tests forum settings crud", function () {
     cy.visit("/?p=admin.index&w=category/admin-category-list");
 
     const testCategory = 'aa_test_category';

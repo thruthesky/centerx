@@ -12,7 +12,7 @@ if ( $key ) {
 $total = user()->count();
 ?>
 
-<section id="admin-user-list">
+<section data-cy="admin-user-list" id="admin-user-list">
     <div class="d-flex justify-content-end">
         <form>
             <input type="hidden" name="p" value="admin.index">
@@ -37,7 +37,7 @@ $total = user()->count();
     </div>
 
     <div class="custom-control custom-checkbox custom-control-inline mb-3" v-for="(option, key) in options" :key="key">
-        <input type="checkbox" class="custom-control-input" :id="key + '-option'" v-model="options[key]">
+        <input :data-cy="key + '-option'" type="checkbox" class="custom-control-input" :id="key + '-option'" v-model="options[key]">
         <label class="custom-control-label text-capitalize" :for="key + '-option'">{{key}}</label>
     </div>
     <section class="overflow-auto">
@@ -45,13 +45,13 @@ $total = user()->count();
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col"  v-if="options.email">Email</th>
+            <th data-cy="firebaseUid-col-header" scope="col" v-if="options.email">Email</th>
             <th scope="col"  v-if="options.firebaseUid">firebaseUid</th>
             <th scope="col"  v-if="options.name">Name</th>
             <th scope="col"  v-if="options.nickname">nickname</th>
             <th scope="col"  v-if="options.point">point</th>
             <th scope="col"  v-if="options.phoneNo">Phone No.</th>
-            <th scope="col"  v-if="options.gender">gender</th>
+            <th data-cy="gender-col-header" scope="col"  v-if="options.gender">gender</th>
             <th scope="col"  v-if="options.birthdate">birthdate</th>
             <th scope="col"  v-if="options.countryCode">countryCode</th>
             <th scope="col"  v-if="options.province">province</th>
@@ -86,7 +86,7 @@ $total = user()->count();
                 <td v-if="options.createdAt"><?=$user->createdAt?></td>
                 <td v-if="options.updatedAt"><?=$user->updatedAt?></td>
                 <td>
-                    <a class="btn btn-outline-primary"
+                    <a data-cy="user-info-edit-button" class="btn btn-outline-primary"
                        href="/?p=admin.index&w=user/admin-user-edit&userIdx=<?=$user->idx?>">🖉</a>
                 </td>
             </tr>
