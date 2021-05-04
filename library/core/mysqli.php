@@ -33,7 +33,7 @@ class MySQLiDatabase {
         debug_log($this->error);
     }
 
-    
+
 
     /**
      * @deprecated Do not use this method. it is not safe. Use it only for test or debug.
@@ -72,7 +72,9 @@ class MySQLiDatabase {
 
         try {
             $sql = "INSERT INTO {$table} ({$fields}) VALUES ({$placeholders})";
+
             $stmt = $this->connection->prepare($sql);
+
             $types = $this->types($values);
             $stmt->bind_param($types, ...$values);
 
