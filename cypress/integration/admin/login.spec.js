@@ -5,6 +5,5 @@ describe('Admin login', function() {
         cy.get('[name="password"]').type('12345a')
 
         cy.get('button[type="submit"]').click()
-
     })
 })
