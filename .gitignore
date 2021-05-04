@@ -24,3 +24,5 @@ cache
 .bashrc
 .profile
 .viminfo
+
+cypress/videos/

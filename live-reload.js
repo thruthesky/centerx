@@ -8,7 +8,7 @@ var svrOptions = {
 
 var server = https.createServer(svrOptions, function onRequest(req, res) {
     // Set CORS headers
-    res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
+    res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
     if ( req.method === 'OPTIONS' ) {
         res.writeHead(200);
@@ -35,4 +35,14 @@ chokidar.watch('.', { ignored: [ '.idea', 'etc/phpdoc', '.phpdoc', 'etc/sql', 'n
     console.log(event, path, ' at ' + ( new Date ).toLocaleString());
     io.emit('reload', { code: 'reload' });
 });
+
+
+const http = require('http');
+
+const requestListener = function (req, res) {
+    res.writeHead(200);
+    res.end('Hello, World!');
+}
+const server2 = http.createServer(requestListener);
+server2.listen(12346);
 
