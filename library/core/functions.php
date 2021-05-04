@@ -524,14 +524,30 @@ function getSecondUser(): UserTaxonomy {
     $users = user()->search(limit: 2, object: true);
     return $users[1];
 }
+
 /**
  * 맨 마지막에서 세번째(가입한) 사용자의 객체를 리턴한다.
  * 테스트에 사용.
- * @return User
+ * @return UserTaxonomy
  */
 function getThirdUser(): UserTaxonomy {
     $users = user()->search(limit: 3, object: true);
     return $users[2];
+}
+
+/**
+ * Generate a random user. Use it for test only.
+ *
+ * password is: 12345a
+ *
+ * @return UserTaxonomy
+ */
+$__generateUserCount = 0;
+function generateUser(): UserTaxonomy {
+    global $__generateUserCount;
+    $__generateUserCount ++;
+    $email = "random-$__generateUserCount-" . time() . "@test.com";
+    return user()->register([EMAIL => $email, PASSWORD => '12345a']);
 }
 
 
