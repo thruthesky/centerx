@@ -164,7 +164,9 @@ class UserActivityTaxonomy extends Entity {
         $fromUser = user($fromUserIdx);
         $toUser = user($toUserIdx);
 
-        $fromUserPointApply  = $this->changeUserPoint($fromUserIdx, $fromUserPoint);
+        if ( $fromUserIdx ) {
+            $fromUserPointApply  = $this->changeUserPoint($fromUserIdx, $fromUserPoint);
+        }
         $toUserPointApply  = $this->changeUserPoint($toUserIdx, $toUserPoint);
 
         $created = $this->create([
