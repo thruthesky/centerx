@@ -1,13 +1,16 @@
 <?php
-
-mysqli_report(MYSQLI_REPORT_ALL ^  MYSQLI_REPORT_INDEX);
-
-
+/**
+ * @file mysqli.php
+ */
+/**
+ * Class MySQLiDatabase
+ */
 
 class MySQLiDatabase {
     public mysqli $connection;
     public string $error = '';
     public bool $displayError = false;
+
 
 
     public function __construct(string $host, string $dbname, string $username, string $passwd, int $port = 0) {
@@ -30,6 +33,7 @@ class MySQLiDatabase {
         debug_log($this->error);
     }
 
+    
 
     /**
      * @deprecated Do not use this method. it is not safe. Use it only for test or debug.
