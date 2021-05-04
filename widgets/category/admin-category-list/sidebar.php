@@ -2,7 +2,7 @@
     $category = category(in(ID));
 
 ?>
-<form action="/" method="post">
+<form data-cy="category-settings-form" action="/" method="post">
     <input type="hidden" name="p" value="admin.index">
     <input type="hidden" name="w" value="category/admin-category-list">
     <input type="hidden" name="mode" value="update">
@@ -29,14 +29,14 @@
         <tr>
             <td><?=ek('Title', '게시판 제목')?></td>
             <td>
-                <input name="<?=TITLE?>" value="<?= $category->title ?>">
+                <input data-cy="category-settings-form-title" name="<?=TITLE?>" value="<?= $category->title ?>">
             </td>
         </tr>
 
         <tr>
             <td><?=ek('Description', '설명')?></td>
             <td>
-                <input name="<?=DESCRIPTION?>" value="<?= $category->description ?>">
+                <input data-cy="category-settings-form-description" name="<?=DESCRIPTION?>" value="<?= $category->description ?>">
             </td>
         </tr>
 
@@ -380,7 +380,7 @@
         <tr>
             <td></td>
             <td>
-                <button type="submit">Submit</button>
+                <button data-cy="category-settings-form-submit" type="submit">Submit</button>
             </td>
         </tr>
         </tbody>
