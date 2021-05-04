@@ -301,16 +301,10 @@ class PostTaxonomy extends Forum {
      */
     public function list(string $categoryId, int $page=1, int $limit=10): array
     {
-<<<<<<< HEAD
-        return $this->search(
-            where: "categoryId=<$categoryId> AND parentIdx=0 AND deletedAt=0",
-            page: $page,
-            limit: $limit
-        );
-=======
+
         $categoryIdx = category($categoryId)->idx;
         return $this->search( where: "categoryIdx=? AND parentIdx=0 AND deletedAt=0", params: [$categoryIdx], page: $page, limit: $limit);
->>>>>>> settings
+
     }
 
     /**
