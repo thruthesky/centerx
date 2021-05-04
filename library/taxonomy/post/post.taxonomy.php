@@ -103,6 +103,7 @@ class PostTaxonomy extends Forum {
             if ( isError($re) ) return $this->error($re);
         }
 
+
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러. error if user is lack of point.
         $pointToCreate = point()->getPostCreate($category->idx);
         if ( $pointToCreate < 0 ) {

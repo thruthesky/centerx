@@ -42,6 +42,7 @@
 - user activities
   - leave all histories including point changes.
   - vote point, post/comment crud point setting for each category.
+  - vote point can have global settings.
     
   - `act()->canCreate($categoryIdx, $postIdx)`, `act()->canDelete()`,
   - `act()->on(POST_CREATE, post: $post, comment: $comment)`, `act()->on(LOGIN)`, `act()->on(POST_VOTE)`,
@@ -694,17 +695,6 @@ This logs all user activities.
 
 
 
-* To record an activity (or to program an acitivy)
-  
-  * add activity name as a static member variable in Actions class.
-  * add a routine to 'canXxxx()' method if it needs to check the permission on the activity.
-  * add a routine to record the action in 'xxxx()' method.
-    * If it needs to deduct point, deduct the point in this method.
-
-  for instance, 'UserActivityTaxonomy::canRegister()' checkes if the user can register, and 'UserActivityTaxonomy::register()' method records.
-
-
-
 
 
 - User activities are recorded in the `user_activities`.
@@ -719,6 +709,30 @@ This logs all user activities.
   - Note that, when a user like or dislike on his own post or comment, there will be no point history.
 
 - For like and dislike, the history is saved under `post_vote_histories` but that has no information about who liked who.
+
+### Vote activity logic
+
+- Admin can set global vote point on point settings menu.
+- Admin can set daily limit and hourly limit on global settings.
+  - If it is not set, then there is no limit.
+  - If it is set, the point will be changed only until it reaches the limit and user can still votes, but point will not be changed.
+
+
+### How to record a user activity
+
+- add activity name as a static member variable in Actions class.
+
+- add a method like 'canXxxx()' in `user_acitivity.taxonomy.php` if it needs to check the permission before the activity
+  - And add it to somewhere before the activity.
+  - For instance `act()->canCreatePost()`
+  
+- add a method of recording activity in `user_acitivity.taxonomy.php`.
+  - And add it after the activity.
+  - For instance, `act()->register()`
+  - If it needs to deduct point, deduct the point in this method.
+  
+- For instance, 'UserActivityTaxonomy::canRegister()' checks if the user can register, and 'UserActivityTaxonomy::register()' method records.
+
 
 
 
