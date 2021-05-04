@@ -67,9 +67,14 @@ class CommentTaxonomy extends Forum {
         $post = post($in[ROOT_IDX]);
 //        $categoryIdx = postCategoryIdx($in[ROOT_IDX]);
         $categoryIdx = $post->categoryIdx;
+        $category = category($categoryIdx);
 
         $in[CATEGORY_IDX] = $categoryIdx;
         $in['Ymd'] = date('Ymd'); // 오늘 날짜
+
+
+        act()->canCreateComment( $category );
+
         parent::create($in);
         if ( $this->hasError ) return $this;
 
@@ -82,7 +87,6 @@ class CommentTaxonomy extends Forum {
         // 업로드된 파일의 taxonomy 와 entity 수정
         $this->fixUploadedFiles($in);
 
-        $category = category($categoryIdx);
 
         // 제한에 걸렸으면, 에러 리턴.
         if ( $category->BAN_ON_LIMIT ) {

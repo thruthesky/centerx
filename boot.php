@@ -29,6 +29,7 @@ require_once ROOT_DIR . 'library/taxonomy/push-notification/push-notification.to
 require_once ROOT_DIR . 'library/taxonomy/push-notification/push-notification.class.php';
 require_once ROOT_DIR . 'library/taxonomy/file/file.taxonomy.php';
 require_once ROOT_DIR . 'library/core/error.php';
+require_once ROOT_DIR . 'library/taxonomy/user_activity/user_activity.taxonomy.php';
 require_once ROOT_DIR . 'lib/point/point.defines.php';
 require_once ROOT_DIR . 'lib/point/point.class.php';
 require_once ROOT_DIR . 'lib/point/point.history.class.php';
@@ -67,6 +68,9 @@ if ( file_exists($_path) ) {
 }
 
 live_reload();
+
+
+
 
 
 debug_log('-- start -- boot.code.php: ', date('r'));

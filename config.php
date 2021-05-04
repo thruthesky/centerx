@@ -17,7 +17,7 @@ define('DEBUG_LOG_FILE_PATH', ROOT_DIR . 'var/logs/debug.log');
 define('DOMAIN_THEMES', [
     'itsuda' => 'itsuda',
     '127.0.0.1' => 'default',
-    'localhost' => 'itsuda',
+    'localhost' => 'default',
     '169.254.194.6' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
     '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.
     '192.168.100.17' => 'itsuda', // Charles Ip address
@@ -28,6 +28,7 @@ define('DOMAIN_THEMES', [
     'sonub' => 'sonub',
     'goldenage50' => 'itsuda',
 ]);
+
 
 
 /**

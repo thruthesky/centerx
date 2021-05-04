@@ -7,8 +7,8 @@ if (admin() == false) jsBack('You are not admin');
     <div class="container-fluid" style="background-color: #181c32;">
         <nav class="container navbar white py-0" style="height: 70px;">
             <div class="white py-3">
-                <a class="btn fw-700 fs-sm" href="/?p=admin.index"><?= ek('Dashboard', 'Dashboard') ?></a>
-                <a class="btn fw-700 fs-sm" href="/"><?= ek('Home', 'Home') ?></a>
+                <a class="btn fw-700 fs-sm" href="/?p=admin.index"><?= ek('Dashboard!', '관리자페이지') ?></a>
+                <a class="btn fw-700 fs-sm" href="/"><?= ek('Home', '홈') ?></a>
             </div>
             <div class="ml-auto white">
                 <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-setting"><?= ln(['en' => 'Settings', 'ko' => '설정']) ?></a>
@@ -24,7 +24,7 @@ if (admin() == false) jsBack('You are not admin');
     <div class="container-fluid bg-light">
         <div class="container d-flex justify-content-between align-items-center sub-menu" style="height: 85px;">
             <div class="mr-5">
-                <a href="/?admin.index" class="fs-xl">CenterX</a>
+                <a href="/?admin.index" class="fs-xl">Center X</a>
             </div>
             <span class="flex-grow-1"></span>
             <div class="d-flex h-100">

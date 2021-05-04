@@ -25,6 +25,7 @@ class PointHistory extends Entity {
 
 
     /**
+     * @deprecated
      * point history 테이블에서 taxonomy, entity, reason 에 맞는 마지막 기록 1개를 리턴한다.
      *
      * - 예제) 마지막 기록을 가져와서, 포인트 기록이 된 시간을 24시간 이전으로 수정한다.

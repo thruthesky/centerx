@@ -103,26 +103,45 @@ function isMobile() {
 
 
 /**
- * Live reload 하는 자바스크립트를 실행한다.
+ * Live reload
+ *
+ * When PHP, Javascript, CSS files are edited, the browser will automatically reload.
+ *
+ * @note This method display live reload javascript code ONLY when `node live-reload.js` is running
+ *  And when it should do 'live-reload'.
  */
 function live_reload()
 {
     if ( canLiveReload() ) {
         $host = LIVE_RELOAD_HOST;
         $port = LIVE_RELOAD_PORT;
+
+
+        $url = "https://$host:$port/socket.io/socket.io.js";
+
+
+
         echo <<<EOH
-   <script src="https://$host:$port/socket.io/socket.io.js"></script>
-   <script>
-       var socket = io('https://main.philov.com:12345');
-       socket.on('reload', function (data) {
-           console.log(data);
-           // window.location.reload(true);
-           location.reload();
-       });
-   </script>
+    <script src="$url"></script>
+    <script>
+        if( window.Cypress || typeof io === 'undefined') {
+            // Don't watch for live-reload if it is Cypress testing or failed to load socket.io.js (that means, live-reload.js is not running)
+        } else {
+            console.log("Live reload enabled...");
+            var socket = io("https://$host:$port/");
+            socket.on('reload', function (data) {
+                console.log('live reloading...', data);
+                location.reload();
+            });            
+        }
+    </script>
 EOH;
     }
 }
+
+
+
+
 
 
 function canLiveReload(): bool {
@@ -505,14 +524,30 @@ function getSecondUser(): UserTaxonomy {
     $users = user()->search(limit: 2, object: true);
     return $users[1];
 }
+
 /**
  * 맨 마지막에서 세번째(가입한) 사용자의 객체를 리턴한다.
  * 테스트에 사용.
- * @return User
+ * @return UserTaxonomy
  */
 function getThirdUser(): UserTaxonomy {
     $users = user()->search(limit: 3, object: true);
     return $users[2];
+}
+
+/**
+ * Generate a random user. Use it for test only.
+ *
+ * password is: 12345a
+ *
+ * @return UserTaxonomy
+ */
+$__generateUserCount = 0;
+function generateUser(): UserTaxonomy {
+    global $__generateUserCount;
+    $__generateUserCount ++;
+    $email = "random-$__generateUserCount-" . time() . "@test.com";
+    return user()->register([EMAIL => $email, PASSWORD => '12345a']);
 }
 
 

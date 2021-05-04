@@ -32,7 +32,7 @@ if(modeSubmit()) {
         <div class="form-row">
             <div class="form-group col-6">
                 <label for="idx">IDX</label>
-                <input type="text" class="form-control" placeholder="IDX" name="idx" id="idx"  value="<?=$profile->idx?>" disabled>
+                <input data-cy="user-edit-form-idx" type="text" class="form-control" placeholder="IDX" name="idx" id="idx"  value="<?=$profile->idx?>" disabled>
             </div>
 
             <div class="form-group col-6">
@@ -62,7 +62,7 @@ if(modeSubmit()) {
 
             <div class="form-group col-6">
                 <label for="nickname"><?=ek('Nickname', '별명')?></label>
-                <input type="text" class="form-control" placeholder="<?=ek('Nickname', '별명')?>" name="nickname" id="nickname"  value="<?=$profile->nickname?>">
+                <input data-cy="user-edit-form-nickname" type="text" class="form-control" placeholder="<?=ek('Nickname', '별명')?>" name="nickname" id="nickname"  value="<?=$profile->nickname?>">
             </div>
         </div>
 
@@ -141,7 +141,7 @@ if(modeSubmit()) {
 
         <div class="d-flex justify-content-start mt-2 mb-3">
             <div class=" mr-5">
-                <button type="submit" class="btn btn-primary">
+                <button data-cy="user-edit-form-submit" type="submit" class="btn btn-primary">
                     <?=ek('Save', '저장')?>
                 </button>
             </div>
