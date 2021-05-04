@@ -45,3 +45,7 @@ Cypress.Commands.add("login", (email, password) => {
     cy.setCookie("sessionId", user.response.sessionId);
   });
 });
+
+Cypress.Commands.add("getElement", (ID) => {
+  return cy.get(`[data-cy="${ID}"]`);
+});
