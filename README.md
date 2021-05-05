@@ -41,7 +41,8 @@
 
 - user activities
   - leave all histories including point changes.
-  - vote point, post/comment crud point setting for each category.
+  - vote point setting can be set per each forum but following the global limitatino.
+  - post/comment crud point setting for each category.
   - vote point can have global settings.
     
   - `act()->canCreate($categoryIdx, $postIdx)`, `act()->canDelete()`,
@@ -51,6 +52,7 @@
     
   - Leave a record on the same method of point change.
   - Change POINT_POST_CREATE to pointCreatePost and all others with the format.
+  
 
 - @doc
   meta function may try to create child meta even if its taxonomy is meta. It only happens on testing.

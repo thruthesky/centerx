@@ -100,27 +100,27 @@ function testPointBasics() {
 //    isTrue(login()->getPoint() == 0, 'B point should be 0, but ' . login()->getPoint());
 
 
-
-// 주의: 이미 같은 글에 두번 추천. 포인트 변화 없음
-    user(B)->setPoint(30);
-    $post1->vote('Y');
-    isTrue(login()->getPoint() == 30, 'B point should be 30. but: ' . login()->getPoint());
-
-// 다른 글에 추천. 포인트를 30 으로 지정. 추천 하면 -20 감소되므로, 10이 됨.
-    user(B)->setPoint(30);
-    $post2->vote('Y');
-    isTrue(login()->getPoint() == 10, 'B point should be 10. but: ' . login()->getPoint());
-
-// D 는 두번 추천 받았으므로, 포인트 200
-    isTrue(user(D)->getPoint() == 200, 'D point must be 200. but: ' . user(D)->getPoint());
-
-
-// B 가 D 에게 비추.
-// B 는 10 포인트를 가지고 있는데, -30을 차감하면, 최소 0이 남음.
-// D 는 -50 감소해서 150 남음
-    $post3->vote('N');
-    isTrue(user(B)->getPoint() == 0, 'B point 0');
-    isTrue(user(D)->getPoint() == 150, 'D point must be 150. but ' . user(D)->getPoint());
+//
+//// 주의: 이미 같은 글에 두번 추천. 포인트 변화 없음
+//    user(B)->setPoint(30);
+//    $post1->vote('Y');
+//    isTrue(login()->getPoint() == 30, 'B point should be 30. but: ' . login()->getPoint());
+//
+//// 다른 글에 추천. 포인트를 30 으로 지정. 추천 하면 -20 감소되므로, 10이 됨.
+//    user(B)->setPoint(30);
+//    $post2->vote('Y');
+//    isTrue(login()->getPoint() == 10, 'B point should be 10. but: ' . login()->getPoint());
+//
+//// D 는 두번 추천 받았으므로, 포인트 200
+//    isTrue(user(D)->getPoint() == 200, 'D point must be 200. but: ' . user(D)->getPoint());
+//
+//
+//// B 가 D 에게 비추.
+//// B 는 10 포인트를 가지고 있는데, -30을 차감하면, 최소 0이 남음.
+//// D 는 -50 감소해서 150 남음
+//    $post3->vote('N');
+//    isTrue(user(B)->getPoint() == 0, 'B point 0');
+//    isTrue(user(D)->getPoint() == 150, 'D point must be 150. but ' . user(D)->getPoint());
 
 }
 

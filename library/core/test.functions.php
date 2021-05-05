@@ -27,6 +27,11 @@ function setUserAsLogin(int|array $profile): UserTaxonomy {
 function setLogin(int|array $profile): UserTaxonomy {
     return setUserAsLogin($profile);
 }
+// Alias of setUserAsLogin
+function loginAs(UserTaxonomy $user): UserTaxonomy {
+    return setUserAsLogin($user->idx);
+}
+
 function setLogout() {
     global $__login_user_profile;
     $__login_user_profile = [];
