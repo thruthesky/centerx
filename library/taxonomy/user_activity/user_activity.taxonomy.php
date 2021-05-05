@@ -40,7 +40,7 @@ class UserActivityTaxonomy extends UserActivityBase {
         if ( $pointToCreate < 0 ) {
             if ( login()->getPoint() < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
         }
-        
+
         // if user is banned by daily, hourly limit.
         // if user is banned by point change. (lack of point)
         // if user is banned by point possession.
