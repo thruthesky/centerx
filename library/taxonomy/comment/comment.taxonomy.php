@@ -73,7 +73,8 @@ class CommentTaxonomy extends Forum {
         $in['Ymd'] = date('Ymd'); // 오늘 날짜
 
 
-        act()->canCreateComment( $category );
+        d("check it can create comment.");
+//        act()->canCreateComment( $category );
 
         parent::create($in);
         if ( $this->hasError ) return $this;
@@ -90,18 +91,18 @@ class CommentTaxonomy extends Forum {
 
         // 제한에 걸렸으면, 에러 리턴.
         if ( $category->BAN_ON_LIMIT ) {
-            $limit = point()->checkCategoryLimit($category->idx);
+            $limit = act()->checkCategoryLimit($category->idx);
             if ( isError($limit) ) return $this->error($limit);
         }
 
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
-        $pointToCreate = point()->getCommentCreate($category->idx);
+        $pointToCreate = act()->getCommentCreatePoint($category->idx);
         if ( $pointToCreate < 0 ) {
             if ( login(POINT) < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
         }
 
-        // $comment = parent::create($in);
-        point()->forum(POINT_COMMENT_CREATE, $this->idx);
+        d("@todo record comment point);");
+//        point()->forum(POINT_COMMENT_CREATE, $this->idx);
         $this->patchPoint();
 
         /**

@@ -41,7 +41,7 @@
 
 - user activities
   - leave all histories including point changes.
-  - vote point setting can be set per each forum but following the global limitatino.
+  - @todo vote point setting can be set per each forum but following the global limitatino.
   - post/comment crud point setting for each category.
   - vote point can have global settings.
     
@@ -53,6 +53,10 @@
   - Leave a record on the same method of point change.
   - Change POINT_POST_CREATE to pointCreatePost and all others with the format.
   
+  - create category fields on createPost, deletePost, ...
+
+  - @todo if user is banned by the amount of point possession.
+
 
 - @doc
   meta function may try to create child meta even if its taxonomy is meta. It only happens on testing.
@@ -722,6 +726,9 @@ This logs all user activities.
 
 
 ### How to record a user activity
+
+
+- add the name of activity in `user_activity.defines.php`
 
 - add activity name as a static member variable in Actions class.
 
