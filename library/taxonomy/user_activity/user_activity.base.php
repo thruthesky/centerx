@@ -71,11 +71,9 @@ class UserActivityBase extends Entity {
         $last_stamp = time() - $stamp;
 
         if ( $fromUserIdx ) {
-            $user = "fromUserIdx=?";
-            $userIdx = $fromUserIdx;
+            $user = "fromUserIdx=$fromUserIdx";
         } else {
-            $user = "toUserIdx=?";
-            $userIdx = login()->idx;
+            $user = "toUserIdx=" . login()->idx;
         }
 
         $q = "SELECT COUNT(*) FROM ". $this->getTable() ." WHERE createdAt > $last_stamp AND $user $q_categoryIdx AND $reason_ors";
@@ -85,7 +83,6 @@ class UserActivityBase extends Entity {
     }
 
 
-
     /**
      * Records user action
      *
@@ -93,14 +90,20 @@ class UserActivityBase extends Entity {
      *
      * @param string $action - the action ( or the user's activity )
      * @param int $fromUserIdx - the user(or system) that gives point to the other user.
-     *  If the system is the one that give points to 'toUserIdx', then it should be 0.
-     *  For instance 'register' or 'login' actions, the system is the one that give point to user.
-     *  For vote, one user triggers the action and that effects to the other user.
+     *
+     *  - If the system is the one that give points to 'toUserIdx', then it should be 0.
+     *      For instance 'register' or 'login' actions, the system is the one that give point to user.
+     *      For vote, one user triggers the action and that effects to the other user.
      *      So, 'fromUser' is the user who votes, and 'toUser' is the user who wrote the post(or comment)
+     *
+     *  - If fromUserIdx would be the same idx of toUserIdx, then fromUserIdx should be 0.
      *
      * @param int $fromUserPoint - the point to apply to $fromUserIdx
      * @param int $toUserIdx - the user that will receive point.
      * @param int $toUserPoint - the point to apply to $toUserIdx.
+     * @param string $taxonomy
+     * @param int $entity
+     * @param int $categoryIdx
      * @return int|string
      *
      * - 적용된 포인트를 음/양의 값으로 리턴한다. 이 리턴되는 값을 from_user_point_apply 또는 to_user_point_apply 에 넣으면 된다.
@@ -148,6 +151,7 @@ class UserActivityBase extends Entity {
         ];
 
         $created = $this->create($record);
+
 
         if ( $created->hasError ) return $created->getError();
         else return $created->idx;
@@ -197,150 +201,175 @@ class UserActivityBase extends Entity {
     }
 
 
-
-
-
-
-
-
+    /**
+     * @deprecated remove 'point.defines.php'
+     * @param $no
+     */
     public function setLikePoint($no) {
-        config()->set(POINT_LIKE, $no);
+        config()->set(Actions::$like, $no);
     }
 
     public function getLikePoint() {
-        return config()->get(POINT_LIKE) ?? 0;
+        return config()->get(Actions::$like) ?? 0;
     }
 
     public function setDislikePoint($no) {
-        config()->set(POINT_DISLIKE, $no);
+        config()->set(Actions::$dislike, $no);
     }
 
     public function getDislikePoint() {
-        return config()->get(POINT_DISLIKE) ?? 0;
+        return config()->get(Actions::$dislike) ?? 0;
     }
 
+    /**
+     * @deprecated delete point.definitions.php
+     * @param $no
+     */
     public function setLikeDeductionPoint($no) {
-        config()->set(POINT_LIKE_DEDUCTION, $no);
+        config()->set(Actions::$likeDeduction, $no);
     }
     public function getLikeDeductionPoint() {
-        return config()->get(POINT_LIKE_DEDUCTION) ?? 0;
+        return config()->get(Actions::$likeDeduction) ?? 0;
     }
 
     public function setDislikeDeductionPoint($no) {
-        config()->set(POINT_DISLIKE_DEDUCTION, $no);
+        config()->set(Actions::$dislikeDeduction, $no);
     }
 
     public function getDislikeDeductionPoint() {
-        return config()->get(POINT_DISLIKE_DEDUCTION) ?? 0;
+        return config()->get(Actions::$dislikeDeduction) ?? 0;
     }
 
     public function setRegisterPoint($no) {
-        config()->set(POINT_REGISTER, $no);
+        config()->set(Actions::$register, $no);
     }
 
     public function getRegisterPoint() {
-        return config()->get(POINT_REGISTER) ?? 0;
+        return config()->get(Actions::$register) ?? 0;
     }
 
     public function setLoginPoint($no) {
-        config()->set(POINT_LOGIN, $no);
+        config()->set(Actions::$login, $no);
     }
 
     public function getLoginPoint() {
-        return config()->get(POINT_LOGIN) ?? 0;
+        return config()->get(Actions::$login) ?? 0;
     }
 
+    /**
+     * @deprecated rename to setVoteHourLimit
+     * @param $hour
+     */
     public function setLikeHourLimit($hour) {
-        config()->set(POINT_LIKE_HOUR_LIMIT, $hour);
+        config()->set(ActivityLimits::$voteHourlyLimit, $hour);
     }
 
     public function getLikeHourLimit() {
-        return config()->get(POINT_LIKE_HOUR_LIMIT) ?? 0;
+        return config()->get(ActivityLimits::$voteHourlyLimit) ?? 0;
     }
 
+
     public function setLikeHourLimitCount($count) {
-        config()->set(POINT_LIKE_HOUR_LIMIT_COUNT, $count);
+        config()->set(ActivityLimits::$voteHourlyLimitCount, $count);
     }
 
     public function getLikeHourLimitCount() {
-        return config()->get(POINT_LIKE_HOUR_LIMIT_COUNT) ?? 0;
+        return config()->get(ActivityLimits::$voteHourlyLimitCount) ?? 0;
     }
 
+    /**
+     * @deprecated name it to setVoteDailyCount
+     * @param $count
+     */
     public function setLikeDailyLimitCount($count) {
-        config()->set(POINT_LIKE_DAILY_LIMIT_COUNT, $count);
+        config()->set(ActivityLimits::$voteDailyLimitCount, $count);
     }
 
     public function getLikeDailyLimitCount() {
-        return config()->get(POINT_LIKE_DAILY_LIMIT_COUNT) ?? 0;
+        return config()->get(ActivityLimits::$voteDailyLimitCount) ?? 0;
     }
 
 
-
-    public function get(int $categoryIdx, string $reason) {
-        return category($categoryIdx)->getAttribute($reason);
+    /**
+     * @deprecated don't use this
+     * @param int $categoryIdx
+     * @param string $action
+     * @return array|float|int|string|null
+     */
+    public function get(int $categoryIdx, string $action) {
+        return category($categoryIdx)->getData($action);
     }
 
     public function setPostCreatePoint($category, $point) {
-        category($category)->update([POINT_POST_CREATE => $point]);
+        category($category)->update([Actions::$createPost => $point]);
     }
 
     public function getPostCreatePoint($category) {
-        return category($category)->POINT_POST_CREATE;
+        return category($category)->getData(Actions::$createPost, 0);
     }
 
     public function setCommentCreatePoint($category, $point) {
-        category($category)->update([POINT_COMMENT_CREATE => $point]);
+        category($category)->update([Actions::$createComment => $point]);
     }
 
     public function getCommentCreatePoint(int|string $category) {
-        return category($category)->POINT_COMMENT_CREATE;
+        return category($category)->getData(Actions::$createComment, 0);
     }
 
     public function setPostDeletePoint($category, $point) {
-        category($category)->update([POINT_POST_DELETE => $point]);
+        category($category)->update([Actions::$deletePost => $point]);
     }
 
     public function getPostDeletePoint($category) {
-        return category($category)->POINT_POST_DELETE;
+        return category($category)->getData(Actions::$deletePost, 0);
     }
 
     public function setCommentDeletePoint($category, $point) {
-        category($category)->update([POINT_COMMENT_DELETE => $point]);
+        category($category)->update([Actions::$deleteComment => $point]);
     }
 
     public function getCommentDeletePoint($category) {
-        return category($category)->POINT_COMMENT_DELETE;
+        return category($category)->getData(Actions::$deleteComment, 0);
     }
 
     public function setCategoryHour($category, $hour) {
-        category($category)->update([POINT_HOUR_LIMIT => $hour]);
+        category($category)->update([ActivityLimits::$categoryHourLimit => $hour]);
     }
 
 
     public function getCategoryHourLimit(int|string $category) {
-        return category($category)->POINT_HOUR_LIMIT;
+        return category($category)->getData(ActivityLimits::$categoryHourLimit, 0);
     }
 
     public function setCategoryHourLimitCount($category, $count) {
-        return category($category)->update([POINT_HOUR_LIMIT_COUNT => $count]);
+        return category($category)->update([ActivityLimits::$categoryHourLimitCount => $count]);
     }
 
     public function getCategoryHourLimitCount(int|string $category) {
-        return category($category)->POINT_HOUR_LIMIT_COUNT;
+        return category($category)->getData(ActivityLimits::$categoryHourLimitCount, 0);
     }
 
     public function setCategoryDailyLimitCount($category, $count) {
-        category($category)->update([POINT_DAILY_LIMIT_COUNT => $count]);
+        category($category)->update([ActivityLimits::$categoryDailyLimitCount => $count]);
     }
     public function getCategoryDailyLimitCount(int|string $category) {
-        return category($category)->POINT_DAILY_LIMIT_COUNT;
+        return category($category)->getData(ActivityLimits::$categoryDailyLimitCount, 0);
     }
 
     public function enableCategoryBanOnLimit(int|string $category) {
-        category($category)->update([BAN_ON_LIMIT => 'Y']);
+        category($category)->update([ActivityLimits::$categoryBanOnLimit => 'Y']);
     }
 
     public function disableCategoryBanOnLimit(int|string $category) {
-        category($category)->update([BAN_ON_LIMIT => 'N']);
+        category($category)->update([ActivityLimits::$categoryBanOnLimit => 'N']);
+    }
+
+    /**
+     * Returns true if the activity of the category is banned on limit.
+     * @param int $categoryIdx
+     * @return bool
+     */
+    public function isCategoryBanOnLimit(int $categoryIdx) {
+        return category($categoryIdx)->getData(ActivityLimits::$categoryBanOnLimit, '') == 'Y';
     }
 }

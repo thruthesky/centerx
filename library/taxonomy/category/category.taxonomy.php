@@ -9,14 +9,6 @@
  * @property-read string $title - category title
  * @property-read string $description
  * @property-read string[] $subcategories
- * @property-read string POINT_POST_CREATE
- * @property-read string POINT_POST_DELETE
- * @property-read string POINT_COMMENT_CREATE
- * @property-read string POINT_COMMENT_DELETE
- * @property-read string POINT_HOUR_LIMIT
- * @property-read string POINT_HOUR_LIMIT_COUNT
- * @property-read string POINT_DAILY_LIMIT_COUNT
- * @property-read string BAN_ON_LIMIT
  * @property-read string postEditWidget
  * @property-read string postEditWidgetOption
  * @property-read string postViewWidget
@@ -29,6 +21,19 @@
  * @property-read string returnToAfterPostEdit
  * @property-read string mobilePostListWidget
  * @property-read string mobilePostViewWidget
+ *
+ *
+ * @property-read string POINT_POST_CREATE
+ * @property-read string POINT_POST_DELETE
+ * @property-read string POINT_COMMENT_CREATE
+ * @property-read string POINT_COMMENT_DELETE
+ *
+ *
+ * @property-read string createPostPoint
+ * @property-read string createCommentPoint
+ * @property-read string deletePostPoint
+ * @property-read string deleteCommentPoint
+ *
  *
  */
 class CategoryTaxonomy extends Entity {
@@ -71,14 +76,14 @@ class CategoryTaxonomy extends Entity {
      * @attention To update, entity.idx must be set properly.
      *
      * @param array $in
-     * @return Category
+     * @return CategoryTaxonomy
      */
     public function update(array $in): self {
         debug_log('category.class.php::update()', $in);
-        if ( isset( $in[POINT_POST_DELETE]) && $in[POINT_POST_DELETE] > 0 ) {
+        if ( isset( $in[Actions::$deletePost]) && $in[Actions::$deletePost] > 0 ) {
             return $this->error(e()->point_must_be_0_or_lower_than_0);
         }
-        if ( isset( $in[POINT_COMMENT_DELETE]) && $in[POINT_COMMENT_DELETE] > 0 ) {
+        if ( isset( $in[Actions::$deleteComment]) && $in[Actions::$deleteComment] > 0 ) {
             return $this->error(e()->point_must_be_0_or_lower_than_0);
         }
         return parent::update($in);

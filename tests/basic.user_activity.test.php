@@ -9,7 +9,6 @@ testPointSettings();
 testUserRegisterPoint();
 testUserLoginPoint();
 
-
 testLikePoint();
 testDislikePoint();
 testDislikePointForMinusPoint();
@@ -17,35 +16,52 @@ testVotePoints_likeAndLikeDeduction();
 testVotePoints_dislikeAndDislikeDeduction();
 
 testVoteAgainOnSamePost();
-testVoteOnComment();
+testVoteLikeOnComment();
+testVoteDislikeOnComment();
+
 testVoteAgainOnSameComment();
 testVoteUntilPointBecomeZero();
-testVotePointNeverGoBelowZero();
+
 
 testVoteHourlyLimit();
 testVoteDailyLimit();
-testVoteLimit();
 testVoteLimitByChangingDate();
 
 
 
-
 testPointPostCreate();
-testPointPostDelete();
-testPointPostCreateAndDeleteByChangingCategories();
+testPatchPoint();
+
+//testPointPostDelete();
+//testPointPostCreateAndDeleteByChangingCategories();
+
+//testPointPostCreateDailyLimit();
+//testPointPostCreateHourlyLimit();
+//testPointPostCreateChangeDates();
+//testPointPostCreateByPointPossession();
+//
+
+
+
+
+
+/// ##############
 
 
 //testPointCommentCreate();
 //testPointCommentDelete();
 //testPointCommentCreateAndDeleteByChangingCategories();
 //
-//testPointPostCreateDailyLimit();
-//testPointPostCreateHourlyLimit();
-//testPointPostCreateDailyAndHourlyLimit();
+
 //
+
 //testPointCommentCreateDailyLimit();
 //testPointCommentCreateHourlyLimit();
-//testPointCommentCreateDailyAndHourlyLimit();
+//testPointCommentCreateByPointPossession.
+
+
+
+testCategoryLimitByDateChange();
 
 
 
@@ -88,13 +104,16 @@ function testUserPointSet() {
 function testPointSettings() {
     resetPoints();
     act()->setPostCreatePoint(POINT, 1000);
-    act()->setPostDeletePoint(POINT, -1200);
-    act()->setCommentCreatePoint(POINT, 200);
-    act()->setCommentDeletePoint(POINT, -300);
+    isTrue(act()->getPostCreatePoint(POINT) == 1000, 'getPostCreatePoint to be 1,000');
 
-    isTrue(act()->getPostCreatePoint(POINT) == 1000);
-    isTrue(act()->getPostDeletePoint(POINT) == -1200);
+
+    act()->setPostDeletePoint(POINT, -1200);
+    isTrue(act()->getPostDeletePoint(POINT) == -1200, 'getPostDeletePoint to be -1,200');
+
+    act()->setCommentCreatePoint(POINT, 200);
     isTrue(act()->getCommentCreatePoint(POINT) == 200);
+
+    act()->setCommentDeletePoint(POINT, -300);
     isTrue(act()->getCommentDeletePoint(POINT) == -300);
 
     act()->setLikePoint(100);
@@ -105,6 +124,20 @@ function testPointSettings() {
     isTrue(act()->getDislikePoint() == -50);
     act()->setDislikeDeductionPoint(-30);
     isTrue(act()->getDislikeDeductionPoint() == -30);
+
+
+
+    // check point settings
+    act()->setPostCreatePoint(POINT, 1000);
+    act()->setPostDeletePoint(POINT, -1200);
+    act()->setCommentCreatePoint(POINT, 200);
+    act()->setCommentDeletePoint(POINT, -300);
+
+    isTrue(act()->getPostCreatePoint(POINT) == 1000);
+    isTrue(act()->getPostDeletePoint(POINT) == -1200);
+    isTrue(act()->getCommentCreatePoint(POINT) == 200);
+    isTrue(act()->getCommentDeletePoint(POINT) == -300);
+
 
 }
 
@@ -134,19 +167,8 @@ function testLikePoint() {
     isTrue($user1->getPoint() == 0, 'Newly registered user point must be 0.');
 
     setLogin($user1->idx);
-    $post1 = createPost()->like();
+    createPost()->like();
     isTrue($user1->getPoint() == 0, 'Newly registered user point after vote should be 0, but ' . $user1->getPoint());
-
-    act()->setLikePoint(123);
-    $post2 = createPost()->like();
-    isTrue($user1->getPoint() == 0, 'The point must be 0 since the post belongs to the voter., but ' . $user1->getPoint());
-
-    $anotherUser = registerUser();
-    setLogin($anotherUser->idx);
-    $post2->like();
-    isTrue($anotherUser->getPoint() == 0, 'Another user registered, logged, voted. And the point of another user must be 0, but ' . $anotherUser->getPoint());
-
-    isTrue($user1->getPoint() == 123, 'user1 point must be 123, but ' . $user1->getPoint());
 }
 
 function testDislikePoint() {
@@ -206,8 +228,6 @@ function testVotePoints_likeAndLikeDeduction() {
     isTrue($A->getPoint() == 5, "A point to be 5." );
     isTrue($B->getPoint() == 10, "B point to be 10."); // B got 10 for like.
 
-
-
 }
 
 function testVotePoints_dislikeAndDislikeDeduction() {
@@ -254,14 +274,13 @@ function testVotePoints_dislikeAndDislikeDeduction() {
 function testVoteAgainOnSamePost() {
 
     resetPoints();
-
     act()->setLikePoint(20);
     act()->setLikeDeductionPoint(-5);
 
-    $A = registerAndLogin();
-    $post = createPost();
+    $A = registerAndLogin(); // login A
+    $post = createPost(); // create a post by A
 
-    $B = registerAndLogin();
+    registerAndLogin(); // login another user
 
     $post->like();
     isTrue($A->getPoint() == 20, "Got 20");
@@ -272,39 +291,188 @@ function testVoteAgainOnSamePost() {
 }
 
 
-function testVoteOnComment() {
+function testVoteLikeOnComment() {
+    resetPoints();
+    act()->setLikePoint(20);
+    act()->setLikeDeductionPoint(-5);
+    $A = registerAndLogin(); // login A
+    $comment = createComment(); // create a comment by A
+    $B = registerAndLogin(); // login B
+    $comment->like();
+
+    isTrue($A->getPoint() == 20, 'A got 20 by commenting');
+    isTrue($B->getPoint() == 0, 'B got -5. But point cannot go below 0');
+}
+
+function testVoteDislikeOnComment() {
+    resetPoints();
+    act()->setDislikePoint(-20);
+    act()->setDislikeDeductionPoint(-30);
+    $A = registerAndLogin(); // login A
+    $A->setPoint(100);
+    $comment = createComment(); // create a comment by A
+
+    $B = registerAndLogin(); // login B
+    $B->setPoint(100);
+
+    $comment->dislike();
+
+    isTrue($A->getPoint() == 80, 'A got -20 by commenting');
+    isTrue($B->getPoint() == 70, 'B got -30. But point cannot go below 0');
 
 }
+
 
 function testVoteAgainOnSameComment() {
+    resetPoints();
+    act()->setLikePoint(20);
+    $A = registerAndLogin(); // login A
+    $comment = createComment(); // create a comment by A
 
+    registerAndLogin(); // login B
+    $comment->like();
+
+    isTrue($A->getPoint() == 20, 'A got 20 by commenting');
+
+    $comment->like(); // like again
+    isTrue($A->getPoint() == 20, 'Point does not change on voting again on same comment.');
 }
 function testVoteUntilPointBecomeZero() {
-    // vote until other user point become 0.
 
-    // vote until my point become 0.
+    resetPoints();
+    act()->setDislikePoint(-80);
+    act()->setDislikeDeductionPoint(-90);
+    $A = registerAndLogin(); // login A
+    $A->setPoint(100);
+    $post = createComment();
+    $comment = createComment(); // create a comment by A
+
+    $B = registerAndLogin(); // login B
+    $B->setPoint(100);
+
+    $post->dislike();
+    $comment->dislike();
+
+    isTrue($A->getPoint() == 0, 'A point deducted more than he has.');
+    isTrue($B->getPoint() == 0, 'B point became 0 sine the point was deducted more than he has.');
 }
 
-function testVotePointNeverGoBelowZero() {
-    // vote to decrease point to check it does not go below 0.
-}
 
 
 function testVoteHourlyLimit() {
+    resetPoints();
+
+    // prepare
+    act()->setLikePoint(100);
+    act()->setLikeDeductionPoint(-100);
+    act()->setDislikePoint(-100);
+    act()->setDislikeDeductionPoint(-100);
+
+    $A = registerAndLogin();
+
+    // test without limit
+    $posts = [];
+    for($i = 0; $i < 5; $i++) {
+        $posts[] = createPost();
+    }
+
+    // See? There is no limit.
+    $B = registerAndLogin();
+    $B->setPoint(1000);
+    foreach($posts as $post) {
+        $post->like();
+    }
+    isTrue($A->getPoint() == 500, "Got 500");
+    isTrue($B->getPoint() == 500, "Got -500");
+
+
+    // Set limit. 4 times in 2 hours.
+    act()->setLikeHourLimit(2);
+    act()->setLikeHourLimitCount(4);
+
+    $C = registerAndLogin();
+    $C->setPoint(1000);
+    foreach($posts as $post) {
+        $post->like();
+    }
+    isTrue($A->getPoint() == 900, "Got another 400. Vote 5 times but last was not increase point.");
+    isTrue($C->getPoint() == 600, "Got -400. One was voted without point deduction due to hourly limitation.");
+
 
 }
 function testVoteDailyLimit() {
 
-}
-function testVoteLimit() {
+    resetPoints();
+    act()->setLikePoint(200);
+    act()->setLikeDeductionPoint(-100);
+    act()->setDislikePoint(-150);
+    act()->setDislikeDeductionPoint(-50);
 
+
+    $A = registerAndLogin()->setPoint(1000);
+    $post1 = createPost();
+    $post2 = createPost();
+    $post3 = createPost();
+
+    $B = registerAndLogin()->setPoint(1000);
+
+
+    // Limit: 2 times a day.
+    act()->setLikeDailyLimitCount(2);
+
+    $post1->like();
+    $post2->like();
+    $post3->like();
+
+    isTrue($A->getPoint() == 1400, 'A point should be 1400. but ' . $A->getPoint());
+    isTrue($B->getPoint() == 800, 'B point should be 800. but ' . $B->getPoint());
 }
+
 function testVoteLimitByChangingDate() {
 
 }
 
 
 function testPointPostCreate() {
+
+    resetPoints();
+
+    // check point settings
+    act()->setPostCreatePoint(POINT, 1000);
+
+
+    // login as A
+    $A = registerAndLogin();
+
+    // create post
+    $post1 = createPost();
+    isTrue($post1->ok, "Post create must be okay. But: " . $post1->getError());
+
+    isTrue($A->getPoint() == 1000, 'A point must be 1000. but ' . $A->getPoint());
+
+//    $post2 = post()->create([CATEGORY_ID => POINT]);
+//    isTrue(login()->getPoint() == 2000, 'A point must be 2000. but ' . login()->getPoint());
+//    // 게시글 삭제
+//    $re = $post1->markDelete();
+//    isTrue(login()->getPoint() == 800, 'A point must be 800. but ' . login()->getPoint());
+//    $re = $post2->markDelete();
+//    isTrue(login()->getPoint() == 0, 'A point must be 0. but ' . login()->getPoint());
+
+}
+
+function testPatchPoint() {
+
+    resetPoints();
+
+    // check point settings
+    act()->setPostCreatePoint(POINT, 321);
+
+    // login as
+    registerAndLogin();
+
+    // create post
+    $post1 = createPost();
+    isTrue($post1->appliedPoint == 321, "AppliedPoint must be 321. But: " . $post1->getError());
 
 }
 
@@ -315,4 +483,37 @@ function testPointPostDelete() {
 
 function testPointPostCreateAndDeleteByChangingCategories() {
 
+}
+
+
+
+function testCategoryLimitByDateChange() {
+//    resetPoints();
+//    point()->enableCategoryBanOnLimit(POINT);
+//
+//    // 하루에 1번 제한
+//    point()->setCategoryDailyLimitCount(POINT, 1);
+//
+//    setLogin(A);
+//    $post1 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 1']);
+//    isTrue($post1->ok, 'testChangeDate() -> post1 must success');
+//
+//    // 제한 하므로 실패.
+//    point()->enableCategoryBanOnLimit(POINT);
+//    $post2 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 2']);
+//    isTrue($post2->hasError, 'testChangeDate() -> post2 must be error.');
+//
+//    // 마지막 추천 기록을 24시간 이전으로 돌림.
+//    $ph = pointHistory()->last(POSTS, $post1->idx, POINT_POST_CREATE);
+//    $ph->update([CREATED_AT => $ph->createdAt - (60 * 60 * 24)]);
+//
+//    // 그리고 다시 쓰기 성공.
+//    $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
+//    isTrue($post3->ok && $post3->title == 'post 3', 'testChangeDate() -> post3 must be success.');
+//
+//    // 하지만 한번 더 쓰기하면 실패.
+//    point()->enableCategoryBanOnLimit(POINT);
+//    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
+//    isTrue($post4->hasError, 'testChangeDate() -> post4 must be error.');
+//    isTrue($post4->getError() == e()->daily_limit, 'post4 daily limit');
 }

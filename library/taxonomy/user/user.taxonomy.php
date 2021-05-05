@@ -114,7 +114,6 @@ class UserTaxonomy extends Entity {
         $this->create($in);
 
         act()->register($this);
-//        point()->register($this->profile());
 
         return $this;
     }
