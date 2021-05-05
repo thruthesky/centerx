@@ -4,35 +4,43 @@ if (category(POINT)->exists() == false) category()->create([ID => POINT]); // cr
 db()->query('truncate ' . act()->getTable()); // empty table
 db()->query('truncate ' . voteHistory()->getTable()); // emtpy table
 
-testUserPointSet();
-testPointSettings();
-testUserRegisterPoint();
-testUserLoginPoint();
-
-
-testLikePoint();
-testDislikePoint();
-testDislikePointForMinusPoint();
-testVotePoints_likeAndLikeDeduction();
-testVotePoints_dislikeAndDislikeDeduction();
-
-testVoteAgainOnSamePost();
-testVoteOnComment();
-testVoteAgainOnSameComment();
-testVoteUntilPointBecomeZero();
-testVotePointNeverGoBelowZero();
-
-testVoteHourlyLimit();
-testVoteDailyLimit();
-testVoteLimit();
-testVoteLimitByChangingDate();
-
-
+//testUserPointSet();
+//testPointSettings();
+//testUserRegisterPoint();
+//testUserLoginPoint();
 
 
 testPointPostCreate();
 testPointPostDelete();
 testPointPostCreateAndDeleteByChangingCategories();
+
+
+
+
+//testLikePoint();
+//testDislikePoint();
+//testDislikePointForMinusPoint();
+//testVotePoints_likeAndLikeDeduction();
+//testVotePoints_dislikeAndDislikeDeduction();
+//
+//testVoteAgainOnSamePost();
+//testVoteOnComment();
+//testVoteAgainOnSameComment();
+//testVoteUntilPointBecomeZero();
+//testVotePointNeverGoBelowZero();
+//
+//testVoteHourlyLimit();
+//testVoteDailyLimit();
+//testVoteLimit();
+//testVoteLimitByChangingDate();
+//
+
+
+
+
+
+
+/// ##############
 
 
 //testPointCommentCreate();
@@ -136,17 +144,17 @@ function testLikePoint() {
     setLogin($user1->idx);
     $post1 = createPost()->like();
     isTrue($user1->getPoint() == 0, 'Newly registered user point after vote should be 0, but ' . $user1->getPoint());
-
-    act()->setLikePoint(123);
-    $post2 = createPost()->like();
-    isTrue($user1->getPoint() == 0, 'The point must be 0 since the post belongs to the voter., but ' . $user1->getPoint());
-
-    $anotherUser = registerUser();
-    setLogin($anotherUser->idx);
-    $post2->like();
-    isTrue($anotherUser->getPoint() == 0, 'Another user registered, logged, voted. And the point of another user must be 0, but ' . $anotherUser->getPoint());
-
-    isTrue($user1->getPoint() == 123, 'user1 point must be 123, but ' . $user1->getPoint());
+//
+//    act()->setLikePoint(123);
+//    $post2 = createPost()->like();
+//    isTrue($user1->getPoint() == 0, 'The point must be 0 since the post belongs to the voter., but ' . $user1->getPoint());
+//
+//    $anotherUser = registerUser();
+//    setLogin($anotherUser->idx);
+//    $post2->like();
+//    isTrue($anotherUser->getPoint() == 0, 'Another user registered, logged, voted. And the point of another user must be 0, but ' . $anotherUser->getPoint());
+//
+//    isTrue($user1->getPoint() == 123, 'user1 point must be 123, but ' . $user1->getPoint());
 }
 
 function testDislikePoint() {
@@ -205,8 +213,6 @@ function testVotePoints_likeAndLikeDeduction() {
     $bPost->like(); // A like B's post. A's point shrinks to 5 since the deduction for like vote is -5.
     isTrue($A->getPoint() == 5, "A point to be 5." );
     isTrue($B->getPoint() == 10, "B point to be 10."); // B got 10 for like.
-
-
 
 }
 
@@ -305,6 +311,33 @@ function testVoteLimitByChangingDate() {
 
 
 function testPointPostCreate() {
+
+    resetPoints();
+
+    // check point settings
+    act()->setPostCreatePoint(POINT, 1000);
+    act()->setPostDeletePoint(POINT, -1200);
+    act()->setCommentCreatePoint(POINT, 200);
+    act()->setCommentDeletePoint(POINT, -300);
+
+    isTrue(act()->getPostCreatePoint(POINT) == 1000);
+    isTrue(act()->getPostDeletePoint(POINT) == -1200);
+    isTrue(act()->getCommentCreatePoint(POINT) == 200);
+    isTrue(act()->getCommentDeletePoint(POINT) == -300);
+
+    // login as A
+    $A = registerAndLogin();
+
+    // create post
+    $post1 = post()->create([CATEGORY_ID => POINT]);
+    isTrue(login()->getPoint() == 1000, 'A point must be 1000. but ' . login()->getPoint());
+//    $post2 = post()->create([CATEGORY_ID => POINT]);
+//    isTrue(login()->getPoint() == 2000, 'A point must be 2000. but ' . login()->getPoint());
+//    // 게시글 삭제
+//    $re = $post1->markDelete();
+//    isTrue(login()->getPoint() == 800, 'A point must be 800. but ' . login()->getPoint());
+//    $re = $post2->markDelete();
+//    isTrue(login()->getPoint() == 0, 'A point must be 0. but ' . login()->getPoint());
 
 }
 

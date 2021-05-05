@@ -26,22 +26,21 @@ class Forum extends Entity {
     }
 
     /**
-     * @deprecated Use next version
      *
-     * 현재 글(또는 코멘트)을 생성 할 때, 작성자가 획득한 포인트를 $this->data 에 업데이트한다.
+     * When creating the current article (or comment), the points earned by the author are updated in $this->data.
      *
-     * 획득한 포인트는 오직, point_histories 에만 기록되는데, 그 값을 읽어, 현재 $this->data 메모리 변수에 적용한다.
-     * 이 함수는 글/코멘트 read() 함수와, 글/코멘트에서 포인트 업데이트 직후에 사용하면 된다.
+     * Acquired points are recorded only in point_histories, and the value is read and applied to the current $this->data memory variable.
+     * This function can be used with the post/comment read() function and immediately after the point update in the post/comment.
      *
-     * 참고로 PointRoute::postCreate() 에서 비슷한 코드를 사용한다.
+     * For reference, use similar code in PointRoute::postCreate().
      *
-     * @todo 글/코멘트 작성을 할 때 획득한 포인트를 posts.pointApplied 필드에 바로 넣어주는 것을 고려한다.
+     * @todo When writing a post/comment, consider putting the acquired points directly into the posts.pointApplied field.
      */
     public function patchPoint() {
-        if ( $this->parentIdx ) $reason = POINT_COMMENT_CREATE;
-        else $reason = POINT_POST_CREATE;
-        $point = pointHistory()->last(POSTS, $this->idx, $reason)?->toUserPointApply ?? 0;
-        $this->updateData('appliedPoint', $point);
+        if ( $this->parentIdx ) $action =  Actions::$createCommentPoint;
+        else $action = Actions::$createPostPoint;
+        $point = act()->last(POSTS, $this->idx, $action)?->toUserPointApply ?? 0;
+        $this->updateMemory('appliedPoint', $point);
     }
     /**
      *

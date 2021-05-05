@@ -99,27 +99,11 @@ class PostTaxonomy extends Forum {
         $in[USER_IDX] = login()->idx;
 
 
-        // 제한에 걸렸으면, 에러 리턴. error on limit.
-        if ( $category->BAN_ON_LIMIT == 'Y' ) {
-            $re = point()->checkCategoryLimit($category->idx);
-            if ( isError($re) ) return $this->error($re);
+        d("@todo can create post check");
+        $act  = act()->canCreatePost($category);
+        if($act->hasError) {
+            return $this->error($act->getError());
         }
-
-
-        // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러. error if user is lack of point.
-        $pointToCreate = point()->getPostCreate($category->idx);
-        if ( $pointToCreate < 0 ) {
-            if ( login()->getPoint() < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
-        }
-
-
-        act()->canCreatePost($category);
-
-
-
-
-
-
 
         // Update path for SEO friendly.
         $in[PATH] = $this->getSeoPath($in['title'] ?? '');
@@ -131,15 +115,12 @@ class PostTaxonomy extends Forum {
         // 업로드된 파일의 taxonomy 와 entity 수정
         $this->fixUploadedFiles($in);
 
+        // @toCheckNext
+        act()->forum(Actions::$createPostPoint, $this->idx);
 
-
-        // 포인트 충전
-        d('@todo point change for post create');
-//        point()->forum(POINT_POST_CREATE, $this->idx);
 
         // 포인트를 현재 객체의 $this->data 에 업데이트
-
-        d('@todo patch point after post create');
+        // @toCheckNext
 //        $this->patchPoint();
 
         /// 글/코멘트에 포인트를 적용 한 후, 훅
@@ -163,7 +144,7 @@ class PostTaxonomy extends Forum {
             'idx' => $this->idx,
             'type' => 'post'
         ];
-        sendMessageToTopic(NOTIFY_POST . $category->id, $title, $in[CONTENT] ?? '', $this->url, $data);
+        sendMessageToTopic(NOTIFY_POST . $category->id, $title, $in[CONTENT] ?? '', $this->url ?? '', $data);
 
         return $this;
     }

@@ -9,10 +9,6 @@
  * @property-read string $title - category title
  * @property-read string $description
  * @property-read string[] $subcategories
- * @property-read string POINT_POST_CREATE
- * @property-read string POINT_POST_DELETE
- * @property-read string POINT_COMMENT_CREATE
- * @property-read string POINT_COMMENT_DELETE
  * @property-read string POINT_HOUR_LIMIT
  * @property-read string POINT_HOUR_LIMIT_COUNT
  * @property-read string POINT_DAILY_LIMIT_COUNT
@@ -29,6 +25,19 @@
  * @property-read string returnToAfterPostEdit
  * @property-read string mobilePostListWidget
  * @property-read string mobilePostViewWidget
+ *
+ *
+ * @property-read string POINT_POST_CREATE
+ * @property-read string POINT_POST_DELETE
+ * @property-read string POINT_COMMENT_CREATE
+ * @property-read string POINT_COMMENT_DELETE
+ *
+ *
+ * @property-read string createPostPoint
+ * @property-read string createCommentPoint
+ * @property-read string deletePostPoint
+ * @property-read string deleteCommentPoint
+ *
  *
  */
 class CategoryTaxonomy extends Entity {

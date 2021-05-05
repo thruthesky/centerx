@@ -85,7 +85,6 @@ class UserActivityBase extends Entity {
     }
 
 
-
     /**
      * Records user action
      *
@@ -101,6 +100,9 @@ class UserActivityBase extends Entity {
      * @param int $fromUserPoint - the point to apply to $fromUserIdx
      * @param int $toUserIdx - the user that will receive point.
      * @param int $toUserPoint - the point to apply to $toUserIdx.
+     * @param string $taxonomy
+     * @param int $entity
+     * @param int $categoryIdx
      * @return int|string
      *
      * - 적용된 포인트를 음/양의 값으로 리턴한다. 이 리턴되는 값을 from_user_point_apply 또는 to_user_point_apply 에 넣으면 된다.
@@ -149,6 +151,7 @@ class UserActivityBase extends Entity {
 
         $created = $this->create($record);
 
+
         if ( $created->hasError ) return $created->getError();
         else return $created->idx;
     }
@@ -195,7 +198,6 @@ class UserActivityBase extends Entity {
             return $point;
         }
     }
-
 
 
 
@@ -276,40 +278,40 @@ class UserActivityBase extends Entity {
 
 
 
-    public function get(int $categoryIdx, string $reason) {
-        return category($categoryIdx)->getAttribute($reason);
+    public function get(int $categoryIdx, string $action) {
+        return category($categoryIdx)->getData($action);
     }
 
     public function setPostCreatePoint($category, $point) {
-        category($category)->update([POINT_POST_CREATE => $point]);
+        category($category)->update([Actions::$createPostPoint => $point]);
     }
 
     public function getPostCreatePoint($category) {
-        return category($category)->POINT_POST_CREATE;
+        return category($category)->createPostPoint;
     }
 
     public function setCommentCreatePoint($category, $point) {
-        category($category)->update([POINT_COMMENT_CREATE => $point]);
+        category($category)->update([Actions::$createCommentPoint => $point]);
     }
 
     public function getCommentCreatePoint(int|string $category) {
-        return category($category)->POINT_COMMENT_CREATE;
+        return category($category)->createCommentPoint;
     }
 
     public function setPostDeletePoint($category, $point) {
-        category($category)->update([POINT_POST_DELETE => $point]);
+        category($category)->update([Actions::$deletePostPoint => $point]);
     }
 
     public function getPostDeletePoint($category) {
-        return category($category)->POINT_POST_DELETE;
+        return category($category)->deletePostPoint;
     }
 
     public function setCommentDeletePoint($category, $point) {
-        category($category)->update([POINT_COMMENT_DELETE => $point]);
+        category($category)->update([Actions::$deleteCommentPoint => $point]);
     }
 
     public function getCommentDeletePoint($category) {
-        return category($category)->POINT_COMMENT_DELETE;
+        return category($category)->deleteCommentPoint;
     }
 
     public function setCategoryHour($category, $hour) {
