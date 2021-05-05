@@ -37,10 +37,12 @@ class Forum extends Entity {
      * @todo When writing a post/comment, consider putting the acquired points directly into the posts.pointApplied field.
      */
     public function patchPoint() {
-        if ( $this->parentIdx ) $action =  Actions::$createCommentPoint;
-        else $action = Actions::$createPostPoint;
-        $point = act()->last(POSTS, $this->idx, $action)?->toUserPointApply ?? 0;
-        $this->updateMemory('appliedPoint', $point);
+        if ( $this->parentIdx ) $action =  Actions::$createComment;
+        else $action = Actions::$createPost;
+
+        d('@todo how to get applied point?');
+//        $point = act()->last(POSTS, $this->idx, $action)?->toUserPointApply ?? 0;
+//        $this->updateMemory('appliedPoint', $point);
     }
     /**
      *

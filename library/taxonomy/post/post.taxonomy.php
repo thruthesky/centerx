@@ -115,8 +115,8 @@ class PostTaxonomy extends Forum {
         // 업로드된 파일의 taxonomy 와 entity 수정
         $this->fixUploadedFiles($in);
 
-        // @toCheckNext
-        act()->forum(Actions::$createPostPoint, $this->idx);
+        d('@todo post create - record action');
+//        act()->forum(Actions::$createPostPoint, $this->idx);
 
 
         // 포인트를 현재 객체의 $this->data 에 업데이트

@@ -30,13 +30,17 @@ class UserActivityTaxonomy extends UserActivityBase {
     public function canCreatePost(CategoryTaxonomy $category ): self {
         // 제한에 걸렸으면, 에러 리턴. error on limit.
         if ( $category->BAN_ON_LIMIT == 'Y' ) {
-            $re = point()->checkCategoryLimit($category->idx);
+            d('@todo canCreatePost');
+            $re = '';
+//            $re = point()->checkCategoryLimit($category->idx);
             if ( isError($re) ) return $this->error($re);
         }
 
 
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러. error if user is lack of point.
-        $pointToCreate = point()->getPostCreate($category->idx);
+        d('@todo $pointToCreate = point()->getPostCreate($category->idx);');
+//        $pointToCreate = point()->getPostCreate($category->idx);
+        $pointToCreate = 0; // todo
         if ( $pointToCreate < 0 ) {
             if ( login()->getPoint() < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
         }
@@ -91,8 +95,8 @@ class UserActivityTaxonomy extends UserActivityBase {
         // Check hourly limit. 추천/비추천 시간/수 제한
         if ( $re = $this->countOver(
             $actions, // check action for like and dislike. 추천/비추천을
-            point()->getLikeHourLimit() * 60 * 60, // for how many hours? 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
-            point()->getLikeHourLimitCount(), // for how many actions? count 회 수 이상 했으면,
+            act()->getLikeHourLimit() * 60 * 60, // for how many hours? 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
+            act()->getLikeHourLimitCount(), // for how many actions? count 회 수 이상 했으면,
             fromUserIdx: login()->idx, // for the login user
         ) ) {
             // Limitation reached.
@@ -106,7 +110,7 @@ class UserActivityTaxonomy extends UserActivityBase {
         if ( $re = $this->countOver(
             $actions, // 추천/비추천을
             24 * 60 * 60, // 하루에
-            point()->getLikeDailyLimitCount(), // count 회 수 이상 했으면,
+            act()->getLikeDailyLimitCount(), // count 회 수 이상 했으면,
             login()->idx,
         ) ) {
             // Limitation reached.
@@ -154,30 +158,30 @@ class UserActivityTaxonomy extends UserActivityBase {
      * @param int $idx
      * @return int|string
      */
-    public function forum(string $action, int $idx): int|string {
-
-        $post = post($idx);
-        if ( $post->isMine() == false ) return 0;
-        $categoryIdx = $post->categoryIdx;
-
-        // If limiting, return error code
-        $re = $this->checkCategoryLimit($categoryIdx);
-        if ( isError($re) ) {
-            return $re;
-        }
-
-        // Leave a record of points
-        return $this->recordAction(
-            $action,
-            fromUserIdx: 0,
-            fromUserPoint: 0,
-            toUserIdx: $post->userIdx,
-            toUserPoint: $this->get($categoryIdx, $action),
-            taxonomy: POSTS,
-            entity: $post->idx,
-            categoryIdx: $categoryIdx,
-        );
-    }
+//    public function forum(string $action, int $idx): int|string {
+//
+//        $post = post($idx);
+//        if ( $post->isMine() == false ) return 0;
+//        $categoryIdx = $post->categoryIdx;
+//
+//        // If limiting, return error code
+//        $re = $this->checkCategoryLimit($categoryIdx);
+//        if ( isError($re) ) {
+//            return $re;
+//        }
+//
+//        // Leave a record of points
+//        return $this->recordAction(
+//            $action,
+//            fromUserIdx: 0,
+//            fromUserPoint: 0,
+//            toUserIdx: $post->userIdx,
+//            toUserPoint: $this->get($categoryIdx, $action),
+//            taxonomy: POSTS,
+//            entity: $post->idx,
+//            categoryIdx: $categoryIdx,
+//        );
+//    }
 
     /**
      *
@@ -203,7 +207,7 @@ class UserActivityTaxonomy extends UserActivityBase {
      */
     public function categoryHourlyLimit(int|string $categoryIdx): bool {
         $re = $this->countOver(
-            actions: [ Actions::$createPostPoint, Actions::$createCommentPoint ], // 글/코멘트 작성을
+            actions: [ Actions::$createPost, Actions::$createComment ], // 글/코멘트 작성을
             stamp: $this->getCategoryHourLimit($categoryIdx) * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
             count: $this->getCategoryHourLimitCount($categoryIdx), // count 회 수 이상 했으면,
             categoryIdx: $categoryIdx,
@@ -221,7 +225,7 @@ class UserActivityTaxonomy extends UserActivityBase {
         // d("categoryDailyLimit(int $categoryIdx)");
         // 추천/비추천 일/수 제한
         return $this->countOver(
-            actions: [ Actions::$createPostPoint, Actions::$createCommentPoint ], // 글/코멘트 작성을
+            actions: [ Actions::$createPost, Actions::$createComment ], // 글/코멘트 작성을
             stamp: time() - mktime(0, 0, 0, date('m'), date('d'), date('Y')), // 하루에 몇번. 주의: 정확히는 0시 0분 0초 부터 현재 시점까지이다. README.md# 포인트 참고
             count: $this->getCategoryDailyLimitCount($categoryIdx), // count 회 수 이상 했으면,
             categoryIdx: $categoryIdx
@@ -244,14 +248,14 @@ class UserActivityTaxonomy extends UserActivityBase {
      * @param string $reason
      * @return UserActivityTaxonomy
      */
-    public function last($taxonomy, $entity, $reason=''): UserActivityTaxonomy {
-        $conds = [ TAXONOMY => $taxonomy, ENTITY => $entity ];
-        if ( $reason ) $conds[REASON] = $reason;
-
-        $histories = $this->search(conds: $conds, limit: 1, object: true);
-        if ( count($histories) ) return act($histories[0]->idx);
-        return act();
-    }
+//    public function last($taxonomy, $entity, $reason=''): UserActivityTaxonomy {
+//        $conds = [ TAXONOMY => $taxonomy, ENTITY => $entity ];
+//        if ( $reason ) $conds[REASON] = $reason;
+//
+//        $histories = $this->search(conds: $conds, limit: 1, object: true);
+//        if ( count($histories) ) return act($histories[0]->idx);
+//        return act();
+//    }
 
 
 

@@ -194,6 +194,18 @@ class MySQLiDatabase {
             $stmt->execute();
             $result = $stmt->get_result(); // get the mysqli result
 
+            if ( $result === false ) {
+
+                $this->handleError("SQL ERROR on row()", $sql);
+
+                d($sql);
+                d($values);
+                d($result);
+
+                return [];
+            }
+
+
             if( $result->num_rows == 0) return []; // if the fetch data is empty return empty array
 
             return $result->fetch_assoc(); // fetch data

@@ -53,6 +53,7 @@
   - Leave a record on the same method of point change.
   - Change POINT_POST_CREATE to pointCreatePost and all others with the format.
   
+  - create category fields on createPost, deletePost, ...
 
 - @doc
   meta function may try to create child meta even if its taxonomy is meta. It only happens on testing.
@@ -722,6 +723,9 @@ This logs all user activities.
 
 
 ### How to record a user activity
+
+
+- add the name of activity in `user_activity.defines.php`
 
 - add activity name as a static member variable in Actions class.
 
