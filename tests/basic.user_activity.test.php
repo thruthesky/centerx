@@ -30,8 +30,16 @@ testVoteLimitByChangingDate();
 
 
 testPointPostCreate();
+testPatchPoint();
+
 //testPointPostDelete();
 //testPointPostCreateAndDeleteByChangingCategories();
+
+//testPointPostCreateDailyLimit();
+//testPointPostCreateHourlyLimit();
+//testPointPostCreateChangeDates();
+//testPointPostCreateByPointPossession();
+//
 
 
 
@@ -44,13 +52,13 @@ testPointPostCreate();
 //testPointCommentDelete();
 //testPointCommentCreateAndDeleteByChangingCategories();
 //
-//testPointPostCreateDailyLimit();
-//testPointPostCreateHourlyLimit();
-//testPointPostCreateDailyAndHourlyLimit();
+
 //
+
 //testPointCommentCreateDailyLimit();
 //testPointCommentCreateHourlyLimit();
-//testPointCommentCreateDailyAndHourlyLimit();
+//testPointCommentCreateByPointPossession.
+
 
 
 testCategoryLimitByDateChange();
@@ -116,6 +124,20 @@ function testPointSettings() {
     isTrue(act()->getDislikePoint() == -50);
     act()->setDislikeDeductionPoint(-30);
     isTrue(act()->getDislikeDeductionPoint() == -30);
+
+
+
+    // check point settings
+    act()->setPostCreatePoint(POINT, 1000);
+    act()->setPostDeletePoint(POINT, -1200);
+    act()->setCommentCreatePoint(POINT, 200);
+    act()->setCommentDeletePoint(POINT, -300);
+
+    isTrue(act()->getPostCreatePoint(POINT) == 1000);
+    isTrue(act()->getPostDeletePoint(POINT) == -1200);
+    isTrue(act()->getCommentCreatePoint(POINT) == 200);
+    isTrue(act()->getCommentDeletePoint(POINT) == -300);
+
 
 }
 
@@ -417,20 +439,15 @@ function testPointPostCreate() {
 
     // check point settings
     act()->setPostCreatePoint(POINT, 1000);
-    act()->setPostDeletePoint(POINT, -1200);
-    act()->setCommentCreatePoint(POINT, 200);
-    act()->setCommentDeletePoint(POINT, -300);
 
-    isTrue(act()->getPostCreatePoint(POINT) == 1000);
-    isTrue(act()->getPostDeletePoint(POINT) == -1200);
-    isTrue(act()->getCommentCreatePoint(POINT) == 200);
-    isTrue(act()->getCommentDeletePoint(POINT) == -300);
 
     // login as A
     $A = registerAndLogin();
 
     // create post
     $post1 = createPost();
+    isTrue($post1->ok, "Post create must be okay. But: " . $post1->getError());
+
     isTrue($A->getPoint() == 1000, 'A point must be 1000. but ' . $A->getPoint());
 
 //    $post2 = post()->create([CATEGORY_ID => POINT]);
@@ -440,6 +457,22 @@ function testPointPostCreate() {
 //    isTrue(login()->getPoint() == 800, 'A point must be 800. but ' . login()->getPoint());
 //    $re = $post2->markDelete();
 //    isTrue(login()->getPoint() == 0, 'A point must be 0. but ' . login()->getPoint());
+
+}
+
+function testPatchPoint() {
+
+    resetPoints();
+
+    // check point settings
+    act()->setPostCreatePoint(POINT, 321);
+
+    // login as
+    registerAndLogin();
+
+    // create post
+    $post1 = createPost();
+    isTrue($post1->appliedPoint == 321, "AppliedPoint must be 321. But: " . $post1->getError());
 
 }
 

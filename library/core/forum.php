@@ -16,6 +16,7 @@
  *
  * @property-read int categoryIdx
  * @property-read int parentIdx
+ * @property-read int appliedPoint;
  * @property-read string files
  */
 class Forum extends Entity {
@@ -25,24 +26,25 @@ class Forum extends Entity {
         parent::__construct(POSTS, $idx);
     }
 
+
     /**
-     *
-     * When creating the current article (or comment), the points earned by the author are updated in $this->data.
+     * The points earned by creating post/comment will be patched as 'appliedPoint'.
      *
      * Acquired points are recorded only in point_histories, and the value is read and applied to the current $this->data memory variable.
      * This function can be used with the post/comment read() function and immediately after the point update in the post/comment.
      *
      * For reference, use similar code in PointRoute::postCreate().
      *
-     * @todo When writing a post/comment, consider putting the acquired points directly into the posts.pointApplied field.
+     * @todo When writing a post/comment, consider putting the user_activity.idx into the posts record for performance.
+     *
+     * @note It only patch the point for creation. Not for delete.
      */
     public function patchPoint() {
         if ( $this->parentIdx ) $action =  Actions::$createComment;
         else $action = Actions::$createPost;
 
-        d('@todo how to get applied point?');
-//        $point = act()->last(POSTS, $this->idx, $action)?->toUserPointApply ?? 0;
-//        $this->updateMemory('appliedPoint', $point);
+        $point = act()->last(POSTS, $this->idx, $action)?->toUserPointApply ?? 0;
+        $this->updateMemory('appliedPoint', $point);
     }
     /**
      *

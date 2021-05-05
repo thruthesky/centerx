@@ -69,8 +69,7 @@ class PostTaxonomy extends Forum {
             $this->updateData('url', $url);
         }
 
-        d("@todo patchPoint()");
-//        $this->patchPoint();
+        $this->patchPoint();
         return $this;
     }
 
@@ -87,23 +86,26 @@ class PostTaxonomy extends Forum {
         if ( login()->block == 'Y' ) return $this->error(e()->blocked);
         if ( !isset($in[CATEGORY_ID]) ) return $this->error(e()->category_id_is_empty);
         $category = category($in[CATEGORY_ID]);
-        if ( $category->notFound ) return $this->error(e()->category_not_exists);
+        if ( $category->notFound ) return $this->error(e()->category_not_exists); // The category really exists in database?
 
         // Category ID 는 저장하지 않는다.
-        unset($in[CATEGORY_ID]);
+//        unset($in[CATEGORY_ID]); // @todo double check if it is not saved into meta.
 
-        // 대신, Category idx 를 저장한다.
+        // Save category.idx
         $in[CATEGORY_IDX] = $category->idx;
 
-        // 회원 번호
+        // Save author idx.
         $in[USER_IDX] = login()->idx;
 
 
-        d("@todo can create post check");
+
+        // Check if the user can create a post.
         $act  = act()->canCreatePost($category);
+
         if($act->hasError) {
             return $this->error($act->getError());
         }
+
 
         // Update path for SEO friendly.
         $in[PATH] = $this->getSeoPath($in['title'] ?? '');
@@ -115,13 +117,13 @@ class PostTaxonomy extends Forum {
         // 업로드된 파일의 taxonomy 와 entity 수정
         $this->fixUploadedFiles($in);
 
-        d('@todo post create - record action');
-//        act()->forum(Actions::$createPostPoint, $this->idx);
+
+        // Record for post creation and change point.
+        act()->createPost($category, $this);
 
 
-        // 포인트를 현재 객체의 $this->data 에 업데이트
-        // @toCheckNext
-//        $this->patchPoint();
+        // Apply the point to post memory field. 포인트를 현재 객체의 $this->data 에 업데이트
+        $this->patchPoint();
 
         /// 글/코멘트에 포인트를 적용 한 후, 훅
         $data = $this->getData();

@@ -18,7 +18,6 @@
  */
 class UserActivityTaxonomy extends UserActivityBase {
 
-    public string $createPost = 'createPost';
 
 
 
@@ -27,27 +26,34 @@ class UserActivityTaxonomy extends UserActivityBase {
         parent::__construct(USER_ACTIVITIES, $idx);
     }
 
+    /**
+     * Check if the user can create a post.
+     *
+     * Checks on
+     *  - limit by daily/hourly
+     *  - lack of point
+     *
+     * @param CategoryTaxonomy $category
+     * @return $this
+     */
     public function canCreatePost(CategoryTaxonomy $category ): self {
         // 제한에 걸렸으면, 에러 리턴. error on limit.
-        if ( $category->BAN_ON_LIMIT == 'Y' ) {
-            d('@todo canCreatePost');
-            $re = '';
-//            $re = point()->checkCategoryLimit($category->idx);
-            if ( isError($re) ) return $this->error($re);
+        if ( $this->isCategoryBanOnLimit($category->idx) ) {
+            $re = act()->checkCategoryLimit($category->idx);
+            if ( $re ) return $this->error($re);
+//            if ( isError($re) ) return $this->error($re);
         }
-
 
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러. error if user is lack of point.
-        d('@todo $pointToCreate = point()->getPostCreate($category->idx);');
-//        $pointToCreate = point()->getPostCreate($category->idx);
-        $pointToCreate = 0; // todo
-        if ( $pointToCreate < 0 ) {
-            if ( login()->getPoint() < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
+        $pointToCreate = act()->getPostCreatePoint($category->idx);
+        if ( $pointToCreate < 0 ) { // point deduction is set on category?
+            if ( login()->getPoint() < abs( $pointToCreate ) ) { // user does not have enough point?
+                return $this->error(e()->lack_of_point); //
+            }
         }
-        
-        // if user is banned by daily, hourly limit.
-        // if user is banned by point change. (lack of point)
-        // if user is banned by point possession.
+
+        // @todo if user is banned by the amount of point possession.
+
         return $this;
     }
 
@@ -150,6 +156,24 @@ class UserActivityTaxonomy extends UserActivityBase {
     }
 
     /**
+     * Record action and change point for post creation
+     *
+     * Limitation check must be done before calling this method.
+     */
+    public function createPost(CategoryTaxonomy $category, PostTaxonomy $post) {
+        $this->recordAction(
+            Actions::$createPost,
+            fromUserIdx: 0,
+            fromUserPoint: 0,
+            toUserIdx: login()->idx,
+            toUserPoint: $this->getPostCreatePoint($category->idx),
+            taxonomy: $post->taxonomy,
+            entity: $post->idx,
+            categoryIdx: $category->idx
+        );
+    }
+
+    /**
      * Not just posts, but anything that uses comments or other posts tables.
      * Because it is not a recommendation, it is write/delete, I apply only to myself. So, if it's someone else's post, it just returns.
      * And only toUserIdx and toUserPointApply are updated.
@@ -183,7 +207,10 @@ class UserActivityTaxonomy extends UserActivityBase {
 //        );
 //    }
 
+
     /**
+     * Return false on success. Or error code if the user reached on limit.
+     *
      *
      * 게시판 글/코멘트 쓰기 제한에 걸렸으면 에러 문자열을 리턴한다. 제한에 걸리지 않았으면 false 를 리턴한다.
      * @param int|string $category
@@ -234,7 +261,7 @@ class UserActivityTaxonomy extends UserActivityBase {
 
 
     /**
-
+     * Returns last history.
      * point history 테이블에서 taxonomy, entity, reason 에 맞는 마지막 기록 1개를 리턴한다.
      *
      * - 예제) 마지막 기록을 가져와서, 포인트 기록이 된 시간을 24시간 이전으로 수정한다.
@@ -243,21 +270,19 @@ class UserActivityTaxonomy extends UserActivityBase {
      * $ph->update([CREATED_AT => $ph->createdAt - (60 * 60 * 24)]);
      * ```
      *
-     * @param $taxonomy
-     * @param $entity
-     * @param string $reason
+     * @param string $taxonomy
+     * @param int $entity
+     * @param string $action
      * @return UserActivityTaxonomy
      */
-//    public function last($taxonomy, $entity, $reason=''): UserActivityTaxonomy {
-//        $conds = [ TAXONOMY => $taxonomy, ENTITY => $entity ];
-//        if ( $reason ) $conds[REASON] = $reason;
-//
-//        $histories = $this->search(conds: $conds, limit: 1, object: true);
-//        if ( count($histories) ) return act($histories[0]->idx);
-//        return act();
-//    }
+    public function last(string $taxonomy, int $entity, string $action=''): UserActivityTaxonomy {
+        $conds = [ TAXONOMY => $taxonomy, ENTITY => $entity ];
+        if ( $action ) $conds['action'] = $action;
 
-
+        $histories = $this->search(conds: $conds, limit: 1, object: true);
+        if ( count($histories) ) return act($histories[0]->idx);
+        return act();
+    }
 
 }
 

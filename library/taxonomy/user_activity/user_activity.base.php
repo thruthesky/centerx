@@ -90,10 +90,13 @@ class UserActivityBase extends Entity {
      *
      * @param string $action - the action ( or the user's activity )
      * @param int $fromUserIdx - the user(or system) that gives point to the other user.
-     *  If the system is the one that give points to 'toUserIdx', then it should be 0.
-     *  For instance 'register' or 'login' actions, the system is the one that give point to user.
-     *  For vote, one user triggers the action and that effects to the other user.
+     *
+     *  - If the system is the one that give points to 'toUserIdx', then it should be 0.
+     *      For instance 'register' or 'login' actions, the system is the one that give point to user.
+     *      For vote, one user triggers the action and that effects to the other user.
      *      So, 'fromUser' is the user who votes, and 'toUser' is the user who wrote the post(or comment)
+     *
+     *  - If fromUserIdx would be the same idx of toUserIdx, then fromUserIdx should be 0.
      *
      * @param int $fromUserPoint - the point to apply to $fromUserIdx
      * @param int $toUserIdx - the user that will receive point.
@@ -359,5 +362,14 @@ class UserActivityBase extends Entity {
 
     public function disableCategoryBanOnLimit(int|string $category) {
         category($category)->update([ActivityLimits::$categoryBanOnLimit => 'N']);
+    }
+
+    /**
+     * Returns true if the activity of the category is banned on limit.
+     * @param int $categoryIdx
+     * @return bool
+     */
+    public function isCategoryBanOnLimit(int $categoryIdx) {
+        return category($categoryIdx)->getData(ActivityLimits::$categoryBanOnLimit, '') == 'Y';
     }
 }
