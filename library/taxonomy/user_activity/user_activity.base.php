@@ -112,7 +112,7 @@ class UserActivityBase extends Entity {
         int $entity = 0,
         int $categoryIdx = 0,
     ): int|string {
-        d("recordAction( action: $action, fromUserIdx: $fromUserIdx, toUserIdx: $toUserIdx, toUserPoint: $toUserPoint");
+        // d("recordAction( action: $action, fromUserIdx: $fromUserIdx, toUserIdx: $toUserIdx, toUserPoint: $toUserPoint");
         // prepare
         $toUser = user($toUserIdx);
         $fromUserPointApply = 0;
