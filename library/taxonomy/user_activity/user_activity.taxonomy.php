@@ -38,7 +38,7 @@ class UserActivityTaxonomy extends UserActivityBase {
      */
     public function canCreatePost(CategoryTaxonomy $category ): self {
 
-        return $this->canCreate($category, Actions::$createPost);
+        return $this->canCreateForumRecord($category, Actions::$createPost);
 //        // 제한에 걸렸으면, 에러 리턴. error on limit.
 //        if ( $this->isCategoryBanOnLimit($category->idx) ) {
 //            $re = act()->checkCategoryLimit($category->idx);
@@ -58,7 +58,7 @@ class UserActivityTaxonomy extends UserActivityBase {
     }
 
     public function canCreateComment(CategoryTaxonomy $category ):self {
-        return $this->canCreate($category, Actions::$createComment);
+        return $this->canCreateForumRecord($category, Actions::$createComment);
 
         // If limiting, return an error. error on limit.
 //        if ( $this->isCategoryBanOnLimit($category->idx) ) {
@@ -75,10 +75,10 @@ class UserActivityTaxonomy extends UserActivityBase {
 //        }
 //        return $this;
     }
-    public function canCreate(CategoryTaxonomy $category, string $activity) : self{
+    public function canCreateForumRecord(CategoryTaxonomy $category, string $activity) : self{
         // If limiting, return an error. error on limit.
         if ( $this->isCategoryBanOnLimit($category->idx) ) {
-            $re = act()->checkCategoryLimit($category->idx);
+            $re = act()->checkCategoryCreateLimit($category->idx);
             if ( $re ) return $this->error($re);
         }
 
@@ -94,7 +94,7 @@ class UserActivityTaxonomy extends UserActivityBase {
                 return $this->error(e()->lack_of_point); //
             }
         }
-        // @todo if user is banned by the amount of point possession.
+
         return $this;
     }
 
@@ -277,14 +277,14 @@ class UserActivityTaxonomy extends UserActivityBase {
      * @param int $categoryIdx
      * @return false|string
      */
-    public function checkCategoryLimit(int $categoryIdx): bool|string
+    public function checkCategoryCreateLimit(int $categoryIdx): bool|string
     {
 
-        if ( $this->categoryHourlyLimit($categoryIdx) ) {
+        if ( $this->categoryCreateHourlyLimit($categoryIdx) ) {
 //            d("categoryHourlyLimit($category) returns true");
             return e()->hourly_limit;
         }
-        if ( $this->categoryDailyLimit($categoryIdx) ) {
+        if ( $this->categoryCreateDailyLimit($categoryIdx) ) {
 //            d("categoryDailyLimit($categoryIdx) returns true");
             return e()->daily_limit;
         }
@@ -298,7 +298,7 @@ class UserActivityTaxonomy extends UserActivityBase {
      * - true error
      * - false success
      */
-    public function categoryHourlyLimit(int|string $categoryIdx): bool {
+    public function categoryCreateHourlyLimit(int|string $categoryIdx): bool {
         $re = $this->countOver(
             actions: [ Actions::$createPost, Actions::$createComment ], // 글/코멘트 작성을
             stamp: $this->getCreateHourLimit($categoryIdx) * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
@@ -314,7 +314,7 @@ class UserActivityTaxonomy extends UserActivityBase {
      * @param int $categoryIdx
      * @return bool
      */
-    public function categoryDailyLimit(int $categoryIdx): bool {
+    public function categoryCreateDailyLimit(int $categoryIdx): bool {
         // d("categoryDailyLimit(int $categoryIdx)");
         // 추천/비추천 일/수 제한
         return $this->countOver(

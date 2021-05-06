@@ -72,7 +72,6 @@ class CommentTaxonomy extends Forum {
         $in['Ymd'] = date('Ymd'); // 오늘 날짜
 
 
-        d("@@check it can create comment.");
         // Check if the user can create a comment.
         $act  = act()->canCreateComment($category);
         if($act->hasError) {
@@ -86,15 +85,10 @@ class CommentTaxonomy extends Forum {
         // update no of comment. There is no delete on comments. It's only marking as deleted.
         $post->update(['noOfComments' => $post->noOfComments + 1]);
 
-
-
         // 업로드된 파일의 taxonomy 와 entity 수정
         $this->fixUploadedFiles($in);
 
 
-
-
-        d("@@check act()->createComment(this)");
         act()->createComment($this);
 
         // Apply the point to comment memory field.

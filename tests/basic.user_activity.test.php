@@ -29,8 +29,6 @@ testVoteHourlyLimit();
 testVoteDailyLimit();
 testVoteLimitByChangingDate();
 
-
-
 testPointPostCreate();
 testPatchPoint();
 testPointPostDelete();
@@ -42,23 +40,21 @@ testPointPostCreateDailyLimit();
 testPointPostCreateHourlyLimit();
 testCategoryLimitByDateChange();
 
-//testPointPostCreateByPointPossession();
-
 
 /// ##############
-
 
 testPointCommentCreate();
 testCommentPatchPoint();
 testPointCommentDelete();
-//testPointCommentCreateAndDeleteByChangingCategories();
-//
-
-//
 
 //testPointCommentCreateDailyLimit();
 //testPointCommentCreateHourlyLimit();
-//testPointCommentCreateByPointPossession.
+
+
+//testPointPostCreateByPointPossession();
+//testPointCommentCreateByPointPossession();
+
+
 
 
 
@@ -693,15 +689,14 @@ function testPointCommentDelete() {
     isTrue($comment3->ok, "comment under comment 1");
 
 
-    $A->setPoint(500);
+    $A->setPoint(250);
     // 게시글 삭제
     $re = $comment1->markDelete();
-    isTrue(login()->getPoint() == 400, 'A point must be 400. but ' . login()->getPoint());
+    isTrue(login()->getPoint() == 150, 'A point must be 400. but ' . login()->getPoint());
 
     $re = $comment2->markDelete();
-    isTrue(login()->getPoint() == 300, 'A point must be 300. but ' . login()->getPoint());
-
+    isTrue(login()->getPoint() == 50, 'A point must be 300. but ' . login()->getPoint());
 
     $re = $comment3->markDelete();
-    isTrue(login()->getPoint() == 200, 'A point must be 200. but ' . login()->getPoint());
+    isTrue(login()->getPoint() == 0, 'A point must be 200. but ' . login()->getPoint());
 }
