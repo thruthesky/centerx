@@ -324,8 +324,6 @@ $category = category(in(ID));
                 </td>
             </tr>
 
-
-
             <tr>
                 <td colspan="2">
                     <button class="btn btn-sm btn-success w-100" data-cy="category-settings-form-submit" type="submit">Submit</button>
