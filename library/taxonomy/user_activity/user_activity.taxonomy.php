@@ -37,31 +37,65 @@ class UserActivityTaxonomy extends UserActivityBase {
      * @return $this
      */
     public function canCreatePost(CategoryTaxonomy $category ): self {
-        // 제한에 걸렸으면, 에러 리턴. error on limit.
+
+        return $this->canCreate($category, Actions::$createPost);
+//        // 제한에 걸렸으면, 에러 리턴. error on limit.
+//        if ( $this->isCategoryBanOnLimit($category->idx) ) {
+//            $re = act()->checkCategoryLimit($category->idx);
+//            if ( $re ) return $this->error($re);
+//        }
+//
+//        // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러. error if user is lack of point.
+//        $pointToCreate = act()->getPostCreatePoint($category->idx);
+//        if ( $pointToCreate < 0 ) { // point deduction is set on category?
+//            if ( login()->getPoint() < abs( $pointToCreate ) ) { // user does not have enough point?
+//                return $this->error(e()->lack_of_point); //
+//            }
+//        }
+//
+//        // @todo if user is banned by the amount of point possession.
+//        return $this;
+    }
+
+    public function canCreateComment(CategoryTaxonomy $category ):self {
+        return $this->canCreate($category, Actions::$createComment);
+
+        // If limiting, return an error. error on limit.
+//        if ( $this->isCategoryBanOnLimit($category->idx) ) {
+//            $re = act()->checkCategoryLimit($category->idx);
+//            if ( $re ) return $this->error($re);
+//        }
+//
+//        // If the point is set to decrease in writing/comment writing, if the points are insufficient, an error
+//        $pointToCreate = act()->getCommentCreatePoint($category->idx);
+//        if ( $pointToCreate < 0 ) {
+//            if ( login()->getPoint() < abs( $pointToCreate ) ) {
+//                return $this->error(e()->lack_of_point); //
+//            }
+//        }
+//        return $this;
+    }
+    public function canCreate(CategoryTaxonomy $category, string $activity) : self{
+        // If limiting, return an error. error on limit.
         if ( $this->isCategoryBanOnLimit($category->idx) ) {
-
-
-
             $re = act()->checkCategoryLimit($category->idx);
             if ( $re ) return $this->error($re);
-//            if ( isError($re) ) return $this->error($re);
         }
 
-        // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러. error if user is lack of point.
-        $pointToCreate = act()->getPostCreatePoint($category->idx);
-        if ( $pointToCreate < 0 ) { // point deduction is set on category?
-            if ( login()->getPoint() < abs( $pointToCreate ) ) { // user does not have enough point?
+        // If the point is set to decrease in writing/comment writing, if the points are insufficient, an error
+        if ($activity == Actions::$createPost ) $pointToCreate = act()->getPostCreatePoint($category->idx);
+        else if($activity == Actions::$createComment ) $pointToCreate = act()->getCommentCreatePoint($category->idx);
+        else {
+            return $this->error(e()->wrong_activity);
+        }
+
+        if ( $pointToCreate < 0 ) {
+            if ( login()->getPoint() < abs( $pointToCreate ) ) {
                 return $this->error(e()->lack_of_point); //
             }
         }
-
-
         // @todo if user is banned by the amount of point possession.
         return $this;
-    }
-
-    public function canCreateComment(CategoryTaxonomy $category ) {
-
     }
 
     /**
@@ -182,7 +216,6 @@ class UserActivityTaxonomy extends UserActivityBase {
      * @param PostTaxonomy $post
      */
     public function deletePost(PostTaxonomy $post):int|string {
-
         return $this->recordAction(
             Actions::$deletePost,
             fromUserIdx: 0,
@@ -192,6 +225,46 @@ class UserActivityTaxonomy extends UserActivityBase {
             taxonomy: $post->taxonomy,
             entity: $post->idx,
             categoryIdx: $post->categoryIdx
+        );
+    }
+
+
+
+    /**
+     * Record action and change point for comment creation
+     *
+     * Limitation check must be done before calling this method.
+     * @param CommentTaxonomy $comment
+     */
+    public function createComment(CommentTaxonomy $comment):int|string {
+        return $this->recordAction(
+            Actions::$createComment,
+            fromUserIdx: 0,
+            fromUserPoint: 0,
+            toUserIdx: login()->idx,
+            toUserPoint: $this->getCommentCreatePoint($comment->categoryIdx),
+            taxonomy: $comment->taxonomy,
+            entity: $comment->idx,
+            categoryIdx: $comment->categoryIdx
+        );
+    }
+
+    /**
+     * Record action and change point for comment creation
+     *
+     * Limitation check must be done before calling this method.
+     * @param CommentTaxonomy $comment
+     */
+    public function deleteComment(CommentTaxonomy $comment):int|string {
+        return $this->recordAction(
+            Actions::$deleteComment,
+            fromUserIdx: 0,
+            fromUserPoint: 0,
+            toUserIdx: login()->idx,
+            toUserPoint: $this->getCommentDeletePoint($comment->categoryIdx),
+            taxonomy: $comment->taxonomy,
+            entity: $comment->idx,
+            categoryIdx: $comment->categoryIdx
         );
     }
 

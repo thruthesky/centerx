@@ -65,7 +65,6 @@ class CommentTaxonomy extends Forum {
 
 
         $post = post($in[ROOT_IDX]);
-//        $categoryIdx = postCategoryIdx($in[ROOT_IDX]);
         $categoryIdx = $post->categoryIdx;
         $category = category($categoryIdx);
 
@@ -73,8 +72,12 @@ class CommentTaxonomy extends Forum {
         $in['Ymd'] = date('Ymd'); // 오늘 날짜
 
 
-        d("check it can create comment.");
-//        act()->canCreateComment( $category );
+        d("@@check it can create comment.");
+        // Check if the user can create a comment.
+        $act  = act()->canCreateComment($category);
+        if($act->hasError) {
+            return $this->error($act->getError());
+        }
 
         parent::create($in);
         if ( $this->hasError ) return $this;
@@ -89,22 +92,12 @@ class CommentTaxonomy extends Forum {
         $this->fixUploadedFiles($in);
 
 
-        // 제한에 걸렸으면, 에러 리턴.
-        d("@todo canCreateComments()");
-//        if ( $category->BAN_ON_LIMIT ) {
-//            $limit = act()->checkCategoryLimit($category->idx);
-//            if ( isError($limit) ) return $this->error($limit);
-//        }
 
-        // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
-        $pointToCreate = act()->getCommentCreatePoint($category->idx);
-        if ( $pointToCreate < 0 ) {
-            if ( login(POINT) < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
-        }
 
-        d("@todo record comment point);");
-//        point()->forum(POINT_COMMENT_CREATE, $this->idx);
-//        act()->createComment($this);
+        d("@@check act()->createComment(this)");
+        act()->createComment($this);
+
+        // Apply the point to comment memory field.
         $this->patchPoint();
 
         /**
@@ -164,14 +157,17 @@ class CommentTaxonomy extends Forum {
      * @return $this
      */
     public function markDelete(): self {
+        if ( $this->hasError ) return $this;
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->isMine() == false ) return $this->error(e()->not_your_comment);
 
         parent::markDelete();
+        if ( $this->hasError ) return $this;
+
         parent::update([TITLE => '', CONTENT => '']);
 
-        point()->forum(POINT_COMMENT_DELETE, $this->idx);
+        act()->deleteComment($this);
 
         return $this;
     }

@@ -45,15 +45,12 @@ testCategoryLimitByDateChange();
 //testPointPostCreateByPointPossession();
 
 
-
-
-
-
 /// ##############
 
 
 testPointCommentCreate();
-//testPointCommentDelete();
+testCommentPatchPoint();
+testPointCommentDelete();
 //testPointCommentCreateAndDeleteByChangingCategories();
 //
 
@@ -643,7 +640,68 @@ function testPointCommentCreate() {
     act()->setCommentCreatePoint(POINT, 50);
 
     $A = registerAndLogin();
-    createComment();
+    $c = createComment();
 
     // $A point should be 50.
+    isTrue($c->ok, "comment create must be okay. But: " . $c->getError());
+    isTrue($A->getPoint() == 50, 'A point must be 50. but ' . $A->getPoint());
+
+    $c->create([ROOT_IDX => $c->rootIdx, PARENT_IDX => $c->idx, TITLE => "comment under " . $c->idx]);
+    isTrue($A->getPoint() == 100, 'A point must be 100 for commenting twice. but ' . $A->getPoint());
+
+}
+
+
+function testCommentPatchPoint() {
+
+    resetPoints();
+
+    // check point settings
+    act()->setCommentCreatePoint(POINT, 111);
+
+    // login as
+    registerAndLogin();
+
+    // create comment
+    $comment1 = createComment();
+    isTrue($comment1->appliedPoint == 111, "AppliedPoint must be 111. But: " . $comment1->getError());
+
+
+    // change point settings
+    act()->setCommentCreatePoint(POINT, 222);
+    $comment2 = createComment();
+    isTrue($comment2->appliedPoint == 222, "AppliedPoint should be 222. But: " . $comment2->getError());
+
+}
+
+
+function testPointCommentDelete() {
+    resetPoints();
+    // check point settings
+    act()->setCommentDeletePoint(POINT, -100);
+
+    // login as A
+    $A = registerAndLogin();
+
+    // create comment
+    $comment1 = createComment();
+    // create one more comment
+    $comment2 = createComment();
+    isTrue($comment1->ok && $comment2->ok, "comment create must be okay. But: C1 " . $comment1->getError() . " C2 " . $comment2->getError());
+
+    $comment3 = comment()->create([ROOT_IDX => $comment1->rootIdx, PARENT_IDX => $comment1->idx, TITLE => "comment under " . $comment1->idx]);
+    isTrue($comment3->ok, "comment under comment 1");
+
+
+    $A->setPoint(500);
+    // 게시글 삭제
+    $re = $comment1->markDelete();
+    isTrue(login()->getPoint() == 400, 'A point must be 400. but ' . login()->getPoint());
+
+    $re = $comment2->markDelete();
+    isTrue(login()->getPoint() == 300, 'A point must be 300. but ' . login()->getPoint());
+
+
+    $re = $comment3->markDelete();
+    isTrue(login()->getPoint() == 200, 'A point must be 200. but ' . login()->getPoint());
 }
