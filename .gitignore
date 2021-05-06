@@ -25,3 +25,5 @@ cache
 .profile
 .viminfo
 .well-known
+
+cypress/videos
