@@ -4,36 +4,36 @@ if (category(POINT)->exists() == false) category()->create([ID => POINT]); // cr
 db()->query('truncate ' . act()->getTable()); // empty table
 db()->query('truncate ' . voteHistory()->getTable()); // emtpy table
 
-testUserPointSet();
-testPointSettings();
-testUserRegisterPoint();
-testUserLoginPoint();
+//testUserPointSet();
+//testPointSettings();
+//testUserRegisterPoint();
+//testUserLoginPoint();
+//
+//testLikePoint();
+//testDislikePoint();
+//testDislikePointForMinusPoint();
+//testVotePoints_likeAndLikeDeduction();
+//testVotePoints_dislikeAndDislikeDeduction();
+//
+//testVoteAgainOnSamePost();
+//testVoteLikeOnComment();
+//testVoteDislikeOnComment();
+//
+//testVoteAgainOnSameComment();
+//testVoteUntilPointBecomeZero();
+//
+//
+//testVoteHourlyLimit();
+//testVoteDailyLimit();
+//testVoteLimitByChangingDate();
 
-testLikePoint();
-testDislikePoint();
-testDislikePointForMinusPoint();
-testVotePoints_likeAndLikeDeduction();
-testVotePoints_dislikeAndDislikeDeduction();
-
-testVoteAgainOnSamePost();
-testVoteLikeOnComment();
-testVoteDislikeOnComment();
-
-testVoteAgainOnSameComment();
-testVoteUntilPointBecomeZero();
 
 
-testVoteHourlyLimit();
-testVoteDailyLimit();
-testVoteLimitByChangingDate();
-
-
-
-testPointPostCreate();
-testPatchPoint();
-
+//testPointPostCreate();
+//testPatchPoint();
 //testPointPostDelete();
 //testPointPostCreateAndDeleteByChangingCategories();
+
 
 //testPointPostCreateDailyLimit();
 //testPointPostCreateHourlyLimit();
@@ -434,12 +434,10 @@ function testVoteLimitByChangingDate() {
 
 
 function testPointPostCreate() {
-
     resetPoints();
 
     // check point settings
     act()->setPostCreatePoint(POINT, 1000);
-
 
     // login as A
     $A = registerAndLogin();
@@ -447,16 +445,11 @@ function testPointPostCreate() {
     // create post
     $post1 = createPost();
     isTrue($post1->ok, "Post create must be okay. But: " . $post1->getError());
-
     isTrue($A->getPoint() == 1000, 'A point must be 1000. but ' . $A->getPoint());
 
-//    $post2 = post()->create([CATEGORY_ID => POINT]);
-//    isTrue(login()->getPoint() == 2000, 'A point must be 2000. but ' . login()->getPoint());
-//    // 게시글 삭제
-//    $re = $post1->markDelete();
-//    isTrue(login()->getPoint() == 800, 'A point must be 800. but ' . login()->getPoint());
-//    $re = $post2->markDelete();
-//    isTrue(login()->getPoint() == 0, 'A point must be 0. but ' . login()->getPoint());
+    // create another post
+    $post2 = post()->create([CATEGORY_ID => POINT]);
+    isTrue(login()->getPoint() == 2000, 'A point must be 1000+1000 = 2000. but ' . login()->getPoint());
 
 }
 
@@ -474,45 +467,116 @@ function testPatchPoint() {
     $post1 = createPost();
     isTrue($post1->appliedPoint == 321, "AppliedPoint must be 321. But: " . $post1->getError());
 
+
+    // change point settings
+    act()->setPostCreatePoint(POINT, 222);
+    $post2 = createPost();
+    isTrue($post2->appliedPoint == 222, "AppliedPoint should be 222. But: " . $post1->getError());
+
 }
 
 function testPointPostDelete() {
+    resetPoints();
+    // check point settings
+    act()->setPostDeletePoint(POINT, -444);
+    // login as A
+    $A = registerAndLogin();
 
+    // create post
+    $post1 = createPost();
+    isTrue($post1->ok, "Post1 create must be okay. But: " . $post1->getError());
+    $post2 = createPost();
+    isTrue($post2->ok, "Post2 create must be okay. But: " . $post2->getError());
+
+    $A->setPoint(500);
+    // 게시글 삭제
+    $re = $post1->markDelete();
+    isTrue(login()->getPoint() == 56, 'A point must be 56. but ' . login()->getPoint());
+    $re = $post2->markDelete();
+    isTrue(login()->getPoint() == 0, 'A point must be 0. but ' . login()->getPoint());
 }
 
 
 function testPointPostCreateAndDeleteByChangingCategories() {
+    resetPoints();
+
+
+    // login as A
+    $A = registerAndLogin();
+    $A->setPoint(500);
+
+
+    // check point settings
+    act()->setPostCreatePoint(POINT, 1000);
+    act()->setPostDeletePoint(POINT, -1250);
+
+    // create post
+    $post1 = createPost();
+    isTrue($A->getPoint() == 1500, 'A point must be 1000. but ' . $A->getPoint());
+    // create another post
+    $post2 = createPost();
+    isTrue(login()->getPoint() == 2500, 'A point must be 2500. but ' . login()->getPoint());
+
+
+    $re = $post1->markDelete();
+    isTrue(login()->getPoint() == 1250, 'A point must be 1250. but ' . login()->getPoint());
+    $re = $post2->markDelete();
+    isTrue(login()->getPoint() == 0, 'A point must be 0. but ' . login()->getPoint());
+
+
+    // create post
+    $post3 = createPost();
+    isTrue($A->getPoint() == 1000, 'A point must be 1000. but ' . $A->getPoint());
+
+
+    // set point settings
+    act()->setPostDeletePoint(POINT, -800);
+    $post3->update([CATEGORY_ID => CHOICE]);
+
+    $re = $post3->markDelete();
+    isTrue(login()->getPoint() == 200, 'A point must be 200. but ' . login()->getPoint());
+
+
 
 }
 
 
 
 function testCategoryLimitByDateChange() {
-//    resetPoints();
-//    point()->enableCategoryBanOnLimit(POINT);
-//
-//    // 하루에 1번 제한
-//    point()->setCategoryDailyLimitCount(POINT, 1);
-//
-//    setLogin(A);
-//    $post1 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 1']);
-//    isTrue($post1->ok, 'testChangeDate() -> post1 must success');
-//
-//    // 제한 하므로 실패.
-//    point()->enableCategoryBanOnLimit(POINT);
-//    $post2 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 2']);
-//    isTrue($post2->hasError, 'testChangeDate() -> post2 must be error.');
-//
-//    // 마지막 추천 기록을 24시간 이전으로 돌림.
-//    $ph = pointHistory()->last(POSTS, $post1->idx, POINT_POST_CREATE);
-//    $ph->update([CREATED_AT => $ph->createdAt - (60 * 60 * 24)]);
+    resetPoints();
+    act()->enableCategoryBanOnLimit(POINT);
+
+    // 하루에 1번 제한
+    act()->setCategoryDailyLimitCount(POINT, 1);
+
+    $A = registerAndLogin();
+    $post1 = createPost();
+    isTrue($post1->ok, 'testChangeDate() -> post1 must success');
+
+    // 제한 하므로 실패.
+    act()->enableCategoryBanOnLimit(POINT);
+    $post2 = createPost();
+    isTrue($post2->hasError, 'testChangeDate() -> post2 must be error.');
+    isTrue($post2->getError() == e()->daily_limit, 'testChangeDate() -> post2 must be error daily limit but::'. $post2->getError());
+
+    // 마지막 추천 기록을 24시간 이전으로 돌림.
+    act()->resetError();
+    $beforeCheck = act()->last(POSTS, $post1->idx, Actions::$createPost);
+    d($beforeCheck, "before check");
+    $res = $beforeCheck->update([CREATED_AT => $beforeCheck->createdAt - (60 * 60 * 24)]);
+    d($res, "after check");
+
+//    $afterCheck = act()->last(POSTS, $post1->idx, Actions::$createPost);
+//    d($beforeCheck->createdAt, $afterCheck->createdAt);
+//    isTrue($beforeCheck->createdAt < $afterCheck->createdAt, 'created at must be backdate by a day');
 //
 //    // 그리고 다시 쓰기 성공.
 //    $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
+//    d($post3);
 //    isTrue($post3->ok && $post3->title == 'post 3', 'testChangeDate() -> post3 must be success.');
 //
 //    // 하지만 한번 더 쓰기하면 실패.
-//    point()->enableCategoryBanOnLimit(POINT);
+//    act()->enableCategoryBanOnLimit(POINT);
 //    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
 //    isTrue($post4->hasError, 'testChangeDate() -> post4 must be error.');
 //    isTrue($post4->getError() == e()->daily_limit, 'post4 daily limit');

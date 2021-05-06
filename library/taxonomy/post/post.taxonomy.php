@@ -88,16 +88,11 @@ class PostTaxonomy extends Forum {
         $category = category($in[CATEGORY_ID]);
         if ( $category->notFound ) return $this->error(e()->category_not_exists); // The category really exists in database?
 
-        // Category ID 는 저장하지 않는다.
-//        unset($in[CATEGORY_ID]); // @todo double check if it is not saved into meta.
-
         // Save category.idx
         $in[CATEGORY_IDX] = $category->idx;
 
         // Save author idx.
         $in[USER_IDX] = login()->idx;
-
-
 
         // Check if the user can create a post.
         $act  = act()->canCreatePost($category);
@@ -106,21 +101,17 @@ class PostTaxonomy extends Forum {
             return $this->error($act->getError());
         }
 
-
         // Update path for SEO friendly.
         $in[PATH] = $this->getSeoPath($in['title'] ?? '');
         $in['Ymd'] = date('Ymd');
         parent::create($in);
         if ( $this->hasError ) return $this;
 
-
         // 업로드된 파일의 taxonomy 와 entity 수정
         $this->fixUploadedFiles($in);
 
-
         // Record for post creation and change point.
         act()->createPost($category, $this);
-
 
         // Apply the point to post memory field. 포인트를 현재 객체의 $this->data 에 업데이트
         $this->patchPoint();
@@ -129,10 +120,8 @@ class PostTaxonomy extends Forum {
         $data = $this->getData();
         hook()->run("{$this->taxonomy}-create-point", $data);
 
-
         // update `noOfPosts`
         // update `noOfComments`
-
 
         // NEW POST IS CREATED => Send notification to forum subscriber
         $title = $in[TITLE] ?? '';
@@ -198,16 +187,14 @@ class PostTaxonomy extends Forum {
      * @return self
      */
     public function markDelete(): self {
-
         if ( $this->hasError ) return $this;
-
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
 
         parent::markDelete();
         parent::update([TITLE => '', CONTENT => '']);
 
-        point()->forum(POINT_POST_DELETE, $this->idx);
+        act()->deletePost($this->category(), $this);
 
         return $this;
     }

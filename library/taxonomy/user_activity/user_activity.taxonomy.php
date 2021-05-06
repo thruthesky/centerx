@@ -158,6 +158,8 @@ class UserActivityTaxonomy extends UserActivityBase {
      * Record action and change point for post creation
      *
      * Limitation check must be done before calling this method.
+     * @param CategoryTaxonomy $category
+     * @param PostTaxonomy $post
      */
     public function createPost(CategoryTaxonomy $category, PostTaxonomy $post) {
         $this->recordAction(
@@ -173,38 +175,23 @@ class UserActivityTaxonomy extends UserActivityBase {
     }
 
     /**
-     * Not just posts, but anything that uses comments or other posts tables.
-     * Because it is not a recommendation, it is write/delete, I apply only to myself. So, if it's someone else's post, it just returns.
-     * And only toUserIdx and toUserPointApply are updated.
-     *
-     * @param string $action
-     * @param int $idx
-     * @return int|string
+     * Record action and change point for post delete
+     * @param CategoryTaxonomy $category
+     * @param PostTaxonomy $post
      */
-//    public function forum(string $action, int $idx): int|string {
-//
-//        $post = post($idx);
-//        if ( $post->isMine() == false ) return 0;
-//        $categoryIdx = $post->categoryIdx;
-//
-//        // If limiting, return error code
-//        $re = $this->checkCategoryLimit($categoryIdx);
-//        if ( isError($re) ) {
-//            return $re;
-//        }
-//
-//        // Leave a record of points
-//        return $this->recordAction(
-//            $action,
-//            fromUserIdx: 0,
-//            fromUserPoint: 0,
-//            toUserIdx: $post->userIdx,
-//            toUserPoint: $this->get($categoryIdx, $action),
-//            taxonomy: POSTS,
-//            entity: $post->idx,
-//            categoryIdx: $categoryIdx,
-//        );
-//    }
+    public function deletePost(CategoryTaxonomy $category, PostTaxonomy $post) {
+
+        $this->recordAction(
+            Actions::$deletePost,
+            fromUserIdx: 0,
+            fromUserPoint: 0,
+            toUserIdx: login()->idx,
+            toUserPoint: $this->getPostdeletePoint($category->idx),
+            taxonomy: $post->taxonomy,
+            entity: $post->idx,
+            categoryIdx: $category->idx
+        );
+    }
 
 
     /**
