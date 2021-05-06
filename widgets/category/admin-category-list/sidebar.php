@@ -69,26 +69,26 @@ $category = category(in(ID));
             <tr>
                 <td><?= ek('Post Create Point', '글 쓰기 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= POINT_POST_CREATE ?>" value="<?= $category->POINT_POST_CREATE ?>">
+                    <input class="form-control" type="number" name="<?= Actions::$createPost ?>" value="<?= $category->POINT_POST_CREATE ?>">
                 </td>
             </tr>
             <tr>
                 <td><?= ek('Post Delete Point', '글 삭제 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= POINT_POST_DELETE ?>" value="<?= $category->POINT_POST_DELETE ?>">
+                    <input class="form-control" type="number" name="<?= Actions::$deletePost ?>" value="<?= $category->POINT_POST_DELETE ?>">
                 </td>
             </tr>
 
             <tr>
                 <td><?= ek('Comment Create Point', '코멘트 쓰기 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= POINT_COMMENT_CREATE ?>" value="<?= $category->POINT_COMMENT_CREATE ?>">
+                    <input class="form-control" type="number" name="<?= Actions::$createComment ?>" value="<?= $category->POINT_COMMENT_CREATE ?>">
                 </td>
             </tr>
             <tr>
                 <td><?= ek('Comment Delete Point', '코멘트 삭제 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= POINT_COMMENT_DELETE ?>" value="<?= $category->POINT_COMMENT_DELETE ?>">
+                    <input class="form-control" type="number" name="<?= Actions::$deleteComment ?>" value="<?= $category->POINT_COMMENT_DELETE ?>">
                 </td>
             </tr>
 
@@ -111,15 +111,15 @@ $category = category(in(ID));
             <tr>
                 <td><?= ek('Hour/Count Limit', '시간/수 제한') ?></td>
                 <td class="d-flex align-items-center">
-                    <input class="w-25 form-control" type="number" name="<?= POINT_HOUR_LIMIT ?>" value="<?= $category->POINT_HOUR_LIMIT ?>">
+                    <input class="w-25 form-control" type="number" name="<?= ActivityLimits::$categoryHourLimit ?>" value="<?= $category->POINT_HOUR_LIMIT ?>">
                     <span class="mx-2">/</span>
-                    <input class="w-25 form-control" type="number" name="<?= POINT_HOUR_LIMIT_COUNT ?>" value="<?= $category->POINT_HOUR_LIMIT_COUNT ?>">
+                    <input class="w-25 form-control" type="number" name="<?= ActivityLimits::$categoryHourLimitCount ?>" value="<?= $category->POINT_HOUR_LIMIT_COUNT ?>">
                 </td>
             </tr>
             <tr>
                 <td><?= ek('Day/Count Limit', '일/수 제한') ?></td>
                 <td>
-                    <input class="w-25 form-control" type="number" name="<?= POINT_DAILY_LIMIT_COUNT ?>" value="<?= $category->POINT_DAILY_LIMIT_COUNT ?>">
+                    <input class="w-25 form-control" type="number" name="<?= ActivityLimits::$categoryDailyLimitCount ?>" value="<?= $category->POINT_DAILY_LIMIT_COUNT ?>">
                 </td>
             </tr>
 
@@ -127,11 +127,11 @@ $category = category(in(ID));
                 <td><?= ek('Ban on wriiting', '글/코멘트에 제한') ?></td>
                 <td>
                     <label>
-                        <input type="radio" name="<?= BAN_ON_LIMIT ?>" value="Y" <?php if ($category->BAN_ON_LIMIT == 'Y') echo 'checked' ?>> <?= ek('Yes', '예') ?>,
+                        <input type="radio" name="<?= ActivityLimits::$categoryBanOnLimit ?>" value="Y" <?php if ($category->BAN_ON_LIMIT == 'Y') echo 'checked' ?>> <?= ek('Yes', '예') ?>,
                     </label>
                     &nbsp;
                     <label>
-                        <input type="radio" name="<?= BAN_ON_LIMIT ?>" value="N" <?php if ($category->BAN_ON_LIMIT != 'Y') echo 'checked' ?>> <?= ek('No', '아니오') ?>
+                        <input type="radio" name="<?= ActivityLimits::$categoryBanOnLimit ?>" value="N" <?php if ($category->BAN_ON_LIMIT != 'Y') echo 'checked' ?>> <?= ek('No', '아니오') ?>
                     </label>
                 </td>
             </tr>
