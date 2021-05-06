@@ -114,13 +114,13 @@ $ms = adminSettings()->get();
                     <div class="col-6">
 
                         <h4><?= ln(['en' => 'Terms and Conditions', 'ko' => '가입 약관']) ?></h4>
-                        <textarea class="w-100" rows="4" name="terms_and_conditions"><?= $ms['terms_and_conditions'] ?? '' ?></textarea>
+                        <textarea class="w-100 form-control" rows="4" name="terms_and_conditions"><?= $ms['terms_and_conditions'] ?? '' ?></textarea>
 
                     </div>
                     <div class="col-6">
 
                         <h4><?= ln(['en' => 'Privacy Policy', 'ko' => '개인 정보 보호']) ?></h4>
-                        <textarea class="w-100" rows="4" name="privacy_policy"><?= $ms['privacy_policy'] ?? '' ?></textarea>
+                        <textarea class="w-100 form-control" rows="4" name="privacy_policy"><?= $ms['privacy_policy'] ?? '' ?></textarea>
 
                     </div>
                 </div>
