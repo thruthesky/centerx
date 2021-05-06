@@ -79,7 +79,7 @@ class CategoryTaxonomy extends Entity {
      * @return CategoryTaxonomy
      */
     public function update(array $in): self {
-        debug_log('category.class.php::update()', $in);
+        // debug_log('category.class.php::update()', $in);
         if ( isset( $in[Actions::$deletePost]) && $in[Actions::$deletePost] > 0 ) {
             return $this->error(e()->point_must_be_0_or_lower_than_0);
         }

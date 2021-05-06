@@ -50,7 +50,7 @@ $category = category(in(ID));
             </tr>
             <tr>
                 <td colspan="2">
-                    <textarea class="w-100 form-control" rows="3" name="subcategories"><?= implode(',', $category->subcategories) ?></textarea>
+                    <textarea data-cy="category-settings-form-subcategories" class="w-100 form-control" rows="3" name="subcategories"><?= implode(',', $category->subcategories) ?></textarea>
                 </td>
             </tr>
 
@@ -69,26 +69,26 @@ $category = category(in(ID));
             <tr>
                 <td><?= ek('Post Create Point', '글 쓰기 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= Actions::$createPost ?>" value="<?= $category->createPost ?>">
+                    <input data-cy="category-settings-form-post-create-point" class="form-control" type="number" name="<?= Actions::$createPost ?>" value="<?= $category->createPost ?>">
                 </td>
             </tr>
             <tr>
                 <td><?= ek('Post Delete Point', '글 삭제 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= Actions::$deletePost ?>" value="<?= $category->deletePost ?>">
+                    <input data-cy="category-settings-form-post-delete-point" class="form-control" type="number" name="<?= Actions::$deletePost ?>" value="<?= $category->deletePost ?>">
                 </td>
             </tr>
 
             <tr>
                 <td><?= ek('Comment Create Point', '코멘트 쓰기 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= Actions::$createComment ?>" value="<?= $category->createComment ?>">
+                    <input data-cy="category-settings-form-comment-create-point" class="form-control" type="number" name="<?= Actions::$createComment ?>" value="<?= $category->createComment ?>">
                 </td>
             </tr>
             <tr>
                 <td><?= ek('Comment Delete Point', '코멘트 삭제 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= Actions::$deleteComment ?>" value="<?= $category->deleteComment ?>">
+                    <input data-cy="category-settings-form-comment-delete-point" class="form-control" type="number" name="<?= Actions::$deleteComment ?>" value="<?= $category->deleteComment ?>">
                 </td>
             </tr>
 

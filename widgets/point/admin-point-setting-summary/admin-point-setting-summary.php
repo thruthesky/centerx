@@ -14,8 +14,8 @@ $login = user()->count(where: "updatedAt<=? AND updatedAt>=?", params: [$now, $a
         <div class="text-right fw-700">
             <div><?= $registered ?></div>
             <div><?= $login ?></div>
-            <div><?= config(POINT_LIKE, 0) ?>/<?= config(POINT_LIKE_DEDUCTION, 0) ?></div>
-            <div><?= config(POINT_DISLIKE, 0) ?>/<?= config(POINT_DISLIKE_DEDUCTION, 0) ?></div>
+            <div><?= config(Actions::$like, 0) ?>/<?= config(Actions::$likeDeduction, 0) ?></div>
+            <div><?= config(Actions::$dislike, 0) ?>/<?= config(Actions::$dislikeDeduction, 0) ?></div>
             <!--            <div>-->
             <?//=config(POINT_LIKE_HOUR_LIMIT, 0)?>
             <!--</div>-->
