@@ -10,6 +10,7 @@ if (modeCreate()) {
     }
 } else if (modeUpdate()) {
     $re = category(in('id'))->update(in());
+    if ( $re->hasError ) jsAlert($re->getError());
 } else if (modeDelete()) {
     category(in('id'))->delete();
 }
