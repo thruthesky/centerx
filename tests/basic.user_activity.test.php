@@ -35,16 +35,16 @@ testPointPostDelete();
 testPointPostCreateAndDeleteByChangingCategories();
 
 
-testPointPostCreateDailyLimit();
-testPointPostCreateHourlyLimit();
-testPointPostCreateChangeDates();
-testPointPostCreateByPointPossession();
-
-
-
-
-
 testCategoryLimitByDateChange();
+
+//testPointPostCreateDailyLimit();
+//testPointPostCreateHourlyLimit();
+//testPointPostCreateChangeDates();
+//testPointPostCreateByPointPossession();
+
+
+
+
 
 
 /// ##############
