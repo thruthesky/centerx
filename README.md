@@ -1823,6 +1823,7 @@ chokidar '**/*.php' -c "docker exec [php_container_name] php [centerx_folder_nam
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic."
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.db."
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.entity.search"
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.user_a"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php app"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php user"
 chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php point"
@@ -2274,11 +2275,33 @@ echo "현재 환율: $phpKwr";
 ```
 
 
-# 카테고리 테이블
+# 카테고리 테이블. Category table
 
 - userIdx 는 게시판 관리자이다. 카페인 경우, 카페 주인이 된다.
 - domain 은 게시판의 도메인이다. 홈페이지 도메인일 수도 있고, 그냥 그룹일 수도 있다. 카페의 경우, 카페 도메인이 된다.
 - countryCode 는 국가 코드이다. 해당 게시판(또는 카페가) 어느 국가에 속해 있는지 표시를 하는 것이다.
+
+
+- postCreateLimit - users who has less points than this cannot create post
+  For instance, this value is 1000 and user has 999. Then the user cannot create post. 
+- commentCreateLimit - users who has less points than this cannot create comment
+- readLimit - users who has less points than this cannot create comment
+  
+
+- banCreateOnLimit - User cannot create post/comment if the user reaches the limit.
+
+
+- createPost - is the Points to be given to the author on post creation. It can be minus value like -100.
+- deletePost - is the Points to be given to the author on post deletion. It can be minus value like -100.
+- createComment - is the Points to be given to the author on comment creation. It can be minus value like -100.
+- deleteComment - is the Points to be given to the author on comment deletion. It can be minus value like -100.
+
+
+- createHourLimit - Create limitation for hours.
+- createHourLimitCount - How many can the user create post/comment within the `createHourLimit` hour.
+- createDailyLimitCount - How many can the user create post/comment in a day.
+
+
 
 
 

@@ -69,26 +69,26 @@ $category = category(in(ID));
             <tr>
                 <td><?= ek('Post Create Point', '글 쓰기 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= Actions::$createPost ?>" value="<?= $category->POINT_POST_CREATE ?>">
+                    <input class="form-control" type="number" name="<?= Actions::$createPost ?>" value="<?= $category->createPost ?>">
                 </td>
             </tr>
             <tr>
                 <td><?= ek('Post Delete Point', '글 삭제 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= Actions::$deletePost ?>" value="<?= $category->POINT_POST_DELETE ?>">
+                    <input class="form-control" type="number" name="<?= Actions::$deletePost ?>" value="<?= $category->deletePost ?>">
                 </td>
             </tr>
 
             <tr>
                 <td><?= ek('Comment Create Point', '코멘트 쓰기 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= Actions::$createComment ?>" value="<?= $category->POINT_COMMENT_CREATE ?>">
+                    <input class="form-control" type="number" name="<?= Actions::$createComment ?>" value="<?= $category->createComment ?>">
                 </td>
             </tr>
             <tr>
                 <td><?= ek('Comment Delete Point', '코멘트 삭제 포인트') ?></td>
                 <td>
-                    <input class="form-control" type="number" name="<?= Actions::$deleteComment ?>" value="<?= $category->POINT_COMMENT_DELETE ?>">
+                    <input class="form-control" type="number" name="<?= Actions::$deleteComment ?>" value="<?= $category->deleteComment ?>">
                 </td>
             </tr>
 
@@ -108,18 +108,19 @@ $category = category(in(ID));
                 </td>
             </tr>
 
+
             <tr>
                 <td><?= ek('Hour/Count Limit', '시간/수 제한') ?></td>
                 <td class="d-flex align-items-center">
-                    <input class="w-25 form-control" type="number" name="<?= ActivityLimits::$categoryHourLimit ?>" value="<?= $category->POINT_HOUR_LIMIT ?>">
+                    <input class="w-25 form-control" type="number" name="<?= ActivityLimits::$createHourLimit ?>" value="<?= $category->createHourLimit ?>">
                     <span class="mx-2">/</span>
-                    <input class="w-25 form-control" type="number" name="<?= ActivityLimits::$categoryHourLimitCount ?>" value="<?= $category->POINT_HOUR_LIMIT_COUNT ?>">
+                    <input class="w-25 form-control" type="number" name="<?= ActivityLimits::$createHourLimitCount ?>" value="<?= $category->createHourLimitCount ?>">
                 </td>
             </tr>
             <tr>
                 <td><?= ek('Day/Count Limit', '일/수 제한') ?></td>
                 <td>
-                    <input class="w-25 form-control" type="number" name="<?= ActivityLimits::$categoryDailyLimitCount ?>" value="<?= $category->POINT_DAILY_LIMIT_COUNT ?>">
+                    <input class="w-25 form-control" type="number" name="<?= ActivityLimits::$createDailyLimitCount ?>" value="<?= $category->createDailyLimitCount ?>">
                 </td>
             </tr>
 
@@ -127,11 +128,11 @@ $category = category(in(ID));
                 <td><?= ek('Ban on wriiting', '글/코멘트에 제한') ?></td>
                 <td>
                     <label>
-                        <input type="radio" name="<?= ActivityLimits::$categoryBanOnLimit ?>" value="Y" <?php if ($category->BAN_ON_LIMIT == 'Y') echo 'checked' ?>> <?= ek('Yes', '예') ?>,
+                        <input type="radio" name="<?= ActivityLimits::$banCreateOnLimit ?>" value="Y" <?php if ($category->banCreateOnLimit == 'Y') echo 'checked' ?>> <?= ek('Yes', '예') ?>,
                     </label>
                     &nbsp;
                     <label>
-                        <input type="radio" name="<?= ActivityLimits::$categoryBanOnLimit ?>" value="N" <?php if ($category->BAN_ON_LIMIT != 'Y') echo 'checked' ?>> <?= ek('No', '아니오') ?>
+                        <input type="radio" name="<?= ActivityLimits::$banCreateOnLimit ?>" value="N" <?php if ($category->banCreateOnLimit != 'Y') echo 'checked' ?>> <?= ek('No', '아니오') ?>
                     </label>
                 </td>
             </tr>
@@ -140,7 +141,7 @@ $category = category(in(ID));
 
 
             <tr class="table-dark">
-                <td colspan="2"><?= ek('Limitation by Point', '포인트 별 글 쓰기 제한 설정') ?></td>
+                <td colspan="2"><?= ek('Limit by Point Possession', '포인트 별 글 쓰기 제한 설정') ?></td>
             </tr>
             <tr class="table-light">
                 <td colspan="2">
@@ -156,7 +157,7 @@ $category = category(in(ID));
             <tr>
                 <td><?= ek('Post create limit', '글 쓰기 허용 포인트 보유량') ?></td>
                 <td>
-                    <input class="form-control" name="CREATE_POST" value="<?= $category->CREATE_POST ?>">
+                    <input class="form-control" name="postCreateLimit" value="<?= $category->postCreateLimit ?>">
                 </td>
             </tr>
 
@@ -164,7 +165,7 @@ $category = category(in(ID));
             <tr>
                 <td><?= ek('Comment creation limit', '코멘트 쓰기 허용 포인트 보유량') ?></td>
                 <td>
-                    <input class="form-control" name="CREATE_COMMENT" value="<?= $category->CREATE_COMMENT ?>">
+                    <input class="form-control" name="commentCreateLimit" value="<?= $category->commentCreateLimit ?>">
                 </td>
             </tr>
 
@@ -172,7 +173,7 @@ $category = category(in(ID));
             <tr>
                 <td><?= ek('Post/comment read limit', '글/코멘트 읽기 허용 포인트 보유량') ?></td>
                 <td>
-                    <input class="form-control" name="READ_POST" value="<?= $category->READ_POST ?>">
+                    <input class="form-control" name="readLimit" value="<?= $category->readLimit ?>">
                 </td>
             </tr>
 

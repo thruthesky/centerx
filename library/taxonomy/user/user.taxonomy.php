@@ -310,6 +310,15 @@ class UserTaxonomy extends Entity {
         return $this->findOne([EMAIL => $uid]);
     }
 
+    /**
+     * alias of by();
+     * @param string $email
+     * @return UserTaxonomy
+     */
+    public function byEmail(string $email): UserTaxonomy {
+        return $this->by($email);
+    }
+
 
     function update($in): self
     {

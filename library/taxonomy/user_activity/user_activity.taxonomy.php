@@ -39,6 +39,9 @@ class UserActivityTaxonomy extends UserActivityBase {
     public function canCreatePost(CategoryTaxonomy $category ): self {
         // 제한에 걸렸으면, 에러 리턴. error on limit.
         if ( $this->isCategoryBanOnLimit($category->idx) ) {
+
+
+
             $re = act()->checkCategoryLimit($category->idx);
             if ( $re ) return $this->error($re);
 //            if ( isError($re) ) return $this->error($re);
@@ -51,6 +54,7 @@ class UserActivityTaxonomy extends UserActivityBase {
                 return $this->error(e()->lack_of_point); //
             }
         }
+
 
         // @todo if user is banned by the amount of point possession.
         return $this;
@@ -158,38 +162,36 @@ class UserActivityTaxonomy extends UserActivityBase {
      * Record action and change point for post creation
      *
      * Limitation check must be done before calling this method.
-     * @param CategoryTaxonomy $category
      * @param PostTaxonomy $post
      */
-    public function createPost(CategoryTaxonomy $category, PostTaxonomy $post) {
-        $this->recordAction(
+    public function createPost(PostTaxonomy $post):int|string {
+        return $this->recordAction(
             Actions::$createPost,
             fromUserIdx: 0,
             fromUserPoint: 0,
             toUserIdx: login()->idx,
-            toUserPoint: $this->getPostCreatePoint($category->idx),
+            toUserPoint: $this->getPostCreatePoint($post->categoryIdx),
             taxonomy: $post->taxonomy,
             entity: $post->idx,
-            categoryIdx: $category->idx
+            categoryIdx: $post->categoryIdx
         );
     }
 
     /**
      * Record action and change point for post delete
-     * @param CategoryTaxonomy $category
      * @param PostTaxonomy $post
      */
-    public function deletePost(CategoryTaxonomy $category, PostTaxonomy $post) {
+    public function deletePost(PostTaxonomy $post):int|string {
 
-        $this->recordAction(
+        return $this->recordAction(
             Actions::$deletePost,
             fromUserIdx: 0,
             fromUserPoint: 0,
             toUserIdx: login()->idx,
-            toUserPoint: $this->getPostdeletePoint($category->idx),
+            toUserPoint: $this->getPostdeletePoint($post->categoryIdx),
             taxonomy: $post->taxonomy,
             entity: $post->idx,
-            categoryIdx: $category->idx
+            categoryIdx: $post->categoryIdx
         );
     }
 
@@ -199,15 +201,18 @@ class UserActivityTaxonomy extends UserActivityBase {
      *
      *
      * 게시판 글/코멘트 쓰기 제한에 걸렸으면 에러 문자열을 리턴한다. 제한에 걸리지 않았으면 false 를 리턴한다.
-     * @param int|string $category
+     * @param int $categoryIdx
      * @return false|string
      */
-    public function checkCategoryLimit(int|string $category): bool|string
+    public function checkCategoryLimit(int $categoryIdx): bool|string
     {
-        if ( $this->categoryHourlyLimit($category) ) {
+
+        if ( $this->categoryHourlyLimit($categoryIdx) ) {
+//            d("categoryHourlyLimit($category) returns true");
             return e()->hourly_limit;
         }
-        if ( $this->categoryDailyLimit($category) ) {
+        if ( $this->categoryDailyLimit($categoryIdx) ) {
+//            d("categoryDailyLimit($categoryIdx) returns true");
             return e()->daily_limit;
         }
         return false;
@@ -217,15 +222,17 @@ class UserActivityTaxonomy extends UserActivityBase {
      * 카테고리 별 글/코멘트 쓰기 제한에 걸렸으면 true 를 리턴한다.
      * @param int|string $categoryIdx
      * @return bool
+     * - true error
+     * - false success
      */
     public function categoryHourlyLimit(int|string $categoryIdx): bool {
         $re = $this->countOver(
             actions: [ Actions::$createPost, Actions::$createComment ], // 글/코멘트 작성을
-            stamp: $this->getCategoryHourLimit($categoryIdx) * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
-            count: $this->getCategoryHourLimitCount($categoryIdx), // count 회 수 이상 했으면,
+            stamp: $this->getCreateHourLimit($categoryIdx) * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
+            count: $this->getCreateHourLimitCount($categoryIdx), // count 회 수 이상 했으면,
             categoryIdx: $categoryIdx,
         );
-        // d("결과: $re, 회수: " . $this->getCategoryHourLimitCount($categoryIdx));
+//         d("결과: $re, 회수: " . $this->getCategoryHourLimitCount($categoryIdx));
         return $re;
     }
 
@@ -240,14 +247,15 @@ class UserActivityTaxonomy extends UserActivityBase {
         return $this->countOver(
             actions: [ Actions::$createPost, Actions::$createComment ], // 글/코멘트 작성을
             stamp: time() - mktime(0, 0, 0, date('m'), date('d'), date('Y')), // 하루에 몇번. 주의: 정확히는 0시 0분 0초 부터 현재 시점까지이다. README.md# 포인트 참고
-            count: $this->getCategoryDailyLimitCount($categoryIdx), // count 회 수 이상 했으면,
+            count: $this->getCreateDailyLimitCount($categoryIdx), // count 회 수 이상 했으면,
             categoryIdx: $categoryIdx
         );
     }
 
 
     /**
-     * Returns last history.
+     * Returns the last history based on the input.
+     *
      * point history 테이블에서 taxonomy, entity, reason 에 맞는 마지막 기록 1개를 리턴한다.
      *
      * - 예제) 마지막 기록을 가져와서, 포인트 기록이 된 시간을 24시간 이전으로 수정한다.
@@ -275,18 +283,14 @@ class UserActivityTaxonomy extends UserActivityBase {
 
 
 
-
-$__UserActivityTaxonomy = null;
 /**
+ * @attention This method must return new object every time, for clearing the previous error message(or not to keep previous error message into new action)
+ *
  * @param int $idx
  * @return UserActivityTaxonomy
  */
 function act(int $idx=0): UserActivityTaxonomy
 {
-    global $__UserActivityTaxonomy;
-    if ( $__UserActivityTaxonomy == null ) {
-        $__UserActivityTaxonomy = new UserActivityTaxonomy($idx);
-    }
-    return $__UserActivityTaxonomy;
+    return new UserActivityTaxonomy($idx);
 }
 

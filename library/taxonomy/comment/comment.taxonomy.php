@@ -90,10 +90,11 @@ class CommentTaxonomy extends Forum {
 
 
         // 제한에 걸렸으면, 에러 리턴.
-        if ( $category->BAN_ON_LIMIT ) {
-            $limit = act()->checkCategoryLimit($category->idx);
-            if ( isError($limit) ) return $this->error($limit);
-        }
+        d("@todo canCreateComments()");
+//        if ( $category->BAN_ON_LIMIT ) {
+//            $limit = act()->checkCategoryLimit($category->idx);
+//            if ( isError($limit) ) return $this->error($limit);
+//        }
 
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
         $pointToCreate = act()->getCommentCreatePoint($category->idx);
@@ -103,6 +104,7 @@ class CommentTaxonomy extends Forum {
 
         d("@todo record comment point);");
 //        point()->forum(POINT_COMMENT_CREATE, $this->idx);
+//        act()->createComment($this);
         $this->patchPoint();
 
         /**

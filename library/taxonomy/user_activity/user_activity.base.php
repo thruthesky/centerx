@@ -19,6 +19,8 @@ class UserActivityBase extends Entity {
      * @param int $fromUserIdx
      * @param int $categoryIdx
      * @return bool
+     *  - true if there are more records than $count
+     *  - false otherwise.
      *
      * @example
      *
@@ -33,12 +35,15 @@ class UserActivityBase extends Entity {
         if ( $count ) {
 //            d("countOver: $categoryIdx");
             $total = $this->countActions( actions: $actions, stamp: $stamp, fromUserIdx: $fromUserIdx, categoryIdx: $categoryIdx );
-            if ( $total >= $count ) {
+//            d("if ( total: $total >= count: $count ) {");
+            if ( $total == 0 ) return false;
+            else if ( $total >= $count ) {
                 return true;
             }
         }
         return false;
     }
+
 
 
 
@@ -86,6 +91,11 @@ class UserActivityBase extends Entity {
     /**
      * Records user action
      *
+     * @attention All the check & test must be done before calling this method.
+     *      If the user has reached the limit of voting point change, then the input of toUserPoint must be 0, so it
+     *      will record the action without point change.
+     *
+     * @attention If the user point is less than the deduction, then user point will be 0.
      *
      *
      * @param string $action - the action ( or the user's activity )
@@ -324,6 +334,7 @@ class UserActivityBase extends Entity {
         return category($category)->getData(Actions::$deletePost, 0);
     }
 
+
     public function setCommentDeletePoint($category, $point) {
         category($category)->update([Actions::$deleteComment => $point]);
     }
@@ -332,37 +343,38 @@ class UserActivityBase extends Entity {
         return category($category)->getData(Actions::$deleteComment, 0);
     }
 
-    public function setCategoryHour($category, $hour) {
-        category($category)->update([ActivityLimits::$categoryHourLimit => $hour]);
+    public function setCreateHourLimit($category, $hour) {
+        category($category)->update([ActivityLimits::$createHourLimit => $hour]);
     }
 
 
-    public function getCategoryHourLimit(int|string $category) {
-        return category($category)->getData(ActivityLimits::$categoryHourLimit, 0);
+    public function getCreateHourLimit(int|string $category) {
+        return category($category)->getData(ActivityLimits::$createHourLimit, 0);
     }
 
-    public function setCategoryHourLimitCount($category, $count) {
-        return category($category)->update([ActivityLimits::$categoryHourLimitCount => $count]);
+    public function setCreateHourLimitCount($category, $count) {
+        return category($category)->update([ActivityLimits::$createHourLimitCount => $count]);
     }
 
-    public function getCategoryHourLimitCount(int|string $category) {
-        return category($category)->getData(ActivityLimits::$categoryHourLimitCount, 0);
+    public function getCreateHourLimitCount(int|string $category) {
+        return category($category)->getData(ActivityLimits::$createHourLimitCount, 0);
     }
 
-    public function setCategoryDailyLimitCount($category, $count) {
-        category($category)->update([ActivityLimits::$categoryDailyLimitCount => $count]);
+    public function setCreateDailyLimitCount($category, $count) {
+        category($category)->update([ActivityLimits::$createDailyLimitCount => $count]);
     }
-    public function getCategoryDailyLimitCount(int|string $category) {
-        return category($category)->getData(ActivityLimits::$categoryDailyLimitCount, 0);
-    }
-
-    public function enableCategoryBanOnLimit(int|string $category) {
-        category($category)->update([ActivityLimits::$categoryBanOnLimit => 'Y']);
+    public function getCreateDailyLimitCount(int|string $category) {
+        return category($category)->getData(ActivityLimits::$createDailyLimitCount, 0);
     }
 
-    public function disableCategoryBanOnLimit(int|string $category) {
-        category($category)->update([ActivityLimits::$categoryBanOnLimit => 'N']);
+    public function enableBanCreateOnLimit(int|string $category) {
+        category($category)->update([ActivityLimits::$banCreateOnLimit => 'Y']);
     }
+
+    public function disableBanCreateOnLimit(int|string $category) {
+        category($category)->update([ActivityLimits::$banCreateOnLimit => 'N']);
+    }
+
 
     /**
      * Returns true if the activity of the category is banned on limit.
@@ -370,6 +382,7 @@ class UserActivityBase extends Entity {
      * @return bool
      */
     public function isCategoryBanOnLimit(int $categoryIdx) {
-        return category($categoryIdx)->getData(ActivityLimits::$categoryBanOnLimit, '') == 'Y';
+//        d("ban($categoryIdx): " . category($categoryIdx)->getData(ActivityLimits::$banCreateOnLimit, ''));
+        return category($categoryIdx)->getData(ActivityLimits::$banCreateOnLimit, '') == 'Y';
     }
 }

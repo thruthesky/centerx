@@ -1,5 +1,7 @@
 <?php
 
+
+
 if (category(POINT)->exists() == false) category()->create([ID => POINT]); // create POINT category if not exists.
 db()->query('truncate ' . act()->getTable()); // empty table
 db()->query('truncate ' . voteHistory()->getTable()); // emtpy table
@@ -35,11 +37,11 @@ testPointPostDelete();
 testPointPostCreateAndDeleteByChangingCategories();
 
 
+
+testPointPostCreateDailyLimit();
+testPointPostCreateHourlyLimit();
 testCategoryLimitByDateChange();
 
-//testPointPostCreateDailyLimit();
-//testPointPostCreateHourlyLimit();
-//testPointPostCreateChangeDates();
 //testPointPostCreateByPointPossession();
 
 
@@ -50,7 +52,7 @@ testCategoryLimitByDateChange();
 /// ##############
 
 
-//testPointCommentCreate();
+testPointCommentCreate();
 //testPointCommentDelete();
 //testPointCommentCreateAndDeleteByChangingCategories();
 //
@@ -60,6 +62,7 @@ testCategoryLimitByDateChange();
 //testPointCommentCreateDailyLimit();
 //testPointCommentCreateHourlyLimit();
 //testPointCommentCreateByPointPossession.
+
 
 
 
@@ -87,9 +90,11 @@ function resetPoints()
     act()->setCommentCreatePoint(category(POINT)->idx, 0);
     act()->setPostDeletePoint(category(POINT)->idx, 0);
     act()->setCommentDeletePoint(category(POINT)->idx, 0);
-    act()->setCategoryDailyLimitCount(category(POINT)->idx, 0);
-    act()->setCategoryHour(category(POINT)->idx, 0);
-    act()->setCategoryHourLimitCount(category(POINT)->idx, 0);
+    act()->setCreateDailyLimitCount(category(POINT)->idx, 0);
+    act()->setCreateHourLimit(category(POINT)->idx, 0);
+    act()->setCreateHourLimitCount(category(POINT)->idx, 0);
+
+    act()->disableBanCreateOnLimit(POINT);
 
 }
 
@@ -105,7 +110,6 @@ function testPointSettings() {
     resetPoints();
     act()->setPostCreatePoint(POINT, 1000);
     isTrue(act()->getPostCreatePoint(POINT) == 1000, 'getPostCreatePoint to be 1,000');
-
 
     act()->setPostDeletePoint(POINT, -1200);
     isTrue(act()->getPostDeletePoint(POINT) == -1200, 'getPostDeletePoint to be -1,200');
@@ -359,45 +363,55 @@ function testVoteUntilPointBecomeZero() {
 
 
 
-function testVoteHourlyLimit() {
+function testVoteWithoutHourlyLimit() {
     resetPoints();
 
     // prepare
-    act()->setLikePoint(100);
     act()->setLikeDeductionPoint(-100);
-    act()->setDislikePoint(-100);
-    act()->setDislikeDeductionPoint(-100);
 
     $A = registerAndLogin();
+    $A->setPoint(600);
 
     // test without limit
-    $posts = [];
     for($i = 0; $i < 5; $i++) {
-        $posts[] = createPost();
+        loginAs($A);
+        $p = createPost();
+        registerAndLogin();
+        $p->like();
     }
 
+    isTrue($A->getPoint() == 100, '-400');
+}
+
+function testVoteHourlyLimit() {
+
+    resetPoints();
+    act()->setLikePoint(100);
+    act()->setLikeDeductionPoint(-100);
+
+
     // See? There is no limit.
+    $A = registerAndLogin();
+    $A->setPoint(1000);
     $B = registerAndLogin();
     $B->setPoint(1000);
-    foreach($posts as $post) {
-        $post->like();
-    }
-    isTrue($A->getPoint() == 500, "Got 500");
-    isTrue($B->getPoint() == 500, "Got -500");
 
 
     // Set limit. 4 times in 2 hours.
     act()->setLikeHourLimit(2);
     act()->setLikeHourLimitCount(4);
 
-    $C = registerAndLogin();
-    $C->setPoint(1000);
-    foreach($posts as $post) {
-        $post->like();
-    }
-    isTrue($A->getPoint() == 900, "Got another 400. Vote 5 times but last was not increase point.");
-    isTrue($C->getPoint() == 600, "Got -400. One was voted without point deduction due to hourly limitation.");
 
+    // test without limit
+    for($i = 0; $i < 5; $i++) {
+        loginAs($A);
+        $p = createPost();
+        loginAs($B);
+        $p->like();
+    }
+
+    isTrue($A->getPoint() == 1400, "A point to be 1500 but: " . $A->getPoint());
+    isTrue($B->getPoint() == 600, "B point to be 600");
 
 }
 function testVoteDailyLimit() {
@@ -405,8 +419,6 @@ function testVoteDailyLimit() {
     resetPoints();
     act()->setLikePoint(200);
     act()->setLikeDeductionPoint(-100);
-    act()->setDislikePoint(-150);
-    act()->setDislikeDeductionPoint(-50);
 
 
     $A = registerAndLogin()->setPoint(1000);
@@ -475,10 +487,14 @@ function testPatchPoint() {
 
 }
 
+
 function testPointPostDelete() {
+
     resetPoints();
     // check point settings
     act()->setPostDeletePoint(POINT, -444);
+
+
     // login as A
     $A = registerAndLogin();
 
@@ -489,9 +505,12 @@ function testPointPostDelete() {
     isTrue($post2->ok, "Post2 create must be okay. But: " . $post2->getError());
 
     $A->setPoint(500);
+
+
     // 게시글 삭제
     $re = $post1->markDelete();
     isTrue(login()->getPoint() == 56, 'A point must be 56. but ' . login()->getPoint());
+
     $re = $post2->markDelete();
     isTrue(login()->getPoint() == 0, 'A point must be 0. but ' . login()->getPoint());
 }
@@ -500,84 +519,131 @@ function testPointPostDelete() {
 function testPointPostCreateAndDeleteByChangingCategories() {
     resetPoints();
 
-
     // login as A
     $A = registerAndLogin();
     $A->setPoint(500);
 
-
     // check point settings
-    act()->setPostCreatePoint(POINT, 1000);
-    act()->setPostDeletePoint(POINT, -1250);
+    act()->setPostCreatePoint(POINT, 100);
+    act()->setPostDeletePoint(POINT, -150);
 
-    // create post
+    // create & delete post
     $post1 = createPost();
-    isTrue($A->getPoint() == 1500, 'A point must be 1000. but ' . $A->getPoint());
-    // create another post
-    $post2 = createPost();
-    isTrue(login()->getPoint() == 2500, 'A point must be 2500. but ' . login()->getPoint());
+    isTrue($A->getPoint() == 600, 'A point must be 600. but ' . $A->getPoint());
+    $post1->markDelete();
+    isTrue($A->getPoint() == 450, 'A point must be 450. but ' . $A->getPoint());
 
 
-    $re = $post1->markDelete();
-    isTrue(login()->getPoint() == 1250, 'A point must be 1250. but ' . login()->getPoint());
-    $re = $post2->markDelete();
-    isTrue(login()->getPoint() == 0, 'A point must be 0. but ' . login()->getPoint());
+    $post2 = createPost(categoryId: 'newCat' . time());
+    isTrue($A->getPoint() == 450, 'New category without point change. So, point not changing. 450. but ' . $A->getPoint());
 
 
-    // create post
-    $post3 = createPost();
-    isTrue($A->getPoint() == 1000, 'A point must be 1000. but ' . $A->getPoint());
-
-
-    // set point settings
-    act()->setPostDeletePoint(POINT, -800);
-    $post3->update([CATEGORY_ID => CHOICE]);
-
-    $re = $post3->markDelete();
-    isTrue(login()->getPoint() == 200, 'A point must be 200. but ' . login()->getPoint());
-
+    createPost();
+    isTrue($A->getPoint() == 550, 'Point category again. 550. but ' . $A->getPoint());
 
 
 }
 
+function testPointPostCreateDailyLimit() {
 
+    resetPoints();
+
+//    d(category(POINT));
+
+    // 1 day, 2 posts.
+    act()->setCreateDailyLimitCount(POINT, 2);
+
+
+
+    registerAndLogin();
+    createPost();
+    $p2 = createPost();
+    isTrue($p2->ok, "p2 ok");
+
+    $p3 = createPost();
+//    d($p3);
+    isTrue($p3->ok, "testPointPostCreateDailyLimit() -> Expect: ok without createBanOnLimit");
+
+    act()->enableBanCreateOnLimit(POINT);
+
+    $p4 = createPost();
+    isTrue($p4->getError() == e()->daily_limit, "Expect: error daily limit");
+}
+
+
+function testPointPostCreateHourlyLimit() {
+
+    resetPoints();
+
+    $category = createCategory('category-hourly-test-' . time());
+
+//    d("category->idx: ". $category->idx);
+
+
+    // 2 hour, 3 posts.
+    act()->setCreateHourLimit($category->idx, 2);
+    act()->setCreateHourLimitCount($category->idx, 3);
+
+    registerAndLogin();
+//    $p1 = createPost($category->id);
+    $p1 = post()->create([CATEGORY_ID => $category->id, TITLE => TITLE, CONTENT => CONTENT]);
+//    d($p1);
+    createPost($category->id);
+    $p3 = createPost($category->id);
+//    d($p3);
+    isTrue($p3->ok, "testPointPostCreateHourlyLimit() -> Expect: ok without ban");
+
+
+
+    act()->enableBanCreateOnLimit($category->idx);
+
+    $p4 = createPost($category->id);
+    isTrue($p4->getError() == e()->hourly_limit, "Expect: error hourly limit");
+}
 
 function testCategoryLimitByDateChange() {
     resetPoints();
-    act()->enableCategoryBanOnLimit(POINT);
+    act()->enableBanCreateOnLimit(POINT);
 
-    // 하루에 1번 제한
-    act()->setCategoryDailyLimitCount(POINT, 1);
+    // Limit 1 time a day.
+    act()->setCreateDailyLimitCount(POINT, 1);
 
     $A = registerAndLogin();
     $post1 = createPost();
     isTrue($post1->ok, 'testChangeDate() -> post1 must success');
 
-    // 제한 하므로 실패.
-    act()->enableCategoryBanOnLimit(POINT);
+    // Ban on limit
+    act()->enableBanCreateOnLimit(POINT);
     $post2 = createPost();
     isTrue($post2->hasError, 'testChangeDate() -> post2 must be error.');
     isTrue($post2->getError() == e()->daily_limit, 'testChangeDate() -> post2 must be error daily limit but::'. $post2->getError());
 
-    // 마지막 추천 기록을 24시간 이전으로 돌림.
-    act()->resetError();
-    $beforeCheck = act()->last(POSTS, $post1->idx, Actions::$createPost);
-    d($beforeCheck, "before check");
-    $res = $beforeCheck->update([CREATED_AT => $beforeCheck->createdAt - (60 * 60 * 24)]);
-    d($res, "after check");
+    // Post creating is banned now!
+    // But change the last post creation history to 1 day before, so it can post again.
 
-//    $afterCheck = act()->last(POSTS, $post1->idx, Actions::$createPost);
-//    d($beforeCheck->createdAt, $afterCheck->createdAt);
-//    isTrue($beforeCheck->createdAt < $afterCheck->createdAt, 'created at must be backdate by a day');
-//
-//    // 그리고 다시 쓰기 성공.
-//    $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
-//    d($post3);
-//    isTrue($post3->ok && $post3->title == 'post 3', 'testChangeDate() -> post3 must be success.');
-//
-//    // 하지만 한번 더 쓰기하면 실패.
-//    act()->enableCategoryBanOnLimit(POINT);
-//    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
-//    isTrue($post4->hasError, 'testChangeDate() -> post4 must be error.');
-//    isTrue($post4->getError() == e()->daily_limit, 'post4 daily limit');
+    // Get last history of post create
+    $beforeCheck = act()->last(POSTS, $post1->idx, Actions::$createPost);
+    // so, if it create a post again, then it will not be an error.
+    $updated = $beforeCheck->update([CREATED_AT => $beforeCheck->createdAt - (60 * 60 * 24)]);
+
+    // Create a new post. Expect success.
+    $post3 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 3']);
+    isTrue($post3->ok && $post3->title == 'post 3', 'testChangeDate() -> post3 must be success.');
+
+
+    // Create again and it must failed.
+    $post4 = post()->create([CATEGORY_ID => POINT, TITLE => 'post 4']);
+    isTrue($post4->hasError, 'testChangeDate() -> post4 must be error.');
+    isTrue($post4->getError() == e()->daily_limit, 'post4 daily limit');
+}
+
+
+function testPointCommentCreate() {
+    resetPoints();
+    act()->setCommentCreatePoint(POINT, 50);
+
+    $A = registerAndLogin();
+    createComment();
+
+    // $A point should be 50.
 }

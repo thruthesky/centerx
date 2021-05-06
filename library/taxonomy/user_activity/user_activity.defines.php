@@ -5,10 +5,10 @@ class ActivityLimits {
     public static string $voteDailyLimitCount = "voteDailyLimitCount";
     public static string $voteHourlyLimit = "voteHourlyLimit";
     public static string $voteHourlyLimitCount = "voteHourlyLimitCount";
-    public static string $categoryDailyLimitCount = "categoryDailyLimitCount";
-    public static string $categoryHourLimit = "categoryHourLimit";
-    public static string $categoryHourLimitCount = "categoryHourLimitCount";
-    public static string $categoryBanOnLimit = "categoryBanOnLimit";
+    public static string $createDailyLimitCount = "createDailyLimitCount";
+    public static string $createHourLimit = "createHourLimit";
+    public static string $createHourLimitCount = "createHourLimitCount";
+    public static string $banCreateOnLimit = "banCreateOnLimit";
 
 
 

@@ -94,13 +94,18 @@ function registerAndLogin(): UserTaxonomy {
 
 
 
-function createPost(): PostTaxonomy {
-    if (category(POINT)->exists() == false) category()->create([ID => POINT]); // create POINT category if not exists.
-    return post()->create([CATEGORY_ID => POINT, TITLE => TITLE, CONTENT => CONTENT]);
+function createCategory(string $id = null): CategoryTaxonomy {
+    return category()->create([ID => $id ?? 'category-test-'. time()]);
 }
 
-function createComment(): CommentTaxonomy {
-    if (category(POINT)->exists() == false) category()->create([ID => POINT]); // create POINT category if not exists.
-    $post = post()->create([CATEGORY_ID => POINT, TITLE => TITLE, CONTENT => CONTENT]);
+
+function createPost(string $categoryId=null): PostTaxonomy {
+    if (category($categoryId ?? POINT)->exists() == false) category()->create([ID => $categoryId ?? POINT]); // create POINT category if not exists.
+    return post()->create([CATEGORY_ID => $categoryId ?? POINT, TITLE => TITLE, CONTENT => CONTENT]);
+}
+
+function createComment(string $categoryId=null): CommentTaxonomy {
+    if (category($categoryId ?? POINT)->exists() == false) category()->create([ID => $categoryId ?? POINT]); // create POINT category if not exists.
+    $post = post()->create([CATEGORY_ID => $categoryId ?? POINT, TITLE => TITLE, CONTENT => CONTENT]);
     return comment()->create([ ROOT_IDX => $post->idx, CONTENT => 'comment content read' ]);
 }

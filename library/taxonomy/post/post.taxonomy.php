@@ -22,7 +22,7 @@
  * @property-read string $subcategory
  * @property-read string $title;
  * @property-read int $noOfComments;
- * @property-read File[] $files;
+ * @property-read FileTaxonomy[] $files;
  * @property-read string $path;
  * @property-read string $content;
  * @property-read string $url;
@@ -80,6 +80,8 @@ class PostTaxonomy extends Forum {
      * @return self
      * @throws \Kreait\Firebase\Exception\FirebaseException
      * @throws \Kreait\Firebase\Exception\MessagingException
+     *
+     *
      */
     public function create( array $in ): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
@@ -111,7 +113,7 @@ class PostTaxonomy extends Forum {
         $this->fixUploadedFiles($in);
 
         // Record for post creation and change point.
-        act()->createPost($category, $this);
+        act()->createPost($this);
 
         // Apply the point to post memory field. 포인트를 현재 객체의 $this->data 에 업데이트
         $this->patchPoint();
@@ -185,16 +187,24 @@ class PostTaxonomy extends Forum {
      * @warning the permission must be checked before calling this method.
      *
      * @return self
+     *
+     * @attention It does not check if the user can delete. Since it's the user's right to delete his own post whether
+     *      he has points or not. It must be that way.
      */
     public function markDelete(): self {
         if ( $this->hasError ) return $this;
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
 
+
         parent::markDelete();
+        if ( $this->hasError ) return $this;
+
+        //
         parent::update([TITLE => '', CONTENT => '']);
 
-        act()->deletePost($this->category(), $this);
+        //
+        act()->deletePost($this);
 
         return $this;
     }
