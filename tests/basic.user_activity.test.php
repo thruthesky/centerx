@@ -4,45 +4,47 @@ if (category(POINT)->exists() == false) category()->create([ID => POINT]); // cr
 db()->query('truncate ' . act()->getTable()); // empty table
 db()->query('truncate ' . voteHistory()->getTable()); // emtpy table
 
-//testUserPointSet();
-//testPointSettings();
-//testUserRegisterPoint();
-//testUserLoginPoint();
-//
-//testLikePoint();
-//testDislikePoint();
-//testDislikePointForMinusPoint();
-//testVotePoints_likeAndLikeDeduction();
-//testVotePoints_dislikeAndDislikeDeduction();
-//
-//testVoteAgainOnSamePost();
-//testVoteLikeOnComment();
-//testVoteDislikeOnComment();
-//
-//testVoteAgainOnSameComment();
-//testVoteUntilPointBecomeZero();
-//
-//
-//testVoteHourlyLimit();
-//testVoteDailyLimit();
-//testVoteLimitByChangingDate();
+testUserPointSet();
+testPointSettings();
+testUserRegisterPoint();
+testUserLoginPoint();
+
+testLikePoint();
+testDislikePoint();
+testDislikePointForMinusPoint();
+testVotePoints_likeAndLikeDeduction();
+testVotePoints_dislikeAndDislikeDeduction();
+
+testVoteAgainOnSamePost();
+testVoteLikeOnComment();
+testVoteDislikeOnComment();
+
+testVoteAgainOnSameComment();
+testVoteUntilPointBecomeZero();
+
+
+testVoteHourlyLimit();
+testVoteDailyLimit();
+testVoteLimitByChangingDate();
 
 
 
-//testPointPostCreate();
-//testPatchPoint();
-//testPointPostDelete();
-//testPointPostCreateAndDeleteByChangingCategories();
+testPointPostCreate();
+testPatchPoint();
+testPointPostDelete();
+testPointPostCreateAndDeleteByChangingCategories();
 
 
-//testPointPostCreateDailyLimit();
-//testPointPostCreateHourlyLimit();
-//testPointPostCreateChangeDates();
-//testPointPostCreateByPointPossession();
-//
+testPointPostCreateDailyLimit();
+testPointPostCreateHourlyLimit();
+testPointPostCreateChangeDates();
+testPointPostCreateByPointPossession();
 
 
 
+
+
+testCategoryLimitByDateChange();
 
 
 /// ##############
@@ -60,8 +62,6 @@ db()->query('truncate ' . voteHistory()->getTable()); // emtpy table
 //testPointCommentCreateByPointPossession.
 
 
-
-testCategoryLimitByDateChange();
 
 
 
