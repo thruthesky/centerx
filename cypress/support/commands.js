@@ -38,11 +38,9 @@ Cypress.Commands.add("loginOrRegister", (email, password) => {
     `/?route=user.loginOrRegister&email=${userEmail}&password=${userPass}`
   )
     .its("body")
-    .as("currentUser");
-
-  cy.get("@currentUser").then((user) => {
-    cy.setCookie("sessionId", user.response.sessionId);
-  });
+    .then((user) => {
+      cy.setCookie("sessionId", user.response.sessionId);
+    });
 });
 
 Cypress.Commands.add("getElement", (ID) => {
