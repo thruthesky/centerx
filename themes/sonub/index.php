@@ -5,14 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/etc/bootstrap-4/bootstrap-4.6.0-min.css">
-    <link rel="stylesheet" href="/themes/sonub/css/bootstrap-vue-2.21.2.min.css">
-    <link href="/etc/fontawesome-pro-5/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="/etc/bootstrap-vue-2.21.2/bootstrap-vue-2.21.2.min.css">
+    <link href="/etc/fontawesome-pro-5/css/all.min.css" rel="stylesheet">
     <style>
         <?php include theme()->css('index') ?>
     </style>
     <script>
-        const mixins = []; // Vue.js 2 의 mixin 들을 담을 변수
-        function later(fn) { window.addEventListener('load', fn); }
+        <?php include theme()->file('js/prepare', extension: 'js'); ?>
     </script>
 </head>
 <body>

@@ -60,7 +60,10 @@ class Theme
      *      include theme()->file('footer');
      *
      * 예제) css 로드하기
-     *  <style> include theme()->file('index', extension: 'css') </style>
+     *  <style> <?php include theme()->file('index', extension: 'css') ?> </style>
+     *
+     * Example) Loading Javascript file under 'js' folder.
+     *  <script> <?php include theme()->file('js/prepare', extension: 'js'); ?> </style>
      */
     public function file(string $filename, bool $prefixThemeName = false, string $extension = 'php'): string
     {

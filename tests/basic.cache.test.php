@@ -36,4 +36,3 @@ isTrue($c->idx == $cache->idx, "Expect same idx: {$c->idx}");
 isTrue($c->data == 'yo', "Expect c->data yo");
 isTrue($cache->data == 'ho', "Expect cache->data ho");
 
-
