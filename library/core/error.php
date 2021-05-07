@@ -81,6 +81,7 @@ class E {
     public string $daily_limit = 'error_daily_limit';
 
     public string $lack_of_point = 'error_lack_of_point';
+    public string $lack_of_point_possession_limit = 'error_lack_of_point_possession_limit';
 
 
     public string $point_must_be_0_or_lower_than_0 = 'error_point_must_be_0_or_lower_than_0';

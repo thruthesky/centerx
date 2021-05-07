@@ -61,8 +61,15 @@ class PostTaxonomy extends Forum {
      */
     public function read(int $idx = 0): self
     {
+
         parent::read($idx);
         if ( $this->notFound ) return $this;
+
+
+        $act = act()->canRead($this->categoryIdx);
+        if ( $act->hasError ) {
+            return $this->error( $act->getError() );
+        }
 
         if ( $this->path ) {
             $url = get_current_root_url() . $this->path;

@@ -41,8 +41,6 @@ testPointPostCreateHourlyLimit();
 testCategoryLimitByDateChange();
 
 
-/// ##############
-
 testPointCommentCreate();
 testCommentPatchPoint();
 testPointCommentDelete();
@@ -50,10 +48,9 @@ testPointCommentDelete();
 testPointCommentCreateDailyLimit();
 testPointCommentCreateHourlyLimit();
 
-
-//testPointPostCreateByPointPossession();
-//testPointCommentCreateByPointPossession();
-
+testPointPostCreateLimitByPointPossession();
+testPointCommentCreateLimitByPointPossession();
+testPointReadLimitByPointPossession();
 
 
 
@@ -89,6 +86,10 @@ function resetPoints()
 
     act()->disableBanCreateOnLimit(POINT);
 
+
+    act()->setPostCreateLimitPoint(POINT, 0);
+    act()->setCommentCreateLimitPoint(POINT, 0);
+    act()->setReadLimitPoint(POINT, 0);
 }
 
 
@@ -134,6 +135,9 @@ function testPointSettings() {
     isTrue(act()->getPostDeletePoint(POINT) == -1200);
     isTrue(act()->getCommentCreatePoint(POINT) == 200);
     isTrue(act()->getCommentDeletePoint(POINT) == -300);
+
+
+
 
 
 }
@@ -745,5 +749,56 @@ function testPointCommentCreateHourlyLimit() {
     $c4 = comment()->create([ ROOT_IDX => $c3->rootIdx, CONTENT => 'comment content read' ]);
     isTrue($c4->getError() == e()->hourly_limit, "Expect: error hourly limit");
 
+
+}
+
+
+function testPointPostCreateLimitByPointPossession() {
+    resetPoints();
+    act()->setPostCreateLimitPoint(POINT, 100);
+
+    $A = registerAndLogin();
+    $p = createPost();
+    isTrue($p->hasError && $p->getError() == e()->lack_of_point_possession_limit, "User 'u' is Lack of point for post create");
+
+    $A->setPoint(100);
+    $p2 = createPost();
+    isTrue($p2->ok, "User u created a post");
+
+}
+
+function testPointCommentCreateLimitByPointPossession() {
+    resetPoints();
+    act()->setCommentCreateLimitPoint(POINT, 100);
+
+    $u2 = registerAndLogin();
+    $c = createComment();
+    isTrue($c->hasError && $c->getError() == e()->lack_of_point_possession_limit, "User 'u2' is Lack of point for comment create");
+
+    $u2->setPoint(100);
+    $c2 = createComment();
+    isTrue($c2->ok, "u2 created a comment");
+
+    $u2->setPoint(99);
+    $c3 = createComment();
+    isTrue($c3->getError() == e()->lack_of_point_possession_limit, "u2 lack of point possession to create a comment");
+
+}
+
+
+function testPointReadLimitByPointPossession() {
+    resetPoints();
+
+    $u3 = registerAndLogin();
+    $p3 = createPost();
+    isTrue($p3->ok, "u3 created a post. But cannot read");
+
+
+    act()->setReadLimitPoint(POINT, 50);
+
+    $u3->setPoint(49);
+
+    $read = post()->read($p3->idx);
+    isTrue($read->hasError && $read->getError() == e()->lack_of_point_possession_limit, "u3 cannot read point due to lack of point possession");
 
 }

@@ -376,6 +376,8 @@ class UserActivityBase extends Entity {
     }
 
 
+
+
     /**
      * Returns true if the activity of the category is banned on limit.
      * @param int $categoryIdx
@@ -385,4 +387,26 @@ class UserActivityBase extends Entity {
 //        d("ban($categoryIdx): " . category($categoryIdx)->getData(ActivityLimits::$banCreateOnLimit, ''));
         return category($categoryIdx)->getData(ActivityLimits::$banCreateOnLimit, '') == 'Y';
     }
+
+    public function setPostCreateLimitPoint(int|string $category, $point) {
+        category($category)->update([ActivityLimits::$postCreateLimit => $point]);
+    }
+    public function getPostCreateLimitPoint(int|string $category): int {
+        return category($category)->getData(ActivityLimits::$postCreateLimit, 0);
+    }
+
+    public function setCommentCreateLimitPoint(int|string $category, $point) {
+        category($category)->update([ActivityLimits::$commentCreateLimit => $point]);
+    }
+    public function getCommentCreateLimitPoint(int|string $category): int {
+        return category($category)->getData(ActivityLimits::$commentCreateLimit, 0);
+    }
+
+    public function setReadLimitPoint(int|string $category, $point) {
+        category($category)->update([ActivityLimits::$readLimit => $point]);
+    }
+    public function getReadLimitPoint(int|string $category): int {
+        return category($category)->getData(ActivityLimits::$readLimit, 0);
+    }
+
 }
