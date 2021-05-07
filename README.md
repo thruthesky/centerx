@@ -2537,3 +2537,21 @@ content[tip]=내용사진입니다.
 - For listing posts under a category, it requires `category.idx`. Whether the client is using SQL or prepared params,
   `category.idx` must be used, instead of `category.id`.
   - Client app should load the forum configuration at startup and cache for the next boot. So, they can use `category.idx`.
+  
+
+
+
+# Trouble Shooting 문제해결
+
+## http://localhost 로, default 테마에 접속이 안되는 경우,
+
+nginx.conf 에서 localhost 설정이 어떤 root 로 되어져 있는지 확인한다.
+
+
+## Call to a member function bind_param()
+
+아래의 에러는 Database 에 Schema 를 올바로 지정하지 않아서 발생할 수 있다.
+
+```
+Fatal error:  Uncaught Error: Call to a member function bind_param() on bool in /docker/home/centerx/library/core/mysqli.php:274
+```
