@@ -48,7 +48,7 @@ function ln(array|string $code, mixed $default_value=''): string
 <span id='$id' style='background-color: #f6efca; cursor: pointer;'>$ret</span>
 <b-popover target="$id" triggers="hover">
     <b>$code</b>
-    <form @submit.prevent="onSubmitTranslate">
+    <form @submit.prevent="onSubmitTranslate('$language', '$code')">
     $inputs
     <button type="submit">Save</button>
 </form>
@@ -68,7 +68,7 @@ function safeCssSelector($code) {
     return 'tr-' . $code . $__safeCssSelectorCounter;
 }
 function isTranslationMode(): bool {
-    return $_COOKIE['adminTranslate'] == 'Y';
+    return isset($_COOKIE['adminTranslate']) && $_COOKIE['adminTranslate'] == 'Y';
 }
 
 /**

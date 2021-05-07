@@ -1,20 +1,28 @@
-
-
-<?php if ( loggedIn() ) { ?>
-    <?=ln('welcome')?>, <?=login()->name?>.
-    <?php if ( admin() ) { ?>
+<?php if (loggedIn()) { ?>
+    <?= ln('welcome') ?>, <?= login()->name ?>.
+    <?php if (admin()) { ?>
         <div>
-            <a href="/?admin.index">[<?=ln('admin')?>]</a> |
-            <?php if ( isTranslationMode() ) { ?>
-                <span onclick="adminTranslate('N');">[<?=ln('stop translate')?>]</span>
+            <a href="/?admin.index">[<?= ln('admin') ?>]</a> |
+            <?php if (isTranslationMode()) { ?>
+                <span onclick="adminTranslate('N');">[<?= ln('stop translate') ?>]</span>
                 <script>
                     mixins.push({
-                        created() {
-                        },
+                        created() {},
                         methods: {
                             onSubmitTranslate: function(ln, code) {
                                 console.log('translate!');
 
+
+                                axios.post('/index.php', {
+                                        sessionId: '<?= login()->sessionId ?>',
+                                        route: 'translation.update',
+                                        code: code,
+                                        currentCodeName: code,
+                                    })
+                                    .then(function(res) {
+                                        console.log(res);
+                                    })
+                                    .catch(alert);
                                 // var res = ...
                                 // var dom == document.getElementById(code);
                                 // dom.innerText = res[ln];
@@ -23,7 +31,7 @@
                     })
                 </script>
             <?php } else { ?>
-                <span onclick="adminTranslate('Y');">[<?=ln('begin translate')?>]</span>
+                <span onclick="adminTranslate('Y');">[<?= ln('begin translate') ?>]</span>
             <?php } ?>
         </div>
     <?php } ?>

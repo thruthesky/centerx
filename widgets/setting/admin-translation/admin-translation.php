@@ -60,6 +60,7 @@ if ( modeAny() ) {
                 ?>
                 <form>
                     <input type="hidden" name="p" value="admin.index">
+                    
                     <input type="hidden" name="w" value="<?=in('w')?>">
                     <input type="hidden" name="mode" value="update">
                     <input type="hidden" name="currentCodeName" value="<?=$code?>">
