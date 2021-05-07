@@ -38,17 +38,17 @@ function ln(array|string $code, mixed $default_value=''): string
     }
 
     if ( is_string($code) && admin() && isTranslationMode() ) {
-        $id = safeCssSelector($code);
+        list ($id, $class) = safeCssSelector($code);
         $inputs = '';
         foreach(SUPPORTED_LANGUAGES as $ln) {
             $t = translation()->text($ln, $code);
             $inputs .= "<div>$ln: <input name='$ln' value=\"$t\"></div>";
         }
         return <<<EOH
-<span id='$id' style='background-color: #f6efca; cursor: pointer;'>$ret</span>
+<span id='$id' class="$class" style='background-color: #f6efca; cursor: pointer;'>$ret</span>
 <b-popover target="$id" triggers="hover">
     <b>$code</b>
-    <form @submit.prevent="onSubmitTranslate('$language', '$code')">
+    <form @submit.prevent="onSubmitTranslate(\$event, '$language', '$code', '$class')">
     $inputs
     <button type="submit">Save</button>
 </form>
@@ -59,13 +59,16 @@ EOH;
     }
 }
 
+/**
+ *
+ */
 $__safeCssSelectorCounter = 0;
 function safeCssSelector($code) {
     global $__safeCssSelectorCounter;
     $__safeCssSelectorCounter ++;
     $code = seoFriendlyString($code);
     $code = str_replace(' ', '-', $code);
-    return 'tr-' . $code . $__safeCssSelectorCounter;
+    return ['tr-' . $code . $__safeCssSelectorCounter, 'tr-' . $code];
 }
 function isTranslationMode(): bool {
     return isset($_COOKIE['adminTranslate']) && $_COOKIE['adminTranslate'] == 'Y';

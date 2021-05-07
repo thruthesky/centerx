@@ -9,20 +9,23 @@
                     mixins.push({
                         created() {},
                         methods: {
-                            onSubmitTranslate: function(ln, code) {
-                                console.log('translate!');
+                            onSubmitTranslate: function(e, ln, code, clsName) {
+                                console.log('translate!', ln, code);
 
+                                const formData = new FormData(e.target);
+                                const data = Object.fromEntries(formData);
+                                data['code'] = code;
+                                data['currentCodeName'] = code;
 
-                                axios.post('/index.php', {
-                                        sessionId: '<?= login()->sessionId ?>',
-                                        route: 'translation.update',
-                                        code: code,
-                                        currentCodeName: code,
-                                    })
-                                    .then(function(res) {
-                                        console.log(res);
-                                    })
-                                    .catch(alert);
+                                request('translation.update', data, function(res) {
+                                    console.log(res);
+                                    console.log('replace: ', data[ln]);
+                                    const nodes = document.getElementsByClassName(clsName);
+                                    for(node in nodes) {
+                                        node.innerText = data[ln];
+                                    }
+                                }, alert);
+
                                 // var res = ...
                                 // var dom == document.getElementById(code);
                                 // dom.innerText = res[ln];

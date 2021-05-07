@@ -81,11 +81,20 @@ class TranslationTaxonomy extends Entity
     }
 
     /**
+     * Update translation cod and text.
      * 코드와 텍스트를 변경한다.
      *
+     * - Note, that it will produce error if new code name exists.
      * - 코드를 변경하는 경우, 새로은 코드 이름이 이미 존재한다면, 에러.
      *
      * @param $in
+     *   $in['currentCodeName'] is the current code name.
+     *   $in['code'] is the new code name.
+     *   - To update 'currentCodeName' and 'code' must have same value.
+     *   - To change code, 'currentCodeName' must be the currentCodeName, and 'code' should have new code name.
+     *   Example input)
+     *      ['code' => '...', 'currentCodeName' => '...', 'en' => '...', 'ko' => '...']
+     *
      * @return string
      * @throws \Kreait\Firebase\Exception\DatabaseException
      */
