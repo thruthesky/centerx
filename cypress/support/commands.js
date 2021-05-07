@@ -25,23 +25,22 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 /**
- * Login via request.
- * 
+ * Login or register via request.
+ *
  * @note only use this when not testing login page.
  */
-Cypress.Commands.add("login", (email, password) => {
+Cypress.Commands.add("loginOrRegister", (email, password) => {
   const userEmail = email ?? "thruthesky@gmail.com";
   const userPass = password ?? "12345a";
 
   cy.request(
     "POST",
-    `/?route=user.login&reload=true&email=${userEmail}&password=${userPass}`
+    `/?route=user.loginOrRegister&email=${userEmail}&password=${userPass}`
   )
     .its("body")
     .as("currentUser");
 
   cy.get("@currentUser").then((user) => {
-    console.log(user.response.sessionId);
     cy.setCookie("sessionId", user.response.sessionId);
   });
 });

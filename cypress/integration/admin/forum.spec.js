@@ -1,6 +1,6 @@
 describe("Forum", function () {
   beforeEach(() => {
-    cy.login();
+    cy.loginOrRegister();
   });
 
   it("tests forum settings crud", function () {
