@@ -5,8 +5,16 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
     <?php
 }
 
+d(get_current_country('124.83.114.70'));
 
 ?>
+
+<div class="demo">
+    ...
+</div>
+
+
+<?php include widget('weather/openweathermap') ?>
 
 
 <div class="p-2 fs-sm">
@@ -35,6 +43,9 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
 
     }
     ?>
+
+
+
 
 
 

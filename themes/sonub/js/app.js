@@ -4,3 +4,4 @@ const app = new Vue({
     data: data,
     mixins: mixins
 });
+

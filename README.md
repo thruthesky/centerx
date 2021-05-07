@@ -1143,6 +1143,22 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
   - He can click 'translate' button,
   - App will 
 
+# Currency Conversion
+
+- centerx support currency api from https://free.currencyconverterapi.com/
+- define free version currency api in config.php
+```php
+define('CURRCONV_API_KEY', 'bd6ed497a84496be7ee9');
+```
+
+# Weather
+
+- the system support weather api from https://openweathermap.org/
+- define open weather map api key in config.php  
+```php
+define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
+```
+
 
 # Settings
 
@@ -2365,6 +2381,8 @@ echo "현재 환율: $phpKwr";
 - `get_current_country()` 함수로 현재 국가 정보 데이터를 가져 올 수 있는데, 매 접속 마다, 이 함수가 실행 될 수 있으며, performance 에 영향을 줄 수 있다.
   - 가장 좋은 방법은 SPA 를 통해서, 처음 접속시 한번만 실행하는 것이다.
   
+
+
 
 # 플러터로 새로운 앱을 개발 할 때 해야하는 것
 

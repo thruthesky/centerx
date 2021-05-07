@@ -265,3 +265,10 @@ $__firebase_sdk = <<<EOH
 EOH;
 if ( !defined('FIREBASE_SDK') ) define('FIREBASE_SDK', $__firebase_sdk);
 
+
+// Free currconv api key from https://free.currencyconverterapi.com/
+if ( !defined('CURRCONV_API_KEY') ) define('CURRCONV_API_KEY', 'bd6ed497a84496be7ee9');
+
+
+if ( !defined('OPENWEATHERMAP_API_KEY' ) ) define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
+

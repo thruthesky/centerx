@@ -146,13 +146,16 @@ function korean_currency_name($countryCode): string {
  *  $currencies = country_currency(cafe()->currencyCode());
  *
  * @example widgets/currency/currency-default/currency-default.php
+ *
+ *
  */
 function country_currency($countryCode) {
     if ( empty($countryCode) ) return [];
     $cc = $countryCode;
+    // @todo save the key into config.php
     $key = 'bd6ed497a84496be7ee9';
     $currency = cache($cc);
-    if ( $currency->olderThan(60 * 60) ) { // 1 시간
+    if ( $currency->olderThan(60 * 60) ) { // cache for 1 hour
         $currency->renew();
         $url = "https://free.currconv.com/api/v7/convert?q={$cc}_KRW,{$cc}_USD&compact=ultra&apiKey=$key";
         $re = file_get_contents($url);
@@ -200,24 +203,3 @@ function round_currency_rate($rate) {
     return $rate;
 }
 
-
-/**
- * 사용자의 접속 IP 를 바탕으로, 사용자가 있는 국가 정보를 Country 객체로 리턴한다.
- * 에러가 있으면, 에러가 설정된 Country 객체가 리턴된다.
- * @return Country|Entity
- * @throws \MaxMind\Db\Reader\InvalidDatabaseException
- */
-function get_current_country(string $ip = null) {
-    $reader = new \GeoIp2\Database\Reader(ROOT_DIR . "etc/data/GeoLite2-Country.mmdb");
-    try {
-        $record = $reader->country($ip ?? $_SERVER['REMOTE_ADDR']);
-        $code2 = $record->country->isoCode;
-        return country($code2);
-    } catch (\GeoIp2\Exception\AddressNotFoundException $e) {
-        return country()->setError(e()->geoip_address_not_found);
-    } catch (\MaxMind\Db\Reader\InvalidDatabaseException $e) {
-        return country()->setError(e()->geoip_invalid_database);
-    } catch (Exception $e) {
-        return country()->setError(e()->geoip_unknown);
-    }
-}

@@ -59,3 +59,31 @@ function country(int|string $idx = 0, bool $currencyCode = false): CountryTaxono
 }
 
 
+
+
+/**
+ * Returns country object that holds IP2Location information
+ *
+ *
+ * 사용자의 접속 IP 를 바탕으로, 사용자가 있는 국가 정보를 Country 객체로 리턴한다.
+ * 에러가 있으면, 에러가 설정된 Country 객체가 리턴된다.
+ *
+ * @param string $ip - the user ip address. if it's empty, then it takes the user's ip address.
+ * @return CountryTaxonomy
+ * @throws \MaxMind\Db\Reader\InvalidDatabaseException
+ */
+function get_current_country(string $ip = null): CountryTaxonomy {
+    $reader = new \GeoIp2\Database\Reader(ROOT_DIR . "etc/data/GeoLite2-Country.mmdb");
+    try {
+        $record = $reader->country($ip ?? $_SERVER['REMOTE_ADDR']);
+        $code2 = $record->country->isoCode;
+        return country($code2);
+    } catch (\GeoIp2\Exception\AddressNotFoundException $e) {
+        return country()->setError(e()->geoip_address_not_found);
+    } catch (\MaxMind\Db\Reader\InvalidDatabaseException $e) {
+        return country()->setError(e()->geoip_invalid_database);
+    } catch (Exception $e) {
+        return country()->setError(e()->geoip_unknown);
+    }
+}
+
