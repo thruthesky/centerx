@@ -39,24 +39,13 @@
 
 - work on next branch
 
-- user activities
-  - leave all histories including point changes.
-  - @todo vote point setting can be set per each forum but following the global limitatino.
-  - post/comment crud point setting for each category.
-  - vote point can have global settings.
-    
-  - `act()->canCreate($categoryIdx, $postIdx)`, `act()->canDelete()`,
-  - `act()->on(POST_CREATE, post: $post, comment: $comment)`, `act()->on(LOGIN)`, `act()->on(POST_VOTE)`,
-    act()->on(POINT_TRANSFER, fromUserIdx: idx, fromUserPoint: -10, toUserIdx: 123, toUserPoint: 20);
-    act()->on(POST_LIKE)
-    
-  - Leave a record on the same method of point change.
-  - Change POINT_POST_CREATE to pointCreatePost and all others with the format.
-  
-  - create category fields on createPost, deletePost, ...
+- update country.test.php
 
-  - @todo if user is banned by the amount of point possession.
+- update external login like kakao, naver
 
+- update test on in-app-purchase.
+
+- update user switch option.
 
 - @doc
   meta function may try to create child meta even if its taxonomy is meta. It only happens on testing.
@@ -66,8 +55,6 @@
   - INSERT/UPDATE 쿼리 word filtering 을 따로 둔다. (글 쓰기, 코멘트 쓰기용 필터링, 욕설 등록 및 기타, entity.class.php 에서 insert 에서 사용.)
   
 - SQL 문장에서 쿼리 시간을 제한 할 수 있도록, config.php 에 설정을 한다.
-
-
 
 - pass login 재 정리
 
@@ -97,7 +84,6 @@
 - 파일에 taxonomy 와 entity 추가
 
 - 게시판 별 추천, 비추천 옵션 선택.
-
 
 - 소셜 로그인 시, 프로필 사진 URL 경로가 https:// 이면, http:// 로 변경한다.
 
