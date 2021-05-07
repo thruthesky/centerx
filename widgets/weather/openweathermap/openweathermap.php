@@ -19,18 +19,22 @@
         $city = $country->city;
         $country = $country->v('2digitCode');
 
-        $re = file_get_contents("https://api.openweathermap.org/data/2.5/weather?q=$city,$country&appid=7cb555e44cdaac586538369ac275a33b");
+        $re = file_get_contents("https://api.openweathermap.org/data/2.5/weather?q=$city,$country&appid=" . OPENWEATHERMAP_API_KEY);
     }
 
-    d("get_current_country");
-    $country = get_current_country('120.29.76.142');
-    d($country, "country~~~~");
-    d(" {$country->city}, " . $country->v('2digitCode'));
-
-    d($re, "USER Current Weather");
-
+//    d("get_current_country");
+//    $country = get_current_country('120.29.76.142');
+//    d($country, "country~~~~");
+//    d(" {$country->city}, " . $country->v('2digitCode'));
     ?>
-    <?=$re->weather[0]->description?>
-    <img src="http://openweathermap.org/img/wn/<?=$re->weather[0]->icon?>.png">
+    <div><?=$re->name?>, <?=$re->sys->country?></div>
+    <div>
+        <img src="http://openweathermap.org/img/wn/<?=$re->weather[0]->icon?>.png">
+        <?=$re->main->temp - 273.15?> ℃
+    </div>
+    <div>
+        <?=$re->weather[0]->description?>
+    </div>
 
+    <?php d($re, "USER Current Weather"); ?>
 </div>
