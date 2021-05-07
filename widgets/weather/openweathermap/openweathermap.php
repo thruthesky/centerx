@@ -19,7 +19,7 @@
         $city = $country->city;
         $country = $country->v('2digitCode');
 
-        $re = file_get_contents("https://api.openweathermap.org/data/2.5/weather?q=$city,$country&appid=7cb555e44cdaac586538369ac275a33b");
+        $re = file_get_contents("https://api.openweathermap.org/data/2.5/weather?q=$city,$country&appid=" . OPENWEATHERMAP_API_KEY);
     }
 
 //    d("get_current_country");
