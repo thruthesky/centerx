@@ -2386,11 +2386,12 @@ echo "현재 환율: $phpKwr";
 - `lib/country.class.php` 와 `lib/data.php` 를 참고한다.
 
 
-# Geo IP
+# Geo IP, GeoLite2
 
-- `get_current_country()` 함수로 현재 국가 정보 데이터를 가져 올 수 있는데, 매 접속 마다, 이 함수가 실행 될 수 있으며, performance 에 영향을 줄 수 있다.
-  - 가장 좋은 방법은 SPA 를 통해서, 처음 접속시 한번만 실행하는 것이다.
-  
+- `get_current_country()` 함수로 현재 국가 와 도시 정보까지 가져올 수 있으며, 각 종 국가 코드(두자리, 세자리, 환율 코드, 심볼 등)를 가져올 수 있다.
+  - 참고로, 매 접속 마다, 이 함수가 실행 될 수 있으며, performance 에 영향을 줄 수 있다.
+  - 가장 좋은 방법은 SPA 또는 Javascript 를 통해서, 처음 접속시 한번만 실행하는 것이다.
+  - 또는 동일한 IP 로 접속하면 캐시를 해서 쓰는 것이다.
 
 
 
