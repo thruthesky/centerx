@@ -63,9 +63,9 @@ class CommentTaxonomy extends Forum {
 
         $in[USER_IDX] = login()->idx;
 
-
         $post = post($in[ROOT_IDX]);
         $categoryIdx = $post->categoryIdx;
+
         $category = category($categoryIdx);
 
         $in[CATEGORY_IDX] = $categoryIdx;
