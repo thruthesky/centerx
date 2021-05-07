@@ -47,8 +47,8 @@ testPointCommentCreate();
 testCommentPatchPoint();
 testPointCommentDelete();
 
-//testPointCommentCreateDailyLimit();
-//testPointCommentCreateHourlyLimit();
+testPointCommentCreateDailyLimit();
+testPointCommentCreateHourlyLimit();
 
 
 //testPointPostCreateByPointPossession();
@@ -699,4 +699,51 @@ function testPointCommentDelete() {
 
     $re = $comment3->markDelete();
     isTrue(login()->getPoint() == 0, 'A point must be 200. but ' . login()->getPoint());
+}
+
+function testPointCommentCreateDailyLimit() {
+
+    resetPoints();
+    // 2 in a day
+    act()->setCreateDailyLimitCount(POINT, 2);
+
+    registerAndLogin();
+    createComment();
+    $comment2 = createComment();
+    isTrue($comment2->ok, "p2 ok");
+
+    $comment3 = createComment();
+    isTrue($comment3->ok, "testPointCommentCreateDailyLimit() -> Expect: ok without createBanOnLimit");
+
+    act()->enableBanCreateOnLimit(POINT);
+
+    $comment4 = comment()->create([ ROOT_IDX => $comment3->rootIdx, CONTENT => 'comment content read' ]);
+    isTrue($comment4->getError() == e()->daily_limit, "Expect: error daily limit");
+
+}
+
+function testPointCommentCreateHourlyLimit() {
+
+    resetPoints();
+
+    $category = createCategory('category-hourly-test-' . time());
+
+    // 2 hour, 3 posts.
+    act()->setCreateHourLimit($category->idx, 2);
+    act()->setCreateHourLimitCount($category->idx, 3);
+
+    registerAndLogin();
+    $c1 = comment()->create([CATEGORY_ID => $category->id, CONTENT => CONTENT]);
+    createComment($category->id);
+    $c3 = createComment($category->id);
+    isTrue($c3->ok, "testPointCommentCreateHourlyLimit() -> Expect: ok without ban");
+
+
+
+    act()->enableBanCreateOnLimit($category->idx);
+
+    $c4 = comment()->create([ ROOT_IDX => $c3->rootIdx, CONTENT => 'comment content read' ]);
+    isTrue($c4->getError() == e()->hourly_limit, "Expect: error hourly limit");
+
+
 }
