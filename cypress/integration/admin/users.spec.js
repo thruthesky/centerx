@@ -1,6 +1,6 @@
 describe("Users", function () {
   beforeEach(() => {
-    cy.login();
+    cy.loginOrRegister();
   });
 
   it("Checks admin users page", function () {

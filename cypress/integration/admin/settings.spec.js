@@ -1,6 +1,6 @@
 describe("Settings", function () {
   beforeEach(() => {
-    cy.login();
+    cy.loginOrRegister();
   });
 
   it("tests settings crud", function () {
