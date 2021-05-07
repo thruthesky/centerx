@@ -76,9 +76,23 @@ class UserActivityTaxonomy extends UserActivityBase {
 //        return $this;
     }
 
+    /**
+     * Check if the user has permission on post read.
+     *
+     * Note, if the app is showing posts from multiple categories (like, when the app shows latest posts to user),
+     *  Some of the posts may have permission error. So, it is important to know when to show what posts to user based
+     *  on the permission rule.
+     *
+     * Note, admin can read all posts without limitation.
+     *
+     * @param int $categoryIdx
+     * @return $this
+     */
     public function canRead(int $categoryIdx): self {
+        if ( admin() ) return $this; // admin can read without limit.
         $pointToRead = act()->getReadLimitPoint($categoryIdx);
         if ( $pointToRead ) {
+            if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
             if (  login()->getPoint() < $pointToRead ) {
                 return $this->error(e()->lack_of_point_possession_limit);
             }

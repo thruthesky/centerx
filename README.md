@@ -88,6 +88,31 @@
 - 소셜 로그인 시, 프로필 사진 URL 경로가 https:// 이면, http:// 로 변경한다.
 
 
+- CenterX 2.0
+  - 오픈소스가 목표. 워드프레스 처럼 설치를 쉽게하고, 모듈과 테마를 동적으로 추가 할 수 있도록 한다.
+  - Change name from CenterX to something else.
+  - Support for web installation.
+  - Change the system to MVC using mustache template.
+  - @later API 보안.
+    - CenterX 는 공개 소스이고, 프로토콜이 공개되어져 있으므로 누구든지, API 를 통해서 악의적으로 반복된 DB 액세스를 하여, DOS 공격을 할 수 있다.
+      따라서, 허용된 클라이언트만 읽고 쓰도록 허용 할 수 방법을 강구해야한다.
+  
+    - 첫번째 방법은, API 자체적으로 보안을 하는 것으로,
+      읽기는 1분에 100회,
+      DB 작업 많이 들어가는 목록이나 검색은 1분에 20회,
+      쓰기는 1분에 10회, 10분에 20회, 60분에 30회로 제한한다.
+      총 용량은 60분에 글 1M 로 제한, 사진 20M 로 제한.
+      이것을 관리자 페이지에서 변경 할 수 있도록 한다.
+      
+  - @later etc/configs 폴더에 각종 설정을 넣는다.
+    db.config.php
+    app.config.php
+    와 같이 분리를 한다. 그리고 db.config.php 가 존재하지 않으면 설치가 안된 것으로 한다.
+
+
+
+- @doc SQLite3 지원할 필요없다. MariaDB(MySQL)이 절대적이고, Docker 를 통해서 쉽게 관리가 가능하다.
+
 - @doc
   meta 에 int, string, double(float) 은 serialize/unserialize 하지 말 것. 그래서 바로 검색이 되도록 한다.
 
@@ -95,18 +120,6 @@
 - @doc
   `https://local.itsuda50.com/?route=comment.get&idx=15224` 와 같이 글이나 코멘트를 가져올 때, 글/코멘트 생성시, 작성자에게 추가된 포인트가 `appliedPoint` 로 클라이언트에게 전달된다.
 
-- README 에 최소한의 정보만 두고, 모두 phpDocument 화 한다.
-  
-- API 보안.
-  - CenterX 는 공개 소스이고, 프로토콜이 공개되어져 있으므로 누구든지, API 를 통해서 악의적으로 반복된 DB 액세스를 하여, DOS 공격을 할 수 있다.
-  따라서, 허용된 클라이언트만 읽고 쓰도록 허용 할 수 방법을 강구해야한다.
-  
-  - 첫번째 방법은, API 자체적으로 보안을 하는 것으로,
-    읽기는 1분에 100회,
-    DB 작업 많이 들어가는 목록이나 검색은 1분에 20회,
-    쓰기는 1분에 10회, 10분에 20회, 60분에 30회로 제한한다.
-    총 용량은 60분에 글 1M 로 제한, 사진 20M 로 제한.
-    이것을 관리자 페이지에서 변경 할 수 있도록 한다.
 
 - @doc 게시판 설정에서, 글 편집 후 이동 옵션에서, 글 읽기 페이지를 선택하면, 글을 작성하고 난 다음에 글 읽기 페이지로 간다.
   글 목록 페이지를 선택하면, 글 쓴 후, 글 목록 페이지로 한다.
@@ -143,11 +156,6 @@ user()->by('thruthesky@gmail.com')->changePassword('12345a');
 - @doc meta 관련 함수를 meta.functions.php 로 떼어 낸다.
 
 
-- @later etc/configs 폴더에 각종 설정을 넣는다.
-  db.config.php
-  app.config.php
-  와 같이 분리를 한다. 그리고 db.config.php 가 존재하지 않으면 설치가 안된 것으로 한다.
-  
 - @doc meta 테이블은 그 활용가 간단해서 taxonomy 와 entity 방식으로 사용하지 않는다. 하지만, 사용해도 무방하다. 실제로 테스트 코드에서는 사용을 한다.
 - @doc 100% getter/setter 를 사용한다.
   변수 x 가 있다면, 아래와 같이 getter/setter 를 사용한다.
@@ -167,8 +175,6 @@ user()->by('thruthesky@gmail.com')->changePassword('12345a');
 
 - @doc 글을 클라이언트로 보낼 때에는 post()->create(...)->response() 를 할 수 있도록 한다.
   이 response() 함수에서 코멘트 정보를 다 읽고 파싱한다.
-
-- @later SQLite3 지원. 그러면 그냥 php dev web server 로 SSL 없이, localhost 로 바로 실행가능하리라 생각한다.
 
 
 
@@ -1129,6 +1135,13 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
   
 
 - @see the phpdoc
+
+
+## In-page Translation
+
+- When admin wants to translate text on the page,
+  - He can click 'translate' button,
+  - App will 
 
 
 # Settings

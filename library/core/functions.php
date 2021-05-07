@@ -899,14 +899,16 @@ function ln(array|string $code, mixed $default_value=''): string
         else $re = serialize($code); // or return string of the code.
     }
     if ( $re ) {
-        return $re;
+        $ret = $re;
     }
     else if ( $default_value ) {
-        return $default_value;
+        $ret = $default_value;
     }
     else {
-        return $code;
+        $ret = $code;
     }
+
+    return $ret;
 }
 
 /**

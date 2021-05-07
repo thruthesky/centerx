@@ -100,6 +100,7 @@ class Theme
     }
 
     /**
+     * Returns the theme script page file path.
      * @return string
      */
     public function page(): string {
