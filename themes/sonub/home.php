@@ -5,19 +5,6 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
     <?php
 }
 
-$country = get_current_country('124.83.114.70');
-
-d(" {$country->city}, " . $country->v('2digitCode'));
-
-$city = $country->city;
-$country = $country->v('2digitCode');
-
-$re = file_get_contents("https://api.openweathermap.org/data/2.5/weather?q=$city,$country&appid=7cb555e44cdaac586538369ac275a33b");
-d($re);
-
-
-
-
 ?>
 
 <div class="demo">
