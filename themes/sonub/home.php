@@ -7,10 +7,10 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
 
 ?>
 
-<div class="demo">
-    ...
+<div>
+    <?=ln('welcome')?>
+    <?=ln('name')?>
 </div>
-
 
 <?php include widget('weather/openweathermap') ?>
 

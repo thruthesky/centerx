@@ -8,6 +8,7 @@ require ROOT_DIR . 'etc/kill-wrong-routes.php';
 require ROOT_DIR . 'vendor/autoload.php';
 
 require_once ROOT_DIR . 'library/core/functions.php';
+require_once ROOT_DIR . 'library/core/language.php';
 
 require_once ROOT_DIR . 'etc/defines.php';
 
