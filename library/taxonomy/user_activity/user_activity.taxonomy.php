@@ -75,7 +75,28 @@ class UserActivityTaxonomy extends UserActivityBase {
 //        }
 //        return $this;
     }
-    public function canCreateForumRecord(CategoryTaxonomy $category, string $activity) : self{
+
+    public function canRead(int $categoryIdx): self {
+        $pointToRead = act()->getReadLimitPoint($categoryIdx);
+        if ( $pointToRead ) {
+            if (  login()->getPoint() < $pointToRead ) {
+                return $this->error(e()->lack_of_point_possession_limit);
+            }
+        }
+        return $this;
+    }
+
+
+    /**
+     * Check if the login user can create a post or a comment.
+     *
+     * @param CategoryTaxonomy $category
+     * @param string $activity
+     * @return $this
+     *  - If there is an error, 'error code' will be set to the object.
+     *  - No error, no error code will be set to the object.
+     */
+    private function canCreateForumRecord(CategoryTaxonomy $category, string $activity) : self {
         // If limiting, return an error. error on limit.
         if ( $this->isCategoryBanOnLimit($category->idx) ) {
             $re = act()->checkCategoryCreateLimit($category->idx);
@@ -95,6 +116,17 @@ class UserActivityTaxonomy extends UserActivityBase {
             }
         }
 
+        // Set error if the user's point is less than the point of 'postCreateLimit' or 'commentCreateLimit'.
+        if ($activity == Actions::$createPost ) $pointToCreate = act()->getPostCreateLimitPoint($category->idx);
+        else if($activity == Actions::$createComment ) $pointToCreate = act()->getCommentCreateLimitPoint($category->idx);
+        else {
+            return $this->error(e()->wrong_activity);
+        }
+        if ( $pointToCreate ) {
+            if (  login()->getPoint() < $pointToCreate ) {
+                return $this->error(e()->lack_of_point_possession_limit);
+            }
+        }
         return $this;
     }
 

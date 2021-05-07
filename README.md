@@ -2286,10 +2286,11 @@ echo "현재 환율: $phpKwr";
   For instance, this value is 1000 and user has 999. Then the user cannot create post. 
 - commentCreateLimit - users who has less points than this cannot create comment
 - readLimit - users who has less points than this cannot create comment
+  - @attention When a user creates a post, it reads the post internally.
+    Which means, for post creating, user will read the post and if user has less point of 'readLimit' when creating, it will fail.
+  - @attention, readLimit is only for post reading, not for comment reading.
   
-
 - banCreateOnLimit - User cannot create post/comment if the user reaches the limit.
-
 
 - createPost - is the Points to be given to the author on post creation. It can be minus value like -100.
 - deletePost - is the Points to be given to the author on post deletion. It can be minus value like -100.
