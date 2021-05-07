@@ -27,6 +27,7 @@
 class CountryTaxonomy extends Entity
 {
     public string $code;
+    public string $city;
 
     public function __construct(int $idx)
     {
@@ -73,11 +74,16 @@ function country(int|string $idx = 0, bool $currencyCode = false): CountryTaxono
  * @throws \MaxMind\Db\Reader\InvalidDatabaseException
  */
 function get_current_country(string $ip = null): CountryTaxonomy {
-    $reader = new \GeoIp2\Database\Reader(ROOT_DIR . "etc/data/GeoLite2-Country.mmdb");
+//    $reader = new \GeoIp2\Database\Reader(ROOT_DIR . "etc/data/GeoLite2-Country.mmdb");
+    $reader = new \GeoIp2\Database\Reader(ROOT_DIR . "etc/data/GeoLite2-City.mmdb");
     try {
-        $record = $reader->country($ip ?? $_SERVER['REMOTE_ADDR']);
+//        $record = $reader->country($ip ?? $_SERVER['REMOTE_ADDR']);
+        $record = $reader->city($ip ?? $_SERVER['REMOTE_ADDR']);
         $code2 = $record->country->isoCode;
-        return country($code2);
+        $country = country($code2);
+
+        if ( isset($record->city->names['en']) ) $country->city = $record->city->names['en'];
+        return $country;
     } catch (\GeoIp2\Exception\AddressNotFoundException $e) {
         return country()->setError(e()->geoip_address_not_found);
     } catch (\MaxMind\Db\Reader\InvalidDatabaseException $e) {

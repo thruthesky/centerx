@@ -1141,7 +1141,14 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 - When admin wants to translate text on the page,
   - He can click 'translate' button,
-  - App will 
+  - App will display edit button on each text that is translatable.
+  - Admin click on text,
+    - then pop-up appears,
+    - admin can input texts based on supported languages.
+    - when save, the text is translated.
+  - Admin can change his language on the pop-up.
+
+
 
 # Currency Conversion
 
@@ -1158,6 +1165,9 @@ define('CURRCONV_API_KEY', 'bd6ed497a84496be7ee9');
 ```php
 define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 ```
+
+- @see widget/openweathermap for example.
+
 
 
 # Settings
