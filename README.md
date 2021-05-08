@@ -245,8 +245,19 @@ cd etc/phpdoc
 
 - 그리고 웹 브라우저로 phpMyAdmin 에 접속을 해서 SQL 스키마를 DB 에 넣는다. 아래 설명 참고.
 
+- node modules 들을 설치한다.
+  - `npm i`
 
-
+- `keys` 폴더에 각종 키를 설정한다.
+  - Firebase 접속을 위한 Admin SDK Account Key 를 설정.
+  
+- `config.php` 에 각종 api key 를 설정한다.
+  - Firebase 접속을 위한 Web access key 를 설정.
+  - 카카오 로그인 설정.
+  - 네이버 로그인 설정.
+  - 날씨 Api 설정
+  - 환율 Api 설정
+  등 원하는 것만 설정하면 된다.
 
 ## 설치 상세 설명
 
@@ -2520,3 +2531,20 @@ content[tip]=내용사진입니다.
 - For listing posts under a category, it requires `category.idx`. Whether the client is using SQL or prepared params,
   `category.idx` must be used, instead of `category.id`.
   - Client app should load the forum configuration at startup and cache for the next boot. So, they can use `category.idx`.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+# 문제 해결
+
+## 웹 브라우저로 접속이 매우 느린 경우
+
+live reload 를 위한 socket.io.js 를 로드하는데 이것이 pending 상태로되어져 있는지 확인한다.
+
+socket.io.js 를 로드하지 않던지, 또는 pending 아닌 failed 로 되어야 한다. 그렇지 않고 pending 상태이면, 웹 브라우저에서 매우 느리게 접속 될 수 있다.
