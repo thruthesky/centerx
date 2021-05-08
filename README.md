@@ -2555,3 +2555,10 @@ nginx.conf 에서 localhost 설정이 어떤 root 로 되어져 있는지 확인
 ```
 Fatal error:  Uncaught Error: Call to a member function bind_param() on bool in /docker/home/centerx/library/core/mysqli.php:274
 ```
+
+## 웹 브라우저로 접속이 매우 느린 경우,
+
+개발자 콘솔에서 socket.io.js 가 pending 상태인지 본다. 만약, 그렇다면,
+
+- socket.io.js 가 접속하는 도메인을 hosts 파일에서 현재 개발 컴퓨터로 지정한다.
+- 그리고 node live-reload.js 를 실행한다.
