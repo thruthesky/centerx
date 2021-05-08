@@ -15,7 +15,8 @@ function testCommentEntity() {
 
 function testCommentCreate() {
     // login first
-    setLoginAny();
+//    setLoginAny();
+    registerAndLogin();
     // get category
     $cat = category()->create(['id' => 'comment-create' . time()]);
     // create post with the category id

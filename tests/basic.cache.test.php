@@ -10,6 +10,7 @@ $cache = cache($code);
 isTrue($cache->code == $code, "Expect: $code not exists, But, the code remains as {$cache->code}!");
 
 
+
 $cache->renew();
 isTrue(!$cache->createdAt, "Expect createdAt to be falsy");
 
