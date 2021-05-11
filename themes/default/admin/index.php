@@ -11,12 +11,12 @@ if (admin() == false) jsBack('You are not admin');
                 <a class="btn fw-700 fs-sm" href="/"><?= ek('Home', '홈') ?></a>
             </div>
             <div class="ml-auto white">
-                <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-setting"><?= ln(['en' => 'Settings', 'ko' => '설정']) ?></a>
-                <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/upload-image&code=admin.app.about.setting"><?= ln(['en' => 'About', 'ko' => '어바웃 설정']) ?></a>
-                <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=point/admin-point-setting"><?= ln(['en' => 'Point Setting', 'ko' => '포인트 설정']) ?></a>
-                <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-translation"><?= ln(['en' => 'Translations', 'ko' => '언어화']) ?></a>
-                <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=point/admin-point-history"><?= ln(['en' => 'Point history', 'ko' => '포인트 기록']) ?></a>
-                <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=push-notification/push-notification-create"><?= ln(['en' => 'Notification', 'ko' => 'Notification']) ?></a>
+                <a data-cy="admin-settings-button" class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-setting"><?= ln(['en' => 'Settings', 'ko' => '설정']) ?></a>
+                <a data-cy="admin-about-button" class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/upload-image&code=admin.app.about.setting"><?= ln(['en' => 'About', 'ko' => '어바웃 설정']) ?></a>
+                <a data-cy="admin-point-setting-button" class="btn fw-700 fs-sm" href="/?p=admin.index&w=point/admin-point-setting"><?= ln(['en' => 'Point Setting', 'ko' => '포인트 설정']) ?></a>
+                <a data-cy="admin-translation-button" class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-translation"><?= ln(['en' => 'Translations', 'ko' => '언어화']) ?></a>
+                <a data-cy="admin-point-history-button" class="btn fw-700 fs-sm" href="/?p=admin.index&w=point/admin-point-history"><?= ln(['en' => 'Point history', 'ko' => '포인트 기록']) ?></a>
+                <a data-cy="admin-push-notification-button" class="btn fw-700 fs-sm" href="/?p=admin.index&w=push-notification/push-notification-create"><?= ln(['en' => 'Notification', 'ko' => 'Notification']) ?></a>
             </div>
         </nav>
     </div>

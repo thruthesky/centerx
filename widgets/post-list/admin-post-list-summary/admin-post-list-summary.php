@@ -4,7 +4,7 @@
  */
 $o = getWidgetOptions();
 ?>
-<section id="admin-post-list-summary">
+<section data-cy="admin-post-list-summary-widget">
     <div class="d-flex justify-content-start py-3 px-4 fw-700">
         <div class="pr-4">
             <div class="d-flex justify-content-center align-items-center hw-54x54 rounded-circle bg-skyblue color-lightblue"><?= ek('Event', '이벤트') ?></div>

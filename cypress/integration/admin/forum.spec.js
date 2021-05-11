@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 describe("Forum", function () {
   beforeEach(() => {
     cy.loginOrRegister();

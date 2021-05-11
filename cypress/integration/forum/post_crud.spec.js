@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 describe("Post crud test", function () {
   beforeEach(() => {
 

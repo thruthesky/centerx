@@ -5,7 +5,7 @@ $ago = $now - 60 * 30;
 $login = user()->count(where: "updatedAt<=? AND updatedAt>=?", params: [$now, $ago]);
 ?>
 
-<section class="d-flex justify-content-between py-3 px-4" id="admin-point-setting-summary">
+<section class="d-flex justify-content-between py-3 px-4" data-cy="admin-point-setting-summary-widget">
     <div>
         <div class="d-flex justify-content-center align-items-center hw-54x54 rounded-circle bg-skyblue color-lightblue fw-700"><?= ek('Point', '포인트') ?></div>
         <a href="/?p=admin.index&w=point/admin-point-setting" class="btn btn-sm btn-info mt-2"><?= ek('Setting', '설정') ?></a>

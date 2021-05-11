@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 describe("Users", function () {
   beforeEach(() => {
     cy.loginOrRegister();

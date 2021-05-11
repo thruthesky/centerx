@@ -4,7 +4,7 @@
  * @type admin
  */
 ?>
-<section class="p-4 overflow-hidden" id="admin-top-user-by-point" style="height: 24rem">
+<section class="p-4 overflow-hidden" data-cy="admin-top-user-by-points-widget" style="height: 24rem">
     <div class="text-muted fs-sm"><?= ek(' ', '사용자 수: ') ?><?= number_format(user()->count()) ?> <?= ek('users', ' ') ?></div>
     <h6 class="mt-2 mb-4 fw-700"><?= ek('Top most user by points', '포인트가 많은 사용자 수') ?></h6>
     <?php
