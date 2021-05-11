@@ -5,7 +5,7 @@ describe("Forum", function () {
     cy.loginOrRegister();
   });
 
-  it("tests forum settings crud", function () {
+  it("Tests category settings crud", function () {
     cy.visit("/?p=admin.index&w=category/admin-category-list");
     cy.viewport(2048, 1024)
 

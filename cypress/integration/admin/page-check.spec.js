@@ -52,4 +52,28 @@ describe("Page checking", function () {
     cy.getElement("admin-push-notification-button").click();
     cy.getElement("push-notification-create-page").should("exist");
   });
+
+  it("Checks admin user list page", function () {
+    cy.visit("/?p=admin.index");
+    cy.getElement("admin-user-list-button").click();
+    cy.getElement("admin-user-list-page").should("exist");
+  });
+
+  it("Checks admin category list page", function () {
+    cy.visit("/?p=admin.index");
+    cy.getElement("admin-category-list-button").click();
+    cy.getElement("admin-category-list-page").should("exist");
+  });
+
+  it("Checks admin shopping mall page", function () {
+    cy.visit("/?p=admin.index");
+    cy.getElement("admin-shopping-mall-button").click();
+    cy.getElement("admin-shopping-mall-page").should("exist");
+  });
+
+  it("Checks admin in app purchase page", function () {
+    cy.visit("/?p=admin.index");
+    cy.getElement("admin-purchase-list-button").click();
+    cy.getElement("in-app-purchase-page").should("exist");
+  });
 });
