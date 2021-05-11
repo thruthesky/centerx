@@ -12,7 +12,8 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
     <?=ln('name')?>
 </div>
 
-<?php include widget('weather/openweathermap') ?>
+
+<?php include widget('weather/openweathermap', ['weather'=> 'forecast']) ?>
 
 
 <div class="p-2 fs-sm">
