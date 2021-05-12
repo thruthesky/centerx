@@ -38,7 +38,7 @@
     <a class="p-2" href="/?user.logout.submit">로그아웃</a>
 <?php } else { ?>
     <a class="p-2" href="/?user.login">로그인</a>
-    <a class="p-2" href="/?p=user.login&mode=register">가입</a>
+    <a class="p-2" href="/?p=user.register">가입</a>
 <?php } ?>
 
 

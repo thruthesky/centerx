@@ -1,6 +1,6 @@
 
 
-* 참고: 이곳에 가입을 하시면 홈페이지를 올바로 이용 할 수 없습니다.
+* 참고: 본인 인증을 해야지만 올바로 이용 할 수 있습니다.
 
 <h2>회원 가입</h2>
 <section class="m-5">
@@ -14,18 +14,6 @@
         <div class="form-group">
             <label>Password</label>
             <input type="password" class="form-control" name="password">
-        </div>
-        <div class="form-group">
-            <label>Name</label>
-            <input type="text" class="form-control" name="name">
-        </div>
-        <div class="form-group">
-            <label>Phone No</label>
-            <input type="text" class="form-control" name="phoneNo">
-        </div>
-        <div class="form-group">
-            <label>Your favorite color</label>
-            <input type="text" class="form-control" name="color">
         </div>
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
