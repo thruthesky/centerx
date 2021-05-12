@@ -1,8 +1,5 @@
 <div class="box mb-2 border-radius-md">
-    <?php
-    if ( loggedIn() ) echo login()->name . '님, 어서오세요';
-    if ( admin() ) echo ' <a href="/?admin.index">[관리자]</a>';
-    ?>
+<?php include widget('login/login')?>
 </div>
 <div class="box d-flex flex-column children-a-ellipsis">
     <h1 class="p-1">최근 글</h1>

@@ -1188,8 +1188,8 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 ## In-page Translation
 
 - When admin wants to translate text on the page,
-  - He can click 'translate' button,
-  - App will display edit button on each text that is translatable.
+  - Admin can click 'translate' button,
+  - Then, the app will display edit button on each text(or the text itself clickable) to translate the text.
   - Admin click on text,
     - then pop-up appears,
     - admin can input texts based on supported languages.
@@ -1197,6 +1197,23 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
   - Admin can change his language on the pop-up.
 
 
+```html
+<?php if ( admin() ) { ?><!-- if the user is admin, display translation button -->
+  <div>
+    <?php if ( $_COOKIE['adminTranslate'] == 'Y' ) { ?>
+        <span onclick="adminTranslate('N');">[<?=ln('stop translate')?>]</span>
+    <?php } else { ?>
+        <span onclick="adminTranslate('Y');">[<?=ln('begin translate')?>]</span>
+    <?php } ?>
+  </div>
+<?php } ?>
+<script>
+  function adminTranslate(flag) {
+    Cookies.set('adminTranslate', flag);
+    location.reload();
+  }
+</script>
+```
 
 # Currency Conversion
 

@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 describe("Users", function () {
   beforeEach(() => {
     cy.loginOrRegister();
@@ -8,7 +10,7 @@ describe("Users", function () {
     cy.visit("?p=admin.index&w=user/admin-user-list");
 
     // cy.getElement('admin-user-list"]').should("exist");
-    cy.getElement("admin-user-list").should("exist");
+    cy.getElement("admin-user-list-page").should("exist");
 
     /// test column visibility
     cy.getElement("gender-col-header").should("not.exist");

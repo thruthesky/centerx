@@ -12,7 +12,7 @@ if ($key) {
 $total = user()->count();
 ?>
 
-<section data-cy="admin-user-list" id="admin-user-list">
+<section data-cy="admin-user-list-page">
     <div class="d-flex justify-content-end mb-3">
         <div class="mt-2 fw-700">
             <?= ek('No of Users', '검색된 사용자') ?>: <?= $total ?>

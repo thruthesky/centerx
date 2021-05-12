@@ -8,7 +8,7 @@
 <?php
 $file = files()->getByCode(in('code'));
 ?>
-<section id="admin-upload-image">
+<section data-cy="admin-upload-image-page">
     <form>
         <div class="position-relative overflow-hidden">
             <button class="btn btn-primary" type="submit">사진 업로드</button>

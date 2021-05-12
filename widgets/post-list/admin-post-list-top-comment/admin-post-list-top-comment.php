@@ -22,7 +22,7 @@ foreach ($rows as $row) {
 }
 ?>
 
-<section class="p-4 overflow-hidden" id="admin-post-list-top-comment" style="height: 24rem; overflow: auto">
+<section class="p-4 overflow-hidden" data-cy="admin-post-list-top-comment-widget" style="height: 24rem; overflow: auto">
 
     <div class="text-muted fs-sm"><?= ek('No of comments for 7 days', '코멘트') ?></div>
     <h6 class="mt-2 mb-4 fw-700"><?= ek('Top most users by comments', '7일간 코멘트를 많이 쓴 사용자') ?></h6>

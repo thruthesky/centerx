@@ -48,7 +48,7 @@ if(modeSubmit()) {
 
 ?>
 <h1><?=ek('Push Notification', '푸시 알림')?></h1>
-<section id="push-notification-create">
+<section data-cy="push-notification-create-page">
 
     <form>
         <?=hiddens(in: ['p', 'w'], mode: 'submit')?>

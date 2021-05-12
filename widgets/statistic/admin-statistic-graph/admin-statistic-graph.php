@@ -90,7 +90,7 @@ function barHeight($no, $max = null): int
     }
 </style>
 
-<section class="d-flex flex-column justify-content-between p-3" style="height: 24rem">
+<section data-cy="admin-statistic-graph-widget" class="d-flex flex-column justify-content-between p-3" style="height: 24rem">
     <h6 class="mt-2 fw-700">Recent Users, Posts, Comments</h6>
     <div class="fs-sm d-flex">
         <div class="mr-2 d-flex align-items-center">

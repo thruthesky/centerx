@@ -33,7 +33,7 @@ foreach ($rows as $row) {
 ?>
 
 <h1>In app purchase</h1>
-<section id="in-app-purchase">
+<section data-cy="in-app-purchase-page">
 
 
     <form ref="inAppPurchase" method="post" action="/">
