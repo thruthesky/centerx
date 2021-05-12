@@ -13,7 +13,7 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
 </div>
 
 
-<?php include widget('weather/openweathermap', ['weather'=> 'forecast']) ?>
+<?php include widget('weather/openweathermap', ['display'=> 'forecast']) ?>
 
 
 <div class="p-2 fs-sm">
@@ -23,22 +23,24 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
     ///
     if ( cafe()->isMainCafe() || cafe()->exists ) {
         $currencies = cafe()->currency();
-        $codes = array_key_first($currencies);
-        list($src, $dst) = convert_currency_codes_to_names($codes);
-        $rate = round_currency_rate($currencies[$codes]);
-        ?>
-        1<?=$src?> <?=$rate?><?=$dst?>.
+        if ( isOk($currencies) ) {
 
-        <?php
-        // 메인 사이트가 아니면,
-        $country = get_current_country();
-        if ( $country->exists ) {
-            echo "접속: " . $country->CountryNameKR;
+            $codes = array_key_first($currencies);
+            list($src, $dst) = convert_currency_codes_to_names($codes);
+            $rate = round_currency_rate($currencies[$codes]);
+            ?>
+            1<?=$src?> <?=$rate?><?=$dst?>.
+
+            <?php
+            // 메인 사이트가 아니면,
+            $country = get_current_country();
+            if ( $country->exists ) {
+                echo "접속: " . $country->CountryNameKR;
+            }
+            ?>
+
+            <?php
         }
-        ?>
-
-
-        <?php
 
     }
     ?>

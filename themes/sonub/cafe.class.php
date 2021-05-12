@@ -58,9 +58,16 @@ class Cafe extends CategoryTaxonomy
 
     /**
      * `해당 국가 통화 vs 원화` 와 `해당 국가 통화 vs 달러` 두 가지를 리턴한다.
+     *
+     * @return mixed
+     *  - 에러가 있으면 에러 문자열
+     *  - 환율 정보가 없으면 빈 배열
+     *  - 환율 정보가 있으면, 환율 정보를 담은 배열.
      */
-    public function currency() {
-        return country_currency($this->currencyCode());
+    public function currency(): mixed {
+        $currencyCode = $this->currencyCode();
+        if ( isError($currencyCode) ) return $currencyCode;
+        return country_currency($currencyCode);
     }
 
     /**

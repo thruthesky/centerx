@@ -166,6 +166,7 @@ class E {
 
 
 
+    public string $empty_country_code = 'error_empty_country_code';
 
 
 
@@ -189,7 +190,12 @@ function e(mixed $errcode=null): E {
 function isError($obj) {
     return e($obj)->isError;
 }
-
+function isSuccess($obj) {
+    return isError($obj) === false;
+}
+function isOk($obj) {
+    return isSuccess($obj);
+}
 /**
  * @deprecated
  * @param $obj
