@@ -63,13 +63,21 @@
     - Taxonomy 를 Model 로 변환( 폴더명 자체를 변경 )
     - Theme 을 View 로 변경. (폴더명 자체를 변경)
     - API 를 Controller 로 변경. (폴더명 자체를 변경).
-      Controller 는 View 에서 쓰기도 하고, Rest API 에서도 그대로 쓰도록 한다.
+      - Controller 는 View 에서 쓰기도 하고, Rest API 에서도 그대로 쓰도록 한다.
+      - Controller 에서는 아래와 같이 할 수 있도록 한다.
+        index.php 에서
+        include 'boot.php' 를 한 다음,
+        app()->get('/user/login', theme: 'sonub/user/login');
+        app()->post('/user/register', ['theme' => 'sonub/user/register', 'allowed_params' => ['email', 'password']]);
+        
   - 모든 함수를 클래스로 변환. functions.php 에 있는 함수를 모두 클래스로 변환.
     - class Utilities {} 와 같이 하고 u()->xxxx() 또는 글로벌 변수 $u->xxx() 로 사용 할 수 있도록 한다.
       $u-> ... 또는 $f->... 와 같이 사용 할 수 있도록 한다.
   - Widget 기능은 그대로 사용하는데, 더 체계화를 한다.
   - 워드프레스의 플러그인 기능 처럼, 관리자페이지에서 추가를 할 수 있도록 한다.
   - 관리자페이지에서 도메인 별로 테마를 선택 하도록 한다.
+  - 게시판 그룹 기능. 그룹 단위 목록, 검색 기능.
+  
   
 
 - @doc
@@ -2578,9 +2586,23 @@ content[tip]=내용사진입니다.
   
   
   
+# Live Reload
+
+
+- To NOT use (or to turn off) live reload,
+  - Set empty string('') to LIVE_RELOAD_HOST.
+
+- To use live reload on localhost without SSL.
+  - set `http://localhost` to `LIVE_RELOAD_HOST`
+  - set '12345' to `LIVE_RELOAD_PORT.
+  - run `node live-reload.js http`.
   
-  
-  
+- To use live reload with SSL,
+  - place `tmp/ssl/live-reload/private.key` and `tmp/ssl/live-reload/cert-ca-bundle.crt` for SSL certificates.
+  - set the host(domain) with scheme to `LIVE_RELOAD_HOST`. ex) `https://sonub.com`
+    - @attention the certificates(and private key) must be for the domain of `LIVE_RELOAD_HOST`. 
+  - set '12345' to `LIVE_RELOAD_PORT`
+  - run `node live-reload.js`
   
   
 # 문제 해결
@@ -2590,3 +2612,10 @@ content[tip]=내용사진입니다.
 live reload 를 위한 socket.io.js 를 로드하는데 이것이 pending 상태로되어져 있는지 확인한다.
 
 socket.io.js 를 로드하지 않던지, 또는 pending 아닌 failed 로 되어야 한다. 그렇지 않고 pending 상태이면, 웹 브라우저에서 매우 느리게 접속 될 수 있다.
+
+
+## GET socket.io.js net::ERR_EMPTY_RESPONSE
+
+Live reload 코드가 실행되는데, socket.io.js 를 로드하지 못해서 발생한 에러.
+
+config.php 에서 LIVE_RELOAD_HOST 에 빈 문자열 값을 주어, live reload 를 turn off 할 수 있다.
