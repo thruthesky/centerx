@@ -39,6 +39,13 @@
 
 - work on next branch
 
+- 챨스.
+  countryCode 를 통한 국가별 게시판 관리.
+  공유 게시판: discussion, qna, reminder, buyandsell, job, caution, rent_house, rent_car, school, 등 공용게시판. 카페장 메인메뉴 선택 가능.
+  비공유게시판: 카테고리 아이디를 도메인과 동일하게 하고, 서브 카테고리를 최대 5개까지만 가능하도록 한다. 그리고 서브카테고리를 선택해서 메인 메뉴에 올릴수 있는데,
+    모바일에서는 1개, 100픽셀 넓이(전체 360픽셀 중),
+    데스크톱에서는 최대 3개, 200픽셀(전체 1024 픽셀 중).
+
 - update country.test.php
 
 - update external login like kakao, naver
@@ -46,6 +53,24 @@
 - update test on in-app-purchase.
 
 - update user switch option.
+
+
+- 다음 버전.
+  - 변경 사항이 많지만, 그래도 큰 변화는 아니다. 기존의 개념을 조금 변경하는 정도.
+    그래서 repo 를 따로 만들 일이 아니다.
+    하나씩 조금씩 변경하면서, 버전을 업데이트 해 나간다.
+  - MVC 로 전환
+    - Taxonomy 를 Model 로 변환( 폴더명 자체를 변경 )
+    - Theme 을 View 로 변경. (폴더명 자체를 변경)
+    - API 를 Controller 로 변경. (폴더명 자체를 변경).
+      Controller 는 View 에서 쓰기도 하고, Rest API 에서도 그대로 쓰도록 한다.
+  - 모든 함수를 클래스로 변환. functions.php 에 있는 함수를 모두 클래스로 변환.
+    - class Utilities {} 와 같이 하고 u()->xxxx() 또는 글로벌 변수 $u->xxx() 로 사용 할 수 있도록 한다.
+      $u-> ... 또는 $f->... 와 같이 사용 할 수 있도록 한다.
+  - Widget 기능은 그대로 사용하는데, 더 체계화를 한다.
+  - 워드프레스의 플러그인 기능 처럼, 관리자페이지에서 추가를 할 수 있도록 한다.
+  - 관리자페이지에서 도메인 별로 테마를 선택 하도록 한다.
+  
 
 - @doc
   meta function may try to create child meta even if its taxonomy is meta. It only happens on testing.

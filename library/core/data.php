@@ -63,7 +63,7 @@ function country_name($code, $lang="CountryNameKR") {
  * @param string $countryCode
  * @return string
  * - 세 자리 통화 코드
- * - 에러가 있으면 빈 문자열
+ * - 에러가 있으면 에러 문자열을 리턴한다.
  *
  *
  * 예)
@@ -78,10 +78,10 @@ function country_name($code, $lang="CountryNameKR") {
  * ```
  */
 function country_currency_code(string $countryCode): string {
-    if ( empty($countryCode) ) return '';
-    return country($countryCode)->currencyCode;
-//    $currency = json_decode(file_get_contents(ROOT_DIR . 'etc/data/country-currency-code.json'), true);
-//    return $currency[$country_id]['currencyId'];
+    if ( empty($countryCode) ) return e()->empty_country_code;
+    $c = country($countryCode);
+    if ( $c->hasError ) return $c->getError();
+    return $c->currencyCode;
 }
 
 /**
@@ -151,6 +151,7 @@ function korean_currency_name($countryCode): string {
  */
 function country_currency($countryCode) {
     if ( empty($countryCode) ) return [];
+
     $cc = $countryCode;
     // @todo save the key into config.php
     $key = 'bd6ed497a84496be7ee9';
