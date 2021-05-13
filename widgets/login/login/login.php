@@ -19,16 +19,13 @@
 
                                 request('translation.update', data, function(res) {
                                     console.log(res);
+                                    console.log(clsName);
                                     console.log('replace: ', data[ln]);
                                     const nodes = document.getElementsByClassName(clsName);
                                     for(node in nodes) {
-                                        node.innerText = data[ln];
+                                        node.innerHtml = data[ln];
                                     }
                                 }, alert);
-
-                                // var res = ...
-                                // var dom == document.getElementById(code);
-                                // dom.innerText = res[ln];
                             }
                         }
                     })
