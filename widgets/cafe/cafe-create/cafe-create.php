@@ -22,6 +22,6 @@
 
     <div class="mt-2">https://<input name="domain" class="w-80px underline focus-none">.<?=get_root_domain()?></div>
     <div class="mt-2 d-flex justify-content-end">
-        <button class="btn btn-sm btn-link"><?=ln('Create Cafe')?></button>
+        <button class="btn btn-sm btn-link"><?=ln('Create Cafe', translate: false)?></button>
     </div>
 </form>

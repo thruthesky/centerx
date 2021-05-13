@@ -14,6 +14,16 @@
             <a class="p-2" href="/?p=forum.post.list&categoryId=qna">질문게시판</a>
         </div>
         <div class="d-flex">
+            <form class="m-0 p-0" action="/">
+                <input type="hidden" name="p" value="user.language.submit">
+                <label class="m-0 p-2">
+                    <select name="language" onchange="submit()">
+                        <option value="">언어선택</option>
+                        <option value="ko">한국어</option>
+                        <option value="en">English</option>
+                    </select>
+                </label>
+            </form>
             <a class="p-2" href="/?p=forum.post.list&categoryId=discussion">광고문의</a>
             <a class="p-2 pr-3" href="/?p=forum.post.list&categoryId=qna">운영자문의</a>
         </div>

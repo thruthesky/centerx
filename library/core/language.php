@@ -5,6 +5,9 @@
  * If $default_value is empty, then $code will be returned when the text of $code is empty.
  * @param array|string $code
  * @param mixed $default_value
+ * @param bool $translate - if it is set to false, it does not display translation popup.
+ *  For text that are used in FORM should not be used since it nests another form.
+ *
  * @return string
  *
  * @example
@@ -13,11 +16,10 @@
  *  ln(['en' => 'English', 'ko' => 'Korean', 'ch' => '...', ... ]); // If the input is array, then the value of the array for that language will be returned.
  *  ln('users', ln(['en' => 'Users', 'ko' => '사용자'])) // 이 처럼 기본 자체를 언어화 할 수 있다.
  */
-function ln(array|string $code, mixed $default_value=''): string
+function ln(array|string $code, mixed $default_value='', bool $translate=true): string
 {
     if ( FIX_LANGUAGE ) $language = FIX_LANGUAGE;
     else $language = get_user_language();
-
 
     if ( is_string($code) ) {
         $re = translation()->text($language, $code);
@@ -37,7 +39,7 @@ function ln(array|string $code, mixed $default_value=''): string
         $ret = $code;
     }
 
-    if ( is_string($code) && admin() && isTranslationMode() ) {
+    if ( is_string($code) && admin() && isTranslationMode() && $translate ) {
         list ($id, $class) = safeCssSelector($code);
         $inputs = '';
         foreach(SUPPORTED_LANGUAGES as $ln) {
