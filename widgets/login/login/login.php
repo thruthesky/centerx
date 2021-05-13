@@ -16,14 +16,14 @@
                                 const data = Object.fromEntries(formData);
                                 data['code'] = code;
                                 data['currentCodeName'] = code;
-
                                 request('translation.update', data, function(res) {
                                     console.log(res);
-                                    console.log(clsName);
                                     console.log('replace: ', data[ln]);
                                     const nodes = document.getElementsByClassName(clsName);
-                                    for(node in nodes) {
-                                        node.innerHtml = data[ln];
+                                    console.log(nodes);
+                                    for (let i = 0; i < nodes.length; i++) {
+                                        // console.log(nodes[i]);
+                                        nodes[i].innerText = data[ln];
                                     }
                                 }, alert);
                             }
