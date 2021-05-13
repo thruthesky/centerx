@@ -65,11 +65,7 @@
     - API 를 Controller 로 변경. (폴더명 자체를 변경).
       - Controller 는 View 에서 쓰기도 하고, Rest API 에서도 그대로 쓰도록 한다.
       - Controller 에서는 아래와 같이 할 수 있도록 한다.
-        index.php 에서
-        include 'boot.php' 를 한 다음,
-        app()->get('/user/login', theme: 'sonub/user/login');
-        app()->post('/user/register', ['theme' => 'sonub/user/register', 'allowed_params' => ['email', 'password']]);
-        
+        route.php 를 좀 더 업데이트한다.
   - 모든 함수를 클래스로 변환. functions.php 에 있는 함수를 모두 클래스로 변환.
     - class Utilities {} 와 같이 하고 u()->xxxx() 또는 글로벌 변수 $u->xxx() 로 사용 할 수 있도록 한다.
       $u-> ... 또는 $f->... 와 같이 사용 할 수 있도록 한다.
@@ -1196,32 +1192,35 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 ## In-page Translation
 
 - When admin wants to translate text on the page,
-  - Admin can click 'translate' button,
-  - Then, the app will display edit button on each text(or the text itself clickable) to translate the text.
-  - Admin click on text,
+  - Admin can click 'translate' button on the menu,
+  - Then, the app will display edit button on each text(or highlight the text to be clicked) to translate the text.
+  - Then, Admin can move over the text,
     - then pop-up appears,
     - admin can input texts based on supported languages.
-    - when save, the text is translated.
+    - when save, the value on the input boxes will be saved as translated.
   - Admin can change his language on the pop-up.
 
+- See `widgets/login/login.php` and `library/core/language.php`.
+
+# Change language
+
+- Make the language selection box like below.
 
 ```html
-<?php if ( admin() ) { ?><!-- if the user is admin, display translation button -->
-  <div>
-    <?php if ( $_COOKIE['adminTranslate'] == 'Y' ) { ?>
-        <span onclick="adminTranslate('N');">[<?=ln('stop translate')?>]</span>
-    <?php } else { ?>
-        <span onclick="adminTranslate('Y');">[<?=ln('begin translate')?>]</span>
-    <?php } ?>
-  </div>
-<?php } ?>
-<script>
-  function adminTranslate(flag) {
-    Cookies.set('adminTranslate', flag);
-    location.reload();
-  }
-</script>
+<form class="m-0 p-0" action="/">
+    <input type="hidden" name="p" value="user.language.submit">
+    <label class="m-0 p-2">
+        <select name="language" onchange="submit()">
+            <option value="">언어선택</option>
+            <option value="ko">한국어</option>
+            <option value="en">English</option>
+        </select>
+    </label>
+</form>
 ```
+
+- And `themes/default/user/language.submit.php` will save the user's choice into cookie.
+
 
 # Currency Conversion
 

@@ -50,7 +50,7 @@ function ln(array|string $code, mixed $default_value='', bool $translate=true): 
 <span id='$id' class="$class" style='background-color: #f6efca; cursor: pointer;'>$ret</span>
 <b-popover target="$id" triggers="hover">
     <b>$code</b>
-    <form @submit.prevent="onSubmitTranslate(\$event, '$language', '$code', '$class')" autocomplete="off">
+    <form class="form-$class" @submit.prevent="onSubmitTranslate(\$event, '$language', '$code', '$class')" autocomplete="off">
     $inputs
     <button type="submit">Save</button>
 </form>

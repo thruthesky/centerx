@@ -10,21 +10,23 @@
                         created() {},
                         methods: {
                             onSubmitTranslate: function(e, ln, code, clsName) {
-                                // console.log('translate!', ln, code);
-
                                 const formData = new FormData(e.target);
                                 const data = Object.fromEntries(formData);
                                 data['code'] = code;
                                 data['currentCodeName'] = code;
                                 request('translation.update', data, function(res) {
+                                    // Since, we cannot find a way to update the input box value on popover,
+                                    // we just reload the page.
+                                    location.reload();
+
                                     // console.log(res);
                                     // console.log('replace: ', data[ln]);
-                                    const nodes = document.getElementsByClassName(clsName);
-                                    // console.log(nodes);
-                                    for (let i = 0; i < nodes.length; i++) {
-                                        // console.log(nodes[i]);
-                                        nodes[i].innerText = data[ln];
-                                    }
+                                    // const nodes = document.getElementsByClassName(clsName);
+                                    // // console.log(nodes);
+                                    // for (let i = 0; i < nodes.length; i++) {
+                                    //     // console.log(nodes[i]);
+                                    //     nodes[i].innerText = data[ln];
+                                    // }
                                 }, alert);
                             }
                         }
