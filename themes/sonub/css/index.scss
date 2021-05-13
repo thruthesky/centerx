@@ -199,3 +199,43 @@ input.focus-none:focus {
   right: 0;
   bottom: 0;
 }
+
+
+
+/**
+ *  Start Line Graph
+ */
+.css-chart {
+  display: inline-block;
+  margin: 2em 0 0;
+  padding: 0;
+  position: relative;
+  width: 100%;
+}
+
+.line-chart {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.data-point {
+  background-color: white;
+  border: 2px solid lightblue;
+  border-radius: 50%;
+  height: 8px;
+  position: absolute;
+  width: 8px;
+  z-index: 1;
+}
+
+.line-segment {
+  background-color: blue;
+  height: 2px;
+  position: absolute;
+  transform-origin: left bottom;
+}
+/**
+ * End Line Graph
+ */
+
