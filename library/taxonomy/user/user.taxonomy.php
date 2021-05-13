@@ -10,7 +10,7 @@
  * @property-read string $firebaseUid
  * @property-read string $name
  * @property-read string $nickname
- * @property-read string $nicknameOrName - 실제 DB 에 존재하지 않는 필드. 닉네임 또는 이름을 리턴한다.
+ * @property-read string $nicknameOrName - 실제 DB 에 존재하지 않는 필드. 닉네임 또는 이름을 리턴한다. 만약, 닉네임 또는 이름이 존재하지 않으면, 이메일 주소의 계정에서 뒷자리 3자리를 xxx 로 변경해서 리턴한다.
  * @property-read int $photoIdx
  * @property-read string $phoneNo
  * @property-read string $gender
@@ -43,6 +43,7 @@ class UserTaxonomy extends Entity {
         parent::__construct(USERS, $idx);
     }
 
+
     /**
      * getter 에 verified 를 추가.
      * @param $name
@@ -54,7 +55,17 @@ class UserTaxonomy extends Entity {
         } else if ( $name == 'nicknameOrName' ) {
             if ( $this->nickname ) return $this->nickname;
             else if ( $this->name ) return $this->name;
-            else return 'No nickname or name';
+            else {
+                $email = $this->email;
+                if ( str_contains($email, '@') ) {
+                    $arr = explode('@', $email, 2);
+                    $account_name = $arr[0];
+                    if ( strlen($account_name) < 3 ) return 'xxx';
+                    return substr($account_name, 0, strlen($account_name)-3) . 'xxx';
+                } else {
+                    return '(No name or nickname) & wrong email';
+                }
+            }
         } else {
             return parent::__get($name);
         }
@@ -100,7 +111,7 @@ class UserTaxonomy extends Entity {
      */
     public function register(array $in): self {
         $this->resetError();
-        if ( isset($in[EMAIL]) == false ) return $this->error(e()->email_is_empty);
+        if ( isset($in[EMAIL]) == false || empty($in[EMAIL]) ) return $this->error(e()->email_is_empty);
         if ( !checkEmailFormat($in[EMAIL]) ) return $this->error(e()->malformed_email);
         if ( isset($in[PASSWORD]) == false ) return $this->error(e()->password_is_empty);
 

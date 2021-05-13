@@ -2,29 +2,27 @@
 //if (isRealNameAuthUser() == false) return displayWarning('본인 인증을 한 사용자만 카페 개설이 가능합니다.');
 
 
+if ( notLoggedIn() ) jsBack('로그인을 먼저 해 주세요.');
 
-$rootDomain = get_root_domain();
-
-$len = strlen($rootDomain);
-
-$inputDomain = strtolower(in('domain'));
-
-$domain = $inputDomain . '.' . $rootDomain;
-
+// input check
 if ( ! in('countryCode') || strlen(in('countryCode')) != 2) {
     jsBack('앗! 교민 카페를 운영 할 국가를 선택해주세요.');
 }
 
+// root domain
+$rootDomain = get_root_domain();
 
+// full domain
+$inputDomain = strtolower(in('domain'));
+$domain = $inputDomain . '.' . $rootDomain;
 
 /**
- * 두 자리 국가 코드로는 도메인을 만들지 못하게 한다.
+ * @re-think 두 자리 국가 코드로는 도메인을 만들지 못하게 한다.
  */
-$up = strtoupper($inputDomain);
-
-if ( country($up)->exists ) {
-    jsBack('앗! 이미 존재하는 도메인입니다. 다른 도메인을 입력하세요.');
-}
+//$up = strtoupper($inputDomain);
+//if ( country($up)->exists ) {
+//    jsBack('앗! 이미 존재하는 도메인입니다. 다른 도메인을 입력하세요.');
+//}
 
 
 if ( strlen($domain) > 32 ) {
@@ -37,8 +35,7 @@ if ( preg_match("/^[a-zA-z][0-9a-zA-z\-]+/", $inputDomain) ) {
     jsBack('앗! 도메인은 알파벳으로 시작해야하고, 숫자와 하이픈(-)만 입력 가능합니다.');
 }
 
-
-
+// @see readme
 $data = [
     USER_IDX => login()->idx,
     ID => $domain,

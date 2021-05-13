@@ -13,7 +13,7 @@
  *
  *
  */
-class Cafe extends CategoryTaxonomy
+class CafeTaxonomy extends CategoryTaxonomy
 {
 
     public $mainmenus;
@@ -115,7 +115,9 @@ class Cafe extends CategoryTaxonomy
     /**
      * 현재 접속 사이트의 루트 도메인이 CAFE_COUNTRY_DOMAIN 이면, 참을 리턴한다.
      *
-     * 활용, 카페 개설을 할 때, 현재 도메인이 특정 국가에 속한 도메인이라면, 국가 선택을 보여주지 않을 수 있다.
+     * 즉, 카페 개설을 할 때, 현재 도메인이 특정 국가에 속한 도메인이라면, 국가 선택을 보여주지 않을 수 있다.
+     * 예를 들어, philov.com 는 필리핀 교민 사이트를 위한 전용 도메인으로 쓰고 싶다면, CAFE_COUNTRY_DOMAIN 으로 등록해 놓는다.
+     * 그러면, 카페 개설을 할 때, philov.com 사이트 또는 그 하위 사이트에서는 따로 국가 선택을 안해도 된다.
      *
      * @return bool
      */
@@ -139,10 +141,10 @@ class Cafe extends CategoryTaxonomy
  * 해당 카페 객체를 한 번 생성하면, 그 다음 부터는 생성된 객체를 재 사용한다. 즉, Singleton 방식으로 사용한다.
  *
  *
- * @return Cafe
+ * @return CafeTaxonomy
  */
 global $__cafe;
-function cafe(): Cafe
+function cafe(): CafeTaxonomy
 {
     global $__cafe;
     // 메모리 캐시 되었으면, 이전 변수를 리턴.
@@ -151,13 +153,17 @@ function cafe(): Cafe
     }
 
 
-    $__cafe = new Cafe(0);      // 카페 객체 생성. 이 후, 이 코드는 두번 실행되지 않는다.
+    $__cafe = new CafeTaxonomy(0);      // 처음, 카페 객체 생성 이 후, 이 코드는 두번 실행되지 않는다.
     $domain = get_domain();     // 현재 도메인
 
     if ( in_array($domain, CAFE_MAIN_DOMAINS) ) return $__cafe; // 현재 도메인이 메인 도메인 중 하라나면, 빈 Cafe 객체를 리턴.
 
-    $__cafe->findOne(['id' => $domain]); // 메인 도메인이 아니면, 해당 도메인의 카페를 찾아 리턴. 카페를 찾지 못하면 에러 설정 됨.
+    // 메인 도메인이 아니면, 해당 도메인의 카페를 찾아 리턴. 카페를 찾지 못하면 에러 설정 됨.
+    // 즉, 맨 처음 1회, 현재 카페의 객체를 생성하고, 재 사용한다.
+    $__cafe->findOne(['id' => $domain]);
     return $__cafe;
 }
+
+cafe(); // 함수를 최초 한번 실행한다.
 
 

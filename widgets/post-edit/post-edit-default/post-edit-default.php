@@ -24,7 +24,7 @@ if (in(CATEGORY_ID)) {
         <input type="hidden" name="<?= IDX ?>" value="<?= $post->idx ?>">
 
         <div class="d-flex">
-            <h3>Category: <?= $category->id ?></h3>
+            <h6>Category: <?= $category->id ?></h6>
             <span class="flex-grow-1"></span>
             <?php if ($category->exists && $category->subcategories) { ?>
                 <select class="form-select form-select-lg mt-2" name="subcategory">

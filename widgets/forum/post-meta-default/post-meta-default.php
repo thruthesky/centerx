@@ -20,7 +20,11 @@ d($post->user()->photoUrl);
         </div>
         <div class="text-muted">
             <?= $post->subcategory ? "<span class='badge badge-info'>{$post->subcategory}</span> " : "" ?>
-            No. <?= $post->idx ?>
+            <?php if ( $_ = hook()->run('post-meta-3rd-line', $post) ) echo $_; else { ?>
+                No. <?= $post->idx ?>
+            <?php } ?>
         </div>
     </div>
 </div>
+
+

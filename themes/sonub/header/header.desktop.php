@@ -29,32 +29,32 @@
         </div>
     </div>
 
-<div class="d-flex justify-content-between l-content fs-sm">
-    <div>
-        <div class="" style="margin-top: 44px;">
-            <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner.jpg">
-        </div>
-    </div>
-    <div class="mt-3 mx-3 mx-lg-5 px-xl-5 w-100">
-        <a class="d-flex justify-content-center align-items-center mb-2" href="/">
-            <img class="h-48px" src="/themes/sonub/img/philov-logo.png">
-            <div class="ml-3 fs-xl">필러브</div>
-        </a>
-        <form>
-            <div class="position-relative">
-                <input class="focus-none pl-3 pr-5 py-1 fs-lg w-100 border-radius-md border-grey">
-                <div class="position-absolute top right mr-1 fs-lg dark">
-                    <div style="padding: 0.6rem;"><i class="fa fa-search"></i></div>
-                </div>
+    <div class="d-flex justify-content-between l-content fs-sm">
+        <div>
+            <div class="" style="margin-top: 44px;">
+                <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner.jpg">
             </div>
-        </form>
-    </div>
-    <div class="d-none d-lg-block">
-        <div style="margin-top: 44px;">
-            <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner2.jpg">
+        </div>
+        <div class="mt-3 mx-3 mx-lg-5 px-xl-5 w-100">
+            <a class="d-flex justify-content-center align-items-center mb-2" href="/">
+                <img class="h-48px" src="/themes/sonub/img/philov-logo.png">
+                <div class="ml-3 fs-xl"><?=cafe()->title?></div>
+            </a>
+            <form>
+                <div class="position-relative">
+                    <input class="focus-none pl-3 pr-5 py-1 fs-lg w-100 border-radius-md border-grey">
+                    <div class="position-absolute top right mr-1 fs-lg dark">
+                        <div style="padding: 0.6rem;"><i class="fa fa-search"></i></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="d-none d-lg-block">
+            <div style="margin-top: 44px;">
+                <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner2.jpg">
+            </div>
         </div>
     </div>
-</div>
 
 </div>
 
@@ -62,10 +62,18 @@
 
     <div class="container-xl d-flex justify-content-between fs-md">
         <div class="d-flex justify-content-around" style="min-width: 300px; max-width: 300px; height: 40px; overflow:hidden; background-color: rgba(248,248,248,0.78);">
-            <a class="py-2" href="#">카페메뉴1</a>
-            <a class="py-2" href="#">메뉴2</a>
-            <a class="py-2" href="#">카페메뉴1</a>
-            <a class="py-2" href="#">카페메뉴1</a>
+
+            <?php if ( count(cafe()->subcategories) == 0 ) { ?>
+                <?php if ( cafe()->isMine() ) { ?>
+                    <a class="py-2" href="/?cafe.admin">카테고리 추가하기</a>
+                <?php } else { ?>
+                    <a class="py-2" href="/?forum.post.list&id=<?=cafe()->id?>"><?=cafe()->title?></a>
+                <?php } ?>
+            <?php } ?>
+            <?php foreach( array_slice(cafe()->subcategories, 0, 5) as $catName ) { ?>
+                <a class="py-2" href="/?forum.post.list&categoryId=<?=cafe()->id?>&subcategory=<?=$catName?>&lsub=<?=$catName?>"><?=$catName?></a>
+            <?php } ?>
+
         </div>
         <?php
         foreach( cafe()->mainmenus as $categoryId => $m ) {

@@ -23,6 +23,7 @@ class MySQLiDatabase {
     }
 
     private function handleError(string $msg, string $sql='') {
+
         $this->error = "$msg\n";
         if ( $sql ) $this->error .= "SQL: $sql\n";
         if ( $this->displayError ) {
@@ -65,10 +66,14 @@ class MySQLiDatabase {
      *       Or it might be 1 if there is no insert id(auto generated id).
      *  - zero(0) on failure.
      *  - It only returns integer(insert_id) when the record is actually created.
+     *
+     * @fix 2021. 04. 13. Display details error message if there is SQL error.
+     *  Especially when `$stmt->execute()` return -1.
      */
     public function insert(string $table, array $record): int {
         if ( empty($table) || empty($record) ) return 0;
         list( $fields, $placeholders, $values ) = $this->parseRecord($record);
+
 
         try {
             $sql = "INSERT INTO {$table} ({$fields}) VALUES ({$placeholders})";
@@ -80,12 +85,22 @@ class MySQLiDatabase {
 
             // Execute the query
             $stmt->execute();
+
+            // @TODO 아래의 코드에서 execute() 가 -1 을 리턴한다.
+            // ```translation()->create(['code'=>'tesu0t', 'text' => 'yo']);```
+            // 위 코드에서 language 가 빠져서 에러가 난다.
+
+
+
             // Check for successful insertion
             if ( $stmt->affected_rows > 0 ) {
                 $id = $this->connection->insert_id;
                 if ( $id ) return $id;
                 else return 1;
+            } else if ( $stmt->affected_rows == 0 ) {
+                return 0;
             } else {
+                $this->handleError($stmt->error, $sql);
                 return 0;
             }
         } catch (mysqli_sql_exception $e) {

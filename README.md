@@ -1544,7 +1544,7 @@ EOH;
 ```
 
 
-* Hook 함수는 각 테마 별로 config.php 에서 정의하면 되고, hook 코드가 커지면 `[theme-name].hooks.php` 로 따로 모으면 된다.
+* Hook 함수는 각 테마 별로 theme-name.functions.php 에서 정의하면 되고, hook 코드가 커지면 `[theme-name].hooks.php` 로 따로 모으면 된다.
 * 동일한 hook 이름에 여러개 훅을 지정 할 수 있다.
 * 훅 함수에는 변수를 얼마든지 마음데로 지정 할 수 있으며 모두 reference 로 전달된다.
 * `posts_before_create` 훅 함수가 에러 문자열을 리턴하면 다른 훅은 모두 실행이 안되고, 글/코멘트 생성이 중지된다.
@@ -1557,6 +1557,19 @@ EOH;
 
 * 훅의 목적은 가능한 기본 코드를 재 사용하되, 원하는 기능 또는 UI/UX 로 적용하기 위한 것이다.
   * 예를 들면, 게시판 목록의 기본 widget 을 사용하되, 사용자 화면에 보이거나, 알림 등의 재 활용 할 수 있도록 하는 것이다.
+
+
+## 페이지나 위젯에서 Hook 을 실행 할 때, 리턴하는 값이 있으면 그 값을 사용하고 아니면, 기본 값을 사용
+
+
+* 아래와 같이 실행 할 수 있다. 훅의 결과가 있으면 그 결과를 사용하고, 없으면 기본 HTML 을 사용하는 것이다.
+
+```html
+<?php if ( $_ = hook()->run('post-meta-3rd-line', $post) ) echo $_; else { ?>
+    No. <?= $post->idx ?>
+<?php } ?>
+```
+
 
 
 
@@ -2586,6 +2599,7 @@ content[tip]=내용사진입니다.
 - To use live reload on localhost without SSL.
   - set `http://localhost` to `LIVE_RELOAD_HOST`
   - set '12345' to `LIVE_RELOAD_PORT.
+  - add the working local domain to `LOCAL_HOSTS`.
   - run `node live-reload.js http`.
   
 - To use live reload with SSL,
@@ -2593,6 +2607,7 @@ content[tip]=내용사진입니다.
   - set the host(domain) with scheme to `LIVE_RELOAD_HOST`. ex) `https://sonub.com`
     - @attention the certificates(and private key) must be for the domain of `LIVE_RELOAD_HOST`. 
   - set '12345' to `LIVE_RELOAD_PORT`
+  - add the working local domain to `LOCAL_HOSTS`.
   - run `node live-reload.js`
   
   
