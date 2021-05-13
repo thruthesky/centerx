@@ -72,7 +72,10 @@ if ( file_exists($_path) ) {
     require_once $_path;
 }
 
+
+// Live reload
 live_reload();
+
 
 
 

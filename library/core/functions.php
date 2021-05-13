@@ -113,13 +113,10 @@ function isMobile() {
 function live_reload()
 {
     if ( canLiveReload() ) {
-        $host = LIVE_RELOAD_HOST;
+        $rootUrl = LIVE_RELOAD_HOST;
         $port = LIVE_RELOAD_PORT;
 
-
-        $url = "https://$host:$port/socket.io/socket.io.js";
-
-
+        $url = "$rootUrl:$port/socket.io/socket.io.js";
 
         echo <<<EOH
     <script src="$url"></script>
@@ -128,7 +125,7 @@ function live_reload()
             // Don't watch for live-reload if it is Cypress testing or failed to load socket.io.js (that means, live-reload.js is not running)
         } else {
             console.log("Live reload enabled...");
-            var socket = io("https://$host:$port/");
+            var socket = io("$rootUrl:$port/");
             socket.on('reload', function (data) {
                 console.log('live reloading...', data);
                 location.reload();
@@ -145,6 +142,9 @@ EOH;
 
 
 function canLiveReload(): bool {
+
+
+    if ( ! LIVE_RELOAD_HOST ) return false;
 
     /// API call 이면, false. 단, reload 에 값이 들어오면, reload.
     if ( API_CALL ) {

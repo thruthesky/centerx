@@ -16,13 +16,23 @@
 class Cafe extends CategoryTaxonomy
 {
 
+    public $mainmenus;
+
     public function __construct(int $idx)
     {
         parent::__construct($idx);
         if ( $this->isMainCafe() ) {
             // 메인 카페의 경우, DB 레코드가 없다. 그래서, 향후 에러가 나지 않도록, countryCode 를 기본 설정 해 준다.
-            $this->updateData('countryCode', CAFE_COUNTRY_DOMAINS[get_root_domain()]['countryCode']);
+            $this->updateMemory('countryCode', CAFE_COUNTRY_DOMAINS[get_root_domain()]['countryCode']);
         }
+
+        $this->mainmenus = CAFE_MAIN_MENUS;
+
+        uasort($this->mainmenus, function($a, $b) {
+            if ( $a['priority'] == $b['priority'] ) return 0;
+            if ( $a['priority'] > $b['priority'] ) return -1;
+            else return 1;
+        });
     }
 
 
@@ -32,9 +42,9 @@ class Cafe extends CategoryTaxonomy
 
     /**
      * 현재 카페가 속한 국가 정보를 리턴한다.
-     * @return Country
+     * @return CountryTaxonomy
      */
-    public function country(): Country {
+    public function country(): CountryTaxonomy {
         return country($this->countryCode);
     }
 
@@ -78,7 +88,7 @@ class Cafe extends CategoryTaxonomy
      * @return bool
      */
     public function isMainCafe(): bool {
-        return in_array(get_domain(), CAFE_MAIN_DOMAIS);
+        return in_array(get_domain(), CAFE_MAIN_DOMAINS);
     }
 
     /**
@@ -135,8 +145,8 @@ global $__cafe;
 function cafe(): Cafe
 {
     global $__cafe;
+    // 메모리 캐시 되었으면, 이전 변수를 리턴.
     if ( isset($__cafe) && $__cafe ) {
-//        d("Reuse cafe object: ");
         return $__cafe;
     }
 
@@ -144,7 +154,7 @@ function cafe(): Cafe
     $__cafe = new Cafe(0);      // 카페 객체 생성. 이 후, 이 코드는 두번 실행되지 않는다.
     $domain = get_domain();     // 현재 도메인
 
-    if ( in_array($domain, CAFE_MAIN_DOMAIS) ) return $__cafe; // 현재 도메인이 메인 도메인 중 하라나면, 빈 Cafe 객체를 리턴.
+    if ( in_array($domain, CAFE_MAIN_DOMAINS) ) return $__cafe; // 현재 도메인이 메인 도메인 중 하라나면, 빈 Cafe 객체를 리턴.
 
     $__cafe->findOne(['id' => $domain]); // 메인 도메인이 아니면, 해당 도메인의 카페를 찾아 리턴. 카페를 찾지 못하면 에러 설정 됨.
     return $__cafe;

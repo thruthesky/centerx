@@ -1,23 +1,43 @@
-
 var fs = require('fs');
 var https = require('https');
-var svrOptions = {
-    key: fs.readFileSync('tmp/ssl/philov.com/private.key'),
-    cert: fs.readFileSync('tmp/ssl/philov.com/cert-ca-bundle.crt'),
-};
+var http = require('http');
 
-var server = https.createServer(svrOptions, function onRequest(req, res) {
-    // Set CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*')
-    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
-    if ( req.method === 'OPTIONS' ) {
-        res.writeHead(200);
-        res.end();
-        return;
-    }
-    res.write("reload.js");
-});
-server.listen(12345);
+var noSsl = process.argv[2] == 'undefined' ? false : (process.argv[2] == 'http' ? true : false );
+var ssl = !noSsl;
+
+var server;
+if ( ssl ) {
+    var svrOptions = {
+        key: fs.readFileSync('tmp/ssl/live-reload/private.key'),
+        cert: fs.readFileSync('tmp/ssl/live-reload/cert-ca-bundle.crt'),
+    };
+    server = https.createServer(svrOptions, function onRequest(req, res) {
+        // Set CORS headers
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+        if ( req.method === 'OPTIONS' ) {
+            res.writeHead(200);
+            res.end();
+            return;
+        }
+        res.write("reload.js");
+    });
+    server.listen(12345);
+} else {
+    server = http.createServer(function onRequest(req, res) {
+        // Set CORS headers
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+        if ( req.method === 'OPTIONS' ) {
+            res.writeHead(200);
+            res.end();
+            return;
+        }
+        res.write("reload.js");
+    });
+    server.listen(12345);
+}
+
 
 /// By pass - Cors problem
 var io = require('socket.io')(server, {
@@ -35,14 +55,3 @@ chokidar.watch('.', { ignored: [ '.idea', 'etc/phpdoc', '.phpdoc', 'etc/sql', 'n
     console.log(event, path, ' at ' + ( new Date ).toLocaleString());
     io.emit('reload', { code: 'reload' });
 });
-
-
-const http = require('http');
-
-const requestListener = function (req, res) {
-    res.writeHead(200);
-    res.end('Hello, World!');
-}
-const server2 = http.createServer(requestListener);
-server2.listen(12346);
-

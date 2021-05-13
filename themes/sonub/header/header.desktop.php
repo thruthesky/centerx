@@ -51,18 +51,17 @@
 <nav class="mainmenu-desktop mt-1 mb-3">
 
     <div class="container-xl d-flex justify-content-between fs-md">
-        <a class="py-2" href="/?p=forum.post.list&categoryId=discussion">자유토론</a>
-        <a class="py-2" href="/?p=forum.post.list&categoryId=qna">질문답변</a>
-        <a class="py-2" href="/?p=forum.post.list&categoryId=market">회원장터</a>
-        <a class="py-2" href="#">자유토론</a>
-        <a class="py-2" href="#">질문답변</a>
-        <a class="py-2" href="#">회원장터</a>
-        <a class="py-2" href="#">자유토론</a>
-        <a class="py-2" href="#">질문답변</a>
-        <a class="py-2" href="#">회원장터</a>
-        <a class="py-2" href="#">자유토론</a>
-        <a class="py-2" href="#">질문답변</a>
-        <a class="py-2" href="#">회원장터</a>
+        <div class="d-flex justify-content-around" style="min-width: 300px; max-width: 300px; height: 40px; overflow:hidden; background-color: rgba(248,248,248,0.78);">
+            <a class="py-2" href="#">카페메뉴1</a>
+            <a class="py-2" href="#">메뉴2</a>
+            <a class="py-2" href="#">카페메뉴1</a>
+            <a class="py-2" href="#">카페메뉴1</a>
+        </div>
+        <?php
+        foreach( cafe()->mainmenus as $categoryId => $m ) {
+            ?>
+            <a class="py-2" href="/?p=forum.post.list&categoryId=<?=$categoryId?>"><?=$m['title']?></a>
+        <?php } ?>
     </div>
 </nav>
 

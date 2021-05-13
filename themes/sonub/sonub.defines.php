@@ -6,10 +6,10 @@
  *
  * 여기에 기록된 메인 도메인은 2차 도메인이라도, 서브 카페(2차 도메인)로 인식되지 않고, 메인 카페로 인식된다.
  */
-define('CAFE_MAIN_DOMAIS', [
+const CAFE_MAIN_DOMAINS = [
     'philov.com', 'www.philov.com', 'main.philov.com',
     'sonub.com', 'www.sonub.com',
-]);
+];
 
 
 /**
@@ -21,10 +21,57 @@ define('CAFE_MAIN_DOMAIS', [
  *
  * @see sonub/README.md
  */
-define('CAFE_COUNTRY_DOMAINS', [
+const CAFE_COUNTRY_DOMAINS = [
     'philov.com' => [
         'countryCode' => 'PH',
         'name' => '필러브',
         'homeButtonLabel' => '홈',
     ],
-]);
+];
+
+
+
+
+
+const CAFE_MAIN_MENUS = [
+    'qna' => [
+        'title' => '질문게시판',
+        'priority' => 40,
+    ],
+    'discussion' => [
+        'title' => '자유게시판',
+        'priority' => 30,
+    ],
+    'buyandsell' => [
+        'title' => '회원장터',
+        'priority' => 20,
+    ],
+    'reminder' => [
+        'title' => '공지사항',
+        'priority' => 0,
+    ],
+    'job' => [
+        'title' => '구인구직',
+        'priority' => 1,
+    ],
+    'rent_house' => [
+        'title' => '주택임대',
+        'priority' => 1,
+    ],
+    'rent_car' => [
+        'title' => '렌트카',
+        'priority' => 1,
+    ],
+    'im' => [
+        'title' => '이민',
+        'priority' => 1,
+    ],
+    'real_estate' => [
+        'title' => '부동산',
+        'priority' => 1,
+    ],
+    'money_exchange' => [
+        'title' => '환전',
+        'priority' => 1,
+    ]
+];
