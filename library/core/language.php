@@ -42,13 +42,13 @@ function ln(array|string $code, mixed $default_value=''): string
         $inputs = '';
         foreach(SUPPORTED_LANGUAGES as $ln) {
             $t = translation()->text($ln, $code);
-            $inputs .= "<div>$ln: <input name='$ln' value=\"$t\"></div>";
+            $inputs .= "<div>$ln: <input name='$ln' value=\"$t\" autocomplete='off'></div>";
         }
         return <<<EOH
 <span id='$id' class="$class" style='background-color: #f6efca; cursor: pointer;'>$ret</span>
 <b-popover target="$id" triggers="hover">
     <b>$code</b>
-    <form @submit.prevent="onSubmitTranslate(\$event, '$language', '$code', '$class')">
+    <form @submit.prevent="onSubmitTranslate(\$event, '$language', '$code', '$class')" autocomplete="off">
     $inputs
     <button type="submit">Save</button>
 </form>
