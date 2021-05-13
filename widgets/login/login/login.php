@@ -10,25 +10,22 @@
                         created() {},
                         methods: {
                             onSubmitTranslate: function(e, ln, code, clsName) {
-                                console.log('translate!', ln, code);
+                                // console.log('translate!', ln, code);
 
                                 const formData = new FormData(e.target);
                                 const data = Object.fromEntries(formData);
                                 data['code'] = code;
                                 data['currentCodeName'] = code;
-
                                 request('translation.update', data, function(res) {
-                                    console.log(res);
-                                    console.log('replace: ', data[ln]);
+                                    // console.log(res);
+                                    // console.log('replace: ', data[ln]);
                                     const nodes = document.getElementsByClassName(clsName);
-                                    for(node in nodes) {
-                                        node.innerText = data[ln];
+                                    // console.log(nodes);
+                                    for (let i = 0; i < nodes.length; i++) {
+                                        // console.log(nodes[i]);
+                                        nodes[i].innerText = data[ln];
                                     }
                                 }, alert);
-
-                                // var res = ...
-                                // var dom == document.getElementById(code);
-                                // dom.innerText = res[ln];
                             }
                         }
                     })

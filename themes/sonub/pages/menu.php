@@ -43,15 +43,11 @@
 
 
 <div class="d-flex flex-wrap justify-content-around">
-    <a href="/?p=forum.post.list&categoryId=discussion" class="circle m-2">자유게시판</a>
-    <a href="/?p=forum.post.list&categoryId=qna" class="circle m-2">질문게시판</a>
-    <a href="/?p=forum.post.list&categoryId=reminder" class="circle m-2">공지사항</a>
-    <a href="/?p=forum.post.list&categoryId=buyandsell" class="circle m-2">사고팔고</a>
-    <a href="/?p=forum.post.list&categoryId=discussion" class="circle m-2">자유게시판</a>
-    <a href="/?p=forum.post.list&categoryId=discussion" class="circle m-2">질문게시판</a>
-    <a href="/?p=forum.post.list&categoryId=discussion" class="circle m-2">공지사항</a>
-    <a href="/?p=forum.post.list&categoryId=discussion" class="circle m-2">사고팔고</a>
-    <a href="/?p=forum.post.list&categoryId=discussion" class="circle m-2">사고팔고</a>
+    <?php
+        foreach( cafe()->mainmenus as $categoryId => $m ) {
+    ?>
+            <a href="/?p=forum.post.list&categoryId=<?=$categoryId?>" class="circle m-2"><?=$m['title']?></a>
+    <?php } ?>
 </div>
 
 

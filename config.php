@@ -184,10 +184,11 @@ define('DEFAULT_DELIVERY_FEE_PRICE', 2500);
 
 
 /**
- * $ node live-reload.js 를 실행 할 때, 사용되는 도메인과 port. SSL 접속을 하기 때문에 도메인과 SSL 이 적용되어야 한다.
+ * @see readme#Live Reload
  */
-define('LIVE_RELOAD_HOST', 'main.philov.com');
+define('LIVE_RELOAD_HOST', 'https://main.philov.com');
 define('LIVE_RELOAD_PORT', '12345');
+
 
 
 
