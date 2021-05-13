@@ -1200,32 +1200,6 @@ function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): s
 }
 
 
-
-
-
-
-
-
-/**
- * Vue.js 를 한번만 로드하게 한다.
- *
- * 참고로, 모든 자바스크립트 관련 코드는, 웹 브라우저로 전달되기 전에, 맨 하단으로 이동 될 수 있다.
- */
-//function includeVueOnce() {
-//    if ( defined('VUE_JS') ) return;
-//    define('VUE_JS', true);
-//
-//    $homeUrl = HOME_URL;
-//
-//    if ( isLocalhost() ) {
-//        $url = "$homeUrl/etc/js/vue.3.0.7.dev.js";
-//    } else {
-//        $url = "$homeUrl/etc/js/vue.3.0.7.min.js";
-//    }
-//    echo "<script src='$url'></script>";
-//}
-
-
 /**
  * @deprecated use `js()`
  * Vue.js 를 한번만 로드한다.
@@ -1245,6 +1219,11 @@ function includeVueJs() {
     echo "<script src='$url'></script>";
 }
 
+/**
+ *
+ * @example
+ *  <?php js('/etc/js/chartjs-2/chart.bundle.min.js') ?>
+ */
 global $__js;
 function js(string $src, int $priority=0) {
     global $__js;
