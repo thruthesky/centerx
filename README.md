@@ -392,20 +392,9 @@ define('DOMAIN_THEMES', [
   - `docker/docker-compose.yml` - Docker Compose file.
   
 
-## Hot reload
+## Live reload
 
-- Node.js version 10.23.0 이상에서 동작한다.
-- Host 와 Port 를 config.php 에 적어주면 된다.
-  - LIVE_RELAOD_HOST 의 domain 은 현재 개발중인 host 일 필요 없으며, 접속 가능한 host 이면 된다.
-    예를 들어, 개발중인 사이트의 도메인은 abc.com 인데, 전혀 상관없는 도메인인 def.com 을 적어도 된다.
-  - Port 는 12345 로 그냥 고정한다.
-  
-- 만약, SSL 로 서비스(개발)하는 경우, `live-reload.js` 에서 SSL 을 LIVE_RELOAD_HOST 에 맞는 것으로 지정해 주어야한다.
-  
-- 동작 방식
-  - 먼저 `node live-reload.js` 와 같이 socket.io 서버를 실행.
-  - etc/boot.code.php 에서 live_reload() 함수 호출
-  - lib/functions.php::live_reload() 함수에서 live-reload.js 서버로 접속해서, 변경 이벤트가 있으면 reload
+아래의 live reload 항목 참고
 
 
 # Versioning
@@ -2588,6 +2577,8 @@ content[tip]=내용사진입니다.
   
 # Live Reload
 
+
+- Node.js version 10.23.0 이상에서 동작한다.
 
 - To NOT use (or to turn off) live reload,
   - Set empty string('') to LIVE_RELOAD_HOST.
