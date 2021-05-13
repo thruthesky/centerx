@@ -20,7 +20,7 @@
                                     // console.log(res);
                                     // console.log('replace: ', data[ln]);
                                     const nodes = document.getElementsByClassName(clsName);
-                                    console.log(nodes);
+                                    // console.log(nodes);
                                     for (let i = 0; i < nodes.length; i++) {
                                         // console.log(nodes[i]);
                                         nodes[i].innerText = data[ln];
