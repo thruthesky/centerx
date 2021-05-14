@@ -23,7 +23,8 @@ class CafeTaxonomy extends CategoryTaxonomy
         parent::__construct($idx);
         if ( $this->isMainCafe() ) {
             // 메인 카페의 경우, DB 레코드가 없다. 그래서, 향후 에러가 나지 않도록, countryCode 를 기본 설정 해 준다.
-            $this->updateMemory('countryCode', CAFE_COUNTRY_DOMAINS[get_root_domain()]['countryCode']);
+		// 2021. 05. 14
+//            $this->updateMemory('countryCode', CAFE_COUNTRY_DOMAINS[get_root_domain()]['countryCode']);
         }
 
         $this->mainmenus = CAFE_MAIN_MENUS;
@@ -63,6 +64,8 @@ class CafeTaxonomy extends CategoryTaxonomy
      * @return string
      */
     public function currencyCode(): string {
+	    //// sonub.com 의 경우, countryCode 가 없다.
+	    return '';
         return country_currency_code($this->countryCode);
     }
 
@@ -106,7 +109,11 @@ class CafeTaxonomy extends CategoryTaxonomy
      * @return string
      */
     public function name(): string {
-        if ( $this->isMainCafe() ) return CAFE_COUNTRY_DOMAINS[get_root_domain()]['homeButtonLabel'];
+	    if ( $this->isMainCafe() ) {
+		    //// 2021. 05. 14.
+		    return 'homeButtonLabel';
+		    return CAFE_COUNTRY_DOMAINS[get_root_domain()]['homeButtonLabel'];
+	    }
         if ( $this->title ) return $this->title;
         else return explode('.', $this->id)[0];
     }
