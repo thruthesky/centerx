@@ -110,7 +110,7 @@
         <script>
             later(function(){
 
-                
+
                 var ctx = document.getElementById('myChart');
                 ctx.height = "50";
                 var myChart = new Chart(ctx, {
