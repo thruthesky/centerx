@@ -10,7 +10,8 @@ class Theme
 
     public string $folderName;
     /**
-     * @var string 현재 테마의 폴더. 객체 초기화를 할 때 지정된다.
+     * @var string 현재 테마의 폴더 경로. 예) '/docker/home/centerx/themes/sonub/' 와 같은 전체 경로의 값을 가지면 맨 끝에 슬래시(/)가 붙는다.
+     *              객체 초기화를 할 때 지정된다.
      */
     public string $folder;
 

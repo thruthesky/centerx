@@ -261,21 +261,57 @@ cd etc/phpdoc
 
 ## 설치 요약
 
-- 먼저, CenterX 구동을 위한 도커를 실행한다. 도커는 compose 를 통해서 실행하는데, 그 설정이 github 에 있다. 아래와 같이 Docker compose 설정을 GitHub 에서 다운로드 또는 clone(또는 fork) 한다.
-  - `git clone https://github.com/thruthesky/docker`
-  
-- 그리고 아래와 같이 docker compose 를 실행한다.
-  - `cd docker`
-  - `docker-compose up`
-  
-- 그리고 centerx 를 설치한다.
-  - 홈 폴더 아래에 centerx git repo 를 clone(또는 fork 후 clone)을 하면 된다.
-  - `cd home`
-  - `git clone https://github.com/thruthesky/centerx`
+- 먼저 도커를 설치하고 실행한다.\
+  [우분투 도커 설치 참고](https://docs.docker.com/engine/install/ubuntu/)
 
-- 그리고 웹 브라우저로 phpMyAdmin 에 접속을 해서 SQL 스키마를 DB 에 넣는다. 아래 설명 참고.
+  
+- 도커는 compose 를 통해서 실행하는데, 그 설정이 github 에 있다. 아래와 같이 Docker compose 설정을 GitHub 에서 다운로드 또는 clone(또는 fork)
+  한다.
+  그리고 루트 계정으로 `/docker` 에 설치를 한다.
+  
+  - `git clone https://github.com/thruthesky/docker /docker`
+
+- 그리고 docker-compose.yml 에서 MYSQL_PASSWORD 와 MYSQL_ROOT_PASSWORD 를 적절한 비밀번호로 변경한다.
+  - `cd /docker`
+  - `vi docker-compose.yml`
+
+- Nginx 서버 설정은 `/docker/etc/nginx/nginx.conf` 이며, 기본 홈페이지 경로는 `/docker/home/default` 이다.
+
+- 그리고 아래와 같이 docker compose 를 실행한다.
+  - `docker-compose up -d`
+
+- 그리고 `centerx` 를 `/docker/home` 폴더 아래에 fork 후 clone 한다.
+  참고, 도커 실행을 위한 docker-compose 설정은 루트 계정으로 `/docker` 폴더에 하지만, centerx 설치와 centerx 관련 작업은 사용자 계정으로 하는 것이
+  좋다.
+  참고로,
+  - `/docker` repo 의 .gitignore 에 `home` 폴더가 들어가 있어서
+  - `/docker/home` 폴더 아래에 `centerx` repo 를 추가해도,
+  - `/docker` repo 에 추가되지 않는다.
+
+- 루트로 사용자 계정을 만든다.
+  - `# useradd -m -d /docker/home/centerx centerx` 와 같이 하면 사용자 계정 `centerx` 의 홈 폴더가 `/docker/home/centerx` 가 된다.
+  - `# su - centerx`
+    - `$ git init`
+    - `$ git remote add origin https://github.com/thruthesky/centerx`
+    - `$ git fetch`
+    - `$ git checkout main`
+    - `$ chmod -R 777 files`
+    - `$ chmod -R 777 var/logs`
+  
+- phpMyAdmin 을 통한 데이터베이스 테이블 설치
+  웹 브라우저로 phpMyAdmin 에 접속을 해서 SQL 스키마를 DB 에 넣는다.
+  - `/docker/home/default/etc/phpMyAdmin` 에 phpMyAdmin 이 설치되어져 있다.
+    접속은 IP 주소를 이용하여, `http://1.2.3.4/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
+    데이터베이스 관리자 아이디는 root 이며, 비밀번호는 위에서 변경 한 것을 입력한다.
+    참고로 기본 비밀번호는 Wc~Cx7 인데 꼭 변경해서 사용하기 바란다.
+
+  - phpMyAdmin 접속 후, `centerx/etc/install/sql` 폴더에서 최신 sql 파일의 내용을 phpMyAdmin 에 입력하고 쿼리 실행을 한다.
+    - 만약, 국가 정보를 원한다면, `wc_countries` 테이블을 삭제하고, `/centerx/etc/install/sql/countries.sql`
+
+  - 참고, phpMyAdmin 에서 root 와 사용자 계정 password 를 변경 할 수 있으며, 변경한 비밀번호를 `etc/keys/db.password.php` 파일에 저장하면 된다.
 
 - node modules 들을 설치한다.
+  참고로 개발을 위해서만 npm install 을 하면 된다. 배포 서버에서는 할 필요 없다.
   - `npm i`
 
 - `keys` 폴더에 각종 키를 설정한다.
@@ -289,50 +325,8 @@ cd etc/phpdoc
   - 환율 Api 설정
   등 원하는 것만 설정하면 된다.
 
-## 설치 상세 설명
+- 만약, 다른 도메인으로 다른 홈페이지를 추가 개발을 하고 싶다면, `/docker/etc/nginx.conf` 를 수정하여, 홈 경로를 `/docker/home` 폴더 아래로 하면 된다.
 
-- 먼저 도커를 설치하고 실행한다.\
-  [우분투 도커 설치 참고](https://docs.docker.com/engine/install/ubuntu/)
-  
-- 그리고 CenterX 실행을 위한 도커 compose 설정을 가지고 있는 git repo 를 (루트 계정으로) /docker 에 (fork 후) clone 한다.
-  - `git clone https://github.com/thruthesky/docker /docker`
-  - `cd /docker`
-  
-- 그리고 docker-compose.yml 에서 MYSQL_PASSWORD 와 MYSQL_ROOT_PASSWORD 를 적절한 비밀번호로 변경한다. 
-  
-- 그리고 아래와 같이 docker compose 를 실행한다.
-  - `docker-compose up -d`
-  
-- Nginx 서버 설정은 `/docker/etc/nginx/nginx.conf` 이며, 기본 홈페이지 경로는 `/docker/home/default` 이다.
-
-- 그리고 `centerx` 를 `/docker/home` 폴더 아래에 fork 후 clone 한다.\
-  참고, 도커 실행을 위한 docker-compose 설정은 루트 계정으로 `/docker` 폴더에 하지만, centerx 설치와 centerx 관련 작업은 사용자 계정으로 하는 것이
-  좋다.
-  참고로,
-    - `/docker` repo 의 .gitignore 에 `home` 폴더가 들어가 있어서
-    - `/docker/home` 폴더 아래에 `centerx` repo 를 추가해도,
-    - `/docker` repo 에 추가되지 않는다.
-  
-  그리고 다른 도메인으로 다른 홈페이지를 추가 개발을 하고 싶다면, `/docker/etc/nginx.conf` 를 수정하여, 홈 경로를 `/docker/home` 폴더 아래로 하면 된다.
-  
-- `centerx` 를 `/docker/home` 에 설치하는 예제)
-  - `# useradd -m -d /docker/home/centerx centerx` 와 같이 하면 사용자 계정 centerx 의 홈 폴더가 `/docker/home/centerx` 가 된다. 계정과 폴더는 원하는데로 변경 가능.
-  - `# su - centerx`
-    - `$ git init`
-    - `$ git remote add origin https://github.com/thruthesky/centerx`
-    - `$ git fetch`
-    - `$ git checkout main`
-    - `$ chmod -R 777 files`
-    - `$ chmod -R 777 var/logs`
-
-- phpMyAdmin 을 통한 데이터베이스 테이블 설치
-  - `/docker/home/default/etc/phpMyAdmin` 에 phpMyAdmin 이 설치되어져 있다.
-    접속은 IP 주소를 이용하여, `http://0.0.0.0/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
-    데이터베이스 관리자 아이디는 root 이며, 비밀번호는 위에서 변경 한 것을 입력한다.
-    참고로 기본 비밀번호는 Wc~Cx7 인데 꼭 변경해서 사용하기 바란다.
-    
-  - phpMyAdmin 접속 후, `centerx/etc/install/sql` 폴더에서 최신 sql 파일의 내용을 phpMyAdmin 에 입력하고 쿼리 실행을 한다.
-    - 만약, 국가 정보를 원한다면, `wc_countries` 테이블을 삭제하고, `/centerx/etc/install/sql/countries.sql`
 
 
 
@@ -700,7 +694,15 @@ with the latest android version, but the developer must code on the android app.
 - 모든 테이블에는 idx, createdAt, updatedAt 이 존재한다.(존재 해야 한다.)
 - 레코드가 사용자의 소유를 나타낼 때에는 추가적으로 userIdx 가 존재해야 한다.
 
+## 데이터베이스 계정 설정
 
+- 가장 먼저 `keys` 폴더에 접속 정보가 존재하는지 확인을 한다.
+  DB 접속 정보는 공개되면 안된다. 그래서 .gitignore 에 포함되어져 있는 keys 폴더에 보관을 한다. 또는 `db.password.php` 파일이 .gitignore 에
+  들어가 있다.
+  - 우선, `theme/theme-name/keys/db.passowrd.php` 파일이 존재하면 로드한다.
+  - 없으면, `etc/keys/db.password.php` 파일이 존재하는지 보고 있으면 로드한다.
+  - 없으면, config.php 에 있는 접속 정보로 접속한다.
+  
 
 ## 게시글 테이블. posts 테이블
 

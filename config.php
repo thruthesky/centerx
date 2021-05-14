@@ -56,10 +56,21 @@ define('SUPPORTED_DOMAIN_SUFFIX', ['.com', '.co.kr', '.kr']);
  *
  * 참고, 테마 설정 파일에서 isLocalhost() 를 사용 할 수 있으므로, 테마 설정이 로드되기 전에 정의되어야 한다.
  */
-define('LOCAL_HOSTS', ['localhost', '127.0.0.1', 'local.itsuda50.com', 'main.philov.com', 'apple.philov.com', 'banana.philov.com', 'cherry.philov.com']);
+define('LOCAL_HOSTS', ['localhost', '127.0.0.1', 'local.itsuda50.com', 'main.philov.com', 'apple.philov.com',
+    'banana.philov.com', 'cherry.philov.com',
+    'main.sonub.com',
+]);
 
 
 
+
+
+/// DB 접속 정보가 keys 폴더에 존재하는지 확인. 아니면 config.php 의 접속 정보를 사용.
+if ( file_exists( theme()->folder . 'keys/db.password.php') ) {
+    include theme()->folder . 'keys/db.password.php';
+} else if ( file_exists(ROOT_DIR . 'etc/keys/db.password.php') ) {
+    include ROOT_DIR . 'etc/keys/db.password.php';
+}
 
 
 /**
@@ -74,6 +85,7 @@ debug_log("Theme Config Path: $_path");
 if ( file_exists($_path) ) {
     require_once $_path;
 }
+
 
 
 define('APP_NAME', 'CenterX');

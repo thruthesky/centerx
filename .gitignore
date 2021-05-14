@@ -11,6 +11,7 @@ var/logs
 
 etc/keys
 keys
+db.password.php
 
 .bash_history
 var
