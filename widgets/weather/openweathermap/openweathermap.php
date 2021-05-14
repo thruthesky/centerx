@@ -74,6 +74,8 @@
         $forecastjs = array_slice($forecastjs,1);
         $forecastjs = array_merge($currentjs,$forecastjs);
 
+//        d($forecastjs);
+
         ?>
 
         <h4><?=$city?>, <?=$twoDigitCode?></h4>
@@ -107,6 +109,8 @@
 
         <script>
             later(function(){
+
+                
                 var ctx = document.getElementById('myChart');
                 ctx.height = "50";
                 var myChart = new Chart(ctx, {
@@ -115,7 +119,7 @@
                         labels: [31, 30, 29, 27, 30, 34, 35, 34],
                         datasets: [{
                             label: 'temp',
-                            data: [31, 30, 29, 27, 30, 34, 35, 34],
+                            data: <?=json_encode($forecastjs['current'])?>,
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
                                 'rgba(54, 162, 235, 0.2)',
