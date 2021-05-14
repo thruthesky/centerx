@@ -7,7 +7,9 @@
      */
     $display = $options['display'] ?? 'current';
 
-    $country = get_current_country('124.83.114.70'); /// @update this.
+    if ( isLocalhost() ) $ip = '124.83.114.70';
+    else $ip = null;
+    $country = get_current_country($ip); /// @update this.
     $city = $country->city;
     $twoDigitCode = $country->v('2digitCode');
 
