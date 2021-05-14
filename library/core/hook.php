@@ -29,9 +29,11 @@ class Hook {
      * 훅을 실행한다.
      *
      * 하나의 훅 이름에 여러개의 훅 함수가 실행될 수 있다.
-     * 주의할 점은, 리턴되는 값은 문자열로, 항상 에러 문자만 리턴된다. 에러가 없으면 공백 문자열이 리턴된다.
-     * 만약, 하나의 훅 이름에 여러개의 훅 함수가 실행될 때, 문자열이 리턴되는 것이 있으면 나머지 훅 실행을 멈추고, 에러 문자열을 바로 리턴한다.
-     * 따라서, 훅을 사용하는 곳에서는 리턴 되는 값이 에러 문자열인지 항상 확인을 해야 한다.
+     *
+     * 주의, 2021-04-13. 훅 함수가 여러개가 있을 수 있는데, 그 중 하나가 에러를 리턴하면, 즉시 에러 문자열을 리턴한다.
+     *      만약, 에러가 없으면, 그 결과를 문자열로 모아서 리턴한다.
+     *
+     * 따라서, 훅을 사용하는 곳에서 필요한 경우, 에러를 리턴하는 지 확인을 해야 한다.
      *
      * @param string $name - 훅 이름
      * @param mixed ...$vars
@@ -39,13 +41,15 @@ class Hook {
      */
     public function run(string $name, mixed &...$vars): string
     {
+        $ret = '';
         if ( isset($this->hooks[$name]) ) {
             foreach( $this->hooks[$name] as $func ) {
                 $re = $func(...$vars);
                 if ( isError($re) ) return $re;
+                $ret .= $re;
             }
         }
-        return '';
+        return $ret;
     }
 
 }

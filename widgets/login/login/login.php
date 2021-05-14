@@ -1,5 +1,5 @@
 <?php if (loggedIn()) { ?>
-    <?= ln('welcome') ?>, <?= login()->name ?>.
+    <?= ln('welcome') ?>, <?= login()->nicknameOrName ?>.
     <?php if (admin()) { ?>
         <div>
             <a href="/?admin.index">[<?= ln('admin') ?>]</a> |
@@ -18,15 +18,6 @@
                                     // Since, we cannot find a way to update the input box value on popover,
                                     // we just reload the page.
                                     location.reload();
-
-                                    // console.log(res);
-                                    // console.log('replace: ', data[ln]);
-                                    // const nodes = document.getElementsByClassName(clsName);
-                                    // // console.log(nodes);
-                                    // for (let i = 0; i < nodes.length; i++) {
-                                    //     // console.log(nodes[i]);
-                                    //     nodes[i].innerText = data[ln];
-                                    // }
                                 }, alert);
                             }
                         }
@@ -36,14 +27,21 @@
                 <span onclick="adminTranslate('Y');">[<?= ln('begin translate') ?>]</span>
             <?php } ?>
         </div>
+
+        <script>
+            function adminTranslate(flag) {
+                Cookies.set('adminTranslate', flag);
+                location.reload();
+            }
+        </script>
     <?php } ?>
+    <a href="/?user.logout.submit">[ <?=ln('logout')?> ]</a>
 <?php } else { ?>
-
+    <div class="fs-sm">
+        <a class="d-block" href="/?user.login">
+            <?=ln('please_login')?>
+            <div class="mb-0 alert alert-info fs-md"><?=ln('to_login')?></div>
+        </a>
+        <a class="d-block mt-1 text-right" href="/?user.register"><?=ln('or_register')?></a>
+    </div>
 <?php  } ?>
-
-<script>
-    function adminTranslate(flag) {
-        Cookies.set('adminTranslate', flag);
-        location.reload();
-    }
-</script>

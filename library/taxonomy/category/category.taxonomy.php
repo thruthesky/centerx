@@ -8,6 +8,7 @@
  * @property-read string $id - id
  * @property-read string $title - category title
  * @property-read string $description
+ * @property-read string $orgSubcategories - subcategories 를 배열로 하기 전의 원래 subcategories.
  * @property-read string[] $subcategories
  * @property-read string postEditWidget
  * @property-read string postEditWidgetOption
@@ -54,7 +55,8 @@ class CategoryTaxonomy extends Entity {
     public function read(int $idx = 0): self
     {
         parent::read($idx);
-        $this->updateData('subcategories', separateByComma($this->subcategories));
+        $this->updateMemory('orgSubcategories', $this->subcategories);
+        $this->updateMemory('subcategories', separateByComma($this->subcategories));
         return $this;
     }
 

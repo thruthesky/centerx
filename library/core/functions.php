@@ -639,8 +639,6 @@ function seoFriendlyString(string $s): string {
     // 여러개의 --- 를 한개의 - 로 변경한다.
     $s = preg_replace('~-+~', '-', $s);
 
-    // 여러개의 공백을 한개의 공백으로 변경한다.
-    $s = preg_replace('/ +/', ' ', $s);
 
     // 특수 문자를 없애거나 - 로 대체한다.
 
@@ -674,6 +672,9 @@ function seoFriendlyString(string $s): string {
     $s = str_replace('<', '', $s);
     $s = str_replace('>', '', $s);
     $s = str_replace(',', ' ', $s);
+
+    // 여러개의 공백을 한개의 공백으로 변경한다.
+    $s = preg_replace('/ +/', ' ', $s);
 
     $s = trim($s, '- ');
 

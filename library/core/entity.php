@@ -362,16 +362,15 @@ class Entity {
         // If there is error after hook, then return error.
         if ( isError($re) ) return $this->error($re);
 
-        debug_log("db()->insert(table: ", $this->getTable());
-        debug_log("db()->insert(record: ", $record);
+
+//        debug_log("db()->insert(table: ", $this->getTable());
+//        debug_log("db()->insert(record: ", $record);
 
         $idx = db()->insert( $this->getTable(), $record );
 
         if ( !$idx ) return $this->error(e()->insert_failed);
 
-
         meta()->creates($this->taxonomy, $idx, $this->getMetaFields($in));
-
 
 
         // read entity

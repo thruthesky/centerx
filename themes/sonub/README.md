@@ -104,6 +104,20 @@
   그리고, 현재 접속 도메인의 root domain 이 `CAFE_COUNTRY_DOMAINS` 에 있으면, 카페의 국가가 그 속성의 `countryCode` 에 있는 국가에 속한다.
 
 
+- 각 카페는 하나의 카테고리이다.
+  참고로, CafeTaxonomy 는 CategoryTaxonomy 를 extends 한다.
+  
+- 각 카페의 도메인은 카테고리 id 로 구분이 된다.
+  예) 카페의 도메인이 apple.philov.com 이라면,
+    category.id 에 apple.philov.com 이 저장되고,
+    category.domain 은 philov.com 이 된다.
+  즉, apple.philov.com, apple.sonub.com 과 같이 동일한 'apple' 서브 도메인이라도 해도, 루트 도메인에 따라 다르게 카페가 이용된다.
+
+- 카페 이름은 category.title 에 저장된다.
+- 카페에서는 무한대의 서브 카테고리를 사용 할 수 있으나, 메인 메뉴에 보이는 갯수는 총 너비로 제한이 된다.
+
+
+
 # 회원 가입 및 로그인
 
 - Email 과 Password 로 가입 및 로그인이 가능하지만, 별 쓸모 없다.
