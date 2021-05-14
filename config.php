@@ -62,6 +62,14 @@ define('LOCAL_HOSTS', ['localhost', '127.0.0.1', 'local.itsuda50.com', 'main.phi
 
 
 
+/// DB 접속 정보가 keys 폴더에 존재하는지 확인. 아니면 config.php 의 접속 정보를 사용.
+if ( file_exists( theme()->folder . 'keys/db.password.php') ) {
+    include theme()->folder . 'keys/db.password.php';
+} else if ( file_exists(ROOT_DIR . 'etc/keys/db.password.php') ) {
+    include ROOT_DIR . 'etc/keys/db.password.php';
+}
+
+
 /**
  * Load theme configuration
  * 각 테마별 설정 파일이 있으면 그 설정 파일을 사용한다.
@@ -74,6 +82,7 @@ debug_log("Theme Config Path: $_path");
 if ( file_exists($_path) ) {
     require_once $_path;
 }
+
 
 
 define('APP_NAME', 'CenterX');

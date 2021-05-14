@@ -308,7 +308,7 @@ cd etc/phpdoc
   - phpMyAdmin 접속 후, `centerx/etc/install/sql` 폴더에서 최신 sql 파일의 내용을 phpMyAdmin 에 입력하고 쿼리 실행을 한다.
     - 만약, 국가 정보를 원한다면, `wc_countries` 테이블을 삭제하고, `/centerx/etc/install/sql/countries.sql`
 
-  - 참고, phpMyAdmin 에서 root 와 사용자 계정 password 를 변경 할 수 있으며, 변경한 비밀번호를 etc/keys/db-password.php 파일에 저장하면 된다.
+  - 참고, phpMyAdmin 에서 root 와 사용자 계정 password 를 변경 할 수 있으며, 변경한 비밀번호를 `etc/keys/db.password.php` 파일에 저장하면 된다.
 
 - node modules 들을 설치한다.
   참고로 개발을 위해서만 npm install 을 하면 된다. 배포 서버에서는 할 필요 없다.
@@ -694,7 +694,15 @@ with the latest android version, but the developer must code on the android app.
 - 모든 테이블에는 idx, createdAt, updatedAt 이 존재한다.(존재 해야 한다.)
 - 레코드가 사용자의 소유를 나타낼 때에는 추가적으로 userIdx 가 존재해야 한다.
 
+## 데이터베이스 계정 설정
 
+- 가장 먼저 `keys` 폴더에 접속 정보가 존재하는지 확인을 한다.
+  DB 접속 정보는 공개되면 안된다. 그래서 .gitignore 에 포함되어져 있는 keys 폴더에 보관을 한다. 또는 `db.password.php` 파일이 .gitignore 에
+  들어가 있다.
+  - 우선, `theme/theme-name/keys/db.passowrd.php` 파일이 존재하면 로드한다.
+  - 없으면, `etc/keys/db.password.php` 파일이 존재하는지 보고 있으면 로드한다.
+  - 없으면, config.php 에 있는 접속 정보로 접속한다.
+  
 
 ## 게시글 테이블. posts 테이블
 
