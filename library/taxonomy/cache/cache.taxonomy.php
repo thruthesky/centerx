@@ -47,7 +47,8 @@ class CacheTaxonomy extends Entity
      * 예를 들어 프로세스 (A) 가 olderThan() 으로 캐시 유효성 검사를 할 때, 캐시 시간이 경과 했다면,
      *      createdAt 을 현재 Unix timestamp 값으로 지정한다.
      *      이렇게 하면 캐시 데이터를 아직 업데이트 하지 않았지만, 업데이트 한 것 처럼 시간을 업데이트하는 것이다.
-     * 그래서, 다른 프로세스 (B) 에서 해당 캐시를 읽을 때, 캐시 시간이 경과하지 않은 것 처럼 보인다. 또는 새로 업데이트 한 것 처럼 보인다. 하지만, 캐시 데이터는 업데이트되지 않은 이전 데이터를 사용 할 수 있다.
+     * 그래서, 다른 프로세스 (B) 에서 해당 캐시를 읽을 때, 캐시 시간이 경과하지 않은 것 처럼 보인다. 또는 새로 업데이트 한 것 처럼 보인다.
+     *      하지만, 캐시 데이터는 업데이트되지 않은 이전 데이터이다. 즉, B 는 이전 데이터를 사용한다. (A 가 작업이 끝날때 까지)
      * 그리고, 프로세스 (A) 가 작업이 끝나면 캐시데이터를 업데이트하고, 한번 더 createdAt 을 업데이트한다.
      *
      * 캐시 레코드가 존재하지 않으면, 아무것도 하지 않는다.
@@ -56,7 +57,7 @@ class CacheTaxonomy extends Entity
         if ( $this->idx ) { // 캐시가 존재하면,
             $stamp = time(); // 현재 시간을,
             $this->update([CREATED_AT => $stamp]); // DB 에서 업데이트하고,
-            $this->updateData(CREATED_AT, $stamp); // 메모리 변수에서도 업데이트 한다.
+            $this->updateMemory(CREATED_AT, $stamp); // 메모리 변수에서도 업데이트 한다.
         }
     }
 
@@ -71,7 +72,14 @@ class CacheTaxonomy extends Entity
      * @return bool
      */
     public function olderThan(int $seconds): bool {
-        return $this->createdAt < time() - $seconds;
+        // if cache not exists, return true to make the app re-cache.
+        if ( $this->exists == false ) return true;
+        return $this->createdAt < (time() - $seconds);
+    }
+
+    // alias of $this->otherThan()
+    public function expired(int $secondsAgo): bool {
+        return $this->olderThan($secondsAgo);
     }
 
     public function delete(): Entity

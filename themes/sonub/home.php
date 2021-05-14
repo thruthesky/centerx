@@ -8,6 +8,7 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
 
 ?>
 
+
 <div>
     <?=ln('welcome')?>
     <?=ln('name')?>

@@ -9,23 +9,30 @@
 
     if ( isLocalhost() ) $ip = '124.83.114.70';
     else $ip = null;
+    $ip = '175.196.80.131';
     $country = get_current_country($ip); /// @update this.
     $city = $country->city;
     $twoDigitCode = $country->v('2digitCode');
 
-    d($_SERVER['REMOTE_ADDR']);
-    d($country);
-    d($twoDigitCode);
 
-    $weatherCode =  "weather12" . $city;
-    $cache = cache($weatherCode);
-    if($cache->exists() && $cache->olderThan(60*60*4)) {
-        $re = json_decode($cache->data);
-    } else {
-        $res = file_get_contents("https://api.openweathermap.org/data/2.5/forecast?q=$city,$twoDigitCode&units=metric&appid=" . OPENWEATHERMAP_API_KEY);
+    // @TODO language support for open weather map does not follow the standard.
+    // https://openweathermap.org/forecast5#multi
+    // Need a conversion.
+    $lang = get_user_language();
+    if ( $lang == 'ko' ) $lang = 'kr';
 
-        cache($weatherCode)->set($res);
+    $weatherCode =  "weather18" . $lang . $city;
+    $weather = cache($weatherCode);
+    if ( $weather->olderThan( 60 * 60 * 1 ) ) {
+        $weather->renew();
+        // 60 seconds.
+        $url = "https://api.openweathermap.org/data/2.5/forecast?q=$city,$twoDigitCode&lang=$lang&units=metric&appid=" . OPENWEATHERMAP_API_KEY;
+        $res = file_get_contents($url);
+        $weather->set($res);
         $re = json_decode($res);
+
+    } else {
+        $re = json_decode($weather->data);
     }
 
     if($display == 'current'){
@@ -81,22 +88,28 @@
             <b-card no-body>
                 <b-tabs card>
                     <?php foreach($forecast as $d => $day) { ?>
-                    <b-tab class="p-0" title="<?=$d?>">
-                        <canvas id="<?=$d?>" ></canvas>
-                        <div class="d-flex justify-content-between mb-3 text-center fs-xs">
-                            <?php
-                            foreach($day as $list) { ?>
-                                <div class="px-2">
-                                    <div><?=date('g A', $list->dt)?></div>
-                                    <div><?=date('D', $list->dt)?></div>
-                                    <div><img src="https://openweathermap.org/img/wn/<?=$list->weather[0]->icon?>.png"></div>
-                                    <div><?=round($list->main->temp_min)?>℃  <?=round($list->main->temp_max)?>℃</div>
-                                </div>
+                        <b-tab class="p-0" title="<?=$d?>">
+                            <canvas id="<?=$d?>" ></canvas>
+                            <div class="d-flex justify-content-between mb-3 text-center fs-xs">
                                 <?php
-                            }
-                            ?>
-                        </div>
-                    </b-tab>
+                                foreach($day as $list) { ?>
+                                    <div class="px-2">
+                                        <div><?=date('g A', $list->dt)?></div>
+                                        <div><?=date('D', $list->dt)?></div>
+                                        <div><img src="https://openweathermap.org/img/wn/<?=$list->weather[0]->icon?>.png"></div>
+                                        <div>
+                                            <?php if ( round($list->main->temp_min) == round($list->main->temp_max) ) { ?>
+                                                <?=round($list->main->temp_min)?>℃
+                                            <?php } else { ?>
+                                            <?=round($list->main->temp_min)?>℃  <?=round($list->main->temp_max)?>℃
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                        </b-tab>
                     <?php } ?>
                 </b-tabs>
             </b-card>
@@ -166,8 +179,8 @@
                             },
                             layout: {
                                 padding: {
-                                    left: 25,
-                                    right: 25,
+                                    left: 16,
+                                    right: 16,
                                     top: 25,
                                     bottom: 10
                                 }

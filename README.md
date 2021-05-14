@@ -2385,6 +2385,8 @@ request('user.profile', {}, console.log, console.error);
 
 - 캐시를 사용하는 예(로직)는 다음과 같다.
 
+- 참고로, 캐시 데이터를 저장할 때, 배열 등이 있으면 searialize 를 해서 넣어야 한다.
+
 ```php
 $currency = cache('PHP_KRW'); // 캐시 객체
 if ( $currency->olderThan(10) ) { // 10 초 보다 오래 되었으면,
@@ -2654,3 +2656,8 @@ socket.io.js 를 로드하지 않던지, 또는 pending 아닌 failed 로 되어
 Live reload 코드가 실행되는데, socket.io.js 를 로드하지 못해서 발생한 에러.
 
 config.php 에서 LIVE_RELOAD_HOST 에 빈 문자열 값을 주어, live reload 를 turn off 할 수 있다.
+
+
+## error_entity_not_found on CountryTaxonomy
+
+Be sure you have the countries table records into the wc_countries table.
