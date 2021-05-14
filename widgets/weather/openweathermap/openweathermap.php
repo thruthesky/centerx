@@ -13,6 +13,7 @@
     $city = $country->city;
     $twoDigitCode = $country->v('2digitCode');
 
+    d($_SERVER['REMOTE_ADDR']);
     d($country);
     d($twoDigitCode);
 
