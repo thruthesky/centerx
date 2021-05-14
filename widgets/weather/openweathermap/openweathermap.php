@@ -13,6 +13,9 @@
     $city = $country->city;
     $twoDigitCode = $country->v('2digitCode');
 
+    d($country);
+    d($twoDigitCode);
+
     $weatherCode =  "weather12" . $city;
     $cache = cache($weatherCode);
     if($cache->exists() && $cache->olderThan(60*60*4)) {
