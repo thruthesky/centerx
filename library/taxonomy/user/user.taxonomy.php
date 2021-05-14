@@ -105,6 +105,7 @@ class UserTaxonomy extends Entity {
      * Create a user account and return his profile.
      *
      * 주의: 이 함수는 기존의 에러를 없애고, 이 함수에서 발생하는 에러를 저장한다.
+     * 주의, 이 함수는 회원 가입만 하고, 쿠키에 로그인 정보를 저장하지 않는다. 즉, 회원 가입을 한 후, 별도로 쿠키에 저장을 해야 한다.
      *
      * @param array $in
      * @return UserTaxonomy
