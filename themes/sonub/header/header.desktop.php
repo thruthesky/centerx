@@ -63,14 +63,17 @@
     <div class="container-xl d-flex justify-content-between fs-md">
         <div class="d-flex justify-content-around" style="min-width: 300px; max-width: 300px; height: 40px; overflow:hidden; background-color: rgba(248,248,248,0.78);">
 
-            <?php if ( count(cafe()->subcategories) == 0 ) { ?>
+            <?php
+            if ( isset(cafe()->subcategories) && count(cafe()->subcategories) == 0 ) { ?>
                 <?php if ( cafe()->isMine() ) { ?>
                     <a class="py-2" href="/?cafe.admin">카테고리 추가하기</a>
                 <?php } else { ?>
                     <a class="py-2" href="/?forum.post.list&id=<?=cafe()->id?>"><?=cafe()->title?></a>
                 <?php } ?>
             <?php } ?>
-            <?php foreach( array_slice(cafe()->subcategories, 0, 5) as $catName ) { ?>
+            <?php
+            if (isset(cafe()->subcategories) && !empty(cafe()->subcategories) )
+            foreach( array_slice(cafe()->subcategories, 0, 5) as $catName ) { ?>
                 <a class="py-2" href="/?forum.post.list&categoryId=<?=cafe()->id?>&subcategory=<?=$catName?>&lsub=<?=$catName?>"><?=$catName?></a>
             <?php } ?>
 

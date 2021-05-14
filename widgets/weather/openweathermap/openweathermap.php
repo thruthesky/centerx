@@ -49,47 +49,62 @@
     }
     if($display == 'forecast') {
 
-        $graph = [];
-        $max = 0;
-        /**
-         * start of the dot
-         */
-        $base_left = 25;
-        /**
-         * distance between dot
-         */
-        $w = 66;
-        /**
-         * height of the graph
-         */
-        $h = 50;
-
-        $current = [
-                "current" => []
-        ];
+        $current = [ "current" => [] ];
+        $currentjs = [ "current" => [] ];
         $forecast  = [];
+        $forecastjs  = [];
         foreach($re->list as $i => $list) {
-            if ($max < $list->main->temp) $max = $list->main->temp;
+
             if ($i < 8) {
                 $current['current'][] = $list;
+                $currentjs['current'][] = $list->main->temp;
             }
             $md = date("md", $list->dt);
-            if(!isset($forecast[$md]))  $forecast[$md] = [];
+            if(!isset($forecast[$md])) {
+                $forecast[$md] = [];
+                $forecastjs[$md] = [];
+            }
             $forecast[$md][] = $list;
+            $forecastjs[$md][] = $list->main->temp;
         }
         $forecast = array_slice($forecast,1);
         $forecast = array_merge($current,$forecast);
 
 
+        $forecastjs = array_slice($forecastjs,1);
+        $forecastjs = array_merge($currentjs,$forecastjs);
+
         ?>
 
+        <h4><?=$city?>, <?=$twoDigitCode?></h4>
+        <div>
+            <b-card no-body>
+                <b-tabs card>
+                    <?php foreach($forecast as $d => $day) { ?>
+                    <b-tab class="p-0" title="<?=$d?>">
+                        <canvas id="myChart" ></canvas>
+                        <div class="d-flex justify-content-between mb-3 text-center fs-xs">
+                            <?php
+                            foreach($day as $list) { ?>
+                                <div class="px-2">
+                                    <div><?=date('g A', $list->dt)?></div>
+                                    <div><?=date('D', $list->dt)?></div>
+                                    <div><img src="https://openweathermap.org/img/wn/<?=$list->weather[0]->icon?>.png"></div>
+                                    <div><?=round($list->main->temp_min)?>℃  <?=round($list->main->temp_max)?>℃</div>
+                                </div>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                    </b-tab>
+                    <?php } ?>
+                </b-tabs>
+            </b-card>
+        </div>
 
-        <?php js('/etc/js/chartjs-2/chart.bundle.min.js', 0) ?>
-        <?php js('/etc/js/chartjs-2/chartjs-plugin-datalabels.min.js', 0) ?>
+    <?php js('/etc/js/chartjs-2/chart.bundle.min.js', 0) ?>
+    <?php js('/etc/js/chartjs-2/chartjs-plugin-datalabels.min.js', 0) ?>
 
-
-
-        <canvas id="myChart" ></canvas>
         <script>
             later(function(){
                 var ctx = document.getElementById('myChart');
@@ -97,10 +112,10 @@
                 var myChart = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange', 'Purple', 'Orange'],
+                        labels: [31, 30, 29, 27, 30, 34, 35, 34],
                         datasets: [{
                             label: 'temp',
-                            data: [2, 4, 1, 5, 2, 4, 2, 4],
+                            data: [31, 30, 29, 27, 30, 34, 35, 34],
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
                                 'rgba(54, 162, 235, 0.2)',
@@ -125,11 +140,24 @@
                         }]
                     },
                     options: {
+                        plugins: {
+                            datalabels: {
+                                align: 'end',
+                                // anchor: 'end',
+                                font: {
+                                    weight: 'bold'
+                                },
+                                padding: 4
+                            }
+                        },
+                        tooltips: {
+                          enabled: false
+                        },
                         layout: {
                             padding: {
-                                left: 10,
-                                right: 10,
-                                top: 10,
+                                left: 25,
+                                right: 25,
+                                top: 25,
                                 bottom: 10
                             }
                         },
@@ -160,63 +188,6 @@
                 });
             })
         </script>
-
-
-
-
-        <h4><?=$city?>, <?=$twoDigitCode?></h4>
-        <div>
-            <b-card no-body>
-                <b-tabs card>
-                    <?php foreach($forecast as $d => $day) { ?>
-                    <b-tab class="p-0" title="<?=$d?>">
-                        <figure class="css-chart" style="height: <?=$h?>px;">
-                            <ul class="line-chart fs-sm">
-                                <?php
-                                foreach($day as $i => $list) {
-                                    $temp = $list->main->temp;
-                                    $bottom = ( $temp / $max) * $h;
-                                    $left = $base_left + ($i * $w);
-                                    $hypotenuse = 0;
-                                    $deg = 0;
-                                    if( $i < count($day) -1 ) {
-                                        $next_temp = $day[$i + 1];
-                                        $opposite = $temp - $next_temp->main->temp;
-                                        $hypotenuse = sqrt(pow($w,2) + pow($opposite, 2));
-                                        $deg = asin($opposite /  $hypotenuse) * (180 / pi());
-                                    }
-                                    ?>
-                                    <li>
-                                        <div class="data-point" style="bottom: <?=$bottom?>px; left: <?=$left?>px;">
-                                            <span class="d-inline-block ml-1"><?=round($list->main->temp)?></span>
-                                        </div>
-                                        <div class="line-segment"
-                                             style="bottom: <?=$bottom+3?>px; left: <?=$left+3?>px; width: <?=$hypotenuse?>;transform: rotate(calc(<?=$deg?> * 1deg));"
-                                        ></div>
-                                    </li>
-                                    <?php
-                                }
-                                ?>
-                            </ul>
-                        </figure>
-                        <div class="d-flex justify-content-start mb-3 text-center fs-xs">
-                            <?php
-                            foreach($day as $list) { ?>
-                                <div class="px-2">
-                                    <div><?=date('g A', $list->dt)?></div>
-                                    <div><?=date('D', $list->dt)?></div>
-                                    <div><img src="http://openweathermap.org/img/wn/<?=$list->weather[0]->icon?>.png"></div>
-                                    <div><?=round($list->main->temp_min)?>℃  <?=round($list->main->temp_max)?>℃</div>
-                                </div>
-                                <?php
-                            }
-                            ?>
-                        </div>
-                    </b-tab>
-                    <?php } ?>
-                </b-tabs>
-            </b-card>
-        </div>
 
     <?php } ?>
 
