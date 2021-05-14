@@ -37,6 +37,7 @@
     <?php } ?>
     <a href="/?user.logout.submit">[ <?=ln('logout')?> ]</a>
 <?php } else { ?>
+
     <div class="fs-sm">
         <a class="d-block" href="/?user.login">
             <?=ln('please_login')?>

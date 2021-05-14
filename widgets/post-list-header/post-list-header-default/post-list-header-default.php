@@ -32,8 +32,21 @@ $category = $o['category'];
 
 
         <span class="flex-grow-1"></span>
+        <span class="mr-3" @click="forumNotification()">Notify <i class="fa fa-bell"></i></span>
+
         <a class="btn btn-sm btn-success" href="/?p=forum.post.edit<?= inCategoryId() ?><?= inSubcategory() ?><?= inLsub() ?>">
             <?= ek('Create', '글 쓰기') ?>
         </a>
     </div>
 </section>
+
+<script>
+    mixins.push({
+        data: {},
+        methods: {
+            forumNotification: function() {
+                console.log("subscribe or unsubscribe")
+            }
+        }
+    });
+</script>
