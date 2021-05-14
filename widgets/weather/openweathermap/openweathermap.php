@@ -78,7 +78,6 @@
             $forecast[$md][] = $list;
         }
         $forecast = array_slice($forecast,1);
-
         $forecast = array_merge($current,$forecast);
 
 
@@ -86,22 +85,29 @@
 
 
         <?php js('/etc/js/chartjs-2/chart.bundle.min.js', 0) ?>
-        <canvas id="myChart" width="400" height="400"></canvas>
+        <?php js('/etc/js/chartjs-2/chartjs-plugin-datalabels.min.js', 0) ?>
+
+
+
+        <canvas id="myChart" ></canvas>
         <script>
             later(function(){
                 var ctx = document.getElementById('myChart');
+                ctx.height = "50";
                 var myChart = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange', 'Purple', 'Orange'],
                         datasets: [{
-                            label: '# of Votes',
-                            data: [12, 19, 3, 5, 2, 3],
+                            label: 'temp',
+                            data: [2, 4, 1, 5, 2, 4, 2, 4],
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
                                 'rgba(54, 162, 235, 0.2)',
                                 'rgba(255, 206, 86, 0.2)',
                                 'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)',
                                 'rgba(153, 102, 255, 0.2)',
                                 'rgba(255, 159, 64, 0.2)'
                             ],
@@ -111,23 +117,46 @@
                                 'rgba(255, 206, 86, 1)',
                                 'rgba(75, 192, 192, 1)',
                                 'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)',
+                                'rgba(153, 102, 255, 1)',
                                 'rgba(255, 159, 64, 1)'
                             ],
                             borderWidth: 1
                         }]
                     },
                     options: {
+                        layout: {
+                            padding: {
+                                left: 10,
+                                right: 10,
+                                top: 10,
+                                bottom: 10
+                            }
+                        },
                         legend: {
                             display: false
                         },
                         scales: {
+                            xAxes: [{
+                                gridLines: {
+                                    display: false
+                                },
+                                ticks: {
+                                    display: false
+                                },
+                            }],
                             yAxes: [{
                                 ticks: {
-                                    beginAtZero: true
-                                }
+                                    //beginAtZero: true,
+                                    display: false
+                                },
+                                gridLines: {
+                                    display: false
+                                },
                             }]
-                        }
-                    }
+
+                        },
+                    },
                 });
             })
         </script>
