@@ -159,7 +159,7 @@ class UserActivityBase extends Entity {
             'toUserPointApply' => $toUserPointApply,
             'toUserPointAfter' => $toUserPointAfter,
         ];
-
+//        d($record);
         $created = $this->create($record);
 
 

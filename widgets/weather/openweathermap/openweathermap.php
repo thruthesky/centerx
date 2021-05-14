@@ -1,7 +1,3 @@
-
-
-
-
 <div>
     <?php
     $options = getWidgetOptions();
@@ -54,10 +50,9 @@
         $forecast  = [];
         $forecastjs  = [];
         foreach($re->list as $i => $list) {
-
             if ($i < 8) {
                 $current['current'][] = $list;
-                $currentjs['current'][] = $list->main->temp;
+                $currentjs['current'][] = round($list->main->temp);
             }
             $md = date("md", $list->dt);
             if(!isset($forecast[$md])) {
@@ -65,16 +60,13 @@
                 $forecastjs[$md] = [];
             }
             $forecast[$md][] = $list;
-            $forecastjs[$md][] = $list->main->temp;
+            $forecastjs[$md][] = round($list->main->temp);
         }
         $forecast = array_slice($forecast,1);
         $forecast = array_merge($current,$forecast);
-
-
         $forecastjs = array_slice($forecastjs,1);
         $forecastjs = array_merge($currentjs,$forecastjs);
 
-//        d($forecastjs);
 
         ?>
 
@@ -84,7 +76,7 @@
                 <b-tabs card>
                     <?php foreach($forecast as $d => $day) { ?>
                     <b-tab class="p-0" title="<?=$d?>">
-                        <canvas id="myChart" ></canvas>
+                        <canvas id="<?=$d?>" ></canvas>
                         <div class="d-flex justify-content-between mb-3 text-center fs-xs">
                             <?php
                             foreach($day as $list) { ?>
@@ -110,86 +102,98 @@
         <script>
             later(function(){
 
+                let dataset = <?=json_encode($forecastjs)?>;
+                // console.log(dataset);
 
-                var ctx = document.getElementById('myChart');
-                ctx.height = "50";
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [31, 30, 29, 27, 30, 34, 35, 34],
-                        datasets: [{
-                            label: 'temp',
-                            data: <?=json_encode($forecastjs['current'])?>,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        plugins: {
-                            datalabels: {
-                                align: 'end',
-                                // anchor: 'end',
-                                font: {
-                                    weight: 'bold'
-                                },
-                                padding: 4
-                            }
-                        },
-                        tooltips: {
-                          enabled: false
-                        },
-                        layout: {
-                            padding: {
-                                left: 25,
-                                right: 25,
-                                top: 25,
-                                bottom: 10
-                            }
-                        },
-                        legend: {
-                            display: false
-                        },
-                        scales: {
-                            xAxes: [{
-                                gridLines: {
-                                    display: false
-                                },
-                                ticks: {
-                                    display: false
-                                },
-                            }],
-                            yAxes: [{
-                                ticks: {
-                                    //beginAtZero: true,
-                                    display: false
-                                },
-                                gridLines: {
-                                    display: false
-                                },
-                            }]
-
-                        },
-                    },
+                Object.keys(dataset).forEach(function(key) {
+                    loadChart(key, dataset[key]);
                 });
+
+                function loadChart(id, data) {
+                    // console.log(id, data);
+                    var ctx = document.getElementById(id);
+                    ctx.height = "50";
+                    var myCharts = {};
+                    myCharts[id] = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: data,
+                            datasets: [{
+                                label: 'temp',
+                                data: data,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    // 'rgba(54, 162, 235, 0.2)',
+                                    // 'rgba(255, 206, 86, 0.2)',
+                                    // 'rgba(75, 192, 192, 0.2)',
+                                    // 'rgba(153, 102, 255, 0.2)',
+                                    // 'rgba(255, 159, 64, 0.2)',
+                                    // 'rgba(153, 102, 255, 0.2)',
+                                    // 'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    // 'rgba(54, 162, 235, 1)',
+                                    // 'rgba(255, 206, 86, 1)',
+                                    // 'rgba(75, 192, 192, 1)',
+                                    // 'rgba(153, 102, 255, 1)',
+                                    // 'rgba(255, 159, 64, 1)',
+                                    // 'rgba(153, 102, 255, 1)',
+                                    // 'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                datalabels: {
+                                    align: 'end',
+                                    // anchor: 'end',
+                                    font: {
+                                        weight: 'bold'
+                                    },
+                                    padding: 4
+                                }
+                            },
+                            tooltips: {
+                                enabled: false
+                            },
+                            layout: {
+                                padding: {
+                                    left: 25,
+                                    right: 25,
+                                    top: 25,
+                                    bottom: 10
+                                }
+                            },
+                            legend: {
+                                display: false
+                            },
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        display: false
+                                    },
+                                }],
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        display: false,
+                                    },
+                                    gridLines: {
+                                        display: false
+                                    },
+                                }]
+
+                            },
+                        },
+                    });
+                }
+
+
             })
         </script>
 

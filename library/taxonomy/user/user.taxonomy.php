@@ -185,7 +185,7 @@ class UserTaxonomy extends Entity {
         $this->idx = $user->idx;
         $this->update($in);
 
-
+//        d($this);
         act()->login($this);
 //        point()->login($this->profile());
         return $this;
