@@ -22,9 +22,13 @@ class CafeTaxonomy extends CategoryTaxonomy
     {
         parent::__construct($idx);
         if ( $this->isMainCafe() ) {
-            // 메인 카페의 경우, DB 레코드가 없다. 그래서, 향후 에러가 나지 않도록, countryCode 를 기본 설정 해 준다.
-		// 2021. 05. 14
-//            $this->updateMemory('countryCode', CAFE_COUNTRY_DOMAINS[get_root_domain()]['countryCode']);
+            // 메인 사이트(카페)의 경우, wc_categories 에 해당하는 게시판 테이블 레코드가 없다. 그래서, 향후 에러가 나지 않도록, countryCode 를 기본 설정 해 준다.
+            // CafeTaxonomy 객체를 초기화 할 때, 각 카페의 경우, 국가 코드가 있지만, 메인 사이트는 없다.
+            // 예를 들어, philov.com 과 같은 경우, 필리핀 전용 도메인으로 countryCode 가 있지만,
+            // sonub.com 의 경우, 전 세계 글로벌 교민 사이트이므로, 특별히 countryCode 가 없다.
+            // 그래서 여기서 초기화를 해 준다.
+
+            $this->updateMemory('countryCode', $this->countryCode());
         }
 
         $this->mainmenus = CAFE_MAIN_MENUS;
@@ -35,6 +39,49 @@ class CafeTaxonomy extends CategoryTaxonomy
             else return 1;
         });
     }
+
+    private function countryDomainSettings(): array|null {
+        $rootDomain = get_root_domain();
+        if ( isset(CAFE_COUNTRY_DOMAIN_SETTINGS[$rootDomain]) ) {
+            return CAFE_COUNTRY_DOMAIN_SETTINGS[$rootDomain];
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
+     * 현재 접속 사이트의 루트 도메인이 CAFE_COUNTRY_DOMAIN 이면, 참을 리턴한다.
+     *
+     * 즉, 카페 개설을 할 때, 현재 도메인이 특정 국가에 속한 도메인이라면, 국가 선택을 보여주지 않을 수 있다.
+     * 예를 들어, philov.com 는 필리핀 교민 사이트를 위한 전용 도메인으로 쓰고 싶다면, CAFE_COUNTRY_DOMAIN 으로 등록해 놓는다.
+     * 그러면, 카페 개설을 할 때, philov.com 사이트 또는 그 하위 사이트에서는 따로 국가 선택을 안해도 된다.
+     *
+     * @return bool
+     */
+    public function isCountryDomain(): bool {
+        return array_key_exists(get_root_domain(), CAFE_COUNTRY_DOMAIN_SETTINGS);
+    }
+
+    /**
+     * main cafe 인 경우, 그 도메인의 country 코드를 리턴한다.
+     * main cafe 가 아닌 경우, 해당 카페의 country 코드를 리턴한다.
+     * @return string
+     */
+    private function countryCode(): string {
+        if ( $this->isMainCafe() ) { // 메인 카페
+            if ( $this->isCountryDomain() ) { // 국가 카페
+                return $this->countryDomainSettings()['countryCode'];
+            } else { // 전 세계 카페. 예) sonub.com
+                // @TODO 사용자가 속한 국가 코드를 리턴한다.
+                return 'KR';
+            }
+        } else {
+            return $this->countryCode;
+        }
+    }
+
+
 
 
     public function countryName(): string {
@@ -62,10 +109,10 @@ class CafeTaxonomy extends CategoryTaxonomy
      * 예) KRW, PHP, USD
      *
      * @return string
+     *
      */
     public function currencyCode(): string {
-	    //// sonub.com 의 경우, countryCode 가 없다.
-	    return '';
+
         return country_currency_code($this->countryCode);
     }
 
@@ -109,35 +156,22 @@ class CafeTaxonomy extends CategoryTaxonomy
      * @return string
      */
     public function name(): string {
-	    if ( $this->isMainCafe() ) {
-		    //// 2021. 05. 14.
-		    return 'homeButtonLabel';
-		    return CAFE_COUNTRY_DOMAINS[get_root_domain()]['homeButtonLabel'];
-	    }
+        if ( $this->isMainCafe() ) {
+            //// 2021. 05. 14.
+            return 'homeButtonLabel';
+            return CAFE_COUNTRY_DOMAIN_SETTINGS[get_root_domain()]['homeButtonLabel'];
+        }
         if ( $this->title ) return $this->title;
         else return explode('.', $this->id)[0];
     }
 
 
     /**
-     * 현재 접속 사이트의 루트 도메인이 CAFE_COUNTRY_DOMAIN 이면, 참을 리턴한다.
-     *
-     * 즉, 카페 개설을 할 때, 현재 도메인이 특정 국가에 속한 도메인이라면, 국가 선택을 보여주지 않을 수 있다.
-     * 예를 들어, philov.com 는 필리핀 교민 사이트를 위한 전용 도메인으로 쓰고 싶다면, CAFE_COUNTRY_DOMAIN 으로 등록해 놓는다.
-     * 그러면, 카페 개설을 할 때, philov.com 사이트 또는 그 하위 사이트에서는 따로 국가 선택을 안해도 된다.
-     *
-     * @return bool
-     */
-    public function isCountryDomain(): bool {
-        return array_key_exists(get_root_domain(), CAFE_COUNTRY_DOMAINS);
-    }
-
-    /**
      * 현재 접속 사이트의 CAFE_COUNTRY_DOMAIN 의 국가 코드를 리턴한다.
      * @return string
      */
     public function countryDomainCountryCode(): string {
-        return CAFE_COUNTRY_DOMAINS[get_root_domain()]['countryCode'];
+        return CAFE_COUNTRY_DOMAIN_SETTINGS[get_root_domain()]['countryCode'];
     }
 }
 

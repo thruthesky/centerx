@@ -5,23 +5,28 @@
  * 메인 카페 목록
  *
  * 여기에 기록된 메인 도메인은 2차 도메인이라도, 서브 카페(2차 도메인)로 인식되지 않고, 메인 카페로 인식된다.
+ * 주로, sonub.com 또는 www.sonub.com 과 같이 기록이 되어야하고, 사용자가 이 도메인으로 접속하면, 메인 사이트로 인식을 하는 것이다.
+ * 하지만, 테스트를 위해서, 개발자 컴퓨터에서 /etc/hosts 에 main.sonub.com 을 등록하고 main.sonub.com 과 같이 접속을 하면, 메인 사이트로 인식을 한다.
  */
 const CAFE_MAIN_DOMAINS = [
     'philov.com', 'www.philov.com', 'main.philov.com',
-    'sonub.com', 'www.sonub.com',
+    'sonub.com', 'www.sonub.com', 'main.sonub.com',
 ];
 
 
 /**
+ *
  * 카페의 루트 도메인 별로 특정 국가를 고정하고자할 때, 아래의 목록에 루트 도메인과 국가 코드, 사이트 이름, 홈 화면 이름 등을 추가하면 된다.
  *
- * 예를 들면, philov.com 도메인을 필리핀 국가로 고정하는 경우, countryCode 를 PH 로 하고, 해당 도메인으로 접속하면, 카페 생성할 때에 국가 선택을 보여주지 않는다. 또한 각종 커스터마이징에서 필리핀으로 고정을 시킨다.
+ * 예를 들면, philov.com 도메인을 필리핀 국가로 고정하는 경우, countryCode 를 PH 로 하고, 해당 도메인으로 접속하면, 카페 생성할 때에 국가 선택을
+ * 보여주지 않는다. 또한 각종 커스터마이징에서 필리핀으로 고정을 시킨다.
  *
- * @주의 sonub.com 은 뺀다. sonub.com 은 특정 국가의 고정 도메인이 아니다.
+ * 주의 할 점은, sonub.com 은 country domain 이 아니다. country domain 은 그 도메인이 한 국가에 속하는 경우이다.
+ *      sonub.com 은 특정 국가의 고정 도메인이 아니라, 전 세계 도메인이므로, 여기에 속하지 않는다.
  *
  * @see sonub/README.md
  */
-const CAFE_COUNTRY_DOMAINS = [
+const CAFE_COUNTRY_DOMAIN_SETTINGS = [
     'philov.com' => [
         'countryCode' => 'PH',
         'name' => '필러브',

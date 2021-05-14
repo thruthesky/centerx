@@ -56,7 +56,10 @@ define('SUPPORTED_DOMAIN_SUFFIX', ['.com', '.co.kr', '.kr']);
  *
  * 참고, 테마 설정 파일에서 isLocalhost() 를 사용 할 수 있으므로, 테마 설정이 로드되기 전에 정의되어야 한다.
  */
-define('LOCAL_HOSTS', ['localhost', '127.0.0.1', 'local.itsuda50.com', 'main.philov.com', 'apple.philov.com', 'banana.philov.com', 'cherry.philov.com']);
+define('LOCAL_HOSTS', ['localhost', '127.0.0.1', 'local.itsuda50.com', 'main.philov.com', 'apple.philov.com',
+    'banana.philov.com', 'cherry.philov.com',
+    'main.sonub.com',
+]);
 
 
 
