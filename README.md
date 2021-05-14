@@ -790,6 +790,33 @@ This logs all user activities.
 - block 은 친구 신고를 하거나, 차단하는 경우, 'Y' 의 값을 가진다. 'N' 의 값을 가지지 않으며, 기본적으로는 빈(문자열) 값이다.
 
 
+# 회원 가입
+
+* 아래의 코드에서 `p` 가 `user.register.submit` 인데, 이 뜻은 FORM 을 전송하면, FORM 의 값들을 `theme/theme-name/user/register.submit.php` 로 전송하겠다는 뜻이다.
+  만약, `theme/theme-name/user/register.submit.php` 이 존재하지 않으면, `theme/default/user/register.submit.php` 가 실행이 된다.
+
+```html
+어서오세요, <?=login()->nicknameOrName?>
+<hr>
+<form>
+    <input type="hidden" name="p" value="user.register.submit">
+    <input type="email" name="email" value=""">
+    <input type="text" name="password" value=""">
+    <button type="submit">회원가입</button>
+</form>
+```
+
+* 아래의 코드는 회원 가입 FORM 에서 email 과 password 를 입력 받아, 회원 가입을 한 후, 쿠키에 회원 로그인 정보를 저장한 다음, 홈으로 이동한다.
+  참고로, 회원 가입 FORM 에 더 많은 값을 입력해도, register.submit.php 에서는 자동으로 저장된다.
+
+```php
+$user = user()->register(in());
+if ( $user->hasError ) jsAlert($user->getError());
+else {
+    setLoginCookies($user->profile());
+    jsGo('/');
+}
+```
 
 # Widget System
 
