@@ -30,10 +30,7 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
             echo "접속: " . $country->CountryNameKR;
         }
         ?>
-
-
         <?php
-
     }
     ?>
 
