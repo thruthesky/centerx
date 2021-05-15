@@ -1221,6 +1221,12 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 - See `widgets/login/login.php` and `library/core/language.php`.
 
+- 아래와 같이 하면, 관리자가 홈페이지에서 바로 번역이 가능하다.
+
+```html
+<?=ln('name')?>
+```
+
 # Change language
 
 - Make the language selection box like below.
@@ -1239,6 +1245,7 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 ```
 
 - And `themes/default/user/language.submit.php` will save the user's choice into cookie.
+
 
 
 # Currency Conversion
@@ -1576,6 +1583,14 @@ EOH;
 * Hook 함수는 각 테마 별로 theme-name.functions.php 에서 정의하면 되고, hook 코드가 커지면 `[theme-name].hooks.php` 로 따로 모으면 된다.
 * 동일한 hook 이름에 여러개 훅을 지정 할 수 있다.
 * 훅 함수에는 변수를 얼마든지 마음데로 지정 할 수 있으며 모두 reference 로 전달된다.
+  즉, 훅 함수로 전달된 변수를 훅 함수 안에서 변경을 할 수 있다.
+  단, 아래와 같이 reference 로 받아서 값을 변경해야 한다.
+```php
+hook()->add('post_list_country_code', function(&$countryCode) {
+    $countryCode = cafe()->countryCode;
+});
+```
+  
 * `posts_before_create` 훅 함수가 에러 문자열을 리턴하면 다른 훅은 모두 실행이 안되고, 글/코멘트 생성이 중지된다.
 
 * 모든 훅 함수는 값을 리턴하거나 파라메타로 받은 레퍼런스 변수를 수정하는 것이 원칙이다.
@@ -1686,6 +1701,10 @@ hook()->add('posts_before_create', function($record, $in) {
   카테고리 선택에서, 선택된 값이 없을 경우, 기본적으로 보여 줄 옵션이다. 보통은 빈 값에, "카테고리 선택" 을 표시하면 된다.
   하지만, 카페에서는 카테고리 선택이 되지 않은 경우, 국가별 카테고리로 검색을 제한해야 한다.
 
+
+* post_list_country_code
+  게시글 목록을 할 때, 강제로 특정 국가의 글만 목록하게 할 수 있다.
+  
 
 ### 게시판 설정 훅
 
@@ -2536,15 +2555,49 @@ echo "현재 환율: $phpKwr";
 
 ## Post list parameters
 
+- 게시판 목록에서 검색에 사용되는 
+
+- `categoryId` 는 글 카테고리. 카테고리 번호를 숫자로 입력해도 된다.
+
 - `subcategory` is the subcategory.
-- `lsub` is the subcategory for listing only for that subcategory.
-  - When a user creates a post under a category, you can pass `lsub` through the edit page and view page.
-    - After edit or view, the user may return post list page. And the app can show the subcategory that he selected before.
+
+- `countryCode`
+  국가별 글 목록을 할 때 사용한다.
+  국가 코드의 경우, hook 을 통해서 수정 할 수 있다.
+  예를 들어, 특정 theme 에서는 무조건 특정 국가의 글만 목록하고자 할 때, 사용 할 수 있다. 예를 들면 소너브에서 도메인/카페 별로 특정 국가의 글만 목록하고자 할 때 사용한다.
   
-- The reason why we need the two `subcategory` parameters is that when post is edited,
-  it needs `subcategory` as input even though the user does not want list for that subcategory.
-  And when the app redirects the user to the list, the app does not know to list the whole category list or only that subcategory.
   
+- `nsub` 사용법.
+  - 사용자가 전체 카테고리에서 글 생성할 때, 'abc' 카테고리를 선택한다면, 그 글은 'abc' 카테고리 글이다.
+    '전체카테고리'와 'abc' 카테고리 중 어떤 카테고리를 보여주어야 할까?
+    정답은 전체 카테고리이다.
+    글 쓰기 FORM 을 열 때, HTTP PARAM 으로 subcategory 값이 전달되지 않은 경우, nsub=all 로 전송을 한다.
+    
+  - 사용자가 전체 카테고리 목록에서, 특정 글을 수정 할 때, 그 글의 카테고리가 'abc' 라면, 글 작성 후, 전체 카테고리를 보여줘야 할까? 'abc' 카테고리만
+    보여줘야 할까?
+    정답은 전체 카테고리이다.
+    글 쓰기 FORM 을 열 때, HTTP PARAM 으로 subcategory 값이 전달되지 않은 경우, nsub=all 로 전송을 한다.
+    
+  - 사용자가 'abc' 카테고리에서 글을 생성하면, 'abc' 카테고리를 보여줘야 한다.
+    
+  - 사용자가 'abc' 카테고리에서 글을 하나 수정할 때, 그 글의 카테고리를 'def' 로 바꾸면, 'abc' 와 'def' 중 어떤 카테고리를 보여줘야 할까?
+    정답은 def 카테고리이다.
+    
+  - 요약을 하면, `nsub` 는 글 생성, 수정, 삭제를 할 때, 그 직전의 페이지 목록이 서브카테고리가 아닌 경우, FORM 전송 후 전체 카테고리로 보여주기 위한 것이다.
+  
+  
+- `searchKey` 검색어
+  - searchKey 에 값이 들어오면, `(title LIKE '%searchKey%' OR content LIKE '%searchKey%')` 있으면 그 것을 검색한다.
+
+- userIdx 는 사용자 번호
+  - 그 사용자가 쓴 글을 검색한다.
+  예) `https://local.itsuda50.com/?p=forum.post.list&categoryId=qna&userIdx=2&searchKey=hello`
+  
+- categoryId 는 글 카테고리 아이디(또는 번호)
+
+- subcategory 는 검색을 할 서브 카테고리이다.
+  
+
 
 # 관리자 페이지
 

@@ -134,7 +134,7 @@ define('META_CODE_EXCEPTIONS', [
     TOKEN,
     'returnTo', // returnTo 는 더 이상 사용되지 않음. 없애도 됨.
     'userfile', // file upload form name.
-    'lsub', // category list tracking.
+    'nsub', // category list tracking.
     'photoIdx', // 이 키는 meta 로 저장되면 안되고, user()->read() 에서 프로그램적으로 임의로 생성된다.
 ]);
 

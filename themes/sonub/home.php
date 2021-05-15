@@ -5,29 +5,9 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
     <?php
 }
 
-
 ?>
 
 
-<span @click="changeName">{{ name }}</span>
-
-<script>
-    mixins.push({
-        data: {
-            name : 'yo',
-        },
-        methods: {
-            changeName() {
-                this.name = 'Hi there!' + 'Yo';
-            }
-        }
-    })
-</script>
-
-<div>
-    <?=ln('welcome')?>
-    <?=ln('name')?>
-</div>
 
 
 <?php include widget('weather/openweathermap', ['display'=> 'forecast']) ?>

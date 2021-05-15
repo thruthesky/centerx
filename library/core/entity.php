@@ -878,9 +878,8 @@ class Entity {
             list( $fields, $placeholders, $values ) = db()->parseRecord($conds, 'select', $conj);
             $q = " SELECT $select FROM $table WHERE $placeholders ORDER BY $order $by LIMIT $from, $limit ";
             $rows = db()->rows($q, ...$values);
-        } else if ( $params ) { // prepare statement if $params is set.
+        } else if ( $where != '1' || $params ) { // prepare statement if $params is set.
             $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
-            // d($q);
             $rows = db()->rows($q, ...$params);
         }
         else if ( $where == '1' ) {
@@ -889,7 +888,7 @@ class Entity {
         }
         else  {
             debug_print_backtrace();
-            die("\n\n-------------------- die on Entity::search() => Wrong parameters. is \$params properly?\n\n");
+            die("\n\n-------------------- die on Entity::search() => Wrong parameters. is \$params set properly?\n\n");
         }
 
 
@@ -927,7 +926,7 @@ class Entity {
             list( $fields, $placeholders, $values ) = db()->parseRecord($conds, 'select', $conj);
             $q = " SELECT $select FROM $table WHERE $placeholders";
             $count = db()->column($q, ...$values);
-        } else if ( $params ) { // prepare statement if $params is set.
+        } else if ( $where != '1' || $params ) { // prepare statement if $params is set.
             $q = " SELECT $select FROM $table WHERE $where";
             $count = db()->column($q, ...$params);
         }
@@ -937,7 +936,7 @@ class Entity {
         }
         else  {
             debug_print_backtrace();
-            die("\n-------------------- die() - Execution dead due to: Entity::search() wrong parameters\n");
+            die("\n-------------------- die() - Execution dead due to: Entity::count() wrong parameters\n");
         }
 
         return $count;

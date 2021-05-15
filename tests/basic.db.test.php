@@ -17,6 +17,7 @@ deleteTest();
 
 
 
+
 function connectionTest() {
     /// Cannot hide error message
 //    $conn = new MySQLiDatabase(DB_HOST, DB_NAME, DB_USER, 'wrong password yo');
@@ -42,7 +43,7 @@ function insertTest() {
 //    db()->displayError = true;
 
     /// Success
-    $re = db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => 'hi', 'createdAt' => '12345']);
+    $re = db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => 'hi', 'createdAt' => '12345', 'updatedAt' => time()]);
     isTrue($re > 0, "Must success");
 
 
@@ -62,7 +63,7 @@ function insertTest() {
 function rowTest() {
     $t = time();
     $key = 'k-' . $t;
-    db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $key, 'createdAt' => $t]);
+    db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $key, 'createdAt' => $t, 'updatedAt' => time() ]);
     $row = db()->row("SELECT * FROM " . DB_PREFIX . 'search_keys' . " WHERE searchKey=?", $key);
     isTrue($row['searchKey'] == $key, "key match: $key");
     isTrue($row['createdAt'] == $t, "time match: $key");
@@ -73,8 +74,8 @@ function rowsTest() {
     /// insert two search key
     $t = time();
     $key = 'rows-' . $t;
-    db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $key, 'createdAt' => $t]);
-    db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $key, 'createdAt' => $t]);
+    db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $key, 'createdAt' => $t, UPDATED_AT => time()]);
+    db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $key, 'createdAt' => $t, UPDATED_AT => time()]);
     $rows = db()->rows("SELECT * FROM " . DB_PREFIX . 'search_keys' . " WHERE searchKey=?", $key);
     isTrue(count($rows) == 2, "Two rows");
     foreach($rows as $row) {
@@ -106,8 +107,8 @@ function columnTest() {
 
     $t = time();
     $key = 'kcol-' . $t;
-    db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $key, 'createdAt' => $t]);
-    $col = db()->column("SELECT * FROM " . DB_PREFIX . 'search_keys' . " WHERE searchKey=?", $key);
+    db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $key, 'createdAt' => $t, UPDATED_AT => time()]);
+    $col = db()->column("SELECT searchKey FROM " . DB_PREFIX . 'search_keys' . " WHERE searchKey=?", $key);
     isTrue($col == $key, 'col key match');
 }
 
@@ -142,9 +143,10 @@ function entitySearchTest() {
 
 function fieldNamesTest() {
     $names = db()->fieldNames(DB_PREFIX . 'search_keys');
-    isTrue(count($names) == 2, 'Two fields');
-    isTrue($names[0] == 'searchKey' && $names[1] == 'createdAt', 'Two fields');
+    isTrue(count($names) == 4, 'There are four fields in search_keys table.');
+    isTrue($names[1] == 'searchKey' && $names[2] == 'createdAt', 'Two fields');
 }
+
 
 
 function updateTest() {
@@ -153,7 +155,7 @@ function updateTest() {
     $table = DB_PREFIX . 'search_keys';
     $t = time();
     $key = 'update-' . $t;
-    db()->insert($table, ['searchKey' => $key, 'createdAt' => $t]);
+    db()->insert($table, ['searchKey' => $key, 'createdAt' => $t, 'updatedAt' => $t]);
     isTrue( db()->update($table, [CREATED_AT => 33], []) == false, "Update fails with empty conds");
 
     // Cannot hide error message
@@ -171,7 +173,7 @@ function deleteTest() {
     $table = DB_PREFIX . 'search_keys';
     $t = time();
     $key = 'delete-' . $t;
-    db()->insert($table, ['searchKey' => $key, 'createdAt' => $t]);
+    db()->insert($table, ['searchKey' => $key, 'createdAt' => $t, 'updatedAt' => $t]);
     $re = db()->row("SELECT * FROM $table WHERE searchKey=? AND createdAt=?", $key, $t);
     isTrue($re['searchKey'] == $key, "searchKey $key exists");
 

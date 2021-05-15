@@ -63,23 +63,28 @@
     <div class="container-xl d-flex justify-content-between fs-md">
         <div class="d-flex justify-content-around" style="min-width: 300px; max-width: 300px; height: 40px; overflow:hidden; background-color: rgba(248,248,248,0.78);">
 
-            <?php
-            if ( isset(cafe()->subcategories) && count(cafe()->subcategories) == 0 ) { ?>
-                <?php if ( cafe()->isMine() ) { ?>
-                    <a class="py-2" href="/?cafe.admin">카테고리 추가하기</a>
+            <?php if ( cafe()->isMainCafe() ) { ?>
+                <div class="py-2">카페를 개설하세요.</div>
+            <?php } else if ( cafe()->exists == false ) { ?>
+                <div class="py-2">존재하지 않는 카페입니다.</div>
+            <?php } else { ?>
+                <?php if ( cafe()->subcategories ) { ?>
+                    <?php foreach( array_slice(cafe()->subcategories, 0, 5) as $catName ) { ?>
+                        <a class="py-2" href="/?forum.post.list&categoryId=<?=cafe()->id?>&subcategory=<?=$catName?>"><?=$catName?></a>
+                    <?php } ?>
                 <?php } else { ?>
-                    <a class="py-2" href="/?forum.post.list&id=<?=cafe()->id?>"><?=cafe()->title?></a>
+                    <?php if ( cafe()->isMine() ) { ?>
+                        <a class="py-2" href="/?cafe.admin">카테고리 추가하기</a>
+                    <?php } else { ?>
+                        <?=cafe()->name()?>
+                    <?php } ?>
                 <?php } ?>
             <?php } ?>
-            <?php
-            if (isset(cafe()->subcategories) && !empty(cafe()->subcategories) )
-            foreach( array_slice(cafe()->subcategories, 0, 5) as $catName ) { ?>
-                <a class="py-2" href="/?forum.post.list&categoryId=<?=cafe()->id?>&subcategory=<?=$catName?>&lsub=<?=$catName?>"><?=$catName?></a>
-            <?php } ?>
+
 
         </div>
         <?php
-        foreach( cafe()->mainmenus as $categoryId => $m ) {
+        foreach( cafe()->cafeMainMenus as $categoryId => $m ) {
             ?>
             <a class="py-2" href="/?p=forum.post.list&categoryId=<?=$categoryId?>"><?=$m['title']?></a>
         <?php } ?>

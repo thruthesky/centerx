@@ -7,15 +7,10 @@
      */
     $display = $options['display'] ?? 'current';
 
-    if ( isLocalhost() ) $ip = '124.83.114.70';
-    else $ip = null;
-    $country = get_current_country($ip); /// @update this.
+    //
+    $country = get_current_country(clientIp());
     $city = $country->city;
     $twoDigitCode = $country->v('2digitCode');
-
-//    d($country);
-
-//    d(get_user_language());
 
 
     // @TODO language support for open weather map does not follow the standard.
@@ -33,7 +28,6 @@
         $res = file_get_contents($url);
         $weather->set($res);
         $re = json_decode($res);
-
     } else {
         $re = json_decode($weather->data);
     }
