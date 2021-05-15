@@ -9,6 +9,21 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
 ?>
 
 
+<span @click="changeName">{{ name }}</span>
+
+<script>
+    mixins.push({
+        data: {
+            name : 'yo',
+        },
+        methods: {
+            changeName() {
+                this.name = 'Hi there!' + 'Yo';
+            }
+        }
+    })
+</script>
+
 <div>
     <?=ln('welcome')?>
     <?=ln('name')?>
