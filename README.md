@@ -1718,6 +1718,7 @@ echo Markdown::render ($md);
 chokidar '**/*.php' -c "docker exec [php_container_name] php [centerx_folder_name]/tests/test.php"
 ```
 
+
 - 원한다면, 아래와 같이 테스트 파일의 일부 문자열을 포함하는 파일만 실행 할 수 있다.
   - 테스트 파일 이름에 "app" 또는 "user" 라는 문자열이 있으면 실행한다.
   
