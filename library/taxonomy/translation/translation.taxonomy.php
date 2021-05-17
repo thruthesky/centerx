@@ -160,20 +160,44 @@ class TranslationTaxonomy extends Entity
     /**
      * 해당 언어의 해당 코드에 해당하는 text 를 리턴한다.
      *
+     * 메모리 캐시를 해서, 동일한 코드를 두번 DB 액세스 하지 않도록 한다.
+     * 참고로, 가장 좋은 방법은 번역 기능을 하지 않아서, DB 액세스 자체를 사용하지 않는 것이다.
+     *
      * @param string $language
      * @param string $code
      * @return mixed|string
      */
     public function text(string $language, string $code) {
+
+        global $translationCache;
+
+        // 캐시에 존재하면, 캐시 값을 리턴
+        if ( isset($translationCache[$code]) && isset($translationCache[$code][$language]) ) return $translationCache[$code][$language];
+
+        // DB 에서 값을 가져와 캐시에 저장하고, 리턴
         $rows = $this->search(select: 'language, code, text', where: "language=? AND code=?", params: [$language, $code]);
         if ( count($rows) ) {
-            return $rows[0]['text'];
+            $translationCache[$code][$language] = $rows[0]['text'];
+            return $translationCache[$code][$language];
         }
-        return '';
+
+
+        // 글로벌 변수에 존재하면, 그 값을 캐시하고, 리턴
+        global $translations;
+        if ( isset($translations[$code]) && isset($translations[$code][$language]) ) {
+            $translationCache[$code][$language] = $translations[$code][$language];
+            return $translationCache[$code][$language];
+        }
+
+        // 값이 존재하지 않으면, 존재하지 않는 값을 캐시하고, 리턴
+        $translationCache[$code][$language] = '';
+        return $translationCache[$code][$language];
     }
+
 
 }
 
+$translationCache = [];
 
 /**
  * Returns Translation instance.
@@ -184,4 +208,10 @@ class TranslationTaxonomy extends Entity
 function translation(int $idx=0): TranslationTaxonomy
 {
     return new TranslationTaxonomy($idx);
+}
+
+
+function translate(string $code, array $texts = [] ) {
+    global $translationCache;
+    $translationCache[$code] = $texts;
 }

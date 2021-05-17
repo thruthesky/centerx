@@ -58,7 +58,13 @@ class E {
     public string $entity_deleted_already = 'error_entity_deleted_already';
 
 
+    public string $file_is_empty = 'error_file_is_empty';
+    public string $file_name_is_empty = 'error_file_name_is_empty';
+    public string $file_size_is_empty = 'error_file_size_is_empty';
+    public string $file_type_is_empty = 'error_file_type_is_empty';
+    public string $file_tmp_name_is_empty = 'error_file_tmp_name_is_empty';
     public string $move_uploaded_file_failed = 'error_move_uploaded_file_failed';
+    public string $copy_file_failed = 'error_copy_file_failed';
 
     public string $not_your_file = 'error_not_your_file';
     public string $file_delete_failed = 'error_file_delete_failed';

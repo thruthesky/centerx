@@ -39,6 +39,7 @@
  * @property-read int $updatedAt;
  * @property-read int $deletedAt;
  * @property-read CommentTaxonomy[] $comments;
+ * @property-read string $shortDate - 짧은 날짜 표시
  */
 class PostTaxonomy extends Forum {
 
@@ -73,10 +74,13 @@ class PostTaxonomy extends Forum {
 
         if ( $this->path ) {
             $url = get_current_root_url() . $this->path;
-            $this->updateData('url', $url);
+            $this->updateMemory('url', $url);
         }
 
         $this->patchPoint();
+
+
+        $this->updateMemory('shortDate', short_date_time($this->createdAt));
         return $this;
     }
 
@@ -239,7 +243,6 @@ class PostTaxonomy extends Forum {
             $post['user'] = user($post[USER_IDX])->shortProfile(firebaseUid: true);
         }
 
-        $post['shortDate'] = short_date_time($post['createdAt']);
         return $post;
     }
 

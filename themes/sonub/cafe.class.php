@@ -15,7 +15,7 @@
  */
 class CafeTaxonomy extends CategoryTaxonomy
 {
-    
+
     /**
      * 메인 카페 목록.
      *
@@ -30,8 +30,6 @@ class CafeTaxonomy extends CategoryTaxonomy
         'philov.com', 'www.philov.com', 'main.philov.com',
         'sonub.com', 'www.sonub.com', 'main.sonub.com',
     ];
-
-
 
 
 

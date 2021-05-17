@@ -1207,24 +1207,6 @@ function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): s
 }
 
 
-/**
- * @deprecated use `js()`
- * Vue.js 를 한번만 로드한다.
- *
- * 참고로, 모든 자바스크립트 관련 코드는, 웹 브라우저로 전달되기 전에, 맨 하단으로 이동 될 수 있다.
- */
-function includeVueJs() {
-    if ( defined('VUE_JS') ) return;
-    define('VUE_JS', true);
-
-    $homeUrl = HOME_URL;
-    if ( isLocalhost() ) {
-        $url = "{$homeUrl}etc/js/vue.2.dev.js";
-    } else {
-        $url = "{$homeUrl}etc/js/vue-2.6.12-min.js";
-    }
-    echo "<script src='$url'></script>";
-}
 
 /**
  *
@@ -1342,7 +1324,11 @@ function hiddens(array $in=[], string $mode='', array $kvs=[], string $p="", str
 }
 
 
-function short_date_time($stamp)
+/**
+ * @param int $stamp
+ * @return string
+ */
+function short_date_time(int $stamp): string
 {
     $Y = date('Y', $stamp);
     $m = date('m', $stamp);
@@ -1487,4 +1473,13 @@ function clientIp() {
     if ( isLocalhost() ) return TEMP_IP_ADDRESS;
     else if ( isset($_SERVER['REMOTE_ADDR']) === false ) return TEMP_IP_ADDRESS;
     else return $_SERVER['REMOTE_ADDR'];
+}
+
+
+/**
+ * @param string $filePath
+ * @return string
+ */
+function mimeType(string $filePath): string {
+    return mime_content_type($filePath);
 }

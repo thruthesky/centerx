@@ -198,7 +198,7 @@ class Entity {
 
 
     /**
-     * @deprecated Use updateMemory().
+     * @deprecated Use updateMemoryData().
      * $this->data 배열을 업데이트한다. 키가 존재하지 않으면 추가한다.
      * 주의, 이 함수는 메모리의 $data 변수 값만 바꾼다. DB 를 바꾸려면 `$this->update()` 를 사용해야한다.
      *
@@ -212,8 +212,22 @@ class Entity {
      * category(123)->updateData('subcategories', separateByComma($this->subcategories));
      */
     public function updateData($k, $v): self {
-        return $this->updateMemory($k, $v);
+        return $this->updateMemoryData($k, $v);
     }
+
+    /**
+     * @deprecated
+     * @param $k
+     * @param $v
+     * @return $this
+     */
+    public function updateMemory($k, $v): self {
+//        $this->data[$k] = $v;
+//        return $this;
+        return $this->updateMemoryData($k, $v);
+    }
+
+
 
     /**
      * 현재 객체의 속성을 담은 $this->data 배열을 업데이트한다. 키가 존재하지 않으면 추가한다.
@@ -229,7 +243,7 @@ class Entity {
      * @example
      * category(123)->updateData('subcategories', separateByComma($this->subcategories));
      */
-    public function updateMemory($k, $v): self {
+    public function updateMemoryData($k, $v): self {
         $this->data[$k] = $v;
         return $this;
     }
