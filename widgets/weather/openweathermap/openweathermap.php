@@ -7,10 +7,8 @@
      */
     $display = $options['display'] ?? 'current';
 
-    if ( isLocalhost() ) $ip = '124.83.114.70';
-    else $ip = null;
-    $ip = '175.196.80.131';
-    $country = get_current_country($ip); /// @update this.
+    //
+    $country = get_current_country(clientIp());
     $city = $country->city;
     $twoDigitCode = $country->v('2digitCode');
 
@@ -23,14 +21,13 @@
 
     $weatherCode =  "weather18" . $lang . $city;
     $weather = cache($weatherCode);
-    if ( $weather->olderThan( 60 * 60 * 1 ) ) {
+    if ( $weather->expired( 60 * 60 * 1 ) ) {
         $weather->renew();
         // 60 seconds.
         $url = "https://api.openweathermap.org/data/2.5/forecast?q=$city,$twoDigitCode&lang=$lang&units=metric&appid=" . OPENWEATHERMAP_API_KEY;
         $res = file_get_contents($url);
         $weather->set($res);
         $re = json_decode($res);
-
     } else {
         $re = json_decode($weather->data);
     }

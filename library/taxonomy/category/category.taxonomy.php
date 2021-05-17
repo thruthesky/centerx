@@ -44,6 +44,10 @@ class CategoryTaxonomy extends Entity {
         parent::__construct(CATEGORIES, $idx);
     }
 
+
+
+
+
     /**
      * 카테고리 전처리
      *

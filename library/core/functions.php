@@ -87,7 +87,13 @@ function isCli(): bool
 function isLocalhost(): bool
 {
     if (isCli()) return false;
+    if ( isset($_SERVER['SERVER_ADDR']) ) {
+        if ( str_starts_with($_SERVER['SERVER_ADDR'], '127.') ) return true;
+        if ( str_starts_with($_SERVER['SERVER_ADDR'], '192.') ) return true;
+        if ( str_starts_with($_SERVER['SERVER_ADDR'], '172.') ) return true;
+    }
     if ( in_array(get_domain_name(), LOCAL_HOSTS) ) return true;
+
     return false;
 }
 
@@ -1201,24 +1207,6 @@ function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): s
 }
 
 
-/**
- * @deprecated use `js()`
- * Vue.js 를 한번만 로드한다.
- *
- * 참고로, 모든 자바스크립트 관련 코드는, 웹 브라우저로 전달되기 전에, 맨 하단으로 이동 될 수 있다.
- */
-function includeVueJs() {
-    if ( defined('VUE_JS') ) return;
-    define('VUE_JS', true);
-
-    $homeUrl = HOME_URL;
-    if ( isLocalhost() ) {
-        $url = "{$homeUrl}etc/js/vue.2.dev.js";
-    } else {
-        $url = "{$homeUrl}etc/js/vue-2.6.12-min.js";
-    }
-    echo "<script src='$url'></script>";
-}
 
 /**
  *
@@ -1336,7 +1324,11 @@ function hiddens(array $in=[], string $mode='', array $kvs=[], string $p="", str
 }
 
 
-function short_date_time($stamp)
+/**
+ * @param int $stamp
+ * @return string
+ */
+function short_date_time(int $stamp): string
 {
     $Y = date('Y', $stamp);
     $m = date('m', $stamp);
@@ -1448,25 +1440,46 @@ function capture_styles_and_scripts(string &$content)
     return $res;
 }
 
+
 /**
+ * in('categoryId') 로 들어오는 값을 '?categoryId=xxxx' 또는 '&categoryId=xxxx' 로 리턴한다.
+ *
  * @param bool $question
  * @return string
  */
-function lsub(bool $question=false): string {
-    if ( !in('lsub') ) return '';
-    if ( $question ) return "?lsub=" . in('lsub');
-    else return "&lsub=" . in('lsub');
-}
-function inLsub(bool $question=false) { return lsub($question); }
 function inCategoryId(bool $question=false) {
-    if ( !in('categoryId') ) return '';
+    if ( ! in('categoryId') ) return '';
     if ( $question ) return "?categoryId=" . in('categoryId');
     else return "&categoryId=" . in('categoryId');
 }
+
+/**
+ * in('subcategori') 로 들어오는 값을 '?inSubcategory=xxxx' 또는 '&inSubcategory=xxxx' 로 리턴한다.
+ * @param bool $question
+ * @return string
+ */
 function inSubcategory(bool $question=false) {
-    if ( !in('subcategroy') ) return '';
-    if ( $question ) return "?subcategroy=" . in('subcategroy');
-    else return "&subcategroy=" . in('subcategroy');
+    if ( ! in('subcategory') ) return '';
+    if ( $question ) return "?subcategory=" . in('subcategory');
+    else return "&subcategory=" . in('subcategory');
 }
 
 
+/**
+ * 사용자의 IP 를 리턴한다.
+ * 만약, 개발자 컴퓨터이거나 IP 정보가 없다면, config 에 지정된 TEMP_IP_ADDRESS 를 리턴한다.
+ */
+function clientIp() {
+    if ( isLocalhost() ) return TEMP_IP_ADDRESS;
+    else if ( isset($_SERVER['REMOTE_ADDR']) === false ) return TEMP_IP_ADDRESS;
+    else return $_SERVER['REMOTE_ADDR'];
+}
+
+
+/**
+ * @param string $filePath
+ * @return string
+ */
+function mimeType(string $filePath): string {
+    return mime_content_type($filePath);
+}

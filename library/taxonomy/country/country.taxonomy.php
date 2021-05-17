@@ -5,19 +5,22 @@
 /**
  * Class Country
  *
- * @property-read string CountryNameKR 한글 국가 이름. 예) 아프가니스탄, 대한민국
- * @property-read string CountryNameEN 영문 국가 이름. 예) Japan, South Korea
- * @property-read string CountryNameOriginal 해당 국가 언어의 표기 이름. 예) 日本, الاردن , 한국
+ * @property-read string $CountryNameKR 한글 국가 이름. 예) 아프가니스탄, 대한민국
+ * @property-read string $CountryNameEN 영문 국가 이름. 예) Japan, South Korea
+ * @property-read string $CountryNameOriginal 해당 국가 언어의 표기 이름. 예) 日本, الاردن , 한국
  * @property-read string 2digitCode 국가별 2자리 코드. 예) JP, KR
  * @property-read string 3digitCode 국가별 3자리 코드. 예) JPN, KOR
- * @property-read string currencyCode 통화 코드. 예) JPY, KRW
- * @property-read string currencyKoreanName 한글 통화 이름(명칭). 예) 엔, 원, 유로, 달러, 페소
- * @property-read string currencySymbol 통화 심볼. 예) ¥, €, ₩, HK$
- * @property-read int ISONumericCode 국가별 ISO 코드
- * @property-read string latitude
- * @property-read string longitude
+ * @property-read string $currencyCode 통화 코드. 예) JPY, KRW
+ * @property-read string $currencyKoreanName 한글 통화 이름(명칭). 예) 엔, 원, 유로, 달러, 페소
+ * @property-read string $currencySymbol 통화 심볼. 예) ¥, €, ₩, HK$
+ * @property-read int $ISONumericCode 국가별 ISO 코드
+ * @property-read string $latitude
+ * @property-read string $longitude
  * @property-read mixed $createdAt
  * @property-read mixed $updatedAt
+ *
+ *
+ * @property-read string $countryCode - 2digitCode 와 같은 값을 리턴한다.
  *
  * @note README 를 참고한다.
  *
@@ -33,6 +36,20 @@ class CountryTaxonomy extends Entity
     {
         parent::__construct(COUNTRIES, $idx);
     }
+
+    /**
+     *
+     * @param $name
+     * @return mixed
+     */
+    public function __get($name): mixed {
+        if ( $name == 'countryCode' ) {
+            return $this->v('2digitCode');
+        } else {
+            return parent::__get($name);
+        }
+    }
+
 }
 
 
@@ -60,8 +77,6 @@ function country(int|string $idx = 0, bool $currencyCode = false): CountryTaxono
 }
 
 
-
-
 /**
  * Returns country object that holds IP2Location information
  *
@@ -69,11 +84,17 @@ function country(int|string $idx = 0, bool $currencyCode = false): CountryTaxono
  * 사용자의 접속 IP 를 바탕으로, 사용자가 있는 국가 정보를 Country 객체로 리턴한다.
  * 에러가 있으면, 에러가 설정된 Country 객체가 리턴된다.
  *
- * @param string $ip - the user ip address. if it's empty, then it takes the user's ip address.
+ * 주의, IP 를 메모리 캐시하여, 동일한 IP 로 여러번 호출해도 한번만 DB 액세스를 한다.
+ *
+ * @param string|null $ip - the user ip address. if it's empty, then it takes the user's ip address.
  * @return CountryTaxonomy
  * @throws \MaxMind\Db\Reader\InvalidDatabaseException
  */
+$__current_country = [];
 function get_current_country(string $ip = null): CountryTaxonomy {
+    global $__current_country;
+    if ( isset($__current_country[$ip]) ) return $__current_country[$ip];
+
 //    $reader = new \GeoIp2\Database\Reader(ROOT_DIR . "etc/data/GeoLite2-Country.mmdb");
     $reader = new \GeoIp2\Database\Reader(ROOT_DIR . "etc/data/GeoLite2-City.mmdb");
     try {
@@ -83,7 +104,8 @@ function get_current_country(string $ip = null): CountryTaxonomy {
         $country = country($code2);
 
         if ( isset($record->city->names['en']) ) $country->city = $record->city->names['en'];
-        return $country;
+        $__current_country[$ip] = $country;
+        return $__current_country[$ip];
     } catch (\GeoIp2\Exception\AddressNotFoundException $e) {
         return country()->setError(e()->geoip_address_not_found);
     } catch (\MaxMind\Db\Reader\InvalidDatabaseException $e) {
@@ -91,22 +113,5 @@ function get_current_country(string $ip = null): CountryTaxonomy {
     } catch (Exception $e) {
         return country()->setError(e()->geoip_unknown);
     }
-}
-
-
-function getIPAddress() {
-    //whether ip is from the share internet
-    if(!empty($_SERVER['HTTP_CLIENT_IP'])) {
-        $ip = $_SERVER['HTTP_CLIENT_IP'];
-    }
-    //whether ip is from the proxy
-    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    }
-    //whether ip is from the remote address
-    else{
-        $ip = $_SERVER['REMOTE_ADDR'];
-    }
-    return $ip;
 }
 

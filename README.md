@@ -67,6 +67,9 @@
       - Controller 는 View 에서 쓰기도 하고, Rest API 에서도 그대로 쓰도록 한다.
       - Controller 에서는 아래와 같이 할 수 있도록 한다.
         route.php 를 좀 더 업데이트한다.
+        
+  - 프로젝트(최상위) 폴더에 model, view, controller 폴더를 둔다.
+    
   - 모든 함수를 클래스로 변환. functions.php 에 있는 함수를 모두 클래스로 변환.
     - class Utilities {} 와 같이 하고 u()->xxxx() 또는 글로벌 변수 $u->xxx() 로 사용 할 수 있도록 한다.
       $u-> ... 또는 $f->... 와 같이 사용 할 수 있도록 한다.
@@ -782,7 +785,6 @@ This logs all user activities.
 
 
 
-
 ## 친구 관리 테이블
 
 - 테이블 이름: friends
@@ -820,6 +822,27 @@ else {
 }
 ```
 
+
+# 쪽지 기능
+
+- 쪽지 기능은 게시판과 매우 흡사하다. 그래서 게시판 기능을 상속해서 쓴다.
+  
+- 글 목록, 페이지내에션, 검색 등에서 비슷하게 사용된다.
+  다만, 외부에서 검색이 되지 않도록 100% 보장하기 위해서, title 과 content 필드 대신에 privateTitle, privateContent 에 기록을 한다.
+  이 때, private 에 Y 의 값을 기록해야 한다.
+  
+- otherUserIdx 에 받는 사람 정보가 들어간다.
+
+- readAt 에 글을 읽은 시간이 들어간다.
+  
+- 게시판 category.id 는 어떤 것이라도 상관없다. 하지만 규칙을 두고, 각종 링크에서 공용으로 사용하기 위해서 'message' 로 한다.
+  즉, 쪽지 목록 메뉴 링크를 걸 때, `/?forum.post.list&categoryId=message` 로 하면 된다.
+  
+- 주의 할 것은 게시판 목록, 읽기, 쓰기 위젯 등을 쪽지 기능에 맞도록 제작해야한다.
+  기본적으로 post-list/message-list-default, post-view/message-view-default, post-edit/message-edit-default 가 존재한다.
+  
+
+
 # Widget System
 
 - A widget is a reusable code block like login, latest post list, and more.
@@ -845,7 +868,71 @@ else {
 
 - And even for the categories(forums) that has no widget settings, the widgets ending with `-default` will be used.
 
+## Widget samples
 
+- visit `/?widget.samples` to see what kinds of widgets are available.
+
+
+
+## 재 사용가능한 위젯 샘플
+
+- 위젯을 만들어 놓고, 재 사용을 하지 못하는 경우가 많다.
+  비슷한 위젯은 css style 디자인만 변경하거나 약간의 옵션 수정으로 재 사용하는 것이 중요한다,
+  그렇게 하기 위해서, /?widget.samples 에 재 사용 가능한 위젯을 표시하도록 했다.
+  
+- 재 사용가능한 위젯을 만들기 위해서는
+  
+  - @size 태그에 narrow 또는 wide 라고 표시해 놓고, 어디에 쓰면 좋을지 적절히 선택 할 수 있도록 한다.
+    참고로, RWD 에 대항해서 위젯을 만들어야 한다.
+    
+    narrow 는 너비가 260px 이하의 비교적 좁은 사이즈
+    wide 는 너비가 600px 이상의 넓은 사이즈를 말한다.
+    /?widget.sample 에서 보여 줄 때, narrow 는 max-width: 260px 너비로 보여주고, wide 는 max-width: 600px 너비로 보여준다.
+    
+  - @dependency 에 종속되는 3rd party 라이브러리 지정
+    Bootstrap 과 같은 외부 CSS 나 Javascript 를 사용해서는 안된다.
+    만약, 사용한다면, @dependency bootstrap 4.6.x vue.js 2.x 와 같이 표시를 해야 한다.
+  
+  - @options 태그에 필요한 옵션 정보를 표시한다.
+    
+  - 모든 위젯은 옵션이 없이 호출되는 것을 대비해서, 임시 데이터 및 사진을 보여 줄 수 있도록 한다.
+    이러한 임시 데이터는 위젯 폴더 내부에 보관해야 한다.
+    
+## 위젯 상속
+
+- 위젯 상속이라기 보다는 기존에 존재하는 위젯을 변경하여 재 활용하기 위한 것이다.
+
+- 예를 들어, 필고에서 처럼, 게시판 글 쓰기 위젯이 존재하는데, 그 위젯의 머리, 꼬리, 글자 등을 변경하여 회원 장터, 갤러리, 쪽지 등의 글 쓰기 페이지로 동일하게 사용하는 것이다.
+
+- centerx 에서는 언어화 기능( `$translationCache` 에 바로 수정 )과 `hook` 기능을 통해서 한다.
+
+예) post-edit-default.php 에서 입력 양식이 대충 아래와 같다. 이 때, 상단 제목이나 언어화를 아래의 예제와 같이 변경 할 수 있다.
+
+```html
+<form action="/" method="POST">
+    <input type="hidden" name="p" value="forum.post.edit.submit">
+    ...
+
+    <?=hook()->run('post-edit-title') ?? "<h6>Category: {$category->id}</h6>" ?>
+    <input placeholder="<?= ln('input_title') ?>" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
+```
+
+예)
+```html
+translate('input_title', [
+    'en' => 'Input message title.',
+    'ko' => '쪽지 제목을 입력하세요.',
+]);
+translate('input_content', [
+    'en' => 'Input message content.',
+    'ko' => '쪽지 내용을 입력하세요.',
+]);
+
+hook()->add('post-edit-title', function() {
+    return '쪽지 전송';
+});
+include widget('post-edit/post-edit-default');
+```
 
 # Debugging
 
@@ -1178,6 +1265,9 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 ```
 
 
+# 파일 업로드
+
+- test 파일에 HTTP FORM POST 값 전송이 아닌 CLI 로 파일을 업로드하고, 글에 추가하는 예제 코드가 있다.
 
 
 # Firebase
@@ -1221,6 +1311,12 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 - See `widgets/login/login.php` and `library/core/language.php`.
 
+- 아래와 같이 하면, 관리자가 홈페이지에서 바로 번역이 가능하다.
+
+```html
+<?=ln('name')?>
+```
+
 # Change language
 
 - Make the language selection box like below.
@@ -1239,6 +1335,7 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 ```
 
 - And `themes/default/user/language.submit.php` will save the user's choice into cookie.
+
 
 
 # Currency Conversion
@@ -1329,7 +1426,7 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 
 ```html
 <?php js(HOME_URL . 'etc/js/helper.js', 7)?>
-<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js', 9)?>
+<?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js', 9)?>
 <?php js(HOME_URL . 'themes/sonub/js/bootstrap-vue-2.21.2.min.js', 10)?>
 <?php js(HOME_URL . 'etc/js/helper.js', 10)?>
 <?php js(HOME_URL . 'etc/js/helper.js', 10)?>
@@ -1398,7 +1495,7 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
   <?php } ?>
 </section>
 <?php js(HOME_URL . 'etc/js/helper.js')?>
-<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js')?>
+<?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js')?>
 <?php js(HOME_URL . 'etc/js/app.js')?>
 </body>
 </html>
@@ -1435,7 +1532,7 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 ```html
 <!-- Load polyfills to support older browsers before loading Vue and Bootstrap Vue -->
 <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
-<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js', 2)?>
+<?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js', 2)?>
 <?php js(HOME_URL . 'etc/js/bootstrap-vue-2.21.2.min.js', 1)?>
 ```
 
@@ -1576,6 +1673,14 @@ EOH;
 * Hook 함수는 각 테마 별로 theme-name.functions.php 에서 정의하면 되고, hook 코드가 커지면 `[theme-name].hooks.php` 로 따로 모으면 된다.
 * 동일한 hook 이름에 여러개 훅을 지정 할 수 있다.
 * 훅 함수에는 변수를 얼마든지 마음데로 지정 할 수 있으며 모두 reference 로 전달된다.
+  즉, 훅 함수로 전달된 변수를 훅 함수 안에서 변경을 할 수 있다.
+  단, 아래와 같이 reference 로 받아서 값을 변경해야 한다.
+```php
+hook()->add('post_list_country_code', function(&$countryCode) {
+    $countryCode = cafe()->countryCode;
+});
+```
+  
 * `posts_before_create` 훅 함수가 에러 문자열을 리턴하면 다른 훅은 모두 실행이 안되고, 글/코멘트 생성이 중지된다.
 
 * 모든 훅 함수는 값을 리턴하거나 파라메타로 받은 레퍼런스 변수를 수정하는 것이 원칙이다.
@@ -1593,6 +1698,13 @@ EOH;
 
 * 아래와 같이 실행 할 수 있다. 훅의 결과가 있으면 그 결과를 사용하고, 없으면 기본 HTML 을 사용하는 것이다.
 
+예제 1) 기본적으로 `hook()->run()` 이 리턴하는 값이 없으면 null 이 리턴된다. 즉, 훅 함수가 없으면 null 이 리턴되는 것이다.
+
+```html
+<?=hook()->run('display-category-name') ?? "<h6>No category name</h6>" ?>
+```
+
+예제 2) 아래 처럼 풀어서 할 수 있다.
 ```html
 <?php if ( $_ = hook()->run('post-meta-3rd-line', $post) ) echo $_; else { ?>
     No. <?= $post->idx ?>
@@ -1686,6 +1798,10 @@ hook()->add('posts_before_create', function($record, $in) {
   카테고리 선택에서, 선택된 값이 없을 경우, 기본적으로 보여 줄 옵션이다. 보통은 빈 값에, "카테고리 선택" 을 표시하면 된다.
   하지만, 카페에서는 카테고리 선택이 되지 않은 경우, 국가별 카테고리로 검색을 제한해야 한다.
 
+
+* post_list_country_code
+  게시글 목록을 할 때, 강제로 특정 국가의 글만 목록하게 할 수 있다.
+  
 
 ### 게시판 설정 훅
 
@@ -2536,15 +2652,66 @@ echo "현재 환율: $phpKwr";
 
 ## Post list parameters
 
+- 게시판 목록에서 검색에 사용되는 
+
+- `categoryId` 는 글 카테고리. 카테고리 번호를 숫자로 입력해도 된다.
+
 - `subcategory` is the subcategory.
-- `lsub` is the subcategory for listing only for that subcategory.
-  - When a user creates a post under a category, you can pass `lsub` through the edit page and view page.
-    - After edit or view, the user may return post list page. And the app can show the subcategory that he selected before.
+
+- `countryCode`
+  국가별 글 목록을 할 때 사용한다.
+  국가 코드의 경우, hook 을 통해서 수정 할 수 있다.
+  예를 들어, 특정 theme 에서는 무조건 특정 국가의 글만 목록하고자 할 때, 사용 할 수 있다. 예를 들면 소너브에서 도메인/카페 별로 특정 국가의 글만 목록하고자 할 때 사용한다.
   
-- The reason why we need the two `subcategory` parameters is that when post is edited,
-  it needs `subcategory` as input even though the user does not want list for that subcategory.
-  And when the app redirects the user to the list, the app does not know to list the whole category list or only that subcategory.
   
+- `nsub` 사용법.
+  - 사용자가 전체 카테고리에서 글 생성할 때, 'abc' 카테고리를 선택한다면, 그 글은 'abc' 카테고리 글이다.
+    '전체카테고리'와 'abc' 카테고리 중 어떤 카테고리를 보여주어야 할까?
+    정답은 전체 카테고리이다.
+    글 쓰기 FORM 을 열 때, HTTP PARAM 으로 subcategory 값이 전달되지 않은 경우, nsub=all 로 전송을 한다.
+    
+  - 사용자가 전체 카테고리 목록에서, 특정 글을 수정 할 때, 그 글의 카테고리가 'abc' 라면, 글 작성 후, 전체 카테고리를 보여줘야 할까? 'abc' 카테고리만
+    보여줘야 할까?
+    정답은 전체 카테고리이다.
+    글 쓰기 FORM 을 열 때, HTTP PARAM 으로 subcategory 값이 전달되지 않은 경우, nsub=all 로 전송을 한다.
+    
+  - 사용자가 'abc' 카테고리에서 글을 생성하면, 'abc' 카테고리를 보여줘야 한다.
+    
+  - 사용자가 'abc' 카테고리에서 글을 하나 수정할 때, 그 글의 카테고리를 'def' 로 바꾸면, 'abc' 와 'def' 중 어떤 카테고리를 보여줘야 할까?
+    정답은 def 카테고리이다.
+    
+  - 요약을 하면, `nsub` 는 글 생성, 수정, 삭제를 할 때, 그 직전의 페이지 목록이 서브카테고리가 아닌 경우, FORM 전송 후 전체 카테고리로 보여주기 위한 것이다.
+  
+  
+- `searchKey` 검색어
+  - searchKey 에 값이 들어오면, `(title LIKE '%searchKey%' OR content LIKE '%searchKey%')` 있으면 그 것을 검색한다.
+
+- userIdx 는 사용자 번호
+  - 그 사용자가 쓴 글을 검색한다.
+  예) `https://local.itsuda50.com/?p=forum.post.list&categoryId=qna&userIdx=2&searchKey=hello`
+  
+- categoryId 는 글 카테고리 아이디(또는 번호)
+
+- subcategory 는 검색을 할 서브 카테고리이다.
+  
+
+
+# 언어화, Translation, 번역
+
+- `etc/translations.php` 에서 PHP 단에서 기본적으로 번역을 해서 제공 할 수 있다. 이렇게 하면 관리자 페이지의 언어화 설정에서 추가되지 않은 언어를
+  기본 값으로 지정 할 수 있다.
+  `etc/translations.php` 에 지정된 동일한 코드를 관리자 설정에서 지정하면 관리자 설정에서 지정된 값이 사용된다.
+  
+- 프로그램적으로 강제 변경을 하기 위해서는 `$translationCache` 변수에 지정을 하면 된다.
+  - `etc/translations.php` 에는 `$translations` 변수가 있지만 이 값들은 관리자 설정에 의해서 덮어 쓰여질 수 있다.
+  - 하지만, `translation.taxonomy.php` 에 있는 `$translationCache` 변수는 관리자 설정에 덮어 쓰여지지 않는다.
+    그래서 이 변수에 값을 지정하면, 그 이후 사용되는 언어 코드에 대해서 강제로 값을 지정 할 수 있다.
+    
+  - 즉, 우선 순위는
+    - `$translationCache` 이 가장 우선이고, 그 다음
+    - 관리자 페이지에서 설정하는 DB 설정 값, 그 다음
+    - `$translations` 이다.
+
 
 # 관리자 페이지
 
@@ -2556,7 +2723,20 @@ echo "현재 환율: $phpKwr";
 
 특히, 사진을 코드별로 업로드하는 위젯에서 `[upload-by-code]` 를 php.ini 방식의 입력을 통해서 여러개 사진을 업로드 할 수 있다.
 
+# Vue.js 2 Mixins
+
+- 파일 업로드, 게시글 쓰기 등에서 공용으로 사용되는 mixin 을 작성해서 재 활용한다.
+
+- mixins 폴더는 `etc/js/vue-js-mixins` 에 있다.
+
+## 글 및 posts taxonomy 관련 레코드 작성(수정)시 첨부 파일
+
+- 첨부 파일 등록, 수정, 삭제를 할 때, 매번 Javascript 를 따로 작성할 필요 없이, 공용 mixin 을 쓰면 된다.
+  참고 widgets/post-edit/post-edit-default/post-edit-default.php 위젯 참고
+
+
 # Vue.js 2 component
+
 
 ## upload-by-code
 
@@ -2641,7 +2821,22 @@ content[tip]=내용사진입니다.
   - add the working local domain to `LOCAL_HOSTS`.
   - run `node live-reload.js`
   
+# Error code
+
+- 에러 관련 루틴은 library
+- 에러 코드는 문자열이며 처음 시작이 반드시 소문자 'error_' 이어야 한다.
+- 에러에 관한 추가 정보는 ' - ' 로 분리하여 추가 할 수 있다.
+  예) error_login_first - user did not logged in.
   
+  
+# 광고 배너
+
+필고의 adv 2.0 보다 한 단계 업그레이드 해서,
+
+- 종류 별 배너 사진을 올리고, 각 배너 사진마다 URL 을 따로 적을 수 있도록 한다.
+
+글의 square-banner 에는 광고 배너 사진이 업로드되어야 하고, url 에는 광고 배너 클릭시 이동해야할 주소를 입력해야 한다.
+
 # 문제 해결
 
 ## 웹 브라우저로 접속이 매우 느린 경우

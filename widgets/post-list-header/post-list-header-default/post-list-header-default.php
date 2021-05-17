@@ -24,36 +24,18 @@ $category = $o['category'];
             <div>
                 <a class="btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>">All</a>
                 <?php foreach ($category->subcategories as $cat) { ?>
-                    <a class="btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>&subcategory=<?= $cat ?>&lsub=<?= $cat ?>"><?= $cat ?></a>
+                    <a class="btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>&subcategory=<?= $cat ?>"><?= $cat ?></a>
                 <?php } ?>
             </div>
         <?php } ?>
 
-
-
         <span class="flex-grow-1"></span>
-        <template>
-            <div>
-                <b-form-checkbox v-model="checked" name="check-button" switch @click="forumNotification()">
-                    Get Notified</b>
-                </b-form-checkbox>
-            </div>
-        </template>
-        <a class="btn btn-sm btn-success" href="/?p=forum.post.edit<?= inCategoryId() ?><?= inSubcategory() ?><?= inLsub() ?>">
+        <span class="mr-3">
+            <?php include widget('push-notification/push-notification-icon', [ 'category' => $category]) ?>
+        </span>
+        <?php inSubcategory() ?>
+        <a class="btn btn-sm btn-success" href="/?p=forum.post.edit<?= inCategoryId() ?><?= inSubcategory() ?>">
             <?= ek('Create', '글 쓰기') ?>
         </a>
     </div>
 </section>
-
-<script>
-    mixins.push({
-        data: {
-            checked: false
-        },
-        methods: {
-            forumNotification: function() {
-                console.log("subscribe or unsubscribe")
-            }
-        }
-    });
-</script>

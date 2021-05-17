@@ -77,7 +77,11 @@ function isTranslationMode(): bool {
 }
 
 /**
+ * @deprecated Use ln().
  * English or Korean
+ *
+ * 이 함수는 영어 아니면 한국어를 출력하는데, 관리자로 in-page-translation 을 할 수 없고, 제약사항이 있어, 사용하지 않는다.
+ *
  * @param $en
  * @param $ko
  * @return string

@@ -11,7 +11,6 @@ if ( !defined('JAVASCRIPT_KAKAO_CLIENT_ID') ) define('JAVASCRIPT_KAKAO_CLIENT_ID
 if ( !defined('JAVASCRIPT_KAKAO_CALLBACK_URL') ) define('JAVASCRIPT_KAKAO_CALLBACK_URL', '/etc/callbacks/kakao/kakao-login.callback.php');
 
 
-
 /// Naver Login API 키
 /// README 참고
 if ( get_root_domain() == 'philov.com' || get_root_domain() == 'sonub.com' ) {
@@ -26,12 +25,7 @@ if ( get_root_domain() == 'philov.com' || get_root_domain() == 'sonub.com' ) {
     if ( !defined('NAVER_API_URL') ) define('NAVER_API_URL', "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=".NAVER_CLIENT_ID."&redirect_uri=".NAVER_CALLBACK_URL."&state=" . get_domain());
 }
 
-
-
 include_once 'sonub.defines.php';
-
-
-
 
 
 

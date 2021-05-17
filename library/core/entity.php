@@ -198,7 +198,7 @@ class Entity {
 
 
     /**
-     * @deprecated Use updateMemory().
+     * @deprecated Use updateMemoryData().
      * $this->data 배열을 업데이트한다. 키가 존재하지 않으면 추가한다.
      * 주의, 이 함수는 메모리의 $data 변수 값만 바꾼다. DB 를 바꾸려면 `$this->update()` 를 사용해야한다.
      *
@@ -212,8 +212,22 @@ class Entity {
      * category(123)->updateData('subcategories', separateByComma($this->subcategories));
      */
     public function updateData($k, $v): self {
-        return $this->updateMemory($k, $v);
+        return $this->updateMemoryData($k, $v);
     }
+
+    /**
+     * @deprecated
+     * @param $k
+     * @param $v
+     * @return $this
+     */
+    public function updateMemory($k, $v): self {
+//        $this->data[$k] = $v;
+//        return $this;
+        return $this->updateMemoryData($k, $v);
+    }
+
+
 
     /**
      * 현재 객체의 속성을 담은 $this->data 배열을 업데이트한다. 키가 존재하지 않으면 추가한다.
@@ -229,7 +243,7 @@ class Entity {
      * @example
      * category(123)->updateData('subcategories', separateByComma($this->subcategories));
      */
-    public function updateMemory($k, $v): self {
+    public function updateMemoryData($k, $v): self {
         $this->data[$k] = $v;
         return $this;
     }
@@ -878,9 +892,8 @@ class Entity {
             list( $fields, $placeholders, $values ) = db()->parseRecord($conds, 'select', $conj);
             $q = " SELECT $select FROM $table WHERE $placeholders ORDER BY $order $by LIMIT $from, $limit ";
             $rows = db()->rows($q, ...$values);
-        } else if ( $params ) { // prepare statement if $params is set.
+        } else if ( $where != '1' || $params ) { // prepare statement if $params is set.
             $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
-            // d($q);
             $rows = db()->rows($q, ...$params);
         }
         else if ( $where == '1' ) {
@@ -889,7 +902,7 @@ class Entity {
         }
         else  {
             debug_print_backtrace();
-            die("\n\n-------------------- die on Entity::search() => Wrong parameters. is \$params properly?\n\n");
+            die("\n\n-------------------- die on Entity::search() => Wrong parameters. is \$params set properly?\n\n");
         }
 
 
@@ -927,7 +940,7 @@ class Entity {
             list( $fields, $placeholders, $values ) = db()->parseRecord($conds, 'select', $conj);
             $q = " SELECT $select FROM $table WHERE $placeholders";
             $count = db()->column($q, ...$values);
-        } else if ( $params ) { // prepare statement if $params is set.
+        } else if ( $where != '1' || $params ) { // prepare statement if $params is set.
             $q = " SELECT $select FROM $table WHERE $where";
             $count = db()->column($q, ...$params);
         }
@@ -937,7 +950,7 @@ class Entity {
         }
         else  {
             debug_print_backtrace();
-            die("\n-------------------- die() - Execution dead due to: Entity::search() wrong parameters\n");
+            die("\n-------------------- die() - Execution dead due to: Entity::count() wrong parameters\n");
         }
 
         return $count;

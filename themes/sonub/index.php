@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/etc/bootstrap-4/bootstrap-4.6.0-min.css">
     <link rel="stylesheet" href="/etc/bootstrap-vue-2.21.2/bootstrap-vue-2.21.2.min.css">
     <link href="/etc/fontawesome-pro-5/css/all.min.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="/themes/sonub/favicon.ico"/>
     <style>
         <?php include theme()->css('css/index') ?>
     </style>
@@ -35,9 +36,43 @@
 <!-- Load polyfills to support older browsers before loading Vue and Bootstrap Vue -->
 <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver%2CObject.fromEntries" crossorigin="anonymous"></script>
 <?php js(HOME_URL . 'etc/js/helper.js', 7)?>
-<?php js(HOME_URL . 'etc/js/vue-2.6.12-min.js', 2)?>
-<?php js(HOME_URL . 'etc/js/bootstrap-vue-2.21.2.min.js', 1)?>
-<?php js(theme()->url . 'js/data.js', 1)?>
+
+<?php
+    if ( isLocalhost() ) {
+        js(HOME_URL . 'etc/js/vue.2.6.12.js', 5);
+    }
+    else {
+        js(HOME_URL . 'etc/js/vue.2.6.12.js', 5);
+    }
+?>
+
+<?php js(HOME_URL . 'etc/js/bootstrap-vue-2.21.2.min.js', 3)?>
+<?php js(theme()->url . 'js/data.js', 3)?>
 <?php js(theme()->url . 'js/app.js', 0)?>
+
+<script>
+    addEventListener('pushNotification', function(){
+        console.log("addEventListener('pushNotification'");
+    });
+    const config = {
+        themeFolderName: "<?=theme()->url?>",
+        firebaseConfig: {
+            apiKey: "AIzaSyDWiVaWIIrAsEP-eHq6bFBY09HLyHHQW2U",
+            authDomain: "sonub-version-2020.firebaseapp.com",
+            databaseURL: "https://sonub-version-2020.firebaseio.com",
+            projectId: "sonub-version-2020",
+            storageBucket: "sonub-version-2020.appspot.com",
+            messagingSenderId: "446424199137",
+            appId: "1:446424199137:web:f421c562ba0a35ac89aca0",
+            measurementId: "G-F86L9641ZQ"
+        },
+        defaultTopic: "<?=DEFAULT_TOPIC?>",
+        post_notification_prefix: '<?=NOTIFY_POST?>',
+        comment_notification_prefix: '<?=NOTIFY_COMMENT?>',
+    };
+</script>
+<?php js('https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js')?>
+<?php js('https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js')?>
+<?php js(theme()->url . 'js/firebase.js')?>
 </body>
 </html>

@@ -15,17 +15,45 @@ class FileTaxonomy extends Entity {
     }
 
 
-
     /**
-     * @param $in
+     * 파일 업로드
+     *
+     * HTTP FORM 으로 업로드 할 수 있고, 프로그램적으로도 업로드 할 수 있다. test 파일 참고
+     *
+     * @param array $in
+     *  $in['deletePreviousUpload'] - 이 값이 Y 이면, 기존에 존재하는(업로드된) 파일을 삭제한다. 하나의 파일만 유지하고자 할 때 사용.
+     *      taxonomy + entity 조합 또는 userIdx + code 조합으로 기존 파일을 삭제할 수 있다.
+     *      즉, deletePreviousUpload 값이 Y 이면, taxonomy + entity 조합 또는 userIdx + code 조합이 들어와야 한다.
+     *  $in[taxonomy] - taxonomy 값이 들어간다.
+     *  $in[entity] - entity 값이 들어간다.
+     *  $in[code] - code 값이 들어간다.
+     *
+     * @param array $userfile
+     *  $_FILES 에 직접 값을 넣어 이 함수를 호출해도 된다. 테스트(tests/basic.file.test.php) 참고.
+     *  하지만, $userfile 변수에 따로 값을 넣어 전달한다.
      * @return self
      */
-    public function upload($in): self {
+    public function upload(array $in, array $userfile = []): self {
 
         if ( $this->hasError ) return $this;
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
-        $name = basename($_FILES[USERFILE]['name']);
+
+
+        if ( empty($userfile) ) $userfile = $_FILES[USERFILE] ?? [];
+
+        if ( !isset($userfile) || empty($userfile) ) return $this->error( e()->file_is_empty );
+        if ( !isset($userfile[NAME]) || empty($userfile[NAME]) ) return $this->error( e()->file_name_is_empty );
+        if ( !isset($userfile[SIZE]) || empty($userfile[SIZE]) ) return $this->error( e()->file_size_is_empty );
+        if ( !isset($userfile[TYPE]) || empty($userfile[TYPE]) ) return $this->error( e()->file_type_is_empty );
+        if ( !isset($userfile[TMP_NAME]) || empty($userfile[TMP_NAME]) ) return $this->error( e()->file_tmp_name_is_empty );
+
+
+
+
+
+        $name = basename($userfile[NAME]);
         $path = $this->getPath($name);
+        $orgPath = $userfile[TMP_NAME];
 
         /**
          * taxonomy 와 entity 에 동일한 값이 있으면, 삭제. 기존 사진을 삭제한다. README 참고.
@@ -43,23 +71,33 @@ class FileTaxonomy extends Entity {
         }
 
 
-        if (move_uploaded_file($_FILES[USERFILE]['tmp_name'], $path)) {
-            $save = [
-                USER_IDX => login()->idx,
-                PATH => basename($path), // path is the name of the file under `files` folder.
-                NAME => $_FILES[USERFILE][NAME],
-                SIZE => $_FILES[USERFILE][SIZE],
-                TYPE => $_FILES[USERFILE][TYPE],
-                TAXONOMY => $in[TAXONOMY] ?? '',
-                ENTITY => $in[ENTITY] ?? 0,
-                CODE => $in[CODE] ?? '',
-            ];
-            debug_log("save: ", $save);
-            return $this->create($save);
+        // HTML FORM 데이터가 HTTP POST 방식으로 업로드 되었는가?
+        if ( is_uploaded_file($orgPath) ) {
+            if ( move_uploaded_file($orgPath, $path) == false ) {
+                debug_log("FileTaxonomy::upload() -> move_uploaded_file() - Possible file upload attack!");
+                return $this->error(e()->move_uploaded_file_failed);
+            }
         } else {
-            debug_log("move_uploaded_file() - Possible file upload attack!");
-            return $this->error(e()->move_uploaded_file_failed);
+            // 아니면, 로컬 파일으로 간주해서 파일 복사.
+            if ( copy($orgPath, $path) == false ) {
+                debug_log("FileTaxonomy::upload() -> copy() - failed");
+                return $this->error(e()->copy_file_failed);
+            }
         }
+
+        $save = [
+            USER_IDX => login()->idx,
+            PATH => basename($path), // path is the name of the file under `files` folder.
+            NAME => $userfile[NAME],
+            SIZE => $userfile[SIZE],
+            TYPE => $userfile[TYPE],
+            TAXONOMY => $in[TAXONOMY] ?? '',
+            ENTITY => $in[ENTITY] ?? 0,
+            CODE => $in[CODE] ?? '',
+        ];
+        debug_log("save: ", $save);
+        return $this->create($save);
+
     }
 
 
