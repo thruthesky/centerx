@@ -102,7 +102,7 @@ class Post extends PostTaxonomy {
 
         // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
         $pointToCreate = point()->getPostCreate($category->idx);
-        if ( $pointToCreate < 0 ) {
+        if ( $pointToCreate && $pointToCreate < 0 ) {
             if ( login()->getPoint() < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
         }
 

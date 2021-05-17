@@ -350,8 +350,8 @@ class Point {
     public function categoryHourlyLimit(int|string $categoryIdx): bool {
         $re = $this->countOver(
             reasons: [ POINT_POST_CREATE, POINT_COMMENT_CREATE ], // 글/코멘트 작성을
-            stamp: $this->getCategoryHourLimit($categoryIdx) * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
-            count: $this->getCategoryHourLimitCount($categoryIdx), // count 회 수 이상 했으면,
+            stamp: intval($this->getCategoryHourLimit($categoryIdx)) * 60 * 60, // 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
+            count: intval($this->getCategoryHourLimitCount($categoryIdx)), // count 회 수 이상 했으면,
             categoryIdx: $categoryIdx,
         );
 //        d("결과: $re, 회수: " . $this->getCategoryHourLimitCount($categoryIdx));
@@ -370,7 +370,7 @@ class Point {
         return $this->countOver(
             reasons: [ POINT_POST_CREATE, POINT_COMMENT_CREATE ], // 글/코멘트 작성을
             stamp: time() - mktime(0, 0, 0, date('m'), date('d'), date('Y')), // 하루에 몇번. 주의: 정확히는 0시 0분 0초 부터 현재 시점까지이다. README.md# 포인트 참고
-            count: $this->getCategoryDailyLimitCount($categoryIdx), // count 회 수 이상 했으면,
+            count: intval($this->getCategoryDailyLimitCount($categoryIdx)), // count 회 수 이상 했으면,
             categoryIdx: $categoryIdx
         );
     }

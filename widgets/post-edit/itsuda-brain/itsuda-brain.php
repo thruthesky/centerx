@@ -118,18 +118,18 @@ if ( $post->idx ) {
                 }
 
                 // 이전에 업로드된 사진이 있는가?
-                if ( itsudaBrainEdit[code].idx ) {
+                if ( app[code].idx ) {
                     // 그렇다면, 이전 업로드된 파일이 쓰레기로 남지 않도록 삭제한다.
                     console.log('going to deelte');
                     axios.post('/index.php', {
                         sessionId: '<?=login()->sessionId?>',
                         route: 'file.delete',
-                        idx: itsudaBrainEdit[code].idx,
+                        idx: app[code].idx,
                     })
                         .then(function (res) {
                             checkCallback(res, function(res) {
                                 console.log('delete success: ', res);
-                                itsudaBrainEdit.files = deleteByComma(itsudaBrainEdit.files, res.idx);
+                                app.files = deleteByComma(app.files, res.idx);
                             }, alert);
                         })
                         .catch(alert);
@@ -146,9 +146,9 @@ if ( $post->idx ) {
                     },
                     function (res) {
                         console.log("success: res.path: ", res, res.path);
-                        itsudaBrainEdit.files = addByComma(itsudaBrainEdit.files, res.idx);
-                        itsudaBrainEdit.uploadedFiles.push(res);
-                        itsudaBrainEdit[code] = res;
+                        app.files = addByComma(app.files, res.idx);
+                        app.uploadedFiles.push(res);
+                        app[code] = res;
                     },
                     alert,
                     function (p) {
