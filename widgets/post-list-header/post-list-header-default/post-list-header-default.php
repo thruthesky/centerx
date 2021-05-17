@@ -32,8 +32,13 @@ $category = $o['category'];
 
 
         <span class="flex-grow-1"></span>
-        <span class="mr-3" @click="forumNotification()">Notify <i class="fa fa-bell"></i></span>
-
+        <template>
+            <div>
+                <b-form-checkbox v-model="checked" name="check-button" switch @click="forumNotification()">
+                    Get Notified</b>
+                </b-form-checkbox>
+            </div>
+        </template>
         <a class="btn btn-sm btn-success" href="/?p=forum.post.edit<?= inCategoryId() ?><?= inSubcategory() ?><?= inLsub() ?>">
             <?= ek('Create', '글 쓰기') ?>
         </a>
@@ -42,7 +47,9 @@ $category = $o['category'];
 
 <script>
     mixins.push({
-        data: {},
+        data: {
+            checked: false
+        },
         methods: {
             forumNotification: function() {
                 console.log("subscribe or unsubscribe")
