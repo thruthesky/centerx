@@ -11,6 +11,7 @@ require_once ROOT_DIR . 'library/core/functions.php';
 require_once ROOT_DIR . 'library/core/language.php';
 
 require_once ROOT_DIR . 'etc/defines.php';
+require_once ROOT_DIR . 'etc/translations.php';
 
 require_once ROOT_DIR . 'library/core/theme.php';
 

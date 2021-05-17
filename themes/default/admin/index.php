@@ -17,7 +17,7 @@ if (admin() == false) jsBack('You are not admin');
                 <a data-cy="admin-translation-button" class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-translation"><?= ln(['en' => 'Translations', 'ko' => '언어화']) ?></a>
                 <a data-cy="admin-point-history-button" class="btn fw-700 fs-sm" href="/?p=admin.index&w=point/admin-point-history"><?= ln(['en' => 'Point history', 'ko' => '포인트 기록']) ?></a>
                 <a data-cy="admin-push-notification-button" class="btn fw-700 fs-sm" href="/?p=admin.index&w=push-notification/push-notification-create"><?= ln(['en' => 'Notification', 'ko' => 'Notification']) ?></a>
-                <a data-cy="admin-widget-button" class="btn fw-700 fs-sm" href="/?widget.samples" target="_blank">Widgets</a>
+                <a data-cy="admin-widget-button" class="btn fw-700 fs-sm" href="/?widget.samples" target="_blank"><?= ln(['en' => 'Widget', 'ko' => '위젯']) ?></a>
             </div>
         </nav>
     </div>

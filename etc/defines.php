@@ -57,6 +57,7 @@ define('USER_IDX', 'userIdx');
 define('EMAIL', 'email');
 define('PASSWORD', 'password');
 define('NAME', 'name');
+const TMP_NAME = 'tmp_name';
 define('SIZE', 'size');
 define('TYPE', 'type');
 

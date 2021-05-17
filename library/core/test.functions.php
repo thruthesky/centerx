@@ -99,9 +99,13 @@ function createCategory(string $id = null): CategoryTaxonomy {
 }
 
 
-function createPost(string $categoryId=null): PostTaxonomy {
+function createPost(string $categoryId=null, string $title = null, string $content = null, string $files = ''): PostTaxonomy {
     if (category($categoryId ?? POINT)->exists() == false) category()->create([ID => $categoryId ?? POINT]); // create POINT category if not exists.
-    return post()->create([CATEGORY_ID => $categoryId ?? POINT, TITLE => TITLE, CONTENT => CONTENT]);
+    return post()->create([CATEGORY_ID => $categoryId ?? POINT,
+        TITLE => $title ?? TITLE,
+        CONTENT => $content ?? CONTENT,
+        'files' => $files,
+        ]);
 }
 
 function createComment(string $categoryId=null): CommentTaxonomy {
