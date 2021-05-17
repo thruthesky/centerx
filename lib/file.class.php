@@ -34,7 +34,7 @@ class File extends Entity {
             if ( isset($in['code']) && $in['code'] ) {
                 $files = $this->find([ CODE => $in[CODE] ]);
             } else {
-                $files = $this->find([TAXONOMY => $in[TAXONOMY], ENTITY => $in[ENTITY]]);
+                $files = $this->find([TAXONOMY => $in[TAXONOMY], ENTITY => $in[ENTITY], USER_IDX => login()->idx]);
             }
             foreach( $files as $file ) {
                 files($file->idx)->delete();
