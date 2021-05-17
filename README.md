@@ -37,7 +37,9 @@
 
 - [CenterX Git Project](https://github.com/thruthesky/centerx/projects/2)
 
-- work on next branch
+
+- @TODO 중요: ?user.logout.submit 형태로 들어오면 &p=user.logut.submit 형태로 바꾸어 줄 것.
+  그래야 live_reload() 할 때, .submit.php 이면, live_reload() 자바스크립트가 출력되지 않는다.
 
 - 챨스.
   countryCode 를 통한 국가별 게시판 관리.
@@ -860,6 +862,36 @@ else {
 }
 ```
 
+
+## 회원 가입을 Javascript 로 XHR 호출을 통해서 하는 경우,
+
+* 아래의 예제는 Vue.js 에서 FORM 전송을 받아 회원 가입 하는 것으로, 특히 주의 해야 할 것은 cookie 저장 domain 이다.
+  이 domain 이 PHP 와 일치해야지 서로 호환이 된다.
+
+```html
+<script>
+  mixins.push({
+    data: {
+      form: {
+        email: '',
+        password: '',
+      }
+    },
+    methods: {
+      onSubmitRegisterForm: function() {
+        request('user.register', this.form, function(user) {
+          Cookies.set('sessionId', user.sessionId, {
+            expires: 365,
+            path: '/',
+            domain: '<?=COOKIE_DOMAIN?>'
+          });
+        }, alert);
+
+      }
+    }
+  })
+</script>
+```
 
 # 쪽지 기능
 
@@ -2858,6 +2890,9 @@ content[tip]=내용사진입니다.
   - set '12345' to `LIVE_RELOAD_PORT`
   - add the working local domain to `LOCAL_HOSTS`.
   - run `node live-reload.js`
+  
+
+
   
 # Error code
 

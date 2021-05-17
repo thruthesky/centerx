@@ -149,6 +149,9 @@ EOH;
 
 function canLiveReload(): bool {
 
+    if ( str_ends_with(in('p', ''), '.submit') ) {
+        return false;
+    }
 
     if ( ! LIVE_RELOAD_HOST ) return false;
 
@@ -387,18 +390,13 @@ function unsetLoginCookies() {
     deleteAppCookie(SESSION_ID);
     deleteAppCookie(NICKNAME);
     deleteAppCookie(PROFILE_PHOTO_URL);
-//    setcookie(SESSION_ID, "", time()-3600, '/', COOKIE_DOMAIN);
-//    setcookie(NICKNAME, "", time()-3600, '/', COOKIE_DOMAIN);
-//    setcookie(PROFILE_PHOTO_URL, "", time()-3600, '/', COOKIE_DOMAIN);
 }
 
 function setAppCookie($name, $value) {
-//    $name = md5($name);
     setcookie ( $name , $value, time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
 }
 
 function deleteAppCookie($name) {
-//    $name = md5($name);
     setcookie($name, "", time()-3600, '/', COOKIE_DOMAIN);
 }
 
