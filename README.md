@@ -261,21 +261,57 @@ cd etc/phpdoc
 
 ## 설치 요약
 
-- 먼저, CenterX 구동을 위한 도커를 실행한다. 도커는 compose 를 통해서 실행하는데, 그 설정이 github 에 있다. 아래와 같이 Docker compose 설정을 GitHub 에서 다운로드 또는 clone(또는 fork) 한다.
-  - `git clone https://github.com/thruthesky/docker`
-  
-- 그리고 아래와 같이 docker compose 를 실행한다.
-  - `cd docker`
-  - `docker-compose up`
-  
-- 그리고 centerx 를 설치한다.
-  - 홈 폴더 아래에 centerx git repo 를 clone(또는 fork 후 clone)을 하면 된다.
-  - `cd home`
-  - `git clone https://github.com/thruthesky/centerx`
+- 먼저 도커를 설치하고 실행한다.\
+  [우분투 도커 설치 참고](https://docs.docker.com/engine/install/ubuntu/)
 
-- 그리고 웹 브라우저로 phpMyAdmin 에 접속을 해서 SQL 스키마를 DB 에 넣는다. 아래 설명 참고.
+  
+- 도커는 compose 를 통해서 실행하는데, 그 설정이 github 에 있다. 아래와 같이 Docker compose 설정을 GitHub 에서 다운로드 또는 clone(또는 fork)
+  한다.
+  그리고 루트 계정으로 `/docker` 에 설치를 한다.
+  
+  - `git clone https://github.com/thruthesky/docker /docker`
+
+- 그리고 docker-compose.yml 에서 MYSQL_PASSWORD 와 MYSQL_ROOT_PASSWORD 를 적절한 비밀번호로 변경한다.
+  - `cd /docker`
+  - `vi docker-compose.yml`
+
+- Nginx 서버 설정은 `/docker/etc/nginx/nginx.conf` 이며, 기본 홈페이지 경로는 `/docker/home/default` 이다.
+
+- 그리고 아래와 같이 docker compose 를 실행한다.
+  - `docker-compose up -d`
+
+- 그리고 `centerx` 를 `/docker/home` 폴더 아래에 fork 후 clone 한다.
+  참고, 도커 실행을 위한 docker-compose 설정은 루트 계정으로 `/docker` 폴더에 하지만, centerx 설치와 centerx 관련 작업은 사용자 계정으로 하는 것이
+  좋다.
+  참고로,
+  - `/docker` repo 의 .gitignore 에 `home` 폴더가 들어가 있어서
+  - `/docker/home` 폴더 아래에 `centerx` repo 를 추가해도,
+  - `/docker` repo 에 추가되지 않는다.
+
+- 루트로 사용자 계정을 만든다.
+  - `# useradd -m -d /docker/home/centerx centerx` 와 같이 하면 사용자 계정 `centerx` 의 홈 폴더가 `/docker/home/centerx` 가 된다.
+  - `# su - centerx`
+    - `$ git init`
+    - `$ git remote add origin https://github.com/thruthesky/centerx`
+    - `$ git fetch`
+    - `$ git checkout main`
+    - `$ chmod -R 777 files`
+    - `$ chmod -R 777 var/logs`
+  
+- phpMyAdmin 을 통한 데이터베이스 테이블 설치
+  웹 브라우저로 phpMyAdmin 에 접속을 해서 SQL 스키마를 DB 에 넣는다.
+  - `/docker/home/default/etc/phpMyAdmin` 에 phpMyAdmin 이 설치되어져 있다.
+    접속은 IP 주소를 이용하여, `http://1.2.3.4/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
+    데이터베이스 관리자 아이디는 root 이며, 비밀번호는 위에서 변경 한 것을 입력한다.
+    참고로 기본 비밀번호는 Wc~Cx7 인데 꼭 변경해서 사용하기 바란다.
+
+  - phpMyAdmin 접속 후, `centerx/etc/install/sql` 폴더에서 최신 sql 파일의 내용을 phpMyAdmin 에 입력하고 쿼리 실행을 한다.
+    - 만약, 국가 정보를 원한다면, `wc_countries` 테이블을 삭제하고, `/centerx/etc/install/sql/countries.sql`
+
+  - 참고, phpMyAdmin 에서 root 와 사용자 계정 password 를 변경 할 수 있으며, 변경한 비밀번호를 `etc/keys/db.password.php` 파일에 저장하면 된다.
 
 - node modules 들을 설치한다.
+  참고로 개발을 위해서만 npm install 을 하면 된다. 배포 서버에서는 할 필요 없다.
   - `npm i`
 
 - `keys` 폴더에 각종 키를 설정한다.
@@ -289,50 +325,8 @@ cd etc/phpdoc
   - 환율 Api 설정
   등 원하는 것만 설정하면 된다.
 
-## 설치 상세 설명
+- 만약, 다른 도메인으로 다른 홈페이지를 추가 개발을 하고 싶다면, `/docker/etc/nginx.conf` 를 수정하여, 홈 경로를 `/docker/home` 폴더 아래로 하면 된다.
 
-- 먼저 도커를 설치하고 실행한다.\
-  [우분투 도커 설치 참고](https://docs.docker.com/engine/install/ubuntu/)
-  
-- 그리고 CenterX 실행을 위한 도커 compose 설정을 가지고 있는 git repo 를 (루트 계정으로) /docker 에 (fork 후) clone 한다.
-  - `git clone https://github.com/thruthesky/docker /docker`
-  - `cd /docker`
-  
-- 그리고 docker-compose.yml 에서 MYSQL_PASSWORD 와 MYSQL_ROOT_PASSWORD 를 적절한 비밀번호로 변경한다. 
-  
-- 그리고 아래와 같이 docker compose 를 실행한다.
-  - `docker-compose up -d`
-  
-- Nginx 서버 설정은 `/docker/etc/nginx/nginx.conf` 이며, 기본 홈페이지 경로는 `/docker/home/default` 이다.
-
-- 그리고 `centerx` 를 `/docker/home` 폴더 아래에 fork 후 clone 한다.\
-  참고, 도커 실행을 위한 docker-compose 설정은 루트 계정으로 `/docker` 폴더에 하지만, centerx 설치와 centerx 관련 작업은 사용자 계정으로 하는 것이
-  좋다.
-  참고로,
-    - `/docker` repo 의 .gitignore 에 `home` 폴더가 들어가 있어서
-    - `/docker/home` 폴더 아래에 `centerx` repo 를 추가해도,
-    - `/docker` repo 에 추가되지 않는다.
-  
-  그리고 다른 도메인으로 다른 홈페이지를 추가 개발을 하고 싶다면, `/docker/etc/nginx.conf` 를 수정하여, 홈 경로를 `/docker/home` 폴더 아래로 하면 된다.
-  
-- `centerx` 를 `/docker/home` 에 설치하는 예제)
-  - `# useradd -m -d /docker/home/centerx centerx` 와 같이 하면 사용자 계정 centerx 의 홈 폴더가 `/docker/home/centerx` 가 된다. 계정과 폴더는 원하는데로 변경 가능.
-  - `# su - centerx`
-    - `$ git init`
-    - `$ git remote add origin https://github.com/thruthesky/centerx`
-    - `$ git fetch`
-    - `$ git checkout main`
-    - `$ chmod -R 777 files`
-    - `$ chmod -R 777 var/logs`
-
-- phpMyAdmin 을 통한 데이터베이스 테이블 설치
-  - `/docker/home/default/etc/phpMyAdmin` 에 phpMyAdmin 이 설치되어져 있다.
-    접속은 IP 주소를 이용하여, `http://0.0.0.0/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
-    데이터베이스 관리자 아이디는 root 이며, 비밀번호는 위에서 변경 한 것을 입력한다.
-    참고로 기본 비밀번호는 Wc~Cx7 인데 꼭 변경해서 사용하기 바란다.
-    
-  - phpMyAdmin 접속 후, `centerx/etc/install/sql` 폴더에서 최신 sql 파일의 내용을 phpMyAdmin 에 입력하고 쿼리 실행을 한다.
-    - 만약, 국가 정보를 원한다면, `wc_countries` 테이블을 삭제하고, `/centerx/etc/install/sql/countries.sql`
 
 
 
@@ -700,7 +694,15 @@ with the latest android version, but the developer must code on the android app.
 - 모든 테이블에는 idx, createdAt, updatedAt 이 존재한다.(존재 해야 한다.)
 - 레코드가 사용자의 소유를 나타낼 때에는 추가적으로 userIdx 가 존재해야 한다.
 
+## 데이터베이스 계정 설정
 
+- 가장 먼저 `keys` 폴더에 접속 정보가 존재하는지 확인을 한다.
+  DB 접속 정보는 공개되면 안된다. 그래서 .gitignore 에 포함되어져 있는 keys 폴더에 보관을 한다. 또는 `db.password.php` 파일이 .gitignore 에
+  들어가 있다.
+  - 우선, `theme/theme-name/keys/db.passowrd.php` 파일이 존재하면 로드한다.
+  - 없으면, `etc/keys/db.password.php` 파일이 존재하는지 보고 있으면 로드한다.
+  - 없으면, config.php 에 있는 접속 정보로 접속한다.
+  
 
 ## 게시글 테이블. posts 테이블
 
@@ -842,6 +844,10 @@ else {
 - For forum widget settings in admin page, widget name ends with `-default` will be used if there is no selected widget.
 
 - And even for the categories(forums) that has no widget settings, the widgets ending with `-default` will be used.
+
+## Widget samples
+
+- visit `/?widget.samples` to see what kinds of widgets are available.
 
 
 
@@ -1219,6 +1225,12 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 
 - See `widgets/login/login.php` and `library/core/language.php`.
 
+- 아래와 같이 하면, 관리자가 홈페이지에서 바로 번역이 가능하다.
+
+```html
+<?=ln('name')?>
+```
+
 # Change language
 
 - Make the language selection box like below.
@@ -1237,6 +1249,7 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 ```
 
 - And `themes/default/user/language.submit.php` will save the user's choice into cookie.
+
 
 
 # Currency Conversion
@@ -1574,6 +1587,14 @@ EOH;
 * Hook 함수는 각 테마 별로 theme-name.functions.php 에서 정의하면 되고, hook 코드가 커지면 `[theme-name].hooks.php` 로 따로 모으면 된다.
 * 동일한 hook 이름에 여러개 훅을 지정 할 수 있다.
 * 훅 함수에는 변수를 얼마든지 마음데로 지정 할 수 있으며 모두 reference 로 전달된다.
+  즉, 훅 함수로 전달된 변수를 훅 함수 안에서 변경을 할 수 있다.
+  단, 아래와 같이 reference 로 받아서 값을 변경해야 한다.
+```php
+hook()->add('post_list_country_code', function(&$countryCode) {
+    $countryCode = cafe()->countryCode;
+});
+```
+  
 * `posts_before_create` 훅 함수가 에러 문자열을 리턴하면 다른 훅은 모두 실행이 안되고, 글/코멘트 생성이 중지된다.
 
 * 모든 훅 함수는 값을 리턴하거나 파라메타로 받은 레퍼런스 변수를 수정하는 것이 원칙이다.
@@ -1684,6 +1705,10 @@ hook()->add('posts_before_create', function($record, $in) {
   카테고리 선택에서, 선택된 값이 없을 경우, 기본적으로 보여 줄 옵션이다. 보통은 빈 값에, "카테고리 선택" 을 표시하면 된다.
   하지만, 카페에서는 카테고리 선택이 되지 않은 경우, 국가별 카테고리로 검색을 제한해야 한다.
 
+
+* post_list_country_code
+  게시글 목록을 할 때, 강제로 특정 국가의 글만 목록하게 할 수 있다.
+  
 
 ### 게시판 설정 훅
 
@@ -2383,6 +2408,8 @@ request('user.profile', {}, console.log, console.error);
 
 - 캐시를 사용하는 예(로직)는 다음과 같다.
 
+- 참고로, 캐시 데이터를 저장할 때, 배열 등이 있으면 searialize 를 해서 넣어야 한다.
+
 ```php
 $currency = cache('PHP_KRW'); // 캐시 객체
 if ( $currency->olderThan(10) ) { // 10 초 보다 오래 되었으면,
@@ -2532,15 +2559,49 @@ echo "현재 환율: $phpKwr";
 
 ## Post list parameters
 
+- 게시판 목록에서 검색에 사용되는 
+
+- `categoryId` 는 글 카테고리. 카테고리 번호를 숫자로 입력해도 된다.
+
 - `subcategory` is the subcategory.
-- `lsub` is the subcategory for listing only for that subcategory.
-  - When a user creates a post under a category, you can pass `lsub` through the edit page and view page.
-    - After edit or view, the user may return post list page. And the app can show the subcategory that he selected before.
+
+- `countryCode`
+  국가별 글 목록을 할 때 사용한다.
+  국가 코드의 경우, hook 을 통해서 수정 할 수 있다.
+  예를 들어, 특정 theme 에서는 무조건 특정 국가의 글만 목록하고자 할 때, 사용 할 수 있다. 예를 들면 소너브에서 도메인/카페 별로 특정 국가의 글만 목록하고자 할 때 사용한다.
   
-- The reason why we need the two `subcategory` parameters is that when post is edited,
-  it needs `subcategory` as input even though the user does not want list for that subcategory.
-  And when the app redirects the user to the list, the app does not know to list the whole category list or only that subcategory.
   
+- `nsub` 사용법.
+  - 사용자가 전체 카테고리에서 글 생성할 때, 'abc' 카테고리를 선택한다면, 그 글은 'abc' 카테고리 글이다.
+    '전체카테고리'와 'abc' 카테고리 중 어떤 카테고리를 보여주어야 할까?
+    정답은 전체 카테고리이다.
+    글 쓰기 FORM 을 열 때, HTTP PARAM 으로 subcategory 값이 전달되지 않은 경우, nsub=all 로 전송을 한다.
+    
+  - 사용자가 전체 카테고리 목록에서, 특정 글을 수정 할 때, 그 글의 카테고리가 'abc' 라면, 글 작성 후, 전체 카테고리를 보여줘야 할까? 'abc' 카테고리만
+    보여줘야 할까?
+    정답은 전체 카테고리이다.
+    글 쓰기 FORM 을 열 때, HTTP PARAM 으로 subcategory 값이 전달되지 않은 경우, nsub=all 로 전송을 한다.
+    
+  - 사용자가 'abc' 카테고리에서 글을 생성하면, 'abc' 카테고리를 보여줘야 한다.
+    
+  - 사용자가 'abc' 카테고리에서 글을 하나 수정할 때, 그 글의 카테고리를 'def' 로 바꾸면, 'abc' 와 'def' 중 어떤 카테고리를 보여줘야 할까?
+    정답은 def 카테고리이다.
+    
+  - 요약을 하면, `nsub` 는 글 생성, 수정, 삭제를 할 때, 그 직전의 페이지 목록이 서브카테고리가 아닌 경우, FORM 전송 후 전체 카테고리로 보여주기 위한 것이다.
+  
+  
+- `searchKey` 검색어
+  - searchKey 에 값이 들어오면, `(title LIKE '%searchKey%' OR content LIKE '%searchKey%')` 있으면 그 것을 검색한다.
+
+- userIdx 는 사용자 번호
+  - 그 사용자가 쓴 글을 검색한다.
+  예) `https://local.itsuda50.com/?p=forum.post.list&categoryId=qna&userIdx=2&searchKey=hello`
+  
+- categoryId 는 글 카테고리 아이디(또는 번호)
+
+- subcategory 는 검색을 할 서브 카테고리이다.
+  
+
 
 # 관리자 페이지
 
@@ -2652,3 +2713,8 @@ socket.io.js 를 로드하지 않던지, 또는 pending 아닌 failed 로 되어
 Live reload 코드가 실행되는데, socket.io.js 를 로드하지 못해서 발생한 에러.
 
 config.php 에서 LIVE_RELOAD_HOST 에 빈 문자열 값을 주어, live reload 를 turn off 할 수 있다.
+
+
+## error_entity_not_found on CountryTaxonomy
+
+Be sure you have the countries table records into the wc_countries table.

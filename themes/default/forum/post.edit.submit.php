@@ -18,11 +18,9 @@ $category->returnToAfterPostEdit;
 
 if ( $category->returnToAfterPostEdit == 'L' ) {
     $url = "/?p=forum.post.list&categoryId=" . $categoryId;
-    if ( in('lsub') ) $url .= lsub();
     jsGo($url);
 } else {
     $url = $post->url;
-    if ( in('lsub') ) $url .= lsub(true);
     jsGo($url);
 }
 

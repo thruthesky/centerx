@@ -44,7 +44,7 @@
 
 <div class="d-flex flex-wrap justify-content-around">
     <?php
-        foreach( cafe()->mainmenus as $categoryId => $m ) {
+        foreach( cafe()->cafeMainMenus as $categoryId => $m ) {
     ?>
             <a href="/?p=forum.post.list&categoryId=<?=$categoryId?>" class="circle m-2"><?=$m['title']?></a>
     <?php } ?>

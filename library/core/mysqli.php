@@ -274,7 +274,6 @@ class MySQLiDatabase {
     public function rows(string $sql, ...$values): array {
 
         try {
-
             $stmt = $this->connection->prepare($sql);
             if ( $values ) {
                 if ( is_array($values[0]) || is_object($values[0]) ) {

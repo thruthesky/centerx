@@ -5,7 +5,7 @@
     <input type="hidden" name="p" value="cafe.create.submit">
 
     <?php if (cafe()->isCountryDomain()) { ?>
-        <input type="hidden" name="countryCode" value="<?=cafe()->countryDomainCountryCode()?>">
+        <input type="hidden" name="countryCode" value="<?=cafe()->countryCode?>">
             <?php } else { ?>
     <label class="fs-sm" for="countryCode">교민 카페 운영 국가 선택</label>
     <select class="form-select w-100" id="countryCode" name="countryCode" aria-label="Country selection box">

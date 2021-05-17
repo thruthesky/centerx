@@ -20,7 +20,7 @@ if (in(CATEGORY_ID)) {
         <input type="hidden" name="returnTo" value="post">
         <input type="hidden" name="files" v-model="files">
         <input type="hidden" name="<?= CATEGORY_ID ?>" value="<?= $category->v(ID) ?>">
-        <input type="hidden" name="lsub" value="<?= in('lsub') ?>">
+        <input type="hidden" name="nsub" value="<?= in('subcategory') ?>">
         <input type="hidden" name="<?= IDX ?>" value="<?= $post->idx ?>">
 
         <div class="d-flex">
@@ -31,7 +31,7 @@ if (in(CATEGORY_ID)) {
                     <option value=""><?= ek('Select Sub category', '카테고리 선택') ?></option>
                     <?php foreach ($category->subcategories as $cat) {
                         if ($post->subcategory == $cat) $selected =  'selected';
-                        else if ($cat == in('lsub')) $selected = ' selected';
+                        else if ($cat == in('subcategory')) $selected = ' selected';
                         else $selected = '';
                     ?>
                         <option value="<?= $cat ?>" <?= $selected ?>><?= $cat ?></option>
