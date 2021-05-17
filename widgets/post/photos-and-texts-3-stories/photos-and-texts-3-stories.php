@@ -48,12 +48,15 @@ $op = getWidgetOptions();
 <style>
     .photos-and-texts-3-stories .first-story {
         display: flex;
+        margin-top: 1em;
     }
     .photos-and-texts-3-stories .first-story .left {
         margin-right: 4px;
+        width: 50%;
     }
     .photos-and-texts-3-stories .first-story .right {
         margin-left: 4px;
+        width: 50%;
     }
 
     .photos-and-texts-3-stories .third-story {

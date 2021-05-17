@@ -8,10 +8,18 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 ?>
 
 <?php
-include widget('post-list/post-list-text-with-thumbnail');
-?>
 
-<?php
+
+include widget('post/photos-and-texts-2-stories', [
+    'title' => 'This is the title',
+    'firstStories' => [
+        'categoryId' => 'qna',
+        'limit' => 5,
+    ],
+    'secondStories' => [
+        'categoryId' => 'qna',
+    ],
+]);
 
 $firstStories = post()->latest(categoryId: 'qna', limit: 2);
 $thirdStories = post()->latest(categoryId: 'qna', limit: 3);
