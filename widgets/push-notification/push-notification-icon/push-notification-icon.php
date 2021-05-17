@@ -1,4 +1,9 @@
 <?php
+/**
+ * @size icon
+ * @options ...
+ * @dependency vue.js 2.x.x
+ */
 ?>
 <div @click="forumNotification()">Notify <i class="fa fa-bell"></i></div>
 

@@ -8,6 +8,22 @@ if ( cafe()->isSubCafe() && cafe()->notExists ) {
 ?>
 
 
+<?php
+
+$firstStories = post()->latest(categoryId: 'qna', limit: 2);
+$thirdStories = post()->latest(categoryId: 'qna', limit: 3);
+include widget('post/photos-and-texts-3-stories', [
+    'firstStories' => $firstStories,
+    'secondStories' => [
+        'title' => 'Most read articles',
+        'categoryId' => 'discussion',
+        'limit' => 5,
+        'displayNumbers' => true
+    ],
+    'thirdStories' => $thirdStories,
+]);
+
+?>
 
 
 <?php include widget('weather/openweathermap', ['display'=> 'forecast']) ?>

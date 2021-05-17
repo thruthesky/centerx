@@ -529,6 +529,14 @@ function setWidgetOptions(array $options) {
     global $__widget_options;
     $__widget_options = $options;
 }
+
+/**
+ * @warning You MUST put the return value into a unique variable
+ *  IF you are going to include widgets in nested loops.
+ * @example
+ *  $op = getWidgetOptions();
+ * @return array
+ */
 function getWidgetOptions() {
     global $__widget_options;
     return $__widget_options;
@@ -1351,10 +1359,12 @@ function short_date_time(int $stamp): string
  * @param int $quality
  * @return string
  */
-function thumbnailUrl(int $fileIdx, int $width=200, int $height=200, int $quality=200): string
+function thumbnailUrl(int $fileIdx, int $width=200, int $height=200, int $quality=100, bool $zoomCrop=true): string
 {
     if ( empty($fileIdx) ) return '';
-    return HOME_URL . "etc/phpThumb/phpThumb.php?src=$fileIdx&w=$width&h=$height&f=jpeg&q=$quality";
+    $url = HOME_URL . "etc/phpThumb/phpThumb.php?src=$fileIdx&w=$width&h=$height&f=jpeg&q=$quality";
+    if ( $zoomCrop ) $url .= "&zc=1";
+    return $url;
 }
 
 
@@ -1426,7 +1436,7 @@ function capture_styles_and_scripts(string &$content)
 
     /// Get styles
 
-    $re = preg_match_all("/\<style\>[^(\<)]*\<\/style\>/s", $after, $m);
+    $re = preg_match_all("/\<style\>[^\<]*\<\/style\>/s", $after, $m);
     if ($re) {
         $styles = $m[0];
         foreach ($styles as $style) {
