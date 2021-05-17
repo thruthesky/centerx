@@ -75,7 +75,7 @@ if ( file_exists($_path) ) {
 
 
 // Live reload
-live_reload();
+// live_reload();
 
 
 

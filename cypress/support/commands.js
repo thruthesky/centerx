@@ -33,10 +33,14 @@ Cypress.Commands.add("loginOrRegister", (email, password) => {
   const userEmail = email ?? "thruthesky@gmail.com";
   const userPass = password ?? "12345a";
 
-  cy.request(
-    "POST",
-    `/?route=user.loginOrRegister&email=${userEmail}&password=${userPass}`
-  )
+  // cy.request(
+  //   "POST",
+  //   `/?route=user.loginOrRegister&email=${userEmail}&password=${userPass}`
+  // )
+  cy.request({
+    method: "POST",
+    url: `/?route=user.loginOrRegister&email=${userEmail}&password=${userPass}`,
+  })
     .its("body")
     .then((user) => {
       cy.setCookie("sessionId", user.response.sessionId);
