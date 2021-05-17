@@ -41,8 +41,8 @@ $secondStories = $op['secondStories'] ?? [];
   }
 
   .photos-and-texts-2-stories .second-story {
-    display: flex;
     margin-top: 8px;
+    display: flex;
   }
 
   .photos-and-texts-2-stories .second-story .story {

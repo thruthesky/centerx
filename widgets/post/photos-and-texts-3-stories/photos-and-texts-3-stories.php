@@ -61,7 +61,6 @@ $op = getWidgetOptions();
 
     .photos-and-texts-3-stories .third-story {
         display: flex;
-        margin-top: 8px;
     }
     .photos-and-texts-3-stories .third-story .left {
         margin-right: 4px;

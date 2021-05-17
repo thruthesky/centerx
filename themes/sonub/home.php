@@ -9,7 +9,6 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 
 <?php
 
-
 include widget('post/photo-and-texts-4-stories', [
     'title' => 'This is the title',
     'firstStories' => [
