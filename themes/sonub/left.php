@@ -21,3 +21,17 @@
 </style>
 
 
+
+<div class="left-banner mt-2">
+    <?php
+    $posts = post()->latest(categoryId: 'qna', limit: 1);
+    include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[0]]);
+    ?>
+</div>
+
+<div class="left-banner mt-2">
+    <?php
+    $posts = post()->latest(categoryId: 'qna', limit: 1);
+    include widget('post/photo-with-text-at-bottom', ['post' => $posts[0]]);
+    ?>
+</div>

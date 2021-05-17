@@ -162,6 +162,7 @@ class Entity {
     /**
      * Set memory data. It does not change database.
      *
+     * Note, updateMemoryData updates only one(1) fields. But setMemoryData() updates an array.
      * 현재 entity 의 $data 값을 변경한다.
      * 주의, 이 함수는 메모리의 $data 변수 값만 바꾼다. DB 를 바꾸려면 `$this->update()` 를 사용해야한다.
      *
