@@ -2,7 +2,7 @@
 
 /**
  * @size wide
- * @options title, 1 'categoryId' & '$limit' in $firstStories, 'categoryId' inside $secondStories.
+ * @options title & 1 'categoryId' & '$limit' in $firstStories, 'categoryId' inside $secondStories.
  */
 
 $op = getWidgetOptions();
@@ -17,7 +17,7 @@ $op = getWidgetOptions();
   <?php } ?>
 
   <div class="first-story">
-    <?php include widget('post/left-photo-with-stories', $op['firstStories']); ?>
+    <?php include widget('post/left-photo-with-stories', $op['firstStories'] ?? []); ?>
   </div>
 
   <div class="second-story">

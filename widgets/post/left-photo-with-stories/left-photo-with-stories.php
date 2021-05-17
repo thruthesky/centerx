@@ -2,7 +2,7 @@
 
 /**
  * @size wide
- * @options title, 1 post in $firstStories, 'categoryId' inside $secondStories.
+ * @options title & 1 'limit' & 'categoryId'.
  */
 
 $op = getWidgetOptions();
@@ -44,12 +44,10 @@ if ($posts[0] && !empty($posts[0]->files())) {
 
   .left-photo-with-stories .stories {
     width: 66%;
-    margin-left: 5px;
+    margin-left: 8px;
   }
 
   .left-photo-with-stories .stories div {
-    margin-bottom: 2px;
-    padding-right: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
