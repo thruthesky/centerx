@@ -1,7 +1,7 @@
 <?php
 /**
  * @size icon
- * @options ...
+ * @options category
  * @dependency vue.js 2.x.x
  */
 
@@ -13,36 +13,39 @@ $comment_topic = NOTIFY_COMMENT . $category->id;
 
 function isSubscribedToTopic($topic): bool
 {
-    return login()->v($topic) === "Y";
+    return login()->v($topic) === "on";
 }
 ?>
-<template>
-    <div>
-        <b-form-checkbox v-model="checked" name="check-button" switch @change="onChangeSubscribeOrUnsubscribeTopic('<?= $post_topic ?>')">
-            Get Notified
-        </b-form-checkbox>
-    </div>
-</template>
+<div class="push-notification-icon">
+    <b-form-checkbox v-model="notifyPost" name="check-button" switch @change="onChangeSubscribeOrUnsubscribeTopic('<?= $post_topic ?>', 'notifyPost')">
+        New Post
+    </b-form-checkbox>
+    <b-form-checkbox v-model="notifyComment" name="check-button" switch @change="onChangeSubscribeOrUnsubscribeTopic('<?= $comment_topic ?>', 'notifyComment')">
+        New Comment
+    </b-form-checkbox>
+</div>
 <script>
-
-
     mixins.push({
         data: {
-            checked: <?=isSubscribedToTopic($post_topic) ? 'true' : "false" ?>
+            notifyPost: <?=isSubscribedToTopic($post_topic) ? 'true' : "false" ?>,
+            notifyComment: <?=isSubscribedToTopic($comment_topic) ? 'true' : "false" ?>
         },
         methods: {
-            onChangeSubscribeOrUnsubscribeTopic: function(topic) {
-                console.log(app.checked);
+            onChangeSubscribeOrUnsubscribeTopic: function(topic, field) {
+                console.log(topic, field);
+                console.log(app.$data[field]);
+
                 if ( !Cookies.get('sessionId') ) {
                     alert("Please login first");
-                    app.checked = false;
+                    app.$data[field] = false;
                     return;
                 }
-
+                console.log(Cookies.get('sessionId'));
                 request(
                     "notification.topicSubscription",
-                    { topic: topic, subscribe: app.checked ? "Y" : "N" },
+                    { topic: topic, subscribe: field ? "on" : "off" },
                     function (res) {
+                        console.log("request",res);
                         // this.$data.user[topic] = mode ? "Y" : "N";
                     },
                     this.error
@@ -51,3 +54,12 @@ function isSubscribedToTopic($topic): bool
         }
     });
 </script>
+
+<style>
+    .push-notification-icon {
+        display: flex;
+    }
+    .push-notification-icon > div {
+        margin-right: 0.5em;
+    }
+</style>
