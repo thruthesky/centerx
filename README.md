@@ -868,6 +868,10 @@ else {
 
 - And even for the categories(forums) that has no widget settings, the widgets ending with `-default` will be used.
 
+## Widget samples
+
+- visit `/?widget.samples` to see what kinds of widgets are available.
+
 
 
 ## 재 사용가능한 위젯 샘플
