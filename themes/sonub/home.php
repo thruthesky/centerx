@@ -13,7 +13,7 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 include widget('post/photos-and-texts-2-stories', [
     'title' => 'This is the title',
     'firstStories' => [
-        'categoryId' => 'qna',
+        'categoryId' => 'discussion',
         'limit' => 5,
     ],
     'secondStories' => [

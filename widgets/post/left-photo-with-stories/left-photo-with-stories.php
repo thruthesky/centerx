@@ -2,7 +2,7 @@
 
 /**
  * @size wide
- * @options 'title' & 1 'limit' & 'categoryId'.
+ * @options 'title' & 'limit' & 'categoryId'.
  * @dependency none
  */
 
@@ -15,7 +15,7 @@ $posts = post()->latest(categoryId: $op['categoryId'] ?? $categoryId, limit: $li
 
 // default image if first story post doesn't have image
 $src = "/widgets/post/left-photo-with-stories/panda.jpg";
-if ($posts[0] && !empty($posts[0]->files())) {
+if ( !empty($posts) && $posts[0] && !empty($posts[0]->files())) {
   $src = thumbnailUrl($posts[0]->files()[0]->idx, 300, 200);
 }
 ?>

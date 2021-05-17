@@ -2,11 +2,12 @@
 
 /**
  * @size wide
- * @options 'title' & 1 'categoryId' & '$limit' in $firstStories, 'categoryId' inside $secondStories.
+ * @options 'title' & 'categoryId' & '$limit' in $firstStories, 'categoryId' inside $secondStories.
  * @dependency none
  */
 
 $op = getWidgetOptions();
+$secondStories = $op['secondStories'] ?? [];
 ?>
 
 
@@ -22,7 +23,8 @@ $op = getWidgetOptions();
   </div>
 
   <div class="second-story">
-    <?php $posts = post()->latest(categoryId: $op['categoryId'] ?? 'discussion', limit: 4);
+    <?php 
+    $posts = post()->latest(categoryId: $secondStories['categoryId'] ?? 'discussion', limit: 4);
     for ($i = 0; $i < 4; $i++) { ?>
       <div class="story story-<?=$i?>">
         <?php include widget('post/photo-with-text-at-bottom', ['post' => $posts[$i] ?? null]); ?>
