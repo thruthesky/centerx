@@ -42,7 +42,7 @@ $secondStories = $op['secondStories'] ?? [];
 
   .photos-and-texts-2-stories .second-story {
     display: flex;
-    margin-top: 4px;
+    margin-top: 8px;
   }
 
   .photos-and-texts-2-stories .second-story .story {
@@ -50,12 +50,12 @@ $secondStories = $op['secondStories'] ?? [];
   }
 
   .photos-and-texts-2-stories .second-story .story-1 {
-    margin-right: 2px;
-    margin-left: 4px;
+    margin-right: 4px;
+    margin-left: 8px;
   }
 
   .photos-and-texts-2-stories .second-story .story-2 {
-    margin-right: 4px;
-    margin-left: 2px;
+    margin-right: 8px;
+    margin-left: 4px;
   }
 </style>

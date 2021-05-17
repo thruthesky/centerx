@@ -10,7 +10,7 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 <?php
 
 
-include widget('post/photos-and-texts-2-stories', [
+include widget('post/photo-and-texts-4-stories', [
     'title' => 'This is the title',
     'firstStories' => [
         'categoryId' => 'discussion',
