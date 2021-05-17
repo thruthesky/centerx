@@ -614,6 +614,44 @@ config()->updateMetas(ADMIN_SETTINGS, in()); // ADMIN_SETTINGS is defined as 1.
 d( config(3)->getMetas() );
 ```
 
+
+# 새로운 사이트 만들기
+
+- CenterX 로 새로운 사이트를 만들기 위해서는 아래와 같은 과정을 거치면 된다.
+  
+
+- 도메인을 dating.com 로 가정하고, /etc/hosts 에 IP 를 127.0.0.1 로 등록한다.
+  - 참고로 원하는 도메인이 있으면 그걸 쓰면 되고, dating.com 이 없으면 가짜 도메인으로 등록한다.
+  - 그리고 가능하면 SSL 도 같이 등록하면 좋다.
+
+- 그리고 테마 폴더 이름을 dating 으로 가정한다.
+  - themes/dating/index.php 를 생성한다.
+  
+- 먼저 dating.com 도메인을 Nginx 와 연결한다.
+  
+Nginx 설정 예제)
+```text
+# dating project
+server {
+    server_name  dating.com;
+    listen       80;
+    root /docker/home/centerx;
+    index index.php;
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+    location ~ \.php$ {
+        fastcgi_pass   php:9000;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+```
+
+- 그리고 config.php 에서 dating.com 으로 접속하면 dating 테마를 사용하도록 한다.
+
+
+
 # 로그인
 
 
@@ -874,7 +912,7 @@ else {
 
 
 
-## 재 사용가능한 위젯 샘플
+## 재 사용가능한 위젯 샘플, Making Re usable widgets
 
 - 위젯을 만들어 놓고, 재 사용을 하지 못하는 경우가 많다.
   비슷한 위젯은 css style 디자인만 변경하거나 약간의 옵션 수정으로 재 사용하는 것이 중요한다,
@@ -882,7 +920,7 @@ else {
   
 - 재 사용가능한 위젯을 만들기 위해서는
   
-  - @size 태그에 narrow 또는 wide 라고 표시해 놓고, 어디에 쓰면 좋을지 적절히 선택 할 수 있도록 한다.
+  - @size 태그에 icon, narrow 또는 wide 라고 표시해 놓고, 어디에 쓰면 좋을지 적절히 선택 할 수 있도록 한다.
     참고로, RWD 에 대항해서 위젯을 만들어야 한다.
     
     narrow 는 너비가 260px 이하의 비교적 좁은 사이즈

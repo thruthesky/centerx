@@ -1,4 +1,10 @@
 <?php
+/**
+ * @size icon
+ * @options ...
+ * @dependency vue.js 2.x.x
+ */
+
 $o = getWidgetOptions();
 $category = $o['category'];
 

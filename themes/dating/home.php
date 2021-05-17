@@ -1,5 +1,6 @@
-<section class="p-3">
+<h1>데이팅 사이트입니다.</h1>
 
+<section class="p-3">
 
     <div class="alert alert-info mb-5">
         어서오세요, <?=login()->nicknameOrName?>
@@ -30,6 +31,5 @@
 
         <button type="submit">회원가입</button>
     </form>
-
 
 </section>

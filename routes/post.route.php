@@ -115,6 +115,7 @@ class PostRoute {
 
     public function vote($in): array|string {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
+        if ( ! isset($in[CHOICE]) ) return e()->empty_vote_choice;
         return post($in[IDX])->vote($in[CHOICE])->response();
     }
 
