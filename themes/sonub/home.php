@@ -19,7 +19,7 @@ include widget('post/photos-and-texts-3-stories', [
     'firstStories' => $firstStories,
     'secondStories' => [
         'title' => 'Most read articles',
-        'categoryId' => 'discussion',
+        'categoryId' => 'qna',
         'limit' => 5,
         'displayNumbers' => true
     ],
