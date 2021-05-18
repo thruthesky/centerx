@@ -124,7 +124,7 @@ function send_message_to_users($in): array|string
         if ( isset($in[SUBSCRIPTION]) ) {
             if ( $user->v($in[SUBSCRIPTION]) == OFF ) continue;
         }
-        
+
         $tokens = token()->getTokens($user->idx);
         $all_tokens = array_merge($all_tokens, $tokens);
     }
