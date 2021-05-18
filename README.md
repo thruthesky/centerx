@@ -38,10 +38,7 @@
 - [CenterX Git Project](https://github.com/thruthesky/centerx/projects/2)
 
 
-- @TODO 중요: ?user.logout.submit 형태로 들어오면 &p=user.logut.submit 형태로 바꾸어 줄 것.
-  그래야 live_reload() 할 때, .submit.php 이면, live_reload() 자바스크립트가 출력되지 않는다.
 
-  
 - 자바스크립트 쿠키 저장 루틴을 helper.js 에 넣을 것.
 
 - helper.js 에 loggedIn(), notLoggedIn() 함수를 넣을 것.
@@ -1319,6 +1316,13 @@ https://local.itsuda50.com/?route=point.postCreate&idx=15130
 <img src="http://local.itsuda50.com/etc/phpThumb/phpThumb.php?src=67&original=Y">
 ```
 
+
+#### phpThumb zoom crop
+
+- 기본적으로 Zoom Crop 옵션이 들어가 있다. 그래서 원래 이미지가 원하는 사이즈 보다 크면, 줌을 해서 crop 을 한다.
+  만약, zoom crop 을 안하면, 원래 이미지의 ratio 가 그대로 유지된다. 그래서 별로다.
+
+
 # Meta
 
 You can search meta table directly by using `meta()`.
@@ -1509,6 +1513,49 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 <?php js(HOME_URL . 'etc/js/helper.js', 10)?>
 <?php js(HOME_URL . 'etc/js/helper.js', 10)?>
 <?php js(HOME_URL . 'etc/js/app.js', 0)?>
+```
+
+# HTTP 입력 값 조정
+
+웹 브라우저가 서버로 `/?a.b.c` 와 같이 접속하면 **테마에서** 특정 페이지를 로드 할 때, `theme()->pageName()` 과 `theme()->file()` 의
+조합으로 어떤 페이지를 로드할 지 결정을 한다.
+
+하지만, 웹 브라우저의 접속 경로가 `/?a.b.submit&a=apple&b=banana` 와 같이 `.submit` 으로 들어오면 테마 자체가 로드되지 않아야 한다.
+즉, 그 경로의 판단을 테마가 로드되기 전에 해야 한다.
+
+그래서, boot.php 에서 HTTP 입력 값 조정을 한다.
+
+## .submit 을 p 변수로 변환
+
+주의, [PHP 공식 문서: Dot 이 Underscore 로 변경](https://www.php.net/variables.external)됨에 따라
+`/?a.b.submit` 이 PHP 로 전달될 때, HTTP 변수로 인식되어 PHP 의 $_REQUEST 에 `$_REQUEST['a_b_submit']` 로 저장되고 값은 없으므로 빈 값이
+저장된다.
+
+즉, `/?a.b.submit&a=apple&b=banana` 와 같이 접속하면  아래와 같이 $_REQUEST 에 저장되는 것이다.
+
+```text
+Array
+(
+    [a_b_submit] => 
+    [a] => apple
+    [b] => banana
+)
+```
+
+이 점을 활용하여, $_REQUEST 의 key 중에 _submit 으로 끝나는 것이 있으면, 테마를 표시하지 않고, 오직, PHP 를 통해 값을 저장하는 것으로 인식하여,
+index.php 에서 테마를 로드하지 않고, PHP 스크립트에서만 처리를 한다.
+
+이러한 작업은 `adjust_http_input()` 에서 하며 (이 뿐만 아니라 여러가지 다른 작업이 있을 수 있다.), 그 결과로
+
+`/?a.b.submit&a=apple&b=banana` 와 같이 접속을 하면 아래와 같이 `.submit` 의 값이 `p` 변수에 저장된다.
+
+```text
+Array
+(
+    [a] => apple
+    [b] => banana
+    [p] => a.b.submit
+)
 ```
 
 

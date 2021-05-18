@@ -3,11 +3,13 @@
  * @file config.php
  */
 /**
- * Debug path.
- * 디버그를 기록할 로그 파일 경로
+ * Debug Configurations
+ * 디버그 옵션 및 기록할 로그 파일 경로
+ *
+ * If DEBUG_LOG is set to false, no debug log will recorded.
  */
-define('DEBUG_LOG_FILE_PATH', ROOT_DIR . 'var/logs/debug.log');
-
+const DEBUG_LOG = true;
+const DEBUG_LOG_FILE_PATH = ROOT_DIR . 'var/logs/debug.log';
 
 const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
 

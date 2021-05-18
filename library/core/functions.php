@@ -494,10 +494,20 @@ function admin(): bool {
 }
 
 function debug_log($message, $data='') {
+    if ( DEBUG_LOG == false ) return;
     $str = print_r($message, true);
     $str .= ' ' . print_r($data, true);
-//    file_put_contents(DEBUG_LOG_FILE_PATH, $str . "\n", FILE_APPEND);
+    $str .= "\n";
     error_log($str, 3, DEBUG_LOG_FILE_PATH);
+}
+
+function leave_starting_debug_log() {
+    if ( DEBUG_LOG == false ) return;
+    $phpSelf = $_SERVER['PHP_SELF'] ?? '';
+    debug_log("-- start -- $phpSelf --> boot.code.php:", date('m/d H:i:s'));
+    if ( str_contains($phpSelf, 'phpThumb.php') == false ) {
+        debug_log('in();', in());
+    }
 }
 
 
