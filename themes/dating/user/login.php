@@ -1,4 +1,4 @@
-<form @submit.prevent="onSubmitRegisterForm()">
+<form @submit.prevent="onSubmitLoginForm()">
     <div class="form-group">
         <label for="inputEmail1">이메일</label>
         <input type="email" class="form-control" id="inputEmail1" aria-describedby="emailHelp" v-model="form.email">
@@ -25,19 +25,13 @@
             }
         },
         methods: {
-            onSubmitRegisterForm: function () {
+            onSubmitLoginForm: function () {
                 this.errorMessage = {};
-
-               // if(this.form.email === '') return this.errorMessage.email = '이메일을 입력해 주세요.';
-               // if(this.form.password ==password= '') return this.errorMessage.password = '이메일을 입력해 주세요.';
-
-
-                // setAppCookie()
-                // location.href='/';
+                request('user.login', this.form, function(user) {
+                    setAppCookie('sessionId', user.sessionId);
+                    location.href = '/';
+                }, alert);
             }
         }
-
     });
-
-
 </script>
