@@ -13,8 +13,8 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 
 include widget('post/photo-and-texts-4-stories', []);
 
-$firstStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 2, photo: 2);
-$thirdStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 3, photo: 3);
+$firstStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 2, photo: true);
+$thirdStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 3, photo: true);
 include widget('post/photos-and-texts-3-stories', [
     'firstStories' => $firstStories,
     'secondStories' => [
