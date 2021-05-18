@@ -114,7 +114,7 @@ class UserTaxonomy extends Entity {
         $this->resetError();
         if ( isset($in[EMAIL]) == false || empty($in[EMAIL]) ) return $this->error(e()->email_is_empty);
         if ( !checkEmailFormat($in[EMAIL]) ) return $this->error(e()->malformed_email);
-        if ( isset($in[PASSWORD]) == false ) return $this->error(e()->password_is_empty);
+        if ( isset($in[PASSWORD]) == false || empty($in[PASSWORD]) ) return $this->error(e()->password_is_empty);
 
 
         $found = $this->exists([EMAIL=>$in[EMAIL]]);

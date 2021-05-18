@@ -40,10 +40,12 @@
 
 - @TODO 중요: ?user.logout.submit 형태로 들어오면 &p=user.logut.submit 형태로 바꾸어 줄 것.
   그래야 live_reload() 할 때, .submit.php 이면, live_reload() 자바스크립트가 출력되지 않는다.
+
   
 - 자바스크립트 쿠키 저장 루틴을 helper.js 에 넣을 것.
 
 - helper.js 에 loggedIn(), notLoggedIn() 함수를 넣을 것.
+
 
 - 챨스.
   countryCode 를 통한 국가별 게시판 관리.
@@ -2894,10 +2896,17 @@ content[tip]=내용사진입니다.
   - set '12345' to `LIVE_RELOAD_PORT`
   - add the working local domain to `LOCAL_HOSTS`.
   - run `node live-reload.js`
+<<<<<<< HEAD
 
 
 
 
+=======
+  
+
+
+  
+>>>>>>> dating
 # Error code
 
 - 에러 관련 루틴은 library
