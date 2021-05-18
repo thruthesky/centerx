@@ -1,3 +1,4 @@
+
 /** Again import google libraries */
 importScripts("https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js");
 importScripts("https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js");
@@ -18,10 +19,13 @@ var firebaseConfig =  {
     appId: "1:446424199137:web:f421c562ba0a35ac89aca0",
     measurementId: "G-F86L9641ZQ"
 };
+
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+
 // Retrieve an instance of Firebase Data Messaging so that it can handle background messages.
 const messaging = firebase.messaging();
+
 
 /** THIS IS THE MAIN WHICH LISTENS IN BACKGROUND */
 messaging.setBackgroundMessageHandler(function(payload) {

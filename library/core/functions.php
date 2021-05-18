@@ -387,16 +387,16 @@ function setLoginCookies(array|int $profile): void {
  * @param $profile
  */
 function unsetLoginCookies() {
-    deleteAppCookie(SESSION_ID);
-    deleteAppCookie(NICKNAME);
-    deleteAppCookie(PROFILE_PHOTO_URL);
+    removeAppCookie(SESSION_ID);
+    removeAppCookie(NICKNAME);
+    removeAppCookie(PROFILE_PHOTO_URL);
 }
 
 function setAppCookie($name, $value) {
     setcookie ( $name , $value, time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
 }
 
-function deleteAppCookie($name) {
+function removeAppCookie($name) {
     setcookie($name, "", time()-3600, '/', COOKIE_DOMAIN);
 }
 
@@ -494,10 +494,20 @@ function admin(): bool {
 }
 
 function debug_log($message, $data='') {
+    if ( DEBUG_LOG == false ) return;
     $str = print_r($message, true);
     $str .= ' ' . print_r($data, true);
-//    file_put_contents(DEBUG_LOG_FILE_PATH, $str . "\n", FILE_APPEND);
+    $str .= "\n";
     error_log($str, 3, DEBUG_LOG_FILE_PATH);
+}
+
+function leave_starting_debug_log() {
+    if ( DEBUG_LOG == false ) return;
+    $phpSelf = $_SERVER['PHP_SELF'] ?? '';
+    debug_log("-- start -- $phpSelf --> boot.code.php:", date('m/d H:i:s'));
+    if ( str_contains($phpSelf, 'phpThumb.php') == false ) {
+        debug_log('in();', in());
+    }
 }
 
 
@@ -522,6 +532,10 @@ function widget(string $path, array $options=[]) {
     return $path;
 }
 
+/**
+ * 위젯 옵션 변수를 설정 할 때, 변수가 하나 뿐이므로, 덮어쓰여질 수 있으니 주의해야 한다.
+ * @todo 각 위젯 호출 마다, 옵션 값을 따로 저장 할 것.
+ */
 $__widget_options = [];
 function setWidgetOptions(array $options) {
     global $__widget_options;
@@ -534,6 +548,7 @@ function setWidgetOptions(array $options) {
  * @example
  *  $op = getWidgetOptions();
  * @return array
+ *
  */
 function getWidgetOptions() {
     global $__widget_options;
@@ -1258,6 +1273,19 @@ function get_javascript_tags(string $scripts_and_styles): string {
     }
 
     return $ret;
+}
+
+
+function get_default_javascript_tags() : string {
+    $COOKIE_DOMAIN = COOKIE_DOMAIN;
+    $default_script = <<<EOH
+<script>
+    const COOKIE_DOMAIN = '$COOKIE_DOMAIN';
+</script>
+EOH;
+
+    if( defined('FIREBASE_SDK') ) $default_script .= FIREBASE_SDK;
+    return $default_script;
 }
 
 /**

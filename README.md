@@ -30,23 +30,23 @@
   - docker 의 nginx 에 접속 도메인 별로, 홈 폴더를 다르게 설정 할 수 있도록 했다.
     - 그로 인해, Host OS 에서 여러 도메인으로 접속을 할 때, 꼭 CenterX 프레임워크가 아니라 다른 성격의 사이트 예) Perl CGI 나 Angular, Vue.js SPA, PWA 등이 가능하게 되었다.
     - 또한 각 홈 폴더에 centerx 를 따로 설치해서, 다른 버전의 centerx 를 운영 할 수 있다.
-  
-  
+
+
 
 # 해야 할 일
 
 - [CenterX Git Project](https://github.com/thruthesky/centerx/projects/2)
 
 
-- @TODO 중요: ?user.logout.submit 형태로 들어오면 &p=user.logut.submit 형태로 바꾸어 줄 것.
-  그래야 live_reload() 할 때, .submit.php 이면, live_reload() 자바스크립트가 출력되지 않는다.
+
+- html minify
 
 - 챨스.
   countryCode 를 통한 국가별 게시판 관리.
   공유 게시판: discussion, qna, reminder, buyandsell, job, caution, rent_house, rent_car, school, 등 공용게시판. 카페장 메인메뉴 선택 가능.
   비공유게시판: 카테고리 아이디를 도메인과 동일하게 하고, 서브 카테고리를 최대 5개까지만 가능하도록 한다. 그리고 서브카테고리를 선택해서 메인 메뉴에 올릴수 있는데,
-    모바일에서는 1개, 100픽셀 넓이(전체 360픽셀 중),
-    데스크톱에서는 최대 3개, 200픽셀(전체 1024 픽셀 중).
+  모바일에서는 1개, 100픽셀 넓이(전체 360픽셀 중),
+  데스크톱에서는 최대 3개, 200픽셀(전체 1024 픽셀 중).
 
 - update country.test.php
 
@@ -69,9 +69,9 @@
       - Controller 는 View 에서 쓰기도 하고, Rest API 에서도 그대로 쓰도록 한다.
       - Controller 에서는 아래와 같이 할 수 있도록 한다.
         route.php 를 좀 더 업데이트한다.
-        
+
   - 프로젝트(최상위) 폴더에 model, view, controller 폴더를 둔다.
-    
+
   - 모든 함수를 클래스로 변환. functions.php 에 있는 함수를 모두 클래스로 변환.
     - class Utilities {} 와 같이 하고 u()->xxxx() 또는 글로벌 변수 $u->xxx() 로 사용 할 수 있도록 한다.
       $u-> ... 또는 $f->... 와 같이 사용 할 수 있도록 한다.
@@ -79,8 +79,8 @@
   - 워드프레스의 플러그인 기능 처럼, 관리자페이지에서 추가를 할 수 있도록 한다.
   - 관리자페이지에서 도메인 별로 테마를 선택 하도록 한다.
   - 게시판 그룹 기능. 그룹 단위 목록, 검색 기능.
-  
-  
+
+
 
 - @doc
   meta function may try to create child meta even if its taxonomy is meta. It only happens on testing.
@@ -88,19 +88,19 @@
 - 필고를 보고, security 체크를 한다. security 패턴 검사를 관리자 페이지에서 입력 할 수 있도록 한다.
   - SELECT SQL 쿼리 word filtering 을 따로 두고, (글 추출 및 각종 해킹 시도. entity.class.php 에서 read, search 등에서 사용. )
   - INSERT/UPDATE 쿼리 word filtering 을 따로 둔다. (글 쓰기, 코멘트 쓰기용 필터링, 욕설 등록 및 기타, entity.class.php 에서 insert 에서 사용.)
-  
+
 - SQL 문장에서 쿼리 시간을 제한 할 수 있도록, config.php 에 설정을 한다.
 
 - pass login 재 정리
 
 - `boot_complete` 훅 추가. 이 훅은 `boot.php` 맨 마지막에서 호출 되는 것으로 각종 입력 값이나 각종 보안 관련 훅을 추가 할 수 있도록 한다.
   예를 들면, 특정 라우트나 페이지에서는 특정 HTTP 입력 값만 허용하도록 하고, 다른 값이 들어오면 에러가 나도록 한다. 그리고 각 값의 문자열 길이나, 타입을 검사해서, 잘못된 입력을 가려 낼 수 있도록 한다.
-  
+
 - 파일 업로드에서, 퍼미션이 없을 때, empty response 에러가 나온다. 올바른 에러가 표시되도록 할 것.
 
 - 훅시스템
   - entity()->create(), update(), delete(), get(), search() 등에서만 훅을 걸면 왠만한 것은 다 된다.
-  
+
 - Friendly URL 에 테마 스크립트 페이지 지정.
   https://domain.com/qna 와 같이 짧은 URL 을 지원 할 것.
   기본적으로 모든 category 는 최 상위 슬래시(/) 다음에 기록 할 수 있도록 한다.
@@ -110,7 +110,7 @@
 
 - 배포
   .gitignore 에 기본적으로 widgets 폴더를 빼고, 배포를 원하는 위젯만 -f 로 넣을 것.
-  
+
 
 - 카테고리
   카테고리 및 서브카테고리 변경 기능.
@@ -131,14 +131,14 @@
   - @later API 보안.
     - CenterX 는 공개 소스이고, 프로토콜이 공개되어져 있으므로 누구든지, API 를 통해서 악의적으로 반복된 DB 액세스를 하여, DOS 공격을 할 수 있다.
       따라서, 허용된 클라이언트만 읽고 쓰도록 허용 할 수 방법을 강구해야한다.
-  
+
     - 첫번째 방법은, API 자체적으로 보안을 하는 것으로,
       읽기는 1분에 100회,
       DB 작업 많이 들어가는 목록이나 검색은 1분에 20회,
       쓰기는 1분에 10회, 10분에 20회, 60분에 30회로 제한한다.
       총 용량은 60분에 글 1M 로 제한, 사진 20M 로 제한.
       이것을 관리자 페이지에서 변경 할 수 있도록 한다.
-      
+
   - @later etc/configs 폴더에 각종 설정을 넣는다.
     db.config.php
     app.config.php
@@ -158,12 +158,12 @@
 
 - @doc 게시판 설정에서, 글 편집 후 이동 옵션에서, 글 읽기 페이지를 선택하면, 글을 작성하고 난 다음에 글 읽기 페이지로 간다.
   글 목록 페이지를 선택하면, 글 쓴 후, 글 목록 페이지로 한다.
-  
+
 
 - @doc `next.***.test.php` 로 테스트 코드를 작성하고 있다.
   - user, category, post, comment 순서로 테스트
   - user()->create()->response() 에서 에러가 있으면 response() 항상 에러 문자열을 리턴한다.
-  
+
 - @doc 클라이언트로 전달하는 response() 함수는 에러가 있으면 에러 문자열을 리턴한다.
 - @doc 클라이언트로 전달하는 경우가 아니면 `->hasError` 로 에러가 있는지 없는지 검사해야 한다.
 
@@ -181,7 +181,7 @@ user()->by('thruthesky@gmail.com')->changePassword('12345a');
 - @doc meta 는 실제 taxonomy 가 존재하지 않아도 된다.
 
 - @done entity 에서 meta 값 업데이트하는 테스트
-  
+
 - @done entity 에서 search(), my(), 테스트
 
 - @doc 1개의 값을 리턴 하는 경우, 에러가 있으면 null 또는 빈 배열을 리턴한다.
@@ -228,7 +228,7 @@ user()->by('thruthesky@gmail.com')->changePassword('12345a');
 
 이 때, 쓸데 없는 값이 저장되지 않도록 defines 에 정의를 해서 처리를 하지만
 
-악용을 하기 위해 큰 데이터를 저장하려는 경우가 있다. 
+악용을 하기 위해 큰 데이터를 저장하려는 경우가 있다.
 
 이 때에는 입력값에 허용된 값이 아닌 다른 값이 들어오면, 저장을 하지 않던지 에러를 내야한다.
 
@@ -269,11 +269,11 @@ cd etc/phpdoc
 - 먼저 도커를 설치하고 실행한다.\
   [우분투 도커 설치 참고](https://docs.docker.com/engine/install/ubuntu/)
 
-  
+
 - 도커는 compose 를 통해서 실행하는데, 그 설정이 github 에 있다. 아래와 같이 Docker compose 설정을 GitHub 에서 다운로드 또는 clone(또는 fork)
   한다.
   그리고 루트 계정으로 `/docker` 에 설치를 한다.
-  
+
   - `git clone https://github.com/thruthesky/docker /docker`
 
 - 그리고 docker-compose.yml 에서 MYSQL_PASSWORD 와 MYSQL_ROOT_PASSWORD 를 적절한 비밀번호로 변경한다.
@@ -302,7 +302,7 @@ cd etc/phpdoc
     - `$ git checkout main`
     - `$ chmod -R 777 files`
     - `$ chmod -R 777 var/logs`
-  
+
 - phpMyAdmin 을 통한 데이터베이스 테이블 설치
   웹 브라우저로 phpMyAdmin 에 접속을 해서 SQL 스키마를 DB 에 넣는다.
   - `/docker/home/default/etc/phpMyAdmin` 에 phpMyAdmin 이 설치되어져 있다.
@@ -321,14 +321,14 @@ cd etc/phpdoc
 
 - `keys` 폴더에 각종 키를 설정한다.
   - Firebase 접속을 위한 Admin SDK Account Key 를 설정.
-  
+
 - `config.php` 에 각종 api key 를 설정한다.
   - Firebase 접속을 위한 Web access key 를 설정.
   - 카카오 로그인 설정.
   - 네이버 로그인 설정.
   - 날씨 Api 설정
   - 환율 Api 설정
-  등 원하는 것만 설정하면 된다.
+    등 원하는 것만 설정하면 된다.
 
 - 만약, 다른 도메인으로 다른 홈페이지를 추가 개발을 하고 싶다면, `/docker/etc/nginx.conf` 를 수정하여, 홈 경로를 `/docker/home` 폴더 아래로 하면 된다.
 
@@ -371,7 +371,7 @@ define('DOMAIN_THEMES', [
 - 기본적으로 Nginx 로 설정되어져 있다. Apache web server 를 사용하려 한다면, 직접 적절한 설정을 해야 한다.
 
 - `etc/nginx.conf` 에 nginx 설정이 있다.
-  
+
 - `nginx` 설정에서 루트 경로는 `docker-compose.yml` 의 설정에 따른다.
   각종 경로만 잘 지정하면, `nginx` 설정 방법을 그대로 활용하면 된다.
 
@@ -389,7 +389,7 @@ define('DOMAIN_THEMES', [
   - `docker/logs` - Log files of Nginx and other logs.
   - `docker/mysqldata` - MariaDB database files are saved in this folder.
   - `docker/docker-compose.yml` - Docker Compose file.
-  
+
 
 ## Live reload
 
@@ -399,7 +399,7 @@ define('DOMAIN_THEMES', [
 # Versioning
 
 - 버전 체계. Semver 로 한다.
- - 브레이킹체인지/메이저.마이너.패치
+- 브레이킹체인지/메이저.마이너.패치
 
 
 
@@ -407,15 +407,15 @@ define('DOMAIN_THEMES', [
 # Component
 
 
-  
+
 - [EzSQL](https://github.com/ezSQL/ezsql)
   For database connection
-  
+
 - Firebase
 
 - [MobileDetect](https://github.com/serbanghita/Mobile-Detect)
   To detect the device is mobile
-  
+
 
 
 # 폴더구조 (Folder Structure)
@@ -425,28 +425,28 @@ define('DOMAIN_THEMES', [
   - `etc/install` - for keeping information about installation.
   - `etc/phpMyAdmin` - phpMyAdmin for managing database. Access `https://www...com/etc/phpMyAdmin/index.php`.
   - `etc/sql` - has SQL schema for installation.
-  
+
 - `routes` 폴더에는 각종 라우트가 저장된다.
 
 - `storage` is for all the uploaded files.
 
 - `themes` is theme folder for website.
-  
+
 - `vendor` is for compose files.
-  
+
 - `widgets` is for widgets.
 
 - `library` folder has the system library scripts.
   -`library/taxonomy` folder has all kinds of taxonomy scripts like `user.taxonomy.php`, `post.taxonomy.php`,
-    `comment.taxonomy.php`, `meta.taxonomy.php`, and others.
-  
-    - post and comment are using same table but their usages are different. So, the taxonomies are divided.
-  
+  `comment.taxonomy.php`, `meta.taxonomy.php`, and others.
+
+  - post and comment are using same table but their usages are different. So, the taxonomies are divided.
+
   - `library/utility` folder has utility scripts for the system like `library/utility/mysqli.php` that provides database connectivity.
-    
+
   - `library/model/entity.php` is a model class for each taxonomy.
   - `library/model/taxonomy.php` is the taxonomy class that extends entity class and is the parent of all taxonomy classes.
-    
+
 
 
 # Boot flow
@@ -477,7 +477,7 @@ define('DOMAIN_THEMES', [
 # Configuration
 
 - `config.php` on project folder is the default configuration and it is only for configuration. It cannot query to database in `config.php`
-  
+
 - The default `config.php` can be overwritten by theme configuration.
 
 ## Theme Configuration
@@ -497,19 +497,19 @@ define('DOMAIN_THEMES', [
 
 - After configuration(including theme configuration) has been set, `theme/theme-name/theme-name.functions.php` will be called on every theme even if it's API call.
   You can do whatever you want from here. You can query to database at this time.
-  
+
 
 # Developer Guideline
 
 - Variables and Functions, Methods should in camel case.
 
 - Taxonomy is like a table and Entity is like a record of the table.
-  
+
 - Entity class has methods for `create`, `update`, `delete`, `get`, `search` and more.
-  
+
 - Child class of Entity will have all the functionality of Entity.
   - For instance, `User` class which extends `Entity` has functionality of
-  `$user->create()`, `$user->update()`, `$user->get()`, `$user->search()` and more of `Entity` class.
+    `$user->create()`, `$user->update()`, `$user->get()`, `$user->search()` and more of `Entity` class.
   - For `User` class to create a user, it may need to encrypt password. So, it but `Entity's create` method has no functionality to encrypt password,
     and that the where `User->register` method comes.
     User class can have its own methods to check if the input from user is right and if email is already exists, then,
@@ -562,7 +562,7 @@ Here are some recommendations on creating helper methods on each taxonomies.
   - A comment can be a post.
   - And anything that has title, content, and needs to be managed like post, then it can be saved as a post.
   - there is a `type` field and it shows the kind of the post. it can be `diary`, `shopping-mall-item`, `memo`, `comment`, `post`, etc.
-  
+
 - The `categoryIdx` is the `wc_categories.idx` indicating that the post belongs to which category.
 - The `category` and `subcategory` is child(sub) categories of the category.
   In the the `category` settings page, admin can add categories and subcategories of the category like below.
@@ -575,32 +575,32 @@ category2=subscateogry-2-1,subcategory-2-2, ...
 - `rootIdx` is the post idx of comments.
   For instance, a post.idx is 3. then the `rootIdx` of all the comments(children) of the post is 3.
   For the post itself, it is 0. And if `rootIdx` is 0, it means, a post. Not a comment.
-  
+
 - `parentIdx` is to indicate who is the parent.
   It is used to find the children of a post or a comment.
   If a post.idx is 3, then the `parentIdx` of all the immediate(first depth) of children of the post is 3.
   For the post itself, it is 0. And if `parentIdx` is 0, it means, it is a post. Not a children.
   For a comment of another comment, the `parentIdx` of the comment will be the `idx` of the parent.
   For instance,
-    - The post A's idx is 3, 
-      And the child of A is B. B has post.idx might be 10, and parentIdx must be 4, and rootIdx = 3.
-      Then, the child of B is C. B's post.idx might be 20, and parentIdx must be 10, and rootIdx = 3.
+  - The post A's idx is 3,
+    And the child of A is B. B has post.idx might be 10, and parentIdx must be 4, and rootIdx = 3.
+    Then, the child of B is C. B's post.idx might be 20, and parentIdx must be 10, and rootIdx = 3.
 
 - If a comment has same value of `rootIdx` and `parentIdx`, then it's the first depth(immediate) child comment of the post.
 
 - `code` 필드는 posts 테이블 레코드에 특정 코드를 저장해서, 해당 글을 추출할 때 사용한다.
   예를 들면, 어떤 글에 특정 code 를 저장하고 URL 로 /?p=forum.post.view&code=abc 와 같이 해서 특정 글을 보거나
-  
+
   또 다른 예로, 특정 청소 기록을 하는 테이블을 만들때, 각 날짜별로 방청소, 화장실 청고, 거실 청소 등 코드를 두어서, 날짜별로 청소를 했는지 안했는지 체크 할 수 있다.
   즉, 별도의 테이블을 만들지 않고, 게시판 테이블로 여러가지 기능을 만들 수 있다.
   `code` 에는 최대 32 글자의 문자열이 저장되는데, 숫자로 저장해도 상관 없다.
-  
+
 
 ## Config taxonomy class
 
 - Config taxonomy class is a fake taxonomy class. There is no such taxonomy table as `config`.
   So, it does not do any `CRUD` on the taxonomy. Instead, it deals only with meta data.
-  The primary goal of `Cofnig` class is to save config data. 
+  The primary goal of `Cofnig` class is to save config data.
 - By default, all config has `idx` as 0.
 - Settings in admin page is also saved as config, but the `idx` is 1.
 - To save(or update) multiple config meta, you can use `updateMetas()` method.
@@ -620,7 +620,7 @@ d( config(3)->getMetas() );
 # 새로운 사이트 만들기
 
 - CenterX 로 새로운 사이트를 만들기 위해서는 아래와 같은 과정을 거치면 된다.
-  
+
 
 - 도메인을 dating.com 로 가정하고, /etc/hosts 에 IP 를 127.0.0.1 로 등록한다.
   - 참고로 원하는 도메인이 있으면 그걸 쓰면 되고, dating.com 이 없으면 가짜 도메인으로 등록한다.
@@ -628,9 +628,9 @@ d( config(3)->getMetas() );
 
 - 그리고 테마 폴더 이름을 dating 으로 가정한다.
   - themes/dating/index.php 를 생성한다.
-  
+
 - 먼저 dating.com 도메인을 Nginx 와 연결한다.
-  
+
 Nginx 설정 예제)
 ```text
 # dating project
@@ -675,16 +675,16 @@ server {
   - 공식 문서에서 `REST API로 개발하는 경우 (Redirect URL 을)필수로 설정해야 합니다.` 와 같이 나온다.
   - 즉, 카카오톡 로그인 버튼을 눌렀을 때, 자바스크립트로 새 창을 띄워서 하는 경우, 로그인 성공 콜백 함수가 나오고 원하는데로 처리를 하면 된다.
     따라서, Redirect URL 을 설정 할 필요가 없다.
-  
+
 - 설정
   - `JAVASCRIPT_KAKAO_CLIENT_ID` 는 자바스크립트 로그인 용 키이다.
   - `JAVASCRIPT_KAKAO_CALLBACK_URL` 는 자바스크립트로 로그인을 한 다음 이동 할 페이지이다. 자바스크립트에서 로그인을 할 때에는 프로그램적으로 원하는 곳으로 이동 할 수 있다.
     - Rest API 를 사용하지 않으므로, Redirect URL 일 필요가 없다.
-  
+
 - 동작
   - 아이폰에서는 로그인 후, 홈페이지로 돌아가지 않는다. 사용자가 앱으로 돌아가기 버튼을 눌러야하는 번거로 움이 있다.
   - 안드로이드폰에서는 로그인 후, 홈페이지로 돌아간다.
-  
+
 
 ## 네이버 로그인
 
@@ -709,7 +709,7 @@ server {
 
 - Root admin, who has the full power, can be set to ADMIN_EMAIL constant in `config.php`.
   After setting the email in config.php, you may regsiter(or login) with the email.
-  
+
 
 ```php
 config()->set('admin', 'thruthesky@gmail.com');
@@ -745,7 +745,7 @@ with the latest android version, but the developer must code on the android app.
   - 우선, `theme/theme-name/keys/db.passowrd.php` 파일이 존재하면 로드한다.
   - 없으면, `etc/keys/db.password.php` 파일이 존재하는지 보고 있으면 로드한다.
   - 없으면, config.php 에 있는 접속 정보로 접속한다.
-  
+
 
 ## 게시글 테이블. posts 테이블
 
@@ -766,11 +766,11 @@ with the latest android version, but the developer must code on the android app.
 - 사용자가 사진을 올릴 때, `file.userIdx` 에 회원 번호, `file.code` 에 `photoUrl` 이라고 입력하면, 해당 사진은 그 사용자의 프로필 사진이 된다.
   주의: 1.0.x 에서는 `file.code` 가 아닌 `file.taxonomy` 에 `photoUrl` 이라고 저장했다.
   회원 사진을 사진을 업로드 할 때나 변경 할 때, `file.code` 값이 `photoUrl` 인 것을 사용하면 된다.
-  
+
   회원 정보를 클라이언트로 전달 할 때, `photoIdx` 에 그 `file.idx` 가 전달된다.
   사용자 프로필 사진을 삭제할 때, `file.code = 'photoUrl' AND file.userIdx='사용자번호'` 조건에 맞는 사진을 삭제 할 수 있다.
   물론 `file.idx=photoIdx` 인 것을 삭제해도 된다.
-  
+
 - `photoUrl` 은 meta 값을 저장되는 것이다. 이것은 users 테이블에 존재하지 않으며, meta 값으로 저장되지 않을 수도 있다.
   즉, 사용자 마다 이 값이 있을 수 있고 없을 수도 있다. 예를 들어 카카오톡 로그인을 하는 경우, 사용자 사진이 있으면 이 값에 그 URL 이 저장된다.
   따라서, 클라이언트에서 적절히 옵션 처리를 해서 사용하면 된다.
@@ -814,12 +814,12 @@ This logs all user activities.
 - add a method like 'canXxxx()' in `user_acitivity.taxonomy.php` if it needs to check the permission before the activity
   - And add it to somewhere before the activity.
   - For instance `act()->canCreatePost()`
-  
+
 - add a method of recording activity in `user_acitivity.taxonomy.php`.
   - And add it after the activity.
   - For instance, `act()->register()`
   - If it needs to deduct point, deduct the point in this method.
-  
+
 - For instance, 'UserActivityTaxonomy::canRegister()' checks if the user can register, and 'UserActivityTaxonomy::register()' method records.
 
 
@@ -893,24 +893,59 @@ else {
 </script>
 ```
 
+# Cookies
+
+## Cookies between PHP and Javascript
+
+- PHP and Javascript can share data. So, if the app sets sessionId with Javascript, then user is logged in PHP, also.
+
+```javascript
+setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
+```
+
+- One important thing to know is that, cookies must use same path and domain. So, you must use `setAppCookie()` and
+  `removeAppCookie()` on both of PHP and Javascript to share (and delete) the cookie data.
+
+
+# Sharing Code between PHP and Javascript
+
+## Same functions that exist both on PHP and Javascript.
+
+- `loggedIn()`
+- `notLoggedIn()`
+- `setAppCookie()`
+- `removeAppCookie()`
+
+
+## Similiar functions
+
+- `login()->idx` in PHP is equal to `loginIdx()` in Javascript.
+
+
+
+
+
+
+
+
 # 쪽지 기능
 
 - 쪽지 기능은 게시판과 매우 흡사하다. 그래서 게시판 기능을 상속해서 쓴다.
-  
+
 - 글 목록, 페이지내에션, 검색 등에서 비슷하게 사용된다.
   다만, 외부에서 검색이 되지 않도록 100% 보장하기 위해서, title 과 content 필드 대신에 privateTitle, privateContent 에 기록을 한다.
   이 때, private 에 Y 의 값을 기록해야 한다.
-  
+
 - otherUserIdx 에 받는 사람 정보가 들어간다.
 
 - readAt 에 글을 읽은 시간이 들어간다.
-  
+
 - 게시판 category.id 는 어떤 것이라도 상관없다. 하지만 규칙을 두고, 각종 링크에서 공용으로 사용하기 위해서 'message' 로 한다.
   즉, 쪽지 목록 메뉴 링크를 걸 때, `/?forum.post.list&categoryId=message` 로 하면 된다.
-  
+
 - 주의 할 것은 게시판 목록, 읽기, 쓰기 위젯 등을 쪽지 기능에 맞도록 제작해야한다.
   기본적으로 post-list/message-list-default, post-view/message-view-default, post-edit/message-edit-default 가 존재한다.
-  
+
 
 
 # Widget System
@@ -921,7 +956,7 @@ else {
 
 - Each widget must have a php script file that has same name of its folder name.
   For instance, if folder name is `widgets/abc`, then script name must be `widgets/abc/abc.php`.
-  
+
 - Each widget can declare some information as comment annotation like below.
 
 ```php
@@ -949,25 +984,25 @@ else {
 - 위젯을 만들어 놓고, 재 사용을 하지 못하는 경우가 많다.
   비슷한 위젯은 css style 디자인만 변경하거나 약간의 옵션 수정으로 재 사용하는 것이 중요한다,
   그렇게 하기 위해서, /?widget.samples 에 재 사용 가능한 위젯을 표시하도록 했다.
-  
+
 - 재 사용가능한 위젯을 만들기 위해서는
-  
+
   - @size 태그에 icon, narrow 또는 wide 라고 표시해 놓고, 어디에 쓰면 좋을지 적절히 선택 할 수 있도록 한다.
     참고로, RWD 에 대항해서 위젯을 만들어야 한다.
-    
+
     narrow 는 너비가 260px 이하의 비교적 좁은 사이즈
     wide 는 너비가 600px 이상의 넓은 사이즈를 말한다.
     /?widget.sample 에서 보여 줄 때, narrow 는 max-width: 260px 너비로 보여주고, wide 는 max-width: 600px 너비로 보여준다.
-    
+
   - @dependency 에 종속되는 3rd party 라이브러리 지정
     Bootstrap 과 같은 외부 CSS 나 Javascript 를 사용해서는 안된다.
     만약, 사용한다면, @dependency bootstrap 4.6.x vue.js 2.x 와 같이 표시를 해야 한다.
-  
+
   - @options 태그에 필요한 옵션 정보를 표시한다.
-    
+
   - 모든 위젯은 옵션이 없이 호출되는 것을 대비해서, 임시 데이터 및 사진을 보여 줄 수 있도록 한다.
     이러한 임시 데이터는 위젯 폴더 내부에 보관해야 한다.
-    
+
 ## 위젯 상속
 
 - 위젯 상속이라기 보다는 기존에 존재하는 위젯을 변경하여 재 활용하기 위한 것이다.
@@ -1018,7 +1053,7 @@ include widget('post-edit/post-edit-default');
 - To view or link to create or update page,
   - use `/?p=forum.post.edit&categoryId=...` for creation
   - use `/?p=forum.post.edit&idx=...` for update.
-  
+
 - After filling up on post create/update form, send the form to `/?p=forum.post.edit.submit` and it will redirect to the list page.
 
 
@@ -1049,18 +1084,18 @@ include widget('post-edit/post-edit-default');
 
 - `route` is the route of the api call.
   Ex) `/?route=app.version`
-  
+
 - To get app version, access like below
   Ex) `/?route=app.version`
-  
+
 - To live reload on web browser, add `/?reload=true`. But you must remove it when you don't need live reload.
-  
+
 
 ## Response
 
 - `login()` 함수는 매번 호출 될 때마다 새로운 객체를 생성하므로, 필요하다면 `$login = login()` 와 같이 객체를 저장해서 재 사용해야한다.
   그래서 아래와 같이 하면, 업데이트된 값이 제대로 전달되지 않는다.
-  
+
 ```php
 login()->updateData('rank', 2); // 이 객체와
 return login()->response(); // 이 객체는 서로 달라서, rank 값이 클라이언트로 전달되지 않는다.
@@ -1077,7 +1112,7 @@ return login()->updateData('rank', 2)->response();
 - There are two ways of handling route.
 - First, you can create a route class under `routes` folder and add method.
   For instance, if `/?route=app.version` is accessed, create `routes/app.route.php` and define `AppRoute` class, then add `version` method in it.
-  
+
 - Second, simple define a function of anywhere.
   For instance, if `/?route=app.version` is accessed, add a function to `addRoute()` function like below.
 ```php
@@ -1115,7 +1150,7 @@ https://local.itsuda50.com/index.php?route=app.settings
 
 - To login, access like below
   Ex) `/?route=user.login&email=...&password=...`
-  
+
 - To register,
 
 ```text
@@ -1168,7 +1203,7 @@ https://local.itsuda50.com/?route=category.delete&reload=true&idx=1
   - Required fields are: `sessionId`, `category`.
   - `title`, `content`, and other properties are optoinal.
   - Since `Entity` class supports adding any meta data, you can add any data in `&key=value` format.
-  
+
 ```text
 https://local.itsuda50.com/?route=post.create&sessionId=5592-52f7119495484c1d56cf8629e9664001&categoryId=banana&title=yo&content=there&a=apple&b=banana&c=cherry
 ```
@@ -1233,9 +1268,9 @@ https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d802387
 - To create a file, there are two steps.
   - First, upload file
   - Second, add the file idx(es) to the taxonomy entity `files` field.
-  
+
   - To upload file, call `file.upload` route with sessionId and `userfile` with file data.
-    
+
   - Add files to post, comment, any other taxonomies.
 ```text
 /?files=123,456,other=vars-to-save-to-the-taxonomies.
@@ -1263,12 +1298,12 @@ https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d802387
 
   또는 아래와 같이 하나는 code 만으로 기존 파일을 삭제 할 수 있다.
   이 때, code 만으로 기존 파일을 삭제하는 경우는 해당 파일이 로그인을 한 사용자의 파일이어야 한다.
-  
+
   {
-    deletePreviousUpload: Y
-    code:
+  deletePreviousUpload: Y
+  code:
   }
-  
+
   본 항목의 사용자 사진 참고
   Flutter Firelamp api.controller.dart 의 takeUploadFile() 과 uploadFile() 함수를 참고.
 
@@ -1278,7 +1313,7 @@ https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d802387
 - 글(또는 코멘트)을 쓸 때, 얼마의 포인트를 획득했는지, 포인트 값을 알고 싶다면, 아래와 같이 호출한다.
   - `idx` 는 글 또는 코멘트 번호이다.
   - @todo 로그인한 사용자 자신의 레코드이어야 값을 가져올 수 있도록 수정해야 한다.
-  
+
 ```
 https://local.itsuda50.com/?route=point.postCreate&idx=15130
 ```
@@ -1290,7 +1325,7 @@ https://local.itsuda50.com/?route=point.postCreate&idx=15130
 
 - By default, images are saved under `files/uploads` folder and the images can be directly displayed using image url.
   But it cannot display images with `file.idx`.
-  
+
 - `phpThumb` does thumbnail generating and control expiration of image. And it even handles the `Last-Modified(Etag)`.
   Chrome and other browsers do memory-cache.
   Flutter can use a package to cache locally if file name is not modified.
@@ -1312,6 +1347,13 @@ https://local.itsuda50.com/?route=point.postCreate&idx=15130
 ```html
 <img src="http://local.itsuda50.com/etc/phpThumb/phpThumb.php?src=67&original=Y">
 ```
+
+
+#### phpThumb zoom crop
+
+- 기본적으로 Zoom Crop 옵션이 들어가 있다. 그래서 원래 이미지가 원하는 사이즈 보다 크면, 줌을 해서 crop 을 한다.
+  만약, zoom crop 을 안하면, 원래 이미지의 ratio 가 그대로 유지된다. 그래서 별로다.
+
 
 # Meta
 
@@ -1353,7 +1395,7 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 - 언어화 기능이다. 사이트나 앱에 표시되는 글을 영어, 한국어 등으로 번역해서 표현 할 수 있다.
 - 플러터에서는 Getx 의 `.tr` 기능과 연계해서 사용하면 된다.
 
-- Translation 을 언어화가 아닌 다른 용도로 사용이 가능한데, 
+- Translation 을 언어화가 아닌 다른 용도로 사용이 가능한데,
   예를 들면, "앱 메뉴"에 "버전 표시"를 할지 말지 관리자 페이지에서 on/off 를 설정 해야하는 경우가 있는데,
   이 기능을 하기 위해서는 매번 관리자 페이지(HTML 웹사이트)를 수정해서, 기능 추가/저장을 해야하는데, 번거롭게 매번 이렇게 하지 말고,
   Translation 에 "showVersionOnDrawer" 를 추가하면, on 이 되고, 삭제하면 off 가 되는 것이다. 즉, 관리자 페이지 기능을 수정 할 필요가 없는 것이다.
@@ -1363,7 +1405,7 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
   클라이언트에서 값을 확인 할 때에는 '플러터 예제 코드' `if ('showLoginOnDrawer'.t == 'Y')` 와 같이 값이 Y 또는 N 인지 비교를 해야 한다.
   그리고 더 짧게 쓰려면 `if ('loginOnDrawer'.on)` 와 같이 할 수도 있다.
   참고: https://github.com/thruthesky/dalgona/blob/main/lib/services/globals.dart#L52
-  
+
 
 - @see the phpdoc
 
@@ -1419,7 +1461,7 @@ define('CURRCONV_API_KEY', 'bd6ed497a84496be7ee9');
 # Weather
 
 - the system support weather api from https://openweathermap.org/
-- define open weather map api key in config.php  
+- define open weather map api key in config.php
 ```php
 define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 ```
@@ -1443,11 +1485,11 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 
 - 모든 페이지를 로드할 때, 각 테마의 index.php 가 호출된다. 즉, 테마의 index.php 에서 각 페이지에 맞는 PHP 스크립트를 로드해야한다.
   - 참고: theme/default/index.php 를 보면, `include theme()->page()` 와 같이 호출하는데, 이렇게 하면 각 페이지 별 PHP 스크립트를 로드한다.
-  
+
 - `pages/` 폴더는 시스템적으로 고정된 것이 아니지만, 테마 디자인을 할 때, 개발자가 추가하는 페이자의 경우, `pages` 폴더 아래에 넣을 것을 권한다.
   - 예를 들어 `/?user.login` 과 같이 하면, `theme/theme-name/user/login.php` 가 로드되는데, user, post 와 같이 범용적인 것은 각각의 폴더에 저장하고
     기타 페이지의 경우, `/?pages.menu` 와 같이 해서, `theme/theme-name/pages/menu.php` 와 같이 `pages` 폴더에 스크립트를 저장하고 로드되도록 한다.
-    
+
 - `parts/` 폴더는 시스템적으로 정해진 것으로 특정 부분의 스크립트가 존재하면 사용된다. 존재하지 않으면 사용되지 않는다.
   - 예를 들어, 각 게시판의 상단에 포함될(보여질) 스크립트인 `pages/post-list-top.php` 이 존재하면, 이 PHP 스크립트가 게시판 상단에 보여진다. 만약, 이
     스크립트가 존재하지 않으면 보여지지 않는 것이다.
@@ -1457,15 +1499,15 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 
 - Theme page is loaded by the path of HTTP `p` variable.
   - For instance, `/index.php?p=user.login` will open `/theme/theme-name/user/login.php`.
-  You may open a page without `p=`. For instance, `/index.php?user.login` will do the same of `/index.php?p=user.login`.
+    You may open a page without `p=`. For instance, `/index.php?user.login` will do the same of `/index.php?p=user.login`.
 
 - 테마 페이지는 URL 변수 `p=...` 에 따라 각 `theme/theme-name` 에 있는 페이지를 연다.
   이 때 만약 해당 페이지가 없으면 `theme/default` 에 있는 페이지를 연다.
-  
+
 - 테마 페이지를 열 때, 각 테마의 `theme/**/index.php` 가 먼저 로드된다.
   그리고 각 테마의 index.php 에서 `include theme()->page()` 와 같이 호출해서 테마 페이지를 로드해야한다.
   즉, 각 테마 페이지에서 적절한 디자인을 추가하거나 기본적인 HTML head 등을 화면에 출력 할 수 있다.
-  
+
 - URL 변수 `p=abc.submit` 과 같이 `.submit` 으로 끝나면, index.php 에 의해서 각 테마의 index.php 를 호출하지 않고, 바로 테마 페이지를 연다.
   즉, 테마 디자인을 생략하고(화면에 출력하지 않고), 곧 바로 테마 스크립트만 실행하는 것이다.
 
@@ -1475,10 +1517,10 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
   모두 HTML 페이지의 하단 (`</body>` 바로 직전)으로 이동한다. HTML 로딩 방식에서 웹브라우저가 랜더링 성능을 높이기 우해 선호하는 방식이며, 이에 따라 검색
   엔진(구글 등)에서 높은 점수를 주어 검색이 더 잘되게 된다. 또는 Vue.js 2 에서 인라인 `<style>` 태그와 `<script>` 태그를 지원하지 않는다.
   - 단, `<head>...</head>` 사이에 있는 `<script>` 나 `<style>` 태그는 하단으로 이동하지 않는다.
-  
+
 - `index.php` 에서 인라인 `<style>` 태그나 `<script>` 태그를 모두 추출하여 하단으로 이동한다. 하지만, `<script src='...'></script>` 와 같이
   외부 링크를 거는 경우 `js()` 함수를 통해서 호출해야 한다.
-  
+
 
 ## 외부 Javascript 를 포함하기
 
@@ -1487,7 +1529,7 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
   - `js()` 함수는 동일한 src 파일을 중복으로 포함해도 한번만 포함하도록 해 준다.
   - 또한 차후에 여러가지 기능이 포함 될 수 있다.
   - 직접 `<script src=...></script>` 와 같이 해 되지만,
-  여러가지 전 처리 기능을 하지 못할 수 있다.
+    여러가지 전 처리 기능을 하지 못할 수 있다.
 
 - `js()` 함수에는 두번째 파라메타에 priority 를 기입 할 수 있다. priority 는 최대 10 부터 0 까지이며, 주의 할 점은 인라인 자바스크립트가 priority 1
   다음, 0 이전에 삽입된다.
@@ -1503,6 +1545,49 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 <?php js(HOME_URL . 'etc/js/helper.js', 10)?>
 <?php js(HOME_URL . 'etc/js/helper.js', 10)?>
 <?php js(HOME_URL . 'etc/js/app.js', 0)?>
+```
+
+# HTTP 입력 값 조정
+
+웹 브라우저가 서버로 `/?a.b.c` 와 같이 접속하면 **테마에서** 특정 페이지를 로드 할 때, `theme()->pageName()` 과 `theme()->file()` 의
+조합으로 어떤 페이지를 로드할 지 결정을 한다.
+
+하지만, 웹 브라우저의 접속 경로가 `/?a.b.submit&a=apple&b=banana` 와 같이 `.submit` 으로 들어오면 테마 자체가 로드되지 않아야 한다.
+즉, 그 경로의 판단을 테마가 로드되기 전에 해야 한다.
+
+그래서, boot.php 에서 HTTP 입력 값 조정을 한다.
+
+## .submit 을 p 변수로 변환
+
+주의, [PHP 공식 문서: Dot 이 Underscore 로 변경](https://www.php.net/variables.external)됨에 따라
+`/?a.b.submit` 이 PHP 로 전달될 때, HTTP 변수로 인식되어 PHP 의 $_REQUEST 에 `$_REQUEST['a_b_submit']` 로 저장되고 값은 없으므로 빈 값이
+저장된다.
+
+즉, `/?a.b.submit&a=apple&b=banana` 와 같이 접속하면  아래와 같이 $_REQUEST 에 저장되는 것이다.
+
+```text
+Array
+(
+    [a_b_submit] => 
+    [a] => apple
+    [b] => banana
+)
+```
+
+이 점을 활용하여, $_REQUEST 의 key 중에 _submit 으로 끝나는 것이 있으면, 테마를 표시하지 않고, 오직, PHP 를 통해 값을 저장하는 것으로 인식하여,
+index.php 에서 테마를 로드하지 않고, PHP 스크립트에서만 처리를 한다.
+
+이러한 작업은 `adjust_http_input()` 에서 하며 (이 뿐만 아니라 여러가지 다른 작업이 있을 수 있다.), 그 결과로
+
+`/?a.b.submit&a=apple&b=banana` 와 같이 접속을 하면 아래와 같이 `.submit` 의 값이 `p` 변수에 저장된다.
+
+```text
+Array
+(
+    [a] => apple
+    [b] => banana
+    [p] => a.b.submit
+)
 ```
 
 
@@ -1595,8 +1680,8 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 - 유용한 Bootstrap 기능 중 몇 다음과 같다.
   - Dialog, Calendar, Date Picker, Time picker, Overlay, Popover, Sidebar, Spinner, Tab, Toast, Tooltip,
   - FORM file(drag & UI), FORM input contextual state,
-  - Scroll spy, 
-  
+  - Scroll spy,
+
 예제) 아래와 같이 polyfill.min.js 를 포함해야 IE10+ 이상이 지원된다.
 
 ```html
@@ -1674,10 +1759,10 @@ if ( modeCreate() ) {
 # FORM
 
 - FORM 은 가능한 post method 로 전송한다.
-  
+
 - 글 작성과 같은 데이터 생성 페이지는 `<input type="hidden" name="p" value="forum.comment.edit.submit">` 처럼 `p` 값의 끝을 `.sumit` 으로 한다.
   그러면, 테마를 실행하지 않고, 바로 그 스크립트를 실행한다. 즉, 화면에 번쩍임이 사라지게 된다.
-  
+
 - 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="returnTo" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
 
 
@@ -1750,7 +1835,7 @@ hook()->add('post_list_country_code', function(&$countryCode) {
     $countryCode = cafe()->countryCode;
 });
 ```
-  
+
 * `posts_before_create` 훅 함수가 에러 문자열을 리턴하면 다른 훅은 모두 실행이 안되고, 글/코멘트 생성이 중지된다.
 
 * 모든 훅 함수는 값을 리턴하거나 파라메타로 받은 레퍼런스 변수를 수정하는 것이 원칙이다.
@@ -1797,7 +1882,7 @@ hook()->add('post_list_country_code', function(&$countryCode) {
 - 대표적인 것으로 `posts_before_create` 와 `posts_after_create` 가 있다.
   `posts_before_create` 훅 함수로 전달되는 값은 생성 직전의 record 와 전에 입력 값이다.
   `posts_after_create` 훅 함수로 전달되는 값은 생선된 entity 값과 전에 입력 값이다.
-  
+
 
 ```php
 hook()->add('posts_before_create', function($record, $in) {
@@ -1845,7 +1930,7 @@ hook()->add('posts_before_create', function($record, $in) {
   글 가져오는 옵션을 변경 할 수 있는 훅. 예) 국가별 카테고리에서, 카테고리 지정이 없으면, 국가 카테고리로 기본 지정한다.
 
 * posts_after_search
-  
+
 * forum_list_header_top - 게시판 목록 최 상단에 표시
 * forum_list_header_bottom - 게시판 목록의 헤더의 맨 아래 부분에 표시.
 
@@ -1871,7 +1956,7 @@ hook()->add('posts_before_create', function($record, $in) {
 
 * post_list_country_code
   게시글 목록을 할 때, 강제로 특정 국가의 글만 목록하게 할 수 있다.
-  
+
 
 ### 게시판 설정 훅
 
@@ -1951,9 +2036,9 @@ EOS;
 # 포인트 시스템
 
 - 포인트를 적용하는 곳(회원 가입, 로그인, 글 쓰기/삭제, 코멘트 쓰기/삭제, 추천, 비추천 등)에서는 포인트의 변화가 없어도(포인트 증감이 없어도) 기록을 남긴다.
-  
+
 - 이 기록을 바탕으로 추천/글쓰기/코멘트쓰기 시간/수 제한, 일/수 제한을 한다.
-  
+
 - 일/수 제한은 해당일(오늘) 0시 0분 0초 부터 현재 시간까지 해당 글/코멘트/추천 들이 얼마나 발생했는지 확인하고 제한한다.
   예를 들어, 현재 시간이 14시 14분 14초 라면, 오늘 0시 0분 0초 부터 지금 현재 14시 14분 14초 까지 시간을 제한하는 것이다.
 
@@ -2087,10 +2172,10 @@ card_flip2 는 쉬운(하) 게임이다
   참고, 문의가 상품 별로 공개 문의 또는 사용자 선택에 의해서 비밀 문의로 되어져야 한다면, 별도의 게시판에 문의를 작성해야한다.
   이 때, 문의 게시판에 작성된 문의가 어느 상품의 것과 연관되어져 있는지, relationIdx 로 표시 할 수 있다.
   이처럼 여러가지 방식으로 활용 할 수 있다.
-  
+
 - `private` 은 현재 글이 비밀글인지 아닌지를 'Y/N'으로 표시한다.
   주의: `private` 일 때에는 글 제목과 내용을 `private_title` 과 `private_content` 로 저장한다. 그래서 검색에서 완전 배제를 한다.
-  
+
 - 'Y' 는 찬성(또는 like) 수
 - 'N' 은 반대(또는 dislke) 수
 
@@ -2123,7 +2208,7 @@ echo Markdown::render ($md);
 
 - 2021년 3월 기준, PHPUnit 이 PHP8 을 완벽히 지원하지 않는 것인지, 실행이 잘 안된다. 하지만, 에러가 나는 부분이 EzSQL 인 것을 감안하면, EzSQL 에 문제가 있지 싶다.
   - 그래서, 테스트 로직을 직접 작성했다.
-  
+
 - 아래와 같이 실행하면, `tests/*.test.php` PHP 스크립트(파일)을 실행한다.
   - php container 이름과 centerx 설치 폴더를 잘 지정하면 된다.
 
@@ -2133,7 +2218,7 @@ chokidar '**/*.php' -c "docker exec [php_container_name] php [centerx_folder_nam
 
 - 원한다면, 아래와 같이 테스트 파일의 일부 문자열을 포함하는 파일만 실행 할 수 있다.
   - 테스트 파일 이름에 "app" 또는 "user" 라는 문자열이 있으면 실행한다.
-  
+
 ```shell
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic."
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.db."
@@ -2271,7 +2356,7 @@ if ( in(CATEGORY_ID) ) {
 ## Vue.js 2 로 하나의 글에 코드 별 여러 사진(파일) 업로드 & 컴포넌트로 작성
 
 - 아래의 코드는 게시글을 작성 할 때, 코드 별로 사진을 업로드하는 예제이다.
-  
+
 - 쇼핑몰과 같이 이미지를 특별한 용도 별로 업로드하고자 할 때 유용하게 사용 할 수 있다.
 
 - 아래의 코드에서 `photo-upload` 는 아주 유용한 코드여서, `app.js` 에 `upload-by-code` 로 추가되어져 있다.
@@ -2485,7 +2570,7 @@ $file = files()->getByCode(in('code'));
 
 - 다음은 바닐라 자바스크립트를 사용한 예제이다. 특징적으로는 코드별로 사진을 업로드한다.
   즉, 게시판처럼 그냥 하나의 글에 여러 사진을 올리는 것이 아니라, 쇼핑몰의 대표사진, 설명사진, 위젯 사진 등으로 나누어 업로드하고 활용하는 것이다.
-  
+
 - 주의 할 점은, 새로운 사진을 업로드 할 때, 이전 사진이 삭제되도록, 먼저 삭제 버튼을 두어, 삭제하도록 한다.
 
 ```html
@@ -2600,13 +2685,13 @@ echo "현재 환율: $phpKwr";
 
 
 - postCreateLimit - users who has less points than this cannot create post
-  For instance, this value is 1000 and user has 999. Then the user cannot create post. 
+  For instance, this value is 1000 and user has 999. Then the user cannot create post.
 - commentCreateLimit - users who has less points than this cannot create comment
 - readLimit - users who has less points than this cannot create comment
   - @attention When a user creates a post, it reads the post internally.
     Which means, for post creating, user will read the post and if user has less point of 'readLimit' when creating, it will fail.
   - @attention, readLimit is only for post reading, not for comment reading.
-  
+
 - banCreateOnLimit - User cannot create post/comment if the user reaches the limit.
 
 - createPost - is the Points to be given to the author on post creation. It can be minus value like -100.
@@ -2650,13 +2735,13 @@ echo "현재 환율: $phpKwr";
 테이블에 들어가 있는 정보는 아래와 같다.
 
 - `CountryNameKR` 한글 국가 이름. 예) 아프가니스탄, 대한민국
-  
+
 - `CountryNameEN` 영문 국가 이름. 예) Japan, South Korea
-  
+
 - `CountryNameOriginal` 해당 국가 언어의 표기 이름. 예) 日本, الاردن , 한국
 
 - `2digitCode` 국가별 2자리 코드. 예) JP, KR
-  
+
 - `3digitCode` 국가별 3자리 코드. 예) JPN, KOR
 
 - `currencyCode` 통화 코드. 예) JPY, KRW
@@ -2670,8 +2755,8 @@ echo "현재 환율: $phpKwr";
 - `latitude`, `longitude` 국가별 중심의 GEO Location. 국가별 수도가 특정 도시가 아닌, 국가의 토지 면적에서 중심이 되는 부분의 위/경도 값이다.
   이 값을 활용 예)
   사용자의 국가 정보를 알고 있으면 그 국가의 중심부의 lat, lon 을 구해서, 해당 국가의 날씨 정보를 추출 할 수 있다. 비록 그 위치가 특정 도시가 아닌, 나라 면적의 중심이지만 적어도 그 국가의 날씨 정보를 알 수 있다.
-  
-  
+
+
 
 ## 국가 정보 코딩 예제
 
@@ -2722,7 +2807,7 @@ echo "현재 환율: $phpKwr";
 
 ## Post list parameters
 
-- 게시판 목록에서 검색에 사용되는 
+- 게시판 목록에서 검색에 사용되는
 
 - `categoryId` 는 글 카테고리. 카테고리 번호를 숫자로 입력해도 된다.
 
@@ -2732,38 +2817,38 @@ echo "현재 환율: $phpKwr";
   국가별 글 목록을 할 때 사용한다.
   국가 코드의 경우, hook 을 통해서 수정 할 수 있다.
   예를 들어, 특정 theme 에서는 무조건 특정 국가의 글만 목록하고자 할 때, 사용 할 수 있다. 예를 들면 소너브에서 도메인/카페 별로 특정 국가의 글만 목록하고자 할 때 사용한다.
-  
-  
+
+
 - `nsub` 사용법.
   - 사용자가 전체 카테고리에서 글 생성할 때, 'abc' 카테고리를 선택한다면, 그 글은 'abc' 카테고리 글이다.
     '전체카테고리'와 'abc' 카테고리 중 어떤 카테고리를 보여주어야 할까?
     정답은 전체 카테고리이다.
     글 쓰기 FORM 을 열 때, HTTP PARAM 으로 subcategory 값이 전달되지 않은 경우, nsub=all 로 전송을 한다.
-    
+
   - 사용자가 전체 카테고리 목록에서, 특정 글을 수정 할 때, 그 글의 카테고리가 'abc' 라면, 글 작성 후, 전체 카테고리를 보여줘야 할까? 'abc' 카테고리만
     보여줘야 할까?
     정답은 전체 카테고리이다.
     글 쓰기 FORM 을 열 때, HTTP PARAM 으로 subcategory 값이 전달되지 않은 경우, nsub=all 로 전송을 한다.
-    
+
   - 사용자가 'abc' 카테고리에서 글을 생성하면, 'abc' 카테고리를 보여줘야 한다.
-    
+
   - 사용자가 'abc' 카테고리에서 글을 하나 수정할 때, 그 글의 카테고리를 'def' 로 바꾸면, 'abc' 와 'def' 중 어떤 카테고리를 보여줘야 할까?
     정답은 def 카테고리이다.
-    
+
   - 요약을 하면, `nsub` 는 글 생성, 수정, 삭제를 할 때, 그 직전의 페이지 목록이 서브카테고리가 아닌 경우, FORM 전송 후 전체 카테고리로 보여주기 위한 것이다.
-  
-  
+
+
 - `searchKey` 검색어
   - searchKey 에 값이 들어오면, `(title LIKE '%searchKey%' OR content LIKE '%searchKey%')` 있으면 그 것을 검색한다.
 
 - userIdx 는 사용자 번호
   - 그 사용자가 쓴 글을 검색한다.
-  예) `https://local.itsuda50.com/?p=forum.post.list&categoryId=qna&userIdx=2&searchKey=hello`
-  
+    예) `https://local.itsuda50.com/?p=forum.post.list&categoryId=qna&userIdx=2&searchKey=hello`
+
 - categoryId 는 글 카테고리 아이디(또는 번호)
 
 - subcategory 는 검색을 할 서브 카테고리이다.
-  
+
 
 
 # 언어화, Translation, 번역
@@ -2771,12 +2856,12 @@ echo "현재 환율: $phpKwr";
 - `etc/translations.php` 에서 PHP 단에서 기본적으로 번역을 해서 제공 할 수 있다. 이렇게 하면 관리자 페이지의 언어화 설정에서 추가되지 않은 언어를
   기본 값으로 지정 할 수 있다.
   `etc/translations.php` 에 지정된 동일한 코드를 관리자 설정에서 지정하면 관리자 설정에서 지정된 값이 사용된다.
-  
+
 - 프로그램적으로 강제 변경을 하기 위해서는 `$translationCache` 변수에 지정을 하면 된다.
   - `etc/translations.php` 에는 `$translations` 변수가 있지만 이 값들은 관리자 설정에 의해서 덮어 쓰여질 수 있다.
   - 하지만, `translation.taxonomy.php` 에 있는 `$translationCache` 변수는 관리자 설정에 덮어 쓰여지지 않는다.
     그래서 이 변수에 값을 지정하면, 그 이후 사용되는 언어 코드에 대해서 강제로 값을 지정 할 수 있다.
-    
+
   - 즉, 우선 순위는
     - `$translationCache` 이 가장 우선이고, 그 다음
     - 관리자 페이지에서 설정하는 DB 설정 값, 그 다음
@@ -2830,6 +2915,15 @@ echo "현재 환율: $phpKwr";
 </script>
 ```
 
+
+# Default Javascript
+
+- Javascript codes that are used by the system will be automatically included at the bottom for all themes.
+  - cookie domain
+  - firebase initialization
+  - and more.
+  You can see it by viewing the source code.
+
 # 위젯
 
 ## 글 쓰기 위젯
@@ -2864,11 +2958,11 @@ content[tip]=내용사진입니다.
 - For listing posts under a category, it requires `category.idx`. Whether the client is using SQL or prepared params,
   `category.idx` must be used, instead of `category.id`.
   - Client app should load the forum configuration at startup and cache for the next boot. So, they can use `category.idx`.
-  
-  
-  
-  
-  
+
+
+
+
+
 # Live Reload
 
 
@@ -2882,26 +2976,33 @@ content[tip]=내용사진입니다.
   - set '12345' to `LIVE_RELOAD_PORT.
   - add the working local domain to `LOCAL_HOSTS`.
   - run `node live-reload.js http`.
-  
+
 - To use live reload with SSL,
   - place `tmp/ssl/live-reload/private.key` and `tmp/ssl/live-reload/cert-ca-bundle.crt` for SSL certificates.
   - set the host(domain) with scheme to `LIVE_RELOAD_HOST`. ex) `https://sonub.com`
-    - @attention the certificates(and private key) must be for the domain of `LIVE_RELOAD_HOST`. 
+    - @attention the certificates(and private key) must be for the domain of `LIVE_RELOAD_HOST`.
   - set '12345' to `LIVE_RELOAD_PORT`
   - add the working local domain to `LOCAL_HOSTS`.
   - run `node live-reload.js`
+<<<<<<< HEAD
+
+
+
+
+=======
   
 
 
   
+>>>>>>> dating
 # Error code
 
 - 에러 관련 루틴은 library
 - 에러 코드는 문자열이며 처음 시작이 반드시 소문자 'error_' 이어야 한다.
 - 에러에 관한 추가 정보는 ' - ' 로 분리하여 추가 할 수 있다.
   예) error_login_first - user did not logged in.
-  
-  
+
+
 # 광고 배너
 
 필고의 adv 2.0 보다 한 단계 업그레이드 해서,
@@ -2929,3 +3030,15 @@ config.php 에서 LIVE_RELOAD_HOST 에 빈 문자열 값을 주어, live reload 
 ## error_entity_not_found on CountryTaxonomy
 
 Be sure you have the countries table records into the wc_countries table.
+
+
+
+# Known Issues
+
+## 404 error on push token renew
+
+- This error is only displayed on developer console and this happens when the app tries to delete previously generated
+  token. Which means, for the very first time, there is no 'previously generated token', so no token to delete and no
+  error. It happens when the app renews the token.
+
+  - see https://docs.google.com/document/d/1Hr7rMaiZiTcuk7SsTAGzYGQZuSIwiNx7OIJq_div-RY/edit#heading=h.op2ktluqo2x2

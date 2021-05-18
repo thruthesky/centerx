@@ -21,16 +21,25 @@ class FileTaxonomy extends Entity {
      * HTTP FORM 으로 업로드 할 수 있고, 프로그램적으로도 업로드 할 수 있다. test 파일 참고
      *
      * @param array $in
-     *  $in['deletePreviousUpload'] - 이 값이 Y 이면, 기존에 존재하는(업로드된) 파일을 삭제한다. 하나의 파일만 유지하고자 할 때 사용.
-     *      taxonomy + entity 조합 또는 userIdx + code 조합으로 기존 파일을 삭제할 수 있다.
-     *      즉, deletePreviousUpload 값이 Y 이면, taxonomy + entity 조합 또는 userIdx + code 조합이 들어와야 한다.
+     *  $in['deletePreviousUpload'] - 이 값이 Y 이면, 기존에 존재하는(업로드된) 파일을 삭제한다.
+     *      즉, 기존의 파일을 자동으로 지우고, 하나의 파일만 유지하고자 할 때 사용한다. 이 때, 입력 값의 조합이 중요하다.
+     *      "taxonomy + entity + userIdx" 조합 또는 "code + userIdx" 조합으로 기존 파일을 삭제할 수 있다.
+     *      즉, deletePreviousUpload 값이 Y 이면,
+     *          반드시 "taxonomy + entity + userIdx" 조합 또는 "code + userIdx" 조합이 들어와야 기존 파일이 삭제된다.
+     *
      *  $in[taxonomy] - taxonomy 값이 들어간다.
+     *      wc_files.taxonomy 에 저장될 값. 이 값은 deletePreviousUpdate 의 값이 Y 이든 아니든, 상관 없이, 저장된다.
+     *
      *  $in[entity] - entity 값이 들어간다.
+     *      wc_files.entity 에 저장될 값. 이 값은 deletePreviousUpdate 의 값이 Y 이든 아니든, 상관 없이, 저장된다.
+     *
      *  $in[code] - code 값이 들어간다.
+     *      wc_files.code 에 저장될 값. 이 값은 deletePreviousUpdate 의 값이 Y 이든 아니든, 상관 없이, 저장된다.
      *
      * @param array $userfile
      *  $_FILES 에 직접 값을 넣어 이 함수를 호출해도 된다. 테스트(tests/basic.file.test.php) 참고.
      *  하지만, $userfile 변수에 따로 값을 넣어 전달한다.
+     *
      * @return self
      */
     public function upload(array $in, array $userfile = []): self {
@@ -47,10 +56,6 @@ class FileTaxonomy extends Entity {
         if ( !isset($userfile[TYPE]) || empty($userfile[TYPE]) ) return $this->error( e()->file_type_is_empty );
         if ( !isset($userfile[TMP_NAME]) || empty($userfile[TMP_NAME]) ) return $this->error( e()->file_tmp_name_is_empty );
 
-
-
-
-
         $name = basename($userfile[NAME]);
         $path = $this->getPath($name);
         $orgPath = $userfile[TMP_NAME];
@@ -63,7 +68,7 @@ class FileTaxonomy extends Entity {
             if ( isset($in['code']) && $in['code'] ) {
                 $files = $this->find([ CODE => $in[CODE], USER_IDX => login()->idx ]);
             } else {
-                $files = $this->find([TAXONOMY => $in[TAXONOMY], ENTITY => $in[ENTITY]]);
+                $files = $this->find([TAXONOMY => $in[TAXONOMY], ENTITY => $in[ENTITY], USER_IDX => login()->idx ]);
             }
             foreach( $files as $file ) {
                 files($file->idx)->delete();

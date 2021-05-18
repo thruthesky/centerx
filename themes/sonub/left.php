@@ -25,13 +25,15 @@
 <div class="left-banner mt-2">
     <?php
     $posts = post()->latest(categoryId: 'qna', limit: 1);
-    include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[0]]);
+    $post = empty($posts) ? null : $posts[0];
+    include widget('post/photo-with-inline-text-at-bottom', ['post' => $post]);
     ?>
 </div>
 
 <div class="left-banner mt-2">
     <?php
     $posts = post()->latest(categoryId: 'qna', limit: 1);
-    include widget('post/photo-with-text-at-bottom', ['post' => $posts[0]]);
+    $post = empty($posts) ? null : $posts[0];
+    include widget('post/photo-with-text-at-bottom', ['post' => $post]);
     ?>
 </div>

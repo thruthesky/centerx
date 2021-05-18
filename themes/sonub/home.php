@@ -7,6 +7,35 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 
 ?>
 
+<script>
+
+    // setAppCookie('b', 'Banana');
+
+    // removeAppCookie('b');
+    // setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
+    // removeAppCookie('sessionId');
+    // setAppCookie('sessionId', '');
+    // console.log('sessionId: ', sessionId());
+    // console.log('loggedIn: ', loggedIn());
+    // console.log('loginIdx: ', loginIdx());
+
+    // console.log('firebase', firebase);
+    //Cookies.set('a', 'Cherry', { domain: '//=COOKIE_DOMAIN?>//'});
+    //alert(Cookies.get('a'));
+    //Cookies.remove('a');
+</script>
+
+<?php
+
+
+//removeAppCookie('a');
+//
+//d($_COOKIE);
+
+
+?>
+
+
 <?php
 
 include widget('post/photo-and-texts-4-stories', [
@@ -34,6 +63,7 @@ include widget('post/photos-and-texts-3-stories', [
 ]);
 
 ?>
+
 
 <?php include widget('weather/openweathermap', ['display' => 'forecast']) ?>
 

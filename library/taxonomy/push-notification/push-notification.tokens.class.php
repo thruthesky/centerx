@@ -9,34 +9,43 @@ class PushNotificationTokenTaxonomy extends Entity {
 
 
     /**
+     * @todo
+     *
      * @attention To update, entity.idx must be set properly.
      *
      * @param array $in
+     *  $in['token'] = 'token-abc...'
+     *  $in['topic'] = 'Apple,Banana,Cherry'
+     *
      * @return PushNotificationTokenTaxonomy
      */
     public function update(array $in): self {
 
+
         $token = $in[TOKEN];
-        $data = [
-            USER_IDX => login()->idx,
-            TOKEN => $token,
-            DOMAIN => get_domain_name(),
-        ];
+        $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
+        $topics = explode(',', $multiTopics);
 
-        if ( $this->exists() == false ) {
-            parent::create($data);
-        } else {
-            parent::update($data);
-        }
+        foreach($topics as $topic) {
 
-        if (isset($in[TOPIC]) && !empty($in[TOPIC])) {
-            $re = subscribeTopic($in[TOPIC], $token);
-        } else {
-            $re = subscribeTopic(DEFAULT_TOPIC, $token);
-        }
+            $data = [
+                USER_IDX => login()->idx,
+                TOKEN => $token,
+                TOPIC => $topic,
+            ];
 
-        if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
-            return $this->error(e()->topic_subscription);
+            if ( $this->exists() == false ) {
+                parent::create($data);
+            } else {
+                parent::update($data);
+            }
+
+            $re = subscribeTopic($topic, $token);
+
+            if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
+                return $this->error(e()->topic_subscription);
+            }
+
         }
 
         return $this;
@@ -114,17 +123,17 @@ function send_message_to_users($in): array|string
         $users = explode(',', $in[USERS]);
     }
     foreach ($users as $userIdx) {
+
+        if (is_numeric($userIdx)) {
+            $user = user($userIdx);
+        } else {
+            $user = user()->findOne(['firebaseUid'=> $userIdx]);
+        }
+
         if ( isset($in[SUBSCRIPTION]) ) {
-
-            if (gettype($userIdx) == 'int') {
-                $user = user($userIdx);
-            } else {
-                $user = user()->findOne(['firebaseUid'=> $userIdx]);
-            }
-
-//            $re = user((int)$userIdx);
             if ( $user->v($in[SUBSCRIPTION]) == OFF ) continue;
         }
+
         $tokens = token()->getTokens($user->idx);
         $all_tokens = array_merge($all_tokens, $tokens);
     }
