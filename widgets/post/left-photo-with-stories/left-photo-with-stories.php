@@ -1,22 +1,28 @@
 <?php
-
 /**
  * @size wide
- * @options 'title' & 'limit' & 'categoryId'.
+ * @options 'categoryId'
+ * @description Get a photo that has photo from the category and display as primary. and Get 5 more posts to display texts.
  * @dependency none
  */
 
 $op = getWidgetOptions();
 
-$limit = $op['limit'] ?? 5;
-$categoryId = $op['categoryId'] ?? 'discussion';
 
-$posts = post()->latest(categoryId: $op['categoryId'] ?? $categoryId, limit: $limit);
+
+if ( isset($op['categoryId']) ) {
+
+//    $posts = post()->latest()
+    $limit = $op['limit'] ?? 5;
+    $categoryId = $op['categoryId'];
+
+    $posts = post()->latest(categoryId: $op['categoryId'] ?? $categoryId, limit: $limit);
 
 // default image if first story post doesn't have image
-$src = "/widgets/post/left-photo-with-stories/panda.jpg";
-if ( !empty($posts) && $posts[0] && !empty($posts[0]->files())) {
-  $src = thumbnailUrl($posts[0]->files()[0]->idx, 300, 200);
+    $src = "/widgets/post/left-photo-with-stories/panda.jpg";
+    if ( !empty($posts) && $posts[0] && !empty($posts[0]->files())) {
+        $src = thumbnailUrl($posts[0]->files()[0]->idx, 300, 200);
+    }
 }
 ?>
 
