@@ -6,10 +6,15 @@
  */
 
 $o = getWidgetOptions();
-$category = $o['category'];
 
-$post_topic = NOTIFY_POST . $category->id;
-$comment_topic = NOTIFY_COMMENT . $category->id;
+if(!isset($o['category'])) {
+    $post_topic = NOTIFY_POST . "mockPostTopic";
+    $comment_topic = NOTIFY_COMMENT . "mockCommentTopic";
+} else {
+    $post_topic = NOTIFY_POST . $o['category']->id;
+    $comment_topic = NOTIFY_COMMENT . $o['category']->id;
+
+}
 
 function isSubscribedToTopic($topic): bool
 {
