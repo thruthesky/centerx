@@ -30,7 +30,7 @@ $op = getWidgetOptions();
     }
 
 
-    for ($i = 0; $i < 4; $i++) {
+    for ($i = 0; $i < count($posts); $i++) {
         ?>
       <div class="story story-<?=$i?>">
         <?php include widget('post/photo-with-text-at-bottom', ['post' => $posts[$i] ]); ?>
