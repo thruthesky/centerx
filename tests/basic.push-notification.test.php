@@ -2,9 +2,9 @@
 require_once ROOT_DIR . 'routes/notification.route.php';
 
 setLogout();
-//testSaveToken();
-//testUpdateToken();
-//testUpdateTokenWithMultipleTopics();
+testSaveToken();
+testUpdateToken();
+testUpdateTokenWithMultipleTopics();
 
 testGetTokens();
 
@@ -39,7 +39,7 @@ function testUpdateTokenWithMultipleTopics()
     $userA =  registerAndLogin();
     $topics = $topic1 . "," . $topic2 . "," . $topic3;
     $re = $notificationRoute->updateToken([TOKEN => 'abcd', TOPIC => $topics]);
-    d($re);
+//    d($re);
     isTrue($re[TOPIC] == $topic3, 'success with the last topic: ' . $topic3);
 }
 
@@ -53,7 +53,7 @@ function testGetTokens(){
     $re = $notificationRoute->updateToken([TOKEN => 'abcd', TOPIC => $topics]);
 
     $token = token()->getTokens($userA->idx);
-    d($token);
+//    d($token);
     isTrue(count($token) == 3, 'must be 3 token');
     isTrue($token[0] == $token[1]  &&  $token[2] == 'abcd', 'should be abcd');
 

@@ -25,7 +25,7 @@ class PushNotificationTokenTaxonomy extends Entity {
         $token = $in[TOKEN];
         $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
         $topics = explode(',', $multiTopics);
-        d($topics);
+//        d($topics);
         foreach($topics as $topic) {
 
             $data = [
@@ -36,11 +36,11 @@ class PushNotificationTokenTaxonomy extends Entity {
 //            d($this->findOne([TOPIC=>$topic]) , "fineone");
 //            d($this->exists([TOPIC=>$topic]) , "exist");
             if ( $this->exists([TOPIC=>$topic]) == false ) {
-                d("create");
+//                d("create");
                 $this->resetError();
                 $this->create($data);
             } else {
-                d("update");
+//                d("update");
                 $this->resetError();
                 $this->findOne([TOPIC=>$topic])->update($data);
             }
