@@ -2,12 +2,11 @@
 
 /**
  * @size wide
- * @options 'title' & 'categoryId' & '$limit' in $firstStories, 'categoryId' inside $secondStories.
+ * @options 'title', 'firstCategoryId', 'secondCategoryId'
  * @dependency none
  */
 
 $op = getWidgetOptions();
-$secondStories = $op['secondStories'] ?? [];
 ?>
 
 
@@ -19,15 +18,22 @@ $secondStories = $op['secondStories'] ?? [];
   <?php } ?>
 
   <div class="first-story">
-    <?php include widget('post/left-photo-with-stories', $op['firstStories'] ?? []); ?>
+    <?php include widget('post/left-photo-with-stories', ['categoryId' => $op['firstCategroyId'] ?? null]); ?>
   </div>
 
   <div class="second-story">
-    <?php 
-    $posts = post()->latest(categoryId: $secondStories['categoryId'] ?? 'discussion', limit: 4);
-    for ($i = 0; $i < 4; $i++) { ?>
+    <?php
+    if ( isset($op['secondCategroyId']) ) {
+        $posts = post()->latest(categoryId: $op['secondCategroyId'], limit: 4);
+    } else {
+        $posts = postMockData(4, photo: true);
+    }
+
+
+    for ($i = 0; $i < 4; $i++) {
+        ?>
       <div class="story story-<?=$i?>">
-        <?php include widget('post/photo-with-text-at-bottom', ['post' => $posts[$i] ?? null]); ?>
+        <?php include widget('post/photo-with-text-at-bottom', ['post' => $posts[$i] ]); ?>
       </div>
     <?php } ?>
   </div>
