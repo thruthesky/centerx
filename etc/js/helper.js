@@ -68,8 +68,12 @@ function request(route, params, success, error) {
     if ( loggedIn() ) params['sessionId'] = sessionId();
     params['route'] = route;
     axios.post('/index.php', params).then(function(res) {
+        console.log(res.data);
         if (typeof res.data.response === 'string' &&  res.data.response.indexOf('error_') === 0  ) error(res.data.response);
-        else success(res.data.response);
+        else if ( typeof res.data === 'string' ) error(res.data);
+        else {
+            success(res.data.response);
+        }
     }).catch(error);
 }
 

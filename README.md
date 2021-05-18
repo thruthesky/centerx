@@ -1093,6 +1093,13 @@ include widget('post-edit/post-edit-default');
 
 ## Response
 
+- 에러가 있는 경우, response 의 값은 'error_' 로 시작하는 값이다.
+  예) `{ request: {email: ..., password: ...}, response: "error_email_exists"}`
+- 또는 PHP 나 기타 에러가 있는 경우, 문자열의 값이 리턴 될 수 있다. 리턴 값의 data 에 에러 문자열이 들어갈 수 있다.
+  예) `<xmp>Data too long for column 'gender' at row 1</xmp><xmp>INSERT...`
+- 성공을 하면, 반드시 리턴되는 연관 배열의 'response' 에 값이 'error_' 가 아닌 값이 들어가 있다.
+  예) `{ request: {email: ..., password: ...}, response: { idx: ... }`
+
 - `login()` 함수는 매번 호출 될 때마다 새로운 객체를 생성하므로, 필요하다면 `$login = login()` 와 같이 객체를 저장해서 재 사용해야한다.
   그래서 아래와 같이 하면, 업데이트된 값이 제대로 전달되지 않는다.
 

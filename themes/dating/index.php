@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/etc/bootstrap-4/bootstrap-4.6.0-min.css">
     <link rel="stylesheet" href="/etc/bootstrap-vue-2.21.2/bootstrap-vue-2.21.2.min.css">
     <link href="/etc/fontawesome-pro-5/css/all.min.css" rel="stylesheet">
+    <link href="/themes/dating/style.css" rel="stylesheet">
     <script>
         <?php include theme()->file('js/prepare', extension: 'js'); ?>
     </script>
