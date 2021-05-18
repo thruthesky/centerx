@@ -25,7 +25,7 @@ class PushNotificationTokenTaxonomy extends Entity {
         $token = $in[TOKEN];
         $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
         $topics = explode(',', $multiTopics);
-
+        d($topics);
         foreach($topics as $topic) {
 
             $data = [
@@ -34,7 +34,7 @@ class PushNotificationTokenTaxonomy extends Entity {
                 TOPIC => $topic,
             ];
 
-            if ( $this->exists() == false ) {
+            if ( token($token)->findOne([TOPIC=>$topic])->exists() == false ) {
                 parent::create($data);
             } else {
                 parent::update($data);
@@ -61,6 +61,18 @@ class PushNotificationTokenTaxonomy extends Entity {
     {
         $rows = parent::search(select: 'token', where: "userIdx=?", params: [$userIdx]);
         return ids($rows, 'token');
+    }
+    /**
+     * Returns tokens of login user in an array
+     * @param int $userIdx
+     * @return array
+     * @throws Exception
+     */
+    function getTopics(int $userIdx) :array
+    {
+        $rows = parent::search(select: 'topic', where: "userIdx=?", params: [$userIdx]);
+        d($rows);
+        return ids($rows, 'topic');
     }
 
     /**
