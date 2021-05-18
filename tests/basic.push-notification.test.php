@@ -11,22 +11,21 @@ testGetTokens();
 
 function testSaveToken() {
     $notificationRoute = new NotificationRoute();
-    $user = registerAndLogin();
+    registerAndLogin();
     $re = $notificationRoute->updateToken([]);
     isTrue(  $re == e()->token_is_empty, 'should be token is empty');
     $re = $notificationRoute->updateToken([TOKEN => 'abcd' . time()]);
     isTrue(  $re['idx'], 'success with default topic');
     isTrue(  $re[TOPIC] == DEFAULT_TOPIC, 'success with default topic: ' . DEFAULT_TOPIC);
-    isTrue(  $re[USER_IDX] == $user->idx, 'user is not login must be ' . $user->idx);
 }
 function testUpdateToken() {
     $notificationRoute = new NotificationRoute();
-    $user = registerAndLogin();
+    registerAndLogin();
     $token = 'testUpdateToken' . time();
-    $re = $notificationRoute->updateToken([TOKEN => $token]);
-    isTrue(  $re[TOPIC] == DEFAULT_TOPIC, 'success with default topic: ' . DEFAULT_TOPIC);
-    $re = $notificationRoute->updateToken([TOKEN=> $token, TOPIC => "newTopic"]);
-    isTrue(  $re[TOPIC] == "newTopic", 'success with default topic: newTopic');
+    $token1 = $notificationRoute->updateToken([TOKEN => $token]);
+    $token2 = $notificationRoute->updateToken([TOKEN=> $token, TOPIC => "newTopic"]);
+    isTrue( $token1[IDX] != $token2[IDX], "New record created");
+    isTrue( $token2[TOPIC] == "newTopic", 'success with default topic: newTopic');
 }
 
 
@@ -39,7 +38,6 @@ function testUpdateTokenWithMultipleTopics()
     $userA =  registerAndLogin();
     $topics = $topic1 . "," . $topic2 . "," . $topic3;
     $re = $notificationRoute->updateToken([TOKEN => 'abcd', TOPIC => $topics]);
-//    d($re);
     isTrue($re[TOPIC] == $topic3, 'success with the last topic: ' . $topic3);
 }
 

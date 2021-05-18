@@ -15,15 +15,30 @@ class NotificationRoute {
      *
      * @return array|string
      *
-     * @note expected result
+     * if token is empty, an error response will be returned.
+     * if an array is returned containing the topics as keys and the value will be true on success, or error string on failure.
      *
-     * {"response":{"idx":"1","userIdx":"0","token":"ebyHPOGMSqmwEMeK2PE7jx:APA91bEBTmyYTWxUXKdypgeC5jKxJ6nXL27EQN9NTe1U6GTSlchv2ZGKVXKfjk_yA6T-hfHh-vRxqJzFb_rrWVSxQJKB5ZNBHQ21kLd_Dt-4PAguVF1hh13HeH2NPGFyaaLwFAxYMh5v","domain":"192.168.100.17","createdAt":"1614768786","updatedAt":"1614771526"},"request":{"route":"notification.updateToken","token":"ebyHPOGMSqmwEMeK2PE7jx:APA91bEBTmyYTWxUXKdypgeC5jKxJ6nXL27EQN9NTe1U6GTSlchv2ZGKVXKfjk_yA6T-hfHh-vRxqJzFb_rrWVSxQJKB5ZNBHQ21kLd_Dt-4PAguVF1hh13HeH2NPGFyaaLwFAxYMh5v","topic":""}}
+     *
+     *
+     * @note expected result
+     *  - 'error_token_is_empty'
+     *  - [ 'topicA' => true, 'topicB' => 'error_topic_subscription' ]
+     *
+     *
      *
      */
     public function updateToken($in): array|string
     {
         if (!isset($in[TOKEN])) return e()->token_is_empty;
-        return token($in[TOKEN])->save($in)->getData();
+        $arr = token($in[TOKEN])->save($in);
+
+        $rets = [];
+        foreach($arr as $a) {
+            if ( $a->hasError ) $rets[] = [$a->topic => $a->getError()];
+            else $rets[] = [$a->topic => true];
+        }
+
+        return $rets;
     }
 
     /**

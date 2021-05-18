@@ -898,7 +898,6 @@ class Entity {
             $rows = db()->rows($q, ...$params);
         }
         else if ( $where == '1' ) {
-            // @TODO 이 코드는 나중에 삭제하도록 한다. SQL Injection 문제가 발생 할 수 있다.
             $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
             $rows = db()->rows($q);
         }

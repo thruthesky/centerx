@@ -1,6 +1,12 @@
 <?php
 use Kreait\Firebase\Messaging\MulticastSendReport;
 
+/**
+ * Class PushNotificationTokenTaxonomy
+ *
+ * @property-read string $topic
+ * @property-read string $token
+ */
 class PushNotificationTokenTaxonomy extends Entity {
     public function __construct(public int $idx = 0)
     {
@@ -9,51 +15,50 @@ class PushNotificationTokenTaxonomy extends Entity {
 
 
     /**
-     * @todo
+     *
+     * Note, it may creates many records. so, the return data is an array of the class.
      *
      * @attention To update, entity.idx must be set properly.
+     *
      *
      * @param array $in
      *  $in['token'] = 'token-abc...'
      *  $in['topic'] = 'Apple,Banana,Cherry'
      *
-     * @return PushNotificationTokenTaxonomy
+     * @return PushNotificationTokenTaxonomy[]
      */
-    public function save(array $in): self {
+    public function save(array $in): array {
 
 
         $token = $in[TOKEN];
         $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
         $topics = explode(',', $multiTopics);
-//        d($topics);
-        foreach($topics as $topic) {
 
-            $data = [
-                USER_IDX => login()->idx,
-                TOKEN => $token,
-                TOPIC => $topic,
-            ];
-//            d($this->findOne([TOPIC=>$topic]) , "fineone");
-//            d($this->exists([TOPIC=>$topic]) , "exist");
-            if ( $this->exists([TOPIC=>$topic]) == false ) {
-//                d("create");
-                $this->resetError();
-                $this->create($data);
+        $rets = [];
+        foreach($topics as $topic) {
+            $found = token()->findOne([TOKEN => $token, TOPIC => $topic]);
+            if ( $found->exists ) {
+                $found->update( [ USER_IDX => login()->idx ] );
+                $rets[] = $found;
             } else {
-//                d("update");
-                $this->resetError();
-                $this->findOne([TOPIC=>$topic])->update($data);
+                $this->create([
+                    USER_IDX => login()->idx,
+                    TOKEN => $token,
+                    TOPIC => $topic,
+                ]);
+                $rets[] = $this;
             }
 
             $re = subscribeTopic($topic, $token);
 
+            //
             if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
-                return $this->error(e()->topic_subscription);
+                $rets[] = $this->error(e()->topic_subscription);
             }
 
         }
 
-        return $this;
+        return $rets;
     }
 
     /**

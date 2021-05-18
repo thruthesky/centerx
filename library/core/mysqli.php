@@ -355,6 +355,8 @@ class MySQLiDatabase {
      *      ['a', 'b', 'c'],
      *      ['a=?', 'b=?', 'count>?'],
      *      ['apple', 'banana', 5],
+     *
+     * @todo 값을 escape 해야 한다. SQL Injection 문제가 발생할 수 있다.
      */
     public function parseRecord(array $record, string $type='', string $glue=',') {
         $fields = [];
