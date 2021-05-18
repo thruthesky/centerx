@@ -27,13 +27,13 @@ function isSubscribedToTopic($topic): bool
 <script>
     mixins.push({
         data: {
-            notifyPost: <?=isSubscribedToTopic($post_topic) ? 'true' : "false" ?>,
-            notifyComment: <?=isSubscribedToTopic($comment_topic) ? 'true' : "false" ?>
+            notifyPost: <?=isSubscribedToTopic($post_topic) ? 'true' : 'false' ?>,
+            notifyComment: <?=isSubscribedToTopic($comment_topic) ? 'true' : 'false' ?>
         },
         methods: {
             onChangeSubscribeOrUnsubscribeTopic: function(topic, field) {
-                console.log(topic, field);
-                console.log(app.$data[field]);
+                // console.log(topic, field);
+                // console.log(app.$data[field]);
 
                 if ( !Cookies.get('sessionId') ) {
                     alert("Please login first");
