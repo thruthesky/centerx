@@ -5,13 +5,12 @@
         <div class="form-group">
             <label for="inputEmail1">이메일</label>
             <input type="email" class="form-control" id="inputEmail1" aria-describedby="emailHelp" v-model="form.email">
-            <div style="color: red">{{form.errorMessage.email}}</div>
+            <div v-show="form.errorMessage.email != null" style="color: red">{{form.errorMessage.email}}</div>
         </div>
         <div class="form-group">
             <label for="inputPassword1">패스워드</label>
             <input type="password" class="form-control" id="inputPassword1" v-model="form.password">
             <div style="color: red">{{form.errorMessage.password}}</div>
-
         </div>
         <div class="form-group">
             <label for="inputPassword2">패스워드 확인</label>
@@ -57,13 +56,14 @@
                 gender: '',
                 address: '',
                 errorMessage: {
-                    email: '',
-                    password: '',
-                    password2: '',
-                    name: '',
-                    birthday: '',
-                    gender: '',
-                    address: '',
+                    error: true,
+                    email: null,
+                    password: null,
+                    password2: null,
+                    name: null,
+                    birthday: null,
+                    gender: null,
+                    address: null,
                 },
             },
             // errorMessage: {
@@ -79,14 +79,14 @@
         },
         methods: {
             onSubmitRegisterForm: function () {
-                this.form.errorMessage.email = '';
-                this.form.errorMessage.password = '';
-                this.form.errorMessage.password2 = '';
-                this.form.errorMessage.password = '';
-                this.form.errorMessage.name = '';
-                this.form.errorMessage.birthday = '';
-                this.form.errorMessage.gender = '';
-                this.form.errorMessage.address = '';
+                this.form.errorMessage.email = null;
+                this.form.errorMessage.password = null;
+                this.form.errorMessage.password2 = null;
+                this.form.errorMessage.password = null;
+                this.form.errorMessage.name = null;
+                this.form.errorMessage.birthday = null;
+                this.form.errorMessage.gender = null;
+                this.form.errorMessage.address = null;
 
                 // if (this.form.email === '') return this.errorMessage.email = '이메일을 입력해 주세요.';
                 if (this.form.email === '') return this.form.errorMessage.email = '이메일을 입력해 주세요.';
@@ -105,9 +105,9 @@
                         domain: '<?=COOKIE_DOMAIN?>'
                     });
                 }, alert);
+
             }
 
-            // location.href('/');
         }
     })
 </script>
