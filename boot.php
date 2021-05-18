@@ -65,6 +65,26 @@ require_once ROOT_DIR . 'etc/db.php';
 
 
 /**
+ * 입력 값 조정. README.md 참고
+ */
+adjust_http_input();
+
+
+/**
+ * @see README.md
+ */
+function adjust_http_input() {
+    if ( isset($_REQUEST) && count($_REQUEST) ) {
+        foreach(array_keys($_REQUEST) as $k) {
+            // convert .submit to `p` variable. @see README.md
+            if ( str_ends_with($k, '_submit') ) {
+                $_REQUEST['p'] = str_replace('_', '.', $k);
+                unset($_REQUEST[$k]);
+            }
+        }
+    }
+}
+/**
  * 각 Theme 의 theme-name.functions.php 가 존재하면, 실행한다.
  */
 $_path = theme()->file( filename: 'functions', prefixThemeName: true );
@@ -74,13 +94,16 @@ if ( file_exists($_path) ) {
 }
 
 
-// Live reload
+
+// Live reload.
+// @see README.md how to control live reload.
 live_reload();
 
 
+// Leave a record, for stating that a new script run time begins.
+leave_starting_debug_log();
 
-debug_log('-- start -- boot.code.php: ', date('r'));
-debug_log('in();', in());
+
 
 if ( API_CALL == false ) {
     setUserAsLogin(getProfileFromCookieSessionId());

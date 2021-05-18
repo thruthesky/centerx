@@ -5,9 +5,6 @@
  *      -> General -> Scroll Down and Choose CDN for all the details
  */
 
-// Initialize Firebase
-firebase.initializeApp(config.firebaseConfig);
-
 /**
  * We can start messaging using messaging() service with firebase object
  */
@@ -16,7 +13,7 @@ var messaging = firebase.messaging();
 /** Register your service worker here
  *  It starts listening to incoming push notifications from here
  */
-navigator.serviceWorker.register(config.themeFolderName + '/firebase-messaging-sw.js')
+navigator.serviceWorker.register('/etc/js/firebase/firebase.messaging.sw.php')
     .then(function (registration) {
         /** Since we are using our own service worker ie firebase-messaging-sw.js file */
         messaging.useServiceWorker(registration);

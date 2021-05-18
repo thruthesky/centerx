@@ -7,6 +7,24 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 
 ?>
 
+<script>
+    console.log('firebase', firebase);
+    //Cookies.set('a', 'Cherry', { domain: '<?//=COOKIE_DOMAIN?>//'});
+    //alert(Cookies.get('a'));
+    //Cookies.remove('a');
+</script>
+
+<?php
+
+
+deleteAppCookie('a');
+//
+//d($_COOKIE);
+
+
+?>
+
+
 <?php
 
 include widget('post/two-stories-with-thumbnail', [
@@ -38,6 +56,7 @@ include widget('post/photos-and-texts-3-stories', [
 ]);
 
 ?>
+
 
 <?php include widget('weather/openweathermap', ['display' => 'forecast']) ?>
 
