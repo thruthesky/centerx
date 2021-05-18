@@ -93,8 +93,6 @@ if ( file_exists($_path) ) {
     require_once $_path;
 }
 
-
-
 // Live reload.
 // @see README.md how to control live reload.
 live_reload();
@@ -102,8 +100,6 @@ live_reload();
 
 // Leave a record, for stating that a new script run time begins.
 leave_starting_debug_log();
-
-
 
 if ( API_CALL == false ) {
     setUserAsLogin(getProfileFromCookieSessionId());
