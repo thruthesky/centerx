@@ -114,17 +114,17 @@ function send_message_to_users($in): array|string
         $users = explode(',', $in[USERS]);
     }
     foreach ($users as $userIdx) {
+
+        if (is_numeric($userIdx)) {
+            $user = user($userIdx);
+        } else {
+            $user = user()->findOne(['firebaseUid'=> $userIdx]);
+        }
+
         if ( isset($in[SUBSCRIPTION]) ) {
-
-            if (gettype($userIdx) == 'int') {
-                $user = user($userIdx);
-            } else {
-                $user = user()->findOne(['firebaseUid'=> $userIdx]);
-            }
-
-//            $re = user((int)$userIdx);
             if ( $user->v($in[SUBSCRIPTION]) == OFF ) continue;
         }
+
         $tokens = token()->getTokens($user->idx);
         $all_tokens = array_merge($all_tokens, $tokens);
     }
