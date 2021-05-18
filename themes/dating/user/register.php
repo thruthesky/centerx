@@ -1,4 +1,5 @@
 <section class="m-5">
+
     <form @submit.prevent="onSubmitRegisterForm()">
         <!--    <input type="hidden" name="p" value="/">-->
         <div class="form-group">

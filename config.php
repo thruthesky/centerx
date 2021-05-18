@@ -61,11 +61,8 @@ define('SUPPORTED_DOMAIN_SUFFIX', ['.com', '.co.kr', '.kr']);
  */
 define('LOCAL_HOSTS',
     ['localhost', '127.0.0.1', 'local.itsuda50.com', 'main.philov.com', 'apple.philov.com',
-    'banana.philov.com', 'cherry.philov.com',
-    'main.sonub.com', 'dating.com'
+    'banana.philov.com', 'cherry.philov.com', 'main.sonub.com', 'dating.com'
 ]);
-
-
 
 
 
@@ -124,6 +121,8 @@ if ( !defined('COOKIE_DOMAIN') ) {
     else $_cookieDomain = ".$_rootDomain";
     define('COOKIE_DOMAIN', $_cookieDomain);
 }
+
+
 
 
 
@@ -202,13 +201,12 @@ define('DEFAULT_DELIVERY_FEE_FREE_LIMIT', 3000);
 define('DEFAULT_DELIVERY_FEE_PRICE', 2500);
 
 
+
 /**
  * @see readme#Live Reload
  */
 define('LIVE_RELOAD_HOST', 'http://localhost');
 define('LIVE_RELOAD_PORT', '12345');
-
-
 
 
 define('SUPPORTED_LANGUAGES', ['en', 'ko']);

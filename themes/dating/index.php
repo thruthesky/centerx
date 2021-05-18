@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>데이트</title>
+    <title>만남사이트</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/etc/bootstrap-4/bootstrap-4.6.0-min.css">
@@ -13,6 +13,7 @@
 </head>
 <body>
 <section id="app">
+
     <?php d($_COOKIE)?>
 
     <header class="bg-light mb-2">

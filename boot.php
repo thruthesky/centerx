@@ -73,14 +73,8 @@ if ( file_exists($_path) ) {
     require_once $_path;
 }
 
-
 // Live reload
  live_reload();
-
-
-
-
-
 
 debug_log('-- start -- boot.code.php: ', date('r'));
 debug_log('in();', in());
