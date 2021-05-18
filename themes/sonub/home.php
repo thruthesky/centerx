@@ -9,10 +9,14 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 
 <?php
 
+include widget('post/two-stories-with-thumbnail', [
+    'categoryId' => 'qna'
+]);
+
 include widget('post/photo-and-texts-4-stories', [
     'title' => 'This is the title',
     'firstStories' => [
-        'categoryId' => 'discussion',
+        'categoryId' => 'qna',
         'limit' => 5,
     ],
     'secondStories' => [
@@ -26,7 +30,7 @@ include widget('post/photos-and-texts-3-stories', [
     'firstStories' => $firstStories,
     'secondStories' => [
         'title' => 'Most read articles',
-        'categoryId' => 'discussion',
+        'categoryId' => 'qna',
         'limit' => 5,
         'displayNumbers' => true
     ],
