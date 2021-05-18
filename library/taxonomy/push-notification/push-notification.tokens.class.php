@@ -19,7 +19,7 @@ class PushNotificationTokenTaxonomy extends Entity {
      *
      * @return PushNotificationTokenTaxonomy
      */
-    public function update(array $in): self {
+    public function save(array $in): self {
 
 
         $token = $in[TOKEN];
@@ -33,11 +33,16 @@ class PushNotificationTokenTaxonomy extends Entity {
                 TOKEN => $token,
                 TOPIC => $topic,
             ];
-
-            if ( token($token)->findOne([TOPIC=>$topic])->exists() == false ) {
-                parent::create($data);
+//            d($this->findOne([TOPIC=>$topic]) , "fineone");
+//            d($this->exists([TOPIC=>$topic]) , "exist");
+            if ( $this->exists([TOPIC=>$topic]) == false ) {
+                d("create");
+                $this->resetError();
+                $this->create($data);
             } else {
-                parent::update($data);
+                d("update");
+                $this->resetError();
+                $this->findOne([TOPIC=>$topic])->update($data);
             }
 
             $re = subscribeTopic($topic, $token);

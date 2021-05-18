@@ -2,48 +2,46 @@
 require_once ROOT_DIR . 'routes/notification.route.php';
 
 setLogout();
-testUpdateToken();
-//testUpdateTokenWithTopic();
-//testUpdateTokenWithMultipleTopics();
+//testSaveToken();
+//testUpdateToken();
+testUpdateTokenWithMultipleTopics();
 //
 //testGetTokens();
 
 
-function testUpdateToken() {
+function testSaveToken() {
     $notificationRoute = new NotificationRoute();
+    $user = registerAndLogin();
     $re = $notificationRoute->updateToken([]);
     isTrue(  $re == e()->token_is_empty, 'should be token is empty');
-    $re = $notificationRoute->updateToken([TOKEN=> 'abcd']);
-    d($re);
-//    isTrue(  $re['idx'], 'success with default topic');
-//    isTrue(  $re[TOPIC] == DEFAULT_TOPIC, 'success with default topic: ' . DEFAULT_TOPIC);
-//    isTrue(  $re[USER_IDX] == 0, 'user is not login must be 0');
-
+    $re = $notificationRoute->updateToken([TOKEN => 'abcd' . time()]);
+    isTrue(  $re['idx'], 'success with default topic');
+    isTrue(  $re[TOPIC] == DEFAULT_TOPIC, 'success with default topic: ' . DEFAULT_TOPIC);
+    isTrue(  $re[USER_IDX] == $user->idx, 'user is not login must be ' . $user->idx);
+}
+function testUpdateToken() {
+    $notificationRoute = new NotificationRoute();
+    $user = registerAndLogin();
+    $token = 'testUpdateToken' . time();
+    $re = $notificationRoute->updateToken([TOKEN => $token]);
+    isTrue(  $re[TOPIC] == DEFAULT_TOPIC, 'success with default topic: ' . DEFAULT_TOPIC);
+    $re = $notificationRoute->updateToken([TOKEN=> $token, TOPIC => "newTopic"]);
+    isTrue(  $re[TOPIC] == "newTopic", 'success with default topic: newTopic');
 }
 
-//function testUpdateTokenWithTopic() {
-//    $notificationRoute = new NotificationRoute();
-//    $userA =  setLoginAny();
-//    $re = $notificationRoute->updateToken([TOKEN=> 'abcd']);
-//    isTrue(  $re[TOPIC] == DEFAULT_TOPIC, 'success with default topic: ' . DEFAULT_TOPIC);
-//    isTrue(  $re[USER_IDX] == $userA->idx, 'user is not login must be equal to::' . $userA->idx);
-//
-//    $topic = 'topic' . time();
-//    $re = $notificationRoute->updateToken([TOKEN=> 'abcd', TOPIC => $topic]);
-//    isTrue(  $re[TOPIC] == $topic, 'success with specific topic: ' . $topic);
-//}
-//
-//function testUpdateTokenWithMultipleTopics()
-//{
-//    $notificationRoute = new NotificationRoute();
-//    $topic1 = 'topic' . time();
-//    $topic2 = 'topic' . time() + 5;
-//    $topic3 = 'topic' . time() + 10;
-//    $userA =  setLoginAny();
-//    $topics = $topic1 . "," . $topic2 . "," . $topic3;
-//    $re = $notificationRoute->updateToken([TOKEN => 'abcd', TOPIC => $topics]);
-//    isTrue($re[TOPIC] == $topic3, 'success with the last topic: ' . $topic3);
-//}
+
+function testUpdateTokenWithMultipleTopics()
+{
+    $notificationRoute = new NotificationRoute();
+    $topic1 = 'topic' . time();
+    $topic2 = 'topic' . time() + 5;
+    $topic3 = 'topic' . time() + 10;
+    $userA =  registerAndLogin();
+    $topics = $topic1 . "," . $topic2 . "," . $topic3;
+    $re = $notificationRoute->updateToken([TOKEN => 'abcd', TOPIC => $topics]);
+    d($re);
+    isTrue($re[TOPIC] == $topic3, 'success with the last topic: ' . $topic3);
+}
 //
 //function testGetTokens(){
 //    $notificationRoute = new NotificationRoute();
