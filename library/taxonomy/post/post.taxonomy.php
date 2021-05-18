@@ -247,26 +247,37 @@ class PostTaxonomy extends Forum {
     }
 
 
-
-
     /**
      * 최신 글을 추출 할 때 유용하다. 글만 추출. 코멘트와 첨부 파일은 추출하지 않음.
      *
+     * 여러가지 옵션이 있으면, 특히 `by` 파라메타를 'ASC' 로 입력하면 처음 글들을 추출할 수 있다.
+     * 참고로, `post()->first()` 함수를 통해서, 마지막 글들이 아닌 최근 글들을 추출 할 수 있다.
      *
      *
      *
+     *
+     *
+     *
+     * @param int $categoryIdx
      * @param string|null $categoryId
+     * @param string|null $countryCode - 특정 국가의 글만 추출한다.
+     * @param string $by
+     * @param int $limit
      * @param bool|null $photo
      *  - 이 값이 true 이면 사진이 있는 것만,
      *  - false 이면, 사진이 없는 것만,
      *  - 기본 값이 null 인데, 사진이 있든 없든 모두 추출한다.
      *
-     * @param int $limit
      * @return PostTaxonomy[]
      *
      *
      * @example
+     * ```php
      *  $posts = post()->latest();
+     *
+     *  // getting latest posts that has photo.
+     *  post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 3, photo: true);
+     * ```
      */
     public function latest(
         int $categoryIdx = 0,
@@ -282,13 +293,21 @@ class PostTaxonomy extends Forum {
                 $categoryIdx = category($categoryId)->idx;
             }
         }
-        if ( $categoryIdx ) $where .= " AND categoryIdx=$categoryIdx";
-        if ( $countryCode ) $where .= " AND countryCode='$countryCode'";
+        $params = [];
+        if ( $categoryIdx ) {
+            $where .= " AND categoryIdx=?";
+            $params[] = $categoryIdx;
+        }
+        if ( $countryCode ) {
+            $where .= " AND countryCode=?";
+            $params[] = $countryCode;
+        }
         if ( $photo === true ) $where .= " AND files <> '' ";
         else if ( $photo === false ) $where .= " AND files = '' ";
 
         return $this->search(
             where: $where,
+            params: $params,
             by: $by,
             limit: $limit,
             object: true
