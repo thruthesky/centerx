@@ -8,7 +8,7 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 ?>
 
 <script>
-    console.log('firebase', firebase);
+    // console.log('firebase', firebase);
     //Cookies.set('a', 'Cherry', { domain: '<?//=COOKIE_DOMAIN?>//'});
     //alert(Cookies.get('a'));
     //Cookies.remove('a');

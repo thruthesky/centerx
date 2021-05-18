@@ -59,6 +59,6 @@
     };
 </script>
 <?php js(theme()->url . 'js/firebase.js')?>
-<?php js('/etc/js/firebase/firebase.messaging.sw.php')?>
+<?php //js('/etc/js/firebase/firebase.messaging.sw.php')?>
 </body>
 </html>
