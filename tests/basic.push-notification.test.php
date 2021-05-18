@@ -4,9 +4,9 @@ require_once ROOT_DIR . 'routes/notification.route.php';
 setLogout();
 //testSaveToken();
 //testUpdateToken();
-testUpdateTokenWithMultipleTopics();
-//
-//testGetTokens();
+//testUpdateTokenWithMultipleTopics();
+
+testGetTokens();
 
 
 function testSaveToken() {
@@ -42,21 +42,21 @@ function testUpdateTokenWithMultipleTopics()
     d($re);
     isTrue($re[TOPIC] == $topic3, 'success with the last topic: ' . $topic3);
 }
-//
-//function testGetTokens(){
-//    $notificationRoute = new NotificationRoute();
-//    $topic1 = 'topic' . time();
-//    $topic2 = 'topic' . time() + 5;
-//    $topic3 = 'topic' . time() + 10;
-//    $userA =  registerAndLogin();
-//    $topics = $topic1 . "," . $topic2 . "," . $topic3;
-//    $re = $notificationRoute->updateToken([TOKEN => 'abcd', TOPIC => $topics]);
-//
-//    $token = token()->getTokens($userA->idx);
-//    d($token);
-//    isTrue(count($token) == 1, 'must be 1 token only');
-//    isTrue($token[0] == 'abcd', 'should be abcd');
-//
-//    $re = token()->getTopics($userA->idx);
-//    d($re);
-//}
+
+function testGetTokens(){
+    $notificationRoute = new NotificationRoute();
+    $topic1 = 'topic' . time();
+    $topic2 = 'topic' . time() + 5;
+    $topic3 = 'topic' . time() + 10;
+    $userA =  registerAndLogin();
+    $topics = $topic1 . "," . $topic2 . "," . $topic3;
+    $re = $notificationRoute->updateToken([TOKEN => 'abcd', TOPIC => $topics]);
+
+    $token = token()->getTokens($userA->idx);
+    d($token);
+    isTrue(count($token) == 3, 'must be 3 token');
+    isTrue($token[0] == $token[1]  &&  $token[2] == 'abcd', 'should be abcd');
+
+    $re = token()->getTopics($userA->idx);
+    isTrue(count($token) == 3, 'must be 3 topics');
+}
