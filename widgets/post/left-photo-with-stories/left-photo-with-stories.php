@@ -1,39 +1,28 @@
 <?php
-
 /**
  * @size wide
- * @options 'title' & 'limit' & 'categoryId'.
+ * @options 'categoryId'
+ * @description Get a photo that has photo from the category and display as primary. and Get 5 more posts to display texts.
  * @dependency none
  */
 
 $op = getWidgetOptions();
 
-$limit = $op['limit'] ?? 5;
-$categoryId = 'discussion';
+
+
+if ( isset($op['categoryId']) ) {
+
+//    $posts = post()->latest()
+    $limit = $op['limit'] ?? 5;
+    $categoryId = $op['categoryId'];
+
+    $posts = post()->latest(categoryId: $op['categoryId'] ?? $categoryId, limit: $limit);
 
 // default image if first story post doesn't have image
-$src = "/widgets/post/left-photo-with-stories/panda.jpg";
-
-if (isset($op['categoryId'])) {
-  $categoryId = $op['categoryId'];
-}
-
-$posts = [];
-if (category($categoryId)->exists == true) {
-  $posts = post()->latest(categoryId: $categoryId, limit: $limit);
-}
-
-if (empty($posts)) {
-  $post = post();
-  $post->updateMemoryData('title', 'What a lovely dog. What is your name? This is the sample title! This is very long text... Make it two lines only!');
-  $post->updateMemoryData('content', 'What a lovely dog. What is your name? This is the sample content! This is very long text... Make it two lines only!');
-  $post->updateMemoryData('url', "javascript:alert('This is a mock data. Post data is not given!');");
-  $post->updateMemoryData('src', "/widgets/post/photo-with-text-at-bottom/panda.jpg");
-  $posts = array_fill(0, $limit, $post);
-}
-
-if ( !empty($posts[0]->files()) ) {
-  $src = thumbnailUrl($posts[0]->files()[0]->idx, 300, 200);
+    $src = "/widgets/post/left-photo-with-stories/panda.jpg";
+    if ( !empty($posts) && $posts[0] && !empty($posts[0]->files())) {
+        $src = thumbnailUrl($posts[0]->files()[0]->idx, 300, 200);
+    }
 }
 ?>
 

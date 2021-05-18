@@ -9,34 +9,43 @@ class PushNotificationTokenTaxonomy extends Entity {
 
 
     /**
+     * @todo
+     *
      * @attention To update, entity.idx must be set properly.
      *
      * @param array $in
+     *  $in['token'] = 'token-abc...'
+     *  $in['topic'] = 'Apple,Banana,Cherry'
+     *
      * @return PushNotificationTokenTaxonomy
      */
     public function update(array $in): self {
 
+
         $token = $in[TOKEN];
-        $data = [
-            USER_IDX => login()->idx,
-            TOKEN => $token,
-            DOMAIN => get_domain_name(),
-        ];
+        $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
+        $topics = explode(',', $multiTopics);
 
-        if ( $this->exists() == false ) {
-            parent::create($data);
-        } else {
-            parent::update($data);
-        }
+        foreach($topics as $topic) {
 
-        if (isset($in[TOPIC]) && !empty($in[TOPIC])) {
-            $re = subscribeTopic($in[TOPIC], $token);
-        } else {
-            $re = subscribeTopic(DEFAULT_TOPIC, $token);
-        }
+            $data = [
+                USER_IDX => login()->idx,
+                TOKEN => $token,
+                TOPIC => $topic,
+            ];
 
-        if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
-            return $this->error(e()->topic_subscription);
+            if ( $this->exists() == false ) {
+                parent::create($data);
+            } else {
+                parent::update($data);
+            }
+
+            $re = subscribeTopic($topic, $token);
+
+            if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
+                return $this->error(e()->topic_subscription);
+            }
+
         }
 
         return $this;

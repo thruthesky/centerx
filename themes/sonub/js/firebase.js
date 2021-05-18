@@ -15,6 +15,7 @@ var messaging = firebase.messaging();
  */
 navigator.serviceWorker.register('/etc/js/firebase/firebase.messaging.sw.php')
     .then(function (registration) {
+
         /** Since we are using our own service worker ie firebase-messaging-sw.js file */
         messaging.useServiceWorker(registration);
 
@@ -26,7 +27,7 @@ navigator.serviceWorker.register('/etc/js/firebase/firebase.messaging.sw.php')
                     .then(function(token) {
                         /** Here I am logging to my console. This token I will use for testing with PHP Notification */
                         console.log("Token", token);
-                        app.saveToken(token, config.defaultTopic);
+                        saveToken(token, location.hostname);
                         /** SAVE TOKEN::From here you need to store the TOKEN by AJAX request to your server */
                     })
                     .catch(function(error) {
@@ -48,7 +49,7 @@ navigator.serviceWorker.register('/etc/js/firebase/firebase.messaging.sw.php')
 messaging.onTokenRefresh(function() {
     messaging.getToken()
         .then(function(renewedToken) {
-            app.saveToken(renewedToken, config.defaultTopic);
+            saveToken(renewedToken, location.hostname);
             /** UPDATE TOKEN::From here you need to store the TOKEN by AJAX request to your server */
         })
         .catch(function(error) {
@@ -66,9 +67,9 @@ messaging.onMessage(function(payload) {
     //     image: 'https://c.disquscdn.com/uploads/users/34896/2802/avatar92.jpg'
     // };
     console.log('onMessage::',payload);
-    console.log('app.$data.user::',app.$data.user);
+    console.log('app.user::',app.user);
     const notification = payload.notification;
     const data = payload.data ? payload.data : {};
-    if (app.loggedIn() && app.$data.user.ID === data['sender']) return;
+    if (loginIdx() === data['senderIdx']) return;
     app.alert(notification.title,notification.body);
 });

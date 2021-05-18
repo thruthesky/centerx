@@ -250,12 +250,20 @@ class PostTaxonomy extends Forum {
 
 
     /**
-     * 최신 글을 추출 할 때 유용하다. 글만 추출. 코멘트는 추출하지 않음.
+     * 최신 글을 추출 할 때 유용하다. 글만 추출. 코멘트와 첨부 파일은 추출하지 않음.
+     *
+     *
+     *
+     *
      * @param string|null $categoryId
-     * @param int $page
+     * @param bool|null $photo
+     *  - 이 값이 true 이면 사진이 있는 것만,
+     *  - false 이면, 사진이 없는 것만,
+     *  - 기본 값이 null 인데, 사진이 있든 없든 모두 추출한다.
+     *
      * @param int $limit
      * @return PostTaxonomy[]
-     * @throws Exception
+     *
      *
      * @example
      *  $posts = post()->latest();
@@ -263,20 +271,24 @@ class PostTaxonomy extends Forum {
     public function latest(
         int $categoryIdx = 0,
         string $categoryId=null,
+        bool $photo = null,
         int $limit=10
     ): array {
 
-        $conds = [PARENT_IDX => 0, DELETED_AT => 0];
+//        $conds = [PARENT_IDX => 0, DELETED_AT => 0];
+        $where = "parentIdx=0 AND deletedAt=0";
 
         if ( $categoryIdx == 0 ) {
             if ( $categoryId ) {
                 $categoryIdx = category($categoryId)->idx;
             }
         }
-        if ( $categoryIdx ) $conds[CATEGORY_IDX] = $categoryIdx;
+        if ( $categoryIdx ) $where .= " AND categoryIdx=$categoryIdx";
+        if ( $photo === true ) $where .= " AND files <> '' ";
+        else if ( $photo === false ) $where .= " AND files = '' ";
 
         return $this->search(
-            conds: $conds,
+            where: $where,
             limit: $limit,
             object: true
         );

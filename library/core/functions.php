@@ -387,16 +387,16 @@ function setLoginCookies(array|int $profile): void {
  * @param $profile
  */
 function unsetLoginCookies() {
-    deleteAppCookie(SESSION_ID);
-    deleteAppCookie(NICKNAME);
-    deleteAppCookie(PROFILE_PHOTO_URL);
+    removeAppCookie(SESSION_ID);
+    removeAppCookie(NICKNAME);
+    removeAppCookie(PROFILE_PHOTO_URL);
 }
 
 function setAppCookie($name, $value) {
     setcookie ( $name , $value, time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
 }
 
-function deleteAppCookie($name) {
+function removeAppCookie($name) {
     setcookie($name, "", time()-3600, '/', COOKIE_DOMAIN);
 }
 
