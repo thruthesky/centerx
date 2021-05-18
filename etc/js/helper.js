@@ -1,4 +1,61 @@
 /**
+ * If user logged in, sessionId will be returned. Or undefined will be returned.
+ * @returns {*}
+ */
+function sessionId() {
+    return Cookies.get('sessionId');
+}
+
+/**
+ * If user logged in, true will be returned. Or false will be returned.
+ * @returns {boolean}
+ */
+function loggedIn() {
+    return !!sessionId();
+}
+function notLoggedIn() {
+    return !loggedIn();
+}
+
+/**
+ * Returns login user's idx.
+ * If the user is not logged in, '0' will be returned.
+ *
+ * @returns {string}
+ */
+function loginIdx() {
+    if ( loggedIn() ) return sessionId().split('-').shift();
+    else return '0';
+}
+
+
+
+/**
+ * set for app cookie.
+ *
+ * Note, COOKIE_DOMAIN is automatically set at the bottom of all theme page. see README.
+ * @param name
+ * @param value
+ */
+function setAppCookie(name, value) {
+    Cookies.set(name, value, {
+        expires: 365,
+        path: '/',
+        domain: COOKIE_DOMAIN
+    });
+}
+
+/**
+ * remove app cookie.
+ */
+function removeAppCookie(name) {
+    Cookies.remove(name, {
+        path: '/',
+        domain: COOKIE_DOMAIN
+    });
+}
+
+/**
  *
  * @param route
  * @param params
@@ -8,12 +65,30 @@
 function request(route, params, success, error) {
     if ( ! params ) params = {};
     // If user has logged in, attach session id.
-    if ( Cookies.get('sessionId') ) params['sessionId'] = Cookies.get('sessionId');
+    if ( loggedIn() ) params['sessionId'] = sessionId();
     params['route'] = route;
     axios.post('/index.php', params).then(function(res) {
         if (typeof res.data.response === 'string' &&  res.data.response.indexOf('error_') === 0  ) error(res.data.response);
         else success(res.data.response);
     }).catch(error);
+}
+
+
+/**
+ *
+ * @param token
+ * @param topic - It can subscribe many topics by separating topics with comma(,). Ex) topicA,topicB
+ */
+function saveToken(token, topic = "") {
+    const data = { token: token, topic: topic };
+    request(
+        "notification.updateToken",
+        data,
+        function (re) {
+            // console.log(re);
+        },
+        this.error
+    );
 }
 
 

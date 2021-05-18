@@ -8,6 +8,17 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 ?>
 
 <script>
+
+    // setAppCookie('b', 'Banana');
+
+    // removeAppCookie('b');
+    // setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
+    // removeAppCookie('sessionId');
+    // setAppCookie('sessionId', '');
+    // console.log('sessionId: ', sessionId());
+    // console.log('loggedIn: ', loggedIn());
+    // console.log('loginIdx: ', loginIdx());
+
     // console.log('firebase', firebase);
     //Cookies.set('a', 'Cherry', { domain: '//=COOKIE_DOMAIN?>//'});
     //alert(Cookies.get('a'));
@@ -17,7 +28,7 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 <?php
 
 
-deleteAppCookie('a');
+//removeAppCookie('a');
 //
 //d($_COOKIE);
 

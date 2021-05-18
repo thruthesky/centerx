@@ -49,16 +49,6 @@
 <?php js(HOME_URL . 'etc/js/bootstrap-vue-2.21.2.min.js', 3)?>
 <?php js(theme()->url . 'js/data.js', 3)?>
 <?php js(theme()->url . 'js/app.js', 0)?>
-
-<script>
-    const config = {
-        themeFolderName: "<?=theme()->url?>",
-        defaultTopic: "<?=DEFAULT_TOPIC?>",
-        post_notification_prefix: '<?=NOTIFY_POST?>',
-        comment_notification_prefix: '<?=NOTIFY_COMMENT?>',
-    };
-</script>
-<?php js(theme()->url . 'js/firebase.js')?>
-<?php //js('/etc/js/firebase/firebase.messaging.sw.php')?>
+<?php js(theme()->url . 'js/firebase.js', 0)?>
 </body>
 </html>

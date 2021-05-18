@@ -39,10 +39,7 @@
 
 
 
-- 자바스크립트 쿠키 저장 루틴을 helper.js h에 넣을 것.
-
-- helper.js 에 loggedIn(), notLoggedIn() 함수를 넣을 것.
-
+- html minify
 
 - 챨스.
   countryCode 를 통한 국가별 게시판 관리.
@@ -895,6 +892,41 @@ else {
   })
 </script>
 ```
+
+# Cookies
+
+## Cookies between PHP and Javascript
+
+- PHP and Javascript can share data. So, if the app sets sessionId with Javascript, then user is logged in PHP, also.
+
+```javascript
+setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
+```
+
+- One important thing to know is that, cookies must use same path and domain. So, you must use `setAppCookie()` and
+  `removeAppCookie()` on both of PHP and Javascript to share (and delete) the cookie data.
+
+
+# Sharing Code between PHP and Javascript
+
+## Same functions that exist both on PHP and Javascript.
+
+- `loggedIn()`
+- `notLoggedIn()`
+- `setAppCookie()`
+- `removeAppCookie()`
+
+
+## Similiar functions
+
+- `login()->idx` in PHP is equal to `loginIdx()` in Javascript.
+
+
+
+
+
+
+
 
 # 쪽지 기능
 
@@ -2998,3 +3030,15 @@ config.php 에서 LIVE_RELOAD_HOST 에 빈 문자열 값을 주어, live reload 
 ## error_entity_not_found on CountryTaxonomy
 
 Be sure you have the countries table records into the wc_countries table.
+
+
+
+# Known Issues
+
+## 404 error on push token renew
+
+- This error is only displayed on developer console and this happens when the app tries to delete previously generated
+  token. Which means, for the very first time, there is no 'previously generated token', so no token to delete and no
+  error. It happens when the app renews the token.
+
+  - see https://docs.google.com/document/d/1Hr7rMaiZiTcuk7SsTAGzYGQZuSIwiNx7OIJq_div-RY/edit#heading=h.op2ktluqo2x2
