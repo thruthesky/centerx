@@ -42,6 +42,14 @@
         <button type="submit" class="btn btn-primary">가입하기</button>
     </form>
 </section>
+<div>{{errorMessage.email}}</div>
+<div>{{errorMessage.password}}</div>
+<div>{{errorMessage.password2}}</div>
+<div>{{errorMessage.password}}</div>
+<div>{{errorMessage.name}}</div>
+<div>{{errorMessage.birthday}}</div>
+<div>{{errorMessage.gender}}</div>
+
 
 <script>
     mixins.push({
@@ -81,11 +89,9 @@
 
                 request('user.register', this.form, function (user) {
                     setAppCookie('sessionId', user.sessionId);
-                    location.href='/';
-                }, console.error);
-
+                    location.href = '/';
+                }, alert);
             }
-
         }
     })
 </script>
