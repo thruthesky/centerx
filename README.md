@@ -39,7 +39,7 @@
 
 
 
-- 자바스크립트 쿠키 저장 루틴을 helper.js 에 넣을 것.
+- 자바스크립트 쿠키 저장 루틴을 helper.js h에 넣을 것.
 
 - helper.js 에 loggedIn(), notLoggedIn() 함수를 넣을 것.
 
