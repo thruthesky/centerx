@@ -19,8 +19,8 @@ const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
 define('DOMAIN_THEMES', [
     'cherry.philov' => 'x',
     'itsuda' => 'itsuda',
-    '127.0.0.1' => 'default',
-    'localhost' => 'default',
+    '127.0.0.1' => 'dating',
+    'localhost' => 'dating',
     '169.254.194.6' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
     '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.
     '192.168.100.17' => 'itsuda', // Charles Ip address
@@ -62,7 +62,7 @@ define('SUPPORTED_DOMAIN_SUFFIX', ['.com', '.co.kr', '.kr']);
 define('LOCAL_HOSTS',
     ['localhost', '127.0.0.1', 'local.itsuda50.com', 'main.philov.com', 'apple.philov.com',
     'banana.philov.com', 'cherry.philov.com',
-    'main.sonub.com',
+    'main.sonub.com', 'dating.com'
 ]);
 
 
@@ -205,7 +205,7 @@ define('DEFAULT_DELIVERY_FEE_PRICE', 2500);
 /**
  * @see readme#Live Reload
  */
-define('LIVE_RELOAD_HOST', 'https://main.philov.com');
+define('LIVE_RELOAD_HOST', 'http://localhost');
 define('LIVE_RELOAD_PORT', '12345');
 
 
