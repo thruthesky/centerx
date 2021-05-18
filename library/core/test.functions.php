@@ -113,3 +113,26 @@ function createComment(string $categoryId=null): CommentTaxonomy {
     $post = post()->create([CATEGORY_ID => $categoryId ?? POINT, TITLE => TITLE, CONTENT => CONTENT]);
     return comment()->create([ ROOT_IDX => $post->idx, CONTENT => 'comment content read' ]);
 }
+
+/**
+ * Returns mock data for post.
+ *
+ * @attention The returned posts are the real posts that exists in wc_posts table. It returns the first posts from
+ * wc_posts table.
+ *
+ * @warning The returned posts are real existing posts. It is recommended to post some test posts when the sysystem is setup.
+ *
+ *
+ * @param int $limit
+ *
+ * @return PostTaxonomy[]
+ *
+ * @attention only the first 5 post has image.
+ */
+function postMockData(int $limit = 1, bool $photo = null ): array {
+    return post()->first(limit: $limit, photo: $photo);
+}
+function firstPost(bool $photo = true ): PostTaxonomy {
+    $posts = post()->first(photo: $photo);
+    return $posts[0];
+}

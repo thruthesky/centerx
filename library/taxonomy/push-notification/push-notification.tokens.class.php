@@ -1,6 +1,12 @@
 <?php
 use Kreait\Firebase\Messaging\MulticastSendReport;
 
+/**
+ * Class PushNotificationTokenTaxonomy
+ *
+ * @property-read string $topic
+ * @property-read string $token
+ */
 class PushNotificationTokenTaxonomy extends Entity {
     public function __construct(public int $idx = 0)
     {
@@ -9,46 +15,50 @@ class PushNotificationTokenTaxonomy extends Entity {
 
 
     /**
-     * @todo
+     *
+     * Note, it may creates many records. so, the return data is an array of the class.
      *
      * @attention To update, entity.idx must be set properly.
+     *
      *
      * @param array $in
      *  $in['token'] = 'token-abc...'
      *  $in['topic'] = 'Apple,Banana,Cherry'
      *
-     * @return PushNotificationTokenTaxonomy
+     * @return PushNotificationTokenTaxonomy[]
      */
-    public function update(array $in): self {
+    public function save(array $in): array {
 
 
         $token = $in[TOKEN];
         $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
         $topics = explode(',', $multiTopics);
 
+        $rets = [];
         foreach($topics as $topic) {
-
-            $data = [
-                USER_IDX => login()->idx,
-                TOKEN => $token,
-                TOPIC => $topic,
-            ];
-
-            if ( $this->exists() == false ) {
-                parent::create($data);
+            $found = token()->findOne([TOKEN => $token, TOPIC => $topic]);
+            if ( $found->exists ) {
+                $found->update( [ USER_IDX => login()->idx ] );
+                $rets[] = $found;
             } else {
-                parent::update($data);
+                $this->create([
+                    USER_IDX => login()->idx,
+                    TOKEN => $token,
+                    TOPIC => $topic,
+                ]);
+                $rets[] = $this;
             }
 
             $re = subscribeTopic($topic, $token);
 
+            //
             if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
-                return $this->error(e()->topic_subscription);
+                $rets[] = $this->error(e()->topic_subscription);
             }
 
         }
 
-        return $this;
+        return $rets;
     }
 
     /**
@@ -61,6 +71,18 @@ class PushNotificationTokenTaxonomy extends Entity {
     {
         $rows = parent::search(select: 'token', where: "userIdx=?", params: [$userIdx]);
         return ids($rows, 'token');
+    }
+    /**
+     * Returns tokens of login user in an array
+     * @param int $userIdx
+     * @return array
+     * @throws Exception
+     */
+    function getTopics(int $userIdx) :array
+    {
+        $rows = parent::search(select: 'topic', where: "userIdx=?", params: [$userIdx]);
+//        d($rows);
+        return ids($rows, 'topic');
     }
 
     /**

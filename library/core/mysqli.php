@@ -275,6 +275,9 @@ class MySQLiDatabase {
 
         try {
             $stmt = $this->connection->prepare($sql);
+            if ( is_bool($stmt) && $stmt === false ) {
+                d("SQL Error: $sql");
+            }
             if ( $values ) {
                 if ( is_array($values[0]) || is_object($values[0]) ) {
                     debug_print_backtrace();
@@ -352,6 +355,8 @@ class MySQLiDatabase {
      *      ['a', 'b', 'c'],
      *      ['a=?', 'b=?', 'count>?'],
      *      ['apple', 'banana', 5],
+     *
+     * @todo 값을 escape 해야 한다. SQL Injection 문제가 발생할 수 있다.
      */
     public function parseRecord(array $record, string $type='', string $glue=',') {
         $fields = [];

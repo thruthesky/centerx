@@ -36,6 +36,8 @@ function loginIdx() {
  * Note, COOKIE_DOMAIN is automatically set at the bottom of all theme page. see README.
  * @param name
  * @param value
+ *
+ * @example setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
  */
 function setAppCookie(name, value) {
     Cookies.set(name, value, {
@@ -47,6 +49,8 @@ function setAppCookie(name, value) {
 
 /**
  * remove app cookie.
+ *
+ * @example removeAppCookie('sessionId');
  */
 function removeAppCookie(name) {
     Cookies.remove(name, {
