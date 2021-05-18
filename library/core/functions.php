@@ -1270,6 +1270,19 @@ function get_javascript_tags(string $scripts_and_styles): string {
     return $ret;
 }
 
+
+function get_default_javascript_tags() : string {
+    $COOKIE_DOMAIN = COOKIE_DOMAIN;
+    $default_script = <<<EOH
+<script>
+    const COOKIE_DOMAIN = '$COOKIE_DOMAIN';
+</script>
+EOH;
+
+    if( defined('FIREBASE_SDK') ) $default_script .= FIREBASE_SDK;
+    return $default_script;
+}
+
 /**
  * Firebase 관련 Javascript 를 표시를 한다.
  *

@@ -256,40 +256,49 @@ if ( !defined('NAVER_API_URL') ) define('NAVER_API_URL', "https://nid.naver.com/
 
 
 /**
- * Firebase 사용을 위한 설정
+ * Firebase configuration.
  *
- * Firebase 콘솔에서 해당 프로젝트에서 제공하는 설정을 그대로 이곳에 복사해 넣으면 된다.
- * 그리고 필요한 firebase auth 또는 firebase firestore 등을 추가하면 된다.
+ * To override this setting, simple define `FIREBASE_SDK_ADMIN_KEY` on your theme.
+ * `FIREBASE_SDK_ADMIN_KEY` must be given a JSON value of the firebase admin JSON key.
+ * If `FIREBASE_SDK_ADMIN_KEY` is defined as falsy, then firebase will not be initialized and will not be loaded by default.
  *
- * 만약, Firebase 를 사용하지 않는다면, 이 값을 null 로 주면 된다.
  */
-$__firebase_sdk = <<<EOH
-<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
-
-<!-- Add Firebase products like firestore -->
-<script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-firestore.js"></script>
+if ( !defined('FIREBASE_SDK_ADMIN_KEY') )
+define('FIREBASE_SDK_ADMIN_KEY', <<<EOJ
+{
+    apiKey: "AIzaSyDWiVaWIIrAsEP-eHq6bFBY09HLyHHQW2U",
+    authDomain: "sonub-version-2020.firebaseapp.com",
+    databaseURL: "https://sonub-version-2020.firebaseio.com",
+    projectId: "sonub-version-2020",
+    storageBucket: "sonub-version-2020.appspot.com",
+    messagingSenderId: "446424199137",
+    appId: "1:446424199137:web:f421c562ba0a35ac89aca0",
+    measurementId: "G-F86L9641ZQ"
+}
+EOJ);
+// If `FIREBASE_SDK_ADMIN_KEY` is defined, then initialize the firebase. This code will be automatically inserted at the
+// bottom of all theme.
+if ( defined('FIREBASE_SDK_ADMIN_KEY') ) {
+    $__firebase_sdk_admin_key = FIREBASE_SDK_ADMIN_KEY;
+    $__firebase_sdk = <<<EOH
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js"></script>
 
 <script>
-  // Your web app's Firebase configuration
-  var firebaseConfig = {
-    apiKey: "AIzaSyBx4GE4qdL1tMxPzxlhfyYlnlTdid17wig",
-    authDomain: "itsuda503.firebaseapp.com",
-    projectId: "itsuda503",
-    storageBucket: "itsuda503.appspot.com",
-    messagingSenderId: "855580642229",
-    appId: "1:855580642229:web:6df58a658839d249fd27fc"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+    // Your web app's Firebase configuration
+    var firebaseConfig = $__firebase_sdk_admin_key;
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
 </script>
 EOH;
-if ( !defined('FIREBASE_SDK') ) define('FIREBASE_SDK', $__firebase_sdk);
+    if ( !defined('FIREBASE_SDK') ) define('FIREBASE_SDK', $__firebase_sdk);
+}
 
 
 // Free currconv api key from https://free.currencyconverterapi.com/
 if ( !defined('CURRCONV_API_KEY') ) define('CURRCONV_API_KEY', 'bd6ed497a84496be7ee9');
 
-
+//
 if ( !defined('OPENWEATHERMAP_API_KEY' ) ) define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 

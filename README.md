@@ -2883,6 +2883,15 @@ echo "현재 환율: $phpKwr";
 </script>
 ```
 
+
+# Default Javascript
+
+- Javascript codes that are used by the system will be automatically included at the bottom for all themes.
+  - cookie domain
+  - firebase initialization
+  - and more.
+  You can see it by viewing the source code.
+
 # 위젯
 
 ## 글 쓰기 위젯
