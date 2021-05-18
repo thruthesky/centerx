@@ -275,6 +275,9 @@ class MySQLiDatabase {
 
         try {
             $stmt = $this->connection->prepare($sql);
+            if ( is_bool($stmt) && $stmt === false ) {
+                d("SQL Error: $sql");
+            }
             if ( $values ) {
                 if ( is_array($values[0]) || is_object($values[0]) ) {
                     debug_print_backtrace();
