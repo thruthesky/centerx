@@ -76,7 +76,7 @@ class PushNotificationTokenTaxonomy extends Entity {
     function getTopics(int $userIdx) :array
     {
         $rows = parent::search(select: 'topic', where: "userIdx=?", params: [$userIdx]);
-        d($rows);
+//        d($rows);
         return ids($rows, 'topic');
     }
 
