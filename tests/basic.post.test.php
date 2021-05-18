@@ -9,6 +9,8 @@ testPostUpdate();
 testPostDelete();
 testPostResponse();
 
+testPostLatest();
+
 
 function testPostEntity() {
     isTrue( get_class(post()) == 'PostTaxonomy', 'is post');
@@ -93,4 +95,18 @@ function testPostResponse() {
     $res = post()->create(['categoryId' => $cat->id, 'title' => 'yo'])->response(); // create a post and get response
     isTrue(is_array($res), 'response is array');
     isTrue($res['idx'] > 0, 'response idx is bigger than 0');
+}
+
+
+function testPostLatest() {
+    $p1 = createPost('post-latest');
+    $p2 = createPost('post-latest');
+    $posts = post()->latest(photo: false, limit: 2);
+    isTrue(count($posts) == 2, 'Get latest posts');
+//d($posts);
+//    $posts = post()->latest(photo: true, limit: 2);
+//    isTrue(count($posts) == 2, 'Get latest posts');
+//    d($posts);
+
+
 }
