@@ -271,28 +271,53 @@ class PostTaxonomy extends Forum {
     public function latest(
         int $categoryIdx = 0,
         string $categoryId=null,
-        bool $photo = null,
-        int $limit=10
+        string $countryCode = null,
+        string $by = 'DESC',
+        int $limit=10,
+        bool $photo = null
     ): array {
-
-//        $conds = [PARENT_IDX => 0, DELETED_AT => 0];
         $where = "parentIdx=0 AND deletedAt=0";
-
         if ( $categoryIdx == 0 ) {
             if ( $categoryId ) {
                 $categoryIdx = category($categoryId)->idx;
             }
         }
         if ( $categoryIdx ) $where .= " AND categoryIdx=$categoryIdx";
+        if ( $countryCode ) $where .= " AND countryCode='$countryCode'";
         if ( $photo === true ) $where .= " AND files <> '' ";
         else if ( $photo === false ) $where .= " AND files = '' ";
 
         return $this->search(
             where: $where,
+            by: $by,
             limit: $limit,
             object: true
         );
     }
+
+    /**
+     * It returns the very first posts while latest() returns the very last posts.
+     * @param int $categoryIdx
+     * @param string|null $categoryId
+     * @param int $limit
+     * @param bool|null $photo
+     * @return array
+     */
+    public function first(
+        int $categoryIdx = 0,
+        string $categoryId=null,
+        string $countryCode = null,
+        int $limit=10,
+        bool $photo = null) {
+        return $this->latest(
+            categoryIdx: $categoryIdx,
+            categoryId: $categoryId,
+            countryCode: $countryCode,
+            limit: $limit,
+            photo: $photo
+        );
+    }
+
 
 
     /**

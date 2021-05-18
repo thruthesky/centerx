@@ -7,54 +7,14 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 
 ?>
 
-<script>
-
-    // setAppCookie('b', 'Banana');
-
-    // removeAppCookie('b');
-    // setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
-    // removeAppCookie('sessionId');
-    // setAppCookie('sessionId', '');
-    // console.log('sessionId: ', sessionId());
-    // console.log('loggedIn: ', loggedIn());
-    // console.log('loginIdx: ', loginIdx());
-
-    // console.log('firebase', firebase);
-    //Cookies.set('a', 'Cherry', { domain: '//=COOKIE_DOMAIN?>//'});
-    //alert(Cookies.get('a'));
-    //Cookies.remove('a');
-</script>
-
-<?php
-
-
-//removeAppCookie('a');
-//
-//d($_COOKIE);
-
-
-?>
 
 
 <?php
 
-include widget('post/two-stories-with-thumbnail', [
-    'categoryId' => 'qna'
-]);
+include widget('post/photo-and-texts-4-stories', []);
 
-include widget('post/photo-and-texts-4-stories', [
-    'title' => 'This is the title',
-    'firstStories' => [
-        'categoryId' => 'qna',
-        'limit' => 5,
-    ],
-    'secondStories' => [
-        'categoryId' => 'qna',
-    ],
-]);
-
-$firstStories = post()->latest(categoryId: 'qna', limit: 2);
-$thirdStories = post()->latest(categoryId: 'qna', limit: 3);
+$firstStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 2, photo: true);
+$thirdStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 3, photo: true);
 include widget('post/photos-and-texts-3-stories', [
     'firstStories' => $firstStories,
     'secondStories' => [
