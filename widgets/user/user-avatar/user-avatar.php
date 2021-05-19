@@ -1,14 +1,10 @@
 <?php
-$o = getWidgetOptions();
-
 /**
- * @var String $url
+ * @size icon
+ * @option UserTaxonomy 'user'
  */
-$photoUrl = $o['photoUrl'];
-$size = $o['size'] ?? '70';
+$o = getWidgetOptions();
+$user = $o['user'] ?? user();
 
-if ($photoUrl) { ?>
-    <img class="mr-3" style="height: <?= $size ?>px; min-width: <?= $size ?>px; border-radius: 50px;" src="<?= $photoUrl ?>" />
-<?php } else { ?>
-    <div class="mr-3" style="height: <?= $size ?>px; min-width: <?= $size ?>px; border-radius: 50px; background-color: grey"> </div>
-<?php } ?>
+include widget('avatar/avatar', ['photoUrl' => $user->photoUrl]);
+

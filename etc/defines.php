@@ -72,8 +72,11 @@ define('SESSION_ID', 'sessionId');
 define('NICKNAME', 'nickname');
 define('PROFILE_PHOTO_URL', 'profilePhotoUrl');
 
-define('TITLE', 'title');
-define('CONTENT', 'content');
+const TITLE = 'title';
+const CONTENT = 'content';
+const PRIVATE_TITLE = 'privateTitle';
+const PRIVATE_CONTENT = 'privateContent';
+
 define('DESCRIPTION', 'description');
 define('PATH', 'path');
 define('DEPTH', 'depth');
@@ -114,6 +117,9 @@ define('CHANNEL', 'channel');
 define('USERFILE', 'userfile');
 define('SHOPPING_MALL', 'shopping_mall');
 
+
+const RETURN_URL = 'return_url';
+
 /**
  * Meta 에 저장되지 말아야 할 키 목록
  *
@@ -126,21 +132,22 @@ define('SHOPPING_MALL', 'shopping_mall');
  * MAX_FILE_SIZE - form file size limit
  * TOKEN - the push token
  */
-define('META_CODE_EXCEPTIONS', [
+const META_CODE_EXCEPTIONS = [
     ROUTE,
     SESSION_ID, 'session_id',
     CATEGORY_ID, // 글 작성시 카테고리 아이디가 넘어 옴. 저장 할 필요 없음.
     'reload',
     'p', 'w', 'cw', 'mode', 'MAX_FILE_SIZE',
     TOKEN,
+    RETURN_URL,
     'returnTo', // returnTo 는 더 이상 사용되지 않음. 없애도 됨.
     'userfile', // file upload form name.
     'nsub', // category list tracking.
     'photoIdx', // 이 키는 meta 로 저장되면 안되고, user()->read() 에서 프로그램적으로 임의로 생성된다.
-]);
+];
 
 
-define('ADMIN_SETTINGS', 1);
+const ADMIN_SETTINGS = 1;
 
 
 /// HOME_URL 이 설정되지 않고, 접속 URL 이 없는 경우, 사용될 기본 URL. 예를 들어 CLI 작업이나 테스팅하는 경우,
@@ -165,7 +172,6 @@ define('VERIFIER_PASSLOGIN', 'passlogin');
 define('VERIFIER_DANAL', 'danal');
 define('VERIFIERS', [VERIFIER_DANAL, VERIFIER_PASSLOGIN]);
 
-define('RETURN_URL', 'return_url');
 
 
 

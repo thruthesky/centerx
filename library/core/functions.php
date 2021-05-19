@@ -912,6 +912,16 @@ function select_list_widgets($categoryIdx,  $widget_type, $setting_name) {
 
 }
 
+/**
+ *
+ * Doc block 에서 '@type admin' 을 하면, 관리자 전용위젯으로, 사용자에게는 표시가 되지 않는 위젯이다.
+ * 따라서, 표시를 하지 않는 위젯을 'admin' 으로 표시하면 된다.
+ *
+ * @param $type
+ * @param $default_selected
+ *
+ *
+ */
 function select_list_widgets_option($type, $default_selected) {
     foreach( glob(ROOT_DIR . "/widgets/$type/**/*.php") as $file ) {
         $info = parseDocBlock(file_get_contents($file));
@@ -1307,8 +1317,10 @@ function includeFirebase() {
  * HTML FORM 에서 input 태그 중 hidden 으로 지정되는 값들 보다 편하게 하기 위한 함수.
  *
  * @param array $in
+ *  입력된 HTTP VAR 의 변수와 <input type=hidden name=...> 에서 name 의 값이 동일한 경우, 여기에 기록을 하면 된다.
  *  이 값이 ['p', 'w'] 와 같이 입력되면, HTTP PARAM 의 키 p, w 와 그 값을 그대로 hidden tag 로 만든다.
- *  예) in:['p'] 와 같이 전달되면, <input type=hidden name=p value=in('p')> 와 같이 각 name 을 p 로 하고, in('p')  값을 채운다.
+ *  예) hiddens(in: ['p']) 와 같이 전달되면, <input type=hidden name=p value=in('p')> 와 같이 각 name 을 p 로 하고, in('p')  값을
+ *  채운다.
  * @param string $mode
  *  <input type=hidden name=mode value=...> 와 같이 form submit mode 를 지정한다.
  * @param array $kvs
@@ -1333,7 +1345,7 @@ function includeFirebase() {
  *  <input type='hidden' name='s' value='edit'>
  *  <input type='hidden' name='idx' value='0'>
  */
-function hiddens(array $in=[], string $mode='', array $kvs=[], string $p="", string $return_url=""): string {
+function hiddens(array $in=[], string $mode='', string $p="", string $return_url="", array $kvs=[]): string {
     $str = '';
     if ( $p ) {
         $str .= "<input type='hidden' name='p' value='$p'>\n";
@@ -1518,4 +1530,9 @@ function clientIp() {
  */
 function mimeType(string $filePath): string {
     return mime_content_type($filePath);
+}
+
+
+function postListUrl(int|string $categoryId): string {
+    return "/?p=forum.post.list&categoryId=" . $categoryId;
 }
