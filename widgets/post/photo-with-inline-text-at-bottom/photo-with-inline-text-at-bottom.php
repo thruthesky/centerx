@@ -35,7 +35,7 @@ $url = $post->url;
 
     .photo-with-inline-text-at-bottom .title {
         position: absolute;
-        padding: 1em;
+        padding: .5em;
         bottom: 0;
         left: 0;
         right: 0;
@@ -46,7 +46,7 @@ $url = $post->url;
 
     .photo-with-inline-text-at-bottom .title .inner {
         overflow: hidden;
-        height: 2.1em;
+        height: 2em;
         line-height: 1em;
         font-size: 1em;
         text-align: center;

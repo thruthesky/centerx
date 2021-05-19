@@ -3,6 +3,8 @@
 /**
  * @size wide
  * @options string 'firstCategory', 'secondCategory'
+ * @dependencies none
+ * @description 
  */
 $op = getWidgetOptions();
 
