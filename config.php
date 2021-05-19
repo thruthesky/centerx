@@ -207,7 +207,7 @@ define('DEFAULT_DELIVERY_FEE_PRICE', 2500);
 /**
  * @see readme#Live Reload
  */
-define('LIVE_RELOAD_HOST', 'https://main.philov.com');
+define('LIVE_RELOAD_HOST', 'https://localhost');
 define('LIVE_RELOAD_PORT', '12345');
 
 
