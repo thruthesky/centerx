@@ -29,7 +29,6 @@ class PushNotificationTokenTaxonomy extends Entity {
      */
     public function save(array $in): array {
 
-
         $token = $in[TOKEN];
         $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
         $topics = explode(',', $multiTopics);
@@ -37,21 +36,22 @@ class PushNotificationTokenTaxonomy extends Entity {
         $rets = [];
         foreach($topics as $topic) {
             $found = token()->findOne([TOKEN => $token, TOPIC => $topic]);
+
             if ( $found->exists ) {
                 $found->update( [ USER_IDX => login()->idx ] );
                 $rets[] = $found;
             } else {
-                $this->create([
+                $re = token()->create([
                     USER_IDX => login()->idx,
                     TOKEN => $token,
                     TOPIC => $topic,
                 ]);
-                $rets[] = $this;
+                $rets[] = $re;
             }
 
             $re = subscribeTopic($topic, $token);
 
-            //
+
             if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
                 $rets[] = $this->error(e()->topic_subscription);
             }
@@ -81,7 +81,6 @@ class PushNotificationTokenTaxonomy extends Entity {
     function getTopics(int $userIdx) :array
     {
         $rows = parent::search(select: 'topic', where: "userIdx=?", params: [$userIdx]);
-//        d($rows);
         return ids($rows, 'topic');
     }
 
@@ -91,6 +90,14 @@ class PushNotificationTokenTaxonomy extends Entity {
      */
     function myTokens(): array {
         return $this->getTokens( login()->idx );
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    function myTopics(): array {
+        return $this->getTopics( login()->idx );
     }
 }
 
@@ -104,10 +111,6 @@ function token(int|string $idx=0): PushNotificationTokenTaxonomy
 {
     if ( is_numeric($idx) ) return new PushNotificationTokenTaxonomy($idx);
     return (new PushNotificationTokenTaxonomy())->findOne([TOKEN => $idx]);
-
-//    $record = entity(PUSH_NOTIFICATION_TOKENS, 0)->get(TOKEN, $idx);
-//    if ( ! $record ) return new PushNotificationTokenTaxonomy(0);
-//    return new PushNotificationTokenTaxonomy($record[IDX]);
 }
 
 function sanitizedInput($in): array {
