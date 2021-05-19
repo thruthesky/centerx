@@ -279,6 +279,7 @@ EOJ);
 // bottom of all theme.
 if ( defined('FIREBASE_SDK_ADMIN_KEY') ) {
     $__firebase_sdk_admin_key = FIREBASE_SDK_ADMIN_KEY;
+    $__firebase_url = HOME_URL . 'etc/js/firebase/firebase.js';
     $__firebase_sdk = <<<EOH
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
@@ -290,6 +291,7 @@ if ( defined('FIREBASE_SDK_ADMIN_KEY') ) {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 </script>
+<script src="$__firebase_url"></script>
 EOH;
     if ( !defined('FIREBASE_SDK') ) define('FIREBASE_SDK', $__firebase_sdk);
 }
