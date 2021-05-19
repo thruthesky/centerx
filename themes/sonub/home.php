@@ -7,43 +7,14 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 
 ?>
 
-<script>
-    // console.log('firebase', firebase);
-    //Cookies.set('a', 'Cherry', { domain: '<?//=COOKIE_DOMAIN?>//'});
-    //alert(Cookies.get('a'));
-    //Cookies.remove('a');
-</script>
-
-<?php
-
-
-deleteAppCookie('a');
-//
-//d($_COOKIE);
-
-
-?>
 
 
 <?php
 
-include widget('post/two-stories-with-thumbnail', [
-    'categoryId' => 'qna'
-]);
+include widget('post/photo-and-texts-4-stories', []);
 
-include widget('post/photo-and-texts-4-stories', [
-    'title' => 'This is the title',
-    'firstStories' => [
-        'categoryId' => 'qna',
-        'limit' => 5,
-    ],
-    'secondStories' => [
-        'categoryId' => 'qna',
-    ],
-]);
-
-$firstStories = post()->latest(categoryId: 'qna', limit: 2);
-$thirdStories = post()->latest(categoryId: 'qna', limit: 3);
+$firstStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 2, photo: true);
+$thirdStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 3, photo: true);
 include widget('post/photos-and-texts-3-stories', [
     'firstStories' => $firstStories,
     'secondStories' => [

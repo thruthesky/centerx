@@ -168,6 +168,7 @@ class UserTaxonomy extends Entity {
      * d(user()->login(email: '...', password: '...');
      */
     public function login(array $in): self {
+
         if ( isset($in[EMAIL]) == false || !$in[EMAIL] ) return $this->error(e()->email_is_empty);
         if ( isset($in[PASSWORD]) == false || !$in[PASSWORD] ) return $this->error(e()->empty_password);
 

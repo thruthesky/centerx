@@ -1,35 +1,13 @@
-<h1>데이팅 사이트입니다.</h1>
 
 <section class="p-3">
 
-    <div class="alert alert-info mb-5">
-        어서오세요, <?=login()->nicknameOrName?>
-    </div>
+    <h1>만남사이트</h1>
 
-    <form>
-        <input type="hidden" name="p" value="user.register.submit">
-        <div class="form-group">
-            <label>이메일</label>
-            <input class="form-control" type="email" name="email" value="">
-            <small class="form-text text-muted">이메일 주소를 입력하세요.</small>
-        </div>
-        <div class="form-group">
-            <label>비밀번호</label>
-            <input class="form-control" type="text" name="password" value="">
-            <small class="form-text text-muted">비밀번호를 입력하세요.</small>
-        </div>
-        <input type="text" name="feeling" value="">
+    <?php if(loggedIn()) { ?>
+    어서오세요, <?=login()->email?>님
+    <?php } else { ?>
+    로그인을 먼저 해주세요.
+    <?php }  ?>
 
-        <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="customSwitch1">
-            <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
-        </div>
-        <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" disabled id="customSwitch2">
-            <label class="custom-control-label" for="customSwitch2">Disabled switch element</label>
-        </div>
-
-        <button type="submit">회원가입</button>
-    </form>
 
 </section>

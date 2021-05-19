@@ -1,44 +1,43 @@
 <?php
-
 /**
  * @size wide
- * @options 'title' & 'limit' & 'categoryId'.
+ * @options 'categoryId'
+ * @description Get a photo that has photo from the category and display as primary. and Get 5 more posts to display texts.
  * @dependency none
  */
 
 $op = getWidgetOptions();
 
-$limit = $op['limit'] ?? 5;
-$categoryId = 'discussion';
 
-// default image if first story post doesn't have image
-$src = "/widgets/post/left-photo-with-stories/panda.jpg";
-
-if (isset($op['categoryId'])) {
-  $categoryId = $op['categoryId'];
-}
-
+$primary = null;
 $posts = [];
-if (category($categoryId)->exists == true) {
-  $posts = post()->latest(categoryId: $categoryId, limit: $limit);
+if ( isset($op['categoryId']) ) {
+    // Get primary post that has photo.
+    $_posts = post()->latest(categoryId: $op['categoryId'], limit: 1, photo: true);
+    if ( count($_posts) ) $primary = $_posts[0];
+
+    // Get first 5 posts excluding the primary post.
+    $limit = $op['limit'] ?? 6;
+    $categoryId = $op['categoryId'];
+    $_posts = post()->latest(categoryId: $op['categoryId'], limit: $limit);
+    foreach( $_posts as $post ) {
+        if ( $post->idx != $primary->idx ) $posts[] = $post;
+        if ( count($posts) == 5 ) break;
+    }
 }
 
-if (empty($posts)) {
-  $post = post();
-  $post->updateMemoryData('title', 'What a lovely dog. What is your name? This is the sample title! This is very long text... Make it two lines only!');
-  $post->updateMemoryData('content', 'What a lovely dog. What is your name? This is the sample content! This is very long text... Make it two lines only!');
-  $post->updateMemoryData('url', "javascript:alert('This is a mock data. Post data is not given!');");
-  $post->updateMemoryData('src', "/widgets/post/photo-with-text-at-bottom/panda.jpg");
-  $posts = array_fill(0, $limit, $post);
+if ( empty($primary) ) {
+    $primary = firstPost();
 }
 
-if ( !empty($posts[0]->files()) ) {
-  $src = thumbnailUrl($posts[0]->files()[0]->idx, 300, 200);
-}
+
+$lack = 5 - count($posts);
+$posts = postMockData($lack, photo: false);
+
 ?>
 
 <div class="left-photo-with-stories">
-  <div class="section-image"><img src="<?= $src ?>"></div>
+  <a class="section-image" href="<?=$primary->url?>"><img src="<?= thumbnailUrl($primary->files()[0]->idx, 300, 200) ?>"></a>
   <div class="stories">
     <?php foreach ($posts as $post) { ?>
       <div><a href="<?= $post->url ?>"><?= $post->title ?></a></div>
@@ -54,6 +53,9 @@ if ( !empty($posts[0]->files()) ) {
 
   .left-photo-with-stories .section-image {
     width: 33%;
+      line-height: 1em;
+      height: 8em;
+      overflow: hidden;
   }
 
   .left-photo-with-stories .section-image img {

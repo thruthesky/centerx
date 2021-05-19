@@ -387,16 +387,16 @@ function setLoginCookies(array|int $profile): void {
  * @param $profile
  */
 function unsetLoginCookies() {
-    deleteAppCookie(SESSION_ID);
-    deleteAppCookie(NICKNAME);
-    deleteAppCookie(PROFILE_PHOTO_URL);
+    removeAppCookie(SESSION_ID);
+    removeAppCookie(NICKNAME);
+    removeAppCookie(PROFILE_PHOTO_URL);
 }
 
 function setAppCookie($name, $value) {
     setcookie ( $name , $value, time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
 }
 
-function deleteAppCookie($name) {
+function removeAppCookie($name) {
     setcookie($name, "", time()-3600, '/', COOKIE_DOMAIN);
 }
 
@@ -532,6 +532,10 @@ function widget(string $path, array $options=[]) {
     return $path;
 }
 
+/**
+ * 위젯 옵션 변수를 설정 할 때, 변수가 하나 뿐이므로, 덮어쓰여질 수 있으니 주의해야 한다.
+ * @todo 각 위젯 호출 마다, 옵션 값을 따로 저장 할 것.
+ */
 $__widget_options = [];
 function setWidgetOptions(array $options) {
     global $__widget_options;
@@ -544,6 +548,7 @@ function setWidgetOptions(array $options) {
  * @example
  *  $op = getWidgetOptions();
  * @return array
+ *
  */
 function getWidgetOptions() {
     global $__widget_options;

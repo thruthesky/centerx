@@ -2,22 +2,16 @@
 
 /**
  * @size narrow
- * @options PostTaxonomy $post
+ * @options 'post'. The post must have an image.
  * @dependency none
- * @description The ratio of width and height is 3:2 for the image of post only.
+ * @description The ratio of width and height is 3:2 for the image of post only. The post must have image.
  */
 $o = getWidgetOptions();
-$post = $o['post'] ?? post();
-$src = "/widgets/post/photo-with-text-at-bottom/panda.jpg";
-if ($post->exists == false) {
-    // mock data
-    $post->updateMemoryData('title', 'What a lovely dog. What is your name? This is the sample title! This is very long text... Make it two lines only!');
-    $url = "javascript:alert('This is a mock data. Post data is not given!');";
-} else {
-    if (!empty($post->files()))
-        $src = thumbnailUrl($post->files()[0]->idx, 300, 200);
-    $url = $post->url;
-}
+$post = $o['post'] ?? firstPost();
+$files = $post->files();
+if ( count($files) == 0 ) return;
+$src = thumbnailUrl($files[0]->idx, 300, 200);
+$url = $post->url;
 ?>
 
 
