@@ -115,7 +115,7 @@ class PostTaxonomy extends Forum {
         }
 
         // 비밀글이면, title 과 content 에 값이 들어오면, privateTitle 과 privateContent 로 이동한다.
-        if ( $in['private'] == 'Y' ) {
+        if ( isset($in['private']) && $in['private'] == 'Y' ) {
             if ( isset($in[TITLE]) && ! empty($in[TITLE]) ) {
                 $in[PRIVATE_TITLE] = $in[TITLE];
                 unset($in[TITLE]);

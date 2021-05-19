@@ -30,7 +30,7 @@ $total = $o['total'];
                         <div class="mt-1 text-muted">
                             <?=$_category?>
                             <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?>
-                            <?= $post->shortDate ?>
+                            [<?=$post->categoryId()?>] <?= $post->shortDate ?>
                         </div>
                     </a>
                 </div>
