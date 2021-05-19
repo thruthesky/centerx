@@ -6,7 +6,7 @@ testSaveToken();
 testUpdateToken();
 testUpdateTokenWithMultipleTopics();
 
-testGetTokens();
+testGetTokensAndTopics();
 
 
 function testSaveToken() {
@@ -15,8 +15,8 @@ function testSaveToken() {
     $re = $notificationRoute->updateToken([]);
     isTrue(  $re == e()->token_is_empty, 'should be token is empty');
     $re = $notificationRoute->updateToken([TOKEN => 'abcd' . time()]);
-    isTrue(  $re['idx'], 'success with default topic');
-    isTrue(  $re[TOPIC] == DEFAULT_TOPIC, 'success with default topic: ' . DEFAULT_TOPIC);
+    isTrue(  count($re), 'must return an array with success or fail');
+    isTrue(  $re[0][DEFAULT_TOPIC] == true, 'success with default topic must be true: ' . DEFAULT_TOPIC);
 }
 function testUpdateToken() {
     $notificationRoute = new NotificationRoute();
@@ -24,8 +24,8 @@ function testUpdateToken() {
     $token = 'testUpdateToken' . time();
     $token1 = $notificationRoute->updateToken([TOKEN => $token]);
     $token2 = $notificationRoute->updateToken([TOKEN=> $token, TOPIC => "newTopic"]);
-    isTrue( $token1[IDX] != $token2[IDX], "New record created");
-    isTrue( $token2[TOPIC] == "newTopic", 'success with default topic: newTopic');
+    isTrue( $token1[0][DEFAULT_TOPIC] == true, "defaultTopic was created");
+    isTrue( $token2[0]["newTopic"] == true , 'newTopic was created');
 }
 
 
@@ -35,26 +35,42 @@ function testUpdateTokenWithMultipleTopics()
     $topic1 = 'topic' . time();
     $topic2 = 'topic' . time() + 5;
     $topic3 = 'topic' . time() + 10;
-    $userA =  registerAndLogin();
+    registerAndLogin();
     $topics = $topic1 . "," . $topic2 . "," . $topic3;
     $re = $notificationRoute->updateToken([TOKEN => 'abcd', TOPIC => $topics]);
-    isTrue($re[TOPIC] == $topic3, 'success with the last topic: ' . $topic3);
+    isTrue(count($re) == 3, 'must be 3');
+    isTrue($re[0][$topic1] == true, 'must be true: ' . $topic1);
+    isTrue($re[1][$topic2] == true, 'must be true: ' . $topic2);
+    isTrue($re[2][$topic3] == true, 'must be true: ' . $topic3);
 }
 
-function testGetTokens(){
+function testGetTokensAndTopics(){
     $notificationRoute = new NotificationRoute();
     $topic1 = 'topic' . time();
     $topic2 = 'topic' . time() + 5;
     $topic3 = 'topic' . time() + 10;
     $userA =  registerAndLogin();
     $topics = $topic1 . "," . $topic2 . "," . $topic3;
-    $re = $notificationRoute->updateToken([TOKEN => 'abcd', TOPIC => $topics]);
+    $notificationRoute->updateToken([TOKEN => 'abcd', TOPIC => $topics]);
 
-    $token = token()->getTokens($userA->idx);
-//    d($token);
-    isTrue(count($token) == 3, 'must be 3 token');
-    isTrue($token[0] == $token[1]  &&  $token[2] == 'abcd', 'should be abcd');
+    $tokens = token()->getTokens($userA->idx);
+    isTrue(count($tokens) == 3, 'must be 3 token');
+    isTrue($tokens[0] == $tokens[1]  &&  $tokens[2] == 'abcd', 'should be abcd');
 
-    $re = token()->getTopics($userA->idx);
-    isTrue(count($token) == 3, 'must be 3 topics');
+    $topics = token()->getTopics($userA->idx);
+    isTrue(count($topics) == 3, 'must be 3 topics');
+
+    $myToken = token()->myTokens();
+    $t = true;
+    foreach($tokens as $i => $token) {
+        if ($token!= $myToken[$i]) $t = false;
+    }
+    isTrue($t, 'must be true that both tokens have same value');
+
+    $myTopics = token()->myTopics();
+    $t = true;
+    foreach($topics as $i => $topic) {
+        if ($topic!= $myTopics[$i]) $t = false;
+    }
+    isTrue($t, 'must be true that both topics have same value');
 }

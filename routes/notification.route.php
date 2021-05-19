@@ -31,7 +31,6 @@ class NotificationRoute {
     {
         if (!isset($in[TOKEN])) return e()->token_is_empty;
         $arr = token($in[TOKEN])->save($in);
-
         $rets = [];
         foreach($arr as $a) {
             if ( $a->hasError ) $rets[] = [$a->topic => $a->getError()];
