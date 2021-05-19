@@ -146,7 +146,8 @@ class Theme
             } else {                                // `/?` 으로 시작하지 않고,
 //                debug_log("uri: $uri"); // 여기에 log 를 기록하면, '/favicon.ico' 와 같은 기록이 되는 것을 확인 할 수 있다.
 
-                if ( $uri == '' || $uri == '/' || $uri == '/?' ) $p = 'home';     // uri 가 `/` 만 있으면, home
+                // 입력된 HTTP URI 에 특별한 값이 없으면, home
+                if ( $uri == '' || $uri == '/' || $uri == '/?' || $uri == '/index.php' ) $p = 'home';
                 else {
                     // 아니면, 글 페이지. Friendly URL 로 들어 온 경우.
                     // 주의, URL 에 ? 가 있을 수 있으니, 글을 가져올 때, ? 부터는 무시하도록 한다.

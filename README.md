@@ -37,6 +37,13 @@
 
 - [CenterX Git Project](https://github.com/thruthesky/centerx/projects/2)
 
+- 다음 버전의 명칭
+  - CenterX 대신 Matrix 로 변경한다.
+    - Matrix 에는 성장/발하는 모체라는 뜻이 있다.
+      뜻: 가로/세로 나열한 행렬 또는 망. (사회 또는 개인이 성정하는, 발달하는) 모체.
+    - 각종 표현/접두어/접미어를 'x' 로 한다.
+      예: 기본 css 를 etc/css/x.css 로 저장한다.
+
 - html minify
 
 - entity()->read() 에서 entity 를 한번만 읽고, 메모리에 캐시한 후, 재 사용.
@@ -1706,6 +1713,13 @@ Array
 <?php js(HOME_URL . 'etc/js/bootstrap-vue-2.21.2.min.js', 1)?>
 ```
 
+# 아이콘, SVG
+
+- 3rd party dependency 를 최대한 줄기이기 위해서, 직접 SVG 를 포함해서 사용한다.
+  - 요약 문서 참고: https://docs.google.com/document/d/1VgfgtExjiaFXrc-Sl15WOiL1cPlsWDRGdq9CTpaqiIg/edit#heading=h.a4ruqalgejpr
+  
+
+
 # Admin page design
 
 - It is recommended to write admin code as a widget.
@@ -3002,6 +3016,14 @@ content[tip]=내용사진입니다.
   - Client app should load the forum configuration at startup and cache for the next boot. So, they can use `category.idx`.
 
 
+# CSS, 공용 CSS
+
+- etc/css/x.css 는 공용 CSS 이며, 많은 곳에서 쓰인다.
+  또한 이 것을 커스터마이징하여 다른 색, 모양을 만들어 낼 수 있다.
+  
+## progress bar
+
+- x.css 를 참고한다.
 
 
 
@@ -3074,7 +3096,26 @@ config.php 에서 LIVE_RELOAD_HOST 에 빈 문자열 값을 주어, live reload 
 Be sure you have the countries table records into the wc_countries table.
 
 
+## 대 용량 사진/파일 업로드
 
+- 에러 로그에 file size 또는 content-length exceeds 에러가 나면, 서버에서 설정한 용량 보다 큰 파일을 업로드해서 그렇다.
+  아래와 같이 해결한다.
+
+에러 메시지)
+NOTICE: PHP message: PHP Warning:  POST Content-Length of 81320805 bytes exceeds the limit of 67108864 bytes in Unknown on line 0
+
+
+해결책)
+```text
+
+php.ini)
+upload_max_filesize = 1000M;
+post_max_size = 1000M;
+
+
+nginx.conf)
+client_max_body_size    500M;
+```
 # Known Issues
 
 ## 404 error on push token renew

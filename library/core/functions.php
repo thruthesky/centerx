@@ -503,8 +503,9 @@ function debug_log($message, $data='') {
 
 function leave_starting_debug_log() {
     if ( DEBUG_LOG == false ) return;
+    $uri = $_SERVER['REQUEST_URI'] ?? '';
     $phpSelf = $_SERVER['PHP_SELF'] ?? '';
-    debug_log("-- start -- $phpSelf --> boot.code.php:", date('m/d H:i:s'));
+    debug_log("-- start -- $phpSelf / (uri) $uri --> boot.code.php:", date('m/d H:i:s'));
     if ( str_contains($phpSelf, 'phpThumb.php') == false ) {
         debug_log('in();', in());
     }

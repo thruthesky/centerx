@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/etc/bootstrap-4/bootstrap-4.6.0-min.css">
     <link rel="stylesheet" href="/etc/bootstrap-vue-2.21.2/bootstrap-vue-2.21.2.min.css">
-    <link href="/etc/fontawesome-pro-5/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/etc/css/x.css">
     <link rel="shortcut icon" type="image/x-icon" href="/themes/sonub/favicon.ico"/>
     <style>
         <?php include theme()->css('css/index') ?>
