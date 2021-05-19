@@ -558,6 +558,24 @@ define('DOMAIN_THEMES', [
   이 때, 테이블 prefix 를 맞추어서 테이블 이름을 정해야 한다. 예) wc_table_name
 
 
+### Creating or Updating an Entity
+
+- Example of creating or updating an entity.
+
+```php
+$obj = token()->findOne([TOKEN => '...token...', TOPIC => '..topic...']);
+if ( $obj->exists ) {
+    $obj->update( [ USER_IDX => login()->idx ] );
+} else {
+    $obj->create([
+        USER_IDX => login()->idx,
+        TOKEN => '...token...',
+        TOPIC => '..topic...',
+    ]);
+}
+```
+
+
 ## Taxonomy helper classes
 
 Each taxonomy may have its own customised methods.
@@ -3011,6 +3029,7 @@ content[tip]=내용사진입니다.
 ```
 
 
+
 # Post list
 
 - For listing posts under a category, it requires `category.idx`. Whether the client is using SQL or prepared params,
@@ -3050,17 +3069,22 @@ content[tip]=내용사진입니다.
   - set '12345' to `LIVE_RELOAD_PORT`
   - add the working local domain to `LOCAL_HOSTS`.
   - run `node live-reload.js`
-<<<<<<< HEAD
 
 
-
-
-=======
+- Do not define `LIVE_RELOAD` in config.php
+  You can define it in the runtime to stop the live reload.
+  Below is an example of display Javascript source code by dynamically updating with PHP.
   
+```html
+<?php
+header("Content-Type: application/javascript");
+header("Cache-Control: max-age=604800, public");
+const LIVE_RELOAD = false;
+require_once '../../../boot.php';
+?>
+alert('Hi');
+```
 
-
-  
->>>>>>> dating
 # Error code
 
 - 에러 관련 루틴은 library
@@ -3097,6 +3121,30 @@ config.php 에서 LIVE_RELOAD_HOST 에 빈 문자열 값을 주어, live reload 
 
 Be sure you have the countries table records into the wc_countries table.
 
+
+
+## Firebase - Invalid service account
+
+- When you use firebase admin sdk, you must put the proper firebase admin sdk.
+  
+- One thing to note is that, On test mode, the `Firebase Admin Sdk Json Key` must be put in the root `config.php`
+  Not in the theme `config.php`.
+
+- Error message examples
+
+```text
+Next Kreait\Firebase\Exception\InvalidArgumentException: Invalid service account: /docker/home/centerx/etc/keys/xxx-firebase-admin-sdk.json can not be read: SplFileObject::__construct(/docker/home/centerx/etc/keys/xxx-firebase-admin-sdk.json): ...
+```
+
+```text
+PHP Warning:  openssl_sign(): Supplied key param cannot be coerced into a private key in /docker/home/centerx/vendor/firebase/php-jwt/src/JWT.php on line 209
+Warning: openssl_sign(): Supplied key param cannot be coerced into a private key in /docker/home/centerx/vendor/firebase/php-jwt/src/JWT.php on line 209
+
+d(): Array
+(
+[topic1621427903] => OpenSSL unable to sign data
+)
+```
 
 ## 대 용량 사진/파일 업로드
 

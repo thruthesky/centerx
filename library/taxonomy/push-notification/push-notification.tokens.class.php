@@ -35,27 +35,33 @@ class PushNotificationTokenTaxonomy extends Entity {
 
         $rets = [];
         foreach($topics as $topic) {
-            $found = token()->findOne([TOKEN => $token, TOPIC => $topic]);
 
-            if ( $found->exists ) {
-                $found->update( [ USER_IDX => login()->idx ] );
-                $rets[] = $found;
+            // Token is being saved (Even if it fails on subscribing to the topics)
+            $obj = token()->findOne([TOKEN => $token, TOPIC => $topic]);
+            if ( $obj->exists ) {
+                $obj->update( [ USER_IDX => login()->idx ] );
             } else {
-                $re = token()->create([
+                $obj->create([
                     USER_IDX => login()->idx,
                     TOKEN => $token,
                     TOPIC => $topic,
                 ]);
-                $rets[] = $re;
             }
 
             $re = subscribeTopic($topic, $token);
 
-
-            if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
-                $rets[] = $this->error(e()->topic_subscription);
+            if ($re) {
+                foreach( $re as $_topic ) {
+                    foreach( $_topic as $_token => $error ) {
+                        if ( $token == $_token ) {
+                            $obj->error(e()->topic_subscription . ':' . $error);
+                            $rets[$obj->topic] = $obj->getError();
+                        }
+                    }
+                }
+            } else {
+                $rets[ $obj->topic ] = true;
             }
-
         }
 
         return $rets;

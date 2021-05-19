@@ -155,17 +155,21 @@ function canLiveReload(): bool {
 
     if ( ! LIVE_RELOAD_HOST ) return false;
 
-    /// API call 이면, false. 단, reload 에 값이 들어오면, reload.
+    // API call 이면, false. 단, reload 에 값이 들어오면, reload.
     if ( API_CALL ) {
         if ( ! in('reload') ) return false;
     }
-    /// CLI 에서 실행하면 false
+    // CLI 에서 실행하면 false
     if ( isCli() ) return false;
-    /// PhpThumb 이면 false
+
+    // PhpThumb 이면 false
     if ( isPhpThumb() ) return false;
 
-    /// 로컬 도메인이 아니면, false
+    // 로컬 도메인이 아니면, false
     if ( isLocalhost() == false ) return false;
+
+    //
+    if ( defined('LIVE_RELOAD') && LIVE_RELOAD == false ) return false;
 
     return true;
 
@@ -876,7 +880,7 @@ function enableTesting() {
 }
 function disableTesting() {
     global $_testing;
-    $_testing = true;
+    $_testing = false;
 }
 
 /**
@@ -886,19 +890,19 @@ enableDebugging();
 post($post3[IDX])->vote('Y');
 disableDebugging();
  */
-$_debugging = false;
-function isDebugging(): bool {
-    global $_debugging;
-    return $_debugging;
-}
-function enableDebugging() {
-    global $_debugging;
-    $_debugging = true;
-}
-function disableDebugging() {
-    global $_debugging;
-    $_debugging = false;
-}
+//$_debugging = false;
+//function isDebugging(): bool {
+//    global $_debugging;
+//    return $_debugging;
+//}
+//function enableDebugging() {
+//    global $_debugging;
+//    $_debugging = true;
+//}
+//function disableDebugging() {
+//    global $_debugging;
+//    $_debugging = false;
+//}
 
 
 function select_list_widgets($categoryIdx,  $widget_type, $setting_name) {

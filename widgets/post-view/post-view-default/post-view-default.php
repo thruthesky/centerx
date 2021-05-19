@@ -13,7 +13,7 @@ $comments = $post->comments();
     <div class="pb-1" style="word-break: normal">
         <h3><?= $post->title ?></h3>
     </div>
-    <?php include widget('forum/post-meta-default', ['post' => $post]) ?>
+    <?php include widget('post-meta/post-meta-default', ['post' => $post]) ?>
     <section class="post-body">
         <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
         <!-- FILES -->

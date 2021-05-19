@@ -15,7 +15,6 @@ var messaging = firebase.messaging();
  */
 navigator.serviceWorker.register('/etc/js/firebase/firebase.messaging.sw.php')
     .then(function (registration) {
-
         /** Since we are using our own service worker ie firebase-messaging-sw.js file */
         messaging.useServiceWorker(registration);
 
