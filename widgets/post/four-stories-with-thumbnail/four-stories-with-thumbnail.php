@@ -15,11 +15,11 @@ if (isset($op['categoryId'])) {
 
 $posts = [];
 if (category($categoryId)->exists) {
-  $posts = post()->latest(categoryId: $categoryId, limit: 4);
+  $posts = post()->latest(categoryId: $categoryId, limit: 4, photo: true);
 }
 
 $lack = 4 - count($posts);
-$posts = postMockData($lack, photo: true);
+$posts = array_merge($posts, postMockData($lack, photo: true));
 ?>
 
 <div class="four-stories-with-thumbnail">

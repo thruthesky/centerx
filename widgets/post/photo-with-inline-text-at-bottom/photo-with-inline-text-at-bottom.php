@@ -2,21 +2,24 @@
 
 /**
  * @size narrow
- * @options PostTaxonomy $post
+ * @options PostTaxonomy $post, $height
  * @dependency none
  */
 $o = getWidgetOptions();
-$post = $o['post'] ?? firstPost();
+$post = $o['post'] ?? firstPost(photo: true);
 $files = $post->files();
-if ( count($files) == 0 ) return;
+$height = $o['height'] ?? 200;
+if (count($files) == 0) return;
 $src = thumbnailUrl($files[0]->idx, 360, 280);
 $url = $post->url;
-
 ?>
 
 
-<a class="photo-with-inline-text-at-bottom" href="<?= $url ?>">
-    <div class="photo"><img src="<?= $src ?>"></div>
+<a class="photo-with-inline-text-at-bottom" 
+    href="<?= $url ?>" 
+    style="height: <?= $height ?>;"
+>
+    <div class="photo" style="background: url(<?= $src ?>);"></div>
     <div class="title">
         <div class="inner"><?= $post->title ?></div>
     </div>
@@ -27,7 +30,6 @@ $url = $post->url;
     .photo-with-inline-text-at-bottom {
         position: relative;
         display: block;
-        max-height: 200px;
         overflow: hidden;
     }
 
@@ -50,7 +52,16 @@ $url = $post->url;
         text-align: center;
     }
 
-    .photo-with-inline-text-at-bottom img {
+    /* .photo-with-inline-text-at-bottom img {
         width: 100%;
+        height: 100%;
+    } */
+
+    .photo-with-inline-text-at-bottom .photo {
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat !important;
+        background-size: cover !important;
+        background-position: center !important;
     }
 </style>

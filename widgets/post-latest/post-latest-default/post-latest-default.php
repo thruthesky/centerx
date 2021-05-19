@@ -1,10 +1,11 @@
 <?php
 /**
  * @size narrow
- * @options $categoryId, $limit
+ * @options $categoryId, $limit, $truncate
  */
 $lo = getWidgetOptions();
 $posts = post()->latest(categoryId: $lo[CATEGORY_ID] ?? null, limit: $lo['limit'] ?? 10);
+$truncate = $op['truncate'] ?? false;
 $out = [];
 $_no = 0;
 foreach($posts as $post) {
@@ -14,7 +15,7 @@ foreach($posts as $post) {
     } else {
         $no = "";
     }
-    $out[] = "<a class='d-block p-1' href='{$post->url}'>$no{$post->title}</a>";
+    $out[] = "<a class='d-block p-1" . ($truncate ? ' truncate' : '') . "' href='{$post->url}'>$no{$post->title}</a>";
 
 }
 echo implode($o['separator'] ?? '', $out);

@@ -8,8 +8,8 @@
  */
 $op = getWidgetOptions();
 
-$post = $op['post'] ?? firstPost();
-$posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 3);
+$post = $op['post'] ?? firstPost(photo: true);
+$posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 3, photo: true);
 ?>
 
 <div class="photo-with-3-story-list">
