@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @name Default Post List Style
  */
@@ -24,9 +23,9 @@ $total = $o['total'];
                     $_category = '';
                 }
         ?>
-                <div class="d-flex w-100">
+                <div class="d-flex">
                     <?php include widget('user/user-avatar', ['photoUrl' => $user->shortProfile()['photoUrl'], 'size' => '50']) ?>
-                    <a href="<?= $post->url ?>" class="w-100" style="text-decoration: none">
+                    <a href="<?= $post->url ?>" style="text-decoration: none">
                         <div style="color: black; font-weight: 500">No. <?= $post->idx ?> - <?= $post->title ?></div>
                         <div class="mt-1 text-muted">
                             <?=$_category?>
@@ -42,3 +41,4 @@ $total = $o['total'];
         <?php } ?>
     </div>
 </section>
+

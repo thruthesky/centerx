@@ -37,11 +37,15 @@
 
 - [CenterX Git Project](https://github.com/thruthesky/centerx/projects/2)
 
-
-
 - html minify
 
-- 챨스.
+- entity()->read() 에서 entity 를 한번만 읽고, 메모리에 캐시한 후, 재 사용.
+  update 나 delete 에서 $this->dirty = true 를 해 놓고,
+  entity()->read() 에서 $this->dirty 가 true 이면 다시 읽는다.
+
+
+
+- 소너브
   countryCode 를 통한 국가별 게시판 관리.
   공유 게시판: discussion, qna, reminder, buyandsell, job, caution, rent_house, rent_car, school, 등 공용게시판. 카페장 메인메뉴 선택 가능.
   비공유게시판: 카테고리 아이디를 도메인과 동일하게 하고, 서브 카테고리를 최대 5개까지만 가능하도록 한다. 그리고 서브카테고리를 선택해서 메인 메뉴에 올릴수 있는데,
@@ -931,20 +935,31 @@ setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
 # 쪽지 기능
 
 - 쪽지 기능은 게시판과 매우 흡사하다. 그래서 게시판 기능을 상속해서 쓴다.
+  - 참고, 글 쓰기: message-edit-default.php
+  - 참고, 글 읽기: message-view-default.php
+  - 참고, 글 목록: message-list-default.php
 
+
+- 게시판 category.id 는 어떤 것이라도 상관없지만, 규칙을 두고, 각종 링크에서 공용으로 사용하기 위해서 MESSAGE_CATEGORY 에 게시판 카테고리를 정의한다.
+  기본적으로 'message' 게시판을 사용한다.
+  즉, 쪽지 목록 메뉴 링크를 걸 때, `<a href="<?=postListUrl(MESSAGE_CATEGORY)?>">쪽지</a>` 로 하면 된다.
+  만약, 다른 게시판으로 하려면, MESSAGE_CATEGORY 를 다른 값으로 변경하면 된다.
+
+
+- 주의 할 것은 게시판 목록, 읽기, 쓰기 위젯 등을 쪽지 위젯으로 설정을 해야 한다.
+  기본적으로 post-list/message-list-default, post-view/message-view-default, post-edit/message-edit-default 가 존재한다.
+
+  
 - 글 목록, 페이지내에션, 검색 등에서 비슷하게 사용된다.
   다만, 외부에서 검색이 되지 않도록 100% 보장하기 위해서, title 과 content 필드 대신에 privateTitle, privateContent 에 기록을 한다.
   이 때, private 에 Y 의 값을 기록해야 한다.
+  
+- 글을 저장 할때, private = Y 옵션을 서버로 전송하면, 서버에서는 자동으로 title 과 content 값을 privateTitle 과 privateContent 에 기록한다.
+- 단, 글을 읽을 때에는 private = Y 이면, privateTitle 과 privateContent 를 직접 화면에 표시해야 한다.
 
 - otherUserIdx 에 받는 사람 정보가 들어간다.
 
 - readAt 에 글을 읽은 시간이 들어간다.
-
-- 게시판 category.id 는 어떤 것이라도 상관없다. 하지만 규칙을 두고, 각종 링크에서 공용으로 사용하기 위해서 'message' 로 한다.
-  즉, 쪽지 목록 메뉴 링크를 걸 때, `/?forum.post.list&categoryId=message` 로 하면 된다.
-
-- 주의 할 것은 게시판 목록, 읽기, 쓰기 위젯 등을 쪽지 기능에 맞도록 제작해야한다.
-  기본적으로 post-list/message-list-default, post-view/message-view-default, post-edit/message-edit-default 가 존재한다.
 
 
 
@@ -1770,7 +1785,7 @@ if ( modeCreate() ) {
 - 글 작성과 같은 데이터 생성 페이지는 `<input type="hidden" name="p" value="forum.comment.edit.submit">` 처럼 `p` 값의 끝을 `.sumit` 으로 한다.
   그러면, 테마를 실행하지 않고, 바로 그 스크립트를 실행한다. 즉, 화면에 번쩍임이 사라지게 된다.
 
-- 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="returnTo" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
+- 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="return_url" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
 
 
 # 글 쓰기
@@ -2266,7 +2281,7 @@ if ( in(CATEGORY_ID) ) {
 <div id="post-edit-default" class="p-5">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
-        <input type="hidden" name="returnTo" value="post">
+        <input type="hidden" name="return_url" value="post">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="files" v-model="files">
         <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
@@ -2388,7 +2403,7 @@ if ( in(CATEGORY_ID) ) {
 <div id="itsuda-event-edit" class="p-5">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
-        <input type="hidden" name="returnTo" value="post">
+        <input type="hidden" name="return_url" value="post">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
         <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">

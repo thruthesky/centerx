@@ -13,17 +13,26 @@ if (in(CATEGORY_ID)) {
     jsBack('잘못된 접속입니다.');
 }
 ?>
-<section class="p-3" id="post-edit-default" style="background-color: #f7f8f8; border-radius: 10px;">
-<form action="/" method="POST">
-    <input type="hidden" name="p" value="forum.post.edit.submit">
-    <input type="hidden" name="returnTo" value="post">
-    <input type="hidden" name="files" v-model="files">
-    <input type="hidden" name="<?= CATEGORY_ID ?>" value="<?= $category->v(ID) ?>">
-    <input type="hidden" name="nsub" value="<?= in('subcategory') ?>">
-    <input type="hidden" name="<?= IDX ?>" value="<?= $post->idx ?>">
+    <section class="p-3" id="post-edit-default" style="background-color: #f7f8f8; border-radius: 10px;">
+        <form action="/" method="POST">
+            <?php
+                $hidden_data = [
+                    IDX => $post->idx,
+                    CATEGORY_ID => $category->id,
+                    'nsub' => in('subcategory'),
+                ];
+                echo hiddens(
+                    p: 'forum.post.edit.submit',
+                    return_url: 'post',
+                    kvs: $hidden_data,
+                );
+                hook()->run('post-edit-form-hidden-tags', $hidden_data);
+            ?>
 
-    <div class="d-flex">
-        <?=hook()->run('post-edit-title') ?? "<h6>Category: {$category->id}</h6>"?>
+            <input type="hidden" name="files" v-model="files">
+
+            <div class="d-flex">
+                <?=hook()->run('post-edit-title') ?? "<h6>Category: {$category->id}</h6>"?>
                 <span class="flex-grow-1"></span>
                 <?php if ($category->exists && $category->subcategories) { ?>
                     <select class="form-select form-select-lg mt-2" name="subcategory">

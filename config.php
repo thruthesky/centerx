@@ -207,8 +207,13 @@ define('DEFAULT_DELIVERY_FEE_PRICE', 2500);
 /**
  * @see readme#Live Reload
  */
+<<<<<<< HEAD
 define('LIVE_RELOAD_HOST', 'https://localhost');
 define('LIVE_RELOAD_PORT', '12345');
+=======
+const LIVE_RELOAD_HOST = 'http://localhost';
+const LIVE_RELOAD_PORT = '12345';
+>>>>>>> a7a7a24f (update on readme)
 
 
 define('SUPPORTED_LANGUAGES', ['en', 'ko']);
@@ -300,3 +305,5 @@ if ( !defined('CURRCONV_API_KEY') ) define('CURRCONV_API_KEY', 'bd6ed497a84496be
 //
 if ( !defined('OPENWEATHERMAP_API_KEY' ) ) define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 
+
+const MESSAGE_CATEGORY = 'message';

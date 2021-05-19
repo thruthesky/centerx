@@ -14,15 +14,15 @@ if ( $post->hasError ) jsBack($post->getError());
 
 
 $category = category($categoryId);
-$category->returnToAfterPostEdit;
 
 if ( $category->returnToAfterPostEdit == 'L' ) {
-    $url = "/?p=forum.post.list&categoryId=" . $categoryId;
-    jsGo($url);
+    $url = postListUrl($categoryId);
 } else {
-    $url = $post->url;
-    jsGo($url);
+    if ( in(RETURN_URL) == 'post' ) $url = $post->url;
+    else $url = postListUrl($categoryId);
 }
+
+jsGo($url);
 
 
 

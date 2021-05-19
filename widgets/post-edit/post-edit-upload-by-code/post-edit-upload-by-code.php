@@ -19,7 +19,6 @@ if ( in(CATEGORY_ID) ) {
 <div id="itsuda-event-edit" class="p-5">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
-        <input type="hidden" name="returnTo" value="post">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
         <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">
