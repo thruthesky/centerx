@@ -8,17 +8,13 @@
 $op = getWidgetOptions();
 
 $categoryId = 'discussion';
-if (isset($op['categoryId'])) {
-  $categoryId = $op['categoryId'];
-}
-
 $posts = [];
-if (category($categoryId)->exists) {
-  $posts = post()->latest(categoryId: $categoryId, limit: 2);
+if (isset($op['categoryId'])) {
+  $posts = post()->latest(categoryId: $op['categoryId'], limit: 2);
 }
 
 if (empty($posts)) {
-  $posts = array_fill(0, 2, null);
+  $posts = postMockData(2, photo: true);
 }
 ?>
 

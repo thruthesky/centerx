@@ -7,7 +7,7 @@
  * @description The ratio of width and height is 3:2 for the image of post only. The post must have image.
  */
 $o = getWidgetOptions();
-$post = $o['post'] ?? firstPost();
+$post = $o['post'] ?? firstPost(photo: true);
 $files = $post->files();
 if ( count($files) == 0 ) return;
 $src = thumbnailUrl($files[0]->idx, 300, 200);

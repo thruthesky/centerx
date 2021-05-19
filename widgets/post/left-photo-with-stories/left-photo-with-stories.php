@@ -30,7 +30,6 @@ if ( empty($primary) ) {
     $primary = firstPost();
 }
 
-
 $lack = 5 - count($posts);
 $posts = postMockData($lack, photo: false);
 

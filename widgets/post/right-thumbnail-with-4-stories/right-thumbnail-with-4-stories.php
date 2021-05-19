@@ -7,21 +7,9 @@
  */
 $op = getWidgetOptions();
 
-$post = $op['post'] ?? post();
-$categoryIdx;
-$otherPosts = [];
-$showNum = $op['showNumber'] ?? true;
-
-if ($post->exists == false) {
-  $post->updateMemoryData('title', 'What a lovely dog. What is your name? This is the sample title! This is very long text... Make it two lines only!');
-  $post->updateMemoryData('content', 'What a lovely dog. What is your name? This is the sample content! This is very long text... Make it two lines only!');
-  $post->updateMemoryData('url', "javascript:alert('This is a mock data. Post data is not given!');");
-  $post->updateMemoryData('src', $src);
-  $otherPosts = array_fill(0, 4, null);
-} else {
-  $posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 4);
-}
-
+$post = $op['post'] ?? firstPost(photo: true);
+$showNum = $op['showNumber'] ?? false;
+$posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 4);
 ?>
 
 
@@ -36,7 +24,7 @@ if ($post->exists == false) {
     foreach ($posts as $post) { ?>
       <div>
         <a href="<?= $post->url ?>">
-          <?= '<span class="number">' . ($_i) . '</span>' ?>
+          <?= $showNum ? '<span class="number">' . ($_i) . '</span>' : '' ?>
           <?= $post->title ?>
         </a>
       </div>

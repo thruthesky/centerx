@@ -7,18 +7,9 @@
  */
 $op = getWidgetOptions();
 
-$post = $op['post'] ?? post();
-
-$src = '/widgets/post/photo-with-text-at-bottom/panda.jpg';
-if ($post->exists == false) {
-  $post->updateMemoryData('title', 'What a lovely dog. What is your name? This is the sample title! This is very long text... Make it two lines only!');
-  $post->updateMemoryData('content', 'What a lovely dog. What is your name? This is the sample content! This is very long text... Make it two lines only!');
-  $post->updateMemoryData('url', "javascript:alert('This is a mock data. Post data is not given!');");
-  $post->updateMemoryData('src', $src);
-} else {
-  if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, 300, 200);
-  $url = $post->url;
-}
+$post = $op['post'] ?? firstPost();
+if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, 300, 200);
+$url = $post->url;
 ?>
 
 <a class="thumbnail-with-title-and-content" href="<?= $url ?>">

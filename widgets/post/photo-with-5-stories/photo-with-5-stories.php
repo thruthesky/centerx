@@ -10,24 +10,14 @@
 
 $op = getWidgetOptions();
 
-$posts = [];
-if (isset($op['post'])) {
-  $primaryPost = $op['post'];
-  $categoryIdx = $primaryPost->categoryIdx;
-  $posts = post()->latest(categoryIdx: $categoryIdx, limit: 5);
-} else {
-  $primaryPost = post();
-  $primaryPost->updateMemoryData('title', 'What a lovely dog. What is your name? This is the sample title! This is very long text... Make it two lines only!');
-  $primaryPost->updateMemoryData('url', "javascript:alert('This is a mock data. Post data is not given!');");
-  $posts = array_fill(0, 5, $primaryPost);
-}
-
+$post = $op['post'] ?? firstPost();
+$posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 5);
 ?>
 
 <div class="photo-with-5-stories">
 
   <div class="top">
-    <?php include widget('post/photo-with-text-at-bottom', ['post' => $primaryPost]); ?>
+    <?php include widget('post/photo-with-text-at-bottom', ['post' => $post]); ?>
   </div>
 
   <div class="stories">
