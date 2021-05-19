@@ -44,38 +44,42 @@ define('ROUTE', 'route');
 
 define('ADMIN', 'admin');
 
-define('IDX', 'idx');
-define('ID', 'id');
-define('CATEGORY', 'category');
-define('CATEGORY_IDX', 'categoryIdx');
-define('CATEGORY_ID', 'categoryId');
-define('PARENT_IDX', 'parentIdx');
-define('ROOT_IDX', 'rootIdx');
+const IDX = 'idx';
+const ID = 'id';
+const CATEGORY = 'category';
+const CATEGORY_IDX = 'categoryIdx';
+const CATEGORY_ID = 'categoryId';
+const PARENT_IDX = 'parentIdx';
+const ROOT_IDX = 'rootIdx';
 
-define('USER', 'user');
-define('USER_IDX', 'userIdx');
-define('EMAIL', 'email');
-define('PASSWORD', 'password');
-define('NAME', 'name');
+const USER = 'user';
+const USER_IDX = 'userIdx';
+const OTHER_USER_IDX = 'otherUserIdx';
+const EMAIL = 'email';
+const PASSWORD = 'password';
+const NAME = 'name';
 const TMP_NAME = 'tmp_name';
-define('SIZE', 'size');
-define('TYPE', 'type');
+const SIZE = 'size';
+const TYPE = 'type';
 
-define('PHONE_NO', 'phoneNo');
-define('CODE', 'code');
-define('CURRENT_CODE_NAME', 'currentCodeName');
-define('DATA', 'data');
-define('CREATED_AT', 'createdAt');
-define('UPDATED_AT', 'updatedAt');
-define('DELETED_AT', 'deletedAt');
-define('SESSION_ID', 'sessionId');
-define('NICKNAME', 'nickname');
-define('PROFILE_PHOTO_URL', 'profilePhotoUrl');
+const PHONE_NO = 'phoneNo';
+const CODE = 'code';
+const CURRENT_CODE_NAME = 'currentCodeName';
+const DATA = 'data';
+const CREATED_AT = 'createdAt';
+const UPDATED_AT = 'updatedAt';
+const DELETED_AT = 'deletedAt';
+const SESSION_ID = 'sessionId';
+const NICKNAME = 'nickname';
+const PROFILE_PHOTO_URL = 'profilePhotoUrl';
 
 const TITLE = 'title';
 const CONTENT = 'content';
+
+
 const PRIVATE_TITLE = 'privateTitle';
 const PRIVATE_CONTENT = 'privateContent';
+
 
 define('DESCRIPTION', 'description');
 define('PATH', 'path');

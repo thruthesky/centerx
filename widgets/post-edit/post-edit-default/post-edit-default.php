@@ -31,7 +31,7 @@ if (in(CATEGORY_ID)) {
 
             <input type="hidden" name="files" v-model="files">
 
-            <div class="d-flex">
+            <div class="category d-flex">
                 <?=hook()->run('post-edit-title') ?? "<h6>Category: {$category->id}</h6>"?>
                 <span class="flex-grow-1"></span>
                 <?php if ($category->exists && $category->subcategories) { ?>
@@ -48,6 +48,7 @@ if (in(CATEGORY_ID)) {
                 <?php } ?>
             </div>
 
+            <?=hook()->run('post-edit-form-before-title', $hidden_data)?>
             <input class="mt-3 form-control" placeholder="<?= ln('input_title') ?>" type="text" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
 
             <textarea class="mt-3 form-control" rows="10" placeholder="<?= ln('input_content') ?>" type="text" name="<?= CONTENT ?>"><?= $post->v(CONTENT) ?></textarea>
@@ -66,7 +67,7 @@ if (in(CATEGORY_ID)) {
                     </div>
                 </div>
 
-                <button class="btn btn-warning mr-3" type="button" @click="window.history.back()"><?= ek('Cancel', '취소') ?></button>
+                <button class="btn btn-warning mr-3" type="button" onclick="history.go(-1)"><?= ek('Cancel', '취소') ?></button>
                 <!-- SUBMIT BUTTON -->
                 <button class="btn btn-success" type="submit"><?= ek('Submit', '전송') ?></button>
             </div>

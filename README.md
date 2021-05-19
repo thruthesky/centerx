@@ -927,7 +927,8 @@ setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
 
 # 쪽지 기능, Message Functionality
 
-- 쪽지 기능은 게시판과 매우 흡사하다. 그래서 게시판 기능을 상속해서 쓴다.
+- 쪽지 기능은 게시판과 매우 흡사하다. 그래서 게시판 테이블과 대부분의 게시판 기능을 사용한다. 단, post-edit-default 위젯을 상속하기에는 좀 복잡해서 직접
+  위젯을 만들어 쓴다.
   - 참고, 글 쓰기: message-edit-default.php
   - 참고, 글 읽기: message-view-default.php
   - 참고, 글 목록: message-list-default.php
@@ -2250,10 +2251,37 @@ chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
 ```
 
 
+# 글 목록
 
-# 사진업로드
+- HTTP 입력 변수(또는 Restful Api 에서는 입력 변수)를 통해서 
 
+# 사진업로드, 파일업로드
+
+- 사진/파일 업로드, 특히, 코멘트에서 사진/파일 업로드가 쉽지 않다. 그래서 재 사용 가능한 코드를 만들어 활용한다.
 - 파일 업로드를 할 때, Vue 를 사용 할 수 있고, 그냥 Vanilla Javascript 를 사용 할 수 있다.
+
+
+## Vue.js 2 로 만든 가장 좋은 코드 (중요)
+
+### 글 작성시 사진 업로드 - post-edit-form-file 믹스인
+
+- 글 작성/수정 시, 사진/파일 업로드/삭제를 쉽게 해 놓은 mixin 이다.
+- 모든 글 또는 wc_posts 테이블을 사용하는 글에 사용가능하다.
+- 예제는 post-edit-default.php 를 참고한다.
+
+### 코멘트 컴포넌트 - comment-form 컴포넌트
+
+- SEO 를 위해서 코멘트를 보여 줄 때에는 PHP 로 표시하지만, 새 코멘트 작성, 수정 등을 할 때에는 컴포넌트로 처리하면 된다.
+- 예제는 post-view-default.php 를 보면 된다.
+
+### 글에 코드 별로 사진을 업로드 - upload-by-code 컴포넌트
+
+- 예를 들어, 쇼핑몰 글을 등록 할 때, 각 종 위젯이나 목록에 보여 줄 사진을 따로 업로드하고, 설명 사진을 따로 업로드하고, 본문 사진을 따로 관리하고 싶을 때 사용한다.
+- 실전 코드는 `widget/shopping-mal/admin-shopping-mall/edit.php` 에 있으며, 아래와 같이 사용 가능하다.
+
+```html
+<upload-by-code post-idx="<?=$post->idx?>" code="primaryPhoto" label="대표 사진" tip="상품 페이지 맨 위에 나오는 사진"></upload-by-code>
+```
 
 ## Vue.js 를 사용한 예제
 

@@ -22,6 +22,7 @@ $comments = $post->comments();
         <div class="d-flex buttons mt-2">
             <div class="d-flex">
                 <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->N ?>"></vote-buttons>
+                <a class="btn btn-sm mr-2" href="<?=messageSendUrl($post->userIdx)?>"><?=ln('send_message')?></a>
             </div>
             <span class="flex-grow-1"></span>
             <a class="btn btn-sm mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ek('List', '목록') ?></a>
