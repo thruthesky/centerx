@@ -22,25 +22,25 @@ $lack = 4 - count($posts);
 $posts = array_merge($posts, postMockData($lack, photo: true));
 ?>
 
-<div class="four-stories-with-thumbnail">
+<div class="four-stories-with-thumbnail-inline-text">
   <div class="stories">
     <?php
     foreach ($posts as $post) { ?>
       <div class="story">
-        <?php include widget('post/photo-with-text-at-bottom', ['post' => $post]); ?>
+        <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $post, 'height' => 100]); ?>
       </div>
     <?php } ?>
   </div>
 </div>
 
 <style>
-  .four-stories-with-thumbnail .stories {
+  .four-stories-with-thumbnail-inline-text .stories {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
   }
 
-  .four-stories-with-thumbnail .stories .story {
+  .four-stories-with-thumbnail-inline-text .stories .story {
     width: 50%;
     padding: 2px;
   }

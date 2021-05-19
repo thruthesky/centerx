@@ -2,29 +2,31 @@
 
 /**
  * @size wide
- * @options PostTaxonomy $post, boolean 'showNumber'
+ * @options PostTaxonomy $post, boolean 'displayNumber'
  * @dependency none
  */
 $op = getWidgetOptions();
 
 $post = $op['post'] ?? firstPost(photo: true);
-$showNum = $op['showNumber'] ?? false;
-$posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 4);
+$displayNumber = $op['displayNumber'] ?? false;
+$posts = post()->latest(categoryId: $post->categoryId, limit: 4);
 ?>
 
 
 <div class="right-thumbnail-with-4-stories">
   <div class="top">
-    <?= $showNum ? '<span class="number">1</span>' : '' ?>
+    <?= $displayNumber ? '<span class="number">1</span>' : '' ?>
     <?php include widget('post/right-thumbnail-with-title', ['post' => $post]); ?>
   </div>
   <div class="stories">
     <?php
-    $_i = 2;
-    foreach ($posts as $post) { ?>
+    $_i = 1;
+    foreach ($posts as $post) {
+      $_i++;
+    ?>
       <div>
         <a href="<?= $post->url ?>">
-          <?= $showNum ? '<span class="number">' . ($_i) . '</span>' : '' ?>
+          <?= $displayNumber ? '<span class="number">' . ($_i) . '</span>' : '' ?>
           <?= $post->title ?>
         </a>
       </div>
