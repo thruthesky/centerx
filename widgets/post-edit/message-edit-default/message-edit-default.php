@@ -3,23 +3,18 @@
  * @name 쪽지 - 글 작성
  */
 
-if ( in(OTHER_USER_IDX))
+if ( !in(OTHER_USER_IDX) ) {
+    jsBack('받는 사람 정보가 없습니다.');
+}
 
 ?>
     <section class="p-3" id="post-edit-default" style="background-color: #f7f8f8; border-radius: 10px;">
         <form action="/" method="POST">
-            <?php
-            $hidden_data = [
-                IDX => $post->idx,
-                CATEGORY_ID => $category->id,
-                'nsub' => in('subcategory'),
-            ];
-            echo hiddens(
+            <?= hiddens(
                 p: 'forum.post.edit.submit',
                 return_url: 'post',
-                kvs: $hidden_data,
+                kvs: [CATEGORY_ID => MESSAGE_CATEGORY],
             );
-            hook()->run('post-edit-form-hidden-tags', $hidden_data);
             ?>
 
             <input type="hidden" name="files" v-model="files">
@@ -28,16 +23,16 @@ if ( in(OTHER_USER_IDX))
                 쪽지 전송
             </div>
 
-            <?=hook()->run('post-edit-form-before-title', $hidden_data)?>
-            <input class="mt-3 form-control" placeholder="<?= ln('input_title') ?>" type="text" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
+            <input class="mt-3 form-control" placeholder="<?= ln('input_title') ?>" type="text" name="<?= TITLE ?>">
 
-            <textarea class="mt-3 form-control" rows="10" placeholder="<?= ln('input_content') ?>" type="text" name="<?= CONTENT ?>"><?= $post->v(CONTENT) ?></textarea>
-            <!-- Buttons. TODO: progress bar -->
+            <textarea class="mt-3 form-control" rows="10" placeholder="<?= ln('input_content') ?>" type="text" name="<?= CONTENT ?>"></textarea>
+
+            <progress-bar progress="28"></progress-bar>
+
             <div class="mt-3 d-flex">
                 <!-- UPLOAD BUTTON -->
-                <div style="width: 100px" class="position-relative overflow-hidden">
-                    <!-- TODO: camera icon -->
-                    <button class="btn btn-primary" type="button">Upload</button>
+                <div class="position-relative overflow-hidden">
+                    <img src="/etc/svg/camera.svg" width="32" class="camera-icon">
                     <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" @change="onFileChange($event)" />
                 </div>
 
@@ -57,18 +52,27 @@ if ( in(OTHER_USER_IDX))
                         <img class="h-100 w-100" :src="file['url']" style="border-radius: 10px;">
                         <div class="p-2 position-absolute  top left font-weight-bold" @click="onFileDelete(file['idx'])" style="color: red">[X]</div>
                     </div>
+
                 </div>
             </div>
         </form>
     </section>
-
+<style>
+    .camera-icon {
+        filter: invert(0.34);
+    }
+    .camera-icon:hover {
+        filter: invert(0);
+    }
+</style>
     <script>
         mixins.push({
             data: {
-                files: '<?= $post->v('files') ?>',
+                files: '',
                 percent: 0,
-                uploadedFiles: <?= json_encode($post->files(true), true) ?>,
+                uploadedFiles: [],
             }
         });
     </script>
 <?php js('/etc/js/vue-js-mixins/post-edit-form-file.js', 1) ?>
+<?php js('/etc/js/vue-js-components/progress-bar.js', 1) ?>

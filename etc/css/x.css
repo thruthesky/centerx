@@ -1,0 +1,16 @@
+.progress-bar {
+  background-color: black;
+  border-radius: 13px;
+  /* (height of inner div) / 2 + padding */
+  padding: 3px;
+}
+.progress-bar div {
+  /* Change width by Javascript */
+  width: 25%;
+  border-radius: 10px;
+  /* By changing the font-size, the height will be changed. */
+  font-size: 10px;
+  background-color: orange;
+}
+
+/*# sourceMappingURL=x.css.map */

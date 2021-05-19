@@ -21,7 +21,10 @@ mixins.push({
                     self.uploadedFiles.push(res);
                     self.percent = 0;
                 },
-                alert,
+                function(e) {
+                    console.erorr(e);
+                    alert(e);
+                },
                 function(p) {
                     console.log("progress: ", p);
                     self.percent = p;
