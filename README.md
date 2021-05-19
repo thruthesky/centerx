@@ -923,16 +923,9 @@ setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
 
 ## Similiar functions
 
-- `login()->idx` in PHP is equal to `loginIdx()` in Javascript.
+- `login()->idx` in PHP is equal to `loginIdx()` in Javascript
 
-
-
-
-
-
-
-
-# 쪽지 기능
+# 쪽지 기능, Message Functionality
 
 - 쪽지 기능은 게시판과 매우 흡사하다. 그래서 게시판 기능을 상속해서 쓴다.
   - 참고, 글 쓰기: message-edit-default.php
@@ -944,7 +937,6 @@ setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
   기본적으로 'message' 게시판을 사용한다.
   즉, 쪽지 목록 메뉴 링크를 걸 때, `<a href="<?=postListUrl(MESSAGE_CATEGORY)?>">쪽지</a>` 로 하면 된다.
   만약, 다른 게시판으로 하려면, MESSAGE_CATEGORY 를 다른 값으로 변경하면 된다.
-
 
 - 주의 할 것은 게시판 목록, 읽기, 쓰기 위젯 등을 쪽지 위젯으로 설정을 해야 한다.
   기본적으로 post-list/message-list-default, post-view/message-view-default, post-edit/message-edit-default 가 존재한다.
@@ -1559,13 +1551,13 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
   - priority 옵션을 통해서, 이러한 점을 잘 활용하면 된다.
 
 ```html
-<?php js(HOME_URL . 'etc/js/helper.js', 7)?>
+<?php js(HOME_URL . 'etc/js/common.js', 7)?>
 <?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js', 9)?>
 <?php js(HOME_URL . 'themes/sonub/js/bootstrap-vue-2.21.2.min.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
 <?php js(HOME_URL . 'etc/js/app.js', 0)?>
 ```
 
@@ -1671,7 +1663,7 @@ Array
   ?>
   <?php } ?>
 </section>
-<?php js(HOME_URL . 'etc/js/helper.js')?>
+<?php js(HOME_URL . 'etc/js/common.js')?>
 <?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js')?>
 <?php js(HOME_URL . 'etc/js/app.js')?>
 </body>

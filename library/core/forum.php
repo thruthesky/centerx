@@ -131,6 +131,13 @@ class Forum extends Entity {
     /**
      * 현재 글/코멘트에 연결된 첨부 파일들을 레코드 배열 또는 객체를 배열로 리턴한다.
      *
+     * 주의, 문서화:
+     *  wc_posts.files 에는 파일 번호가 콤마로 분리되어 저장되는데, 여기서 리턴하는 값은 wc_posts.files 와 상관없이,
+     *  taxonomy = 'posts', entity = post.idx 조건이 맞으면, 해당 파일을 리턴한다. 그리고 화면에 표시 할 때, 실제 파일이 없는데, DB 레코드만
+     *  존재하는 경우, 이미지가 표시되지 않는 에러가 발생할 수 있다.
+     *  에러 재 생성: 글에 사진을 업로드하고, HDD 에서 사진을 삭제하면, 위와 같은 현상이 나타날 수 있는다.
+     *  이 같은 경우, post-edit-form-file.js 에서 처리를 한다.
+     *
      * ```
      * foreach( $post->files() as $file ) { ... }
      * ```
@@ -142,10 +149,7 @@ class Forum extends Entity {
      */
     public function files(bool $response = false): array {
 	if ( $this->idx == 0 ) return [];
-        /**
-         *
-         * taxonomy 와 entity 를 기반으로 첨부 파일을 가져오는데, 사진을 업로드한 순서대로 가져온다.
-         */
+         // taxonomy 와 entity 를 기반으로 첨부 파일을 가져오는데, 사진을 업로드한 순서대로 가져온다.
         $files = files()->find([TAXONOMY => POSTS, ENTITY => $this->idx], by: 'ASC');
         if ( $response ) {
             $rets = [];

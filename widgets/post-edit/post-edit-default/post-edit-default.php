@@ -90,4 +90,4 @@ if (in(CATEGORY_ID)) {
             }
         });
     </script>
-<?php js('/etc/js/vue-js-mixins/forum-edit-photo.js', 1) ?>
+<?php js('/etc/js/vue-js-mixins/post-edit-form-file.js', 1) ?>
