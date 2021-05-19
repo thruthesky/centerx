@@ -102,9 +102,7 @@ class PostRoute {
             limit: $in['limit'] ?? 10,
         );
 
-        if (isset($in['searchKey'])) {
-            db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $in['searchKey'], 'createdAt' => time()]);
-        }
+        if ( isset($in['searchKey']) ) saveSearchKeyword($in['searchKey']);
 
         $res = [];
 //        if ( $onTop ) $res[] = $onTop->response();

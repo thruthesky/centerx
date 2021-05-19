@@ -13,7 +13,11 @@ if ( !in(OTHER_USER_IDX) ) {
             <?= hiddens(
                 p: 'forum.post.edit.submit',
                 return_url: 'post',
-                kvs: [CATEGORY_ID => MESSAGE_CATEGORY],
+                kvs: [
+                        CATEGORY_ID => MESSAGE_CATEGORY,
+                        OTHER_USER_IDX => in(OTHER_USER_IDX),
+                        'private' => 'Y',
+                    ],
             );
             ?>
 
@@ -27,7 +31,6 @@ if ( !in(OTHER_USER_IDX) ) {
 
             <textarea class="mt-3 form-control" rows="10" placeholder="<?= ln('input_content') ?>" type="text" name="<?= CONTENT ?>"></textarea>
 
-            <progress-bar progress="28"></progress-bar>
 
             <div class="mt-3 d-flex">
                 <!-- UPLOAD BUTTON -->
@@ -36,10 +39,9 @@ if ( !in(OTHER_USER_IDX) ) {
                     <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" @change="onFileChange($event)" />
                 </div>
 
+
                 <div class="flex-grow-1 mt-2 mr-4">
-                    <div v-if="percent !== 0" class="progress">
-                        <div class="progress-bar" role="progressbar" :style="{ 'width': percent + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
+                    <progress-bar class="ml-2" :progress="percent"></progress-bar>
                 </div>
 
                 <button class="btn btn-warning mr-3" type="button" onclick="history.go(-1)"><?= ek('Cancel', '취소') ?></button>
@@ -57,14 +59,6 @@ if ( !in(OTHER_USER_IDX) ) {
             </div>
         </form>
     </section>
-<style>
-    .camera-icon {
-        filter: invert(0.34);
-    }
-    .camera-icon:hover {
-        filter: invert(0);
-    }
-</style>
     <script>
         mixins.push({
             data: {

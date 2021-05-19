@@ -54,16 +54,15 @@ if (in(CATEGORY_ID)) {
             <textarea class="mt-3 form-control" rows="10" placeholder="<?= ln('input_content') ?>" type="text" name="<?= CONTENT ?>"><?= $post->v(CONTENT) ?></textarea>
 
 
-            <progress-bar :progress="percent"></progress-bar>
             <?php js('/etc/js/vue-js-components/progress-bar.js', 1) ?>
             <div class="mt-3 d-flex">
                 <div class="position-relative overflow-hidden">
-                    <img src="/etc/svg/camera.svg" width="32" class="camera-icon">
+                    <img src="/etc/svg/camera.svg" width="32" class="camera-icon d-block mr-2">
                     <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" @change="onFileChange($event)" />
                 </div>
 
                 <div class="flex-grow-1 mt-2 mr-4">
-                    <progress-bar :progress="percent"></progress-bar>
+                    <progress-bar class="ml-2" :progress="percent"></progress-bar>
                 </div>
 
                 <button class="btn btn-warning mr-3" type="button" onclick="history.go(-1)"><?= ek('Cancel', '취소') ?></button>

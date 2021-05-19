@@ -1587,20 +1587,31 @@ function parsePostListHttpParams(array $in): array {
     // @TODO private 게시판의 경우, 옵션에 따라, userIdx, otherUserIdx 가 내 값이면, privateTitle 과 privateContent 를 찾을 수 있도록 해야 한다.
     if ( isset($in['searchKey']) ) {
         $where .= " AND (title LIKE ? OR content LIKE ?) ";
-        $params[] = '%' . in('searchKey') . '%';
-        $params[] = '%' . in('searchKey') . '%';
+        $params[] = '%' . $in['searchKey'] . '%';
+        $params[] = '%' . $in['searchKey'] . '%';
     }
 
 // 사용자 글 번호. 특정 사용자가 쓴 글만 목록. 쪽지 기능에서는 보내는 사람.
-    if ( in('userIdx') && is_numeric(in('userIdx')) ) {
+    if ( isset($in[USER_IDX]) && is_numeric($in[USER_IDX]) ) {
         $where .= " AND userIdx=? ";
-        $params[] = in('userIdx');
+        $params[] = $in[USER_IDX];
     }
 // 다른 사용자 글 번호. 즉, 글이 특정 사용자에게 전달되는 것. 쪽지 기능에서는 받는 사람.
-    if ( in('otherUserIdx') && is_numeric(in('otherUserIdx')) ) {
+    if ( isset($in[OTHER_USER_IDX]) && is_numeric($in[OTHER_USER_IDX]) ) {
         $where .= " AND otherUserIdx=? ";
-        $params[] = in('otherUserIdx');
+        $params[] = $in[OTHER_USER_IDX];
     }
 
     return [ $where, $params ];
+}
+
+
+/**
+ * Saves the search keyword for listing(searching) posts.
+ * @param string $searchKey
+ */
+function saveSearchKeyword(string $searchKey): void {
+    if ($searchKey) {
+        db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $searchKey, 'createdAt' => time(), UPDATED_AT => time()]);
+    }
 }

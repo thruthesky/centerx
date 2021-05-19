@@ -26,7 +26,17 @@ $total = $o['total'];
                 <div class="d-flex">
                     <?php include widget('user/user-avatar', ['photoUrl' => $user->shortProfile()['photoUrl'], 'size' => '50']) ?>
                     <a href="<?= $post->url ?>" style="text-decoration: none">
-                        <div style="color: black; font-weight: 500">No. <?= $post->idx ?> - <?= $post->title ?></div>
+                        <div style="color: black; font-weight: 500">No. <?= $post->idx ?> -
+                            <?php
+                            if ( $post->isPrivate ) {
+                                if ( $post->userIdx == login()->idx || $post->otherUserIdx == login()->idx ) {
+                                    echo $post->privateTitle;
+                                }
+                            } else {
+                                echo $post->title;
+                            }
+                            ?>
+                        </div>
                         <div class="mt-1 text-muted">
                             <?=$_category?>
                             <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?>

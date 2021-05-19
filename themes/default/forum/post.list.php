@@ -12,6 +12,8 @@ list( $where, $params ) = parsePostListHttpParams(in());
 $posts = post()->search(where: $where, params: $params, page: in('page', 1), limit: in('limit', 10), object: true);
 $total = post()->count(where: $where, params: $params);
 
+if ( isset($in['searchKey']) ) saveSearchKeyword($in['searchKey']);
+
 
 include theme()->part('post-list-top');
 include_once widget($category->postListHeaderWidget ? $category->postListHeaderWidget : 'post-list-header/post-list-header-default', [

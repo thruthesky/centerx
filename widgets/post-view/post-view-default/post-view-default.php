@@ -37,9 +37,12 @@ $comments = $post->comments();
         </div>
     </section>
     <div class="pt-2">
-        <comment-form root-idx="<?= $post->idx ?>"
+        <!--
+            if text-photo is not set, then camera icon will be used.
+        -->
+        <comment-form
+                root-idx="<?= $post->idx ?>"
                       parent-idx="<?= $post->idx ?>"
-                      text-photo="<?=ln('photo')?>"
                       text-submit="<?=ln('submit')?>"
                       text-cancel="<?=ln('cancel')?>"
         ></comment-form>
@@ -115,3 +118,4 @@ $comments = $post->comments();
     });
 </script>
 <?php js('/etc/js/vue-js-components/comment-form.js', 1) ?>
+<?php js('/etc/js/vue-js-components/progress-bar.js', 1) ?>

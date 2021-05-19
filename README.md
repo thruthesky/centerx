@@ -46,6 +46,8 @@
 
 - html minify
 
+- create search entity.
+
 - entity()->read() 에서 entity 를 한번만 읽고, 메모리에 캐시한 후, 재 사용.
   update 나 delete 에서 $this->dirty = true 를 해 놓고,
   entity()->read() 에서 $this->dirty 가 true 이면 다시 읽는다.
