@@ -207,9 +207,9 @@ define('DEFAULT_DELIVERY_FEE_PRICE', 2500);
 /**
  * @see readme#Live Reload
  */
-define('LIVE_RELOAD_HOST', 'http://localhost');
-define('LIVE_RELOAD_PORT', '12345');
 
+const LIVE_RELOAD_HOST = 'http://localhost';
+const LIVE_RELOAD_PORT = '12345';
 
 define('SUPPORTED_LANGUAGES', ['en', 'ko']);
 
@@ -218,7 +218,6 @@ define('SUPPORTED_LANGUAGES', ['en', 'ko']);
  * If you want the app/site to have a fixed language and ignore user's language, put language code like `en`, `ko`, `ch`, ...
  */
 if ( ! defined('FIX_LANGUAGE') ) define('FIX_LANGUAGE', '');
-
 
 
 
@@ -303,3 +302,5 @@ if ( !defined('CURRCONV_API_KEY') ) define('CURRCONV_API_KEY', 'bd6ed497a84496be
 //
 if ( !defined('OPENWEATHERMAP_API_KEY' ) ) define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 
+
+const MESSAGE_CATEGORY = 'message';

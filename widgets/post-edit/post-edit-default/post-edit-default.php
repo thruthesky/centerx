@@ -13,17 +13,26 @@ if (in(CATEGORY_ID)) {
     jsBack('잘못된 접속입니다.');
 }
 ?>
-<section class="p-3" id="post-edit-default" style="background-color: #f7f8f8; border-radius: 10px;">
-<form action="/" method="POST">
-    <input type="hidden" name="p" value="forum.post.edit.submit">
-    <input type="hidden" name="returnTo" value="post">
-    <input type="hidden" name="files" v-model="files">
-    <input type="hidden" name="<?= CATEGORY_ID ?>" value="<?= $category->v(ID) ?>">
-    <input type="hidden" name="nsub" value="<?= in('subcategory') ?>">
-    <input type="hidden" name="<?= IDX ?>" value="<?= $post->idx ?>">
+    <section class="p-3" id="post-edit-default" style="background-color: #f7f8f8; border-radius: 10px;">
+        <form action="/" method="POST">
+            <?php
+                $hidden_data = [
+                    IDX => $post->idx,
+                    CATEGORY_ID => $category->id,
+                    'nsub' => in('subcategory'),
+                ];
+                echo hiddens(
+                    p: 'forum.post.edit.submit',
+                    return_url: 'post',
+                    kvs: $hidden_data,
+                );
+                hook()->run('post-edit-form-hidden-tags', $hidden_data);
+            ?>
 
-    <div class="d-flex">
-        <?=hook()->run('post-edit-title') ?? "<h6>Category: {$category->id}</h6>"?>
+            <input type="hidden" name="files" v-model="files">
+
+            <div class="category d-flex">
+                <?=hook()->run('post-edit-title') ?? "<h6>Category: {$category->id}</h6>"?>
                 <span class="flex-grow-1"></span>
                 <?php if ($category->exists && $category->subcategories) { ?>
                     <select class="form-select form-select-lg mt-2" name="subcategory">
@@ -39,6 +48,7 @@ if (in(CATEGORY_ID)) {
                 <?php } ?>
             </div>
 
+            <?=hook()->run('post-edit-form-before-title', $hidden_data)?>
             <input class="mt-3 form-control" placeholder="<?= ln('input_title') ?>" type="text" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
 
             <textarea class="mt-3 form-control" rows="10" placeholder="<?= ln('input_content') ?>" type="text" name="<?= CONTENT ?>"><?= $post->v(CONTENT) ?></textarea>
@@ -57,7 +67,7 @@ if (in(CATEGORY_ID)) {
                     </div>
                 </div>
 
-                <button class="btn btn-warning mr-3" type="button" @click="window.history.back()"><?= ek('Cancel', '취소') ?></button>
+                <button class="btn btn-warning mr-3" type="button" onclick="history.go(-1)"><?= ek('Cancel', '취소') ?></button>
                 <!-- SUBMIT BUTTON -->
                 <button class="btn btn-success" type="submit"><?= ek('Submit', '전송') ?></button>
             </div>
@@ -81,4 +91,4 @@ if (in(CATEGORY_ID)) {
             }
         });
     </script>
-<?php js('/etc/js/vue-js-mixins/forum-edit-photo.js', 1) ?>
+<?php js('/etc/js/vue-js-mixins/post-edit-form-file.js', 1) ?>

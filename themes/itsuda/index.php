@@ -99,7 +99,7 @@
 </section>
 
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver" crossorigin="anonymous"></script>
-<?php js(HOME_URL . 'etc/js/helper.js?v=1', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js?v=1', 10)?>
 <?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js', 3)?>
 <?php js(HOME_URL . 'etc/js/app.js?v=3')?>
 </body>

@@ -37,11 +37,15 @@
 
 - [CenterX Git Project](https://github.com/thruthesky/centerx/projects/2)
 
-
-
 - html minify
 
-- 챨스.
+- entity()->read() 에서 entity 를 한번만 읽고, 메모리에 캐시한 후, 재 사용.
+  update 나 delete 에서 $this->dirty = true 를 해 놓고,
+  entity()->read() 에서 $this->dirty 가 true 이면 다시 읽는다.
+
+
+
+- 소너브
   countryCode 를 통한 국가별 게시판 관리.
   공유 게시판: discussion, qna, reminder, buyandsell, job, caution, rent_house, rent_car, school, 등 공용게시판. 카페장 메인메뉴 선택 가능.
   비공유게시판: 카테고리 아이디를 도메인과 동일하게 하고, 서브 카테고리를 최대 5개까지만 가능하도록 한다. 그리고 서브카테고리를 선택해서 메인 메뉴에 올릴수 있는데,
@@ -919,32 +923,36 @@ setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
 
 ## Similiar functions
 
-- `login()->idx` in PHP is equal to `loginIdx()` in Javascript.
+- `login()->idx` in PHP is equal to `loginIdx()` in Javascript
+
+# 쪽지 기능, Message Functionality
+
+- 쪽지 기능은 게시판과 매우 흡사하다. 그래서 게시판 테이블과 대부분의 게시판 기능을 사용한다. 단, post-edit-default 위젯을 상속하기에는 좀 복잡해서 직접
+  위젯을 만들어 쓴다.
+  - 참고, 글 쓰기: message-edit-default.php
+  - 참고, 글 읽기: message-view-default.php
+  - 참고, 글 목록: message-list-default.php
 
 
+- 게시판 category.id 는 어떤 것이라도 상관없지만, 규칙을 두고, 각종 링크에서 공용으로 사용하기 위해서 MESSAGE_CATEGORY 에 게시판 카테고리를 정의한다.
+  기본적으로 'message' 게시판을 사용한다.
+  즉, 쪽지 목록 메뉴 링크를 걸 때, `<a href="<?=postListUrl(MESSAGE_CATEGORY)?>">쪽지</a>` 로 하면 된다.
+  만약, 다른 게시판으로 하려면, MESSAGE_CATEGORY 를 다른 값으로 변경하면 된다.
 
+- 주의 할 것은 게시판 목록, 읽기, 쓰기 위젯 등을 쪽지 위젯으로 설정을 해야 한다.
+  기본적으로 post-list/message-list-default, post-view/message-view-default, post-edit/message-edit-default 가 존재한다.
 
-
-
-
-
-# 쪽지 기능
-
-- 쪽지 기능은 게시판과 매우 흡사하다. 그래서 게시판 기능을 상속해서 쓴다.
-
+  
 - 글 목록, 페이지내에션, 검색 등에서 비슷하게 사용된다.
   다만, 외부에서 검색이 되지 않도록 100% 보장하기 위해서, title 과 content 필드 대신에 privateTitle, privateContent 에 기록을 한다.
   이 때, private 에 Y 의 값을 기록해야 한다.
+  
+- 글을 저장 할때, private = Y 옵션을 서버로 전송하면, 서버에서는 자동으로 title 과 content 값을 privateTitle 과 privateContent 에 기록한다.
+- 단, 글을 읽을 때에는 private = Y 이면, privateTitle 과 privateContent 를 직접 화면에 표시해야 한다.
 
 - otherUserIdx 에 받는 사람 정보가 들어간다.
 
 - readAt 에 글을 읽은 시간이 들어간다.
-
-- 게시판 category.id 는 어떤 것이라도 상관없다. 하지만 규칙을 두고, 각종 링크에서 공용으로 사용하기 위해서 'message' 로 한다.
-  즉, 쪽지 목록 메뉴 링크를 걸 때, `/?forum.post.list&categoryId=message` 로 하면 된다.
-
-- 주의 할 것은 게시판 목록, 읽기, 쓰기 위젯 등을 쪽지 기능에 맞도록 제작해야한다.
-  기본적으로 post-list/message-list-default, post-view/message-view-default, post-edit/message-edit-default 가 존재한다.
 
 
 
@@ -1544,13 +1552,13 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
   - priority 옵션을 통해서, 이러한 점을 잘 활용하면 된다.
 
 ```html
-<?php js(HOME_URL . 'etc/js/helper.js', 7)?>
+<?php js(HOME_URL . 'etc/js/common.js', 7)?>
 <?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js', 9)?>
 <?php js(HOME_URL . 'themes/sonub/js/bootstrap-vue-2.21.2.min.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
 <?php js(HOME_URL . 'etc/js/app.js', 0)?>
 ```
 
@@ -1656,7 +1664,7 @@ Array
   ?>
   <?php } ?>
 </section>
-<?php js(HOME_URL . 'etc/js/helper.js')?>
+<?php js(HOME_URL . 'etc/js/common.js')?>
 <?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js')?>
 <?php js(HOME_URL . 'etc/js/app.js')?>
 </body>
@@ -1770,7 +1778,7 @@ if ( modeCreate() ) {
 - 글 작성과 같은 데이터 생성 페이지는 `<input type="hidden" name="p" value="forum.comment.edit.submit">` 처럼 `p` 값의 끝을 `.sumit` 으로 한다.
   그러면, 테마를 실행하지 않고, 바로 그 스크립트를 실행한다. 즉, 화면에 번쩍임이 사라지게 된다.
 
-- 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="returnTo" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
+- 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="return_url" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
 
 
 # 글 쓰기
@@ -2243,10 +2251,37 @@ chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
 ```
 
 
+# 글 목록
 
-# 사진업로드
+- HTTP 입력 변수(또는 Restful Api 에서는 입력 변수)를 통해서 
 
+# 사진업로드, 파일업로드
+
+- 사진/파일 업로드, 특히, 코멘트에서 사진/파일 업로드가 쉽지 않다. 그래서 재 사용 가능한 코드를 만들어 활용한다.
 - 파일 업로드를 할 때, Vue 를 사용 할 수 있고, 그냥 Vanilla Javascript 를 사용 할 수 있다.
+
+
+## Vue.js 2 로 만든 가장 좋은 코드 (중요)
+
+### 글 작성시 사진 업로드 - post-edit-form-file 믹스인
+
+- 글 작성/수정 시, 사진/파일 업로드/삭제를 쉽게 해 놓은 mixin 이다.
+- 모든 글 또는 wc_posts 테이블을 사용하는 글에 사용가능하다.
+- 예제는 post-edit-default.php 를 참고한다.
+
+### 코멘트 컴포넌트 - comment-form 컴포넌트
+
+- SEO 를 위해서 코멘트를 보여 줄 때에는 PHP 로 표시하지만, 새 코멘트 작성, 수정 등을 할 때에는 컴포넌트로 처리하면 된다.
+- 예제는 post-view-default.php 를 보면 된다.
+
+### 글에 코드 별로 사진을 업로드 - upload-by-code 컴포넌트
+
+- 예를 들어, 쇼핑몰 글을 등록 할 때, 각 종 위젯이나 목록에 보여 줄 사진을 따로 업로드하고, 설명 사진을 따로 업로드하고, 본문 사진을 따로 관리하고 싶을 때 사용한다.
+- 실전 코드는 `widget/shopping-mal/admin-shopping-mall/edit.php` 에 있으며, 아래와 같이 사용 가능하다.
+
+```html
+<upload-by-code post-idx="<?=$post->idx?>" code="primaryPhoto" label="대표 사진" tip="상품 페이지 맨 위에 나오는 사진"></upload-by-code>
+```
 
 ## Vue.js 를 사용한 예제
 
@@ -2266,7 +2301,7 @@ if ( in(CATEGORY_ID) ) {
 <div id="post-edit-default" class="p-5">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
-        <input type="hidden" name="returnTo" value="post">
+        <input type="hidden" name="return_url" value="post">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="files" v-model="files">
         <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
@@ -2388,7 +2423,7 @@ if ( in(CATEGORY_ID) ) {
 <div id="itsuda-event-edit" class="p-5">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
-        <input type="hidden" name="returnTo" value="post">
+        <input type="hidden" name="return_url" value="post">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
         <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">

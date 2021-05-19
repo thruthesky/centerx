@@ -1,4 +1,9 @@
-
+/**
+ * @file post-edit-form-file.js
+ */
+/**
+ * Use this on every post(or any of wc_posts taxonomy) form for uploading and deleting(editing) files.
+ */
 mixins.push({
     methods: {
         onFileChange: function(event) {
@@ -23,6 +28,13 @@ mixins.push({
                 }
             );
         },
+        // Remove a file from the view(html)
+        removeFileFromView: function(idx) {
+            this.uploadedFiles = this.uploadedFiles.filter(function(v, i, ar) {
+                return v.idx !== idx;
+            });
+            this.files = deleteByComma(this.files, idx);
+        },
         onFileDelete: function(idx) {
             const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
             if (re === false) return;
@@ -30,11 +42,15 @@ mixins.push({
             request('file.delete', {
                 idx: idx
             }, function(res) {
-                self.uploadedFiles = self.uploadedFiles.filter(function(v, i, ar) {
-                    return v.idx !== res.idx;
-                });
-                self.files = deleteByComma(self.files, res.idx);
-            }, alert);
+                self.removeFileFromView(idx);
+            }, function(e) {
+                if ( e === 'error_file_not_exists_in_db' || e === 'error_file_not_exists_in_disk' ) {
+                    self.removeFileFromView(idx);
+                    alert('File deleted. The file that was not actually exist in file system has now removed.');
+                } else {
+                    alert(e);
+                }
+            });
         }
     }
 });

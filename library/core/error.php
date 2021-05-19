@@ -34,7 +34,8 @@ class E {
 
     public string $post_not_exists = 'error_post_not_exists';
     public string $comment_not_exists = 'error_comment_not_exists';
-    public string $file_not_exists = 'error_file_not_exists';
+    public string $file_not_exists_in_db = 'error_file_not_exists_in_db';
+    public string $file_not_exists_in_disk = 'error_file_not_exists_in_disk';
     public string $not_your_post = 'error_not_your_post';
 
     public string $not_your_comment = 'error_not_your_comment';

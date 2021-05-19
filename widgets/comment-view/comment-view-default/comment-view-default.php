@@ -46,7 +46,14 @@ $comment = $o['comment'];
     </div>
 
     <!-- comment update form -->
-    <comment-form root-idx="<?= $post->idx ?>" comment-idx='<?= $comment->idx ?>' v-if="displayCommentForm[<?= $comment->idx ?>] === 'update'"></comment-form>
+    <comment-form
+            root-idx="<?= $post->idx ?>"
+            comment-idx='<?= $comment->idx ?>'
+            text-photo="<?=ln('photo')?>"
+            text-submit="<?=ln('submit')?>"
+            text-cancel="<?=ln('cancel')?>"
+            v-if="displayCommentForm[<?= $comment->idx ?>] === 'update'"
+    ></comment-form>
 
 
 </div>

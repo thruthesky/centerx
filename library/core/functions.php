@@ -912,6 +912,16 @@ function select_list_widgets($categoryIdx,  $widget_type, $setting_name) {
 
 }
 
+/**
+ *
+ * Doc block 에서 '@type admin' 을 하면, 관리자 전용위젯으로, 사용자에게는 표시가 되지 않는 위젯이다.
+ * 따라서, 표시를 하지 않는 위젯을 'admin' 으로 표시하면 된다.
+ *
+ * @param $type
+ * @param $default_selected
+ *
+ *
+ */
 function select_list_widgets_option($type, $default_selected) {
     foreach( glob(ROOT_DIR . "/widgets/$type/**/*.php") as $file ) {
         $info = parseDocBlock(file_get_contents($file));
@@ -1307,8 +1317,10 @@ function includeFirebase() {
  * HTML FORM 에서 input 태그 중 hidden 으로 지정되는 값들 보다 편하게 하기 위한 함수.
  *
  * @param array $in
+ *  입력된 HTTP VAR 의 변수와 <input type=hidden name=...> 에서 name 의 값이 동일한 경우, 여기에 기록을 하면 된다.
  *  이 값이 ['p', 'w'] 와 같이 입력되면, HTTP PARAM 의 키 p, w 와 그 값을 그대로 hidden tag 로 만든다.
- *  예) in:['p'] 와 같이 전달되면, <input type=hidden name=p value=in('p')> 와 같이 각 name 을 p 로 하고, in('p')  값을 채운다.
+ *  예) hiddens(in: ['p']) 와 같이 전달되면, <input type=hidden name=p value=in('p')> 와 같이 각 name 을 p 로 하고, in('p')  값을
+ *  채운다.
  * @param string $mode
  *  <input type=hidden name=mode value=...> 와 같이 form submit mode 를 지정한다.
  * @param array $kvs
@@ -1333,7 +1345,7 @@ function includeFirebase() {
  *  <input type='hidden' name='s' value='edit'>
  *  <input type='hidden' name='idx' value='0'>
  */
-function hiddens(array $in=[], string $mode='', array $kvs=[], string $p="", string $return_url=""): string {
+function hiddens(array $in=[], string $mode='', string $p="", string $return_url="", array $kvs=[]): string {
     $str = '';
     if ( $p ) {
         $str .= "<input type='hidden' name='p' value='$p'>\n";
@@ -1518,4 +1530,76 @@ function clientIp() {
  */
 function mimeType(string $filePath): string {
     return mime_content_type($filePath);
+}
+
+
+function messageSendUrl(int $userIdx): string {
+    return postEditUrl(MESSAGE_CATEGORY) . "&otherUserIdx=$userIdx";
+}
+
+function postListUrl(int|string $categoryId): string {
+    return "/?p=forum.post.list&categoryId=" . $categoryId;
+}
+
+function postEditUrl(int|string $categoryId = '', int $postIdx=0): string {
+    $url = "/?p=forum.post.edit";
+    if ( $categoryId ) $url .= "&categoryId=$categoryId";
+    if ( $postIdx ) $url .= "&postIdx=$postIdx";
+    return $url;
+}
+
+
+/**
+ * HTTP PARAMS 으로 들어오는 키/값들을 파싱하여 글 목록 또는 글 추출을 하기 위한 SQL 쿼리에 사용 할 where 와 params 을 리턴한다.
+ * 이 함수는 PHP 형식과 Restful Api 방식에서 공용으로 사용된다.
+ *
+ * 단, order, by, page, limit 등은 외부 함수에서 별도로 적절히 처리를 해야 한다.
+ */
+function parsePostListHttpParams(array $in): array {
+
+    $category = category( $in[CATEGORY_ID] ?? 0 );
+    $params = [];
+
+    $where = "parentIdx=0 AND deletedAt=0";
+
+    if ($category->exists()) {
+        $where .= " AND categoryIdx=" . $category->idx;
+    }
+
+    if (isset($in['subcategory'])) {
+        $where .= " AND subcategory=?";
+        $params[] = $in['subcategory'];
+    }
+
+    /**
+     * 국가 코드
+     * README 참고
+     */
+    $countryCode = $in['countryCode'] ?? '';
+    hook()->run('post_list_country_code', $countryCode);
+    if ( $countryCode ) {
+        $where .= " AND countryCode=?";
+        $params[] = $countryCode;
+    }
+
+    // 검색어가 입력되면, 제목과 내용에서 검색한다.
+    // @TODO private 게시판의 경우, 옵션에 따라, userIdx, otherUserIdx 가 내 값이면, privateTitle 과 privateContent 를 찾을 수 있도록 해야 한다.
+    if ( isset($in['searchKey']) ) {
+        $where .= " AND (title LIKE ? OR content LIKE ?) ";
+        $params[] = '%' . in('searchKey') . '%';
+        $params[] = '%' . in('searchKey') . '%';
+    }
+
+// 사용자 글 번호. 특정 사용자가 쓴 글만 목록. 쪽지 기능에서는 보내는 사람.
+    if ( in('userIdx') && is_numeric(in('userIdx')) ) {
+        $where .= " AND userIdx=? ";
+        $params[] = in('userIdx');
+    }
+// 다른 사용자 글 번호. 즉, 글이 특정 사용자에게 전달되는 것. 쪽지 기능에서는 받는 사람.
+    if ( in('otherUserIdx') && is_numeric(in('otherUserIdx')) ) {
+        $where .= " AND otherUserIdx=? ";
+        $params[] = in('otherUserIdx');
+    }
+
+    return [ $where, $params ];
 }

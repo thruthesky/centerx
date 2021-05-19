@@ -75,22 +75,27 @@ class PostRoute {
     /**
      * @param $in
      * @return array|string
+     * @todo 코드를 복잡하게 하지 않는다. onTop 이나 기타 기능을 제공하지 않는다.
      */
     public function search($in): array|string
     {
 
-        ///
-        $onTop = null;
-        if ( isset($in['postOnTop']) && $in['postOnTop'] ) {
-            $onTop = post($in['postOnTop']);
-            if ($onTop->hasError) return $onTop->getError();
-            $categoryId = $onTop->categoryId();
-            $in['where'] = "categoryId=<$categoryId>";
-        }
+        list ($where, $params ) = parsePostListHttpParams($in);
+
+
+//        $onTop = null;
+//
+//        if ( isset($in['postOnTop']) && $in['postOnTop'] ) {
+//            $onTop = post($in['postOnTop']);
+//            if ($onTop->hasError) return $onTop->getError();
+//            $categoryId = $onTop->categoryId();
+//            $in['where'] = "categoryId=<$categoryId>";
+//        }
 
         $posts = post()->search(
             select: $in['select'] ?? 'idx',
-            where: $in['where'] ?? '1',
+            where: $where,
+            params: $params,
             order: $in['order'] ?? IDX,
             by: $in['by'] ?? 'DESC',
             page: $in['page'] ?? 1,
@@ -102,9 +107,9 @@ class PostRoute {
         }
 
         $res = [];
-        if ( $onTop ) $res[] = $onTop->response();
+//        if ( $onTop ) $res[] = $onTop->response();
         foreach($posts as $post) {
-            if ( $onTop?->idx == $post->idx ) continue;
+//            if ( $onTop?->idx == $post->idx ) continue;
             $res[] = $post->response();
         }
         return $res;

@@ -114,9 +114,24 @@ class PostTaxonomy extends Forum {
             return $this->error($act->getError());
         }
 
+        // 비밀글이면, title 과 content 에 값이 들어오면, privateTitle 과 privateContent 로 이동한다.
+        if ( isset($in['private']) && $in['private'] == 'Y' ) {
+            if ( isset($in[TITLE]) && ! empty($in[TITLE]) ) {
+                $in[PRIVATE_TITLE] = $in[TITLE];
+                unset($in[TITLE]);
+            }
+            if ( isset($in[CONTENT]) && ! empty($in[CONTENT]) ) {
+                $in[PRIVATE_CONTENT] = $in[CONTENT];
+                unset($in[CONTENT]);
+            }
+        }
+
         // Update path for SEO friendly.
         $in[PATH] = $this->getSeoPath($in['title'] ?? '');
         $in['Ymd'] = date('Ymd');
+
+
+        // Create a post
         parent::create($in);
         if ( $this->hasError ) return $this;
 

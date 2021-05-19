@@ -127,7 +127,7 @@ function addByComma(orgValue, newValue) {
 }
 function deleteByComma(orgValue, val) {
     const arr = orgValue.split(',');
-    const i = arr.indexOf(val);
+    const i = arr.indexOf(`${val}`); // fix, since `num` is not same as `string` it will return `-1`.
     if ( i >= 0 ) {
         arr.splice(i, 1);
     }
