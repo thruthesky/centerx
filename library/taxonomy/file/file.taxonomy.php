@@ -129,7 +129,7 @@ class FileTaxonomy extends Entity {
         // if ( $this->exists() === false ) return $this->error(e()->file_not_exists);
         // if ( file_exists($this->path) === false ) return $this->error(e()->file_not_exists);
 
-        if ( file_exists($this->path) === true ) {
+        if ( file_exists($this->path) === false ) {
             // ... Ignore, since it is already deleted in the disk.
         } else {
             $re = @unlink($this->path);
