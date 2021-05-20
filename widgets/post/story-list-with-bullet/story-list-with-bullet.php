@@ -40,8 +40,12 @@ $posts = array_merge($posts, postMockData($lack));
 </div>
 
 <style>
+  .story-list-with-bullet {
+    padding-left: 1.5em;
+  }
+
   .story-list-with-bullet ul {
-    padding-left: 20px;
+    padding-left: 0;
   }
 
   .story-list-with-bullet ul li div {
