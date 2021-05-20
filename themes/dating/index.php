@@ -18,7 +18,8 @@
         <div class="container text-center">
             <a href="/">홈</a>
             <?php if(loggedIn()) { ?>
-            <a href="?user.logout.submit">로그아웃</a>
+                <a href="?user.profile">회원정보 수정</a>
+                <a href="?user.logout.submit">로그아웃</a>
             <?php } else { ?>
             <a href="?user.login">로그인</a>
             <a href="?user.register">회원가입</a>

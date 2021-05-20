@@ -279,7 +279,7 @@ EOJ);
 }
 // If `FIREBASE_SDK_ADMIN_KEY` is defined, then initialize the firebase. This code will be automatically inserted at the
 // bottom of all theme.
-if ( defined('FIREBASE_SDK_ADMIN_KEY') ) {
+if ( defined('FIREBASE_SDK_ADMIN_KEY') && FIREBASE_SDK_ADMIN_KEY ) {
     $__firebase_sdk_admin_key = FIREBASE_SDK_ADMIN_KEY;
     define('FIREBASE_BOOT_SCRIPTS', <<<EOH
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
