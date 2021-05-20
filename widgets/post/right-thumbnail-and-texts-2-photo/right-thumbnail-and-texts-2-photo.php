@@ -4,7 +4,6 @@
  * @size narrow
  * @options string 'firstCategory', 'secondCategory', 'imageHeight', 'imageWidth'
  * @dependencies none
- * @description 
  */
 $op = getWidgetOptions();
 

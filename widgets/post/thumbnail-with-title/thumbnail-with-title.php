@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @size narrow
+ * @size wide
  * @options PostTaxonomy 'post', 'imageHeight', 'imageWidth'
  * @dependency none
  */
@@ -10,14 +10,14 @@ $op = getWidgetOptions();
 $post = $op['post'] ?? firstPost(photo: true);
 
 
-$imageHeight = $op['imageHeight'] ?? 200;
-$imageWidth = $op['imageWidth'] ?? 280;
+$imageHeight = $op['imageHeight'] ?? 100;
+$imageWidth = $op['imageWidth'] ?? 150;
 if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, height: $imageHeight, width: $imageWidth);
 $url = $post->url;
 ?>
 
-<a class="thumbnail-with-title" href="<?= $url ?>">
-  <div class="photo" style="height: <?= $imageHeight ?>; width: <?= $imageWidth ?>;">
+<a class="thumbnail-with-title" href="<?= $url ?>" style="height: <?= $imageHeight ?>;">
+  <div class="photo" style="height: <?= $imageHeight ?>;">
     <img src="<?= $src ?>">
   </div>
   <div class="title">
@@ -29,7 +29,6 @@ $url = $post->url;
   .thumbnail-with-title {
     display: flex;
     width: 100%;
-    height: 3em;
     overflow: hidden;
   }
 

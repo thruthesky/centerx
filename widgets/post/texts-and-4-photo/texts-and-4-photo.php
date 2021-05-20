@@ -35,6 +35,6 @@ $secondStoriesOps = [
     margin-top: 4px;
   }
   .texts-and-4-photo .bottom {
-    margin-top: 6px;
+    margin-top: 2px;
   }
 </style>

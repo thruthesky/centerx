@@ -12,7 +12,7 @@ $files = $post->files();
 if (count($files) == 0) return;
 
 $imageHeight = $o['imageHeight'] ?? 160;
-$imageWidth = $o['imageWidth'] ?? 160;
+$imageWidth = $o['imageWidth'] ?? 140;
 
 $src = thumbnailUrl($files[0]->idx, $imageHeight, $imageWidth);
 $url = $post->url;

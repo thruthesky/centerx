@@ -47,6 +47,7 @@ $posts = array_merge($posts, postMockData($lack));
   }
 
   .top-6-stories .number {
+    font-weight: bold;
     margin-right: 8px;
   }
 </style>
