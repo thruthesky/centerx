@@ -2,13 +2,22 @@
 
 /**
  * @size wide
- * @options PostTaxonomy 'post', 2 post for 'secondStories'
+ * @options PostTaxonomy 'post', 'categoryId'
  * @dependencies none
  * @description It display 1 post at top, 2 photo of post on lower left and list of post on lower right.
  */
 $op = getWidgetOptions();
 
 $post = $op['post'] ?? firstPost();
+
+$posts = [];
+
+$categoryId = 'discussion';
+if (isset($op['categoryId']) && category($categoryId)->exists) {
+  $posts = post()->latest(categoryId: $categoryId, limit: 2, photo: true);
+}
+$lack = 2 - count($posts);
+$posts = array_merge($posts, postMockData($lack, photo: true));
 ?>
 
 <div class="two-left-photo-with-stories">
@@ -18,15 +27,14 @@ $post = $op['post'] ?? firstPost();
   </a>
   <div class="bottom">
     <div class="left">
-      <div class="photo">
-        <?php include widget('post/photo-with-inline-text-at-bottom', $op['secondStories'][0] ?? []); ?>
-      </div>
-      <div class="photo">
-        <?php include widget('post/photo-with-inline-text-at-bottom', $op['secondStories'][1] ?? []); ?>
-      </div>
+      <?php foreach ($posts as $post) { ?>
+        <div class="photo">
+          <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $post, 'height' => 150]); ?>
+        </div>
+      <?php } ?>
     </div>
     <div class="right">
-      <?php include widget('post/story-list-with-bullet', [ 'categoryId' => $op['categoryId'] ?? null ]); ?>
+      <?php include widget('post/story-list-with-bullet', ['categoryId' => $op['categoryId'] ?? null]); ?>
     </div>
   </div>
 </div>
@@ -34,7 +42,7 @@ $post = $op['post'] ?? firstPost();
 <style>
   .two-left-photo-with-stories .top .title {
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 1em;
   }
 
   .two-left-photo-with-stories .top .title,
@@ -50,6 +58,7 @@ $post = $op['post'] ?? firstPost();
 
   .two-left-photo-with-stories .bottom {
     display: flex;
+    margin-top: 2px;
   }
 
   .two-left-photo-with-stories .bottom .left {
@@ -57,7 +66,7 @@ $post = $op['post'] ?? firstPost();
   }
 
   .two-left-photo-with-stories .bottom .left .photo {
-    margin-top: 8px;
+    margin-top: 2px;
   }
 
   .two-left-photo-with-stories .bottom .right {

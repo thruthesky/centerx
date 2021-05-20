@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @size wide
+ * @size narrow
  * @options string 'categoryId', 'limit'
  * @dependencies none
  */
@@ -41,13 +41,12 @@ $posts = array_merge($posts, postMockData($lack));
 
 <style>
   .story-list-with-bullet ul {
-    list-style-type: circle;
-    padding-top: .5em;
+    padding-left: 20px;
   }
 
   .story-list-with-bullet ul li div {
-    margin-bottom: .5em;
-    font-size: 1.2em;
+    margin-bottom: .3em;
+    font-size: 1em;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
