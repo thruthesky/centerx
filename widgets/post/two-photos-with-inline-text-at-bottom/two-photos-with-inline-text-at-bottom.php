@@ -27,10 +27,10 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
 
 <div class="two-photos-with-inline-text-at-bottom">
   <div class="left">
-    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[0], 'height' => 150]); ?>
+    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[0]]); ?>
   </div>
   <div class="right">
-    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[1], 'height' => 150]); ?>
+    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[1]]); ?>
   </div>
 </div>
 

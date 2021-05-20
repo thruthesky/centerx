@@ -49,7 +49,7 @@ $posts = array_merge($posts, postMockData($lack));
   }
 
   .story-list-with-bullet ul li div {
-    margin-bottom: .3em;
+    margin-bottom: .35em;
     font-size: 1em;
     overflow: hidden;
     white-space: nowrap;
