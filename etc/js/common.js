@@ -83,19 +83,24 @@ function request(route, params, success, error) {
 
 
 /**
+ * Save token into localStorage and remote.
+ *
+ *
+ *
  *
  * @param token
  * @param topic - It can subscribe many topics by separating topics with comma(,). Ex) topicA,topicB
  */
 function saveToken(token, topic = "") {
-    const data = { token: token, topic: topic };
+    localStorage.setItem("pushToken", token);
+    const data = { token: token, topic: topic};
     request(
         "notification.updateToken",
         data,
         function (re) {
-            // console.log(re);
+            console.log(re);
         },
-        this.error
+        alert
     );
 }
 
