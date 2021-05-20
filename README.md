@@ -2052,7 +2052,7 @@ EOH;
   즉, 훅 함수로 전달된 변수를 훅 함수 안에서 변경을 할 수 있다.
   단, 아래와 같이 reference 로 받아서 값을 변경해야 한다.
 ```php
-hook()->add('post_list_country_code', function(&$countryCode) {
+hook()->add('HOOK_POST_LIST_COUNTRY_CODE', function(&$countryCode) {
     $countryCode = cafe()->countryCode;
 });
 ```
@@ -2088,6 +2088,16 @@ hook()->add('post_list_country_code', function(&$countryCode) {
 ```
 
 
+
+## 훅에서 widget 을 포함하기
+
+- 그냥 아래와 같이 훅에서 위젯을 출력해 버려도 된다.
+
+```php
+hook()->add(HOOK_POST_LIST_TOP, function() {
+    include widget('banner/post-list-top');
+});
+```
 
 
 ## Entity hooks
@@ -2175,7 +2185,7 @@ hook()->add('posts_before_create', function($record, $in) {
   하지만, 카페에서는 카테고리 선택이 되지 않은 경우, 국가별 카테고리로 검색을 제한해야 한다.
 
 
-* post_list_country_code
+* HOOK_POST_LIST_COUNTRY_CODE
   게시글 목록을 할 때, 강제로 특정 국가의 글만 목록하게 할 수 있다.
 
 

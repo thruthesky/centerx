@@ -1,10 +1,17 @@
 <?php
 
+
+const HOOK_POST_LIST_COUNTRY_CODE = 'post_list_country_code';
+const HOOK_POST_LIST_TOP = 'post-list-top';
+
 class Hook {
+
+    public $names;
     /**
      * @var array
      */
     public $hooks = [];
+
 
     /**
      * 훅 함수를 추가한다.
@@ -57,6 +64,7 @@ class Hook {
 
 
 /**
+ * It does memory cache.
  * @return Hook
  */
 $__hook = null;

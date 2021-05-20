@@ -22,6 +22,10 @@ hook()->add('posts-before-create', function(&$record, $in) {
 
 
 
-hook()->add('post_list_country_code', function(&$countryCode) {
+hook()->add(HOOK_POST_LIST_COUNTRY_CODE, function(&$countryCode) {
     $countryCode = cafe()->countryCode;
+});
+
+hook()->add(HOOK_POST_LIST_TOP, function() {
+    include widget('banner/post-list-top');
 });
