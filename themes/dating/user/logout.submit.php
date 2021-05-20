@@ -1,5 +1,4 @@
 <?php
 
-
 unsetLoginCookies();
 jsGo('/');

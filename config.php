@@ -21,7 +21,7 @@ const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
 define('DOMAIN_THEMES', [
     'cherry.philov' => 'x',
     'itsuda' => 'itsuda',
-    '127.0.0.1' => 'dating',
+    '127.0.0.1' => 'default',
     'localhost' => 'dating',
     '169.254.194.6' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
     '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.

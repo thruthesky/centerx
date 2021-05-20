@@ -27,11 +27,12 @@
         methods: {
             onSubmitLoginForm: function () {
                 this.errorMessage = {};
-                request('user.login', this.form,
-                    function (user) {
-                        setAppCookie('sessionId', user.sessionId);
-                        location.href = '/';
-                    }, alert);
+                request('user.login', this.form, function (user) {
+                    setAppCookie('sessionId', user.sessionId);
+                    location.href='/';
+                    alert('로그인 성공')
+                }, alert)
+
             }
         }
     });

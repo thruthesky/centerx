@@ -42,13 +42,6 @@
         <button type="submit" class="btn btn-primary">가입하기</button>
     </form>
 </section>
-<div>{{errorMessage.email}}</div>
-<div>{{errorMessage.password}}</div>
-<div>{{errorMessage.password2}}</div>
-<div>{{errorMessage.password}}</div>
-<div>{{errorMessage.name}}</div>
-<div>{{errorMessage.birthday}}</div>
-<div>{{errorMessage.gender}}</div>
 
 
 <script>
@@ -64,7 +57,7 @@
                 address: '',
             },
             errorMessage: {
-                email: '',
+                email: null,
                 password: null,
                 password2: null,
                 name: null,
@@ -87,13 +80,11 @@
                 if (this.form.gender === '') return this.errorMessage.gender = '성별을 입력해 주세요.';
                 if (this.form.address === '') return this.errorMessage.address = '주소를 입력해 주세요.';
 
-                request('user.register', this.form,
-                    function (user) {
-                        setAppCookie('sessionId', user.sessionId);
-                        location.href = '/';
-                    },
-
-                    alert);
+                request('user.register', this.form, function (user) {
+                    setAppCookie('sessionId', user.sessionId);
+                    location.href = '/';
+                    alert('가입이 완료되었습니다.')
+                }, alert);
             }
         }
     })
