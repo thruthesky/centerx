@@ -2,7 +2,7 @@
 
 /**
  * @size narrow
- * @options PostTaxonomy $post, $imageHeight
+ * @options PostTaxonomy $post
  * @dependency none
  */
 $op = getWidgetOptions();

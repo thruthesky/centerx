@@ -2,7 +2,7 @@
 
 /**
  * @size wide
- * @options string 'categoryId', 'height'
+ * @options string 'categoryId'
  * @dependency none
  * @description Displays 2 post side by side, each containing photo with inline text. It uses 'photo-with-inline-text-at-bottom' widget as child.
  */
