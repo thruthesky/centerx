@@ -1,5 +1,6 @@
 <?php if (loggedIn()) { ?>
     <?= ln('welcome') ?>, <?= login()->nicknameOrName ?>.
+    <?=login()->idx?>
     <?php if (admin()) { ?>
         <div>
             <a href="/?admin.index">[<?= ln('admin') ?>]</a> |

@@ -5,19 +5,37 @@
  */
 
 
+
 $post = post()->current();
-$comments = $post->comments();
+
+if ( $post->userIdx != login()->idx && $post->otherUserIdx != login()->idx ) {
+    return include widget('info/error-wrong-route');
+}
+
+
+if ( $post->userIdx == login()->idx ) $inbox = false;
+else $inbox = true;
+
+$sender = user( $post->userIdx );
+$receiver = user($post->otherUserIdx);
+
 ?>
 
-    <section class="post-view-default p-3 mb-5" style="border-radius: 16px; background-color: #f4f4f4;">
-        <div class="pb-1" style="word-break: normal">
-            <h3><?= $post->title ?></h3>
+    <section class="post-view-default p-3 mb-5">
+        <div class="pb-1">
+            <h3><?= $post->privateTitle ?></h3>
         </div>
 
         <div class="post-meta-default d-flex">
-            <?php include widget('user/user-avatar', ['user' => $post->user(), 'size' => '70']) ?>
+            <?php include widget('user/user-avatar', ['user' => $inbox ? $sender : $receiver, 'size' => '70']) ?>
             <div class="meta">
-                <div><?=ln('sender')?> : <b><?=$post->user()->nicknameOrName?></b></div>
+                <div>
+                        <?php if ( $inbox ) { ?>
+                            <?=ln('sender')?>: <?=$sender->nicknameOrName?>
+                        <?php } else { ?>
+                            <?=ln('receiver')?>: <?=$receiver->nicknameOrName?>
+                        <?php } ?>
+                </div>
                 <div class="text-muted">
                     <?= date('r', $post->createdAt) ?>
                 </div>
@@ -26,7 +44,7 @@ $comments = $post->comments();
 
 
         <section class="post-body">
-            <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
+            <div class="content box mt-3"><?= $post->privateContent ?></div>
             <!-- FILES -->
             <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
             <hr class="my-1">
@@ -36,10 +54,10 @@ $comments = $post->comments();
                 </div>
                 <span class="flex-grow-1"></span>
                 <a class="btn btn-sm mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ek('List', '목록') ?></a>
-                <?php if ($post->isMine()) { ?>
+                <?php if ($post->sentToMe()) { ?>
                     <div>
                         <a class="btn btn-sm" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>" style="color: red" onclick="return confirm('<?= ek('Delete Post?', '@T Delete Post') ?>')">
-                            <?= ek('Delete', '삭제') ?>
+                            <?=ln('delete') ?>
                         </a>
                     </div>
                 <?php } ?>

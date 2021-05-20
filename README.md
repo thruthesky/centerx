@@ -51,6 +51,8 @@
 - entity()->read() 에서 entity 를 한번만 읽고, 메모리에 캐시한 후, 재 사용.
   update 나 delete 에서 $this->dirty = true 를 해 놓고,
   entity()->read() 에서 $this->dirty 가 true 이면 다시 읽는다.
+  이렇게하면 login() 함수에서 따로 캐시를 할 필요 없이, 그냥 쓰면 된다.
+  login() 함수 뿐만아니라, 많은 경우에서 메모리 캐시를 할 필요가 없다. 이 부분은 성능 개선을 위해서 매우 중요하다.
 
 
 
@@ -780,9 +782,6 @@ with the latest android version, but the developer must code on the android app.
 
 ## 게시글 테이블. posts 테이블
 
-- `code` 는 게시글에 부여되는 특별한 코드이고, 그 코드를 바탕으로 글을 추출 할 수 있다.
-- `report` 는 신고된 회 수를 저장한다. 신고가 될 때마다 1씩 증가한다.
-
 
 
 ## 사용자 테이블
@@ -805,6 +804,96 @@ with the latest android version, but the developer must code on the android app.
 - `photoUrl` 은 meta 값을 저장되는 것이다. 이것은 users 테이블에 존재하지 않으며, meta 값으로 저장되지 않을 수도 있다.
   즉, 사용자 마다 이 값이 있을 수 있고 없을 수도 있다. 예를 들어 카카오톡 로그인을 하는 경우, 사용자 사진이 있으면 이 값에 그 URL 이 저장된다.
   따라서, 클라이언트에서 적절히 옵션 처리를 해서 사용하면 된다.
+
+  
+
+## wc_posts, 게시판 테이블
+
+
+
+
+- `userIdx` 글 쓴이 idx.
+- `otherUserIdx` 에는 글을 받는 사람의 idx 가 들어간다.
+  예를 들어, 쪽지나 메일을 전송 할 때, 게시판 테이블을 활용하게되는데, 이 때, 받는이가 `otherUserIdx` 에 저장된다.
+  중요한 점은, 이 때, 글을 수정 할 수 없다. Entity 로직에서 에러가 발생한다.
+  삭제는 오직, 받는이 `otherUserIdx` 만 할 수 있다. 글 쓴이가 하려면, Entity 로직에서 에러가 발생한다.
+  글 읽기는 양쪽 모두 가능하다. 주의: 이 부분은 Entity 로직에서 처리가 안되고, 위젯에서 구현해야 한다.
+  
+- `relationIdx` 는 현재 글이 어느 것(또는 다른 taxonomy 의 entity)과 연결되어져 있는지 표시 할 때 사용한다.
+  예를 들면, 쇼핑몰에서 상품에 대한 후기는 코멘트로 남기고, 후기는 별도의 inquiry 게시판에 남기고자 한다.
+  즉, 상품 A 에 대한 문의는 inquiry 게시판에 모두 기록된다.
+  참고, 일반적인 문의는 채팅방 형식으로 해도 좋다. 1:1 문의는 채팅방이 적당하나, 공개를 할 수 없다. 즉, 공개 문의를 할 수 없다.
+  참고, 쇼핑몰 상품 A 에 대한 후기는 코멘트로 남기는 것이 좋다.
+  참고, 문의가 상품 별로 공개 문의 또는 사용자 선택에 의해서 비밀 문의로 되어져야 한다면, 별도의 게시판에 문의를 작성해야한다.
+  이 때, (문의 게시판에 작성된) 문의가 어느 (쇼핑몰)상품의 것과 연관되어져 있는지를 relationIdx 로 표시 할 수 있다.
+  즉, 이 때는 relationIdx 는 쇼핑몰 상품 번호가 되는 것이다.
+  
+  이 처럼 `relationIdx` 는 글과 글의 연결성을 표시하는 데에 사용되며, 여러 가지 방식으로 활용 할 수 있다.
+
+- `private` 은 현재 글이 비밀글인지 아닌지를 'Y/N'으로 표시한다.
+  주의: `private` 일 때에는 글 제목과 내용을 `privateTitle` 과 `privateContent` 로 저장한다. 그래서 검색에서 완전 배제를 한다.
+  참고로 글 작성시, `private=Y` 로 전달하면, taxonomy 에서 title 과 content 를 자동으로 `private_title` 과 `privateContent`에 저장한다.
+
+- 'Y' 는 찬성(또는 like) 수
+- 'N' 은 반대(또는 dislke) 수
+
+- `Ymd` 는 글을 쓴 시점의 날짜(YYYYMMDD)의 값이 자동으로 들어간다.
+
+- `noOfComments` 는 각 게시글의 코멘트 수를 표시한다. 게시판에서 코멘트 많은 순서로 글을 추출 하고자 할 때 사용 가능하다.
+  참고로, 게시판 글 코멘트 삭제 기능은 없다. 삭제를 하지 못하고, 삭제됨 표시만 하는 것이다. 따라서, 코멘트 수는 증가만 하고, 감소를 하지 않는다.
+  - 각 게시판 별 글 수, 코멘트 수가 필요한 경우는 count(*) 로 해서 처리를 한다.
+
+
+- `code` 는 게시글에 부여되는 특별한 코드이고, 그 코드를 바탕으로 글을 추출 할 수 있다.
+- `report` 는 신고된 회 수를 저장한다. 신고가 될 때마다 1씩 증가한다.
+
+- `createdAt` 글이 작성된 시간 stamp. 처음 1회만 저장.
+- `updatedAt` 글이 수정된 시간 stamp. 자주 업데이트 될 수 있음.
+- `readAt` 글이 읽혀진 시간 stamp
+- `deletedAt` 글이 삭제된 시간 stamp. 글이 삭제된 시간.
+- `beginAt` 글이 시작되는 시간 stamp. 예를 들어, 해당 글이 언제 부터 보여져야 할 지, 또는 광고 프로그램에서, 광고가 언제 부터 시작되어야 할지
+- `endAt` 글이 끝나는 시간 stamp. 글이 언제 부터 안보여져야 할 지. 광고 배너가 언제 끝나는 지 등.
+
+
+
+- 참고, 글이 삭제되면, 실제 레코드 지우지 않고,
+  title, privateTitle, content, privateContent 만 빈 문자열로 저장한다.
+  즉, 글의 작성자, 첨부 파일이나 코멘트 등은 그대로 살아있다.
+  
+## files
+
+- taxonomy, entity 는 예를 들어, posts taxonomy 의 어떤 글 번호에 연결이 되었는지 또는 users taxonomy 의 어떤 사용자와 연결이 되었는지 나타낸다.
+- code 는 파일의 코드 값으로 예를 들어, taxonomy=users AND entity=사용자번호 AND code=profilePhoto 와 같이 업로드된 파일의 특성을 나타낼 때 사용 할 수 있다.
+
+
+
+## 카테고리 테이블. Category table
+
+- userIdx 는 게시판 관리자이다. 카페인 경우, 카페 주인이 된다.
+- domain 은 게시판의 도메인이다. 홈페이지 도메인일 수도 있고, 그냥 그룹일 수도 있다. 카페의 경우, 카페 도메인이 된다.
+- countryCode 는 국가 코드이다. 해당 게시판(또는 카페가) 어느 국가에 속해 있는지 표시를 하는 것이다.
+
+
+- postCreateLimit - users who has less points than this cannot create post
+  For instance, this value is 1000 and user has 999. Then the user cannot create post.
+- commentCreateLimit - users who has less points than this cannot create comment
+- readLimit - users who has less points than this cannot create comment
+  - @attention When a user creates a post, it reads the post internally.
+    Which means, for post creating, user will read the post and if user has less point of 'readLimit' when creating, it will fail.
+  - @attention, readLimit is only for post reading, not for comment reading.
+
+- banCreateOnLimit - User cannot create post/comment if the user reaches the limit.
+
+- createPost - is the Points to be given to the author on post creation. It can be minus value like -100.
+- deletePost - is the Points to be given to the author on post deletion. It can be minus value like -100.
+- createComment - is the Points to be given to the author on comment creation. It can be minus value like -100.
+- deleteComment - is the Points to be given to the author on comment deletion. It can be minus value like -100.
+
+
+- createHourLimit - Create limitation for hours.
+- createHourLimitCount - How many can the user create post/comment within the `createHourLimit` hour.
+- createDailyLimitCount - How many can the user create post/comment in a day.
+
 
 ## User Activity
 
@@ -1090,6 +1179,49 @@ include widget('post-edit/post-edit-default');
   - use `/?p=forum.post.edit&idx=...` for update.
 
 - After filling up on post create/update form, send the form to `/?p=forum.post.edit.submit` and it will redirect to the list page.
+
+
+
+## 글 작성, Post Edit
+
+
+
+### 글 작성 위젯 옵션
+
+- 글 작성 위젯 옵션에는 PHP INI 형식의 데이터를 입력하면 된다. 그리고 각 위젯에서 적절히 활용하면 된다.
+
+#### 글 작성 위젯 옵션 활용 - 이벤트 게시판 등
+
+Post Edit Widget 중에서 코드 별 사진 업로드(post-edit-upload-by-code.php)가 있다.
+
+이 위젯은, 글의 제목과 내용을 업로드 할 수 있으며, 첨부 파일/사진을 코드 별로 업로드 할 수 있다. 즉, 임의의 사진을 무한정 업로드 할 수 없고, 정해진 코드 몇
+개에만 업로드 가능하다.
+
+글 읽기는 적절한 위젯을 만들어 사용하면 된다.
+
+예를 들어, 이벤트 게시판을 작성한다고 가정 할 때,
+
+이벤트 배너를 목록에 보여주고, 이벤트 내용을 사진으로 보여주고자 할 때,
+
+사진 2개만 입력 받을 수 있다.
+
+이 때, 아래와 같이 입력을 하면 된다.
+
+```ini
+[upload-by-code]
+banner[label]=배너 사진
+banner[tip]=목록에 나타나는 이벤트 배너(광고) 사진을 업로드 해 주세요.
+content[label]=내용 사진
+content[tip]=배너 사진을 클릭 했을 때 나타나는 내용 사진을 업로드 해 주세요.
+```
+
+위와 같이 하면, 목록에서 배너 사진을 보여주고, 내용에 내용 사진을 보여주면 된다.
+
+첨부 파일의 코드에 'banner' 또는 'content' 가 들어간다.
+
+만약, 이벤트가 종료되었다면, 배너 사진에 문구를 종료됨으로 수정하고, 내용에도 종료되었다는 표시를 하면 된다.
+
+
 
 
 # Firebase
@@ -2210,38 +2342,6 @@ card_flip2 는 쉬운(하) 게임이다
     }
 ```
 
-# 데이터베이스 테이블
-
-## posts
-
-- `relationIdx` 는 현재 글이 어느 것(또는 다른 taxonomy 의 entity)과 연결되어져 있는지 표시 할 때 사용한다.
-  예를 들면, 쇼핑몰에서 상품 A 에 대한 문의를 남기는데, 문의는 inquiry 게시판에 모두 기록된다.
-  참고, 일반적인 문의는 채팅방 형식이 될 수 있다. 1:1 문의는 채팅방이 적당하나, 공개를 할 수 없다. 즉, 공개 문의를 할 수 없다.
-  참고, 쇼핑몰 상품 A 에 대한 후기는 코멘트로 남긴다.
-  참고, 문의가 상품 별로 공개 문의 또는 사용자 선택에 의해서 비밀 문의로 되어져야 한다면, 별도의 게시판에 문의를 작성해야한다.
-  이 때, 문의 게시판에 작성된 문의가 어느 상품의 것과 연관되어져 있는지, relationIdx 로 표시 할 수 있다.
-  이처럼 여러가지 방식으로 활용 할 수 있다.
-
-- `private` 은 현재 글이 비밀글인지 아닌지를 'Y/N'으로 표시한다.
-  주의: `private` 일 때에는 글 제목과 내용을 `private_title` 과 `private_content` 로 저장한다. 그래서 검색에서 완전 배제를 한다.
-
-- 'Y' 는 찬성(또는 like) 수
-- 'N' 은 반대(또는 dislke) 수
-
-- `Ymd` 는 글을 쓴 시점의 날짜(YYYYMMDD)의 값이 자동으로 들어간다.
-
-- `noOfComments` 는 각 게시글의 코멘트 수를 표시한다. 게시판에서 코멘트 많은 순서로 글을 추출 하고자 할 때 사용 가능하다.
-  참고로, 게시판 글 코멘트 삭제 기능은 없다. 삭제를 하지 못하고, 삭제됨 표시만 하는 것이다. 따라서, 코멘트 수는 증가만 하고, 감소를 하지 않는다.
-  - 각 게시판 별 글 수, 코멘트 수가 필요한 경우는 count(*) 로 해서 처리를 한다.
-
-
-## files
-
-- taxonomy, entity 는 예를 들어, posts taxonomy 의 어떤 글 번호에 연결이 되었는지 또는 users taxonomy 의 어떤 사용자와 연결이 되었는지 나타낸다.
-- code 는 파일의 코드 값으로 예를 들어, taxonomy=users AND entity=사용자번호 AND code=profilePhoto 와 같이 업로드된 파일의 특성을 나타낼 때 사용 할 수 있다.
-
-
-
 
 # Markdown
 
@@ -2753,35 +2853,6 @@ echo "현재 환율: $phpKwr";
 ```
 
 
-# 카테고리 테이블. Category table
-
-- userIdx 는 게시판 관리자이다. 카페인 경우, 카페 주인이 된다.
-- domain 은 게시판의 도메인이다. 홈페이지 도메인일 수도 있고, 그냥 그룹일 수도 있다. 카페의 경우, 카페 도메인이 된다.
-- countryCode 는 국가 코드이다. 해당 게시판(또는 카페가) 어느 국가에 속해 있는지 표시를 하는 것이다.
-
-
-- postCreateLimit - users who has less points than this cannot create post
-  For instance, this value is 1000 and user has 999. Then the user cannot create post.
-- commentCreateLimit - users who has less points than this cannot create comment
-- readLimit - users who has less points than this cannot create comment
-  - @attention When a user creates a post, it reads the post internally.
-    Which means, for post creating, user will read the post and if user has less point of 'readLimit' when creating, it will fail.
-  - @attention, readLimit is only for post reading, not for comment reading.
-
-- banCreateOnLimit - User cannot create post/comment if the user reaches the limit.
-
-- createPost - is the Points to be given to the author on post creation. It can be minus value like -100.
-- deletePost - is the Points to be given to the author on post deletion. It can be minus value like -100.
-- createComment - is the Points to be given to the author on comment creation. It can be minus value like -100.
-- deleteComment - is the Points to be given to the author on comment deletion. It can be minus value like -100.
-
-
-- createHourLimit - Create limitation for hours.
-- createHourLimitCount - How many can the user create post/comment within the `createHourLimit` hour.
-- createDailyLimitCount - How many can the user create post/comment in a day.
-
-
-
 
 
 # 카페
@@ -3001,6 +3072,13 @@ echo "현재 환율: $phpKwr";
   You can see it by viewing the source code.
 
 # 위젯
+
+## 글 목록 위젯
+
+### 글 목록 상단 위젯
+
+- 쪽지 게시판 등에서는 게시판 상단 목록이 필요 없을 수 있다. 이 때에는 empty widget 을 선택하면 된다.
+
 
 ## 글 쓰기 위젯
 

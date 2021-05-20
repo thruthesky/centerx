@@ -1538,8 +1538,20 @@ function mimeType(string $filePath): string {
 }
 
 
+/**
+ * @param int $userIdx
+ * @return string
+ */
 function messageSendUrl(int $userIdx): string {
     return postEditUrl(MESSAGE_CATEGORY) . "&otherUserIdx=$userIdx";
+}
+
+function messageInboxUrl(): string {
+    return postListUrl(MESSAGE_CATEGORY) . "&otherUserIdx=" . login()->idx;
+}
+
+function messageOutboxUrl(): string {
+    return postListUrl(MESSAGE_CATEGORY) . "&userIdx=" . login()->idx;
 }
 
 function postListUrl(int|string $categoryId): string {

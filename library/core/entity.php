@@ -71,7 +71,7 @@ class Entity {
     }
 
     /**
-     * 에러 문자열을 설정한다. 즉, 에러가 있음을 표시하는 것이다.
+     * 에러 문자열을 설정한다. 즉, 에러가 있음을 표시하는 것으로, 현재 객체에 에러를 포함하게 되는 것이다.
      * @param string $code
      * @return $this
      */
@@ -82,6 +82,11 @@ class Entity {
     public function getError(): string {
         return $this->error;
     }
+
+    /**
+     * 현재 객체에 에러를 없앤다. 즉, 에러가 없었던 것 처럼 된다.
+     * @return $this
+     */
     public function resetError(): self {
         $this->error = '';
         return $this;
@@ -809,11 +814,10 @@ class Entity {
         if ( notLoggedIn() ) return false;
         if ( ! $this->idx ) return false;
 
-        if ( $this->userIdx == null ) return false;
+        if ( !$this->userIdx ) return false;
 
         return $this->userIdx == login()->idx;
     }
-
 
 
     /**
@@ -1084,6 +1088,10 @@ class Entity {
      * If the user has no permission, or for other errors occurs, error will be set to the entity.
      *
      *
+     * @attention For `PostTaxonomy`, it has extra permission check on `otherUserIdx`.
+     *  So, do not use this for 'PostTaxonomy' for permission check.
+     *  Instead, simply use `post()->markDelete()` or `post()->update()` for post entity.
+     *  You may use this method for `CommentTaxonomy` and other taxonomies.
      *
      * @return self
      *
