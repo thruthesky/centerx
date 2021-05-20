@@ -85,9 +85,6 @@ function request(route, params, success, error) {
 /**
  * Save token into localStorage and remote.
  *
- *
- *
- *
  * @param token
  * @param topic - It can subscribe many topics by separating topics with comma(,). Ex) topicA,topicB
  */
