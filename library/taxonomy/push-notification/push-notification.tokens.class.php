@@ -28,34 +28,41 @@ class PushNotificationTokenTaxonomy extends Entity {
      * @return PushNotificationTokenTaxonomy[]
      */
     public function save(array $in): array {
-
-
+//        d($_SERVER);
         $token = $in[TOKEN];
         $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
+
         $topics = explode(',', $multiTopics);
 
         $rets = [];
         foreach($topics as $topic) {
-            $found = token()->findOne([TOKEN => $token, TOPIC => $topic]);
-            if ( $found->exists ) {
-                $found->update( [ USER_IDX => login()->idx ] );
-                $rets[] = $found;
+
+            // Token is being saved (Even if it fails on subscribing to the topics)
+            $obj = token()->findOne([TOKEN => $token, TOPIC => $topic]);
+            if ( $obj->exists ) {
+                $obj->update( [ USER_IDX => login()->idx ] );
             } else {
-                $this->create([
+                $obj->create([
                     USER_IDX => login()->idx,
                     TOKEN => $token,
                     TOPIC => $topic,
                 ]);
-                $rets[] = $this;
             }
 
             $re = subscribeTopic($topic, $token);
 
-            //
-            if ($re && isset($re['results']) && count($re['results']) && isset($re['results'][0]['error'])) {
-                $rets[] = $this->error(e()->topic_subscription);
+            if ($re) {
+                foreach( $re as $_topic ) {
+                    foreach( $_topic as $_token => $error ) {
+                        if ( $token == $_token ) {
+                            $obj->error(e()->topic_subscription . ':' . $error);
+                            $rets[$obj->topic] = $obj->getError();
+                        }
+                    }
+                }
+            } else {
+                $rets[ $obj->topic ] = true;
             }
-
         }
 
         return $rets;
@@ -81,7 +88,6 @@ class PushNotificationTokenTaxonomy extends Entity {
     function getTopics(int $userIdx) :array
     {
         $rows = parent::search(select: 'topic', where: "userIdx=?", params: [$userIdx]);
-//        d($rows);
         return ids($rows, 'topic');
     }
 
@@ -91,6 +97,14 @@ class PushNotificationTokenTaxonomy extends Entity {
      */
     function myTokens(): array {
         return $this->getTokens( login()->idx );
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    function myTopics(): array {
+        return $this->getTopics( login()->idx );
     }
 }
 
@@ -104,10 +118,6 @@ function token(int|string $idx=0): PushNotificationTokenTaxonomy
 {
     if ( is_numeric($idx) ) return new PushNotificationTokenTaxonomy($idx);
     return (new PushNotificationTokenTaxonomy())->findOne([TOKEN => $idx]);
-
-//    $record = entity(PUSH_NOTIFICATION_TOKENS, 0)->get(TOKEN, $idx);
-//    if ( ! $record ) return new PushNotificationTokenTaxonomy(0);
-//    return new PushNotificationTokenTaxonomy($record[IDX]);
 }
 
 function sanitizedInput($in): array {

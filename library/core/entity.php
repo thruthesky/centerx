@@ -71,7 +71,7 @@ class Entity {
     }
 
     /**
-     * 에러 문자열을 설정한다. 즉, 에러가 있음을 표시하는 것이다.
+     * 에러 문자열을 설정한다. 즉, 에러가 있음을 표시하는 것으로, 현재 객체에 에러를 포함하게 되는 것이다.
      * @param string $code
      * @return $this
      */
@@ -82,9 +82,17 @@ class Entity {
     public function getError(): string {
         return $this->error;
     }
+
+    /**
+     * 현재 객체에 에러를 없앤다. 즉, 에러가 없었던 것 처럼 된다.
+     * @return $this
+     */
     public function resetError(): self {
         $this->error = '';
         return $this;
+    }
+    public function clearError(): self {
+        return $this->resetError();
     }
 
     /**
@@ -296,8 +304,9 @@ class Entity {
             else return false;
         }
 
-        /// 필드 값을 가져오려고 할 때, 현재 객체에 에러가 있으면, null 을 리턴.
-        if ( $this->hasError ) return null;
+        // @change May 19, 2021. The entity object can now get properties even if an error is set to the entity object.
+        // 필드 값을 가져오려고 할 때, 현재 객체에 에러가 있으면, null 을 리턴.
+        // if ( $this->hasError ) return null;
 
         /// 에러가 없으면 값을 리턴. 값이 없으면 null 리턴.
         if ( $this->data && isset($this->data[$name]) ) return $this->data[$name];
@@ -338,6 +347,8 @@ class Entity {
      *
      * 생성 후, 현재 객체에 보관한다. $this->idx 도 현재 생성된 객체로 변경된다.
      *
+     * @attention It clears the error if there was any error set previously.
+     *
      * @param array $in
      *
      *
@@ -358,6 +369,8 @@ class Entity {
      *
      */
     public function create( array $in ): self {
+
+        $this->clearError();
 
         if ( ! $in ) return $this->error(e()->empty_param);
 
@@ -529,6 +542,8 @@ class Entity {
     /**
      * Entity(레코드와 메타)를 DB 로 부터 읽어 현재 객체에 보관한다.
      *
+     * 주의, 반드시, 오직!! 이 함수를 통해서 entity 를 읽어야 한다. 그렇지 않으면 메모리 캐시를 할 때, 재 사용이 안될 수 있다.
+     *
      * $idx 가 주어지면, 해당 $idx 를 읽어, 현재 객체의 $data 에 보관하고, $this->idx = $idx 와 같이 entity idx 도 업데이트 한다.
      * $idx 가 주어지지 않았거나, 객체를 생성 할 때, $idx 가 주어지지 않았다면, 빈 배열을 보관한다.
      *
@@ -545,7 +560,6 @@ class Entity {
      * @return self
      */
     public function read(int $idx = 0): self {
-
 
         if ( $this->hasError ) return $this;
 
@@ -800,11 +814,10 @@ class Entity {
         if ( notLoggedIn() ) return false;
         if ( ! $this->idx ) return false;
 
-        if ( $this->userIdx == null ) return false;
+        if ( !$this->userIdx ) return false;
 
         return $this->userIdx == login()->idx;
     }
-
 
 
     /**
@@ -1075,6 +1088,10 @@ class Entity {
      * If the user has no permission, or for other errors occurs, error will be set to the entity.
      *
      *
+     * @attention For `PostTaxonomy`, it has extra permission check on `otherUserIdx`.
+     *  So, do not use this for 'PostTaxonomy' for permission check.
+     *  Instead, simply use `post()->markDelete()` or `post()->update()` for post entity.
+     *  You may use this method for `CommentTaxonomy` and other taxonomies.
      *
      * @return self
      *

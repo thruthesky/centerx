@@ -175,7 +175,7 @@ define('ADMIN_EMAIL', 'admin@itsuda50.com,thruthesky@gmail.com');
  * Firebase Admin Service Account Key, for firebase connection
  */
 if ( ! defined('FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH') ) {
-    define("FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH", ROOT_DIR . "etc/keys/itsuda50-firebase-adminsdk.json");
+    define("FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH", ROOT_DIR . "themes/sonub/keys/sonub-firebase-admin-sdk.json");
 }
 if ( ! defined('FIREBASE_DATABASE_URI') ) {
     define("FIREBASE_DATABASE_URI", "https://itsuda50-default-rtdb.firebaseio.com/");
@@ -186,6 +186,8 @@ if ( ! defined('FIREBASE_DATABASE_URI') ) {
  */
 define("GCP_SERVICE_ACCOUNT_KEY_JSON_FILE_PATH", ROOT_DIR . "themes/itsuda/keys/gcp_service_account_key.json");
 define("ANDROID_APP_ID", "com.itsuda50.app3");
+
+
 
 
 
@@ -207,9 +209,9 @@ define('DEFAULT_DELIVERY_FEE_PRICE', 2500);
 /**
  * @see readme#Live Reload
  */
-define('LIVE_RELOAD_HOST', 'http://localhost');
-define('LIVE_RELOAD_PORT', '12345');
 
+const LIVE_RELOAD_HOST = 'http://localhost';
+const LIVE_RELOAD_PORT = '12345';
 
 define('SUPPORTED_LANGUAGES', ['en', 'ko']);
 
@@ -218,7 +220,6 @@ define('SUPPORTED_LANGUAGES', ['en', 'ko']);
  * If you want the app/site to have a fixed language and ignore user's language, put language code like `en`, `ko`, `ch`, ...
  */
 if ( ! defined('FIX_LANGUAGE') ) define('FIX_LANGUAGE', '');
-
 
 
 
@@ -262,8 +263,8 @@ if ( !defined('NAVER_API_URL') ) define('NAVER_API_URL', "https://nid.naver.com/
  * If `FIREBASE_SDK_ADMIN_KEY` is defined as falsy, then firebase will not be initialized and will not be loaded by default.
  *
  */
-if ( !defined('FIREBASE_SDK_ADMIN_KEY') )
-define('FIREBASE_SDK_ADMIN_KEY', <<<EOJ
+if ( !defined('FIREBASE_SDK_ADMIN_KEY') ) {
+    define('FIREBASE_SDK_ADMIN_KEY', <<<EOJ
 {
     apiKey: "AIzaSyDWiVaWIIrAsEP-eHq6bFBY09HLyHHQW2U",
     authDomain: "sonub-version-2020.firebaseapp.com",
@@ -275,11 +276,12 @@ define('FIREBASE_SDK_ADMIN_KEY', <<<EOJ
     measurementId: "G-F86L9641ZQ"
 }
 EOJ);
+}
 // If `FIREBASE_SDK_ADMIN_KEY` is defined, then initialize the firebase. This code will be automatically inserted at the
 // bottom of all theme.
 if ( defined('FIREBASE_SDK_ADMIN_KEY') ) {
     $__firebase_sdk_admin_key = FIREBASE_SDK_ADMIN_KEY;
-    $__firebase_sdk = <<<EOH
+    define('FIREBASE_BOOT_SCRIPTS', <<<EOH
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js"></script>
@@ -290,10 +292,11 @@ if ( defined('FIREBASE_SDK_ADMIN_KEY') ) {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 </script>
-EOH;
-    if ( !defined('FIREBASE_SDK') ) define('FIREBASE_SDK', $__firebase_sdk);
+<script src="/etc/js/firebase/firebase.js"></script>
+EOH);
 }
 
+if ( !defined('PUSH_NOTIFICATION_ICON_URL') ) define('PUSH_NOTIFICATION_ICON_URL', HOME_URL . 'etc/img/messaging/messaging-icon.png');
 
 // Free currconv api key from https://free.currencyconverterapi.com/
 if ( !defined('CURRCONV_API_KEY') ) define('CURRCONV_API_KEY', 'bd6ed497a84496be7ee9');
@@ -301,3 +304,5 @@ if ( !defined('CURRCONV_API_KEY') ) define('CURRCONV_API_KEY', 'bd6ed497a84496be
 //
 if ( !defined('OPENWEATHERMAP_API_KEY' ) ) define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 
+
+const MESSAGE_CATEGORY = 'message';

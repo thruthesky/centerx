@@ -88,20 +88,25 @@ function request(route, params, success, error) {
 }
 
 /**
+ * Save token into localStorage and remote.
+ *
+ *
+ *
  *
  * @param token
  * @param topic - It can subscribe many topics by separating topics with comma(,). Ex) topicA,topicB
  */
-function saveToken(token, topic = '') {
-  const data = { token: token, topic: topic };
-  request(
-    'notification.updateToken',
-    data,
-    function (re) {
-      // console.log(re);
-    },
-    this.error
-  );
+function saveToken(token, topic = "") {
+    localStorage.setItem("pushToken", token);
+    const data = { token: token, topic: topic};
+    request(
+        "notification.updateToken",
+        data,
+        function (re) {
+            console.log(re);
+        },
+        alert
+    );
 }
 
 /**
@@ -134,16 +139,12 @@ function addByComma(orgValue, newValue) {
     .join(',');
 }
 function deleteByComma(orgValue, val) {
-  const arr = orgValue.split(',');
-  const i = arr.indexOf(val);
-  if (i >= 0) {
-    arr.splice(i, 1);
-  }
-  return arr
-    .filter(function (v) {
-      return !!v;
-    })
-    .join(',');
+    const arr = orgValue.split(',');
+    const i = arr.indexOf(`${val}`); // fix, since `num` is not same as `string` it will return `-1`.
+    if ( i >= 0 ) {
+        arr.splice(i, 1);
+    }
+    return arr.filter(function(v) { return !!v; }).join(',');
 }
 
 /**

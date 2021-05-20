@@ -24,9 +24,9 @@
 </section>
 
 <style>
-    .widget-samples .widget { padding: 1em; background-color: #efefef; }
-    .widget-samples .icon { margin-top: .5em; max-width: 64px!important; }
-    .widget-samples .narrow { margin-top: .5em; max-width: 260px!important; }
-    .widget-samples .wide { margin-top: .5em; max-width: 600px!important; }
+    .widget-samples .widget { margin-bottom: 5em; padding: 1em; background-color: rgba(245, 245, 245, 0.73); }
+    .widget-samples .icon { margin-top: .5em; }
+    .widget-samples .narrow { margin-top: .5em; width: 260px; }
+    .widget-samples .wide { margin-top: .5em; width: 600px; }
     .widget-samples em {display: inline-block; min-width: 100px; color: #99338f; font-weight: bold; }
 </style>

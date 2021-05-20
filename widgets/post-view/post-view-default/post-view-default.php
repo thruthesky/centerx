@@ -13,7 +13,7 @@ $comments = $post->comments();
     <div class="pb-1" style="word-break: normal">
         <h3><?= $post->title ?></h3>
     </div>
-    <?php include widget('forum/post-meta-default', ['post' => $post]) ?>
+    <?php include widget('post-meta/post-meta-default', ['post' => $post]) ?>
     <section class="post-body">
         <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
         <!-- FILES -->
@@ -21,22 +21,35 @@ $comments = $post->comments();
         <hr class="my-1">
         <div class="d-flex buttons mt-2">
             <div class="d-flex">
-                <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->N ?>"></vote-buttons>
+                <vote-buttons
+                        parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->N ?>"
+                        text-like="<?=ln('like')?>"
+                        text-dislike="<?=ln('dislike')?>"
+                ></vote-buttons>
+                <a class="btn btn-sm mr-2" href="<?=messageSendUrl($post->userIdx)?>"><?=ln('send_message')?></a>
             </div>
             <span class="flex-grow-1"></span>
-            <a class="btn btn-sm mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ek('List', '목록') ?></a>
+            <a class="btn btn-sm mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?=ln('list')?></a>
             <?php if ($post->isMine() || admin()) { ?>
                 <div>
-                    <a class="btn btn-sm" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '수정') ?></a>
-                    <a class="btn btn-sm" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>" style="color: red" onclick="return confirm('<?= ek('Delete Post?', '@T Delete Post') ?>')">
-                        <?= ek('Delete', '삭제') ?>
+                    <a class="btn btn-sm" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?=ln('edit')?></a>
+                    <a class="btn btn-sm red" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>" onclick="return confirm('<?= ek('Delete Post?', '@T Delete Post') ?>')">
+                        <?=ln('delete')?>
                     </a>
                 </div>
             <?php } ?>
         </div>
     </section>
     <div class="pt-2">
-        <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>"></comment-form>
+        <!--
+            if text-photo is not set, then camera icon will be used.
+        -->
+        <comment-form
+                root-idx="<?= $post->idx ?>"
+                      parent-idx="<?= $post->idx ?>"
+                      text-submit="<?=ln('submit')?>"
+                      text-cancel="<?=ln('cancel')?>"
+        ></comment-form>
     </div>
 
     <?php if ( $comments ) { ?>
@@ -48,7 +61,13 @@ $comments = $post->comments();
                     <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                         <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>
                         <!-- comment reply form -->
-                        <comment-form root-idx="<?= $post->idx ?>" parent-idx='<?= $comment->idx ?>' v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'"></comment-form>
+                        <comment-form root-idx="<?= $post->idx ?>"
+                                      parent-idx='<?= $comment->idx ?>'
+                                      text-photo="<?=ln('photo')?>"
+                                      text-submit="<?=ln('submit')?>"
+                                      text-cancel="<?=ln('cancel')?>"
+                                      v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'"
+                        ></comment-form>
                     </div>
             <?php }
             } ?>
@@ -63,15 +82,8 @@ $comments = $post->comments();
     mixins.push({
         data: function() {
             return {
-                displayCommentForm: {
-                    'a': 'apple'
-                }
+                displayCommentForm: {}
             };
-        },
-        created: function() {
-            // console.log('created', this.displayCommentForm.a);
-            request('app.version', {}, console.log, console.error);
-            request('user.profile', {}, console.log, console.error);
         },
         methods: {
             onCommentEditButtonClick: function(idx, mode) {
@@ -79,151 +91,7 @@ $comments = $post->comments();
             },
         }
     });
-    Vue.component('comment-form', {
-        props: ['rootIdx', 'parentIdx', 'commentIdx'],
-        data: function() {
-            return {
-                form: {
-                    session_id: '<?= login()->session_id ?>',
-                    p: 'forum.comment.edit.submit',
-                    rootIdx: this.rootIdx,
-                    content: this.comment ? this.comment.content : '',
-                    files: '', // a string of file idx(es)
-                },
-                percent: 0,
-                uploadedFiles: [], // an array of file objects
-            }
-        },
-        created: function() {
-            console.log('component: comment-form, created', this.commentIdx);
-            if (this.commentIdx) {
-                const self = this;
-                request('comment.get', {
-                    idx: this.commentIdx
-                }, function(res) {
-                    self.form.content = res.content;
-                    // self.form = res;
-                    self.uploadedFiles = res.files;
-                }, alert);
-            }
-        },
-        template: '<form class="mt-2" v-on:submit.prevent="commentFormSubmit">' +
-            '<input type="hidden" name="files" v-model="form.files">' +
-            '<section class="d-flex">' +
-            '   <div class="position-relative overflow-hidden" style="min-width: 80px;">' +
-            '       <button class="btn btn-primary mr-4" type="button"><?= ek('Photo', '사진') ?></button>' +
-            '       <input class="position-absolute top left fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
-            '   </div>' +
-            '   <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
-            '   </textarea>' +
-            '   <div><div class="d-flex" v-if="form.content || uploadedFiles.length">' +
-            '      <button class="btn btn-primary ml-2" type="submit"><?= ek('Submit', '전송') ?></button>' +
-            '      <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">Cancel</button>' +
-            '   </div></div>' +
-            '</section>' +
-            '   <div class="mt-2 row photos">' +
-            '       <div class="col-3 photo" v-for="file in uploadedFiles" :key="file.idx">' +
-            '           <div clas="position-relative" style="height: 200px">' +
-            '               <img class="h-100 w-100" :src="file.url" style="border-radius: 10px;">' +
-            '               <div class="px-3 py-2 position-absolute top left font-weight-bold" v-on:click="onFileDelete(file.idx)" style="color: red">[X]</div>' +
-            '           </div>' +
-            '       </div>' +
-            '   </div>' +
-            '</div>' +
-            '</form>',
-        methods: {
-            onFileChange: function(event) {
-                if (event.target.files.length === 0) {
-                    console.log("User cancelled upload");
-                    return;
-                }
-                const file = event.target.files[0];
-                const self = this;
-                fileUpload(
-                    file, {},
-                    function(res) {
-                        console.log("success: res.path: ", res, res.path);
-                        self.form.files = addByComma(self.form.files, res.idx);
-                        self.uploadedFiles.push(res);
-                    },
-                    alert,
-                    function(p) {
-                        console.log("pregoress: ", p);
-                        this.percent = p;
-                    }
-                );
-            },
-            commentFormSubmit: function() {
-                var route;
-                if (this.commentIdx) {
-                    route = 'comment.update';
-                    this.form.idx = this.commentIdx;
-                } else {
-                    route = 'comment.create';
-                    this.form.parentIdx = this.parentIdx;
-                }
-
-                console.log('form', this.form);
-
-                request(route, this.form, function() {
-                    location.reload();
-                }, alert);
-            },
-            onCommentEditCancelButtonClick: function() {
-                console.log('onCommentEditCancelButtonClick', this.commentIdx);
-                var idx = this.commentIdx;
-                if (this.commentIdx === null) {
-                    idx = this.parentIdx;
-                }
-
-                this.$parent.displayCommentForm[idx] = '';
-            },
-            onFileDelete: function(idx) {
-                const re = confirm('Are you sure you want to delete file no. ' + idx + '?');
-                if (re === false) return;
-                const self = this;
-                request('file.delete', {
-                    idx: idx
-                }, function(res) {
-                    self.uploadedFiles = self.uploadedFiles.filter(function(v, i, ar) {
-                        return v.idx !== res.idx;
-                    });
-                    self.form.files = deleteByComma(self.form.files, res.idx);
-                }, alert);
-            },
-            autoResize: function(event) {
-                event.target.style.height = 'auto';
-                event.target.style.height = event.target.scrollHeight + 'px';
-            }
-        }
-    });
 </script>
-<script>
-    Vue.component('vote-buttons', {
-        props: ['parentIdx', 'y', 'n'],
-        data: function() {
-            return {
-                Y: this.y,
-                N: this.n,
-            }
-        },
-        template: '<div class="d-flex">' +
-            '<a class="btn btn-sm mr-2" @click="onVote(\'Y\')" style="color: green">' +
-            '<?= ek('Like', '좋아요') ?> <span class="badge badge-success badge-pill" v-if="Y != \'0\'">{{ Y }}</span></a>' +
-            '<a class="btn btn-sm mr-2" @click="onVote(\'N\')" style="color: red">' +
-            '<?= ek('Dislike', '싫어요') ?> <span  class="badge badge-danger badge-pill" v-if="N != \'0\'">{{ N }}</span></a>' +
-            '</div>',
-        methods: {
-            onVote: function(choice) {
-                const self = this;
-                request('post.vote', {
-                    idx: this.parentIdx,
-                    choice: choice
-                }, function(res) {
-                    self.N = res['N'];
-                    self.Y = res['Y'];
-                }, alert);
-            },
-        }
-    });
-</script>
+<?php js('/etc/js/vue-js-components/vote-buttons.js', 1) ?>
+<?php js('/etc/js/vue-js-components/comment-form.js', 1) ?>
+<?php js('/etc/js/vue-js-components/progress-bar.js', 1) ?>

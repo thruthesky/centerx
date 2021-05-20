@@ -10,7 +10,7 @@
 <section class="box">
     <h1>Weather</h1>
     <hr>
-    <?php include widget('weather/openweathermap') ?>
+    <?php include widget('weather/openweathermapcurrent') ?>
 </section>
 
 

@@ -37,11 +37,26 @@
 
 - [CenterX Git Project](https://github.com/thruthesky/centerx/projects/2)
 
-
+- 다음 버전의 명칭
+  - CenterX 대신 Matrix 로 변경한다.
+    - Matrix 에는 성장/발하는 모체라는 뜻이 있다.
+      뜻: 가로/세로 나열한 행렬 또는 망. (사회 또는 개인이 성정하는, 발달하는) 모체.
+    - 각종 표현/접두어/접미어를 'x' 로 한다.
+      예: 기본 css 를 etc/css/x.css 로 저장한다.
 
 - html minify
 
-- 챨스.
+- create search entity.
+
+- entity()->read() 에서 entity 를 한번만 읽고, 메모리에 캐시한 후, 재 사용.
+  update 나 delete 에서 $this->dirty = true 를 해 놓고,
+  entity()->read() 에서 $this->dirty 가 true 이면 다시 읽는다.
+  이렇게하면 login() 함수에서 따로 캐시를 할 필요 없이, 그냥 쓰면 된다.
+  login() 함수 뿐만아니라, 많은 경우에서 메모리 캐시를 할 필요가 없다. 이 부분은 성능 개선을 위해서 매우 중요하다.
+
+
+
+- 소너브
   countryCode 를 통한 국가별 게시판 관리.
   공유 게시판: discussion, qna, reminder, buyandsell, job, caution, rent_house, rent_car, school, 등 공용게시판. 카페장 메인메뉴 선택 가능.
   비공유게시판: 카테고리 아이디를 도메인과 동일하게 하고, 서브 카테고리를 최대 5개까지만 가능하도록 한다. 그리고 서브카테고리를 선택해서 메인 메뉴에 올릴수 있는데,
@@ -545,6 +560,24 @@ define('DOMAIN_THEMES', [
   이 때, 테이블 prefix 를 맞추어서 테이블 이름을 정해야 한다. 예) wc_table_name
 
 
+### Creating or Updating an Entity
+
+- Example of creating or updating an entity.
+
+```php
+$obj = token()->findOne([TOKEN => '...token...', TOPIC => '..topic...']);
+if ( $obj->exists ) {
+    $obj->update( [ USER_IDX => login()->idx ] );
+} else {
+    $obj->create([
+        USER_IDX => login()->idx,
+        TOKEN => '...token...',
+        TOPIC => '..topic...',
+    ]);
+}
+```
+
+
 ## Taxonomy helper classes
 
 Each taxonomy may have its own customised methods.
@@ -749,9 +782,6 @@ with the latest android version, but the developer must code on the android app.
 
 ## 게시글 테이블. posts 테이블
 
-- `code` 는 게시글에 부여되는 특별한 코드이고, 그 코드를 바탕으로 글을 추출 할 수 있다.
-- `report` 는 신고된 회 수를 저장한다. 신고가 될 때마다 1씩 증가한다.
-
 
 
 ## 사용자 테이블
@@ -774,6 +804,96 @@ with the latest android version, but the developer must code on the android app.
 - `photoUrl` 은 meta 값을 저장되는 것이다. 이것은 users 테이블에 존재하지 않으며, meta 값으로 저장되지 않을 수도 있다.
   즉, 사용자 마다 이 값이 있을 수 있고 없을 수도 있다. 예를 들어 카카오톡 로그인을 하는 경우, 사용자 사진이 있으면 이 값에 그 URL 이 저장된다.
   따라서, 클라이언트에서 적절히 옵션 처리를 해서 사용하면 된다.
+
+  
+
+## wc_posts, 게시판 테이블
+
+
+
+
+- `userIdx` 글 쓴이 idx.
+- `otherUserIdx` 에는 글을 받는 사람의 idx 가 들어간다.
+  예를 들어, 쪽지나 메일을 전송 할 때, 게시판 테이블을 활용하게되는데, 이 때, 받는이가 `otherUserIdx` 에 저장된다.
+  중요한 점은, 이 때, 글을 수정 할 수 없다. Entity 로직에서 에러가 발생한다.
+  삭제는 오직, 받는이 `otherUserIdx` 만 할 수 있다. 글 쓴이가 하려면, Entity 로직에서 에러가 발생한다.
+  글 읽기는 양쪽 모두 가능하다. 주의: 이 부분은 Entity 로직에서 처리가 안되고, 위젯에서 구현해야 한다.
+  
+- `relationIdx` 는 현재 글이 어느 것(또는 다른 taxonomy 의 entity)과 연결되어져 있는지 표시 할 때 사용한다.
+  예를 들면, 쇼핑몰에서 상품에 대한 후기는 코멘트로 남기고, 후기는 별도의 inquiry 게시판에 남기고자 한다.
+  즉, 상품 A 에 대한 문의는 inquiry 게시판에 모두 기록된다.
+  참고, 일반적인 문의는 채팅방 형식으로 해도 좋다. 1:1 문의는 채팅방이 적당하나, 공개를 할 수 없다. 즉, 공개 문의를 할 수 없다.
+  참고, 쇼핑몰 상품 A 에 대한 후기는 코멘트로 남기는 것이 좋다.
+  참고, 문의가 상품 별로 공개 문의 또는 사용자 선택에 의해서 비밀 문의로 되어져야 한다면, 별도의 게시판에 문의를 작성해야한다.
+  이 때, (문의 게시판에 작성된) 문의가 어느 (쇼핑몰)상품의 것과 연관되어져 있는지를 relationIdx 로 표시 할 수 있다.
+  즉, 이 때는 relationIdx 는 쇼핑몰 상품 번호가 되는 것이다.
+  
+  이 처럼 `relationIdx` 는 글과 글의 연결성을 표시하는 데에 사용되며, 여러 가지 방식으로 활용 할 수 있다.
+
+- `private` 은 현재 글이 비밀글인지 아닌지를 'Y/N'으로 표시한다.
+  주의: `private` 일 때에는 글 제목과 내용을 `privateTitle` 과 `privateContent` 로 저장한다. 그래서 검색에서 완전 배제를 한다.
+  참고로 글 작성시, `private=Y` 로 전달하면, taxonomy 에서 title 과 content 를 자동으로 `private_title` 과 `privateContent`에 저장한다.
+
+- 'Y' 는 찬성(또는 like) 수
+- 'N' 은 반대(또는 dislke) 수
+
+- `Ymd` 는 글을 쓴 시점의 날짜(YYYYMMDD)의 값이 자동으로 들어간다.
+
+- `noOfComments` 는 각 게시글의 코멘트 수를 표시한다. 게시판에서 코멘트 많은 순서로 글을 추출 하고자 할 때 사용 가능하다.
+  참고로, 게시판 글 코멘트 삭제 기능은 없다. 삭제를 하지 못하고, 삭제됨 표시만 하는 것이다. 따라서, 코멘트 수는 증가만 하고, 감소를 하지 않는다.
+  - 각 게시판 별 글 수, 코멘트 수가 필요한 경우는 count(*) 로 해서 처리를 한다.
+
+
+- `code` 는 게시글에 부여되는 특별한 코드이고, 그 코드를 바탕으로 글을 추출 할 수 있다.
+- `report` 는 신고된 회 수를 저장한다. 신고가 될 때마다 1씩 증가한다.
+
+- `createdAt` 글이 작성된 시간 stamp. 처음 1회만 저장.
+- `updatedAt` 글이 수정된 시간 stamp. 자주 업데이트 될 수 있음.
+- `readAt` 글이 읽혀진 시간 stamp
+- `deletedAt` 글이 삭제된 시간 stamp. 글이 삭제된 시간.
+- `beginAt` 글이 시작되는 시간 stamp. 예를 들어, 해당 글이 언제 부터 보여져야 할 지, 또는 광고 프로그램에서, 광고가 언제 부터 시작되어야 할지
+- `endAt` 글이 끝나는 시간 stamp. 글이 언제 부터 안보여져야 할 지. 광고 배너가 언제 끝나는 지 등.
+
+
+
+- 참고, 글이 삭제되면, 실제 레코드 지우지 않고,
+  title, privateTitle, content, privateContent 만 빈 문자열로 저장한다.
+  즉, 글의 작성자, 첨부 파일이나 코멘트 등은 그대로 살아있다.
+  
+## files
+
+- taxonomy, entity 는 예를 들어, posts taxonomy 의 어떤 글 번호에 연결이 되었는지 또는 users taxonomy 의 어떤 사용자와 연결이 되었는지 나타낸다.
+- code 는 파일의 코드 값으로 예를 들어, taxonomy=users AND entity=사용자번호 AND code=profilePhoto 와 같이 업로드된 파일의 특성을 나타낼 때 사용 할 수 있다.
+
+
+
+## 카테고리 테이블. Category table
+
+- userIdx 는 게시판 관리자이다. 카페인 경우, 카페 주인이 된다.
+- domain 은 게시판의 도메인이다. 홈페이지 도메인일 수도 있고, 그냥 그룹일 수도 있다. 카페의 경우, 카페 도메인이 된다.
+- countryCode 는 국가 코드이다. 해당 게시판(또는 카페가) 어느 국가에 속해 있는지 표시를 하는 것이다.
+
+
+- postCreateLimit - users who has less points than this cannot create post
+  For instance, this value is 1000 and user has 999. Then the user cannot create post.
+- commentCreateLimit - users who has less points than this cannot create comment
+- readLimit - users who has less points than this cannot create comment
+  - @attention When a user creates a post, it reads the post internally.
+    Which means, for post creating, user will read the post and if user has less point of 'readLimit' when creating, it will fail.
+  - @attention, readLimit is only for post reading, not for comment reading.
+
+- banCreateOnLimit - User cannot create post/comment if the user reaches the limit.
+
+- createPost - is the Points to be given to the author on post creation. It can be minus value like -100.
+- deletePost - is the Points to be given to the author on post deletion. It can be minus value like -100.
+- createComment - is the Points to be given to the author on comment creation. It can be minus value like -100.
+- deleteComment - is the Points to be given to the author on comment deletion. It can be minus value like -100.
+
+
+- createHourLimit - Create limitation for hours.
+- createHourLimitCount - How many can the user create post/comment within the `createHourLimit` hour.
+- createDailyLimitCount - How many can the user create post/comment in a day.
+
 
 ## User Activity
 
@@ -919,32 +1039,36 @@ setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
 
 ## Similiar functions
 
-- `login()->idx` in PHP is equal to `loginIdx()` in Javascript.
+- `login()->idx` in PHP is equal to `loginIdx()` in Javascript
+
+# 쪽지 기능, Message Functionality
+
+- 쪽지 기능은 게시판과 매우 흡사하다. 그래서 게시판 테이블과 대부분의 게시판 기능을 사용한다. 단, post-edit-default 위젯을 상속하기에는 좀 복잡해서 직접
+  위젯을 만들어 쓴다.
+  - 참고, 글 쓰기: message-edit-default.php
+  - 참고, 글 읽기: message-view-default.php
+  - 참고, 글 목록: message-list-default.php
 
 
+- 게시판 category.id 는 어떤 것이라도 상관없지만, 규칙을 두고, 각종 링크에서 공용으로 사용하기 위해서 MESSAGE_CATEGORY 에 게시판 카테고리를 정의한다.
+  기본적으로 'message' 게시판을 사용한다.
+  즉, 쪽지 목록 메뉴 링크를 걸 때, `<a href="<?=postListUrl(MESSAGE_CATEGORY)?>">쪽지</a>` 로 하면 된다.
+  만약, 다른 게시판으로 하려면, MESSAGE_CATEGORY 를 다른 값으로 변경하면 된다.
 
+- 주의 할 것은 게시판 목록, 읽기, 쓰기 위젯 등을 쪽지 위젯으로 설정을 해야 한다.
+  기본적으로 post-list/message-list-default, post-view/message-view-default, post-edit/message-edit-default 가 존재한다.
 
-
-
-
-
-# 쪽지 기능
-
-- 쪽지 기능은 게시판과 매우 흡사하다. 그래서 게시판 기능을 상속해서 쓴다.
-
+  
 - 글 목록, 페이지내에션, 검색 등에서 비슷하게 사용된다.
   다만, 외부에서 검색이 되지 않도록 100% 보장하기 위해서, title 과 content 필드 대신에 privateTitle, privateContent 에 기록을 한다.
   이 때, private 에 Y 의 값을 기록해야 한다.
+  
+- 글을 저장 할때, private = Y 옵션을 서버로 전송하면, 서버에서는 자동으로 title 과 content 값을 privateTitle 과 privateContent 에 기록한다.
+- 단, 글을 읽을 때에는 private = Y 이면, privateTitle 과 privateContent 를 직접 화면에 표시해야 한다.
 
 - otherUserIdx 에 받는 사람 정보가 들어간다.
 
 - readAt 에 글을 읽은 시간이 들어간다.
-
-- 게시판 category.id 는 어떤 것이라도 상관없다. 하지만 규칙을 두고, 각종 링크에서 공용으로 사용하기 위해서 'message' 로 한다.
-  즉, 쪽지 목록 메뉴 링크를 걸 때, `/?forum.post.list&categoryId=message` 로 하면 된다.
-
-- 주의 할 것은 게시판 목록, 읽기, 쓰기 위젯 등을 쪽지 기능에 맞도록 제작해야한다.
-  기본적으로 post-list/message-list-default, post-view/message-view-default, post-edit/message-edit-default 가 존재한다.
 
 
 
@@ -1057,7 +1181,90 @@ include widget('post-edit/post-edit-default');
 - After filling up on post create/update form, send the form to `/?p=forum.post.edit.submit` and it will redirect to the list page.
 
 
+
+## 글 작성, Post Edit
+
+
+
+### 글 작성 위젯 옵션
+
+- 글 작성 위젯 옵션에는 PHP INI 형식의 데이터를 입력하면 된다. 그리고 각 위젯에서 적절히 활용하면 된다.
+
+#### 글 작성 위젯 옵션 활용 - 이벤트 게시판 등
+
+Post Edit Widget 중에서 코드 별 사진 업로드(post-edit-upload-by-code.php)가 있다.
+
+이 위젯은, 글의 제목과 내용을 업로드 할 수 있으며, 첨부 파일/사진을 코드 별로 업로드 할 수 있다. 즉, 임의의 사진을 무한정 업로드 할 수 없고, 정해진 코드 몇
+개에만 업로드 가능하다.
+
+글 읽기는 적절한 위젯을 만들어 사용하면 된다.
+
+예를 들어, 이벤트 게시판을 작성한다고 가정 할 때,
+
+이벤트 배너를 목록에 보여주고, 이벤트 내용을 사진으로 보여주고자 할 때,
+
+사진 2개만 입력 받을 수 있다.
+
+이 때, 아래와 같이 입력을 하면 된다.
+
+```ini
+[upload-by-code]
+banner[label]=배너 사진
+banner[tip]=목록에 나타나는 이벤트 배너(광고) 사진을 업로드 해 주세요.
+content[label]=내용 사진
+content[tip]=배너 사진을 클릭 했을 때 나타나는 내용 사진을 업로드 해 주세요.
+```
+
+위와 같이 하면, 목록에서 배너 사진을 보여주고, 내용에 내용 사진을 보여주면 된다.
+
+첨부 파일의 코드에 'banner' 또는 'content' 가 들어간다.
+
+만약, 이벤트가 종료되었다면, 배너 사진에 문구를 종료됨으로 수정하고, 내용에도 종료되었다는 표시를 하면 된다.
+
+
+
+
 # Firebase
+
+
+- If you want to use Firebase, set `FIREBASE_SDK_ADMIN_KEY` with json string with `Firebase SDK Admin Key`.
+  For example,
+  
+```php
+define('FIREBASE_SDK_ADMIN_KEY', <<<EOJ
+{
+    apiKey: "AIzaSyDWiVaWIIrAsEP-eHq6bFBY09HLyHHQW2U",
+    authDomain: "sonub-version-2020.firebaseapp.com",
+    databaseURL: "https://sonub-version-2020.firebaseio.com",
+    projectId: "sonub-version-2020",
+    storageBucket: "sonub-version-2020.appspot.com",
+    messagingSenderId: "446424199137",
+    appId: "1:446424199137:web:f421c562ba0a35ac89aca0",
+    measurementId: "G-F86L9641ZQ"
+}
+EOJ);
+```
+
+- Then, it will define `FIREBASE_BOOT_SCRIPTS` with
+  - complete firebase javascript sdk,
+  - and the code of **initializing the firebase app**,
+  - and the code of push notification
+    - installing service worker for push notification,
+    - accquiring permissions from user,
+    - saving tokens to backend,
+    - registering token to topic,
+    - handling background push notification,
+  
+
+- Then, in the `index.php` (of the root) will insert the `FIREBASE_BOOT_SCRIPTS` at the bottom of the HTML on all page.
+
+- Note that `/etc/js/firebase/firebase.js` is loaded along with `FIREBASE_BOOT_SCRIPTS` to do the firebase push notification routine.
+
+- Note, the firebase app will be initialized at the bottom of the HTML. Meaning, you cannot use it in the middle of the page.
+- Note, you can access all the firebase service with the global `firebase` namespace.
+  For instance, you can do `messaging = firebase.messaging();` only after the initialization.
+  Or in the middle of the page, `later(function() { messaging = firebase.messaging(); })`
+  @see https://firebase.google.com/docs/reference/js/firebase
 
 ## Javascript
 
@@ -1544,13 +1751,13 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
   - priority 옵션을 통해서, 이러한 점을 잘 활용하면 된다.
 
 ```html
-<?php js(HOME_URL . 'etc/js/helper.js', 7)?>
+<?php js(HOME_URL . 'etc/js/common.js', 7)?>
 <?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js', 9)?>
 <?php js(HOME_URL . 'themes/sonub/js/bootstrap-vue-2.21.2.min.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
-<?php js(HOME_URL . 'etc/js/helper.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
+<?php js(HOME_URL . 'etc/js/common.js', 10)?>
 <?php js(HOME_URL . 'etc/js/app.js', 0)?>
 ```
 
@@ -1656,7 +1863,7 @@ Array
   ?>
   <?php } ?>
 </section>
-<?php js(HOME_URL . 'etc/js/helper.js')?>
+<?php js(HOME_URL . 'etc/js/common.js')?>
 <?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js')?>
 <?php js(HOME_URL . 'etc/js/app.js')?>
 </body>
@@ -1697,6 +1904,13 @@ Array
 <?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js', 2)?>
 <?php js(HOME_URL . 'etc/js/bootstrap-vue-2.21.2.min.js', 1)?>
 ```
+
+# 아이콘, SVG
+
+- 3rd party dependency 를 최대한 줄기이기 위해서, 직접 SVG 를 포함해서 사용한다.
+  - 요약 문서 참고: https://docs.google.com/document/d/1VgfgtExjiaFXrc-Sl15WOiL1cPlsWDRGdq9CTpaqiIg/edit#heading=h.a4ruqalgejpr
+  
+
 
 # Admin page design
 
@@ -1770,7 +1984,7 @@ if ( modeCreate() ) {
 - 글 작성과 같은 데이터 생성 페이지는 `<input type="hidden" name="p" value="forum.comment.edit.submit">` 처럼 `p` 값의 끝을 `.sumit` 으로 한다.
   그러면, 테마를 실행하지 않고, 바로 그 스크립트를 실행한다. 즉, 화면에 번쩍임이 사라지게 된다.
 
-- 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="returnTo" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
+- 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="return_url" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
 
 
 # 글 쓰기
@@ -2168,38 +2382,6 @@ card_flip2 는 쉬운(하) 게임이다
     }
 ```
 
-# 데이터베이스 테이블
-
-## posts
-
-- `relationIdx` 는 현재 글이 어느 것(또는 다른 taxonomy 의 entity)과 연결되어져 있는지 표시 할 때 사용한다.
-  예를 들면, 쇼핑몰에서 상품 A 에 대한 문의를 남기는데, 문의는 inquiry 게시판에 모두 기록된다.
-  참고, 일반적인 문의는 채팅방 형식이 될 수 있다. 1:1 문의는 채팅방이 적당하나, 공개를 할 수 없다. 즉, 공개 문의를 할 수 없다.
-  참고, 쇼핑몰 상품 A 에 대한 후기는 코멘트로 남긴다.
-  참고, 문의가 상품 별로 공개 문의 또는 사용자 선택에 의해서 비밀 문의로 되어져야 한다면, 별도의 게시판에 문의를 작성해야한다.
-  이 때, 문의 게시판에 작성된 문의가 어느 상품의 것과 연관되어져 있는지, relationIdx 로 표시 할 수 있다.
-  이처럼 여러가지 방식으로 활용 할 수 있다.
-
-- `private` 은 현재 글이 비밀글인지 아닌지를 'Y/N'으로 표시한다.
-  주의: `private` 일 때에는 글 제목과 내용을 `private_title` 과 `private_content` 로 저장한다. 그래서 검색에서 완전 배제를 한다.
-
-- 'Y' 는 찬성(또는 like) 수
-- 'N' 은 반대(또는 dislke) 수
-
-- `Ymd` 는 글을 쓴 시점의 날짜(YYYYMMDD)의 값이 자동으로 들어간다.
-
-- `noOfComments` 는 각 게시글의 코멘트 수를 표시한다. 게시판에서 코멘트 많은 순서로 글을 추출 하고자 할 때 사용 가능하다.
-  참고로, 게시판 글 코멘트 삭제 기능은 없다. 삭제를 하지 못하고, 삭제됨 표시만 하는 것이다. 따라서, 코멘트 수는 증가만 하고, 감소를 하지 않는다.
-  - 각 게시판 별 글 수, 코멘트 수가 필요한 경우는 count(*) 로 해서 처리를 한다.
-
-
-## files
-
-- taxonomy, entity 는 예를 들어, posts taxonomy 의 어떤 글 번호에 연결이 되었는지 또는 users taxonomy 의 어떤 사용자와 연결이 되었는지 나타낸다.
-- code 는 파일의 코드 값으로 예를 들어, taxonomy=users AND entity=사용자번호 AND code=profilePhoto 와 같이 업로드된 파일의 특성을 나타낼 때 사용 할 수 있다.
-
-
-
 
 # Markdown
 
@@ -2243,10 +2425,33 @@ chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
 ```
 
 
+# 사진업로드, 파일업로드
 
-# 사진업로드
-
+- 사진/파일 업로드, 특히, 코멘트에서 사진/파일 업로드가 쉽지 않다. 그래서 재 사용 가능한 코드를 만들어 활용한다.
 - 파일 업로드를 할 때, Vue 를 사용 할 수 있고, 그냥 Vanilla Javascript 를 사용 할 수 있다.
+
+
+## Vue.js 2 로 만든 가장 좋은 코드 (중요)
+
+### 글 작성시 사진 업로드 - post-edit-form-file 믹스인
+
+- 글 작성/수정 시, 사진/파일 업로드/삭제를 쉽게 해 놓은 mixin 이다.
+- 모든 글 또는 wc_posts 테이블을 사용하는 글에 사용가능하다.
+- 예제는 post-edit-default.php 를 참고한다.
+
+### 코멘트 컴포넌트 - comment-form 컴포넌트
+
+- SEO 를 위해서 코멘트를 보여 줄 때에는 PHP 로 표시하지만, 새 코멘트 작성, 수정 등을 할 때에는 컴포넌트로 처리하면 된다.
+- 예제는 post-view-default.php 를 보면 된다.
+
+### 글에 코드 별로 사진을 업로드 - upload-by-code 컴포넌트
+
+- 예를 들어, 쇼핑몰 글을 등록 할 때, 각 종 위젯이나 목록에 보여 줄 사진을 따로 업로드하고, 설명 사진을 따로 업로드하고, 본문 사진을 따로 관리하고 싶을 때 사용한다.
+- 실전 코드는 `widget/shopping-mal/admin-shopping-mall/edit.php` 에 있으며, 아래와 같이 사용 가능하다.
+
+```html
+<upload-by-code post-idx="<?=$post->idx?>" code="primaryPhoto" label="대표 사진" tip="상품 페이지 맨 위에 나오는 사진"></upload-by-code>
+```
 
 ## Vue.js 를 사용한 예제
 
@@ -2266,7 +2471,7 @@ if ( in(CATEGORY_ID) ) {
 <div id="post-edit-default" class="p-5">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
-        <input type="hidden" name="returnTo" value="post">
+        <input type="hidden" name="return_url" value="post">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="files" v-model="files">
         <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
@@ -2388,7 +2593,7 @@ if ( in(CATEGORY_ID) ) {
 <div id="itsuda-event-edit" class="p-5">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
-        <input type="hidden" name="returnTo" value="post">
+        <input type="hidden" name="return_url" value="post">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
         <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">
@@ -2684,35 +2889,6 @@ echo "현재 환율: $phpKwr";
 ```
 
 
-# 카테고리 테이블. Category table
-
-- userIdx 는 게시판 관리자이다. 카페인 경우, 카페 주인이 된다.
-- domain 은 게시판의 도메인이다. 홈페이지 도메인일 수도 있고, 그냥 그룹일 수도 있다. 카페의 경우, 카페 도메인이 된다.
-- countryCode 는 국가 코드이다. 해당 게시판(또는 카페가) 어느 국가에 속해 있는지 표시를 하는 것이다.
-
-
-- postCreateLimit - users who has less points than this cannot create post
-  For instance, this value is 1000 and user has 999. Then the user cannot create post.
-- commentCreateLimit - users who has less points than this cannot create comment
-- readLimit - users who has less points than this cannot create comment
-  - @attention When a user creates a post, it reads the post internally.
-    Which means, for post creating, user will read the post and if user has less point of 'readLimit' when creating, it will fail.
-  - @attention, readLimit is only for post reading, not for comment reading.
-
-- banCreateOnLimit - User cannot create post/comment if the user reaches the limit.
-
-- createPost - is the Points to be given to the author on post creation. It can be minus value like -100.
-- deletePost - is the Points to be given to the author on post deletion. It can be minus value like -100.
-- createComment - is the Points to be given to the author on comment creation. It can be minus value like -100.
-- deleteComment - is the Points to be given to the author on comment deletion. It can be minus value like -100.
-
-
-- createHourLimit - Create limitation for hours.
-- createHourLimitCount - How many can the user create post/comment within the `createHourLimit` hour.
-- createDailyLimitCount - How many can the user create post/comment in a day.
-
-
-
 
 
 # 카페
@@ -2933,6 +3109,14 @@ echo "현재 환율: $phpKwr";
 
 # 위젯
 
+## 글 목록 위젯
+
+### 글 목록 상단 위젯
+
+- 쪽지 게시판 등에서는 게시판 상단 목록이 필요 없을 수 있다. 이 때에는 empty widget 을 선택하면 된다.
+
+- 글 목록 위젯에서 All in one 의 경우, 목록 위젯에서 글 목록, 읽기, 쓰기를 모두 다 한다. 즉, 글 읽기, 쓰기 위젯을 따로 설정 안해도 되며, 해도 적용이 안된다.
+
 ## 글 쓰기 위젯
 
 ### post-edit-upload-by-code
@@ -2960,6 +3144,7 @@ content[tip]=내용사진입니다.
 ```
 
 
+
 # Post list
 
 - For listing posts under a category, it requires `category.idx`. Whether the client is using SQL or prepared params,
@@ -2967,6 +3152,14 @@ content[tip]=내용사진입니다.
   - Client app should load the forum configuration at startup and cache for the next boot. So, they can use `category.idx`.
 
 
+# CSS, 공용 CSS
+
+- etc/css/x.css 는 공용 CSS 이며, 많은 곳에서 쓰인다.
+  또한 이 것을 커스터마이징하여 다른 색, 모양을 만들어 낼 수 있다.
+  
+## progress bar
+
+- x.css 를 참고한다.
 
 
 
@@ -2991,17 +3184,22 @@ content[tip]=내용사진입니다.
   - set '12345' to `LIVE_RELOAD_PORT`
   - add the working local domain to `LOCAL_HOSTS`.
   - run `node live-reload.js`
-<<<<<<< HEAD
 
 
-
-
-=======
+- Do not define `LIVE_RELOAD` in config.php
+  You can define it in the runtime to stop the live reload.
+  Below is an example of display Javascript source code by dynamically updating with PHP.
   
+```html
+<?php
+header("Content-Type: application/javascript");
+header("Cache-Control: max-age=604800, public");
+const LIVE_RELOAD = false;
+require_once '../../../boot.php';
+?>
+alert('Hi');
+```
 
-
-  
->>>>>>> dating
 # Error code
 
 - 에러 관련 루틴은 library
@@ -3040,6 +3238,49 @@ Be sure you have the countries table records into the wc_countries table.
 
 
 
+## Firebase - Invalid service account
+
+- When you use firebase admin sdk, you must put the proper firebase admin sdk.
+  
+- One thing to note is that, On test mode, the `Firebase Admin Sdk Json Key` must be put in the root `config.php`
+  Not in the theme `config.php`.
+
+- Error message examples
+
+```text
+Next Kreait\Firebase\Exception\InvalidArgumentException: Invalid service account: /docker/home/centerx/etc/keys/xxx-firebase-admin-sdk.json can not be read: SplFileObject::__construct(/docker/home/centerx/etc/keys/xxx-firebase-admin-sdk.json): ...
+```
+
+```text
+PHP Warning:  openssl_sign(): Supplied key param cannot be coerced into a private key in /docker/home/centerx/vendor/firebase/php-jwt/src/JWT.php on line 209
+Warning: openssl_sign(): Supplied key param cannot be coerced into a private key in /docker/home/centerx/vendor/firebase/php-jwt/src/JWT.php on line 209
+
+d(): Array
+(
+[topic1621427903] => OpenSSL unable to sign data
+)
+```
+
+## 대 용량 사진/파일 업로드
+
+- 에러 로그에 file size 또는 content-length exceeds 에러가 나면, 서버에서 설정한 용량 보다 큰 파일을 업로드해서 그렇다.
+  아래와 같이 해결한다.
+
+에러 메시지)
+NOTICE: PHP message: PHP Warning:  POST Content-Length of 81320805 bytes exceeds the limit of 67108864 bytes in Unknown on line 0
+
+
+해결책)
+```text
+
+php.ini)
+upload_max_filesize = 1000M;
+post_max_size = 1000M;
+
+
+nginx.conf)
+client_max_body_size    500M;
+```
 # Known Issues
 
 ## 404 error on push token renew

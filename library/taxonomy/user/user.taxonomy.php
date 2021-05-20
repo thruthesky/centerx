@@ -63,7 +63,7 @@ class UserTaxonomy extends Entity {
                     if ( strlen($account_name) < 3 ) return 'xxx';
                     return substr($account_name, 0, strlen($account_name)-3) . 'xxx';
                 } else {
-                    return '(No name or nickname) & wrong email';
+                    return '(No nameOrNickname or Email)';
                 }
             }
         } else {

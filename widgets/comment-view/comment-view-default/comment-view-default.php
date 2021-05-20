@@ -32,13 +32,19 @@ $comment = $o['comment'];
         </div>
         <hr class="my-1">
         <section class="d-flex buttons mt-2">
-            <a class="btn btn-sm mr-2" v-if="displayCommentForm[<?= $comment->idx ?>] !== 'reply'" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'reply')"><?= ek('Reply', '답변하기') ?></a>
-            <a class="btn btn-sm mr-2" v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, '')"><?= ek('Cancel', '취소') ?></a>
-            <vote-buttons n="<?= $comment->N ?>" y="<?= $comment->Y ?>" parent-idx="<?= $comment->idx ?>"></vote-buttons>
+            <a class="btn btn-sm mr-2" v-if="displayCommentForm[<?= $comment->idx ?>] !== 'reply'" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'reply')"><?=ln('reply')?></a>
+            <a class="btn btn-sm mr-2" v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, '')"><?=ln('cancel')?></a>
+            <vote-buttons
+                    n="<?= $comment->N ?>" y="<?= $comment->Y ?>" parent-idx="<?= $comment->idx ?>"
+                          text-like="<?=ln('like')?>"
+                          text-dislike="<?=ln('dislike')?>"
+            ></vote-buttons>
             <span class="flex-grow-1"></span>
             <?php if ($comment->isMine()) { ?>
-                <a class="btn btn-sm mr-1" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'update')"><?= ek('Edit', '수정') ?></a>
-                <a class="btn btn-sm" onclick="onCommentDelete(<?= $comment->idx ?>)" style="color: red;"><?= ek('Delete', '삭제') ?></a>
+                <a class="btn btn-sm mr-1" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'update')"><?=ln('edit')?></a>
+                <a class="btn btn-sm" onclick="onCommentDelete(<?= $comment->idx ?>)" style="color: red;"><?=ln('delete')?></a>
+            <?php } else { ?>
+                <a class="btn btn-sm mr-2" href="<?=messageSendUrl($comment->userIdx)?>"><?=ln('send_message')?></a>
             <?php } ?>
         </section>
 
@@ -46,7 +52,14 @@ $comment = $o['comment'];
     </div>
 
     <!-- comment update form -->
-    <comment-form root-idx="<?= $post->idx ?>" comment-idx='<?= $comment->idx ?>' v-if="displayCommentForm[<?= $comment->idx ?>] === 'update'"></comment-form>
+    <comment-form
+            root-idx="<?= $post->idx ?>"
+            comment-idx='<?= $comment->idx ?>'
+            text-photo="<?=ln('photo')?>"
+            text-submit="<?=ln('submit')?>"
+            text-cancel="<?=ln('cancel')?>"
+            v-if="displayCommentForm[<?= $comment->idx ?>] === 'update'"
+    ></comment-form>
 
 
 </div>
@@ -67,3 +80,4 @@ $comment = $o['comment'];
             .catch(alert);
     }
 </script>
+<?php js('/etc/js/vue-js-components/vote-buttons.js', 1) ?>

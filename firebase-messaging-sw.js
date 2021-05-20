@@ -1,5 +1,4 @@
-
-/** Again import google libraries */
+/** Import google libraries */
 importScripts("https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js");
 importScripts("https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js");
 
@@ -9,7 +8,7 @@ importScripts("https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js");
  *      -> Left Side bar -> Project Overview -> Project Settings
  *      -> General -> Scroll Down and Choose CDN for all the details
  */
-var firebaseConfig =  {
+var firebaseConfig = {
     apiKey: "AIzaSyDWiVaWIIrAsEP-eHq6bFBY09HLyHHQW2U",
     authDomain: "sonub-version-2020.firebaseapp.com",
     databaseURL: "https://sonub-version-2020.firebaseio.com",

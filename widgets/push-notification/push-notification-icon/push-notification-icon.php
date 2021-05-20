@@ -1,8 +1,8 @@
 <?php
 /**
  * @size icon
- * @options category
- * @dependency vue.js 2.x.x
+ * @options CategoryTaxonomy `category`
+ * @dependency none
  */
 
 $o = getWidgetOptions();
@@ -37,15 +37,12 @@ function isSubscribedToTopic($topic): bool
         },
         methods: {
             onChangeSubscribeOrUnsubscribeTopic: function(topic, field) {
-                // console.log(topic, field);
-                // console.log(app.$data[field]);
 
-                if ( !Cookies.get('sessionId') ) {
+                if ( notLoggedIn() ) {
                     alert("Please login first");
                     app.$data[field] = false;
                     return;
                 }
-                console.log(Cookies.get('sessionId'));
                 request(
                     "notification.topicSubscription",
                     { topic: topic, subscribe: field ? "on" : "off" },

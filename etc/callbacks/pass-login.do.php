@@ -19,7 +19,7 @@ if ( isError($profile) ) {
  */
 user($profile[IDX])->update([in('state') => $profile[SESSION_ID]]);
 ?>
-<?php includeFirebase(); ?>
+
 <script>
     const db = firebase.firestore();
     db.collection('passlogin').doc('<?=in('state')?>')
