@@ -163,9 +163,6 @@
 
 - @doc SQLite3 지원할 필요없다. MariaDB(MySQL)이 절대적이고, Docker 를 통해서 쉽게 관리가 가능하다.
 
-- @doc
-  meta 에 int, string, double(float) 은 serialize/unserialize 하지 말 것. 그래서 바로 검색이 되도록 한다.
-
 
 - @doc
   `https://local.itsuda50.com/?route=comment.get&idx=15224` 와 같이 글이나 코멘트를 가져올 때, 글/코멘트 생성시, 작성자에게 추가된 포인트가 `appliedPoint` 로 클라이언트에게 전달된다.
@@ -1591,6 +1588,10 @@ The above code is identical as below
 $meta = entity(METAS)->get('code', 'topic_qna');
 $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='Y'", select: 'entity', limit: 10000);
 ```
+
+
+- meta 에 int, string, double(float) 은 serialize/unserialize 하지 않는다.
+  즉, SQL 쿼리를 할 때, 메타 값으로 비교 할 수 있다.
 
 
 # 파일 업로드
@@ -3205,6 +3206,13 @@ echo "현재 환율: $phpKwr";
     });
 </script>
 ```
+
+### Ajax 로 글 전송 위젯, post-edit-ajax.php
+
+- 글을 저장할 때, PHP 로 다음 페이지로 넘겨서 처리를 하는 것이 아니라, Vue.js 로 입력 값을 점검 한 후, Axios 로 글을 생성한다.
+
+- `post-default-ajax.php` 위젯이 그 예제이며, `post-edit-default.php` 를 상속해서 쓴다.
+
 
 ### post-edit-upload-by-code
 
