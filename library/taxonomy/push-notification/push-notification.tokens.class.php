@@ -28,7 +28,7 @@ class PushNotificationTokenTaxonomy extends Entity {
      * @return PushNotificationTokenTaxonomy[]
      */
     public function save(array $in): array {
-        d($_SERVER);
+//        d($_SERVER);
         $token = $in[TOKEN];
         $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
 
