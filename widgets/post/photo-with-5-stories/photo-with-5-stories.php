@@ -17,7 +17,7 @@ $posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 4);
 <div class="photo-with-5-stories">
 
   <div class="top">
-    <?php include widget('post/photo-with-text-at-bottom', ['post' => $post, 'imageHeight' => $op['imageHeight'] ?? 150, 'imageWidth' => $op['imageWidth'] ?? 100 ]); ?>
+    <?php include widget('post/photo-with-text-at-bottom', ['post' => $post, 'imageHeight' => $op['imageHeight'] ?? 160, 'imageWidth' => $op['imageWidth'] ?? 100 ]); ?>
   </div>
 
   <div class="stories">

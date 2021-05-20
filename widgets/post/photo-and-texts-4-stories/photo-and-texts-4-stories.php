@@ -23,17 +23,17 @@ $op = getWidgetOptions();
 
   <div class="second-story">
     <?php
-    if ( isset($op['secondCategroyId']) ) {
-        $posts = post()->latest(categoryId: $op['secondCategroyId'], limit: 4);
+    if (isset($op['secondCategroyId'])) {
+      $posts = post()->latest(categoryId: $op['secondCategroyId'], limit: 4);
     } else {
-        $posts = postMockData(4, photo: true);
+      $posts = postMockData(4, photo: true);
     }
 
 
     for ($i = 0; $i < count($posts); $i++) {
-        ?>
-      <div class="story story-<?=$i?>">
-        <?php include widget('post/photo-with-text-at-bottom', ['post' => $posts[$i] ]); ?>
+    ?>
+      <div class="story story-<?= $i ?>">
+        <?php include widget('post/photo-with-text-at-bottom', ['post' => $posts[$i], 'imageHeight' => $op['imageHeight'] ?? 150, 'imageWidth' => $op['imageWidth'] ?? 150]); ?>
       </div>
     <?php } ?>
   </div>

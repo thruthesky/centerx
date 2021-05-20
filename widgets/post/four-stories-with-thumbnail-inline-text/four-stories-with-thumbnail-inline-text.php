@@ -21,8 +21,8 @@ if (category($categoryId)->exists) {
 $lack = 4 - count($posts);
 $posts = array_merge($posts, postMockData($lack, photo: true));
 
-$imageHeight = $op['imageHeight'] ?? 90;
-$imageWidth = $op['imageWidth'] ?? 85;
+$imageHeight = $op['imageHeight'] ?? 150;
+$imageWidth = $op['imageWidth'] ?? 100;
 ?>
 
 <div class="four-stories-with-thumbnail-inline-text">
