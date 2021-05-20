@@ -2,7 +2,7 @@
 
 /**
  * @size narrow
- * @options 'categoryId'
+ * @options 'categoryId', 'imageHeight', 'imageWidth'
  * @dependency none
  */
 
@@ -27,7 +27,7 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
     <?php
     foreach ($posts as $post) { ?>
       <div class="story">
-        <?php include widget('post/photo-with-text-at-bottom', ['post' => $post]); ?>
+        <?php include widget('post/photo-with-text-at-bottom', ['post' => $post ]); ?>
       </div>
     <?php } ?>
   </div>

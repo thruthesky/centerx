@@ -11,7 +11,7 @@ $secondStoriesOps = $op['secondStories'] ?? [];
 if (!isset($secondStoriesOps['imageHeight'])) $secondStoriesOps['imageHeight'] = 90;
 if (!isset($secondStoriesOps['imageWidth'])) $secondStoriesOps['imageWidth'] = 90;
 
-$firstStories = $op['firstStories'];
+$firstStories = $op['firstStories'] ?? [];
 ?>
 
 
