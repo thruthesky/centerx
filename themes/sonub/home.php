@@ -29,7 +29,7 @@ include widget('post/photos-and-texts-3-stories', [
 ?>
 
 
-<?php include widget('weather/openweathermap', ['display' => 'forecast']) ?>
+<?php include widget('weather/openweathermapforecast') ?>
 
 
     <div class="p-2 fs-sm">

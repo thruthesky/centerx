@@ -1,8 +1,8 @@
 <?php
 /**
  * @size icon
- * @options category
- * @dependency vue.js 2.x.x
+ * @options CategoryTaxonomy `category`
+ * @dependency none
  */
 
 $o = getWidgetOptions();
