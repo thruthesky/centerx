@@ -33,7 +33,7 @@ Vue.component('comment-form', {
     template: '<form class="mt-2" v-on:submit.prevent="commentFormSubmit">' +
         '<input type="hidden" name="files" v-model="form.files">' +
         '<section class="d-flex">' +
-        '   <div class="position-relative overflow-hidden" style="flex-basis: 32px">' +
+        '   <div class="position-relative overflow-hidden" style="min-width: 32px">' +
         '       <img src="/etc/svg/camera.svg" class="camera-icon d-block" v-if=" !textPhoto ">' +
         '       <div class="mr-2 pt-1" type="button" v-if=" textPhoto ">{{ textPhoto }}</div>' +
         '       <input class="position-absolute top left right fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
