@@ -10,7 +10,7 @@ $post = $o['post'] ?? firstPost(photo: true);
 $height = $o['height'] ?? 200;
 $files = $post->files();
 if (count($files) == 0) return;
-$src = thumbnailUrl($files[0]->idx, 360, 280);
+$src = thumbnailUrl($files[0]->idx, 360, $height);
 $url = $post->url;
 ?>
 
