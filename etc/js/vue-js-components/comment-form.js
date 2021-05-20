@@ -33,17 +33,19 @@ Vue.component('comment-form', {
     template: '<form class="mt-2" v-on:submit.prevent="commentFormSubmit">' +
         '<input type="hidden" name="files" v-model="form.files">' +
         '<section class="d-flex">' +
-        '   <div class="position-relative overflow-hidden" style="min-width: 80px;">' +
-        '       <button class="btn btn-primary mr-4" type="button">{{ textPhoto }}</button>' +
-        '       <input class="position-absolute top left fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
+        '   <div class="position-relative overflow-hidden" style="flex-basis: 32px">' +
+        '       <img src="/etc/svg/camera.svg" class="camera-icon d-block" v-if=" !textPhoto ">' +
+        '       <div class="mr-2 pt-1" type="button" v-if=" textPhoto ">{{ textPhoto }}</div>' +
+        '       <input class="position-absolute top left right fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
         '   </div>' +
-        '   <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
+        '   <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control ml-2" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
         '   </textarea>' +
         '   <div><div class="d-flex" v-if="form.content || uploadedFiles.length">' +
         '      <button class="btn btn-primary ml-2" type="submit">{{ textSubmit }}</button>' +
         '      <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">{{ textCancel }}</button>' +
         '   </div></div>' +
         '</section>' +
+        '   <progress-bar class="mt-2" :progress="percent"></progress-bar>' +
         '   <div class="mt-2 row photos">' +
         '       <div class="col-3 photo" v-for="file in uploadedFiles" :key="file.idx">' +
         '           <div clas="position-relative" style="height: 200px">' +
@@ -72,7 +74,7 @@ Vue.component('comment-form', {
                 alert,
                 function(p) {
                     console.log("pregoress: ", p);
-                    this.percent = p;
+                    self.percent = p;
                 }
             );
         },

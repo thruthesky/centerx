@@ -30,15 +30,7 @@ class NotificationRoute {
     public function updateToken($in): array|string
     {
         if (!isset($in[TOKEN])) return e()->token_is_empty;
-        $arr = token($in[TOKEN])->save($in);
-
-        $rets = [];
-        foreach($arr as $a) {
-            if ( $a->hasError ) $rets[] = [$a->topic => $a->getError()];
-            else $rets[] = [$a->topic => true];
-        }
-
-        return $rets;
+        return token($in[TOKEN])->save($in);
     }
 
     /**

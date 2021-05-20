@@ -121,6 +121,9 @@ function sendMessageToTopic(
  * @param $topic
  * @param $tokens - a token or an array of tokens
  * @return array
+ *
+ * @example of return values on error.
+ *
  */
 function subscribeTopic($topic, $tokens): array {
     if ( isTesting() ) return [];

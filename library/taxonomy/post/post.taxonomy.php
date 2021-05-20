@@ -19,12 +19,17 @@
  * @property-read int $parentIdx;
  * @property-read int $categoryIdx;
  * @property-read int $userIdx;
- * @property-read string $subcategory
+ * @property-read int $otherUserIdx;
+ * @property-read string $subcategory;
  * @property-read string $title;
+ * @property-read string $content;
+ * @property-read string $privateTitle;
+ * @property-read string $privateContent;
+ * @property-read string $private;
+ * @property-read string $isPrivate;
  * @property-read int $noOfComments;
  * @property-read FileTaxonomy[] $files;
  * @property-read string $path;
- * @property-read string $content;
  * @property-read string $url;
  * @property-read int $y;
  * @property-read int $n;
@@ -46,6 +51,21 @@ class PostTaxonomy extends Forum {
     public function __construct(int $idx)
     {
         parent::__construct($idx);
+    }
+
+
+
+    /**
+     * getter 에 verified 를 추가.
+     * @param $name
+     * @return mixed
+     */
+    public function __get($name): mixed {
+        if ( $name == 'isPrivate' ) {
+            return $this->private == 'Y';
+        } else {
+            return parent::__get($name);
+        }
     }
 
 

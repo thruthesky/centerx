@@ -86,6 +86,9 @@ class Entity {
         $this->error = '';
         return $this;
     }
+    public function clearError(): self {
+        return $this->resetError();
+    }
 
     /**
      * 현재 entity 의 필드 값 1개 또는 레코드 배열 전체를 리턴한다.
@@ -296,8 +299,9 @@ class Entity {
             else return false;
         }
 
-        /// 필드 값을 가져오려고 할 때, 현재 객체에 에러가 있으면, null 을 리턴.
-        if ( $this->hasError ) return null;
+        // @change May 19, 2021. The entity object can now get properties even if an error is set to the entity object.
+        // 필드 값을 가져오려고 할 때, 현재 객체에 에러가 있으면, null 을 리턴.
+        // if ( $this->hasError ) return null;
 
         /// 에러가 없으면 값을 리턴. 값이 없으면 null 리턴.
         if ( $this->data && isset($this->data[$name]) ) return $this->data[$name];
@@ -338,6 +342,8 @@ class Entity {
      *
      * 생성 후, 현재 객체에 보관한다. $this->idx 도 현재 생성된 객체로 변경된다.
      *
+     * @attention It clears the error if there was any error set previously.
+     *
      * @param array $in
      *
      *
@@ -358,6 +364,8 @@ class Entity {
      *
      */
     public function create( array $in ): self {
+
+        $this->clearError();
 
         if ( ! $in ) return $this->error(e()->empty_param);
 
@@ -547,7 +555,6 @@ class Entity {
      * @return self
      */
     public function read(int $idx = 0): self {
-
 
         if ( $this->hasError ) return $this;
 

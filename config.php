@@ -175,7 +175,7 @@ define('ADMIN_EMAIL', 'admin@itsuda50.com,thruthesky@gmail.com');
  * Firebase Admin Service Account Key, for firebase connection
  */
 if ( ! defined('FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH') ) {
-    define("FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH", ROOT_DIR . "etc/keys/itsuda50-firebase-adminsdk.json");
+    define("FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH", ROOT_DIR . "themes/sonub/keys/sonub-firebase-admin-sdk.json");
 }
 if ( ! defined('FIREBASE_DATABASE_URI') ) {
     define("FIREBASE_DATABASE_URI", "https://itsuda50-default-rtdb.firebaseio.com/");
@@ -186,6 +186,8 @@ if ( ! defined('FIREBASE_DATABASE_URI') ) {
  */
 define("GCP_SERVICE_ACCOUNT_KEY_JSON_FILE_PATH", ROOT_DIR . "themes/itsuda/keys/gcp_service_account_key.json");
 define("ANDROID_APP_ID", "com.itsuda50.app3");
+
+
 
 
 
@@ -278,6 +280,7 @@ EOJ);
 // bottom of all theme.
 if ( defined('FIREBASE_SDK_ADMIN_KEY') ) {
     $__firebase_sdk_admin_key = FIREBASE_SDK_ADMIN_KEY;
+    $__firebase_url = HOME_URL . 'etc/js/firebase/firebase.js';
     $__firebase_sdk = <<<EOH
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
@@ -289,6 +292,7 @@ if ( defined('FIREBASE_SDK_ADMIN_KEY') ) {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 </script>
+<script src="$__firebase_url"></script>
 EOH;
     if ( !defined('FIREBASE_SDK') ) define('FIREBASE_SDK', $__firebase_sdk);
 }

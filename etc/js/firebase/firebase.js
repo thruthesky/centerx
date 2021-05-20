@@ -15,7 +15,6 @@ var messaging = firebase.messaging();
  */
 navigator.serviceWorker.register('/etc/js/firebase/firebase.messaging.sw.php')
     .then(function (registration) {
-
         /** Since we are using our own service worker ie firebase-messaging-sw.js file */
         messaging.useServiceWorker(registration);
 
@@ -27,7 +26,9 @@ navigator.serviceWorker.register('/etc/js/firebase/firebase.messaging.sw.php')
                     .then(function(token) {
                         /** Here I am logging to my console. This token I will use for testing with PHP Notification */
                         console.log("Token", token);
+                        if(localStorage.pushToken === token) return;
                         saveToken(token, location.hostname);
+                        localStorage.setItem("pushToken", token);
                         /** SAVE TOKEN::From here you need to store the TOKEN by AJAX request to your server */
                     })
                     .catch(function(error) {
@@ -49,7 +50,9 @@ navigator.serviceWorker.register('/etc/js/firebase/firebase.messaging.sw.php')
 messaging.onTokenRefresh(function() {
     messaging.getToken()
         .then(function(renewedToken) {
+            if(localStorage.pushToken === renewedToken) return;
             saveToken(renewedToken, location.hostname);
+            localStorage.setItem("pushToken", renewedToken);
             /** UPDATE TOKEN::From here you need to store the TOKEN by AJAX request to your server */
         })
         .catch(function(error) {
@@ -60,16 +63,10 @@ messaging.onTokenRefresh(function() {
 
 // Handle incoming messages
 messaging.onMessage(function(payload) {
-    // const notificationTitle = 'Data Message Title';
-    // const notificationOptions = {
-    //     body: 'Data Message body',
-    //     icon: 'https://c.disquscdn.com/uploads/users/34896/2802/avatar92.jpg',
-    //     image: 'https://c.disquscdn.com/uploads/users/34896/2802/avatar92.jpg'
-    // };
-    console.log('onMessage::',payload);
-    console.log('app.user::',app.user);
+    // console.log('onMessage::',payload);
+    // console.log('loginIdx()::',loginIdx());
     const notification = payload.notification;
     const data = payload.data ? payload.data : {};
     if (loginIdx() === data['senderIdx']) return;
-    app.alert(notification.title,notification.body);
+    alert(notification.title + "\n" +notification.body);
 });

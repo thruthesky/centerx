@@ -1,0 +1,14 @@
+.progress-bar {
+  background-color: #d4d4d4;
+  border-radius: 13px;
+  /* (height of inner div) / 2 + padding */
+  padding: 3px;
+  div {
+    /* Change width by Javascript */
+    width: 25%;
+    border-radius: 10px;
+    /* By changing the font-size, the height will be changed. */
+    font-size: 12px;
+    background-color: #0037ff;
+  }
+}

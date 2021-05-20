@@ -52,19 +52,17 @@ if (in(CATEGORY_ID)) {
             <input class="mt-3 form-control" placeholder="<?= ln('input_title') ?>" type="text" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
 
             <textarea class="mt-3 form-control" rows="10" placeholder="<?= ln('input_content') ?>" type="text" name="<?= CONTENT ?>"><?= $post->v(CONTENT) ?></textarea>
-            <!-- Buttons. TODO: progress bar -->
+
+
+            <?php js('/etc/js/vue-js-components/progress-bar.js', 1) ?>
             <div class="mt-3 d-flex">
-                <!-- UPLOAD BUTTON -->
-                <div style="width: 100px" class="position-relative overflow-hidden">
-                    <!-- TODO: camera icon -->
-                    <button class="btn btn-primary" type="button">Upload</button>
+                <div class="position-relative overflow-hidden">
+                    <img src="/etc/svg/camera.svg" width="32" class="camera-icon d-block mr-2">
                     <input class="position-absolute top left h-100 opacity-0" name="<?= USERFILE ?>" type="file" @change="onFileChange($event)" />
                 </div>
 
                 <div class="flex-grow-1 mt-2 mr-4">
-                    <div v-if="percent !== 0" class="progress">
-                        <div class="progress-bar" role="progressbar" :style="{ 'width': percent + '%' }" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
+                    <progress-bar class="ml-2" :progress="percent"></progress-bar>
                 </div>
 
                 <button class="btn btn-warning mr-3" type="button" onclick="history.go(-1)"><?= ek('Cancel', '취소') ?></button>
