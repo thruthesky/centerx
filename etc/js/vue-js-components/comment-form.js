@@ -38,12 +38,16 @@ Vue.component('comment-form', {
         '       <div class="mr-2 pt-1" type="button" v-if=" textPhoto ">{{ textPhoto }}</div>' +
         '       <input class="position-absolute top left right fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
         '   </div>' +
-        '   <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control ml-2" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
-        '   </textarea>' +
-        '   <div><div class="d-flex" v-if="form.content || uploadedFiles.length">' +
-        '      <button class="btn btn-primary ml-2" type="submit">{{ textSubmit }}</button>' +
-        '      <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">{{ textCancel }}</button>' +
-        '   </div></div>' +
+        '   <div class="w-100 d-flex">' +
+        '     <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control ml-2" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
+        '     </textarea>' +
+        '     <div>' +
+        '       <div class="d-flex" v-if="form.content || uploadedFiles.length">' +
+        '         <button class="btn btn-primary ml-2" type="submit">{{ textSubmit }}</button>' +
+        '         <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">{{ textCancel }}</button>' +
+        '       </div>' +
+        '     </div>' +
+        '   </div>' +
         '</section>' +
         '   <progress-bar class="mt-2" :progress="percent"></progress-bar>' +
         '   <div class="mt-2 row photos">' +
