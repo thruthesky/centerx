@@ -87,10 +87,13 @@
                 if (this.form.gender === '') return this.errorMessage.gender = '성별을 입력해 주세요.';
                 if (this.form.address === '') return this.errorMessage.address = '주소를 입력해 주세요.';
 
-                request('user.register', this.form, function (user) {
-                    setAppCookie('sessionId', user.sessionId);
-                    location.href = '/';
-                }, alert);
+                request('user.register', this.form,
+                    function (user) {
+                        setAppCookie('sessionId', user.sessionId);
+                        location.href = '/';
+                    },
+
+                    alert);
             }
         }
     })
