@@ -3,6 +3,8 @@
 /**
  * @size wide
  * @options string 'categoryId'
+ * @dependency none
+ * @description Displays 2 post side by side, each containing photo with inline text. It uses 'photo-with-inline-text-at-bottom' widget as child.
  */
 $op = getWidgetOptions();
 
@@ -25,10 +27,10 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
 
 <div class="two-photos-with-inline-text-at-bottom">
   <div class="left">
-    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[0], 'height' => 300]); ?>
+    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[0], 'height' => 150]); ?>
   </div>
   <div class="right">
-    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[1], 'height' => 300]); ?>
+    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[1], 'height' => 150]); ?>
   </div>
 </div>
 
@@ -45,5 +47,6 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
   .two-photos-with-inline-text-at-bottom .right,
   .two-photos-with-inline-text-at-bottom .left {
     width: 55%;
+    height: 100%;
   }
 </style>

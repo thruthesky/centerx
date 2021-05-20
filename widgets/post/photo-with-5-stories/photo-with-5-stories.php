@@ -29,6 +29,11 @@ $posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 5);
 
 
 <style>
+
+  .photo-with-5-stories {
+    display: block;
+  }
+
   .photo-with-5-stories .stories div {
     margin-bottom: 3px;
     white-space: nowrap;

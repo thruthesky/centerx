@@ -7,8 +7,8 @@
  */
 $o = getWidgetOptions();
 $post = $o['post'] ?? firstPost(photo: true);
-$files = $post->files();
 $height = $o['height'] ?? 200;
+$files = $post->files();
 if (count($files) == 0) return;
 $src = thumbnailUrl($files[0]->idx, 360, 280);
 $url = $post->url;
@@ -16,8 +16,8 @@ $url = $post->url;
 
 
 <a class="photo-with-inline-text-at-bottom" 
-    href="<?= $url ?>" 
-    style="height: <?= $height ?>;"
+    href="<?= $url ?>"
+    style="height: <?=$height?>px" 
 >
     <div class="photo" style="background: url(<?= $src ?>);"></div>
     <div class="title">
@@ -31,6 +31,7 @@ $url = $post->url;
         position: relative;
         display: block;
         overflow: hidden;
+        /* max-height: 200px; */
     }
 
     .photo-with-inline-text-at-bottom .title {
@@ -52,10 +53,10 @@ $url = $post->url;
         text-align: center;
     }
 
-    /* .photo-with-inline-text-at-bottom img {
+    .photo-with-inline-text-at-bottom img {
         width: 100%;
-        height: 100%;
-    } */
+        /* height: 100%; */
+    }
 
     .photo-with-inline-text-at-bottom .photo {
         width: 100%;

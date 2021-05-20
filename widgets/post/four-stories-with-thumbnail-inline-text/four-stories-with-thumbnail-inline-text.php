@@ -27,7 +27,7 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
     <?php
     foreach ($posts as $post) { ?>
       <div class="story">
-        <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $post, 'height' => 100]); ?>
+        <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $post, 'height' => 85]); ?>
       </div>
     <?php } ?>
   </div>
