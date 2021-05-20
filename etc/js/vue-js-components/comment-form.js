@@ -41,7 +41,7 @@ Vue.component('comment-form', {
         '   <div class="w-100 d-flex">' +
         '     <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control ml-2" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
         '     </textarea>' +
-        '     <div>' +
+        '     <div style="max-height: 250px;">' +
         '       <div class="d-flex" v-if="form.content || uploadedFiles.length">' +
         '         <button class="btn btn-primary ml-2" type="submit">{{ textSubmit }}</button>' +
         '         <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">{{ textCancel }}</button>' +
