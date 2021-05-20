@@ -173,12 +173,7 @@ class Theme
         }
         $this->folder = ROOT_DIR . 'themes/' . $this->folderName . '/';
     }
-
-    public function part(string $partName) {
-        $path = theme()->file("parts/$partName");
-        if ( file_exists($path) ) return $path;
-        else return ROOT_DIR . 'etc/empty.php';
-    }
+    
 }
 
 

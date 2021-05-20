@@ -17,7 +17,7 @@ $total = post()->count(where: $where, params: $params);
 if ( isset($in['searchKey']) ) saveSearchKeyword($in['searchKey']);
 
 
-hook()->run('post-list-top');
+hook()->run(HOOK_POST_LIST_TOP);
 
 include_once widget($category->postListHeaderWidget ? $category->postListHeaderWidget : 'post-list-header/post-list-header-default', [
     'category' => $category,

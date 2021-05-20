@@ -1579,7 +1579,7 @@ function parsePostListHttpParams(array $in): array {
      * README 참고
      */
     $countryCode = $in['countryCode'] ?? '';
-    hook()->run('post_list_country_code', $countryCode);
+    hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $countryCode);
     if ( $countryCode ) {
         $where .= " AND countryCode=?";
         $params[] = $countryCode;
