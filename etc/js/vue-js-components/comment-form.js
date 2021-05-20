@@ -15,7 +15,6 @@ Vue.component('comment-form', {
         }
     },
     created: function() {
-        console.log('component: comment-form, created', this.commentIdx);
         if (this.commentIdx) {
             const self = this;
             request('comment.get', {
@@ -26,9 +25,6 @@ Vue.component('comment-form', {
                 self.uploadedFiles = res.files;
             }, alert);
         }
-    },
-    mounted: function() {
-        console.log(this.$props);
     },
     template: '<form class="mt-2" v-on:submit.prevent="commentFormSubmit">' +
         '<input type="hidden" name="files" v-model="form.files">' +

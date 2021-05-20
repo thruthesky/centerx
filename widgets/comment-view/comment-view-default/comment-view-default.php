@@ -34,7 +34,11 @@ $comment = $o['comment'];
         <section class="d-flex buttons mt-2">
             <a class="btn btn-sm mr-2" v-if="displayCommentForm[<?= $comment->idx ?>] !== 'reply'" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'reply')"><?=ln('reply')?></a>
             <a class="btn btn-sm mr-2" v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, '')"><?=ln('cancel')?></a>
-            <vote-buttons n="<?= $comment->N ?>" y="<?= $comment->Y ?>" parent-idx="<?= $comment->idx ?>"></vote-buttons>
+            <vote-buttons
+                    n="<?= $comment->N ?>" y="<?= $comment->Y ?>" parent-idx="<?= $comment->idx ?>"
+                          text-like="<?=ln('like')?>"
+                          text-dislike="<?=ln('dislike')?>"
+            ></vote-buttons>
             <span class="flex-grow-1"></span>
             <?php if ($comment->isMine()) { ?>
                 <a class="btn btn-sm mr-1" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'update')"><?=ln('edit')?></a>
@@ -76,3 +80,4 @@ $comment = $o['comment'];
             .catch(alert);
     }
 </script>
+<?php js('/etc/js/vue-js-components/vote-buttons.js', 1) ?>

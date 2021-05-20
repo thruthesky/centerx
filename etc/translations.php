@@ -1,10 +1,13 @@
 <?php
 
 $translations = [
+    'list' => ['en' => 'List', 'ko' => '목록'],
     'cancel' => ['en' => 'Cancel', 'ko' => '취소'],
     'reply' => ['en' => 'Reply', 'ko' => '댓글'],
     'edit' => ['en' => 'Edit', 'ko' => '수정'],
     'delete' => ['en' => 'Delete', 'ko' => '삭제'],
+    'like' => ['en' => 'Like', 'ko' => '좋아요'],
+    'dislike' => ['en' => 'Dislike', 'ko' => '싫어요'],
     'input_title' => [
         'en' => 'Input title',
         'ko' => '제목을 입력하세요.',

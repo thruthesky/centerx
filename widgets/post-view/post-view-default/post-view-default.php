@@ -21,16 +21,20 @@ $comments = $post->comments();
         <hr class="my-1">
         <div class="d-flex buttons mt-2">
             <div class="d-flex">
-                <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->N ?>"></vote-buttons>
+                <vote-buttons
+                        parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->N ?>"
+                        text-like="<?=ln('like')?>"
+                        text-dislike="<?=ln('dislike')?>"
+                ></vote-buttons>
                 <a class="btn btn-sm mr-2" href="<?=messageSendUrl($post->userIdx)?>"><?=ln('send_message')?></a>
             </div>
             <span class="flex-grow-1"></span>
-            <a class="btn btn-sm mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ek('List', '목록') ?></a>
+            <a class="btn btn-sm mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?=ln('list')?></a>
             <?php if ($post->isMine() || admin()) { ?>
                 <div>
-                    <a class="btn btn-sm" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?= ek('Edit', '수정') ?></a>
-                    <a class="btn btn-sm" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>" style="color: red" onclick="return confirm('<?= ek('Delete Post?', '@T Delete Post') ?>')">
-                        <?= ek('Delete', '삭제') ?>
+                    <a class="btn btn-sm" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?=ln('edit')?></a>
+                    <a class="btn btn-sm red" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>" onclick="return confirm('<?= ek('Delete Post?', '@T Delete Post') ?>')">
+                        <?=ln('delete')?>
                     </a>
                 </div>
             <?php } ?>
@@ -88,34 +92,6 @@ $comments = $post->comments();
         }
     });
 </script>
-<script>
-    Vue.component('vote-buttons', {
-        props: ['parentIdx', 'y', 'n'],
-        data: function() {
-            return {
-                Y: this.y,
-                N: this.n,
-            }
-        },
-        template: '<div class="d-flex">' +
-            '<a class="btn btn-sm mr-2" @click="onVote(\'Y\')" style="color: green">' +
-            '<?= ek('Like', '좋아요') ?> <span class="badge badge-success badge-pill" v-if="Y != \'0\'">{{ Y }}</span></a>' +
-            '<a class="btn btn-sm mr-2" @click="onVote(\'N\')" style="color: red">' +
-            '<?= ek('Dislike', '싫어요') ?> <span  class="badge badge-danger badge-pill" v-if="N != \'0\'">{{ N }}</span></a>' +
-            '</div>',
-        methods: {
-            onVote: function(choice) {
-                const self = this;
-                request('post.vote', {
-                    idx: this.parentIdx,
-                    choice: choice
-                }, function(res) {
-                    self.N = res['N'];
-                    self.Y = res['Y'];
-                }, alert);
-            },
-        }
-    });
-</script>
+<?php js('/etc/js/vue-js-components/vote-buttons.js', 1) ?>
 <?php js('/etc/js/vue-js-components/comment-form.js', 1) ?>
 <?php js('/etc/js/vue-js-components/progress-bar.js', 1) ?>
