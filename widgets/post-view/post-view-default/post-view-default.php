@@ -36,6 +36,11 @@ $comments = $post->comments();
                     <a class="btn btn-sm red" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>" onclick="return confirm('<?= ek('Delete Post?', '@T Delete Post') ?>')">
                         <?=ln('delete')?>
                     </a>
+                    <?php if (admin()) { ?>
+                    <a class="btn btn-sm" href="/?p=admin.index&w=push-notification/push-notification-create&idx=<?= $post->idx ?>">
+                        <?=ln('admin push')?>
+                    </a>
+                    <?php } ?>
                 </div>
             <?php } ?>
         </div>

@@ -1,17 +1,17 @@
 <?php
 /**
  * @size wide
- * @options string `cacheCode` - default 'weather'
+ * @options string `cacheCode`(optional), integer `cacheTime`(optional)
  * @dependency https://openweathermap.org/forecast5#multi
+ * @description display weather for the next 5days with 3hours interval
+ *
  */
 ?>
 <div>
     <?php
     $o = getWidgetOptions();
-    $cacheCode = "weather";
-    if(isset($o['cacheCode'])) {
-        $cacheCode = $o['cacheCode'];
-    }
+    $cacheCode = $o['cacheCode'] ?? "forecast";
+    $cacheTime = $o['cacheTime'] ?? 60 * 25;
 
     $country = get_current_country(clientIp());
     $city = $country->city;
@@ -25,7 +25,7 @@
 
     $weatherCode =  $cacheCode . $lang . $city;
     $weather = cache($weatherCode);
-    if ( $weather->expired( 60 * 60 * 1 ) ) {
+    if ( $weather->expired( $cacheTime) ) {
         $weather->renew();
         $url = "https://api.openweathermap.org/data/2.5/forecast?q=$city,$twoDigitCode&lang=$lang&units=metric&appid=" . OPENWEATHERMAP_API_KEY;
         $res = file_get_contents($url);

@@ -1,17 +1,16 @@
 <?php
 /**
  * @size narrow
- * @options string `cacheCode` - default 'weather'
+ * @options string `cacheCode`(optional), integer `cacheTime`(optional)
  * @dependency https://openweathermap.org/
+ * @description display current weather
  */
 ?>
 <div>
     <?php
     $o = getWidgetOptions();
-    $cacheCode = "weather";
-    if(isset($o['cacheCode'])) {
-        $cacheCode = $o['cacheCode'];
-    }
+    $cacheCode = $o['cacheCode'] ?? "current";
+    $cacheTime = $o['cacheTime'] ?? 60 * 25;
 
     $country = get_current_country(clientIp());
     $city = $country->city;
@@ -25,16 +24,16 @@
 
     $weatherCode =  $cacheCode . $lang . $city;
     $weather = cache($weatherCode);
-    if ( $weather->expired( 60 * 60 * 1 ) ) {
+    if ( $weather->expired( $cacheTime  ) ) {
         $weather->renew();
-        $url = "https://api.openweathermap.org/data/2.5/forecast?q=$city,$twoDigitCode&lang=$lang&units=metric&appid=" . OPENWEATHERMAP_API_KEY;
+        $url = "https://api.openweathermap.org/data/2.5/weather?q=$city,$twoDigitCode&lang=$lang&units=metric&appid=" . OPENWEATHERMAP_API_KEY;
         $res = file_get_contents($url);
         $weather->set($res);
         $re = json_decode($res);
     } else {
         $re = json_decode($weather->data);
     }
-    $current = $re->list[0];
+    $current = $re;
     ?>
     <div>
         <h5 class="mb-0">
