@@ -2,6 +2,13 @@
     <form @submit.prevent="onSubmitRegisterForm()">
         <!--    <input type="hidden" name="p" value="/">-->
 
+
+        <div class="form-group">
+            <label>이메일</label>
+            <div><?=login()->email?></div>
+            <div class="error">{{errorMessage.name}}</div>
+        </div>
+
         <div class="form-group">
             <label for="inputName">이름</label>
             <input type="text" class="form-control" id="inputName" v-model="form.name">
@@ -25,7 +32,7 @@
             <div class="error">{{errorMessage.address}}</div>
 
         </div>
-        <button type="submit" class="btn btn-primary">가입하기</button>
+        <button type="submit" class="btn btn-primary">수정하기</button>
     </form>
 </section>
 
@@ -34,10 +41,10 @@
     mixins.push({
         data: {
             form: {
-                name: '',
-                birthday: '',
-                gender: '',
-                address: '',
+                name: '<?=login()->name?>',
+                birthday: '<?=login()->birthdate?>',
+                gender: '<?=login()->gender?>',
+                address: '<?=login()->address?>',
             },
             errorMessage: {
                 name: null,
@@ -55,10 +62,8 @@
                 if (this.form.gender === '') return this.errorMessage.gender = '성별을 입력해 주세요.';
                 if (this.form.address === '') return this.errorMessage.address = '주소를 입력해 주세요.';
 
-                request('user.register', this.form, function (user) {
-                    setAppCookie('sessionId', user.sessionId);
-                    location.href = '/';
-                    alert('가입이 완료되었습니다.')
+                request('user.update', this.form, function (user) {
+                    alert('회원 정보 수정이 완료되었습니다.');
                 }, alert);
             }
         }

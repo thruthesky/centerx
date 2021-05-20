@@ -30,13 +30,15 @@
                 title: '',
                 content: '',
                 tag: '',
-                categoryId: 'join',
+                categoryId: '<?=in('categoryId')?>',
             }
         },
         methods: {
 
             onSubmitPost: function () {
-                request('post.create', this.form, '', alert)
+                request('post.create', this.form, function(res) {
+                    location.href = res.url;
+                }, alert)
             }
         }
     })

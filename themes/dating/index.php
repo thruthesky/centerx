@@ -25,8 +25,8 @@
             <a href="?user.register">회원가입</a>
             <?php }  ?>
 
-            <a href="?forum.post.list">자유게시판</a>
-            <a href="#">질문게시판</a>
+            <a href="/?forum.post.list&categoryId=discussion">자유게시판</a>
+            <a href="<?=postListUrl('qna')?>">질문게시판</a>
         </div>
     </header>
     <div class="row">

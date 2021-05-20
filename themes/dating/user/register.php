@@ -82,8 +82,8 @@
 
                 request('user.register', this.form, function (user) {
                     setAppCookie('sessionId', user.sessionId);
+                    alert('가입이 완료되었습니다.');
                     location.href = '/';
-                    alert('가입이 완료되었습니다.')
                 }, alert);
             }
         }
