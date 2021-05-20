@@ -10,12 +10,14 @@ $op = getWidgetOptions();
 $secondStoriesOps = $op['secondStories'] ?? [];
 if (!isset($secondStoriesOps['imageHeight'])) $secondStoriesOps['imageHeight'] = 90;
 if (!isset($secondStoriesOps['imageWidth'])) $secondStoriesOps['imageWidth'] = 90;
+
+$firstStories = $op['firstStories'];
 ?>
 
 
 <div class="three-column-story-group-b">
   <div class="left">
-    <?php include widget('post/two-left-photo-with-stories', $op['firstStories'] ?? ['imageHeight' => 153, 'imageWidth' => 100]); ?>
+    <?php include widget('post/two-left-photo-with-stories', $firstStories); ?>
   </div>
   <div class="right">
     <?php include widget('post/texts-and-4-photo', $secondStoriesOps); ?>

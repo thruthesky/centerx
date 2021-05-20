@@ -16,25 +16,19 @@ if (isset($op['categoryId']) && category($categoryId)->exists) {
 $lack = 2 - count($posts);
 $posts = array_merge($posts, postMockData($lack, photo: true));
 
-if (!isset($op['imageHeight'])) {
-  $op['imageHeight'] = 152;
-}
-
-if (!isset($op['imageWidth'])) {
-  $op['imageWidth'] = 200;
-}
+$topPost = $op['firstPost'] ?? firstPost();
 ?>
 
 <div class="two-left-photo-with-stories">
-  <a class="top" href="<?= $post->url ?>">
-    <div class="title"><?= $post->title ?></div>
-    <div class="content"><?= $post->content ?></div>
+  <a class="top" href="<?= $topPost->url ?>">
+    <div class="title"><?= $topPost->title ?></div>
+    <div class="content"><?= $topPost->content ?></div>
   </a>
   <div class="bottom">
     <div class="left">
       <?php foreach ($posts as $post) { ?>
         <!-- <div class="photo"> -->
-          <?php include widget('post/photo-with-inline-text-at-bottom', $op ?? []); ?>
+          <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $post, 'imageHeight' => $op['imageHeight'] ?? 152, 'imageWidth' => $op['imageWidth'] ?? 200 ] ?? null); ?>
         <!-- </div> -->
       <?php } ?>
     </div>
