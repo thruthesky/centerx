@@ -3,7 +3,7 @@
  * @returns {*}
  */
 function sessionId() {
-    return Cookies.get('sessionId');
+  return Cookies.get('sessionId');
 }
 
 /**
@@ -11,10 +11,10 @@ function sessionId() {
  * @returns {boolean}
  */
 function loggedIn() {
-    return !!sessionId();
+  return !!sessionId();
 }
 function notLoggedIn() {
-    return !loggedIn();
+  return !loggedIn();
 }
 
 /**
@@ -24,8 +24,8 @@ function notLoggedIn() {
  * @returns {string}
  */
 function loginIdx() {
-    if ( loggedIn() ) return sessionId().split('-').shift();
-    else return '0';
+  if ( loggedIn() ) return sessionId().split('-').shift();
+  else return '0';
 }
 
 
@@ -40,11 +40,11 @@ function loginIdx() {
  * @example setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
  */
 function setAppCookie(name, value) {
-    Cookies.set(name, value, {
-        expires: 365,
-        path: '/',
-        domain: COOKIE_DOMAIN
-    });
+  Cookies.set(name, value, {
+    expires: 365,
+    path: '/',
+    domain: COOKIE_DOMAIN
+  });
 }
 
 /**
@@ -53,10 +53,10 @@ function setAppCookie(name, value) {
  * @example removeAppCookie('sessionId');
  */
 function removeAppCookie(name) {
-    Cookies.remove(name, {
-        path: '/',
-        domain: COOKIE_DOMAIN
-    });
+  Cookies.remove(name, {
+    path: '/',
+    domain: COOKIE_DOMAIN
+  });
 }
 
 /**
@@ -68,35 +68,37 @@ function removeAppCookie(name) {
  * @param error
  */
 function request(route, params, success, error) {
-    if ( ! params ) params = {};
-    // If user has logged in, attach session id.
-    if ( loggedIn() ) params['sessionId'] = sessionId();
-    params['route'] = route;
-    axios.post('/index.php', params).then(function(res) {
-        if (typeof res.data.response === 'string' &&  res.data.response.indexOf('error_') === 0  ) error(res.data.response);
-        else if ( typeof res.data === 'string' ) error(res.data);
-        else {
-            success(res.data.response);
-        }
-    }).catch(error);
+  if ( ! params ) params = {};
+  // If user has logged in, attach session id.
+  if ( loggedIn() ) params['sessionId'] = sessionId();
+  params['route'] = route;
+  axios.post('/index.php', params).then(function(res) {
+    if (typeof res.data.response === 'string' &&  res.data.response.indexOf('error_') === 0  ) error(res.data.response);
+    else if ( typeof res.data === 'string' ) error(res.data);
+    else {
+      success(res.data.response);
+    }
+  }).catch(error);
 }
 
 
 /**
+ * Save token into localStorage and remote.
  *
  * @param token
  * @param topic - It can subscribe many topics by separating topics with comma(,). Ex) topicA,topicB
  */
 function saveToken(token, topic = "") {
-    const data = { token: token, topic: topic };
-    request(
-        "notification.updateToken",
-        data,
-        function (re) {
-            // console.log(re);
-        },
-        this.error
-    );
+  localStorage.setItem("pushToken", token);
+  const data = { token: token, topic: topic};
+  request(
+      "notification.updateToken",
+      data,
+      function (re) {
+        console.log(re);
+      },
+      alert
+  );
 }
 
 
@@ -120,18 +122,18 @@ function saveToken(token, topic = "") {
  * re = addByComma(re, '777'); => 111,555,777 // already exists.
  */
 function addByComma(orgValue, newValue) {
-    const arr = orgValue.split(',');
-    if ( arr.indexOf(newValue) >= 0 ) return orgValue; // already exists.
-    arr.push(newValue);
-    return arr.filter(function(v) { return !!v; }).join(',');
+  const arr = orgValue.split(',');
+  if ( arr.indexOf(newValue) >= 0 ) return orgValue; // already exists.
+  arr.push(newValue);
+  return arr.filter(function(v) { return !!v; }).join(',');
 }
 function deleteByComma(orgValue, val) {
-    const arr = orgValue.split(',');
-    const i = arr.indexOf(`${val}`); // fix, since `num` is not same as `string` it will return `-1`.
-    if ( i >= 0 ) {
-        arr.splice(i, 1);
-    }
-    return arr.filter(function(v) { return !!v; }).join(',');
+  const arr = orgValue.split(',');
+  const i = arr.indexOf(`${val}`); // fix, since `num` is not same as `string` it will return `-1`.
+  if ( i >= 0 ) {
+    arr.splice(i, 1);
+  }
+  return arr.filter(function(v) { return !!v; }).join(',');
 }
 
 /**
@@ -146,31 +148,31 @@ function deleteByComma(orgValue, val) {
  * @param progressCallback
  */
 function fileUpload(file, params, successCallback, errorCallback, progressCallback) {
-    const form = new FormData();
-    form.append('route', 'file.upload');
-    // If user has logged in, attach session id.
-    if ( Cookies.get('sessionId') ) form.append('sessionId', Cookies.get('sessionId'));
-    for(var key in params ) {
-        form.append(key, params[key]);
-    }
-    // for(var key of Object.keys(params) ) {
-    //     form.append(key, params[key]);
-    // }
-    form.append('userfile', file);
-    const options = {
-        onUploadProgress: function (progressEvent) {
-            const p = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-            );
-            if ( progressCallback ) progressCallback(p);
-        },
-    };
-    axios.post('/index.php', form, options)
-        .then(function (res) {
-            if (typeof res.data.response === 'string' &&  res.data.response.indexOf('error_') === 0  ) errorCallback(res.data.response);
-            else successCallback(res.data.response);
-        })
-        .catch(errorCallback);
+  const form = new FormData();
+  form.append('route', 'file.upload');
+  // If user has logged in, attach session id.
+  if ( Cookies.get('sessionId') ) form.append('sessionId', Cookies.get('sessionId'));
+  for(var key in params ) {
+    form.append(key, params[key]);
+  }
+  // for(var key of Object.keys(params) ) {
+  //     form.append(key, params[key]);
+  // }
+  form.append('userfile', file);
+  const options = {
+    onUploadProgress: function (progressEvent) {
+      const p = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+      );
+      if ( progressCallback ) progressCallback(p);
+    },
+  };
+  axios.post('/index.php', form, options)
+      .then(function (res) {
+        if (typeof res.data.response === 'string' &&  res.data.response.indexOf('error_') === 0  ) errorCallback(res.data.response);
+        else successCallback(res.data.response);
+      })
+      .catch(errorCallback);
 }
 
 /* axios v0.21.0 | (c) 2020 by Matt Zabriskie */

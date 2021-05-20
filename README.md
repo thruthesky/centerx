@@ -1226,6 +1226,46 @@ content[tip]=배너 사진을 클릭 했을 때 나타나는 내용 사진을 �
 
 # Firebase
 
+
+- If you want to use Firebase, set `FIREBASE_SDK_ADMIN_KEY` with json string with `Firebase SDK Admin Key`.
+  For example,
+  
+```php
+define('FIREBASE_SDK_ADMIN_KEY', <<<EOJ
+{
+    apiKey: "AIzaSyDWiVaWIIrAsEP-eHq6bFBY09HLyHHQW2U",
+    authDomain: "sonub-version-2020.firebaseapp.com",
+    databaseURL: "https://sonub-version-2020.firebaseio.com",
+    projectId: "sonub-version-2020",
+    storageBucket: "sonub-version-2020.appspot.com",
+    messagingSenderId: "446424199137",
+    appId: "1:446424199137:web:f421c562ba0a35ac89aca0",
+    measurementId: "G-F86L9641ZQ"
+}
+EOJ);
+```
+
+- Then, it will define `FIREBASE_BOOT_SCRIPTS` with
+  - complete firebase javascript sdk,
+  - and the code of **initializing the firebase app**,
+  - and the code of push notification
+    - installing service worker for push notification,
+    - accquiring permissions from user,
+    - saving tokens to backend,
+    - registering token to topic,
+    - handling background push notification,
+  
+
+- Then, in the `index.php` (of the root) will insert the `FIREBASE_BOOT_SCRIPTS` at the bottom of the HTML on all page.
+
+- Note that `/etc/js/firebase/firebase.js` is loaded along with `FIREBASE_BOOT_SCRIPTS` to do the firebase push notification routine.
+
+- Note, the firebase app will be initialized at the bottom of the HTML. Meaning, you cannot use it in the middle of the page.
+- Note, you can access all the firebase service with the global `firebase` namespace.
+  For instance, you can do `messaging = firebase.messaging();` only after the initialization.
+  Or in the middle of the page, `later(function() { messaging = firebase.messaging(); })`
+  @see https://firebase.google.com/docs/reference/js/firebase
+
 ## Javascript
 
 - Firebase 설정은 config.php 에서 한다. 필요한 Firebase product 를 추가하면 된다.

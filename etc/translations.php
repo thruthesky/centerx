@@ -1,6 +1,8 @@
 <?php
 
 $translations = [
+    'topic' => ['en' => 'Topic', 'ko' => '토픽'],
+    'token' => ['en' => 'Tokens', 'ko' => '토큰'],
     'list' => ['en' => 'List', 'ko' => '목록'],
     'cancel' => ['en' => 'Cancel', 'ko' => '취소'],
     'reply' => ['en' => 'Reply', 'ko' => '댓글'],

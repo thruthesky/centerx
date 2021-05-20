@@ -17,7 +17,7 @@ if (modeCreate()) {
 }
 
 if (modeAny()) { ?>
-    <?php includeFirebase(); ?>
+
     <script>
         later(function() {
             const db = firebase.firestore();

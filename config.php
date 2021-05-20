@@ -21,7 +21,7 @@ const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
 define('DOMAIN_THEMES', [
     'cherry.philov' => 'x',
     'itsuda' => 'itsuda',
-    '127.0.0.1' => 'dating',
+    '127.0.0.1' => 'default',
     'localhost' => 'dating',
     '169.254.194.6' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
     '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.
@@ -263,8 +263,8 @@ if ( !defined('NAVER_API_URL') ) define('NAVER_API_URL', "https://nid.naver.com/
  * If `FIREBASE_SDK_ADMIN_KEY` is defined as falsy, then firebase will not be initialized and will not be loaded by default.
  *
  */
-if ( !defined('FIREBASE_SDK_ADMIN_KEY') )
-define('FIREBASE_SDK_ADMIN_KEY', <<<EOJ
+if ( !defined('FIREBASE_SDK_ADMIN_KEY') ) {
+    define('FIREBASE_SDK_ADMIN_KEY', <<<EOJ
 {
     apiKey: "AIzaSyDWiVaWIIrAsEP-eHq6bFBY09HLyHHQW2U",
     authDomain: "sonub-version-2020.firebaseapp.com",
@@ -276,12 +276,12 @@ define('FIREBASE_SDK_ADMIN_KEY', <<<EOJ
     measurementId: "G-F86L9641ZQ"
 }
 EOJ);
+}
 // If `FIREBASE_SDK_ADMIN_KEY` is defined, then initialize the firebase. This code will be automatically inserted at the
 // bottom of all theme.
-if ( defined('FIREBASE_SDK_ADMIN_KEY') ) {
+if ( defined('FIREBASE_SDK_ADMIN_KEY') && FIREBASE_SDK_ADMIN_KEY ) {
     $__firebase_sdk_admin_key = FIREBASE_SDK_ADMIN_KEY;
-    $__firebase_url = HOME_URL . 'etc/js/firebase/firebase.js';
-    $__firebase_sdk = <<<EOH
+    define('FIREBASE_BOOT_SCRIPTS', <<<EOH
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js"></script>
@@ -292,11 +292,11 @@ if ( defined('FIREBASE_SDK_ADMIN_KEY') ) {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 </script>
-<script src="$__firebase_url"></script>
-EOH;
-    if ( !defined('FIREBASE_SDK') ) define('FIREBASE_SDK', $__firebase_sdk);
+<script src="/etc/js/firebase/firebase.js"></script>
+EOH);
 }
 
+if ( !defined('PUSH_NOTIFICATION_ICON_URL') ) define('PUSH_NOTIFICATION_ICON_URL', HOME_URL . 'etc/img/messaging/messaging-icon.png');
 
 // Free currconv api key from https://free.currencyconverterapi.com/
 if ( !defined('CURRCONV_API_KEY') ) define('CURRCONV_API_KEY', 'bd6ed497a84496be7ee9');

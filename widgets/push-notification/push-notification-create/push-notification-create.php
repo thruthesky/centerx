@@ -60,17 +60,17 @@ include_once ROOT_DIR . 'routes/notification.route.php';
             <label for="status"><?=ln('Mode', '방법')?></label>
             <select class="custom-select" id="notify" name="notify" v-model="notify">
                 <option value="all"><?=ln('All', '모두')?></option>
-                <option value="topic"><?=ln('Topic', '대체론')?></option>
-                <option value="tokens"><?=ln('Tokens', '토큰')?></option>
+                <option value="topic"><?=ln('topic')?></option>
+                <option value="tokens"><?=ln('token')?></option>
             </select>
         </div>
         <div class="form-group" v-if="notify == 'topic'">
-            <label for="idx"><?=ln('Topic', '대체론')?></label>
-            <input type="text" class="form-control" placeholder="<?=ln('Topic', '대체론')?>" name="topic" id="topic" v-model="topic">
+            <label for="idx"><?=ln('topic')?></label>
+            <input type="text" class="form-control" placeholder="<?=ln('topic')?>" name="topic" id="topic" v-model="topic">
         </div>
         <div class="form-group"v-if="notify == 'tokens'">
-            <label for="idx"><?=ln('Tokens', '토큰')?></label>
-            <input type="text" class="form-control" placeholder="<?=ln('Tokens', '토큰')?>" name="tokens" id="tokens" v-model="tokens">
+            <label for="idx"><?=ln('token')?></label>
+            <input type="text" class="form-control" placeholder="<?=ln('token')?>" name="tokens" id="tokens" v-model="tokens">
         </div>
         <div class="form-group">
             <label for="idx"><?=ln('Landing Post idx', '랜딩 포스트 IDX')?></label>
@@ -95,8 +95,11 @@ include_once ROOT_DIR . 'routes/notification.route.php';
             <input type="text" class="form-control" placeholder="<?=ln('Click Url', '클릭 URL')?>" name="click_action" id="click_action" v-model="click_action">
         </div>
         <div class="form-group">
-            <label for="idx"><?=ln('Image Url', '이미지 URL')?></label>
+            <label for="idx"><?=ln('Icon Url', '아이콘 URL')?></label>
             <input type="text" class="form-control" placeholder="<?=ln('Image Url', '이미지 URL')?>" name="imageUrl" id="imageUrl" v-model="imageUrl">
+            <small class="form-text text-muted">
+                If the post has an image, that image will be used as Icon. or Default image in 'config.php' will be used.
+            </small>
         </div>
         <div class="form-group">
             <label for="idx"><?=ln('Sound', '소리')?></label>
@@ -110,9 +113,6 @@ include_once ROOT_DIR . 'routes/notification.route.php';
 
         <div class="d-flex justify-content-between mt-2 mb-3">
             <div>
-<!--                <button type="submit" class="btn btn-primary mr-5">-->
-<!--                    --><?//=ln('Send Notification php', '알림 보내기')?>
-<!--                </button>-->
                 <button type="button" class="btn btn-primary" @click="sendPushNotification()">
                     <?=ln('Send Notification vue', '알림 보내기')?>
                 </button>
@@ -133,7 +133,7 @@ include_once ROOT_DIR . 'routes/notification.route.php';
             title: "<?=in('title')?>",
             body: "<?=in('body')?>",
             click_action: "<?=in('click_action')?>",
-            imageUrl: "<?=in('imageUrl')?>",
+            imageUrl: "<?=in('imageUrl') ?? PUSH_NOTIFICATION_ICON_URL?>",
             sound: "<?=in('sound', 'telephoneringwav.wav')?>",
             channel: "<?=in('channel', 'PUSH_NOTIFICATION')?>",
         },

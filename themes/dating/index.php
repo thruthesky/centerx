@@ -14,27 +14,25 @@
 </head>
 <body>
 <section id="app">
-
-    <?php d($_COOKIE)?>
-
     <header class="bg-light mb-2">
         <div class="container text-center">
             <a href="/">홈</a>
             <?php if(loggedIn()) { ?>
-            <a href="?user.logout.submit">로그아웃</a>
+                <a href="?user.profile">회원정보 수정</a>
+                <a href="?user.logout.submit">로그아웃</a>
             <?php } else { ?>
             <a href="?user.login">로그인</a>
             <a href="?user.register">회원가입</a>
             <?php }  ?>
 
-            <a href="#">자유게시판</a>
-            <a href="#">질문게시판</a>
+            <a href="/?forum.post.list&categoryId=discussion">자유게시판</a>
+            <a href="<?=postListUrl('qna')?>">질문게시판</a>
         </div>
     </header>
     <div class="row">
-        <div class="col bg-warning">left</div>
-        <div class="col bg-light"><?php include theme()->page(); ?></div>
-        <div class="col bg-warning">right</div>
+        <div class=" col-lg-3 bg-warning">left</div>
+        <div class=" col-lg-6 bg-light"><?php include theme()->page(); ?></div>
+        <div class=" col-lg-3 bg-dark">right</div>
     </div>
     <footer class="bg-success mt-5">
         <div class="text-center">

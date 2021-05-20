@@ -1299,22 +1299,8 @@ function get_default_javascript_tags() : string {
 </script>
 EOH;
 
-    if( defined('FIREBASE_SDK') ) $default_script .= FIREBASE_SDK;
+    if ( defined('FIREBASE_BOOT_SCRIPTS') ) $default_script .= FIREBASE_BOOT_SCRIPTS;
     return $default_script;
-}
-
-/**
- * Firebase 관련 Javascript 를 표시를 한다.
- *
- * 참고로, 모든 자바스크립트 관련 코드는, 웹 브라우저로 전달되기 전에, 맨 하단으로 이동 될 수 있다.
- */
-function includeFirebase() {
-    if ( defined('INCLUDE_FIREBASE') ) return;
-    define('INCLUDE_FIREBASE', true);
-
-
-    if ( defined('FIREBASE_SDK') ) echo FIREBASE_SDK;
-
 }
 
 
