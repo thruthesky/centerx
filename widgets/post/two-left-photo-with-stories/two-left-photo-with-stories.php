@@ -2,14 +2,11 @@
 
 /**
  * @size wide
- * @options PostTaxonomy 'post', 'categoryId'
+ * @options PostTaxonomy 'post', 'categoryId' & 'imageHeight' & 'imageWidth'
  * @dependencies none
  * @description It display 1 post at top, 2 photo of post on lower left and list of post on lower right.
  */
 $op = getWidgetOptions();
-
-$post = $op['post'] ?? firstPost();
-
 $posts = [];
 
 $categoryId = 'discussion';
@@ -18,6 +15,14 @@ if (isset($op['categoryId']) && category($categoryId)->exists) {
 }
 $lack = 2 - count($posts);
 $posts = array_merge($posts, postMockData($lack, photo: true));
+
+if (!isset($op['imageHeight'])) {
+  $op['imageHeight'] = 152;
+}
+
+if (!isset($op['imageWidth'])) {
+  $op['imageWidth'] = 200;
+}
 ?>
 
 <div class="two-left-photo-with-stories">
@@ -28,9 +33,9 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
   <div class="bottom">
     <div class="left">
       <?php foreach ($posts as $post) { ?>
-        <div class="photo">
-          <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $post, 'height' => 150]); ?>
-        </div>
+        <!-- <div class="photo"> -->
+          <?php include widget('post/photo-with-inline-text-at-bottom', $op ?? []); ?>
+        <!-- </div> -->
       <?php } ?>
     </div>
     <div class="right">

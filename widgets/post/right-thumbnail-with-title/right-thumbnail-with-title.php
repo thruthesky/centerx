@@ -1,23 +1,27 @@
 <?php
 
 /**
- * @size narrow
- * @options PostTaxonomy $post
+ * @size wide
+ * @options PostTaxonomy $post, 'imageHeight', 'imageWidth'
  * @dependency none
  */
 $op = getWidgetOptions();
 
 $post = $op['post'] ?? firstPost(photo: true);
-if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, 300, 200);
+
+$imageHeight = $op['imageHeight'] ?? 100;
+$imageWidth = $op['imageWidth'] ?? 150;
+if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, height: $imageHeight, width: $imageWidth);
 $url = $post->url;
 ?>
 
-<a class="right-thumbnail-with-title" href="<?= $url ?>">
+<a class="right-thumbnail-with-title" href="<?= $url ?>" style="height: <?= $imageHeight ?>px;">
   <div class="title">
     <?= $post->title ?>
   </div>
-  <!-- <img class="photo" src="<?= $src ?>"> -->
-  <div class="photo" style="background: url(<?= $src ?>);"></div>
+  <div class="photo">
+    <img src="<?= $src ?>">
+  </div>
 </a>
 
 <style>
@@ -26,25 +30,23 @@ $url = $post->url;
     width: 100%;
   }
 
-  .right-thumbnail-with-title,
   .right-thumbnail-with-title .title {
     height: 3em;
   }
 
   .right-thumbnail-with-title .title {
     width: 70%;
+    margin-right: 8px;
     overflow: hidden;
-    margin-right: 15px;
     font-weight: bold;
   }
 
-
   .right-thumbnail-with-title .photo {
-    display: block;
-    width: 30%; 
+    width: 30%;
+  }
+
+  .right-thumbnail-with-title .photo img {
     height: 100%;
-    background-repeat: no-repeat !important;
-    background-size: cover !important;
-    background-position: center !important;
+    width: 100%;
   }
 </style>
