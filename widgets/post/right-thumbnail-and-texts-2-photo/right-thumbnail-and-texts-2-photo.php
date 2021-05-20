@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @size wide
+ * @size narrow
  * @options string 'firstCategory', 'secondCategory'
  * @dependencies none
  * @description 

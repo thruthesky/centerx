@@ -4,6 +4,7 @@
  * @size wide
  * @options 'categoryId'
  * @dependency none
+ * @description displays 2 stacked post, each post contains a thumbnail with title and content. It use's 'thumbnail-with-title-and-content' as child widget.
  */
 $op = getWidgetOptions();
 

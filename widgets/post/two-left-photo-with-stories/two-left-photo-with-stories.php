@@ -4,6 +4,7 @@
  * @size wide
  * @options PostTaxonomy 'post', 2 post for 'secondStories'
  * @dependencies none
+ * @description It display 1 post at top, 2 photo of post on lower left and list of post on lower right.
  */
 $op = getWidgetOptions();
 
