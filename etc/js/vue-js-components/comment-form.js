@@ -15,7 +15,6 @@ Vue.component('comment-form', {
         }
     },
     created: function() {
-        console.log('component: comment-form, created', this.commentIdx);
         if (this.commentIdx) {
             const self = this;
             request('comment.get', {
@@ -27,23 +26,24 @@ Vue.component('comment-form', {
             }, alert);
         }
     },
-    mounted: function() {
-        console.log(this.$props);
-    },
     template: '<form class="mt-2" v-on:submit.prevent="commentFormSubmit">' +
         '<input type="hidden" name="files" v-model="form.files">' +
         '<section class="d-flex">' +
-        '   <div class="position-relative overflow-hidden" style="flex-basis: 32px">' +
+        '   <div class="position-relative overflow-hidden" style="min-width: 32px">' +
         '       <img src="/etc/svg/camera.svg" class="camera-icon d-block" v-if=" !textPhoto ">' +
         '       <div class="mr-2 pt-1" type="button" v-if=" textPhoto ">{{ textPhoto }}</div>' +
         '       <input class="position-absolute top left right fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
         '   </div>' +
-        '   <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control ml-2" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
-        '   </textarea>' +
-        '   <div><div class="d-flex" v-if="form.content || uploadedFiles.length">' +
-        '      <button class="btn btn-primary ml-2" type="submit">{{ textSubmit }}</button>' +
-        '      <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">{{ textCancel }}</button>' +
-        '   </div></div>' +
+        '   <div class="w-100 d-flex">' +
+        '     <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control ml-2" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
+        '     </textarea>' +
+        '     <div style="max-height: 250px;">' +
+        '       <div class="d-flex" v-if="form.content || uploadedFiles.length">' +
+        '         <button class="btn btn-primary ml-2" type="submit">{{ textSubmit }}</button>' +
+        '         <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">{{ textCancel }}</button>' +
+        '       </div>' +
+        '     </div>' +
+        '   </div>' +
         '</section>' +
         '   <progress-bar class="mt-2" :progress="percent"></progress-bar>' +
         '   <div class="mt-2 row photos">' +

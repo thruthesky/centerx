@@ -2,7 +2,7 @@
 
 
 /**
- * @size wide
+ * @size narrow
  * @options PostTaxonomy $post
  * @dependency none
  */
@@ -14,7 +14,7 @@ $posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 3, photo: true);
 
 <div class="photo-with-3-story-list">
   <div class="top">
-    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $post]); ?>
+    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $post, 'height' => 150]); ?>
   </div>
   <div class="list">
     <?php foreach ($posts as $post) { ?>
@@ -26,9 +26,11 @@ $posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 3, photo: true);
 </div>
 
 <style>
+  .photo-with-3-story-list {
+    display: block;
+  }
 
-    .photo-with-3-story-list .list .story {
-      margin-top: 8px;
-    }
-
+  .photo-with-3-story-list .list .story {
+    margin-top: 8px;
+  }
 </style>

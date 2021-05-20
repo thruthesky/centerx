@@ -1,4 +1,4 @@
 <?php
 /**
- * @name Gallery style post list
+ * @name Gallery
  */

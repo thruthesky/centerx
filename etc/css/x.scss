@@ -1,3 +1,101 @@
+/**
+ * BASE
+ */
+body {
+  font-size: 16px;
+  font-family: -apple-system,BlinkMacSystemFont,"Malgun Gothic","맑은 고딕",helvetica,"Apple SD Gothic Neo",sans-serif;
+}
+input[type=file], /* FF, IE7+, chrome (except button) */
+input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
+  cursor: pointer;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
+}
+
+
+
+/**
+ *
+ * -------------------------------------------------------------------------------------------
+ *
+ * Font Size
+ *
+ * -------------------------------------------------------------------------------------------
+ *
+ */
+
+.fs-xs {
+  font-size: 11px;
+}
+.fs-sm {
+  font-size: 13px;
+}
+.fs-md {
+  font-size: 16px;
+}
+.fs-lg {
+  font-size: 24px;
+}
+.fs-xl {
+  font-size: 48px;
+}
+.fs-xxl {
+  font-size: 96px;
+}
+
+
+
+
+/**
+ *
+ * -------------------------------------------------------------------------------------------
+ *
+ * Colors
+ *
+ * -------------------------------------------------------------------------------------------
+ *
+ */
+
+
+.white {
+  color: white;
+}
+.white a {
+  color: white;
+}
+.dark {
+  color: #666666;
+}
+.bg-blue {
+  background-color: blue !important;
+}
+.bg-green {
+  background-color: green;
+}
+.red {
+  color: red;
+}
+.bg-red {
+  background-color: red;
+}
+
+/**
+ *
+ * -------------------------------------------------------------------------------------------
+ *
+ * Components, Module
+ *
+ * -------------------------------------------------------------------------------------------
+ *
+ */
+
+
 .progress-bar {
   background-color: #d4d4d4;
   border-radius: 13px;
@@ -12,3 +110,4 @@
     background-color: #0037ff;
   }
 }
+

@@ -11,8 +11,8 @@
         }
     ?>
 </div>
-<a href="<?=postListUrl(MESSAGE_CATEGORY)?>&otherUserIdx=<?=login()->idx?>">받은 쪽지</a> |
-<a href="<?=postListUrl(MESSAGE_CATEGORY)?>&userIdx=<?=login()->idx?>">보낸 쪽지</a>
+<a href="<?=messageInboxUrl()?>">받은 쪽지</a> |
+<a href="<?=messageOutboxUrl()?>">보낸 쪽지</a>
 <div class="box d-flex flex-column children-a-ellipsis">
     <h1 class="p-1">최근 글</h1>
     <?php include widget('post-latest/post-latest-default', ['id' => 'left-latest', 'categoryId' => 'qna']) ?>

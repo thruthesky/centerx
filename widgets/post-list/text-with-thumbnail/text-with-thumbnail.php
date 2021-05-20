@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @name Text with thumbnail post preview
+ * @name Text with thumbnail
  */
 
 

@@ -39,14 +39,14 @@
 
 <?php
     if ( isLocalhost() ) {
-        js(HOME_URL . 'etc/js/vue.2.6.12.js', 5);
+        js('/etc/js/vue.2.6.12.js', 5);
     }
     else {
-        js(HOME_URL . 'etc/js/vue.2.6.12.js', 5);
+        js('/etc/js/vue.2.6.12.min.js', 5);
     }
 ?>
 
-<?php js(HOME_URL . 'etc/js/bootstrap-vue-2.21.2.min.js', 3)?>
+<?php js('/etc/js/bootstrap-vue-2.21.2.min.js', 3)?>
 <?php js(theme()->url . 'js/data.js', 3)?>
 <?php js(theme()->url . 'js/app.js', 0)?>
 </body>

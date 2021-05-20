@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @size wide
+ * @size narrow
  * @options PostTaxonomy $post, boolean 'displayNumber'
  * @dependency none
  */

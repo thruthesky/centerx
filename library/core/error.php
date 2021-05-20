@@ -33,6 +33,11 @@ class E {
     public string $idx_is_empty = 'error_idx_is_empty';
 
     public string $post_not_exists = 'error_post_not_exists';
+
+    // If otherUserIdx is set, the post cannot be edited.
+    public string $cannot_be_updated_due_to_other_user_idx = 'error_cannot_be_updated_due_to_other_user_idx';
+    // If otherUserIdx is set, only the other user can delete.
+    public string $cannot_be_deleted_due_to_wrong_other_user_idx = 'error_cannot_be_deleted_due_to_wrong_other_user_idx';
     public string $comment_not_exists = 'error_comment_not_exists';
     public string $file_not_exists_in_db = 'error_file_not_exists_in_db';
     public string $file_not_exists_in_disk = 'error_file_not_exists_in_disk';

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @size wide
+ * @size narrow
  * @options PostTaxonomy $post
  * @dependency none
  */
@@ -13,7 +13,7 @@ $url = $post->url;
 ?>
 
 <a class="thumbnail-with-title" href="<?= $url ?>">
-  <img class="photo" src="<?= $src ?>">
+  <div class="photo" style="background: url(<?= $src ?>);"></div>
   <div class="title">
     <?= $post->title ?>
   </div>
@@ -22,16 +22,25 @@ $url = $post->url;
 <style>
   .thumbnail-with-title {
     display: flex;
-    max-height: 90px;
-  }
-
-  .thumbnail-with-title .photo {
-    height: 90px;
+    width: 100%;
+    height: 3em;
+    overflow: hidden;
   }
 
   .thumbnail-with-title .title {
+    display: block;
     margin-left: 15px;
-    height: 90px;
+    width: 70%;
     font-weight: bold;
+    font-size: 1em;
+  }
+
+  .thumbnail-with-title .photo {
+    display: block;
+    width: 30%;
+    height: 100%;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position: center !important;
   }
 </style>

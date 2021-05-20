@@ -210,6 +210,7 @@ class PostTaxonomy extends Forum {
         if ( login()->block == 'Y' ) return $this->error(e()->blocked);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
+        if ( $this->otherUserIdx ) return $this->error(e()->cannot_be_updated_due_to_other_user_idx);
 
         parent::update($in);
         $this->fixUploadedFiles($in);
@@ -238,8 +239,22 @@ class PostTaxonomy extends Forum {
      *      he has points or not. It must be that way.
      */
     public function markDelete(): self {
+
         if ( $this->hasError ) return $this;
+
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
+
+        // otherUserIdx 가 설정되었으면,
+        if ( $this->otherUserIdx  ) {
+            // 오직 otherUserIdx 삭제 가능.
+            if ( $this->otherUserIdx != login()->idx ) return $this->error(e()->cannot_be_deleted_due_to_wrong_other_user_idx);
+        } else {
+            // 아니면, 내 글인 경우에만 삭제 가능.
+            if ( $this->isMine() == false ) {
+                return $this->error(e()->not_your_post);
+            }
+        }
+
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
 
 
@@ -247,7 +262,7 @@ class PostTaxonomy extends Forum {
         if ( $this->hasError ) return $this;
 
         //
-        parent::update([TITLE => '', CONTENT => '']);
+        parent::update([TITLE => '', CONTENT => '', PRIVATE_TITLE => '', PRIVATE_CONTENT => '']);
 
         //
         act()->deletePost($this);

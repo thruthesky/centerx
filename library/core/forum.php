@@ -16,6 +16,7 @@
  *
  * @property-read int categoryIdx
  * @property-read int parentIdx
+ * @property-read int otherUserIdx
  * @property-read int appliedPoint;
  * @property-read string files
  */
@@ -201,6 +202,22 @@ class Forum extends Entity {
         }
 
     }
+
+
+    /**
+     * Return true if `otherUserIdx` is set to the login user.
+     *
+     * @note this is used only for posts taxonomy.
+     * @return bool
+     */
+    public function sentToMe(): bool {
+        if ( notLoggedIn() ) return false;
+        if ( ! $this->idx ) return false;
+        if ( ! $this->otherUserIdx ) return false;
+        return $this->otherUserIdx == login()->idx;
+    }
+
+
 
 }
 

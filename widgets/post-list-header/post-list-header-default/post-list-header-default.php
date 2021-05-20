@@ -1,9 +1,8 @@
 <?php
-
-$o = getWidgetOptions();
 /**
  * @name Default Post List Header
  */
+$o = getWidgetOptions();
 $category = $o['category'];
 
 ?>
