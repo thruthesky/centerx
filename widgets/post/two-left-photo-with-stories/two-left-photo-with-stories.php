@@ -21,7 +21,7 @@ if (!isset($op['imageHeight'])) {
 }
 
 if (!isset($op['imageWidth'])) {
-  $op['imageWidth'] = 152;
+  $op['imageWidth'] = 200;
 }
 ?>
 

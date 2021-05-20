@@ -2,21 +2,27 @@
 
 /**
  * @size narrow
- * @options 'post'. The post must have an image.
+ * @options 'post'. The post must have an image. 'imageHeight', 'imageWidth'
  * @dependency none
  * @description The ratio of width and height is 3:2 for the image of post only. The post must have image.
  */
 $o = getWidgetOptions();
 $post = $o['post'] ?? firstPost(photo: true);
 $files = $post->files();
-if ( count($files) == 0 ) return;
-$src = thumbnailUrl($files[0]->idx, 300, 200);
+if (count($files) == 0) return;
+
+$imageHeight = $o['imageHeight'] ?? 160;
+$imageWidth = $o['imageWidth'] ?? 160;
+
+$src = thumbnailUrl($files[0]->idx, $imageHeight, $imageWidth);
 $url = $post->url;
 ?>
 
 
 <a class="photo-with-text-at-bottom" href="<?= $url ?>">
-    <div class="photo"><img src="<?= $src ?>"></div>
+    <div class="photo" style="height: <?= $imageHeight ?>px;">
+        <img src="<?= $src ?>">
+    </div>
     <div class="title">
         <div class="inner"><?= $post->title ?></div>
     </div>
@@ -24,11 +30,9 @@ $url = $post->url;
 
 
 <style>
-    .photo-with-text-at-bottom {
+    .photo-with-text-at-bottom .photo img {
         display: block;
-    }
-
-    .photo-with-text-at-bottom img {
+        height: 100%;
         width: 100%;
     }
 

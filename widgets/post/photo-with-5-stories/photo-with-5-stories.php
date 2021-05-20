@@ -11,7 +11,7 @@
 $op = getWidgetOptions();
 
 $post = $op['post'] ?? firstPost();
-$posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 5);
+$posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 4);
 ?>
 
 <div class="photo-with-5-stories">
@@ -29,9 +29,12 @@ $posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 5);
 
 
 <style>
-
   .photo-with-5-stories {
     display: block;
+  }
+
+  .photo-with-5-stories .stories{
+    margin-top: 3px;
   }
 
   .photo-with-5-stories .stories div {
