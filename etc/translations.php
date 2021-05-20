@@ -5,6 +5,7 @@ $translations = [
     'token' => ['en' => 'Tokens', 'ko' => '토큰'],
     'list' => ['en' => 'List', 'ko' => '목록'],
     'cancel' => ['en' => 'Cancel', 'ko' => '취소'],
+    'submit' => ['en' => 'Submit', 'ko' => '전송'],
     'reply' => ['en' => 'Reply', 'ko' => '댓글'],
     'edit' => ['en' => 'Edit', 'ko' => '수정'],
     'delete' => ['en' => 'Delete', 'ko' => '삭제'],
