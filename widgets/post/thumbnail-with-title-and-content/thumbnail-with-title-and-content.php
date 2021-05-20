@@ -41,15 +41,14 @@ $url = $post->url;
     overflow: hidden;
   }
 
+  
   .thumbnail-with-title-and-content .title-content .title {
     font-weight: bold;
-    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
   }
 
+  .thumbnail-with-title-and-content .title-content .title, 
   .thumbnail-with-title-and-content .title-content .content {
-    margin-top: 18px;
-    height: 50px;
+    height: 3em;
   }
 </style>

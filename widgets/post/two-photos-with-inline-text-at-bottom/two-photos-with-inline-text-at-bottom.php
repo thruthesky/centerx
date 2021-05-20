@@ -22,17 +22,16 @@ if (category($categoryId)->exists) {
 $lack = 2 - count($posts);
 $posts = array_merge($posts, postMockData($lack, photo: true));
 
-
 $imageHeight =  $op['imageHeight'] ?? 150;
 $imageWidth = $op['imageWidth'] ?? 250;
 ?>
 
 
 <div class="two-photos-with-inline-text-at-bottom">
-  <div class="left">
+  <div class="left-story">
     <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[0], 'imageHeight' => $imageHeight, 'imageWidth' => $imageWidth]); ?>
   </div>
-  <div class="right">
+  <div class="right-story">
     <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[1], 'imageHeight' => $imageHeight, 'imageWidth' => $imageWidth]); ?>
   </div>
 </div>
@@ -43,13 +42,13 @@ $imageWidth = $op['imageWidth'] ?? 250;
     width: 100%;
   }
 
-  .two-photos-with-inline-text-at-bottom .right {
+  .two-photos-with-inline-text-at-bottom .right-story {
     margin-left: 8px;
   }
 
-  .two-photos-with-inline-text-at-bottom .right,
-  .two-photos-with-inline-text-at-bottom .left {
-    width: 55%;
+  .two-photos-with-inline-text-at-bottom .right-story,
+  .two-photos-with-inline-text-at-bottom .left-story {
+    width: 50%;
     height: 100%;
   }
 </style>

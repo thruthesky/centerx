@@ -59,6 +59,42 @@ function removeAppCookie(name) {
   });
 }
 
+
+/**
+ * Serialize all form data into a JSON string
+ *
+ * It serialize the input form and returns an JSON object. (Not json string)
+ *
+ * Note, if the type is 'file', 'reset', 'submit', 'button', it does not include into the return object.
+ *
+ * (c) 2021 Chris Ferdinandi, MIT License, https://gomakethings.com
+ * @param {HTMLFormElement} form The form to serialize
+ * @returns {Object} The serialized form data
+ *
+ * @todo check if it works on IE11.
+ */
+function serializeJSON (form) {
+  var obj = {};
+  Array.prototype.slice.call(form.elements).forEach(function (field) {
+    if (!field.name || field.disabled || ['file', 'reset', 'submit', 'button'].indexOf(field.type) > -1) return;
+    if (field.type === 'select-multiple') {
+      var options = [];
+      Array.prototype.slice.call(field.options).forEach(function (option) {
+        if (!option.selected) return;
+        options.push(option.value);
+      });
+      if (options.length) {
+        obj[field.name] = options;
+      }
+      return;
+    }
+    if (['checkbox', 'radio'].indexOf(field.type) > -1 && !field.checked) return;
+    obj[field.name] = field.value;
+  });
+  return obj;
+}
+
+
 /**
  * 자바스크립트로 PHP 백엔드로 데이터를 보낸다.
  *
@@ -155,9 +191,6 @@ function fileUpload(file, params, successCallback, errorCallback, progressCallba
   for(var key in params ) {
     form.append(key, params[key]);
   }
-  // for(var key of Object.keys(params) ) {
-  //     form.append(key, params[key]);
-  // }
   form.append('userfile', file);
   const options = {
     onUploadProgress: function (progressEvent) {
