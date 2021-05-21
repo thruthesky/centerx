@@ -8,12 +8,12 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 ?>
 
 
-    <template>
-        <div class="mb-3">
-            <b-button @click="toast('notAppend', 'Content not append')">Show Toast</b-button>
-            <b-button @click="toast('notAppend', 'Content Append', true)">Show Toast (appended)</b-button>
-        </div>
-    </template>
+<template>
+    <div class="mb-3">
+        <b-button @click="toast('notAppend', 'Content not append')">Show Toast</b-button>
+        <b-button @click="toast('notAppend', 'Content Append', true)">Show Toast (appended)</b-button>
+    </div>
+</template>
 
 <script>
     mixins.push({
@@ -28,19 +28,24 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
                 const id = `toast-${this.toastCount++}`;
                 const vNodesTitle = h(
                     'div',
-                    { class: ['d-flex', 'flex-grow-1', 'align-items-baseline', 'mr-2'] },
+                    { class: ['mr-2'] },
                     [
                         h('strong', { class: 'mr-2' }, title ?? ""),
                     ]
                 )
                 const vNodesMsg = h(
-                    'p',
+                    'div',
                     { class: ['mb-0'] },
                     [
                         `${content}`,
                         h('hr'),
-                        h( 'b-button', { on: { click: () => this.$bvToast.hide(id) } }, 'Close' ),
-                        h( 'b-button', { on: { click: () => location.href = `${url}` } }, 'Open' )
+                        h(
+                            'div', {class: ['d-flex justify-content-between']},
+                            [
+                                h( 'b-button', { on: { click: () => this.$bvToast.hide(id) } }, 'Close' ),
+                                h( 'b-button', { on: { click: () => location.href = `?p=forum.post.list&categoryId=qna` } }, 'Open' )
+                            ]
+                        )
                     ]
                 )
                 this.$bvToast.toast([vNodesMsg], {
