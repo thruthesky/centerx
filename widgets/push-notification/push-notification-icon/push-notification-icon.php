@@ -3,11 +3,11 @@
  * @size icon
  * @options string `topic`, string `label`
  * @dependency none
- * @description it will display if the user is subscribe to the given topic and by clicking the icon it will unsubscribe and subscribe
+ * @description it will display if the user is subscribe to the given topic and by clicking the icon it will subscribe or unsubscribe to topic
  */
 
 $o = getWidgetOptions();
-$__topic = $o['topic'] ?? "defaultTopic";
+$__topic = $o['topic'] ?? "widgetDefaultTopic";
 $__label = $o['label'] ?? "";
 $__topicData = 'push_icon_' . $__topic;
 ?>

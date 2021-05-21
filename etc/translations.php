@@ -45,8 +45,9 @@ $translations = [
     'icon url' => [ 'en' => 'Icon Url', 'ko' => '아이콘 URL' ],
     'sound' => [ 'en' => 'Sound', 'ko' => '소리' ],
     'channel id' => [ 'en' => 'Channel Id', 'ko' => '채널 ID' ],
-    'send Notification' => [ 'en' => 'Send Notification', 'ko' => '알림 보내기' ],
+    'send notification' => [ 'en' => 'Send Notification', 'ko' => '알림 보내기' ],
     'admin push' => [ 'en' => 'Admin Push', 'ko' => '@admin push' ],
     'post' => [ 'en' => 'Post', 'ko' => '게시하다' ],
-    'comment' => [ 'en' => 'Comment', 'ko' => '논평' ]
+    'comment' => [ 'en' => 'Comment', 'ko' => '논평' ],
+    'loading' => [ 'en' => 'Loading', 'ko' => '로딩' ]
 ];

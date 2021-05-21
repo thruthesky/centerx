@@ -69,7 +69,8 @@
         <div class="d-flex justify-content-between mt-2 mb-3">
             <div>
                 <button type="button" class="btn btn-primary" @click="sendPushNotification()">
-                    <?=ln('send notification')?>
+                    <span v-if="!send_notification_loading"><?=ln('send notification')?></span>
+                    <span v-if="send_notification_loading"><?=ln('loading')?></span>
                 </button>
             </div>
         </div>
@@ -91,6 +92,7 @@
             imageUrl: "<?=in('imageUrl') ?? PUSH_NOTIFICATION_ICON_URL?>",
             sound: "<?=in('sound', 'telephoneringwav.wav')?>",
             channel: "<?=in('channel', 'PUSH_NOTIFICATION')?>",
+            send_notification_loading: false
         },
         created: function (){
             console.log('created');
@@ -107,27 +109,34 @@
                 }).then(function(res) {
                     console.log(res);
                     let post = res.data.response;
-                    app.$data.title = post.title;
-                    app.$data.body = post.content;
-                    app.$data.click_action = post.url;
+                    app.title = post.title;
+                    app.body = post.content;
+                    app.click_action = post.url;
 
                     if(post.files.length > 0) {
-                        app.$data.imageUrl = post.files[0].url;
+                        app.imageUrl = post.files[0].url;
                     }
                 }).catch(alert);
             },
             sendPushNotification: function() {
+                if (app.send_notification_loading) return;
+                app.send_notification_loading = true
                 const data = {
                     route: "notification.sendMessageToTopic",
                     title: this.title,
                     body: this.body,
-                    idx: this.idx,
                     sessionId: '<?= login()->sessionId ?>',
                     click_action: this.click_action,
                     imageUrl: this.imageUrl,
                     sound: this.sound,
                     channel: this.channel,
                 };
+                if (this.idx) {
+                    data['data'] = {
+                        idx: this.idx,
+                        type: "post"
+                    }
+                }
                 if (this.notify === 'all' ) {
                     data['topic'] = "<?=DEFAULT_TOPIC?>";
                 } else if (this.notify === 'topic' ) {
@@ -150,10 +159,11 @@
                     } else {
                         alert('Success Sending push notification to topic.')
                     }
-
-                }).catch(alert);
-
-
+                    app.send_notification_loading = false;
+                }).catch( function(e) {
+                    app.send_notification_loading = false;
+                    alert(e);
+                });
             }
         }
     });

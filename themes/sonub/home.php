@@ -8,8 +8,61 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 ?>
 
 
+<template>
+    <div class="mb-3">
+        <b-button @click="toast('notAppend', 'Content not append')">Show Toast</b-button>
+        <b-button @click="toast('notAppend', 'Content Append', true)">Show Toast (appended)</b-button>
+    </div>
+</template>
+
+<script>
+    mixins.push({
+        data() {
+            return {
+                toastCount: 0
+            }
+        },
+        methods: {
+            toast(content, title, url, append = false) {
+                const h = this.$createElement;
+                const id = `toast-${this.toastCount++}`;
+                const vNodesTitle = h(
+                    'div',
+                    { class: ['mr-2'] },
+                    [
+                        h('strong', { class: 'mr-2' }, title ?? ""),
+                    ]
+                )
+                const vNodesMsg = h(
+                    'div',
+                    { class: ['mb-0'] },
+                    [
+                        `${content}`,
+                        h('hr'),
+                        h(
+                            'div', {class: ['d-flex justify-content-between']},
+                            [
+                                h( 'b-button', { on: { click: () => this.$bvToast.hide(id) } }, 'Close' ),
+                                h( 'b-button', { on: { click: () => location.href = `?p=forum.post.list&categoryId=qna` } }, 'Open' )
+                            ]
+                        )
+                    ]
+                )
+                this.$bvToast.toast([vNodesMsg], {
+                    id: id,
+                    title: [vNodesTitle],
+                    autoHideDelay: 10000,
+                    appendToast: append,
+                    solid: true,
+                })
+            }
+        }
+    });
+</script>
 
 <?php
+
+
 
 include widget('post/photo-and-texts-4-stories', []);
 
