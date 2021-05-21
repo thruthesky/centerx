@@ -18,7 +18,7 @@ $posts = $o['posts'];
         if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, 300, 200);
     ?>
         <div class="d-flex">
-          <a href="<?= $post->url ?>" class="d-flex" style="width: 60%; font-size: 1em; text-decoration: none;">
+          <a href="<?= $post->url ?>" class="d-flex" style="width: 100%; font-size: 1em; text-decoration: none;">
             <?php if ($src) { ?> <img class="photo rounded mr-2" src="<?= $src ?>" style="width: 90px; height: 90px;"> <?php } ?>
             <div>
               <div class="overflow-hidden" style="max-height: 3em; color: black; font-weight: 500">
@@ -29,11 +29,11 @@ $posts = $o['posts'];
               </div>
             </div>
           </a>
-          <div class="text-truncate text-center" style="width: 15%;">
-            <?= category($post->categoryIdx)->id ?>
+          <div class="d-block text-right" style="min-width: 100px;">
+            <div><?= category($post->categoryIdx)->id ?></div>
+            <div>79</div>
+            <div><?= $post->shortDate ?></div>
           </div>
-          <div class="text-muted text-center" style="width: 10%;"> 79 </div>
-          <div style="width: 15%;"> <?= $post->shortDate ?></div>
         </div>
         <hr>
       <?php }
