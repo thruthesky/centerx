@@ -1985,7 +1985,7 @@ Array
 # 아이콘, SVG
 
 - 3rd party dependency 를 최대한 줄기이기 위해서, 직접 SVG 를 포함해서 사용한다.
-  - 요약 문서 참고: https://docs.google.com/document/d/1VgfgtExjiaFXrc-Sl15WOiL1cPlsWDRGdq9CTpaqiIg/edit#heading=h.a4ruqalgejpr
+  - 요약 문서 참고: [SVG 아이콘 사용법](https://docs.google.com/document/d/1VgfgtExjiaFXrc-Sl15WOiL1cPlsWDRGdq9CTpaqiIg/edit#heading=h.a4ruqalgejpr)
   
 
 
@@ -2061,8 +2061,30 @@ if ( modeCreate() ) {
 - 글 작성과 같은 데이터 생성 페이지는 `<input type="hidden" name="p" value="forum.comment.edit.submit">` 처럼 `p` 값의 끝을 `.sumit` 으로 한다.
   그러면, 테마를 실행하지 않고, 바로 그 스크립트를 실행한다. 즉, 화면에 번쩍임이 사라지게 된다.
 
-- 글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="return_url" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
+- `return_url`
+  글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="return_url" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
+  `return_url` 에는 `post` 와 `list` 두 가지가 있으며, 이 외에는 직접 값을 입력 할 수 있다.
 
+예제) 먼저 훅을 추가하고
+```html
+<?php
+hook()->add(HOOK_POST_EDIT_RETURN_URL, function() {
+    return 'list';
+});
+?>
+```
+
+예제) 아래와 같이 쓰면 된다.
+```html
+<form action="/" method="POST" <?=hook()->run(HOOK_POST_EDIT_FORM_ATTR)?>>
+    <?php
+    echo hiddens(
+        p: 'forum.post.edit.submit',
+        return_url: hook()->run(HOOK_POST_EDIT_RETURN_URL) ?? 'post',
+        kvs: $hidden_data,
+    );
+    ?>
+```
 
 # 글 쓰기
 
@@ -2294,6 +2316,7 @@ include widget('post-edit/post-edit-default');
 </script>
 ```
 
+- HOOK_POST_EDIT_RETURN_URL - you can edit return url of the post edit form.
 
 
 ### 훅으로 HTML TITLE 변경하기

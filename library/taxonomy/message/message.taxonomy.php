@@ -30,6 +30,23 @@ class MessageTaxonomy extends PostTaxonomy
 
         return $this->count(conds: $conds);
     }
+    public function latest(
+        int $categoryIdx = 0,
+        string $categoryId=null,
+        string $countryCode = null,
+        string $by = 'DESC',
+        int $limit=10,
+        bool $photo = null,
+        string $private = '',
+    ): array {
+        $categoryIdx = category(MESSAGE_CATEGORY)->idx;
+        $myIdx = login()->idx;
+        return $this->search(
+            where: "categoryIdx=$categoryIdx AND otherUserIdx=$myIdx AND deletedAt=0",
+            limit: $limit,
+            object: true
+        );
+    }
 }
 
 

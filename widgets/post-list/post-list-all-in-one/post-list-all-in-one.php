@@ -5,6 +5,11 @@
 
 $o = getWidgetOptions();
 $posts = $o['posts'];
+
+
+hook()->add(HOOK_POST_EDIT_RETURN_URL, function() {
+    return 'list';
+});
 ?>
 
 

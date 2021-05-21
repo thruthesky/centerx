@@ -531,8 +531,6 @@ function leave_starting_debug_log() {
  *  include widget('post-latest/post-latest-default')
  */
 function widget(string $path, array $options=[]) {
-//    if ( $widgetId && $options ) addMetaIfNotExists('widget', 0, $widgetId, $options);
-
     setWidgetOptions($options);
     $arr = explode('/', $path);
     $path = ROOT_DIR . "widgets/$arr[0]/$arr[1]/$arr[1].php";

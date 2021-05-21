@@ -18,8 +18,13 @@ $category = category($categoryId);
 if ( $category->returnToAfterPostEdit == 'L' ) {
     $url = postListUrl($categoryId);
 } else {
-    if ( in(RETURN_URL) == 'post' ) $url = $post->url;
-    else $url = postListUrl($categoryId);
+    if ( in(RETURN_URL) ) {
+        if ( in(RETURN_URL) == 'post' ) $url = $post->url;
+        else if ( in(RETURN_URL) == 'list' ) $url = postListUrl($categoryId);
+        else $url = in(RETURN_URL);
+    } else {
+        $url = postListUrl($categoryId);
+    }
 }
 
 jsGo($url);
