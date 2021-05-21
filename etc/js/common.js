@@ -124,8 +124,9 @@ function request(route, params, success, error) {
  * @param token
  * @param topic - It can subscribe many topics by separating topics with comma(,). Ex) topicA,topicB
  */
-function saveToken(token, topic = "") {
+function saveToken(token, topic) {
   localStorage.setItem("pushToken", token);
+  if (!topic) topic = '';
   const data = { token: token, topic: topic};
   request(
       "notification.updateToken",
