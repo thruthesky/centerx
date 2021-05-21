@@ -1,20 +1,22 @@
 <?php
 
 /**
- * @name Text with thumbnail
+ * @name Text with thumbnail post list
  */
-
-
 $o = getWidgetOptions();
-$post = $o['post'];
-
-$fileIdxs = explode(",", $post->files);
+$posts = $o['posts'];
 ?>
 
-
-<div class="p-1">
-  <img class="w-100" src="<?= files($fileIdxs[0])->url ?>">
-
-  <?= $post->title ?>
-
-</div>
+<section class="post-list-default px-2 px-lg-0">
+  <div style="padding: 1rem 1rem 0 1rem; background-color: #efefef;">
+    <?php
+    if (!empty($posts)) {
+      foreach ($posts as $post) {
+        $post = post(idx: $post->idx);
+        include widget('post/thumbnail-with-title-and-content', ['post' => $post]);
+      }
+    } else {
+    ?> <div class="pb-3 d-flex justify-content-center">No posts yet ..</div>
+    <?php } ?>
+  </div>
+</section>

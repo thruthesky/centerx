@@ -1,56 +1,40 @@
 <?php
 /**
  * @size icon
- * @options CategoryTaxonomy `category`
+ * @options string `topic`, string `label`
  * @dependency none
+ * @description it will display if the user is subscribe to the given topic and by clicking the icon it will unsubscribe and subscribe
  */
 
 $o = getWidgetOptions();
-
-if(!isset($o['category'])) {
-    $post_topic = NOTIFY_POST . "mockPostTopic";
-    $comment_topic = NOTIFY_COMMENT . "mockCommentTopic";
-} else {
-    $post_topic = NOTIFY_POST . $o['category']->id;
-    $comment_topic = NOTIFY_COMMENT . $o['category']->id;
-
-}
-
-function isSubscribedToTopic($topic): bool
-{
-    return login()->v($topic) === "on";
-}
+$__topic = $o['topic'] ?? "defaultTopic";
+$__label = $o['label'] ?? "";
+$__topicData = 'push_icon_' . $__topic;
 ?>
 <div class="push-notification-icon">
-    <b-form-checkbox v-model="notifyPost" name="check-button" switch @change="onChangeSubscribeOrUnsubscribeTopic('<?= $post_topic ?>', 'notifyPost')">
-        New Post
-    </b-form-checkbox>
-    <b-form-checkbox v-model="notifyComment" name="check-button" switch @change="onChangeSubscribeOrUnsubscribeTopic('<?= $comment_topic ?>', 'notifyComment')">
-        New Comment
+    <b-form-checkbox v-model="<?=$__topicData?>" name="check-button" switch @change="onChangeSubscribeOrUnsubscribeTopic('<?= $__topic ?>')">
+        <?=$__label?>
     </b-form-checkbox>
 </div>
 <script>
     mixins.push({
         data: {
-            notifyPost: <?=isSubscribedToTopic($post_topic) ? 'true' : 'false' ?>,
-            notifyComment: <?=isSubscribedToTopic($comment_topic) ? 'true' : 'false' ?>
+            '<?=$__topicData?>': <?=isSubscribedToTopic($__topic) ? 'true' : 'false' ?>,
         },
         methods: {
-            onChangeSubscribeOrUnsubscribeTopic: function(topic, field) {
-
+            onChangeSubscribeOrUnsubscribeTopic: function(topic) {
                 if ( notLoggedIn() ) {
                     alert("Please login first");
-                    app.$data[field] = false;
+                    app.$data['<?=$__topicData?>'] = false;
                     return;
                 }
                 request(
                     "notification.topicSubscription",
-                    { topic: topic, subscribe: field ? "on" : "off" },
+                    { topic: topic, subscribe: app.$data['<?=$__topicData?>'] ? "on" : "off" },
                     function (res) {
                         console.log("request",res);
-                        // this.$data.user[topic] = mode ? "Y" : "N";
                     },
-                    this.error
+                    alert
                 );
             },
         }
