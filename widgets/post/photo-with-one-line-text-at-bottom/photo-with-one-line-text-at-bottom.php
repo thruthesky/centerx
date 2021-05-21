@@ -8,8 +8,8 @@
 $o = getWidgetOptions();
 $post = $o['post'] ?? firstPost(photo: true);
 
-$imageHeight = $o['imageHeight'] ?? 300;
-$imageWidth = $o['imageWidth'] ?? 300;
+$imageHeight = $o['imageHeight'] ?? 200;
+$imageWidth = $o['imageWidth'] ?? 200;
 
 $src = thumbnailUrl($post->files()[0]->idx, height: $imageHeight, width: $imageWidth);
 $url = $post->url;
@@ -26,7 +26,6 @@ $url = $post->url;
 
 <style>
     .photo-with-one-line-text-at-bottom {
-        display: block;
         height: 100%;
     }
 

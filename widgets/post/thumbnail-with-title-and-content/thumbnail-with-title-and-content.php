@@ -8,47 +8,75 @@
 $op = getWidgetOptions();
 
 $post = $op['post'] ?? firstPost();
-if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, 300, 200);
+
+$imageHeight = $op['imageHeight'] ?? 200;
+$imageWidth = $op['imageWidth'] ?? 300;
+
+$src = '';
+if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, height: $imageHeight, width: $imageWidth);
 $url = $post->url;
 ?>
 
-<a class="thumbnail-with-title-and-content" href="<?= $url ?>">
-  <img class="photo" src="<?= $src ?>">
-  <div class="title-content">
-    <div class="title">
-      <?= $post->title ?>
+<div class="thumbnail-with-title-and-content">
+  <a class="body" href="<?= $url ?>">
+    <?php if ($src) { ?>
+      <img class="photo" src="<?= $src ?>">
+    <?php } ?>
+    <div class="title-content">
+      <div class="title">
+        <?= $post->title ?>
+      </div>
+      <div class="content">
+        <?= $post->content ?>
+      </div>
     </div>
-    <div class="content">
-      <?= $post->content ?>
-    </div>
+  </a>
+  <div class="meta">
+    <div><?= category($post->categoryIdx)->id ?></div>
+    <div>79</div>
+    <div><?= $post->shortDate ?></div>
   </div>
-</a>
+</div>
 
 <style>
-  .thumbnail-with-title-and-content {
+  .thumbnail-with-title-and-content,
+  .thumbnail-with-title-and-content .body {
     display: flex;
-    max-height: 90px;
+    max-height: 6em;
+    width: 100%;
   }
 
-  .thumbnail-with-title-and-content .photo {
+  .thumbnail-with-title-and-content .body {
+    text-decoration: none;
+    color: black;
+  }
+
+  .thumbnail-with-title-and-content .meta {
+    display: block;
+    margin-left: 15px;
+    min-width: 100px;
+    text-align: right;
+  }
+
+  .thumbnail-with-title-and-content .body .photo {
+    margin-right: 15px;
     height: 90px;
   }
 
-  .thumbnail-with-title-and-content .title-content {
-    margin-left: 15px;
+  .thumbnail-with-title-and-content .body .title-content {
     height: 100%;
     width: 100%;
     overflow: hidden;
   }
 
-  
-  .thumbnail-with-title-and-content .title-content .title {
+
+  .thumbnail-with-title-and-content .body .title-content .title {
     font-weight: bold;
     overflow: hidden;
   }
 
-  .thumbnail-with-title-and-content .title-content .title, 
-  .thumbnail-with-title-and-content .title-content .content {
+  .thumbnail-with-title-and-content .body .title-content .title,
+  .thumbnail-with-title-and-content .body .title-content .content {
     height: 3em;
   }
 </style>

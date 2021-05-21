@@ -30,7 +30,7 @@ $posts = $o['posts'];
 <style>
   .grid-item {
     float: left;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     width: 32.5%;
     height: 150px;
     /* border: 1px black solid; */
