@@ -10,6 +10,7 @@ class MySQLiDatabase {
     public mysqli $connection;
     public string $error = '';
     public bool $displayError = false;
+    public bool $displaySql = false;
 
 
 
@@ -205,7 +206,6 @@ class MySQLiDatabase {
                 $stmt->bind_param($types, ...$values);
             }
 
-
             $stmt->execute();
             $result = $stmt->get_result(); // get the mysqli result
 
@@ -218,6 +218,12 @@ class MySQLiDatabase {
                 d($result);
 
                 return [];
+            }
+
+            if ( $this->displaySql ) {
+                d($sql);
+                d($values);
+                d($result);
             }
 
 

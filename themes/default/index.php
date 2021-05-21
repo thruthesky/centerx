@@ -31,6 +31,6 @@
 <?php js(HOME_URL . 'etc/js/common.js')?>
 <?php js(HOME_URL . 'etc/js/vue.2.6.12.min.js')?>
 <?php js(HOME_URL . 'etc/js/vue-js-components/upload-by-code.js')?>
-<?php js(HOME_URL . 'etc/js/app.js')?>
+<?php js(HOME_URL . 'etc/js/app.js', 0)?>
 </body>
 </html>

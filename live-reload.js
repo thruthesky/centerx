@@ -2,8 +2,8 @@ var fs = require('fs');
 var https = require('https');
 var http = require('http');
 
-var noSsl = process.argv[2] == 'undefined' ? false : (process.argv[2] == 'http' ? true : false );
-var ssl = !noSsl;
+var ssl = process.argv[2] == 'undefined' ? false : (process.argv[2] == 'https' ? true : false );
+
 
 var server;
 if ( ssl ) {

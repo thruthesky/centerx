@@ -30,16 +30,23 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-between l-content fs-sm">
-        <div>
-            <div class="" style="margin-top: 44px;">
-                <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner.jpg">
-            </div>
+
+    <div class="d-flex justify-content-between l-content my-3 fs-sm">
+        <div class="mt-3">
+            <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner.jpg">
         </div>
-        <div class="mt-3 mx-3 mx-lg-5 px-xl-5 w-100">
-            <a class="d-flex justify-content-center align-items-center mb-2" href="/">
-                <img class="h-48px" src="/themes/sonub/img/philov-logo.png">
-                <div class="ml-3 fs-xl"><?=cafe()->title?></div>
+        <div class="mx-3 mx-lg-5 w-100">
+            <a class="d-block fs-lg text-center mb-2" href="/">
+                <?php
+                // 로고 이미지가 있으면, 로고 이미지 표시
+                // 아니면, 제목 표시
+                // 아니면, id 표시
+                $logo = cafe()->logo();
+                if ( $logo->ok ) echo "<img class='w-100' src='{$logo->url}'>";
+                else if ( cafe()->title ) echo cafe()->title;
+                else if ( cafe()->id ) echo cafe()->id;
+                else echo cafe()->rootCafeName();
+                ?>
             </a>
             <form action="/">
                 <input type="hidden" name="p" value="forum.post.list">
@@ -51,10 +58,8 @@
                 </div>
             </form>
         </div>
-        <div class="d-none d-lg-block">
-            <div style="margin-top: 44px;">
-                <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner2.jpg">
-            </div>
+        <div class="d-none d-lg-block mt-3">
+            <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner2.jpg">
         </div>
     </div>
 
@@ -63,7 +68,7 @@
 <nav class="mainmenu-desktop mt-1 mb-3">
 
     <div class="container-xl d-flex justify-content-between fs-md">
-        <div class="d-flex justify-content-around" style="min-width: 300px; max-width: 300px; height: 40px; overflow:hidden; background-color: rgba(248,248,248,0.78);">
+        <div class="left d-flex justify-content-around">
 
             <?php if ( cafe()->isMainCafe() ) { ?>
                 <div class="py-2">카페를 개설하세요.</div>
@@ -88,7 +93,7 @@
         <?php
         foreach( cafe()->cafeMainMenus as $categoryId => $m ) {
             ?>
-            <a class="py-2" href="/?p=forum.post.list&categoryId=<?=$categoryId?>"><?=$m['title']?></a>
+            <a class="a py-2" href="/?p=forum.post.list&categoryId=<?=$categoryId?>"><?=$m['title']?></a>
         <?php } ?>
     </div>
 </nav>
@@ -96,6 +101,20 @@
 
 <style>
     .mainmenu-desktop {
-        border-top: 1px solid #efefef; border-bottom: 1px solid #d0d0d0; box-shadow: 1px 1px 1px 1px #f8f8f8;
+        border-top: 1px solid #efefef;
+        border-bottom: 1px solid #d0d0d0;
+        box-shadow: 1px 1px 1px 1px #f8f8f8;
+        height: 2.5em;
+        overflow: hidden;
+    }
+    .mainmenu-desktop .left {
+        min-width: 300px;
+        max-width: 300px;
+        height: 40px;
+        overflow:hidden;
+        background-color: rgba(248,248,248,0.78);
+    }
+    .mainmenu-desktop .a {
+        min-width: 30px;
     }
 </style>

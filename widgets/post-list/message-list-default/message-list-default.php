@@ -6,6 +6,7 @@ $o = getWidgetOptions();
 $posts = $o['posts'];
 $total = $o['total'];
 
+
 if ( in('userIdx') != login()->idx && in('otherUserIdx') != login()->idx ) {
 //    return include widget('info/error-wrong-route');
     jsGo(messageInboxUrl());
@@ -23,14 +24,9 @@ else $inbox = false;
         <?php
         if ( $posts ) {
             foreach ($posts as $post) {
-                $post = post(idx: $post->idx);
-                if ($inbox) {
-                    $receiver = user( $post->otherUserIdx );
-                    $sender = user( $post->userIdx );
-                } else {
-                    $receiver = user($post->userIdx);
-                    $sender = user( $post->otherUserIdx );
-                }
+                $receiver = user( $post->otherUserIdx );
+                $sender = user( $post->userIdx );
+
                 ?>
                 <div class="d-flex">
                     <?php include widget('user/user-avatar', ['photoUrl' => $receiver->shortProfile()['photoUrl'], 'size' => '50']) ?>

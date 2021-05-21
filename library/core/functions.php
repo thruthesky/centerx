@@ -153,6 +153,7 @@ function canLiveReload(): bool {
         return false;
     }
 
+    if ( LIVE_RELOAD == false ) return false;
     if ( ! LIVE_RELOAD_HOST ) return false;
 
     // API call 이면, false. 단, reload 에 값이 들어오면, reload.
@@ -169,12 +170,13 @@ function canLiveReload(): bool {
     if ( isLocalhost() == false ) return false;
 
     //
-    if ( defined('LIVE_RELOAD') && LIVE_RELOAD == false ) return false;
+    if ( defined('STOP_LIVE_RELOAD') && STOP_LIVE_RELOAD ) return false;
 
     return true;
 
 //    return !API_CALL && !isCli() && !isPhpThumb();
 }
+
 
 
 /**
@@ -1250,7 +1252,7 @@ function sqlCondition(array $conds, string $conj = 'AND', string $field = ''): s
  *  <?php js('/etc/js/chartjs-2/chart.bundle.min.js') ?>
  */
 global $__js;
-function js(string $src, int $priority=0) {
+function js(string $src, int $priority=1) {
     global $__js;
     if ( isset($__js) == false || empty($__js) ) $__js = [];
     if ( $priority > 10 ) $priority = 10;

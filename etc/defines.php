@@ -69,6 +69,7 @@ const DATA = 'data';
 const CREATED_AT = 'createdAt';
 const UPDATED_AT = 'updatedAt';
 const DELETED_AT = 'deletedAt';
+const READ_AT = 'readAt';
 const SESSION_ID = 'sessionId';
 const NICKNAME = 'nickname';
 const PROFILE_PHOTO_URL = 'profilePhotoUrl';

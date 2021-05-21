@@ -131,24 +131,39 @@ class CafeTaxonomy extends CategoryTaxonomy
      * @return mixed
      */
     public function __get($name): mixed {
-        if ( $name == 'title' ) {
-            if ( $this->isMainCafe() ) {
-                return $this->domainSettings()['name'];
-            }
-        }
+//        if ( $name == 'title' ) {
+//            if ( $this->isMainCafe() ) {
+//                return $this->rootDomainSettings()['name'];
+//            }
+//        }
 
-            return parent::__get($name);
+        return parent::__get($name);
 
     }
 
 
-
-    private function domainSettings(): array|null {
+    /**
+     * 현재 카페의 루트 도메인 세이팅을 리턴한다.
+     * @return array|null
+     */
+    private function rootDomainSettings(): array|null {
         $rootDomain = get_root_domain();
         if ( isset($this->cafeRootDomainSettings[$rootDomain]) ) {
             return $this->cafeRootDomainSettings[$rootDomain];
         } else {
             return null;
+        }
+    }
+
+    /**
+     * 루트 카페(도메인)의 이름을 리턴한다.
+     */
+    public function rootCafeName() {
+        $setting = $this->rootDomainSettings();
+        if ( $setting ) {
+            return $setting['name'];
+        } else {
+            return '';
         }
     }
 
@@ -163,7 +178,7 @@ class CafeTaxonomy extends CategoryTaxonomy
      * @return bool
      */
     public function isCountryDomain(): bool {
-        return isset($this->cafeCountryDomains[get_root_domain()]);
+        return in_array(get_root_domain(), $this->cafeCountryDomains);
     }
 
     /**
@@ -174,7 +189,7 @@ class CafeTaxonomy extends CategoryTaxonomy
     private function countryCode(): string {
         if ( $this->isMainCafe() ) { // 메인 카페
             if ( $this->isCountryDomain() ) { // 국가 카페
-                return $this->domainSettings()['countryCode'];
+                return $this->rootDomainSettings()['countryCode'];
             } else { // 전 세계 카페. 예) sonub.com
                 $country = get_current_country(clientIp());
                 if ( $country->hasError ) return 'KR';
@@ -261,12 +276,16 @@ class CafeTaxonomy extends CategoryTaxonomy
      */
     public function name(): string {
         if ( $this->isMainCafe() ) {
-            return $this->domainSettings()['name'];
+            return $this->rootDomainSettings()['name'];
         }
         if ( $this->title ) return $this->title;
         else return explode('.', $this->id)[0];
     }
 
+
+    public function logo(): FileTaxonomy {
+        return files()->findOne([TAXONOMY => $this->taxonomy, ENTITY => $this->idx, CODE => 'logo']);
+    }
 
 }
 

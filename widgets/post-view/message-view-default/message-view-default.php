@@ -6,11 +6,14 @@
 
 
 
-$post = post()->current();
+$post = message()->current();
+
 
 if ( $post->userIdx != login()->idx && $post->otherUserIdx != login()->idx ) {
     return include widget('info/error-wrong-route');
 }
+
+$post->readAt();
 
 
 if ( $post->userIdx == login()->idx ) $inbox = false;
@@ -50,13 +53,13 @@ $receiver = user($post->otherUserIdx);
             <hr class="my-1">
             <div class="d-flex buttons mt-2">
                 <div class="d-flex">
-                    <a class="btn btn-sm mr-2" href="<?=messageSendUrl($post->userIdx)?>"><?=ln('send_message')?></a>
+                    <a class="btn btn-sm mr-2" href="<?=messageSendUrl( $inbox ? $post->userIdx : $post->otherUserIdx )?>"><?=ln('send_message')?></a>
                 </div>
                 <span class="flex-grow-1"></span>
-                <a class="btn btn-sm mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ek('List', '목록') ?></a>
+                <a class="btn btn-sm mr-1" href="<?= $inbox ? messageInboxUrl() : messageOutboxUrl() ?>"><?=ln('list')?></a>
                 <?php if ($post->sentToMe()) { ?>
                     <div>
-                        <a class="btn btn-sm" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>" style="color: red" onclick="return confirm('<?= ek('Delete Post?', '@T Delete Post') ?>')">
+                        <a class="btn btn-sm red" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>" onclick="return confirm('<?=ln('confirm_delete')?>')">
                             <?=ln('delete') ?>
                         </a>
                     </div>

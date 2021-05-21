@@ -35,9 +35,10 @@ require_once ROOT_DIR . 'library/taxonomy/user_activity/user_activity.defines.ph
 require_once ROOT_DIR . 'library/taxonomy/user_activity/user_activity.actions.php';
 require_once ROOT_DIR . 'library/taxonomy/user_activity/user_activity.base.php';
 require_once ROOT_DIR . 'library/taxonomy/user_activity/user_activity.taxonomy.php';
-//require_once ROOT_DIR . 'lib/point/point.defines.php';
-//require_once ROOT_DIR . 'lib/point/point.class.php';
-//require_once ROOT_DIR . 'lib/point/point.history.class.php';
+
+
+require_once ROOT_DIR . 'library/taxonomy/message/message.taxonomy.php';
+
 require_once ROOT_DIR . 'library/taxonomy/vote/vote-history.taxonomy.php';
 require_once ROOT_DIR . 'library/taxonomy/shopping-mall-order/shopping-mall-order.taxonomy.php';
 require_once ROOT_DIR . 'library/taxonomy/cache/cache.taxonomy.php';
