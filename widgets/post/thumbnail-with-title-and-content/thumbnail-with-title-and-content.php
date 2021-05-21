@@ -54,7 +54,7 @@ $url = $post->url;
   .thumbnail-with-title-and-content .meta {
     display: block;
     margin-left: 15px;
-    min-width: 100px;
+    min-width: 90px;
     text-align: right;
   }
 

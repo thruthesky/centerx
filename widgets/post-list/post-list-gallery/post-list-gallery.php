@@ -9,14 +9,14 @@ $posts = $o['posts'];
 ?>
 
 <section class="post-list-gallery p-1" style="border-radius: 16px; background-color: #f4f4f4;">
-  <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "gutter": 5 }'>
+  <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "gutter": 5, "percentPosition": true, "horizontalOrder": true  }'>
 
     <?php
     $_gi = 0;
     foreach ($posts as $post) {
       $_gi++;
       $isEven = $_gi % 2 === 0;
-      $imageHeight = $isEven ? 266 : 116;
+      $imageHeight = $isEven ? 300 : 150;
     ?>
       <div class="grid-item <?= $isEven ? 'grid-item--height2' : '' ?>">
         <div class="image-holder">
@@ -32,12 +32,12 @@ $posts = $o['posts'];
     float: left;
     margin-bottom: 5px;
     width: 32.5%;
-    height: 150px;
+    height: 182px;
     /* border: 1px black solid; */
   }
 
   .grid-item--height2 {
-    height: 300px;
+    height: 332px;
   }
 </style>
 
