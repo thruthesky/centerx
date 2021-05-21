@@ -30,7 +30,10 @@ $category = $o['category'];
 
         <span class="flex-grow-1"></span>
         <span class="mr-3">
-            <?php include widget('push-notification/push-notification-icon', [ 'category' => $category]) ?>
+            <?php include widget('push-notification/push-notification-icon', [ 'topic' => NOTIFY_POST . $category->id, 'label' => ln('post') ]) ?>
+        </span>
+        <span class="mr-3">
+            <?php include widget('push-notification/push-notification-icon',  [ 'topic' => NOTIFY_COMMENT . $category->id, 'label' => ln('comment') ]) ?>
         </span>
         <?php inSubcategory() ?>
         <a class="btn btn-sm btn-success" href="/?p=forum.post.edit<?= inCategoryId() ?><?= inSubcategory() ?>">

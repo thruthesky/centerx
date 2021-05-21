@@ -1,6 +1,12 @@
 <?php
+/**
+ * @file hook.php
+ */
 
-
+/**
+ *
+ */
+const HOOK_POST_EDIT_FORM_ATTR = 'post-edit-form-attr';
 const HOOK_POST_LIST_COUNTRY_CODE = 'post_list_country_code';
 const HOOK_POST_LIST_TOP = 'post-list-top';
 

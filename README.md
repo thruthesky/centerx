@@ -163,9 +163,6 @@
 
 - @doc SQLite3 지원할 필요없다. MariaDB(MySQL)이 절대적이고, Docker 를 통해서 쉽게 관리가 가능하다.
 
-- @doc
-  meta 에 int, string, double(float) 은 serialize/unserialize 하지 말 것. 그래서 바로 검색이 되도록 한다.
-
 
 - @doc
   `https://local.itsuda50.com/?route=comment.get&idx=15224` 와 같이 글이나 코멘트를 가져올 때, 글/코멘트 생성시, 작성자에게 추가된 포인트가 `appliedPoint` 로 클라이언트에게 전달된다.
@@ -1266,7 +1263,7 @@ EOJ);
   Or in the middle of the page, `later(function() { messaging = firebase.messaging(); })`
   @see https://firebase.google.com/docs/reference/js/firebase
 
-## Javascript
+## Firebase Javascript
 
 - Firebase 설정은 config.php 에서 한다. 필요한 Firebase product 를 추가하면 된다.
 - Firestore 사용은 아래와 같이 하면 된다.
@@ -1283,6 +1280,8 @@ EOJ);
     includeFirebase();
 ?>
 ```
+
+
 
 
 # API Protocol
@@ -1591,6 +1590,10 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 ```
 
 
+- meta 에 int, string, double(float) 은 serialize/unserialize 하지 않는다.
+  즉, SQL 쿼리를 할 때, 메타 값으로 비교 할 수 있다.
+
+
 # 파일 업로드
 
 - test 파일에 HTTP FORM POST 값 전송이 아닌 CLI 로 파일을 업로드하고, 글에 추가하는 예제 코드가 있다.
@@ -1642,6 +1645,25 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 ```html
 <?=ln('name')?>
 ```
+
+# 자바스크립트 - common.js
+
+- common.js 에는 cookie, axios, 그 외 꼭 필요한 공용 함수들을 모아 놓았다.
+
+- 회원 정보 관련 함수 `sessionId()`, `loggedIn()`, `notLoggedIn()`, `loginIdx()` 등이 있으며,
+
+- 쿠키 관련 `setAppCookie()`, `removeAppCookie()` 가 있다.
+
+- HTML FORM 을 serializing 하는 `serializeJSON()` 가 있으며,
+
+- 백엔드로 ajax 호출을 하는 `request()` 가 있고,
+
+- 파일을 업로드하는 `fileUpload()` 함수가 있다.
+
+- 파일을 업로드해 했을 때, `wc_posts.files` 속성에 파일 번호를 콤마로 구분해서 넣어야 하는데, `addByComma()` 와 `deleteByComma()` 가 있다.
+
+- 그리고 FCM 에서 message token 을 서버로 저장하기 위한 `saveToken()` 가 있다.
+
 
 # Change language
 
@@ -2141,7 +2163,6 @@ hook()->add('posts_before_create', function($record, $in) {
 
 ## 훅 목록과 설명
 
-### 전체 훅 목록
 
 * html_head
 
@@ -2188,8 +2209,36 @@ hook()->add('posts_before_create', function($record, $in) {
 * HOOK_POST_LIST_COUNTRY_CODE
   게시글 목록을 할 때, 강제로 특정 국가의 글만 목록하게 할 수 있다.
 
+* HOOK_POST_EDIT_FORM_ATTR
+  글 수정을 할 때에 HTML FORM 태그에 추가 할 속성을 리턴 할 수 있다.
+  예를 들면 아래와 같이 hook 이 호출된다.
+  
+예) post-edit-default.php 위젯에서 아래와 같이 hook 을 실행한다.
+```html
+<form action="/" method="POST" <?=hook()->run(HOOK_POST_EDIT_FORM_ATTR)?>> ... </form>
+```
 
-### 게시판 설정 훅
+예제) post-edit-ajax.php 에서 아래와 같이 hook 을 사용하여, 전송 버튼을 클릭하면 다음 페이지로 넘어가지 않고, Ajax 로 글을 작성한다.
+```php
+<?php
+/**
+ * @name Ajax post edit widget
+ */
+
+hook()->add(HOOK_POST_EDIT_FORM_ATTR, function() { return "@submit.prevent='onPostEditAjaxSubmit'"; });
+include widget('post-edit/post-edit-default');
+?>
+<script>
+    mixins.push({
+        methods: {
+            onPostEditAjaxSubmit: function() {
+                console.log('ajax forum submit!');
+            }
+        }
+    })
+</script>
+```
+
 
 
 ### 훅으로 HTML TITLE 변경하기
@@ -3129,6 +3178,42 @@ echo "현재 환율: $phpKwr";
 
 ## 글 쓰기 위젯
 
+### 글 쓰기 위젯에 들어가는 요소
+
+- FORM 에 `HOOK_POST_EDIT_FORM_ATTR` 훅을 실행한다.
+  이것은 자식 위젯(상속해서 쓰는 위젯)에서 FORM 동작 방식을 변경해서, 활용하기 위한 것이다. 예를 들면 post-edit-ajax.php 가 post-edit-default.php
+  를 상속해서, 글 쓰기만 ajax 로 한다.
+  
+- Vue.js 에 `loading` 속성 추가
+  이 것은 상속한 위젯에서 ajax 로 글을 쓸 때, 백엔드로 연결 중에 전송 표시를 하기 위해서이다. 
+
+```html
+<div v-if="!loading">
+  <button class="btn btn-warning mr-3" type="button" onclick="history.go(-1)"><?=ln('cancel')?></button>
+  <button class="btn btn-success" type="submit"><?=ln('submit')?></button>
+</div>
+<div class="d-none" :class="{'d-block': loading }">
+  전송중입니다.
+</div>
+<script>
+    mixins.push({
+        data: {
+            loading: false,
+            files: '<?= $post->v('files') ?>',
+            percent: 0,
+            uploadedFiles: <?= json_encode($post->files(true), true) ?>,
+        }
+    });
+</script>
+```
+
+### Ajax 로 글 전송 위젯, post-edit-ajax.php
+
+- 글을 저장할 때, PHP 로 다음 페이지로 넘겨서 처리를 하는 것이 아니라, Vue.js 로 입력 값을 점검 한 후, Axios 로 글을 생성한다.
+
+- `post-default-ajax.php` 위젯이 그 예제이며, `post-edit-default.php` 를 상속해서 쓴다.
+
+
 ### post-edit-upload-by-code
 
 - 관리자 페이지의 위젯 옵션에서 아래와 같이 입력하면, 여러 가지 사진을 코드 별로 업로드 할 수 있다.
@@ -3164,8 +3249,15 @@ content[tip]=내용사진입니다.
 
 # CSS, 공용 CSS
 
-- etc/css/x.css 는 공용 CSS 이며, 많은 곳에서 쓰인다.
+
+## x.scss, x.css
+
+- x.scss 를 컴파일하여 x.css 로 쓴다. 따라서 x.css 파일을 수정하면 안된다.
+
+- etc/css/x.css 는 공용 CSS 이며, 많은 곳에서 쓰인다. 특히, vue-js-components 나 각종 widget 에서 기본적으로 사용하는 것이다.
   또한 이 것을 커스터마이징하여 다른 색, 모양을 만들어 낼 수 있다.
+  
+
   
 ## progress bar
 

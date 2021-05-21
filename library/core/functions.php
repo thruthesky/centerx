@@ -1617,3 +1617,14 @@ function saveSearchKeyword(string $searchKey): void {
         db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $searchKey, 'createdAt' => time(), UPDATED_AT => time()]);
     }
 }
+
+
+/**
+ * Return bool if the user is subscribe to topic or not
+ * @param $topic
+ * @return bool
+ */
+function isSubscribedToTopic($topic): bool
+{
+    return login()->v($topic) === "on";
+}

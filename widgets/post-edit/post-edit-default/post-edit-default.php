@@ -13,20 +13,20 @@ if (in(CATEGORY_ID)) {
     jsBack('잘못된 접속입니다.');
 }
 ?>
-    <section class="p-3" id="post-edit-default" style="background-color: #f7f8f8; border-radius: 10px;">
-        <form action="/" method="POST">
+    <section class="p-3" id="post-edit-default">
+        <form action="/" method="POST" <?=hook()->run(HOOK_POST_EDIT_FORM_ATTR)?>>
             <?php
-                $hidden_data = [
-                    IDX => $post->idx,
-                    CATEGORY_ID => $category->id,
-                    'nsub' => in('subcategory'),
-                ];
-                echo hiddens(
-                    p: 'forum.post.edit.submit',
-                    return_url: 'post',
-                    kvs: $hidden_data,
-                );
-                hook()->run('post-edit-form-hidden-tags', $hidden_data);
+            $hidden_data = [
+                IDX => $post->idx,
+                CATEGORY_ID => $category->id,
+                'nsub' => in('subcategory'),
+            ];
+            echo hiddens(
+                p: 'forum.post.edit.submit',
+                return_url: 'post',
+                kvs: $hidden_data,
+            );
+            hook()->run('post-edit-form-hidden-tags', $hidden_data);
             ?>
 
             <input type="hidden" name="files" v-model="files">
@@ -65,15 +65,20 @@ if (in(CATEGORY_ID)) {
                     <progress-bar class="ml-2" :progress="percent"></progress-bar>
                 </div>
 
-                <button class="btn btn-warning mr-3" type="button" onclick="history.go(-1)"><?= ek('Cancel', '취소') ?></button>
-                <!-- SUBMIT BUTTON -->
-                <button class="btn btn-success" type="submit"><?= ek('Submit', '전송') ?></button>
+                <div v-if="!loading">
+                    <button class="btn btn-warning mr-3" type="button" onclick="history.go(-1)"><?=ln('cancel')?></button>
+                    <button class="btn btn-success" type="submit"><?=ln('submit')?></button>
+                </div>
+                <div class="d-none p-2 red" :class="{'d-block': loading }">
+                    전송중입니다...
+                </div>
+
             </div>
             <div class="px-3 row photos">
                 <div class="mt-3 col-4 p-1 photo" v-for="file in uploadedFiles" :key="file['idx']">
-                    <div clas="position-relative" style="max-height: 250px">
-                        <img class="h-100 w-100" :src="file['url']" style="border-radius: 10px;">
-                        <div class="p-2 position-absolute  top left font-weight-bold" @click="onFileDelete(file['idx'])" style="color: red">[X]</div>
+                    <div clas="position-relative">
+                        <img class="h-100 w-100" :src="file['url']">
+                        <div class="p-2 position-absolute top left font-weight-bold red" @click="onFileDelete(file['idx'])">[X]</div>
                     </div>
                 </div>
             </div>
@@ -83,6 +88,7 @@ if (in(CATEGORY_ID)) {
     <script>
         mixins.push({
             data: {
+                loading: false,
                 files: '<?= $post->v('files') ?>',
                 percent: 0,
                 uploadedFiles: <?= json_encode($post->files(true), true) ?>,
