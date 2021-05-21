@@ -209,7 +209,7 @@ define('DEFAULT_DELIVERY_FEE_PRICE', 2500);
 /**
  * @see readme#Live Reload
  */
-const LIVE_RELOAD = false;
+const LIVE_RELOAD = true;
 const LIVE_RELOAD_HOST = 'http://localhost';
 const LIVE_RELOAD_PORT = '12345';
 
