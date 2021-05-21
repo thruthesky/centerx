@@ -13,13 +13,10 @@ $posts = $o['posts'];
     if (!empty($posts)) {
       foreach ($posts as $post) {
         $post = post(idx: $post->idx);
-
-        include widget('post/thumbnail-with-title-and-content', [ 'post' => $post ]);
-    ?>
-
-      <?php }
-    } else { ?>
-      <div class="pb-3 d-flex justify-content-center">No posts yet ..</div>
+        include widget('post/thumbnail-with-title-and-content', ['post' => $post]);
+      }
+    } else {
+    ?> <div class="pb-3 d-flex justify-content-center">No posts yet ..</div>
     <?php } ?>
   </div>
 </section>
