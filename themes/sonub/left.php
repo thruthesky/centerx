@@ -13,7 +13,7 @@
 </div>
 
 
-<?php //include widget('message/message-side-menu')?>
+<?php include widget('message/message-side-menu')?>
 
 <div class="box d-flex flex-column children-a-ellipsis">
     <h1 class="p-1">최근 글</h1>
