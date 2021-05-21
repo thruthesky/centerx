@@ -8,7 +8,7 @@ $o = getWidgetOptions();
 $posts = $o['posts'];
 ?>
 
-<section class="post-view-default p-3 mb-5" style="border-radius: 16px; background-color: #f4f4f4;">
+<section class="post-list-gallery p-1" style="border-radius: 16px; background-color: #f4f4f4;">
   <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "gutter": 5 }'>
 
     <?php
@@ -16,7 +16,7 @@ $posts = $o['posts'];
     foreach ($posts as $post) {
       $_gi++;
       $isEven = $_gi % 2 === 0;
-      $imageHeight = $isEven ? 374 : 174;
+      $imageHeight = $isEven ? 274 : 124;
     ?>
       <div class="grid-item <?= $isEven ? 'grid-item--height2' : '' ?>">
         <div class="image-holder">
@@ -32,12 +32,11 @@ $posts = $o['posts'];
     float: left;
     margin-bottom: 10px;
     width: 32.5%;
-    height: 200px;
-    border: 1px solid hsla(0, 0%, 0%, 0.5);
+    height: 150px;
   }
 
   .grid-item--height2 {
-    height: 400px;
+    height: 300px;
   }
 </style>
 
