@@ -3,13 +3,14 @@
  * @name Ajax post edit widget
  */
 
-hook()->add(HOOK_POST_EDIT_FORM_ATTR, function() { return "@submit.prevent='onPostEditAjaxSubmit(event)'"; });
+hook()->add(HOOK_POST_EDIT_FORM_ATTR, function() { return '@submit.prevent="onPostEditAjaxSubmit($event)"'; });
 include widget('post-edit/post-edit-default');
 ?>
 <script>
     mixins.push({
         methods: {
             onPostEditAjaxSubmit: function($event) {
+
                 const data = serializeJSON($event.target);
                 console.log('ajax forum submit!', data);
 

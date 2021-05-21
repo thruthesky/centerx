@@ -6,6 +6,22 @@ class FileRoute {
         return files()->upload($in)->response();
     }
 
+
+    /**
+     * taxonomy, entity, code 를 입력 받아서, 해당 사진을 리턴한다.
+     * @param $in
+     * @return array|string
+     *
+     * @see readme
+     */
+    public function get($in) {
+        $conds = [];
+        if ( isset($in[TAXONOMY]) ) $conds[TAXONOMY] = $in[TAXONOMY];
+        if ( isset($in[ENTITY]) ) $conds[ENTITY] = $in[ENTITY];
+        if ( isset($in[CODE]) ) $conds[CODE] = $in[CODE];
+        return files()->findOne($conds)->response();
+    }
+
     /**
      * 글 또는 코멘트 번호를 입력하면, 연결된 사진 정보를 리턴한다.
      * @param $in

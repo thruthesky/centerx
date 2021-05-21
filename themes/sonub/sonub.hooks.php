@@ -23,7 +23,7 @@ hook()->add('posts-before-create', function(&$record, $in) {
 
 
 hook()->add(HOOK_POST_LIST_COUNTRY_CODE, function(&$countryCode) {
-    $countryCode = cafe()->countryCode;
+    if ( in(CATEGORY_ID) != MESSAGE_CATEGORY ) $countryCode = cafe()->countryCode;
 });
 
 hook()->add(HOOK_POST_LIST_TOP, function() {

@@ -335,9 +335,10 @@ class PostTaxonomy extends Forum {
         string $countryCode = null,
         string $by = 'DESC',
         int $limit=10,
-        bool $photo = null
+        bool $photo = null,
+        string $private = '',
     ): array {
-        $where = "parentIdx=0 AND deletedAt=0";
+        $where = "parentIdx=0 AND deletedAt=0 AND private='$private'";
         if ( $categoryIdx == 0 ) {
             if ( $categoryId ) {
                 $categoryIdx = category($categoryId)->idx;
@@ -545,6 +546,17 @@ class PostTaxonomy extends Forum {
         }
 
         return $rets;
+    }
+
+
+    /**
+     *
+     * 읽은 시간을 업데이트한다.
+     *
+     * 주의, parent::update() 를 호출하여 퍼미션을 검사하지 않고, 업데이트한다. 참고로 이 후, read() 가 호출되어 메모리 캐시 변수가 업데이트 된다.
+     */
+    public function readAt() {
+        parent::update([READ_AT => time()]);
     }
 
 }

@@ -38,11 +38,19 @@
 - [CenterX Git Project](https://github.com/thruthesky/centerx/projects/2)
 
 - 다음 버전의 명칭
-  - CenterX 대신 Matrix 로 변경한다.
+  - CenterX 대신 Matrix 로 변경
+    - https://github.com/withcenter/matrix 로 repo 를 이동.
     - Matrix 에는 성장/발하는 모체라는 뜻이 있다.
       뜻: 가로/세로 나열한 행렬 또는 망. (사회 또는 개인이 성정하는, 발달하는) 모체.
     - 각종 표현/접두어/접미어를 'x' 로 한다.
       예: 기본 css 를 etc/css/x.css 로 저장한다.
+
+- LIVE_RELOAD 를 ON/OFF 를 할 수 있도록 한다.
+
+
+- 사용자 프로필을
+  taxonomy=user, code=photoUrl 로 변경한다.
+  
 
 - html minify
 
@@ -827,9 +835,10 @@ with the latest android version, but the developer must code on the android app.
   
   이 처럼 `relationIdx` 는 글과 글의 연결성을 표시하는 데에 사용되며, 여러 가지 방식으로 활용 할 수 있다.
 
-- `private` 은 현재 글이 비밀글인지 아닌지를 'Y/N'으로 표시한다.
+- `private` 은 현재 글이 비밀글인지 아닌지를 'Y' 또는 공백으로 표시한다.
   주의: `private` 일 때에는 글 제목과 내용을 `privateTitle` 과 `privateContent` 로 저장한다. 그래서 검색에서 완전 배제를 한다.
   참고로 글 작성시, `private=Y` 로 전달하면, taxonomy 에서 title 과 content 를 자동으로 `private_title` 과 `privateContent`에 저장한다.
+  검색을 할 때, private 이 아닌 글을 검색하고자 한다면, 공백인 것을 검색하면 된다.
 
 - 'Y' 는 찬성(또는 like) 수
 - 'N' 은 반대(또는 dislke) 수
@@ -851,17 +860,26 @@ with the latest android version, but the developer must code on the android app.
 - `beginAt` 글이 시작되는 시간 stamp. 예를 들어, 해당 글이 언제 부터 보여져야 할 지, 또는 광고 프로그램에서, 광고가 언제 부터 시작되어야 할지
 - `endAt` 글이 끝나는 시간 stamp. 글이 언제 부터 안보여져야 할 지. 광고 배너가 언제 끝나는 지 등.
 
-
-
 - 참고, 글이 삭제되면, 실제 레코드 지우지 않고,
   title, privateTitle, content, privateContent 만 빈 문자열로 저장한다.
   즉, 글의 작성자, 첨부 파일이나 코멘트 등은 그대로 살아있다.
   
-## files
+- 'files' 필드는 글에 등록된 파일 들의 idx 를 콤마로 분리해서 저장한다. 예) "123,456"
+  하지만, 글을 읽을 때에는 'files' 필드를 참조하지 않고, wc_files 의 entity 를 보고, 해당 글에 연결된 모든 파일을 가져온다.
+  다만, 글 검색을 할 때, 'files' 필드에 값이 있으면 첨부 파일/사진이 있는 것으로 간주하여, 사진이 있는 파일만 가져오게 할 수 있다.
+  
+## files, 파일 테이블
+
 
 - taxonomy, entity 는 예를 들어, posts taxonomy 의 어떤 글 번호에 연결이 되었는지 또는 users taxonomy 의 어떤 사용자와 연결이 되었는지 나타낸다.
 - code 는 파일의 코드 값으로 예를 들어, taxonomy=users AND entity=사용자번호 AND code=profilePhoto 와 같이 업로드된 파일의 특성을 나타낼 때 사용 할 수 있다.
 
+- 파일이 꼭 게시판에 등록 될 필요는 없다.
+  - taxonomy, entity 만 잘 활용해서 하면 된다.
+  - 예를 들어, 사진이 특정 카테고리에 적용이 되어야 하는 경우, 특히, 서브 사이트나 카페를 만들 때, 하나의 카테고리마다 사진이 여러개 등록되어야하는 경우,
+    taxonomy=cafe
+    entity=cafe.idx
+    code=logo 또는 code=icon 등으로 여러개의 사진/파일을 연결 할 수 있다.
 
 
 ## 카테고리 테이블. Category table
@@ -1521,6 +1539,16 @@ https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d802387
   Flutter Firelamp api.controller.dart 의 takeUploadFile() 과 uploadFile() 함수를 참고.
 
 
+- To get a file
+  Use `file.get` route
+  Ex) https://main.philov.com/?route=file.get&taxonomy=posts&code=web&entity=14944
+  
+- To get all files of a post
+  Use `file.byPostIdx` route
+
+- To get a file of code of a post
+  Use `file.byPostCode` route.
+
 ## Point Api
 
 - 글(또는 코멘트)을 쓸 때, 얼마의 포인트를 획득했는지, 포인트 값을 알고 싶다면, 아래와 같이 호출한다.
@@ -1531,6 +1559,21 @@ https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d802387
 https://local.itsuda50.com/?route=point.postCreate&idx=15130
 ```
 
+
+## Translation api
+
+### 언어 코드 하나에 대한 번역된 글 가져오기
+
+- `translation.get` 라우트에 `code` 값만 주면, 백엔드에서 사용자의 언어를 자동으로 찾아서 해당 코드의 번역 글을 리턴한다.
+  리턴 속성
+  ln: 사용자 언어 예) en, ko
+  code: 요청한 코드
+  text: 결과 문자열
+
+- 특정 코드의 언어 번역 코드를 가져오려면, Javascript 로 아래와 같이 하면 된다.
+```javascript
+request('translation.get', {'code': 'list'}, console.log, alert);
+```
 
 ### phpThumb Displaying images
 
@@ -1597,6 +1640,10 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 # 파일 업로드
 
 - test 파일에 HTTP FORM POST 값 전송이 아닌 CLI 로 파일을 업로드하고, 글에 추가하는 예제 코드가 있다.
+- 파일 테이블 참고
+
+
+
 
 
 # Firebase
@@ -1622,9 +1669,17 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
   클라이언트에서 값을 확인 할 때에는 '플러터 예제 코드' `if ('showLoginOnDrawer'.t == 'Y')` 와 같이 값이 Y 또는 N 인지 비교를 해야 한다.
   그리고 더 짧게 쓰려면 `if ('loginOnDrawer'.on)` 와 같이 할 수도 있다.
   참고: https://github.com/thruthesky/dalgona/blob/main/lib/services/globals.dart#L52
-
+  
 
 - @see the phpdoc
+
+## 자바스크립트에서 언어화
+
+- Inline Javascript 를 사용하는 경우, 그냥 PHP 코드로 `<?=ln('list')?>` 와 같이 사용을 하면 된다.
+  Vue.js component 를 사용 할 때, component property 에 `<?=ln('...')?>` 와 같이 넘겨주면 된다.
+  
+- 만약, PHP 로 넘겨 주기를 원하지 않을 때, 또는 자바스크립트로 `translatoin.get` 라우트로 특정 텍스를 가져오면 된다.
+  참고, translation api
 
 
 ## In-page Translation
@@ -2503,6 +2558,28 @@ chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
 - SEO 를 위해서 코멘트를 보여 줄 때에는 PHP 로 표시하지만, 새 코멘트 작성, 수정 등을 할 때에는 컴포넌트로 처리하면 된다.
 - 예제는 post-view-default.php 를 보면 된다.
 
+
+### 사진을 업로드하는 - upload-image 컴포넌트
+
+- taxonomy, entity, code 로 업로드를 하면 이미 존재하는 동일한 taxonomy, entity, code 의 값이 있으면, 기존의 파일을 삭제한다.
+  즉, 하나의 사진만 유지하고자 할 때 사용 할 수 있다.
+  
+  
+- 예제 코드) 스타일을 통해서 디자인 변경이 가능하다.
+
+```html
+<upload-image taxonomy="<?=cafe()->taxonomy?>" entity="<?=cafe()->idx?>" code="logo"></upload-image>
+<style>
+  .uploaded-image img {
+    width: 100%;
+  }
+  .upload-button {
+    margin-top: .5em;
+  }
+</style>
+<?php js('/etc/js/vue-js-components/upload-image.js')?>
+```
+  
 ### 글에 코드 별로 사진을 업로드 - upload-by-code 컴포넌트
 
 - 예를 들어, 쇼핑몰 글을 등록 할 때, 각 종 위젯이나 목록에 보여 줄 사진을 따로 업로드하고, 설명 사진을 따로 업로드하고, 본문 사진을 따로 관리하고 싶을 때 사용한다.
@@ -2623,6 +2700,7 @@ if ( in(CATEGORY_ID) ) {
     }).mount("#post-edit-default");
 </script>
 ```
+
 
 ## Vue.js 2 로 하나의 글에 코드 별 여러 사진(파일) 업로드 & 컴포넌트로 작성
 
@@ -3166,6 +3244,15 @@ echo "현재 환율: $phpKwr";
   - and more.
   You can see it by viewing the source code.
 
+
+# 글을 관련 로직, 최근 글 가져오는 로직 등
+
+- 글(또는 최근 글)을 가져오는 경우, 카테고리에 구분 없이 글을 가져오는 경우가 있다.
+  이 경우 message 게시판에서는 글을 가져오지 않거나 글이 private 인 것은 가져오지 않아야 한다.
+  어차피 private 인 경우에는 글 제목, 내용이 안보이겠지만, 사진이 보일 수 있다.
+  그래서 주의 해야 한다.
+
+
 # 위젯
 
 ## 글 목록 위젯
@@ -3268,35 +3355,40 @@ content[tip]=내용사진입니다.
 # Live Reload
 
 
-- Node.js version 10.23.0 이상에서 동작한다.
+- live reload works on Node.js version 10.23.0 and above.
 
-- To NOT use (or to turn off) live reload,
-  - Set empty string('') to LIVE_RELOAD_HOST.
+
+- To use live reload, set `LIVE_RELOAD` to true and adjust the following settings.
+
+## Live reload with http (without SSL)
 
 - To use live reload on localhost without SSL.
   - set `http://localhost` to `LIVE_RELOAD_HOST`
-  - set '12345' to `LIVE_RELOAD_PORT.
+  - set `12345` to `LIVE_RELOAD_PORT`.
   - add the working local domain to `LOCAL_HOSTS`.
-  - run `node live-reload.js http`.
+  - run `node live-reload.js`.
+
+
+## Live reload with https (with SSL)
 
 - To use live reload with SSL,
   - place `tmp/ssl/live-reload/private.key` and `tmp/ssl/live-reload/cert-ca-bundle.crt` for SSL certificates.
-  - set the host(domain) with scheme to `LIVE_RELOAD_HOST`. ex) `https://sonub.com`
-    - @attention the certificates(and private key) must be for the domain of `LIVE_RELOAD_HOST`.
+  - set the host(domain) with scheme to `LIVE_RELOAD_HOST`.
+    ex) `https://sonub.com`
+    Not that, the certificates(and private key) must be for the domain.
   - set '12345' to `LIVE_RELOAD_PORT`
   - add the working local domain to `LOCAL_HOSTS`.
-  - run `node live-reload.js`
+  - run `node live-reload.js https`
+ 
+## Stop live reload for a run-time.
 
-
-- Do not define `LIVE_RELOAD` in config.php
-  You can define it in the runtime to stop the live reload.
-  Below is an example of display Javascript source code by dynamically updating with PHP.
+- If you want to stop live reload only for a script (or a page), define `STOP_LIVE_RELOAD` like below.
   
 ```html
 <?php
 header("Content-Type: application/javascript");
 header("Cache-Control: max-age=604800, public");
-const LIVE_RELOAD = false;
+const STOP_LIVE_RELOAD = true;
 require_once '../../../boot.php';
 ?>
 alert('Hi');

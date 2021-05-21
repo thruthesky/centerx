@@ -147,8 +147,8 @@ class FileTaxonomy extends Entity {
     {
         parent::read($idx);
         $url = UPLOAD_URL . $this->v(PATH);// $data[PATH];
-        $this->updateData('url', $url);
-        $this->updateData('path', UPLOAD_DIR . $this->path);
+        $this->updateMemoryData('url', $url);
+        $this->updateMemoryData('path', UPLOAD_DIR . $this->path);
         return $this;
     }
 

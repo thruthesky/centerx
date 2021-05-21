@@ -11,8 +11,10 @@
         }
     ?>
 </div>
-<a href="<?=messageInboxUrl()?>">받은 쪽지</a> |
-<a href="<?=messageOutboxUrl()?>">보낸 쪽지</a>
+
+
+<?php include widget('message/message-side-menu')?>
+
 <div class="box d-flex flex-column children-a-ellipsis">
     <h1 class="p-1">최근 글</h1>
     <?php include widget('post-latest/post-latest-default', ['id' => 'left-latest', 'categoryId' => 'qna']) ?>

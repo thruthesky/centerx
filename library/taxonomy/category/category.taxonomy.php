@@ -46,6 +46,22 @@ class CategoryTaxonomy extends Entity {
 
 
 
+    /**
+     *
+     * @param $name
+     * @return mixed
+    public function __get($name): mixed {
+//        if ( $name == 'title' ) {
+//            $title = parent::__get($name);
+//            if ( empty($title) ) $title = $this->id;
+//            return $title;
+//        }
+        return parent::__get($name);
+    }
+     */
+
+
+
 
 
     /**
@@ -59,8 +75,8 @@ class CategoryTaxonomy extends Entity {
     public function read(int $idx = 0): self
     {
         parent::read($idx);
-        $this->updateMemory('orgSubcategories', $this->subcategories);
-        $this->updateMemory('subcategories', separateByComma($this->subcategories));
+        $this->updateMemoryData('orgSubcategories', $this->subcategories);
+        $this->updateMemoryData('subcategories', separateByComma($this->subcategories));
         return $this;
     }
 
