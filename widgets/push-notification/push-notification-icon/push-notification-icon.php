@@ -19,7 +19,7 @@ $__topicData = 'push_icon_' . $__topic;
 <script>
     mixins.push({
         data: {
-            ['<?=$__topicData?>']: <?=isSubscribedToTopic($__topic) ? 'true' : 'false' ?>,
+            '<?=$__topicData?>': <?=isSubscribedToTopic($__topic) ? 'true' : 'false' ?>,
         },
         methods: {
             onChangeSubscribeOrUnsubscribeTopic: function(topic) {

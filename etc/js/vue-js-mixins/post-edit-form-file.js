@@ -22,7 +22,7 @@ mixins.push({
                     self.percent = 0;
                 },
                 function(e) {
-                    console.erorr(e);
+                    console.error(e);
                     alert(e);
                 },
                 function(p) {
