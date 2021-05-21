@@ -13,6 +13,8 @@ $translations = [
     'like' => ['en' => 'Like', 'ko' => '좋아요'],
     'dislike' => ['en' => 'Dislike', 'ko' => '싫어요'],
     'confirm_delete' => ['en' => 'Do you want to delete?', 'ko' => '삭제하시겠습니까?'],
+    'post_create' => ['en' => 'Create', 'ko' => '글 쓰기'],
+    'category' => ['en' => 'Category', 'ko' => '카테고리'],
     'input_title' => [
         'en' => 'Input title',
         'ko' => '제목을 입력하세요.',

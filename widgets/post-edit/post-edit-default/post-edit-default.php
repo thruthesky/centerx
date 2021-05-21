@@ -66,7 +66,7 @@ if (in(CATEGORY_ID)) {
                 </div>
 
                 <div v-if="!loading">
-                    <button class="btn btn-warning mr-3" type="button" onclick="history.go(-1)"><?=ln('cancel')?></button>
+                    <a class="btn btn-warning mr-3" type="button" href="<?=postListUrl($category->id)?>" <?=hook()->run(HOOK_POST_EDIT_CANCEL_BUTTON_ATTR)?>><?=ln('cancel')?></a>
                     <button class="btn btn-success" type="submit"><?=ln('submit')?></button>
                 </div>
                 <div class="d-none p-2 red" :class="{'d-block': loading }">

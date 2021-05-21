@@ -8,14 +8,10 @@ $o = getWidgetOptions();
 $posts = $o['posts'];
 
 
-hook()->add(HOOK_POST_EDIT_RETURN_URL, function() {
-    return 'list';
-});
 ?>
-
-
-<?php include widget('post-edit/post-edit-default') ?>
-
+<div class="d-none" :class="{'d-block': showPostForm}">
+    <?php include widget('post-edit/post-edit-default') ?>
+</div>
 <section class="post-list-all-in-one">
 
     <?php foreach ($posts as $post) {
@@ -34,16 +30,15 @@ hook()->add(HOOK_POST_EDIT_RETURN_URL, function() {
                     </div>
                 </a>
             </div>
-            <div class="content p-2" style="background-color: #dcffff;">
-                <?= $post->content ?>
+            <div class="content p-2 bg-white">
+                <?= nl2br($post->content) ?>
             </div>
             <div class="files">
                 <?php foreach ($post->files() as $file) { ?>
                     <div class="position-relative">
                         <img class="w-100" src="<?= $file->url ?>">
                         <div 
-                            class="position-absolute" 
-                            style="top: 0; color: white; background-color: black;" 
+                            class="position-absolute top white bg-black"
                             onclick="onClickFileDelete(<?= $file->idx ?>);"
                         >[ X ]</div>
                     </div>

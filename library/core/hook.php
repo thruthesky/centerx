@@ -10,6 +10,9 @@ const HOOK_POST_EDIT_FORM_ATTR = 'post-edit-form-attr';
 const HOOK_POST_EDIT_RETURN_URL = 'post-edit-form-return-url';
 const HOOK_POST_LIST_COUNTRY_CODE = 'post_list_country_code';
 const HOOK_POST_LIST_TOP = 'post-list-top';
+const HOOK_POST_CREATE_BUTTON_ATTR = 'HOOK_POST_CREATE_BUTTON_ATTR';
+const HOOK_POST_EDIT_CANCEL_BUTTON_ATTR = 'HOOK_POST_EDIT_CANCEL_BUTTON_ATTR';
+
 
 class Hook {
 

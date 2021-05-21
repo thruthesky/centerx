@@ -1086,6 +1086,13 @@ setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
 - readAt 에 글을 읽은 시간이 들어간다.
 
 
+## 쪽지 기능 사운드 알림
+
+- 새로운 쪽지가 있으면, 소리를 낸다.
+- 사용자가 on/off 할 수 있다.
+- sound-on-off.php 위젯으로 사용이 가능한데, 중복으로 사용되어도 소리 파일은 중복으로 출력하지 않는다.
+  sound-on-off.php 내부적으로 `new-message-sound-on-off` 컴포넌트를 사용하는데, 이 컴포넌트에서 사운드 on/off 를 한다.
+
 
 # Widget System
 
@@ -1987,6 +1994,7 @@ Array
 - 3rd party dependency 를 최대한 줄기이기 위해서, 직접 SVG 를 포함해서 사용한다.
   - 요약 문서 참고: [SVG 아이콘 사용법](https://docs.google.com/document/d/1VgfgtExjiaFXrc-Sl15WOiL1cPlsWDRGdq9CTpaqiIg/edit#heading=h.a4ruqalgejpr)
   
+
 
 
 # Admin page design
@@ -3279,6 +3287,20 @@ echo "현재 환율: $phpKwr";
 # 위젯
 
 ## 글 목록 위젯
+
+### post-list-top.php
+
+- You can include a php script before post list header widget by putting a script named `[xxx].top.php` where `[xxx]` is
+  the folder name.
+  For instance, you can put `post-list-all-in-one.top.php` under `widgets/post-list/post-list-all-in-one` folder, and
+  `post-list-all-in-one.top.php` will be included before 'post list header' widget.
+  Remember, it is simply included as a php script not as a widget.
+  With this script, you can do something to apply the whole post list widget. For instance, you can hook post list
+  header widget.
+  
+- Important to note that all hooks and javascript mixins should be defined in `[xxx].hooks-mixins.php` that is included
+  by `[xxx].top.php` to avoid confusions.
+
 
 ### 글 목록 상단 위젯
 

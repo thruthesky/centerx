@@ -17,14 +17,23 @@ $total = post()->count(where: $where, params: $params);
 if ( isset($in['searchKey']) ) saveSearchKeyword($in['searchKey']);
 
 
+
+// Hook for the very top of the post list page.
 hook()->run(HOOK_POST_LIST_TOP);
 
-include_once widget($category->postListHeaderWidget ? $category->postListHeaderWidget : 'post-list-header/post-list-header-default', [
+// For post list widget, it will first include 'post-list-top.php' script if exists.
+
+$post_list_path = $category->postListWidget ? $category->postListWidget : 'post-list/post-list-default';
+$post_list_top_path = str_replace('.php', '.top.php', get_widget_script_path($post_list_path));
+if ( file_exists($post_list_top_path) ) include_once $post_list_top_path;
+
+$post_list_header_path = $category->postListHeaderWidget ? $category->postListHeaderWidget : 'post-list-header/post-list-header-default';
+include_once widget($post_list_header_path, [
     'category' => $category,
 ]);
 
 
-include_once widget($category->postListWidget ? $category->postListWidget : 'post-list/post-list-default', [
+include_once widget($post_list_path, [
     'posts' => $posts,
     'total' => $total,
     'category' => $category,

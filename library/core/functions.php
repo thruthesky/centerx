@@ -532,8 +532,13 @@ function leave_starting_debug_log() {
  */
 function widget(string $path, array $options=[]) {
     setWidgetOptions($options);
+    return get_widget_script_path($path);
+}
+
+function get_widget_script_path(string $path, string $filename = null): string {
     $arr = explode('/', $path);
-    $path = ROOT_DIR . "widgets/$arr[0]/$arr[1]/$arr[1].php";
+    $filename ??= $arr[1];
+    $path = ROOT_DIR . "widgets/$arr[0]/$arr[1]/$filename.php";
     return $path;
 }
 
@@ -1481,6 +1486,8 @@ function capture_styles_and_scripts(string &$content)
 
 
 /**
+ * @deprecated Use xxxXxxUrl() functions.
+ *
  * in('categoryId') 로 들어오는 값을 '?categoryId=xxxx' 또는 '&categoryId=xxxx' 로 리턴한다.
  *
  * @param bool $question
@@ -1493,6 +1500,8 @@ function inCategoryId(bool $question=false) {
 }
 
 /**
+ * @deprecated Use xxxXxxUrl() functions.
+ *
  * in('subcategori') 로 들어오는 값을 '?inSubcategory=xxxx' 또는 '&inSubcategory=xxxx' 로 리턴한다.
  * @param bool $question
  * @return string
@@ -1544,10 +1553,11 @@ function postListUrl(int|string $categoryId): string {
     return "/?p=forum.post.list&categoryId=" . $categoryId;
 }
 
-function postEditUrl(int|string $categoryId = '', int $postIdx=0): string {
+function postEditUrl(int|string $categoryId = '', string $subcategory=null, int $postIdx=0 ): string {
     $url = "/?p=forum.post.edit";
     if ( $categoryId ) $url .= "&categoryId=$categoryId";
     if ( $postIdx ) $url .= "&postIdx=$postIdx";
+    if ( $subcategory ) $url .= "&subcategory=$subcategory";
     return $url;
 }
 
