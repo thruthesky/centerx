@@ -2,18 +2,22 @@
 
 /**
  * @size narrow
- * @options PostTaxonomy $post
+ * @options PostTaxonomy 'post', 'imageHeight', 'imageWidth'
  * @dependency none
  */
 $o = getWidgetOptions();
 $post = $o['post'] ?? firstPost(photo: true);
-$src = thumbnailUrl($post->files()[0]->idx, 300, 200);
+
+$imageHeight = $o['imageHeight'] ?? 300;
+$imageWidth = $o['imageWidth'] ?? 300;
+
+$src = thumbnailUrl($post->files()[0]->idx, height: $imageHeight, width: $imageWidth);
 $url = $post->url;
 ?>
 
 
 <a class="photo-with-one-line-text-at-bottom" href="<?= $url ?>">
-    <div class="photo"><img src="<?= $src ?>"></div>
+    <div class="photo" style="height: <?=$imageHeight?>px"><img src="<?= $src ?>"></div>
     <div class="title">
         <div class="inner"><?= $post->title ?></div>
     </div>
@@ -21,12 +25,17 @@ $url = $post->url;
 
 
 <style>
+    .photo-with-one-line-text-at-bottom {
+        display: block;
+        height: 100%;
+    }
+
     .photo-with-one-line-text-at-bottom img {
         width: 100%;
+        height: 100%;
     }
 
     .photo-with-one-line-text-at-bottom .title {
-        margin-top: 5px;
         background-color: #ececec;
         color: black;
     }

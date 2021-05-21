@@ -15,51 +15,29 @@ $posts = $o['posts'];
     $_gi = 0;
     foreach ($posts as $post) {
       $_gi++;
-      if ($_gi < 4 && $_gi / 2 === 1) {
-        $imageHeight = 400; ?>
-        <a class="grid-item grid-item--height2" href="<?= $post->url ?>">
-          <img src="<?= thumbnailUrl($post->files()[0]->idx, height: $imageHeight, zoomCrop: true);  ?>">
-          <div><?= $post->title ?></div>
-        </a>
-      <?php } else {
-        $imageHeight = 200; ?>
-        <a class="grid-item" href="<?= $post->url ?>">
-          <img src="<?= thumbnailUrl($post->files()[0]->idx, height: $imageHeight, zoomCrop: true); ?>">
-          <div><?= $post->title ?></div>
-        </a>
-      <?php } ?>
+      $isEven = $_gi % 2 === 0;
+      $imageHeight = $isEven ? 374 : 174;
+    ?>
+      <div class="grid-item <?= $isEven ? 'grid-item--height2' : '' ?>">
+        <div class="image-holder">
+          <?php include widget('post/photo-with-one-line-text-at-bottom', ['post' => $post, 'imageHeight' => $imageHeight]); ?>
+        </div>
+      </div>
     <?php } ?>
   </div>
 </section>
 
 <style>
   .grid-item {
-    position: relative;
     float: left;
     margin-bottom: 10px;
-    width: 33%;
+    width: 32.5%;
     height: 200px;
     border: 1px solid hsla(0, 0%, 0%, 0.5);
   }
 
-  .grid-item img {
-    width: 100%;
-    height: 100%;
-  }
-
-  .grid-item div {
-    position: absolute;
-    overflow: hidden;
-    height: 2em;
-    bottom: 0;
-    padding: .25em;
-    font-weight: 500;
-    font-size: 1em;
-    background-color: wheat;
-  }
-
   .grid-item--height2 {
-    height: 410px;
+    height: 400px;
   }
 </style>
 
