@@ -16,7 +16,7 @@ $posts = $o['posts'];
     foreach ($posts as $post) {
       $_gi++;
       $isEven = $_gi % 2 === 0;
-      $imageHeight = $isEven ? 274 : 124;
+      $imageHeight = $isEven ? 266 : 116;
     ?>
       <div class="grid-item <?= $isEven ? 'grid-item--height2' : '' ?>">
         <div class="image-holder">
@@ -33,6 +33,7 @@ $posts = $o['posts'];
     margin-bottom: 10px;
     width: 32.5%;
     height: 150px;
+    /* border: 1px black solid; */
   }
 
   .grid-item--height2 {

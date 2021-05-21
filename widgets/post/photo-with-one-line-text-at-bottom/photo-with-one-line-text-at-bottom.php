@@ -36,6 +36,8 @@ $url = $post->url;
     }
 
     .photo-with-one-line-text-at-bottom .title {
+        height: 2em;
+        padding: .25em;
         background-color: #ececec;
         color: black;
     }
