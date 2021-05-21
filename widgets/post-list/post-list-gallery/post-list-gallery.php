@@ -9,6 +9,7 @@ $posts = $o['posts'];
 ?>
 
 <section class="post-list-gallery p-1" style="border-radius: 16px; background-color: #f4f4f4;">
+  <?php if (count($posts)) { ?>
   <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "gutter": 5, "percentPosition": true, "horizontalOrder": true  }'>
 
     <?php
@@ -25,6 +26,9 @@ $posts = $o['posts'];
       </div>
     <?php } ?>
   </div>
+  <?php } else { ?>
+    <div class="text-center"> <?=ln('No posts yet')?></div>
+  <?php } ?>
 </section>
 
 <style>

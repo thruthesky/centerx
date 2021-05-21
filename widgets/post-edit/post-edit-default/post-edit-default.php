@@ -23,7 +23,7 @@ if (in(CATEGORY_ID)) {
             ];
             echo hiddens(
                 p: 'forum.post.edit.submit',
-                return_url: 'post',
+                return_url: hook()->run(HOOK_POST_EDIT_RETURN_URL) ?? 'post',
                 kvs: $hidden_data,
             );
             hook()->run('post-edit-form-hidden-tags', $hidden_data);

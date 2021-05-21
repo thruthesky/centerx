@@ -13,7 +13,8 @@ if ( $post->userIdx != login()->idx && $post->otherUserIdx != login()->idx ) {
     return include widget('info/error-wrong-route');
 }
 
-$post->readAt();
+// 나에게 온 쪽지이면, 받는 사람이 나이면, 읽음 표시
+if ( $post->otherUserIdx == login()->idx) $post->readAt();
 
 
 if ( $post->userIdx == login()->idx ) $inbox = false;

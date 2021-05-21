@@ -1,63 +1,97 @@
 <?php
+
 /**
  * @name All In One: Create, List, View
  */
 
 $o = getWidgetOptions();
 $posts = $o['posts'];
+
+
+hook()->add(HOOK_POST_EDIT_RETURN_URL, function() {
+    return 'list';
+});
 ?>
 
 
 <?php include widget('post-edit/post-edit-default') ?>
 
-<section class="post-list-create-view">
+<section class="post-list-all-in-one">
 
-    <?php foreach( $posts as $post ) { ?>
-        <h1>No. <?=$post->idx?> <?=$post->title?></h1>
-        <div class="content">
-            <?=$post->content?>
-        </div>
-        <div class="files">
-            <?php foreach( $post->files() as $file ) { ?>
-                <div class="position-relative">
-                    <img class="w-100" src="<?=$file->url?>">
-                    <div class="position-absolute" style="top: 0; color: white; background-color: black;" onclick="onClickFileDelete(<?=$file->idx?>);">[ X ]</div>
+    <?php foreach ($posts as $post) {
+        $_user = user($post->userIdx);
+    ?>
+        <div class="w-100 p-2 rounded" style="background-color: #f4f4f4;">
+            <div class="post-view-header d-flex">
+                <div>
+                    <?php include widget('avatar/avatar', ['photoUrl' => $_user->photoUrl]) ?>
                 </div>
-            <?php } ?>
-        </div>
-        <div>
-            <?php include widget('comment-edit/comment-edit-default', [
-                'post' => $post,
-                'parent' => $post,
-            ]); ?>
-        </div>
-
-        <?php
-
-        ?>
-        <div class="comments">
-            <?php foreach( $post->comments() as $comment ) {  ?>
-                <div class="mb-2 p-3 text-white bg-secondary" style="margin-left: <?=$comment->depth * 16?>px;">
-                    No.: <?=$comment->idx?>
-                    <div>
-                        <?=$comment->content?>
+                <a href="<?= $post->url ?>">
+                    <div class="font-weight-bold">No. <?= $post->idx ?> <?= $post->title ?></div>
+                    <div class="mt-2">
+                        <?= category($post->categoryIdx)->id ?> -
+                        <?= $post->shortDate ?>
                     </div>
-                    <div class="files">
-                        <?php foreach( $comment->files() as $file ) { ?>
-                            <img class="w-100" src="<?=$file->url?>">
-                        <?php } ?>
+                </a>
+            </div>
+            <div class="content p-2" style="background-color: #dcffff;">
+                <?= $post->content ?>
+            </div>
+            <div class="files">
+                <?php foreach ($post->files() as $file) { ?>
+                    <div class="position-relative">
+                        <img class="w-100" src="<?= $file->url ?>">
+                        <div 
+                            class="position-absolute" 
+                            style="top: 0; color: white; background-color: black;" 
+                            onclick="onClickFileDelete(<?= $file->idx ?>);"
+                        >[ X ]</div>
                     </div>
-                    <div>
+                <?php } ?>
+            </div>
+            <div class="mt-3">
+                <comment-form 
+                    root-idx="<?= $post->idx ?>"
+                    parent-idx="<?= $post->idx ?>" 
+                    text-submit="<?= ln('submit') ?>" 
+                    text-cancel="<?= ln('cancel') ?>">
+                </comment-form>
+            </div>
+            <?php
 
-                        <?php include widget('comment-edit/comment-edit-default', [
-                            'post' => $post,
-                            'parent' => $comment,
-                        ]); ?>
-
+            ?>
+            <div class="comments mt-3">
+                <?php foreach ($post->comments() as $comment) { ?>
+                    <div class="mb-2 p-1 rounded" style="margin-left: <?= $comment->depth * 16 ?>px; background-color: #e0e0e0;">
+                        <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]); ?>
+                        <comment-form 
+                            root-idx="<?= $post->idx ?>" 
+                            parent-idx="<?= $comment->idx ?>" 
+                            text-submit="<?= ln('submit') ?>" 
+                            text-cancel="<?= ln('cancel') ?>" 
+                            v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'"
+                        ></comment-form>
                     </div>
-                </div>
-            <?php } ?>
+                <?php } ?>
+            </div>
         </div>
     <?php } ?>
 
 </section>
+
+<script>
+    mixins.push({
+        data: function() {
+            return {
+                displayCommentForm: {}
+            };
+        },
+        methods: {
+            onCommentEditButtonClick: function(idx, mode) {
+                this.$set(this.displayCommentForm, idx, mode);
+            },
+        }
+    });
+</script>
+
+<?php js('/etc/js/vue-js-components/comment-form.js', 1) ?>

@@ -30,7 +30,7 @@ Vue.component('comment-form', {
         '<input type="hidden" name="files" v-model="form.files">' +
         '<section class="d-flex">' +
         '   <div class="position-relative overflow-hidden" style="min-width: 32px">' +
-        '       <img src="/etc/svg/camera.svg" class="camera-icon d-block" v-if=" !textPhoto ">' +
+        '       <img src="/etc/svg/camera.svg" class="camera-icon d-block" v-if=" !textPhoto " style="max-width: 32px;">' +
         '       <div class="mr-2 pt-1" type="button" v-if=" textPhoto ">{{ textPhoto }}</div>' +
         '       <input class="position-absolute top left right fs-lg opacity-0" type="file" v-on:change="onFileChange($event)">' +
         '   </div>' +
@@ -97,9 +97,13 @@ Vue.component('comment-form', {
         onCommentEditCancelButtonClick: function() {
             console.log('onCommentEditCancelButtonClick', this.commentIdx);
             var idx = this.commentIdx;
-            if (this.commentIdx === null) {
+            if (this.commentIdx === null 
+                || this.commentIdx === '' 
+                || typeof this.commentIdx === 'undefined'
+                ) {
                 idx = this.parentIdx;
             }
+            console.log('onCommentEditCancelButtonClick', idx);
 
             this.$parent.displayCommentForm[idx] = '';
         },
