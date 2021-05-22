@@ -1,6 +1,16 @@
 # CenterX
 
 - CenterX 는 웹 및 Restful Api 를 통해서 애플리케이션을 개발할 수 있도록 하는 백엔드 프레임워크이다.
+- CenterX 가 PHP 그리고 Vue.js 2.x 와 Bootstrap 4.x 를 사용하는 이유
+  - 개발 환경 및 IE 지원
+    - IE11 을 지원하고, (Vue.js 3 는 IE 지원 하지 않음)
+    - SEO 를 하며, (SSR 이 필요함.)
+    - 컴파일을 하지 않는다. (Angular Universal 이나 Nuxt.js 류는 컴파일을 해야하는데, 약간의 수정을 해도 매번 컴파일을 해야하고, 차 후, 다른 개발자가 이어 갈때, PHP 보다는 더 어려울 수 있다.)
+  
+  - PHP 는 매우 직관적.
+    Nuxt.js 나 SvelteKit 과 같은 좋은 툴들이 있지만, 웹 개발에 직접적이지 않은 많은 설정이 필요하다. Node 와 CLI 명령들, 그리고 자바스크립트 빌드 과정 등.
+    
+  - 만약, 컴파일을 해야한다면, SvelteKit 을 적극 추천 할 만하다.
 
 
 ## 특징
@@ -123,13 +133,6 @@
 
 - 훅시스템
   - entity()->create(), update(), delete(), get(), search() 등에서만 훅을 걸면 왠만한 것은 다 된다.
-
-- Friendly URL 에 테마 스크립트 페이지 지정.
-  https://domain.com/qna 와 같이 짧은 URL 을 지원 할 것.
-  기본적으로 모든 category 는 최 상위 슬래시(/) 다음에 기록 할 수 있도록 한다.
-  예) `addPage('abc')` 와 같이 하면 `https://domain.com/abc` 와 같이 접속을 할 수 있고, `themes/../abc.php` 가 로드 될 수 있도록 한다.
-  게시판의 경우 기본적으로 지원을 한다. 예) `https://domain.com/qna` 와 같이 접속하면, `/?forum.post.list&categoryId=qna` 와 같도록 한다.
-  그리고 이것은 각 테마에서 직접 코딩을 할 수 있도록 한다.
 
 - 배포
   .gitignore 에 기본적으로 widgets 폴더를 빼고, 배포를 원하는 위젯만 -f 로 넣을 것.
@@ -967,6 +970,19 @@ This logs all user activities.
 - myIdx 는 나의 회원 번호
 - otherIdx 는 내 친구로 등록된 (다른 사용자의) 회원 번호.
 - block 은 친구 신고를 하거나, 차단하는 경우, 'Y' 의 값을 가진다. 'N' 의 값을 가지지 않으며, 기본적으로는 빈(문자열) 값이다.
+
+
+# Friendly URL
+
+
+- Friendly URL 에 테마 스크립트 페이지 지정.
+  https://domain.com/qna 와 같이 짧은 URL 을 지원 할 것.
+  기본적으로 모든 category 는 최 상위 슬래시(/) 다음에 기록 할 수 있도록 한다.
+  예) `addPage('abc')` 와 같이 하면 `https://domain.com/abc` 와 같이 접속을 할 수 있고, `themes/../abc.php` 가 로드 될 수 있도록 한다.
+  게시판의 경우 기본적으로 지원을 한다. 예) `https://domain.com/qna` 와 같이 접속하면, `/?forum.post.list&categoryId=qna` 와 같도록 한다.
+  그리고 이것은 각 테마에서 직접 코딩을 할 수 있도록 한다.
+
+- The url for post view can be like `/?p=forum.post.view&postIdx=15778` where you can get `post.idx=123`.
 
 
 # 회원 가입

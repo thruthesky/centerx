@@ -451,6 +451,7 @@ class PostTaxonomy extends Forum {
      *   d(post()->getFromPath());
      */
     public function getFromPath(): self {
+        if ( in('postIdx') ) return post(in('postIdx'));
         $path = $_SERVER['REQUEST_URI'];
         if ( str_contains($path, '?') ) {
             $arr = explode('?', $path);
