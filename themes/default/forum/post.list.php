@@ -10,8 +10,14 @@ if ($category->hasError && $category->getError() == e()->entity_not_found) {
 list( $where, $params ) = parsePostListHttpParams(in());
 
 
+// 글 목록 추출
 $posts = post()->search(where: $where, params: $params, page: in('page', 1), limit: in('limit', 10), object: true);
+
+// 글 총(전체) 개수
 $total = post()->count(where: $where, params: $params);
+
+// 공지사항 추출
+$reminders = category(in(CATEGORY_ID))->reminders(in());
 
 
 if ( isset($in['searchKey']) ) saveSearchKeyword($in['searchKey']);
@@ -34,9 +40,10 @@ include_once widget($post_list_header_path, [
 
 
 include_once widget($post_list_path, [
+    'category' => $category,
+    'reminders' => $reminders,
     'posts' => $posts,
     'total' => $total,
-    'category' => $category,
 ]);
 
 

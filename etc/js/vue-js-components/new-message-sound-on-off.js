@@ -16,7 +16,6 @@ Vue.component('new-message-sound-on-off', {
         '</div>',
     mounted() {
         this.re = this.option !== 'N';
-        console.log(this.option, this.re);
     },
     methods: {
         toggleMessageSound: function() {

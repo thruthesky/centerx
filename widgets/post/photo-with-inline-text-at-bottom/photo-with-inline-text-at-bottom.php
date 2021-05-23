@@ -7,6 +7,7 @@
  */
 $o = getWidgetOptions();
 $post = $o['post'] ?? firstPost(photo: true);
+
 $files = $post->files();
 if (count($files) == 0) return;
 

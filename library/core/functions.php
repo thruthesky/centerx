@@ -1556,11 +1556,18 @@ function postListUrl(int|string $categoryId): string {
 function postEditUrl(int|string $categoryId = '', string $subcategory=null, int $postIdx=0 ): string {
     $url = "/?p=forum.post.edit";
     if ( $categoryId ) $url .= "&categoryId=$categoryId";
-    if ( $postIdx ) $url .= "&postIdx=$postIdx";
     if ( $subcategory ) $url .= "&subcategory=$subcategory";
+    if ( $postIdx ) $url .= "&idx=$postIdx";
     return $url;
 }
 
+function postDeleteUrl(int $idx) {
+    return "/?p=forum.post.delete.submit&idx=$idx";
+}
+
+function postMessagingUrl(int $idx) {
+    return "/?p=admin.index&w=push-notification/push-notification-create&idx=$idx";
+}
 
 /**
  * HTTP PARAMS 으로 들어오는 키/값들을 파싱하여 글 목록 또는 글 추출을 하기 위한 SQL 쿼리에 사용 할 where 와 params 을 리턴한다.
@@ -1586,7 +1593,7 @@ function parsePostListHttpParams(array $in): array {
 
     /**
      * 국가 코드
-     * README 참고
+     * README `HOOK_POST_LIST_COUNTRY_CODE` 참고
      */
     $countryCode = $in['countryCode'] ?? '';
     hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $countryCode);

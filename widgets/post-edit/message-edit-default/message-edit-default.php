@@ -47,11 +47,11 @@ if ( !in(OTHER_USER_IDX) ) {
                     <progress-bar class="ml-2" :progress="percent"></progress-bar>
                 </div>
 
-                <button class="btn btn-warning mr-3" type="button" onclick="history.go(-1)"><?= ek('Cancel', '취소') ?></button>
+                <button class="btn btn-warning mr-3" type="button" onclick="history.go(-1)"><?=ln('cancel')?></button>
                 <!-- SUBMIT BUTTON -->
-                <button class="btn btn-success" type="submit"><?= ek('Submit', '전송') ?></button>
+                <button class="btn btn-success" type="submit"><?=ln('submit')?></button>
             </div>
-            <div class="px-3 row photos">
+            <div class="d-none px-3 row photos" :class="{'d-flex': uploadedFiles}">
                 <div class="mt-3 col-4 p-1 photo" v-for="file in uploadedFiles" :key="file['idx']">
                     <div clas="position-relative" style="max-height: 250px">
                         <img class="h-100 w-100" :src="file['url']" style="border-radius: 10px;">

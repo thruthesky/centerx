@@ -77,6 +77,9 @@ const PROFILE_PHOTO_URL = 'profilePhotoUrl';
 const TITLE = 'title';
 const CONTENT = 'content';
 
+const NO_OF_VIEWS = 'noOfViews';
+
+
 
 const PRIVATE_TITLE = 'privateTitle';
 const PRIVATE_CONTENT = 'privateContent';

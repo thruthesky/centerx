@@ -14,7 +14,8 @@ $post = $o['post'];
     <div class="meta">
         <div><b><?=$post->user()->nicknameOrName?></b></div>
         <div class="text-muted">
-            <?= date('r', $post->createdAt) ?>
+            <?=ln('date')?>: <?=$post->shortDate?>
+            <?=ln('no_of_views')?>: <?=$post->noOfViews?>
         </div>
         <div class="text-muted">
             <?= $post->subcategory ? "<span class='badge badge-info'>{$post->subcategory}</span> " : "" ?>

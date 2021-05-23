@@ -13,6 +13,7 @@ if (in(CATEGORY_ID)) {
     jsBack('잘못된 접속입니다.');
 }
 ?>
+
     <section class="p-3" id="post-edit-default">
         <form action="/" method="POST" <?=hook()->run(HOOK_POST_EDIT_FORM_ATTR)?>>
             <?php
@@ -36,7 +37,7 @@ if (in(CATEGORY_ID)) {
                 <span class="flex-grow-1"></span>
                 <?php if ($category->exists && $category->subcategories) { ?>
                     <select class="form-select form-select-lg mt-2" name="subcategory">
-                        <option value=""><?= ek('Select Sub category', '카테고리 선택') ?></option>
+                        <option value=""><?= ln('select_category') ?></option>
                         <?php foreach ($category->subcategories as $cat) {
                             if ($post->subcategory == $cat) $selected =  'selected';
                             else if ($cat == in('subcategory')) $selected = ' selected';
@@ -52,6 +53,20 @@ if (in(CATEGORY_ID)) {
             <input class="mt-3 form-control" placeholder="<?= ln('input_title') ?>" type="text" name="<?= TITLE ?>" value="<?= $post->v(TITLE) ?>">
 
             <textarea class="mt-3 form-control" rows="10" placeholder="<?= ln('input_content') ?>" type="text" name="<?= CONTENT ?>"><?= $post->v(CONTENT) ?></textarea>
+
+            <?php if ( admin() ) { ?>
+                <div class="alert alert-secondary d-flex align-items-center mt-3" role="alert">
+                    <div class="form-group form-check mb-0">
+                        <input type="hidden" name="reminder" id="reminder" value="<?=$post->reminder?>">
+                        <input type="checkbox" class="form-check-input" id="set-reminder" :checked="reminder" v-model="reminder" @change="onChangeReminder()">
+                        <label class="form-check-label" for="set-reminder">공지사항으로 표시</label>
+                    </div>
+                    <div class="ml-5" v-if="reminder">
+                        표시 순서:
+                        <input name="listOrder" value="<?=$post->listOrder?>">
+                    </div>
+                </div>
+            <?php } ?>
 
 
             <?php js('/etc/js/vue-js-components/progress-bar.js', 1) ?>
@@ -74,11 +89,12 @@ if (in(CATEGORY_ID)) {
                 </div>
 
             </div>
-            <div class="px-3 row photos">
+
+            <div class="d-none px-3 row photos" :class="{'d-flex': uploadedFiles}">
                 <div class="mt-3 col-4 p-1 photo" v-for="file in uploadedFiles" :key="file['idx']">
                     <div clas="position-relative">
                         <img class="h-100 w-100" :src="file['url']">
-                        <div class="p-2 position-absolute top left font-weight-bold red" @click="onFileDelete(file['idx'])">[X]</div>
+                        <i class="fa fa-trash p-2 position-absolute top-sm left-sm font-weight-bold red bg-white radius-50 pointer" @click="onFileDelete(file['idx'])"></i>
                     </div>
                 </div>
             </div>
@@ -92,6 +108,13 @@ if (in(CATEGORY_ID)) {
                 files: '<?= $post->v('files') ?>',
                 percent: 0,
                 uploadedFiles: <?= json_encode($post->files(true), true) ?>,
+                reminder: <?=$post->reminder=='Y' ? 'true': 'false'?>,
+            },
+            methods: {
+                onChangeReminder: function() {
+                    const dom = document.getElementById('reminder');
+                    dom.value = this.reminder ? 'Y' : 'N';
+                }
             }
         });
     </script>

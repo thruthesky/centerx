@@ -12,6 +12,7 @@ Vue.component('comment-form', {
             },
             percent: 0,
             uploadedFiles: [], // an array of file objects
+            commenting: false,
         }
     },
     created: function() {
@@ -37,12 +38,11 @@ Vue.component('comment-form', {
         '   <div class="w-100 d-flex">' +
         '     <textarea :rows="commentIdx || parentIdx !== rootIdx ? 3 : 1" class="form-control ml-2" v-model="form.content" @input="autoResize($event)" style="max-height: 250px;">' +
         '     </textarea>' +
-        '     <div style="max-height: 250px;">' +
-        '       <div class="d-flex" v-if="form.content || uploadedFiles.length">' +
-        '         <button class="btn btn-primary ml-2" type="submit">{{ textSubmit }}</button>' +
-        '         <button class="btn btn-primary ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">{{ textCancel }}</button>' +
+        '       <div class="d-flex flex-column" v-if="!commenting && (form.content || uploadedFiles.length)">' +
+        '         <button class="btn btn-primary ml-2" type="submit" v-if="!commenting">{{ textSubmit }}</button>' +
+        '         <button class="btn btn-link ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">{{ textCancel }}</button>' +
         '       </div>' +
-        '     </div>' +
+        '       <div class="text-center" v-if="commenting"><b-spinner class="ml-2" variant="success" type="grow" label="Spinning"></b-spinner></div>' +
         '   </div>' +
         '</section>' +
         '   <progress-bar class="mt-2" :progress="percent"></progress-bar>' +
@@ -90,6 +90,7 @@ Vue.component('comment-form', {
 
             console.log('form', this.form);
 
+            this.commenting = true;
             request(route, this.form, function() {
                 location.reload();
             }, alert);

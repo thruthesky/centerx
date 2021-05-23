@@ -15,6 +15,9 @@ $translations = [
     'confirm_delete' => ['en' => 'Do you want to delete?', 'ko' => '삭제하시겠습니까?'],
     'post_create' => ['en' => 'Create', 'ko' => '글 쓰기'],
     'category' => ['en' => 'Category', 'ko' => '카테고리'],
+    'date' => ['en' => 'Date', 'ko' => '날짜'],
+    'no_of_views' => ['en' => 'Views', 'ko' => '조회수'],
+    'select_category' => ['en' => 'Select Category', 'ko' => '카테고리 선택'],
     'input_title' => [
         'en' => 'Input title',
         'ko' => '제목을 입력하세요.',

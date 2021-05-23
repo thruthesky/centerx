@@ -7,6 +7,7 @@
  */
 
 $post = post()->current();
+$post->increaseNoOfViews();
 
 if ( $post->hasError ) {
     if (in('postIdx')) {

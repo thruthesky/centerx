@@ -28,6 +28,9 @@
  * @property-read string $private;
  * @property-read string $isPrivate;
  * @property-read int $noOfComments;
+ * @property-read int $noOfViews;
+ * @property-read string $reminder;
+ * @property-read int $listOrder;
  * @property-read FileTaxonomy[] $files;
  * @property-read string $path;
  * @property-read string $url;
@@ -349,6 +352,13 @@ class PostTaxonomy extends Forum {
             $where .= " AND categoryIdx=?";
             $params[] = $categoryIdx;
         }
+
+
+        /**
+         * 국가 코드
+         * README `HOOK_POST_LIST_COUNTRY_CODE` 참고
+         */
+        hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $countryCode);
         if ( $countryCode ) {
             $where .= " AND countryCode=?";
             $params[] = $countryCode;
@@ -560,6 +570,9 @@ class PostTaxonomy extends Forum {
         parent::update([READ_AT => time()]);
     }
 
+    public function increaseNoOfViews() {
+        parent::update([NO_OF_VIEWS => $this->noOfViews + 1]);
+    }
 }
 
 

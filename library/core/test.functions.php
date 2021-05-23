@@ -134,5 +134,6 @@ function postMockData(int $limit = 1, bool $photo = null ): array {
 }
 function firstPost(bool $photo = true ): PostTaxonomy {
     $posts = post()->first(photo: $photo);
+    if ( empty($posts) ) return post();
     return $posts[0];
 }

@@ -11,6 +11,7 @@ if ( $post->hasError ) {
 $comments = $post->comments();
 ?>
 
+
     <section class="post-view-default p-3 mb-5" style="border-radius: 16px; background-color: #f4f4f4;">
         <div class="pb-1" style="word-break: normal">
             <h3><?= $post->title ?></h3>
@@ -21,30 +22,35 @@ $comments = $post->comments();
             <!-- FILES -->
             <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
             <hr class="my-1">
-            <div class="d-flex buttons mt-2">
+            <div class="d-flex align-items-center buttons mt-2">
                 <div class="d-flex">
                     <vote-buttons
                             parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->N ?>"
                             text-like="<?=ln('like')?>"
                             text-dislike="<?=ln('dislike')?>"
                     ></vote-buttons>
-                    <a class="btn btn-sm mr-2" href="<?=messageSendUrl($post->userIdx)?>"><?=ln('send_message')?></a>
+                    <?php if ( $post->isMine() == false ) {?><a class="btn btn-sm mr-2" href="<?=messageSendUrl($post->userIdx)?>"><?=ln('send_message')?></a><?php } ?>
                 </div>
                 <span class="flex-grow-1"></span>
                 <a class="btn btn-sm mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?=ln('list')?></a>
+
                 <?php if ($post->isMine() || admin()) { ?>
-                    <div>
-                        <a class="btn btn-sm" href="/?p=forum.post.edit&idx=<?= $post->idx ?>"><?=ln('edit')?></a>
-                        <a class="btn btn-sm red" href="/?p=forum.post.delete.submit&idx=<?= $post->idx ?>" onclick="return confirm('<?= ek('Delete Post?', '@T Delete Post') ?>')">
-                            <?=ln('delete')?>
-                        </a>
+                    <b-dropdown size="lg"  variant="link" toggle-class="text-decoration-none" no-caret>
+                        <template #button-content>
+                            <i class="fa fa-ellipsis-h dark fs-md"></i><span class="sr-only">Search</span>
+                        </template>
+                        <b-dropdown-item href="<?=postEditUrl(postIdx: $post->idx)?>"><?=ln('edit')?></b-dropdown-item>
+                        <b-dropdown-item href="<?=postDeleteUrl($post->idx)?>"  onclick="return confirm('<?=ln('confirm_delete')?>')"><div class="red"><?=ln('delete')?></div></b-dropdown-item>
                         <?php if (admin()) { ?>
-                            <a class="btn btn-sm" href="/?p=admin.index&w=push-notification/push-notification-create&idx=<?= $post->idx ?>">
-                                <?=ln('admin push')?>
-                            </a>
+                            <b-dropdown-divider></b-dropdown-divider>
+                        <b-dropdown-group id="dropdown-group-1" header="Admin">
+                        <b-dropdown-item href="<?=postMessagingUrl($post->idx)?>"><?=ln('admin push')?></b-dropdown-item>
+                        </b-dropdown-group>
                         <?php } ?>
-                    </div>
+                    </b-dropdown>
                 <?php } ?>
+
+
             </div>
         </section>
         <div class="pt-2">
@@ -70,7 +76,6 @@ $comments = $post->comments();
                             <!-- comment reply form -->
                             <comment-form root-idx="<?= $post->idx ?>"
                                           parent-idx='<?= $comment->idx ?>'
-                                          text-photo="<?=ln('photo')?>"
                                           text-submit="<?=ln('submit')?>"
                                           text-cancel="<?=ln('cancel')?>"
                                           v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'"

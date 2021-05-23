@@ -120,6 +120,24 @@ class CategoryTaxonomy extends Entity {
         else return $this->getData();
     }
 
+    /**
+     * @return PostTaxonomy[]
+     */
+    public function reminders(array $in = []): array {
+        $where = "categoryIdx={$this->idx} AND reminder='Y' AND parentIdx=0 AND deletedAt=0";
+        $params = [];
+        /**
+         * 국가 코드
+         * README `HOOK_POST_LIST_COUNTRY_CODE` 참고
+         */
+        $countryCode = $in['countryCode'] ?? '';
+        hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $countryCode);
+        if ( $countryCode ) {
+            $where .= " AND countryCode=?";
+            $params[] = $countryCode;
+        }
+        return post()->search(where: $where, params: $params, order: 'listOrder', page: in('page', 1), limit: in('limit', 10), object: true);
+    }
 }
 
 

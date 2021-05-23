@@ -6,7 +6,7 @@
         if ( cafe()->isMine() ) {
             ?>
             <hr>
-            <a href="?cafe.admin">카페 관리자</a>
+            <a href="/?cafe.admin">카페 관리자</a>
     <?php
         }
     ?>

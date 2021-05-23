@@ -6,9 +6,8 @@ $o = getWidgetOptions();
 $posts = $o['posts'];
 $total = $o['total'];
 
-
-
 ?>
+<?php include_once widget('post-list-reminder/post-list-reminder-default', ['reminders' => $o['reminders']])?>
 <section class="post-list-default px-2 px-lg-0">
     <div style="padding: 1rem 1rem 0 1rem; background-color: #efefef;">
         <?php

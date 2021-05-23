@@ -12,7 +12,7 @@ $__label = $o['label'] ?? "";
 $__topicData = 'push_icon_' . $__topic;
 ?>
 <div class="push-notification-icon">
-    <b-form-checkbox v-model="<?=$__topicData?>" name="check-button" switch @change="onChangeSubscribeOrUnsubscribeTopic('<?= $__topic ?>')">
+    <b-form-checkbox v-model="$data['<?=$__topicData?>']" name="check-button" switch @change="onChangeSubscribeOrUnsubscribeTopic('<?= $__topic ?>')">
         <?=$__label?>
     </b-form-checkbox>
 </div>

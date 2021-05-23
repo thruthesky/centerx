@@ -7,6 +7,7 @@ $category = $o['category'];
 
 ?>
 
+
 <section class="post-list-header-default px-2 px-lg-0">
     <div class="d-flex align-items-center p-2">
 

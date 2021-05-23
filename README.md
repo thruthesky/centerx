@@ -1,25 +1,42 @@
 # CenterX
 
-- CenterX 는 웹 및 Restful Api 를 통해서 애플리케이션을 개발할 수 있도록 하는 백엔드 프레임워크이다.
-- CenterX 가 PHP 그리고 Vue.js 2.x 와 Bootstrap 4.x 를 사용하는 이유
-  - 개발 환경 및 IE 지원
-    - IE11 을 지원하고, (Vue.js 3 는 IE 지원 하지 않음)
-    - SEO 를 하며, (SSR 이 필요함.)
-    - 컴파일을 하지 않는다. (Angular Universal 이나 Nuxt.js 류는 컴파일을 해야하는데, 약간의 수정을 해도 매번 컴파일을 해야하고, 차 후, 다른 개발자가 이어 갈때, PHP 보다는 더 어려울 수 있다.)
-  
-  - PHP 는 매우 직관적.
-    - PHP 는 HTML 을 그대로 웹 브라우저에 표현을 할 수 있다. (Vue.js 와 같은 자바스크립트를 같이 사용하여 UX 를 높일 수 있다.)
-    - 그에 반해 SPA 를 지원하는 SSR 가능한 툴(Angular Universal, Nuxt.js, SvelteKit 등)들은 웹 개발에 있어 Node 와 CLI 명령, 그리고 자바스크립트 빌드 및 배포 과정이 직관적이지 않다.
+- CenterX 는 웹사이트 개발 및 Restful Api 를 통해서 Mobile App 의 백엔드로 개발 할 있도록 하는 프레임워크이다.
+- CenterX 를 직접 개발한 이유는
+  - PHP 버전 8 으로 업데이트 될 때, 새로운 기능을 사용하고 싶었는데, 기존의 프레임워크들이 즉각적인 지원을 하지 않았다.
+  - 직관적이며, 간단한 프레임워크를 통해 팀원 및 다른 개발자들이 쉽게 사용 할 수 있도록 하기 위해서이다.
     
-  - 만약, 컴파일을 해야한다면, SvelteKit 을 적극 추천 할 만하다.
+## 개발 환경
+
+- 2021년 5월, 대한민국의 데스크톱 컴퓨터에서 IE11 의 점유율이 10%가 넘는다. 그래서 IE11 의 지원은 필수이며 최소한, 앞으로 5년간 필수 지원을 해야 한다.
+  참고로, IE10 이하는 거의 사용되지 않아 무시한다.
+  - 이러한 이유로, Vue.js 2.x 와 Bootstrap 5.x 를 사용한다.
+  
+- Native SEO 를 지원하기 위해서 PHP 를 사용한다.
+  - SPA 의 경우 SSR 을 통해서 SEO 지원이 가능하다. 예) Angular Universal, React Next.js, Vue Nuxt.js, SvelteKit 등이 SSR 를 지원한다.
+  하지만, Native 지원을 하지 못하므로 배포 전에 컴파일 과정을 거쳐야 하며, SSR 을 위한 별도의 서버를 운영해야한다.
+  이러한 과정이 번거로우며, 특히 약간의 수정을 해도 컴파일하고 배포해야 하며, 혹시라도 다른 개발자가 이어서 개발을 해 나갈 때 개발 환경 설정이 만만치 않을 수 있다.
+  - 즉, SSR 을 하되 컴파일을 하지 않는 것을 중요하게 생각하고 있으며, 그래서 PHP Native SEO 를 한다.
+    - PHP 는 HTML 을 그대로 웹 브라우저에 표현을 할 수 있다. (Vue.js 와 같은 자바스크립트를 같이 사용하여 UX 를 높일 수 있다.)
 
 
-## 특징
+- 개발은 Docker Container 를 통해서 하며, 실제 서버에서도 Docker Container 를 이용해도 무방하다.
 
-- 가장 단순하며 직관적인 플랫폼을 위해서 직접 개발
-- 성능 향상을 위해서 최신 PHP (버전 8)를 사용하고 있으며, Nginx(Apache 대체 가능)와 MariaDB(MySQL 대체 가능)를 바탕으로 하는 프레임워크
-- Container(Docker) 를 통한 배포
-- IE10+ 지원. 대한민국의 데스크톱에서 10% 이상이 IE 를 사용한다. IE 지원은 필수이다. 그래서 Vue.js 2 와 Bootstrap 4 를 기준으로 작업을 한다.
+
+### 주요 개발 요소
+
+CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요소들을 사용한다.
+
+- Vue.js 2.x (IE11 지원, PHP 에서 inline 으로 Vue.js 2 를 사용)
+- Bootstrap 4.x (IE11 지원)
+- BootstrapVue 2.x (IE11 지원)
+- FontAwesome 5.x  
+- /etc/css/x.css
+
+
+만약, Vue.js, Bootstrap, Font Awesome 등을 사용하지 않고, 다른 자바스크립트, CSS, 아이콘 등을 사용하고 싶다면 그렇게 하면 된다. 다만, CenterX 에서
+제공하는 기본 위젯들이 Vue.js 와 Bootstrap, Font Awesome 을 기본으로 만들어져 있다. 그래서 이미 만들어진 위젯 기능을 사용하려 한다면, 위의 요소들을
+사용해야 한다.
+
 
 
 # 문서 안내
@@ -46,7 +63,7 @@
 
 # 해야 할 일
 
-- [CenterX Git Project](https://github.com/thruthesky/centerx/projects/2)
+- [PHP + SPA](https://docs.google.com/document/d/1WG3caN7_3eXRhPthBgDAgzzkI-OrVir1Bvnrbt-nsR0/edit#heading=h.n7o87sszwfc6) 를 시도해 본다.
 
 - 다음 버전의 명칭
   - CenterX 대신 Matrix 로 변경
@@ -56,7 +73,8 @@
     - 각종 표현/접두어/접미어를 'x' 로 한다.
       예: 기본 css 를 etc/css/x.css 로 저장한다.
 
-- LIVE_RELOAD 를 ON/OFF 를 할 수 있도록 한다.
+
+- 공지사항을 beginAt 과 endAt 을 통해서, 언제 부터 언제까지인지 표시를 할 수 있도록 한다.
 
 
 - 사용자 프로필을
@@ -789,9 +807,6 @@ with the latest android version, but the developer must code on the android app.
   - 없으면, config.php 에 있는 접속 정보로 접속한다.
 
 
-## 게시글 테이블. posts 테이블
-
-
 
 ## 사용자 테이블
 
@@ -816,10 +831,7 @@ with the latest android version, but the developer must code on the android app.
 
   
 
-## wc_posts, 게시판 테이블
-
-
-
+## wc_posts, 게시판 테이블, posts 테이블, posts table
 
 - `userIdx` 글 쓴이 idx.
 - `otherUserIdx` 에는 글을 받는 사람의 idx 가 들어간다.
@@ -871,6 +883,16 @@ with the latest android version, but the developer must code on the android app.
 - 'files' 필드는 글에 등록된 파일 들의 idx 를 콤마로 분리해서 저장한다. 예) "123,456"
   하지만, 글을 읽을 때에는 'files' 필드를 참조하지 않고, wc_files 의 entity 를 보고, 해당 글에 연결된 모든 파일을 가져온다.
   다만, 글 검색을 할 때, 'files' 필드에 값이 있으면 첨부 파일/사진이 있는 것으로 간주하여, 사진이 있는 파일만 가져오게 할 수 있다.
+  
+- `listOrder` - 코멘트의 목록 순서는 parentIdx 를 바탕으로하는 재귀 함수를 통해서 정렬을 한다.
+  그래서 코멘트 정렬에서 listOrder 가 사용되지는 않지만, 공지 사항 목록 우선 순위나 배너 표시 우선 순위 등 여러가지 상황에서 활용을 할 수 있다.
+  
+- `reminder` - 'Y' 이면 공지사항이라는 뜻이며, 'Y' 가 아니면(빈 값 또는 N)이면 일반 글이라는 뜻이다.
+
+- `noOfViews` 는 조회수이다. 앱이나 SPA 에서는 라우트를 통해서 업데이트 해야하며, 검색 로봇 조회나, 이중 업데이트를 방지해야 한다.
+
+
+
   
 ## files, 파일 테이블
 
@@ -2310,6 +2332,7 @@ hook()->add('posts_before_create', function($record, $in) {
 
 * HOOK_POST_LIST_COUNTRY_CODE
   게시글 목록을 할 때, 강제로 특정 국가의 글만 목록하게 할 수 있다.
+  이 훅은 글 목록이나, 공지사항 목록 등에서 사용 된다.
 
 * HOOK_POST_EDIT_FORM_ATTR
   글 수정을 할 때에 HTML FORM 태그에 추가 할 속성을 리턴 할 수 있다.
@@ -3356,6 +3379,20 @@ echo "현재 환율: $phpKwr";
 </script>
 ```
 
+## 코멘트 위젯
+
+- 코멘트 쓰기는 Vue.js 컴포넌트로 한다. (참고. 글/코멘트 내용 출력은 SEO 를 위해서 PHP 로 해야한다.)
+- 아래의 예제에서, `text-photo` 값을 지정하지 않으면, 자동으로 카메라 아이콘이 표시된다.
+
+```html
+<comment-form root-idx="<?= $post->idx ?>"
+              parent-idx='<?= $comment->idx ?>'
+              text-photo="<?=ln('photo')?>"
+              text-submit="<?=ln('submit')?>"
+              text-cancel="<?=ln('cancel')?>"
+              v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'"
+></comment-form>
+```
 ### Ajax 로 글 전송 위젯, post-edit-ajax.php
 
 - 글을 저장할 때, PHP 로 다음 페이지로 넘겨서 처리를 하는 것이 아니라, Vue.js 로 입력 값을 점검 한 후, Axios 로 글을 생성한다.

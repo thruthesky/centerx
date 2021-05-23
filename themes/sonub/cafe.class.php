@@ -121,7 +121,7 @@ class CafeTaxonomy extends CategoryTaxonomy
             // sonub.com 의 경우, 전 세계 글로벌 교민 사이트이므로, 특별히 countryCode 가 없다.
             // 그래서 여기서 초기화를 해 준다.
 
-            $this->updateMemory('countryCode', $this->countryCode());
+            $this->updateMemoryData('countryCode', $this->countryCode());
         }
     }
 

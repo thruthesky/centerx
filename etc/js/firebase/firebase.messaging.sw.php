@@ -1,7 +1,7 @@
 <?php
 header("Content-Type: application/javascript");
 header("Cache-Control: max-age=604800, public");
-const STOP_LIVE_RELOAD = false;
+const STOP_LIVE_RELOAD = true;
 require_once '../../../boot.php';
 ?>
 /** Import google libraries */

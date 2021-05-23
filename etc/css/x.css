@@ -124,8 +124,16 @@ a:hover {
   top: 0;
 }
 
+.top-sm {
+  top: 0.5em;
+}
+
 .left {
   left: 0;
+}
+
+.left-sm {
+  left: 0.5em;
 }
 
 .right {
