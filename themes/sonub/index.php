@@ -24,9 +24,9 @@
         ?>
         <div class="container-xl">
             <div class="row">
-                <div class="d-none d-md-block col-4 col-lg-3"><?php include theme()->file('left'); ?></div>
-                <div class="col-12 col-md-8 col-lg-6 p-0 m-0"><?php include theme()->page(); ?></div>
-                <div class="d-none d-lg-block col-3"><?php include theme()->file('right'); ?></div>
+                <div class="d-none d-lg-block col-2"><?php include theme()->file('left'); ?></div>
+                <div class="col-12 col-md-8 col-lg-7 px-1"><?php include theme()->page(); ?></div>
+                <div class="d-none d-md-block col-4 col-lg-3"><?php include theme()->file('right'); ?></div>
             </div>
         </div>
         <?php
@@ -34,6 +34,7 @@
         ?>
     <?php } ?>
 </section>
+
 <!-- Load polyfills to support older browsers before loading Vue and Bootstrap Vue -->
 <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver%2CObject.fromEntries" crossorigin="anonymous"></script>
 <?php js(HOME_URL . 'etc/js/common.js', 7)?>

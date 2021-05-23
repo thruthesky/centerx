@@ -1686,3 +1686,30 @@ function isSubscribedToTopic($topic): bool
 {
     return login()->v($topic) === "on";
 }
+
+
+/**
+ * Convert the input to timestamp
+ *
+ * @see https://www.php.net/manual/en/datetime.formats.date.php for details
+ *
+ * @param int|string $date
+ * @return int
+ *  - if $date is int, return $date
+ *  - if $date is string, return after `strtotime`.
+ *  - else return 0.
+ */
+function dateToTime(int|string $date): int {
+    if ( is_numeric($date) || is_int($date) ) return $date;
+    else if ( is_string($date) ) return strtotime($date);
+    else return 0;
+}
+
+
+
+function daysBetween($stamp1, $stamp2) {
+    if ( empty($stamp1) || empty($stamp2) ) return 0;
+    $date1 = \Carbon\Carbon::createFromTimestamp($stamp1);
+    $date2 = \Carbon\Carbon::createFromTimestamp($stamp2);
+    return $date1->diffInDays($date2, false);
+}

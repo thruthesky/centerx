@@ -1,13 +1,27 @@
 <?php
 
 ?>
+
+<div class="box mb-2 border-radius-md">
+    <?php include widget('login/login')?>
+
+    <?php
+    if ( cafe()->isMine() ) {
+        ?>
+        <hr>
+        <a href="/?cafe.admin">카페 관리자</a>
+        <?php
+    }
+    ?>
+</div>
+
 <section class="box mb-2">
-    <h1>카페 개설하기</h1>
-    <hr>
-    <?php include widget('cafe/cafe-create') ?>
+    <a href="/?cafe.create">카페 개설하기</a>
 </section>
 
-<section class="box">
+<?php include widget('message/message-side-menu')?>
+
+<section class="box mb-2">
     <h1>Weather</h1>
     <hr>
     <?php include widget('weather/openweathermapcurrent') ?>

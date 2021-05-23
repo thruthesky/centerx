@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [5.19.0] - 2021-05-09
+* Added the `startAfter` and `endBefore` filters for the Realtime Database. At the moment they
+  don't seem to have an effect on the returned results (just as if they didn't exist); it's
+  unclear if the implementation is incorrect or if the REST API doesn't support the new
+  filters yet. If you see why it's not working or if it _does_ work for you, please
+  let me know.
+### Changed
+* `CloudMessage::withData()` allowed the message data to be empty, resulting in the Firebase
+  API rejecting the message. If the message data is empty, the field is now removed before
+  sending the message.
+  ([#591](https://github.com/kreait/firebase-php/issues/591))
+
 ## [5.18.0] - 2021-04-19
 ### Added
 * Added support for more public keys from Google that ID Tokens could have been signed with. 
@@ -236,7 +248,8 @@ to upgrade from a 4.x release to 5.0 without changes to your code.**
 * Support for PHP `<7.2`
 * Deprecated methods and classes
 
-[Unreleased]: https://github.com/kreait/firebase-php/compare/5.18.0...HEAD
+[Unreleased]: https://github.com/kreait/firebase-php/compare/5.19.0...HEAD
+[5.19.0]: https://github.com/kreait/firebase-php/compare/5.18.0...5.19.0
 [5.18.0]: https://github.com/kreait/firebase-php/compare/5.17.1...5.18.0
 [5.17.1]: https://github.com/kreait/firebase-php/compare/5.17.0...5.17.1
 [5.17.0]: https://github.com/kreait/firebase-php/compare/5.16.0...5.17.0

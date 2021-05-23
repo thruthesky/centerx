@@ -10,7 +10,9 @@ else {
     $categoryId = in(CATEGORY_ID);
 }
 
-if ( $post->hasError ) jsBack($post->getError());
+if ( $post->hasError ) {
+    jsBack($post->getError());
+}
 
 
 $category = category($categoryId);

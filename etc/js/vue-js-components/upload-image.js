@@ -48,7 +48,7 @@ Vue.component('upload-image', {
     },
     template: '' +
         '<section class="upload-image">' +
-        '   <div class="uploaded-image" style="position: relative">' +
+        '   <div class="uploaded-image d-inline-block" style="position: relative">' +
         '       <img :src="file.url" v-if="file.url">' +
         '       <div class="close-button" @click="onClickDeleteImage" v-if="file.idx" style="position: absolute; display: flex; width: 24px;  align-items: center; justify-content: center; bottom: 6px; right: 6px; height: 24px; background-color: red; color: white; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 18px;"><div>&#x00D7</div></div>' +
         '   </div>' +

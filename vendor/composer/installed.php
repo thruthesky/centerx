@@ -1,24 +1,24 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => 'dev-next',
-    'version' => 'dev-next',
+    'pretty_version' => 'dev-main',
+    'version' => 'dev-main',
     'aliases' => 
     array (
     ),
-    'reference' => '3823f49bdfb2393952119edfaf45dad6358f20ad',
+    'reference' => 'dbcb328589b80aa8c00d7e42ea4cd30e8e80eeab',
     'name' => '__root__',
   ),
   'versions' => 
   array (
     '__root__' => 
     array (
-      'pretty_version' => 'dev-next',
-      'version' => 'dev-next',
+      'pretty_version' => 'dev-main',
+      'version' => 'dev-main',
       'aliases' => 
       array (
       ),
-      'reference' => '3823f49bdfb2393952119edfaf45dad6358f20ad',
+      'reference' => 'dbcb328589b80aa8c00d7e42ea4cd30e8e80eeab',
     ),
     'aporat/store-receipt-validator' => 
     array (
@@ -46,15 +46,6 @@
       array (
       ),
       'reference' => 'd56bf6102915de5702778fe20f2de3b2fe570b5b',
-    ),
-    'ezsql/ezsql' => 
-    array (
-      'pretty_version' => '5.1.1',
-      'version' => '5.1.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '14968136b7bd4fc6e96ac19cd1fb9d88c87ea4c8',
     ),
     'fig/http-message-util' => 
     array (
@@ -94,30 +85,30 @@
     ),
     'google/apiclient-services' => 
     array (
-      'pretty_version' => 'v0.170.0',
-      'version' => '0.170.0.0',
+      'pretty_version' => 'v0.175.0',
+      'version' => '0.175.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b45ddc3d82b2c8f328d869d55db88c1885d898ee',
+      'reference' => '316cbf9b02c575a140d8cbeca48a3ca0070fcd5a',
     ),
     'google/auth' => 
     array (
-      'pretty_version' => 'v1.15.0',
-      'version' => '1.15.0.0',
+      'pretty_version' => 'v1.15.1',
+      'version' => '1.15.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b346c07de6613e26443d7b4830e5e1933b830dc4',
+      'reference' => '4e0c9367719df9703e96f5ad613041b87742471c',
     ),
     'google/cloud-core' => 
     array (
-      'pretty_version' => 'v1.41.1',
-      'version' => '1.41.1.0',
+      'pretty_version' => 'v1.42.0',
+      'version' => '1.42.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6c39dfc66eb9e542fcc5d793a1c128d3d006a6b8',
+      'reference' => '0e311771797adb1b8674fce77e5dbaf727cea3eb',
     ),
     'google/cloud-storage' => 
     array (
@@ -157,12 +148,12 @@
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '1.8.1',
-      'version' => '1.8.1.0',
+      'pretty_version' => '1.8.2',
+      'version' => '1.8.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => '35ea11d335fd638b5882ff1725228b3d35496ab1',
+      'reference' => 'dc960a912984efb74d0a90222870c72c87f10c91',
     ),
     'kreait/clock' => 
     array (
@@ -175,12 +166,12 @@
     ),
     'kreait/firebase-php' => 
     array (
-      'pretty_version' => '5.18.0',
-      'version' => '5.18.0.0',
+      'pretty_version' => '5.19.0',
+      'version' => '5.19.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2fb3778725bb26000c49e9299ed4a52ac142a4e3',
+      'reference' => '3e056f77c3499e86bfbf9e5af8776c2fb070453d',
     ),
     'kreait/firebase-tokens' => 
     array (
@@ -260,21 +251,21 @@
     ),
     'nesbot/carbon' => 
     array (
-      'pretty_version' => '2.46.0',
-      'version' => '2.46.0.0',
+      'pretty_version' => '2.48.0',
+      'version' => '2.48.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2fd2c4a77d58a4e95234c8a61c5df1f157a91bf4',
+      'reference' => 'd3c447f21072766cddec3522f9468a5849a76147',
     ),
     'nikic/php-parser' => 
     array (
-      'pretty_version' => 'v4.10.4',
-      'version' => '4.10.4.0',
+      'pretty_version' => 'v4.10.5',
+      'version' => '4.10.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c6d052fc58cb876152f89f532b95a8d7907e7f0e',
+      'reference' => '4432ba399e47c66624bc73c8c0f811e5c109576f',
     ),
     'paragonie/constant_time_encoding' => 
     array (
@@ -420,22 +411,6 @@
       ),
       'reference' => 'd11b50ad223250cf17b86e38383413f5a6764bf8',
     ),
-    'psr/container' => 
-    array (
-      'pretty_version' => '1.1.1',
-      'version' => '1.1.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '8622567409010282b7aeebe4bb841fe98b58dcaf',
-    ),
-    'psr/container-implementation' => 
-    array (
-      'provided' => 
-      array (
-        0 => '1.0',
-      ),
-    ),
     'psr/http-client' => 
     array (
       'pretty_version' => '1.0.1',
@@ -470,12 +445,12 @@
     ),
     'psr/log' => 
     array (
-      'pretty_version' => '1.1.3',
-      'version' => '1.1.3.0',
+      'pretty_version' => '1.1.4',
+      'version' => '1.1.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0f73288fd15629204f9d42b7055f72dacbe811fc',
+      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
     ),
     'psr/log-implementation' => 
     array (
@@ -702,12 +677,12 @@
     ),
     'symfony/translation' => 
     array (
-      'pretty_version' => 'v5.2.6',
-      'version' => '5.2.6.0',
+      'pretty_version' => 'v5.2.9',
+      'version' => '5.2.9.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2cc7f45d96db9adfcf89adf4401d9dfed509f4e1',
+      'reference' => '61af68dba333e2d376a325a29c2a3f2a605b4876',
     ),
     'symfony/translation-contracts' => 
     array (

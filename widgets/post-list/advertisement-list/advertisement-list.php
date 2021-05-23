@@ -14,9 +14,9 @@ if ( empty($posts) ) return include widget('post-list/empty-post-list');
                 $post = post(idx: $post->idx);
                 ?>
                 <div class="d-flex">
-                    <a href="<?= $post->url ?>" style="text-decoration: none">
+                    <a href="<?= postEditUrl(postIdx: $post->idx) ?>" style="text-decoration: none">
                         <div class="bold">No. <?= $post->idx ?> -
-                            <?=$post->title?>
+                            <?=$post->privateTitle?>
                         </div>
                         <div class="mt-1 text-muted">
                             <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?>

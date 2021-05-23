@@ -24,8 +24,6 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         'a8d3953fd9959404dd22d3dfcd0a79f0' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
-        '8fa1aa8cac6a43024fcfc5386df20ced' => __DIR__ . '/..' . '/ezsql/ezsql/lib/Constants.php',
-        'b8b48b5f3b620f647efc2110a0a0e913' => __DIR__ . '/..' . '/ezsql/ezsql/lib/ezFunctions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -33,10 +31,6 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         array (
             'phpseclib3\\' => 11,
             'phpDocumentor\\Reflection\\' => 25,
-        ),
-        'e' => 
-        array (
-            'ezsql\\' => 6,
         ),
         'W' => 
         array (
@@ -63,7 +57,6 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
-            'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
             'Prophecy\\' => 9,
             'PhpParser\\' => 10,
@@ -131,10 +124,6 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
             1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
-        'ezsql\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/ezsql/ezsql/lib',
-        ),
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
@@ -190,10 +179,6 @@ class ComposerStaticInit04c450a8b89c8b6450e928cb463fb957
         'Psr\\Http\\Client\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
-        ),
-        'Psr\\Container\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/container/src',
         ),
         'Psr\\Cache\\' => 
         array (

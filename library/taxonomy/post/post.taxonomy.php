@@ -46,6 +46,9 @@
  * @property-read int $createdAt;
  * @property-read int $updatedAt;
  * @property-read int $deletedAt;
+ * @property-read int $readAt;
+ * @property-read int $beginAt;
+ * @property-read int $endAt;
  * @property-read CommentTaxonomy[] $comments;
  * @property-read string $shortDate - 짧은 날짜 표시
  */
@@ -153,7 +156,9 @@ class PostTaxonomy extends Forum {
         $in[PATH] = $this->getSeoPath($in['title'] ?? '');
         $in['Ymd'] = date('Ymd');
 
-
+        // beginAt 과 endAt 의 값이 문자열이면, strtotime 을 해서 저장한다.
+        $in[BEGIN_AT] = dateToTime($in[BEGIN_AT]);
+        $in[END_AT] = dateToTime($in[END_AT]);
         // Create a post
         parent::create($in);
         if ( $this->hasError ) return $this;
@@ -214,6 +219,11 @@ class PostTaxonomy extends Forum {
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
         if ( $this->otherUserIdx ) return $this->error(e()->cannot_be_updated_due_to_other_user_idx);
+
+
+        // beginAt 과 endAt 의 값이 문자열이면, strtotime 을 해서 저장한다.
+        $in[BEGIN_AT] = dateToTime($in[BEGIN_AT]);
+        $in[END_AT] = dateToTime($in[END_AT]);
 
         parent::update($in);
         $this->fixUploadedFiles($in);

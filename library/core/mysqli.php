@@ -27,7 +27,7 @@ class MySQLiDatabase {
 
         $this->error = "$msg\n";
         if ( $sql ) $this->error .= "SQL: $sql\n";
-        if ( $this->displayError ) {
+        if ( $this->displayError && isLocalhost() ) {
             d($msg);
             d($sql);
             debug_print_backtrace();

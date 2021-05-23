@@ -70,6 +70,9 @@ const CREATED_AT = 'createdAt';
 const UPDATED_AT = 'updatedAt';
 const DELETED_AT = 'deletedAt';
 const READ_AT = 'readAt';
+const BEGIN_AT = 'beginAt';
+const END_AT = 'endAt';
+
 const SESSION_ID = 'sessionId';
 const NICKNAME = 'nickname';
 const PROFILE_PHOTO_URL = 'profilePhotoUrl';
@@ -127,6 +130,13 @@ define('SHOPPING_MALL', 'shopping_mall');
 
 
 const RETURN_URL = 'return_url';
+
+
+const AD_TOP = 'ad_top';
+const AD_POST_LIST_SQUARE = 'ad_post_list_square';
+const AD_POST_LIST_THUMBNAIL = 'ad_post_list_thumbnail';
+const AD_WING = 'ad_wing';
+
 
 /**
  * Meta 에 저장되지 말아야 할 키 목록

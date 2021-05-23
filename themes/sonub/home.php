@@ -5,9 +5,21 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
     <?php
 }
 
+
+$file_table = DB_PREFIX . 'files';
+$post_table = DB_PREFIX . 'posts';
+$ad_type = AD_TOP;
+$today = \Carbon\Carbon::today()->getTimestamp();
+d(date('r', $today));
+$q = "SELECT f.idx fileIdx, p.idx postIdx FROM $file_table f, $post_table p WHERE f.code = '$ad_type' AND f.entity = p.idx AND p.endAt >= $today ORDER BY p.listOrder DESC";
+$rows = db()->rows($q);
+foreach( $rows as $row ) {
+    d(post($row['postIdx']));
+}
 ?>
 
-
+a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9
+a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9
 <template>
     <div class="mb-3">
         <b-button @click="toast('notAppend', 'Content not append')">Show Toast</b-button>
