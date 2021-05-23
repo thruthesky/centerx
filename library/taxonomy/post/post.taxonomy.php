@@ -341,6 +341,7 @@ class PostTaxonomy extends Forum {
         bool $photo = null,
         string $private = '',
     ): array {
+
         $where = "parentIdx=0 AND deletedAt=0 AND private='$private'";
         if ( $categoryIdx == 0 ) {
             if ( $categoryId ) {
@@ -353,13 +354,8 @@ class PostTaxonomy extends Forum {
             $params[] = $categoryIdx;
         }
 
-
-        /**
-         * 국가 코드
-         * README `HOOK_POST_LIST_COUNTRY_CODE` 참고
-         */
-        hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $countryCode);
-        if ( $countryCode ) {
+        // 국가 코드 훅. @see README `HOOK_POST_LIST_COUNTRY_CODE` 참고
+        if ( $countryCode = hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $countryCode) ) {
             $where .= " AND countryCode=?";
             $params[] = $countryCode;
         }
@@ -373,6 +369,7 @@ class PostTaxonomy extends Forum {
             limit: $limit,
             object: true
         );
+
     }
 
     /**

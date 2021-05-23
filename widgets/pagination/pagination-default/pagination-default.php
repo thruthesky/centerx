@@ -54,7 +54,7 @@ function _url($no) {
 
 ?>
 
-<div class="d-flex justify-content-center mb-2" style='padding: 10px 20px 0px; border-top: dotted 1px #CCC;'>
+<div class="d-flex justify-content-center mb-2">
     <strong>Page <?php echo $page." of ".$total_no_of_pages; ?></strong>
 </div>
 <nav class="d-flex justify-content-center" aria-label="Page navigation" style="display: inline-block">

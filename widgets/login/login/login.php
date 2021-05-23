@@ -3,7 +3,8 @@
     <?=login()->idx?>
     <?php if (admin()) { ?>
         <div>
-            <a href="/?admin.index">[<?= ln('admin') ?>]</a> |
+            <a href="/?admin.index"><?= ln('admin') ?></a>
+            <a href="<?=postListUrl(ADVERTISEMENT_CATEGORY)?>"><?= ln('advertisement') ?></a>
             <?php if (isTranslationMode()) { ?>
                 <span onclick="adminTranslate('N');">[<?= ln('stop translate') ?>]</span>
                 <script>
@@ -25,7 +26,7 @@
                     })
                 </script>
             <?php } else { ?>
-                <span onclick="adminTranslate('Y');">[<?= ln('begin translate') ?>]</span>
+                <span onclick="adminTranslate('Y');"><?= ln('begin translate') ?></span>
             <?php } ?>
         </div>
 
@@ -36,9 +37,8 @@
             }
         </script>
     <?php } ?>
-    <a href="/?user.logout.submit">[ <?=ln('logout')?> ]</a>
+    <a href="/?user.logout.submit"><?=ln('logout')?></a>
 <?php } else { ?>
-
     <div class="fs-sm">
         <a class="d-block" href="/?user.login">
             <?=ln('please_login')?>
@@ -46,4 +46,4 @@
         </a>
         <a class="d-block mt-1 text-right" href="/?user.register"><?=ln('or_register')?></a>
     </div>
-<?php  } ?>
+<?php } ?>

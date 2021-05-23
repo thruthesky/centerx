@@ -9,13 +9,13 @@ if ( !in(OTHER_USER_IDX) ) {
 
 ?>
 
-받는 사람 표시. 이 때, inbox outbox 에 ㄸ라ㅏ서 처리해야 한다.
+@todo 받는 사람 표시. 이 때, inbox outbox 에 ㄸ라ㅏ서 처리해야 한다.
 
     <section class="p-3" id="post-edit-default" style="background-color: #f7f8f8; border-radius: 10px;">
         <form action="/" method="POST">
             <?= hiddens(
                 p: 'forum.post.edit.submit',
-                return_url: 'post',
+                return_url: 'view',
                 kvs: [
                         CATEGORY_ID => MESSAGE_CATEGORY,
                         OTHER_USER_IDX => in(OTHER_USER_IDX),

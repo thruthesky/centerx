@@ -2109,8 +2109,9 @@ if ( modeCreate() ) {
   그러면, 테마를 실행하지 않고, 바로 그 스크립트를 실행한다. 즉, 화면에 번쩍임이 사라지게 된다.
 
 - `return_url`
-  글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="return_url" value="post">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글)로 돌아온다.
-  `return_url` 에는 `post` 와 `list` 두 가지가 있으며, 이 외에는 직접 값을 입력 할 수 있다.
+  글/코멘트 쓰기에서 FORM hidden 으로 `<input type="hidden" name="return_url" value="view">` 와 같이 하면, 글/코멘트 작성 후 글(루트 글) 읽기 페이지로 돌아온다.
+  `return_url` 에는 `view`, `list` 그리고 `edit` 중에 하나를 쓸 수 있으며, 이 외에는 직접 값을 입력 할 수 있다.
+  `view` 는 글 읽기 페이지로 이동한다.
 
 예제) 먼저 훅을 추가하고
 ```html
@@ -2127,7 +2128,7 @@ hook()->add(HOOK_POST_EDIT_RETURN_URL, function() {
     <?php
     echo hiddens(
         p: 'forum.post.edit.submit',
-        return_url: hook()->run(HOOK_POST_EDIT_RETURN_URL) ?? 'post',
+        return_url: hook()->run(HOOK_POST_EDIT_RETURN_URL) ?? 'view',
         kvs: $hidden_data,
     );
     ?>
@@ -2172,6 +2173,11 @@ hook()->add(HOOK_POST_EDIT_RETURN_URL, function() {
 
 * 훅을 실행하고 싶은 곳에서 `hook()->run('name', 'vars')` 와 같이 하면 된다.
 * 훅 함수들은 `hook()->add(function() {})` 와 같이 정의하면 된다.
+* 훅에서 주의 할 점은,
+  * 입력 파라메타와 리턴 값이 자유롭다는 것이다.
+    * 입력 파라메타는 기본적으로 pass by reference 를 지원해서, 입력 파라메타의 값을 변경하여 상위 함수로 전달 할 수 있다.
+    * 또한 리턴 값으로 전달 할 수도 있다. 즉, 상위 함수에서 리턴 값을 받아서 사용 할 수도 있다.
+    * HOOK_POST_LIST_COUNTRY_CODE 예제 참고
 
 예제) widgets/setting/admin-setting/admin-setting.php
 ```html
@@ -2194,14 +2200,7 @@ EOH;
 
 * Hook 함수는 각 테마 별로 theme-name.functions.php 에서 정의하면 되고, hook 코드가 커지면 `[theme-name].hooks.php` 로 따로 모으면 된다.
 * 동일한 hook 이름에 여러개 훅을 지정 할 수 있다.
-* 훅 함수에는 변수를 얼마든지 마음데로 지정 할 수 있으며 모두 reference 로 전달된다.
-  즉, 훅 함수로 전달된 변수를 훅 함수 안에서 변경을 할 수 있다.
-  단, 아래와 같이 reference 로 받아서 값을 변경해야 한다.
-```php
-hook()->add('HOOK_POST_LIST_COUNTRY_CODE', function(&$countryCode) {
-    $countryCode = cafe()->countryCode;
-});
-```
+
 
 * `posts_before_create` 훅 함수가 에러 문자열을 리턴하면 다른 훅은 모두 실행이 안되고, 글/코멘트 생성이 중지된다.
 
@@ -2331,8 +2330,25 @@ hook()->add('posts_before_create', function($record, $in) {
 
 
 * HOOK_POST_LIST_COUNTRY_CODE
-  게시글 목록을 할 때, 강제로 특정 국가의 글만 목록하게 할 수 있다.
+  게시글을 추출 할 때(글 목록 또는 최근 글 가져오기), 강제로 특정 국가의 글만 목록하게 할 수 있다.
   이 훅은 글 목록이나, 공지사항 목록 등에서 사용 된다.
+  
+  입력 값: 기존 국가 코드.
+  리턴 값: 새로운 국가 코드.
+  
+예제) hook `add` 에서 만약, countryCode 를 변경 할 필요가 없으면 그냥 리턴한다. 그리고 `run` 에서 사용을 한다.
+```php
+hook()->add(HOOK_POST_LIST_COUNTRY_CODE, function(&$countryCode) {
+    if ( in(CATEGORY_ID) != MESSAGE_CATEGORY ) $countryCode = cafe()->countryCode;
+    return $countryCode;
+});
+
+// 국가 코드 훅. @see README `HOOK_POST_LIST_COUNTRY_CODE` 참고
+if ( $countryCode = hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $in['countryCode']) ) {
+    $where .= " AND countryCode=?";
+    $params[] = $countryCode;
+}
+```
 
 * HOOK_POST_EDIT_FORM_ATTR
   글 수정을 할 때에 HTML FORM 태그에 추가 할 속성을 리턴 할 수 있다.
@@ -2678,7 +2694,7 @@ if ( in(CATEGORY_ID) ) {
 <div id="post-edit-default" class="p-5">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
-        <input type="hidden" name="return_url" value="post">
+        <input type="hidden" name="return_url" value="view">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="files" v-model="files">
         <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
@@ -2801,7 +2817,7 @@ if ( in(CATEGORY_ID) ) {
 <div id="itsuda-event-edit" class="p-5">
     <form action="/" method="POST">
         <input type="hidden" name="p" value="forum.post.edit.submit">
-        <input type="hidden" name="return_url" value="post">
+        <input type="hidden" name="return_url" value="view">
         <input type="hidden" name="MAX_FILE_SIZE" value="16000000" />
         <input type="hidden" name="<?=CATEGORY_ID?>" value="<?=$category->v(ID)?>">
         <input type="hidden" name="<?=IDX?>" value="<?=$post->idx?>">
@@ -3574,6 +3590,19 @@ post_max_size = 1000M;
 nginx.conf)
 client_max_body_size    500M;
 ```
+
+
+# 광고 기능
+
+- 광고 게시판 카테고리를 `ADVERTISEMENT_CATEGORY` 에 지정한다.
+  - 참고로 advertisement category 의 list, edit widget 을 선택해야 한다.
+  
+
+
+
+
+
+
 # Known Issues
 
 ## 404 error on push token renew

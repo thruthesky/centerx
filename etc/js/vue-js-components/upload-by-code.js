@@ -1,5 +1,5 @@
 /**
- * @deprecated upload-file 을 사용할 것.
+ * @deprecated upload-image 을 사용할 것.
  * @see readme
  */
 Vue.component('upload-by-code', {

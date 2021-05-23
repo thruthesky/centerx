@@ -18,6 +18,7 @@ $translations = [
     'date' => ['en' => 'Date', 'ko' => '날짜'],
     'no_of_views' => ['en' => 'Views', 'ko' => '조회수'],
     'select_category' => ['en' => 'Select Category', 'ko' => '카테고리 선택'],
+    'no_post_yet' => ['en' => 'No posts yet ..', 'ko' => '아직 게시글이 없습니다.'],
     'input_title' => [
         'en' => 'Input title',
         'ko' => '제목을 입력하세요.',

@@ -1428,15 +1428,61 @@ function canHandleError(): bool {
  */
 function customErrorHandler($errno, $errstr, $error_file, $error_line) {
     $APP_NAME = APP_NAME;
+
+    if (!(error_reporting() & $errno)) {
+        // This error code is not included in error_reporting, so let it fall
+        // through to the standard PHP error handler
+        return false;
+    }
+
+
     echo <<<EOE
 <div style="margin-bottom: 8px; padding: 16px; border-radius: 10px; background-color: #5a3764; color: white;">
     <div>{$APP_NAME} Error</div>
     <div style="margin-top: 16px; padding: 16px; border-radius: 10px; background-color: white; color: black;">
-        <b>Error:</b> [$errno] $errstr in $error_file at line $error_line
+EOE;
+
+    // $errstr may need to be escaped:
+    $errstr = htmlspecialchars($errstr);
+
+    switch ($errno) {
+        case E_ERROR:
+        case E_CORE_ERROR:
+        case E_USER_ERROR:
+            echo "<b>ERROR</b> [$errno] $errstr<br />\n";
+            echo "  Fatal error on line $error_line in file $error_file";
+            echo ", PHP " . PHP_VERSION . " (" . PHP_OS . ")<br />\n";
+            echo "Aborting...<br />\n";
+            exit(1);
+
+        case E_WARNING:
+        case E_USER_WARNING:
+            echo "<b>WARNING</b>";
+            break;
+
+        case E_PARSE: echo "<b>PARSE</b>"; break;
+
+        case E_NOTICE:
+        case E_USER_NOTICE:
+            echo "<b>NOTICE</b>";
+            break;
+
+        default:
+            echo "<b>Unknown error type</b>";
+            break;
+    }
+
+    echo <<<EOE
+         :  [$errno] $errstr<br />\n on line $error_line in file $error_file
     </div>
 </div>
 EOE;
     d(debug_backtrace());
+
+
+    /* Don't execute PHP internal error handler */
+    return true;
+
 }
 
 
@@ -1591,13 +1637,8 @@ function parsePostListHttpParams(array $in): array {
         $params[] = $in['subcategory'];
     }
 
-    /**
-     * 국가 코드
-     * README `HOOK_POST_LIST_COUNTRY_CODE` 참고
-     */
-    $countryCode = $in['countryCode'] ?? '';
-    hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $countryCode);
-    if ( $countryCode ) {
+    // 국가 코드 훅. @see README `HOOK_POST_LIST_COUNTRY_CODE` 참고
+    if ( $countryCode = hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $in['countryCode']) ) {
         $where .= " AND countryCode=?";
         $params[] = $countryCode;
     }

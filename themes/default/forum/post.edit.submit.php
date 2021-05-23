@@ -19,8 +19,9 @@ if ( $category->returnToAfterPostEdit == 'L' ) {
     $url = postListUrl($categoryId);
 } else {
     if ( in(RETURN_URL) ) {
-        if ( in(RETURN_URL) == 'post' ) $url = $post->url;
+        if ( in(RETURN_URL) == 'view' ) $url = $post->url;
         else if ( in(RETURN_URL) == 'list' ) $url = postListUrl($categoryId);
+        else if ( in(RETURN_URL) == 'edit' ) $url = postEditUrl(postIdx: $post->idx);
         else $url = in(RETURN_URL);
     } else {
         $url = postListUrl($categoryId);
