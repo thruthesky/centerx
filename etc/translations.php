@@ -87,4 +87,21 @@ $translations = [
     'post_delete_point' => ['en' => 'Post Delete Point', 'ko' => '글 삭제 포인트'],
     'comment_create_point' => ['en' => 'Comment Create Point', 'ko' => '코멘트 쓰기 포인트'],
     'comment_delete_point' => ['en' => 'Comment Delete Point', 'ko' => '코멘트 삭제 포인트'],
+    'limit_by_hour_day' => ['en' => 'Limitation by Hour/Day', 'ko' => '시간/일 글 쓰기 제한 설정'],
+    'limit_by_hour_day_hint' => [
+        'en' => 'When the limitation below happens, point will not be increase or decreased. But the user can continue writing posts and comments. And if `Ban on writing` is checked, then the user can no longer be able to write post or comments.',
+        'ko' => '아래의 제한 설정에 걸리면 포인트 증/감이 발생하지 않습니다. 다만, 글/코멘트는 계속 쓸 수 있는데, 아래의 글/코멘트 제한을 하면, 글/코멘트도 못 쓰게 됩니다.'
+    ],
+    'hour_count_limit' => ['en' => 'Hour/Count Limit', 'ko' => '시간/수 제한'],
+    'day_count_limit' => ['en' => 'Day/Count Limit', 'ko' => '일/수 제한'],
+    'ban_on_writing' => ['en' => 'Ban on writing', 'ko' => '글/코멘트에 제한'],
+    'limit_by_point_possession' => ['en' => 'Limit by Point Possession', 'ko' => '포인트 별 글 쓰기 제한 설정'],
+    'limit_by_point_possession_hint' => [
+        'en' => 'Limits based on how much point the user own. For instance, if 10,000 is set for post creation, then the user must have more than or equal to 10,000 to create a post. You may input big number to ban on all users.',
+        'ko' => '포인트 보유량에 따라 글 쓰기 제한. 예를 들어, 글 쓰기 제한에 1만 포인트를 적으면, 1만 포인트 이상인 사람만 글 쓰기 가능. 전체 사용자에게 글 쓰기 방지를 위해서, 큰 숫자를 입력 할 수 있음.'
+    ],
+    'post_create_limit' => ['en' => 'Post create limit', 'ko' => '글 쓰기 허용 포인트 보유량'],
+    'comment_create_limit' => ['en' => 'Comment creation limit', 'ko' => '코멘트 쓰기 허용 포인트 보유량'],
+    'post_comment_read_limit' => ['en' => 'Post/comment read limit', 'ko' => '글/코멘트 읽기 허용 포인트 보유량'],
+    'return_to' => ['en' => 'Return to', 'ko' => '게시판 동작 설정'],
 ];

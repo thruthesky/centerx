@@ -94,22 +94,19 @@ $category = category(in(ID));
 
 
             <tr class="table-dark">
-                <td colspan="2"><?= ek('Limitation by Hour/Day', '시간/일 글 쓰기 제한 설정') ?></td>
+                <td colspan="2"><?= ln('limit_by_hour_day') ?></td>
             </tr>
             <tr class="table-light">
                 <td colspan="2">
                     <div class="hint">
-                        <?= ek(
-                            'When the limitation below happens, point will not be increase or decreased. But the user can continue writing posts and comments. And if `Ban on writing` is checked, then the user can no longer be able to write post or comments.',
-                            '아래의 제한 설정에 걸리면 포인트 증/감이 발생하지 않습니다. 다만, 글/코멘트는 계속 쓸 수 있는데, 아래의 글/코멘트 제한을 하면, 글/코멘트도 못 쓰게 됩니다.'
-                        ) ?>
+                        <?= ln('limit_by_hour_day_hint') ?>
                     </div>
                 </td>
             </tr>
 
 
             <tr>
-                <td><?= ek('Hour/Count Limit', '시간/수 제한') ?></td>
+                <td><?= ln('hour_count_limit') ?></td>
                 <td class="d-flex align-items-center">
                     <input data-cy="form-create-hour-limit" class="w-25 form-control" type="number" name="<?= ActivityLimits::$createHourLimit ?>" value="<?= $category->createHourLimit ?>">
                     <span class="mx-2">/</span>
@@ -117,14 +114,14 @@ $category = category(in(ID));
                 </td>
             </tr>
             <tr>
-                <td><?= ek('Day/Count Limit', '일/수 제한') ?></td>
+                <td><?= ln('day_count_limit') ?></td>
                 <td>
                     <input data-cy="form-create-daily-limit-count" class="w-25 form-control" type="number" name="<?= ActivityLimits::$createDailyLimitCount ?>" value="<?= $category->createDailyLimitCount ?>">
                 </td>
             </tr>
 
             <tr>
-                <td><?= ek('Ban on wriiting', '글/코멘트에 제한') ?></td>
+                <td><?= ln('ban_on_writing') ?></td>
                 <td>
                     <label>
                         <input data-cy="form-ban-create-on-limit-Y" type="radio" name="<?= ActivityLimits::$banCreateOnLimit ?>" value="Y" <?php if ($category->banCreateOnLimit == 'Y') echo 'checked' ?>> <?= ek('Yes', '예') ?>,
@@ -140,21 +137,18 @@ $category = category(in(ID));
 
 
             <tr class="table-dark">
-                <td colspan="2"><?= ek('Limit by Point Possession', '포인트 별 글 쓰기 제한 설정') ?></td>
+                <td colspan="2"><?= ln('limit_by_point_possession') ?></td>
             </tr>
             <tr class="table-light">
                 <td colspan="2">
                     <div class="hint">
-                        <?= ek(
-                            'Limits based on how much point the user own. For instance, if 10,000 is set for post creation, then the user must have more than or equal to 10,000 to create a post. You may input big number to ban on all users.',
-                            '포인트 보유량에 따라 글 쓰기 제한. 예를 들어, 글 쓰기 제한에 1만 포인트를 적으면, 1만 포인트 이상인 사람만 글 쓰기 가능. 전체 사용자에게 글 쓰기 방지를 위해서, 큰 숫자를 입력 할 수 있음.'
-                        ) ?>
+                        <?= ln('limit_by_point_possession_hint') ?>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td><?= ek('Post create limit', '글 쓰기 허용 포인트 보유량') ?></td>
+                <td><?= ln('post_create_limit') ?></td>
                 <td>
                     <input data-cy="form-post-create-limit" class="form-control" name="postCreateLimit" value="<?= $category->postCreateLimit ?>">
                 </td>
@@ -162,7 +156,7 @@ $category = category(in(ID));
 
 
             <tr>
-                <td><?= ek('Comment creation limit', '코멘트 쓰기 허용 포인트 보유량') ?></td>
+                <td><?= ln('comment_create_limit') ?></td>
                 <td>
                     <input data-cy="form-comment-create-limit" class="form-control" name="commentCreateLimit" value="<?= $category->commentCreateLimit ?>">
                 </td>
@@ -170,7 +164,7 @@ $category = category(in(ID));
 
 
             <tr>
-                <td><?= ek('Post/comment read limit', '글/코멘트 읽기 허용 포인트 보유량') ?></td>
+                <td><?= ln('post_comment_read_limit') ?></td>
                 <td>
                     <input data-cy="form-read-limit" class="form-control" name="readLimit" value="<?= $category->readLimit ?>">
                 </td>
@@ -181,7 +175,7 @@ $category = category(in(ID));
 
 
             <tr class="table-dark">
-                <td colspan="2"><?= ek('Return to', '게시판 동작 설정') ?></td>
+                <td colspan="2"><?= ln('return_to') ?></td>
             </tr>
 
             <tr>
