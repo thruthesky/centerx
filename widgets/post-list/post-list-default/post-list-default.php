@@ -1,13 +1,14 @@
 <?php
+
 /**
  * @name Default Post List Style
  */
 $o = getWidgetOptions();
 $posts = $o['posts'];
 $total = $o['total'];
-if ( empty($posts) ) return include widget('post-list/empty-post-list');
+if (empty($posts)) return include widget('post-list/empty-post-list');
 ?>
-<?php include_once widget('post-list-reminder/post-list-reminder-default', ['reminders' => $o['reminders']])?>
+<?php include_once widget('post-list-reminder/post-list-reminder-default', ['reminders' => $o['reminders']]) ?>
 <section class="post-list-default p-2 px-lg-0">
     <div>
         <?php
@@ -52,4 +53,3 @@ if ( empty($posts) ) return include widget('post-list/empty-post-list');
         <?=hook()->run( HOOK_POST_LIST_ROW, $rowNo, $posts )?>
     </div>
 </section>
-

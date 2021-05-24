@@ -20,54 +20,41 @@ a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9 a b c d 
 a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9
 <template>
     <div class="mb-3">
-        <b-button @click="toast('notAppend', 'Content not append')">Show Toast</b-button>
-        <b-button @click="toast('notAppend', 'Content Append', true)">Show Toast (appended)</b-button>
+        <b-button @click="toastPushNotification('Content')">Show Custom Toast</b-button>
+        <b-button @click="toast('Content', {append: true})">Show Toast (appended)</b-button>
     </div>
 </template>
 
 <script>
+    console.log(mixins);
     mixins.push({
-        data() {
-            return {
-                toastCount: 0
-            }
-        },
         methods: {
-            toast(content, title, url, append = false) {
-                const h = this.$createElement;
-                const id = `toast-${this.toastCount++}`;
-                const vNodesTitle = h(
-                    'div',
-                    { class: ['mr-2'] },
-                    [
-                        h('strong', { class: 'mr-2' }, title ?? ""),
-                    ]
-                )
-                const vNodesMsg = h(
-                    'div',
-                    { class: ['mb-0'] },
-                    [
-                        `${content}`,
-                        h('hr'),
-                        h(
-                            'div', {class: ['d-flex justify-content-between']},
+            toastNotification(content, title = "Notification", url =`?p=forum.post.list&categoryId=qna`) {
+                app.toast(content,
+                    {
+                        title: title,
+                        // buttonAlignRight: true,
+                        buttons:
                             [
-                                h( 'b-button', { on: { click: () => this.$bvToast.hide(id) } }, 'Close' ),
-                                h( 'b-button', { on: { click: () => location.href = `?p=forum.post.list&categoryId=qna` } }, 'Open' )
+                                {
+                                    text: "Close",
+                                    class: "mr-3",
+                                    onclick: () => console.log('Close')
+                                },
+                                {
+                                    text: "Open",
+                                    onclick: () => {
+                                        console.log("Okay");
+                                        location.href = url;
+                                    }
+                                }
                             ]
-                        )
-                    ]
-                )
-                this.$bvToast.toast([vNodesMsg], {
-                    id: id,
-                    title: [vNodesTitle],
-                    autoHideDelay: 10000,
-                    appendToast: append,
-                    solid: true,
-                })
-            }
+                    })
+            },
         }
     });
+
+    console.log(mixins);
 </script>
 
 <?php

@@ -93,7 +93,7 @@ if (in(CATEGORY_ID)) {
             <div class="d-none px-3 row photos" :class="{'d-flex': uploadedFiles}">
                 <div class="mt-3 col-4 p-1 photo" v-for="file in uploadedFiles" :key="file['idx']">
                     <div clas="position-relative">
-                        <img class="h-100 w-100" :src="file['url']">
+                        <img class="w-100" :src="file['url']">
                         <i class="fa fa-trash p-2 position-absolute top-sm left-sm font-weight-bold red bg-white radius-50 pointer" @click="onFileDelete(file['idx'])"></i>
                     </div>
                 </div>
