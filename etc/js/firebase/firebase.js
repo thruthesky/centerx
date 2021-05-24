@@ -71,21 +71,48 @@ if (!("Notification" in window)) {
         // console.log('loginIdx()::',loginIdx());
         const notification = payload.notification;
         const data = payload.data ? payload.data : {};
+        let url = null;
         if (loginIdx() === data['senderIdx']) return;
-        alert(notification.title + "\n" +notification.body);
 
         /**
          * If the type is post then move it to a specific post.
          */
         if (data['type'] === 'post') {
-            location.href = "?p=forum.post.view&postIdx=" + data['idx'];
+            url = "?p=forum.post.view&postIdx=" + data['idx'];
         }
 
         /**
          * If the type is chat then move it to private chat.
          */
         if (data['type'] === 'chat') {
-            location.href = "?p=forum.post.edit&categoryId=message&otherUserIdx=" + data['idx'];
+            url = "?p=forum.post.edit&categoryId=message&otherUserIdx=" + data['idx'];
         }
+
+        if (typeof  app.toastPushNotification === "function") {
+            app.toast(notification.body,
+                {
+                    title: notification.title,
+                    buttonAlignRight: true,
+                    buttons:
+                        [
+                            {
+                                text: "Close",
+                                class: "mr-3",
+                                onclick: () => console.log('Close')
+                            },
+                            {
+                                text: "Open",
+                                onclick: () => {
+                                    console.log("Okay");
+                                    if(url) location.href = url;
+                                }
+                            }
+                        ]
+                })
+        } else {
+            alert(notification.title + "\n" +notification.body);
+            if(url) location.href = url;
+        }
+
     });
 }

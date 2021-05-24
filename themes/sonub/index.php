@@ -49,6 +49,7 @@
 ?>
 
 <?php js('/etc/js/bootstrap-vue-2.21.2.min.js', 3)?>
+<?php js( 'etc/js/toast.js', 0)?>
 <?php js(theme()->url . 'js/data.js', 3)?>
 <?php js(theme()->url . 'js/app.js', 0)?>
 </body>
