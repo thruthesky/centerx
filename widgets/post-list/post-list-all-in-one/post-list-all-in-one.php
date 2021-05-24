@@ -61,7 +61,7 @@ $posts = $o['posts'];
             </div>
         <?php }
     } else { ?>
-        <?php include widget('post-list/no-post-yet'); ?>
+        <?php include widget('post-list/empty-post-listt'); ?>
     <?php } ?>
 </section>
 

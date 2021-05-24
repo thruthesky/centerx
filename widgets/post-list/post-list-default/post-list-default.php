@@ -47,7 +47,7 @@ if (empty($posts)) return include widget('post-list/empty-post-list');
                 <hr>
             <?php }
         } else { ?>
-            <?php include widget('post-list/no-post-yet'); ?>
+            <?php include widget('post-list/empty-post-list'); ?>
         <?php } ?>
     </div>
 </section>

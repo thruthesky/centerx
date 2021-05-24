@@ -18,7 +18,7 @@ $url = $post->url;
 ?>
 
 <div class="thumbnail-with-title-and-content">
-  <a class="body" href="<?= $url ?>" style="height: <?=$imageHeight?>">
+  <a class="body" href="<?= $url ?>" style="height: <?=$imageHeight?>px">
     <?php if ($src) { ?>
       <img class="photo" src="<?= $src ?>">
     <?php } ?>
