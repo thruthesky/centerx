@@ -9,7 +9,7 @@
     <link href="/etc/fontawesome-free-5/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="/etc/css/x.css">
     <link rel="shortcut icon" type="image/x-icon" href="/themes/sonub/favicon.ico"/>
-    <link rel="manifest" href="manifest.json">
+<!--    <link rel="manifest" href="manifest.json">-->
     <style>
         <?php include theme()->css('css/index') ?>
     </style>
