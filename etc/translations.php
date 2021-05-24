@@ -13,6 +13,7 @@ $translations = [
     'delete' => ['en' => 'Delete', 'ko' => '삭제'],
     'like' => ['en' => 'Like', 'ko' => '좋아요'],
     'dislike' => ['en' => 'Dislike', 'ko' => '싫어요'],
+    'upload_photo' => ['en' => 'Upload photo', 'ko' => '사진 업로드'],
     'confirm_delete' => ['en' => 'Do you want to delete?', 'ko' => '삭제하시겠습니까?'],
     'post_create' => ['en' => 'Create', 'ko' => '글 쓰기'],
     'category' => ['en' => 'Category', 'ko' => '카테고리'],
@@ -58,6 +59,12 @@ $translations = [
     'post' => ['en' => 'Post', 'ko' => '게시하다'],
     'comment' => ['en' => 'Comment', 'ko' => '논평'],
     'loading' => ['en' => 'Loading', 'ko' => '로딩'],
+    'comments' => ['en' => 'Comments', 'ko' => '개의 코멘트'],
+    'no_comments_yet' => ['en' => 'No comments yet ..', 'ko' => '작성된 코멘트가 없습니다.'],
+
+
+
+
     'attached_files' => ['en' => 'Attached Files', 'ko' => '첨부된 사진(파일)'],
     'category_update' => ['en' => 'Category Update', 'ko' => '@T Category Update'],
     'click_id_to_update' => ['en' => 'Click id to update.', 'ko' => '@T Click id to update.'],
@@ -104,4 +111,6 @@ $translations = [
     'comment_create_limit' => ['en' => 'Comment creation limit', 'ko' => '코멘트 쓰기 허용 포인트 보유량'],
     'post_comment_read_limit' => ['en' => 'Post/comment read limit', 'ko' => '글/코멘트 읽기 허용 포인트 보유량'],
     'return_to' => ['en' => 'Return to', 'ko' => '게시판 동작 설정'],
+    'return_to_after_edit' => ['en' => 'Return To After Edit', 'ko' => '글 편집 후 이동'],
+    'widgets_web' => ['en' => 'Widgets (web)', 'ko' => '웹 위젯 설정'],
 ];

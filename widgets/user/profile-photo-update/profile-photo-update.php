@@ -8,7 +8,7 @@
         <?php } ?>
     </div>
 
-    <div><?=ek('Upload photo', '사진 업로드')?></div>
+    <div><?=ln('upload_photo')?></div>
 
     <input class="cover pointer fs-lg opacity-0" type="file" v-on:change="onUserProfilePhotoChange($event)">
 </div>

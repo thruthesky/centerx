@@ -179,7 +179,7 @@ $category = category(in(ID));
             </tr>
 
             <tr>
-                <td><?= ek('Return To After Edit', '글 편집 후 이동') ?></td>
+                <td><?= ln('return_to_after_edit') ?></td>
                 <td>
                     <label>
                         <input data-cy="form-return-to-after-post-edit-V" type="radio" name="returnToAfterPostEdit" value="V" <?php if ($category->returnToAfterPostEdit == 'V' || empty($category->returnToAfterPostEdit)) echo 'checked' ?>> <?= ek('Post view page', '글 읽기 페이지') ?>,
@@ -193,7 +193,7 @@ $category = category(in(ID));
 
 
             <tr class="table-dark">
-                <td colspan="2"><?= ek('Widgets (web)', '웹 위젯 설정') ?></td>
+                <td colspan="2"><?= ln('widgets_web') ?></td>
             </tr>
 
             <tr>

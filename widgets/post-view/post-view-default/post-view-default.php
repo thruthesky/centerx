@@ -67,7 +67,7 @@ $comments = $post->comments();
 
         <?php if ( $comments ) { ?>
             <hr class="mb-1">
-            <small class="text-muted"><?= count($comments) . ' ' . ek('Comments', '개의 코멘트') ?></small>
+            <small class="text-muted"><?= count($comments) . ' ' . ln('comments') ?></small>
             <div class="comments mt-2">
                 <?php foreach ($comments as $comment) {
                     if (!$comment->deletedAt) { ?>
@@ -85,7 +85,7 @@ $comments = $post->comments();
                 } ?>
             </div>
         <?php } else { ?>
-            <p class="mt-2 mb-0 text-muted"><small><?= ek('No comments yet ..', '작성된 코멘트가 없습니다.') ?></small></p>
+            <p class="mt-2 mb-0 text-muted"><small><?= ln('no_comments_yet') ?></small></p>
         <?php } ?>
     </section>
 
