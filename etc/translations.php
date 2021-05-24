@@ -1,6 +1,7 @@
 <?php
 
 $translations = [
+    'login' => ['en' => 'Login', 'ko' => '로그인'],
     'topic' => ['en' => 'Topic', 'ko' => '토픽'],
     'token' => ['en' => 'Tokens', 'ko' => '토큰'],
     'all' => ['en' => 'All', 'ko' => '모두'],
@@ -61,11 +62,14 @@ $translations = [
     'loading' => ['en' => 'Loading', 'ko' => '로딩'],
     'comments' => ['en' => 'Comments', 'ko' => '개의 코멘트'],
     'no_comments_yet' => ['en' => 'No comments yet ..', 'ko' => '작성된 코멘트가 없습니다.'],
-
-
-
-
     'attached_files' => ['en' => 'Attached Files', 'ko' => '첨부된 사진(파일)'],
+    
+    
+    'dashboard' => ['en' => 'Dashboard', 'ko' => '관리자페이지'],
+    'home' => ['en' => 'Home', 'ko' => '홈'],
+    'show' => ['en' => 'Show', 'ko' => '보이기'],
+    'hide' => ['en' => 'Hide', 'ko' => '숨기기'],
+    
     'category_update' => ['en' => 'Category Update', 'ko' => '@T Category Update'],
     'click_id_to_update' => ['en' => 'Click id to update.', 'ko' => '@T Click id to update.'],
     'category_update_description' => [
