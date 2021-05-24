@@ -15,8 +15,7 @@ class PushNotification {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! isset($in[TOPIC]) && empty($in[TOPIC]) ) return e()->topic_is_empty;
         if ( ! isset($in[TOKENS])) $in[TOKENS] = token()->myTokens();
-
-        $res = subscribeTopic($in[TOPIC], $in[TOKENS]);
+        if(count($in[TOKENS])) $res = subscribeTopic($in[TOPIC], $in[TOKENS]);
         return login()->switchOn($in[TOPIC])->response();
     }
 
@@ -24,7 +23,7 @@ class PushNotification {
         if ( notLoggedIn() ) return e()->not_logged_in;
         if ( ! isset($in[TOPIC]) && empty($in[TOPIC]) ) return e()->topic_is_empty;
         if ( ! isset($in[TOKENS])) $in[TOKENS] = token()->myTokens();
-
+        if(count($in[TOKENS])) $res = subscribeTopic($in[TOPIC], $in[TOKENS]);
         $res = unsubscribeTopic($in[TOPIC], $in[TOKENS]);
         return login()->switchOff($in[TOPIC])->response();
     }

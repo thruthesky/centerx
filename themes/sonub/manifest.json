@@ -1,0 +1,15 @@
+{
+  "background_color": "red",
+  "description": "Main philov com description",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "/themes/sonub/img/philov-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "name": "Main.Philov.com",
+  "short_name": "Philov",
+  "start_url": "/index.php"
+}

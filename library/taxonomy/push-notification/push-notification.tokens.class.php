@@ -54,9 +54,11 @@ class PushNotificationTokenTaxonomy extends Entity {
             if ($re) {
                 foreach( $re as $_topic ) {
                     foreach( $_topic as $_token => $error ) {
-                        if ( $token == $_token ) {
+                        if ( $error != 'OK' ) {
                             $obj->error(e()->topic_subscription . ':' . $error);
                             $rets[$obj->topic] = $obj->getError();
+                        } else {
+                            $rets[ $obj->topic ] = true;
                         }
                     }
                 }

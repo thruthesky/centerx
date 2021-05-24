@@ -88,7 +88,7 @@ if (!("Notification" in window)) {
             url = "?p=forum.post.edit&categoryId=message&otherUserIdx=" + data['idx'];
         }
 
-        if (typeof  app.toastPushNotification === "function") {
+        if (typeof  app.toast === "function") {
             app.toast(notification.body,
                 {
                     title: notification.title,
