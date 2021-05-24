@@ -104,6 +104,7 @@ function serializeJSON (form) {
  * @param error
  */
 function request(route, params, success, error) {
+  console.log(route);
   if ( ! params ) params = {};
   // If user has logged in, attach session id.
   if ( loggedIn() ) params['sessionId'] = sessionId();
