@@ -2,11 +2,14 @@
 
 /**
  * @size wide
- * @options 'title', 'firstCategoryId', 'secondCategoryId'
+ * @options 'title', 'firstCategoryId', 'secondCategoryId', 'imageHeight', 'imageWidth'
  * @dependency none
  */
 
 $op = getWidgetOptions();
+
+$imageHeight = $op['imageHeight'] ?? 150;
+$imageWidth = $op['imageWidth'] ?? 150;
 ?>
 
 
@@ -18,13 +21,13 @@ $op = getWidgetOptions();
   <?php } ?>
 
   <div class="first-story">
-    <?php include widget('post/left-photo-with-stories', ['categoryId' => $op['firstCategroyId'] ?? null]); ?>
+    <?php include widget('post/left-photo-with-stories', ['categoryId' => $op['firstCategoryId'] ?? null]); ?>
   </div>
 
   <div class="second-story">
     <?php
-    if (isset($op['secondCategroyId'])) {
-      $posts = post()->latest(categoryId: $op['secondCategroyId'], limit: 4);
+    if (isset($op['secondCategoryId'])) {
+      $posts = post()->latest(categoryId: $op['secondCategoryId'], limit: 4);
     } else {
       $posts = postMockData(4, photo: true);
     }
@@ -33,7 +36,11 @@ $op = getWidgetOptions();
     for ($i = 0; $i < count($posts); $i++) {
     ?>
       <div class="story story-<?= $i ?>">
-        <?php include widget('post/photo-with-text-at-bottom', ['post' => $posts[$i], 'imageHeight' => $op['imageHeight'] ?? 150, 'imageWidth' => $op['imageWidth'] ?? 150]); ?>
+        <?php include widget('post/photo-with-text-at-bottom', [
+          'post' => $posts[$i],
+          'imageHeight' => $imageHeight,
+          'imageWidth' => $imageWidth
+        ]); ?>
       </div>
     <?php } ?>
   </div>

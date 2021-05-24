@@ -12,12 +12,20 @@ $op = getWidgetOptions();
 
 $post = $op['post'] ?? firstPost();
 $posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 4);
+
+
+$imageHeight = $op['imageHeight'] ?? 160;
+$imageWidth = $op['imageWidth'] ?? 100;
 ?>
 
 <div class="photo-with-5-stories">
 
   <div class="top">
-    <?php include widget('post/photo-with-text-at-bottom', ['post' => $post, 'imageHeight' => $op['imageHeight'] ?? 160, 'imageWidth' => $op['imageWidth'] ?? 100 ]); ?>
+    <?php include widget('post/photo-with-text-at-bottom', [
+      'post' => $post,
+      'imageHeight' => $imageHeight,
+      'imageWidth' => $imageWidth
+    ]); ?>
   </div>
 
   <div class="stories">
@@ -33,7 +41,7 @@ $posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 4);
     display: block;
   }
 
-  .photo-with-5-stories .stories{
+  .photo-with-5-stories .stories {
     margin-top: 3px;
   }
 

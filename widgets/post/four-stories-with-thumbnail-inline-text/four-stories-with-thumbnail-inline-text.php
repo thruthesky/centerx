@@ -20,9 +20,6 @@ if (category($categoryId)->exists) {
 
 $lack = 4 - count($posts);
 $posts = array_merge($posts, postMockData($lack, photo: true));
-
-$imageHeight = $op['imageHeight'] ?? 150;
-$imageWidth = $op['imageWidth'] ?? 100;
 ?>
 
 <div class="four-stories-with-thumbnail-inline-text">
@@ -30,7 +27,11 @@ $imageWidth = $op['imageWidth'] ?? 100;
     <?php
     foreach ($posts as $post) { ?>
       <div class="story">
-        <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $post, 'imageHeight' => $imageHeight, 'imageWidth' => $imageWidth]); ?>
+        <?php include widget('post/photo-with-inline-text-at-bottom', [
+          'post' => $post,
+          'imageHeight' => $op['imageHeight'] ?? 150,
+          'imageWidth' => $op['imageWidth'] ?? 100
+        ]); ?>
       </div>
     <?php } ?>
   </div>

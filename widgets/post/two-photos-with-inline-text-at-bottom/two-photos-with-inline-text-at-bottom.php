@@ -29,10 +29,18 @@ $imageWidth = $op['imageWidth'] ?? 250;
 
 <div class="two-photos-with-inline-text-at-bottom">
   <div class="left-story">
-    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[0], 'imageHeight' => $imageHeight, 'imageWidth' => $imageWidth]); ?>
+    <?php include widget('post/photo-with-inline-text-at-bottom', [
+      'post' => $posts[0],
+      'imageHeight' => $imageHeight,
+      'imageWidth' => $imageWidth
+    ]); ?>
   </div>
   <div class="right-story">
-    <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $posts[1], 'imageHeight' => $imageHeight, 'imageWidth' => $imageWidth]); ?>
+    <?php include widget('post/photo-with-inline-text-at-bottom', [
+      'post' => $posts[1],
+      'imageHeight' => $imageHeight,
+      'imageWidth' => $imageWidth
+    ]); ?>
   </div>
 </div>
 
