@@ -84,7 +84,8 @@ if (in(CATEGORY_ID)) {
                 </small>
                 <label>표시 위치</label>
                 <input class="form-control" type="text" name="<?=AD_WING?>" value="<?=$post->v(AD_WING)?>">
-                <small class="form-text text-muted">데스크톱 전체 날개 페이지 & 모바일 첫 화면에 표시.</small>
+                <small class="form-text text-muted">위치를 지정하지 않으면, 데스크톱 전체 페이지 및 모바일 첫 화면에 표시. 위치 지정하면 해당 "게시판.카테고리"에만 표시.</small>
+                <small class="form-text text-muted">위치 표시 방법: 점(.)으로 분리하여 "게시판아이디.카테고리"를 입력. 예) qna.비자</small>
             </div>
 
 

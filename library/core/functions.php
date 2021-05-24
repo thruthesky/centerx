@@ -1088,6 +1088,7 @@ function onCommentCreateSendNotification(CommentTaxonomy|PostTaxonomy $cp)
         }
     }
 
+
     // prepare message data.
     $body               = $cp->content;
     $click_url          = $cp->path;
@@ -1700,9 +1701,10 @@ function isSubscribedToTopic($topic): bool
  *  - else return 0.
  */
 function dateToTime(int|string $date): int {
+    if ( empty($date) ) return 0;
     if ( is_numeric($date) || is_int($date) ) return $date;
-    else if ( is_string($date) ) return strtotime($date);
-    else return 0;
+    if ( is_string($date) ) return strtotime($date);
+    return 0;
 }
 
 

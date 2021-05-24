@@ -208,13 +208,38 @@ class FileTaxonomy extends Entity {
 
     /**
      * code 에 맞는 (아무) 파일 하나를 리턴한다.
-     * 파일이 존재하지 않으면, entity_not_found 에러가 설정된 객체를 리턴된된다. 이 때, (에러가 있다면,) $this->idx 는 0, $this->url 은 null 의 값을 가진다.
+     *
+     * 파일이 존재하지 않으면, entity_not_found 에러가 설정된 객체를 리턴된된다. 이 때, (에러가 설정되면면,) $this->idx 는 0, $this->url 은 null 의 값을 가진다.
+     *
+     * 참고, code 만 입력해서 검색 할 수 있지만, taxonomy, entity 로 검색 할 수 있다.
      *
      * @param string $code
+     *
      * @return $this
      */
     public function getByCode(string $code): self {
-        return $this->findOne(['code' => $code]);
+        return $this->getBy(code: $code);
+    }
+
+    /**
+     *
+     * taxonomy, entity, code 전체 또는 일부를 입력 받아 조건에 맞는 파일 하나를 리턴한다.
+     *
+     * 사용 예, 특정 게시글의 특정 첨부 파일 코드
+     *
+     * @param string $taxonomy
+     * @param int $entity
+     * @param string $code
+     * @return $this
+     *  - 파일이 존재하지 않으면, entity_not_found 에러가 설정된 객체를 리턴된된다.
+     *      이 때, (에러가 설정되면면,) $this->idx 는 0, $this->url 은 null 의 값을 가진다.
+     */
+    public function getBy(string $taxonomy='', int $entity=0, string $code=''): self {
+        $conds = [];
+        if ( $taxonomy ) $conds[TAXONOMY] = $taxonomy;
+        if ( $entity ) $conds[ENTITY] = $entity;
+        if ( $code ) $conds[CODE] = $code;
+        return $this->findOne($conds);
     }
 
 }

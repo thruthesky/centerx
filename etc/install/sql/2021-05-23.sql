@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- 생성 시간: 21-05-04 12:07
+-- 생성 시간: 21-05-24 02:00
 -- 서버 버전: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP 버전: 8.0.3
 
@@ -50,14 +50,17 @@ CREATE TABLE `wc_categories` (
                                  `title` varchar(255) NOT NULL DEFAULT '',
                                  `description` text NOT NULL DEFAULT '',
                                  `subcategories` text NOT NULL DEFAULT '',
-                                 `POINT_POST_CREATE` int(11) NOT NULL DEFAULT 0,
-                                 `POINT_POST_DELETE` int(11) NOT NULL DEFAULT 0,
-                                 `POINT_COMMENT_CREATE` int(11) NOT NULL DEFAULT 0,
-                                 `POINT_COMMENT_DELETE` int(11) NOT NULL DEFAULT 0,
-                                 `BAN_ON_LIMIT` char(1) NOT NULL DEFAULT 'N',
-                                 `POINT_HOUR_LIMIT` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
-                                 `POINT_HOUR_LIMIT_COUNT` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
-                                 `POINT_DAILY_LIMIT_COUNT` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+                                 `postCreateLimit` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                 `commentCreateLimit` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                 `readLimit` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                 `banCreateOnLimit` char(1) NOT NULL DEFAULT '',
+                                 `createPost` mediumint(8) NOT NULL DEFAULT 0,
+                                 `deletePost` mediumint(8) NOT NULL DEFAULT 0,
+                                 `createComment` mediumint(8) NOT NULL DEFAULT 0,
+                                 `deleteComment` mediumint(8) NOT NULL DEFAULT 0,
+                                 `createHourLimit` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+                                 `createHourLimitCount` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+                                 `createDailyLimitCount` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
                                  `listOnView` char(1) NOT NULL DEFAULT 'Y',
                                  `noOfPostsPerPage` smallint(5) UNSIGNED NOT NULL DEFAULT 20,
                                  `mobilePostListWidget` varchar(64) NOT NULL DEFAULT '',
@@ -164,20 +167,6 @@ CREATE TABLE `wc_in_app_purchase` (
 -- --------------------------------------------------------
 
 --
--- 테이블 구조 `wc_itsuda`
---
-
-CREATE TABLE `wc_itsuda` (
-                             `idx` int(10) UNSIGNED NOT NULL,
-                             `userIdx` int(10) UNSIGNED NOT NULL,
-                             `healthPoint` int(10) UNSIGNED NOT NULL DEFAULT 0,
-                             `createdAt` int(10) UNSIGNED NOT NULL,
-                             `updatedAt` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- 테이블 구조 `wc_metas`
 --
 
@@ -194,6 +183,28 @@ CREATE TABLE `wc_metas` (
 -- --------------------------------------------------------
 
 --
+-- 테이블 구조 `wc_point_histories`
+--
+
+CREATE TABLE `wc_point_histories` (
+                                      `idx` int(10) UNSIGNED NOT NULL,
+                                      `fromUserIdx` int(10) UNSIGNED NOT NULL,
+                                      `toUserIdx` int(10) UNSIGNED NOT NULL,
+                                      `reason` varchar(32) NOT NULL,
+                                      `taxonomy` varchar(32) NOT NULL,
+                                      `entity` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                                      `categoryIdx` int(10) UNSIGNED NOT NULL,
+                                      `fromUserPointApply` int(11) NOT NULL,
+                                      `fromUserPointAfter` int(11) NOT NULL,
+                                      `toUserPointApply` int(11) NOT NULL,
+                                      `toUserPointAfter` int(11) NOT NULL,
+                                      `createdAt` int(10) UNSIGNED NOT NULL,
+                                      `updatedAt` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- 테이블 구조 `wc_posts`
 --
 
@@ -204,15 +215,19 @@ CREATE TABLE `wc_posts` (
                             `categoryIdx` int(10) UNSIGNED NOT NULL,
                             `relationIdx` int(10) UNSIGNED NOT NULL DEFAULT 0,
                             `userIdx` int(10) UNSIGNED NOT NULL,
+                            `otherUserIdx` int(10) UNSIGNED NOT NULL DEFAULT 0,
                             `subcategory` varchar(64) NOT NULL DEFAULT '',
                             `title` varchar(255) NOT NULL DEFAULT '',
                             `path` varchar(255) NOT NULL DEFAULT '',
-                            `content` longtext NOT NULL DEFAULT '',
+                            `content` longtext DEFAULT '',
                             `private` char(1) NOT NULL DEFAULT '',
                             `privateTitle` varchar(255) NOT NULL DEFAULT '',
-                            `privateContent` longtext NOT NULL DEFAULT '\'\'',
+                            `privateContent` longtext DEFAULT '',
                             `noOfComments` int(11) NOT NULL DEFAULT 0,
-                            `files` text NOT NULL DEFAULT '',
+                            `noOfViews` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                            `reminder` char(1) NOT NULL DEFAULT '',
+                            `listOrder` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                            `files` text DEFAULT '',
                             `Y` int(10) UNSIGNED NOT NULL DEFAULT 0,
                             `N` int(10) UNSIGNED NOT NULL DEFAULT 0,
                             `report` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
@@ -224,8 +239,11 @@ CREATE TABLE `wc_posts` (
                             `zipcode` varchar(16) NOT NULL DEFAULT '',
                             `Ymd` int(10) UNSIGNED NOT NULL DEFAULT 0,
                             `createdAt` int(10) UNSIGNED NOT NULL,
+                            `readAt` int(10) UNSIGNED NOT NULL DEFAULT 0,
                             `updatedAt` int(10) UNSIGNED NOT NULL,
-                            `deletedAt` int(10) UNSIGNED NOT NULL DEFAULT 0
+                            `deletedAt` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                            `beginAt` int(10) UNSIGNED NOT NULL DEFAULT 0,
+                            `endAt` int(10) UNSIGNED NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -254,8 +272,7 @@ CREATE TABLE `wc_push_notification_tokens` (
                                                `idx` int(10) UNSIGNED NOT NULL,
                                                `userIdx` int(10) UNSIGNED NOT NULL,
                                                `token` varchar(255) NOT NULL,
-                                               `domain` varchar(64) NOT NULL,
-                                               `rootDomain` varchar(32) NOT NULL DEFAULT '',
+                                               `topic` varchar(64) NOT NULL DEFAULT '',
                                                `createdAt` int(10) UNSIGNED NOT NULL,
                                                `updatedAt` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -267,8 +284,10 @@ CREATE TABLE `wc_push_notification_tokens` (
 --
 
 CREATE TABLE `wc_search_keys` (
+                                  `idx` int(10) UNSIGNED NOT NULL,
                                   `searchKey` varchar(64) NOT NULL,
-                                  `createdAt` int(10) UNSIGNED NOT NULL
+                                  `createdAt` int(10) UNSIGNED NOT NULL,
+                                  `updatedAt` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -352,28 +371,6 @@ CREATE TABLE `wc_user_activities` (
                                       `updatedAt` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
-
---
--- 테이블 구조 `x.wc_point_histories`
---
-
-CREATE TABLE `x.wc_point_histories` (
-                                        `idx` int(10) UNSIGNED NOT NULL,
-                                        `fromUserIdx` int(10) UNSIGNED NOT NULL,
-                                        `toUserIdx` int(10) UNSIGNED NOT NULL,
-                                        `reason` varchar(32) NOT NULL,
-                                        `taxonomy` varchar(32) NOT NULL,
-                                        `entity` int(10) UNSIGNED NOT NULL DEFAULT 0,
-                                        `categoryIdx` int(10) UNSIGNED NOT NULL,
-                                        `fromUserPointApply` int(11) NOT NULL,
-                                        `fromUserPointAfter` int(11) NOT NULL,
-                                        `toUserPointApply` int(11) NOT NULL,
-                                        `toUserPointAfter` int(11) NOT NULL,
-                                        `createdAt` int(10) UNSIGNED NOT NULL,
-                                        `updatedAt` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 --
 -- 덤프된 테이블의 인덱스
 --
@@ -430,18 +427,21 @@ ALTER TABLE `wc_in_app_purchase`
   ADD KEY `productID` (`productID`);
 
 --
--- 테이블의 인덱스 `wc_itsuda`
---
-ALTER TABLE `wc_itsuda`
-    ADD PRIMARY KEY (`idx`);
-
---
 -- 테이블의 인덱스 `wc_metas`
 --
 ALTER TABLE `wc_metas`
     ADD PRIMARY KEY (`idx`),
   ADD UNIQUE KEY `taxonomy_entity_code` (`taxonomy`,`entity`,`code`),
   ADD KEY `code` (`code`);
+
+--
+-- 테이블의 인덱스 `wc_point_histories`
+--
+ALTER TABLE `wc_point_histories`
+    ADD PRIMARY KEY (`idx`),
+  ADD KEY `createdAt` (`createdAt`),
+  ADD KEY `createdAt_fromUserIdx_reason` (`idx`,`fromUserIdx`,`toUserIdx`) USING BTREE,
+  ADD KEY `fromUserIdx_toUserIdx_reason` (`fromUserIdx`,`toUserIdx`,`reason`) USING BTREE;
 
 --
 -- 테이블의 인덱스 `wc_posts`
@@ -461,7 +461,11 @@ ALTER TABLE `wc_posts`
   ADD KEY `Ymd` (`Ymd`),
   ADD KEY `code` (`code`),
   ADD KEY `report` (`report`),
-  ADD KEY `noOfComments` (`noOfComments`);
+  ADD KEY `noOfComments` (`noOfComments`),
+  ADD KEY `otherUserIdx` (`otherUserIdx`),
+  ADD KEY `noOfViews` (`noOfViews`),
+  ADD KEY `listOrder` (`listOrder`),
+  ADD KEY `reminder` (`reminder`);
 
 --
 -- 테이블의 인덱스 `wc_post_vote_histories`
@@ -476,15 +480,15 @@ ALTER TABLE `wc_post_vote_histories`
 --
 ALTER TABLE `wc_push_notification_tokens`
     ADD PRIMARY KEY (`idx`),
-  ADD UNIQUE KEY `token` (`token`),
-  ADD KEY `domain` (`domain`),
-  ADD KEY `rootDomain` (`rootDomain`);
+  ADD UNIQUE KEY ` token_topic` (`token`,`topic`) USING BTREE,
+  ADD KEY `topic` (`topic`);
 
 --
 -- 테이블의 인덱스 `wc_search_keys`
 --
 ALTER TABLE `wc_search_keys`
-    ADD KEY `searchKey` (`searchKey`),
+    ADD PRIMARY KEY (`idx`),
+  ADD KEY `searchKey` (`searchKey`),
   ADD KEY `createdAt` (`createdAt`);
 
 --
@@ -523,16 +527,8 @@ ALTER TABLE `wc_user_activities`
     ADD PRIMARY KEY (`idx`),
   ADD KEY `createdAt` (`createdAt`),
   ADD KEY `createdAt_fromUserIdx_reason` (`idx`,`fromUserIdx`,`toUserIdx`) USING BTREE,
-  ADD KEY `fromUserIdx_toUserIdx_action` (`fromUserIdx`,`toUserIdx`,`action`) USING BTREE;
-
---
--- 테이블의 인덱스 `x.wc_point_histories`
---
-ALTER TABLE `x.wc_point_histories`
-    ADD PRIMARY KEY (`idx`),
-  ADD KEY `createdAt` (`createdAt`),
-  ADD KEY `createdAt_fromUserIdx_reason` (`idx`,`fromUserIdx`,`toUserIdx`) USING BTREE,
-  ADD KEY `fromUserIdx_toUserIdx_reason` (`fromUserIdx`,`toUserIdx`,`reason`) USING BTREE;
+  ADD KEY `fromUserIdx_toUserIdx_action` (`fromUserIdx`,`toUserIdx`,`action`) USING BTREE,
+  ADD KEY `taxonomy_entity_action` (`taxonomy`,`entity`,`action`) USING BTREE;
 
 --
 -- 덤프된 테이블의 AUTO_INCREMENT
@@ -575,15 +571,15 @@ ALTER TABLE `wc_in_app_purchase`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- 테이블의 AUTO_INCREMENT `wc_itsuda`
---
-ALTER TABLE `wc_itsuda`
-    MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- 테이블의 AUTO_INCREMENT `wc_metas`
 --
 ALTER TABLE `wc_metas`
+    MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 테이블의 AUTO_INCREMENT `wc_point_histories`
+--
+ALTER TABLE `wc_point_histories`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -602,6 +598,12 @@ ALTER TABLE `wc_post_vote_histories`
 -- 테이블의 AUTO_INCREMENT `wc_push_notification_tokens`
 --
 ALTER TABLE `wc_push_notification_tokens`
+    MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- 테이블의 AUTO_INCREMENT `wc_search_keys`
+--
+ALTER TABLE `wc_search_keys`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -626,12 +628,6 @@ ALTER TABLE `wc_users`
 -- 테이블의 AUTO_INCREMENT `wc_user_activities`
 --
 ALTER TABLE `wc_user_activities`
-    MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- 테이블의 AUTO_INCREMENT `x.wc_point_histories`
---
-ALTER TABLE `x.wc_point_histories`
     MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;
 

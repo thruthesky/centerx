@@ -157,8 +157,8 @@ class PostTaxonomy extends Forum {
         $in['Ymd'] = date('Ymd');
 
         // beginAt 과 endAt 의 값이 문자열이면, strtotime 을 해서 저장한다.
-        $in[BEGIN_AT] = dateToTime($in[BEGIN_AT]);
-        $in[END_AT] = dateToTime($in[END_AT]);
+        $in[BEGIN_AT] = dateToTime($in[BEGIN_AT] ?? '');
+        $in[END_AT] = dateToTime($in[END_AT] ?? '');
         // Create a post
         parent::create($in);
         if ( $this->hasError ) return $this;
@@ -222,8 +222,8 @@ class PostTaxonomy extends Forum {
 
 
         // beginAt 과 endAt 의 값이 문자열이면, strtotime 을 해서 저장한다.
-        $in[BEGIN_AT] = dateToTime($in[BEGIN_AT]);
-        $in[END_AT] = dateToTime($in[END_AT]);
+        $in[BEGIN_AT] = dateToTime($in[BEGIN_AT] ?? '');
+        $in[END_AT] = dateToTime($in[END_AT] ?? '');
 
         parent::update($in);
         $this->fixUploadedFiles($in);
