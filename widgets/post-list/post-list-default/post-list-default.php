@@ -12,42 +12,44 @@ if (empty($posts)) return include widget('post-list/empty-post-list');
 <section class="post-list-default p-2 px-lg-0">
     <div>
         <?php
-        if (count($posts)) {
-            foreach ($posts as $post) {
-                $post = post(idx: $post->idx);
-                $user = user(idx: $post->userIdx);
+        $rowNo = 0;
+        foreach ($posts as $post) {
+            $post = post(idx: $post->idx);
+            $user = user(idx: $post->userIdx);
 
-                if (in('categoryId') == null) {
-                    $_category = '(' . $post->categoryId() . ')';
-                } else {
-                    $_category = '';
-                }
-        ?>
-                <div class="d-flex">
-                    <?php include widget('user/user-avatar', ['photoUrl' => $user->shortProfile()['photoUrl'], 'size' => '50']) ?>
-                    <a href="<?= $post->url ?>" style="text-decoration: none">
-                        <div class="bold">No. <?= $post->idx ?> -
-                            <?php
-                            if ($post->isPrivate) {
-                                if ($post->userIdx == login()->idx || $post->otherUserIdx == login()->idx) {
-                                    echo $post->privateTitle;
-                                }
-                            } else {
-                                echo $post->title;
+            if ( in('categoryId') == null ) {
+                $_category = '('. $post->categoryId() . ')';
+            } else {
+                $_category = '';
+            }
+            ?>
+            <?=hook()->run( HOOK_POST_LIST_ROW, $rowNo, $posts )?>
+            <div class="d-flex">
+                <?php include widget('user/user-avatar', ['photoUrl' => $user->shortProfile()['photoUrl'], 'size' => '50']) ?>
+                <a href="<?= $post->url ?>" style="text-decoration: none">
+                    <div class="bold">No. <?= $post->idx ?> -
+                        <?php
+                        if ( $post->isPrivate ) {
+                            if ( $post->userIdx == login()->idx || $post->otherUserIdx == login()->idx ) {
+                                echo $post->privateTitle;
                             }
-                            ?>
-                        </div>
-                        <div class="mt-1 text-muted">
-                            <?= $_category ?>
-                            <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?>
-                            [<?= $post->categoryId() ?>] <?= $post->shortDate ?>
-                        </div>
-                    </a>
-                </div>
-                <hr>
-            <?php }
-        } else { ?>
-            <?php include widget('post-list/empty-post-list'); ?>
-        <?php } ?>
+                        } else {
+                            echo $post->title;
+                        }
+                        ?>
+                    </div>
+                    <div class="mt-1 text-muted">
+                        <?=$_category?>
+                        <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?>
+                        [<?=$post->categoryId()?>] <?= $post->shortDate ?>
+                    </div>
+                </a>
+            </div>
+            <hr>
+            <?php
+            $rowNo ++;
+        }
+        ?>
+        <?=hook()->run( HOOK_POST_LIST_ROW, $rowNo, $posts )?>
     </div>
 </section>

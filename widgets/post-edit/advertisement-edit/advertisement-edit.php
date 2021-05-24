@@ -45,13 +45,13 @@ if (in(CATEGORY_ID)) {
             <div class="form-group bg-light p-3">
                 <label>광고 시작 날짜와 끝 날짜</label>
                 <div>
-                    <input type="date" name="beginAt" value="<?=date('Y-m-d', $post->beginAt)?>">
-                    <input type="date" name="endAt" value="<?=date('Y-m-d', $post->endAt)?>">
+                    <input type="date" name="beginAt" value="<?=$post->beginAt ? date('Y-m-d', $post->beginAt) : 0?>">
+                    <input type="date" name="endAt" value="<?=$post->endAt ? date('Y-m-d', $post->endAt) : 0?>">
                     <span class="ml-2">남은 광고 일 수: <?=daysBetween($post->beginAt, $post->endAt)?></span>
                 </div>
                 <small class="form-text text-muted">광고비 시작 날짜와 끝 날짜를 선택해주세요.</small>
                 <small class="form-text text-muted">참고: 날짜 입력은 직접 입력하지 않고, Input 태그의 달력에서 날짜를 선택한다. type=date 의 표시는 YYYY/MM/DD 이지만, PHP 로 전달은 YYYY-MM-DD 이다.</small>
-                <small class="form-text text-muted">참고: 광고가 23일 까지이면, 밤 23일까지 표시된다. 즉, 광고가 0일 남아도, 그 날 밤까지 광고가 표시된다.</small>
+                <small class="form-text text-muted">참고: 광고가 23일 까지이면, 밤 23일까지 표시된다. 즉, 광고가 0일 남아도, 마지막 날 밤까지 광고가 표시된다.</small>
             </div>
 
 
@@ -67,7 +67,7 @@ if (in(CATEGORY_ID)) {
 
             <div class="form-group bg-light p-3">
                 <label>최 상단 배너</label>
-                <upload-image taxonomy="<?=ADVERTISEMENT_CATEGORY?>" entity="<?=$post->idx?>" code="<?=AD_TOP?>"></upload-image>
+                <upload-image taxonomy="<?=POSTS?>" entity="<?=$post->idx?>" code="<?=AD_TOP?>"></upload-image>
                 <small class="form-text text-muted">
                     너비: 408px. 높이: 160px.
                 </small>
@@ -78,7 +78,7 @@ if (in(CATEGORY_ID)) {
 
             <div class="form-group bg-light p-3">
                 <label>날개 & 모바일 첫 화면 배너</label>
-                <upload-image taxonomy="<?=ADVERTISEMENT_CATEGORY?>" entity="<?=$post->idx?>" code="<?=AD_WING?>"></upload-image>
+                <upload-image taxonomy="<?=POSTS?>" entity="<?=$post->idx?>" code="<?=AD_WING?>"></upload-image>
                 <small class="form-text text-muted">
                     너비: 408px. 높이: 160px.
                 </small>
@@ -86,12 +86,14 @@ if (in(CATEGORY_ID)) {
                 <input class="form-control" type="text" name="<?=AD_WING?>" value="<?=$post->v(AD_WING)?>">
                 <small class="form-text text-muted">위치를 지정하지 않으면, 데스크톱 전체 페이지 및 모바일 첫 화면에 표시. 위치 지정하면 해당 "게시판.카테고리"에만 표시.</small>
                 <small class="form-text text-muted">위치 표시 방법: 점(.)으로 분리하여 "게시판아이디.카테고리"를 입력. 예) qna.비자</small>
+                <small class="form-text text-muted">위치에 공백을 입력하면 전체 페이지에 나온다.</small>
+
             </div>
 
 
             <div class="form-group bg-light p-3">
                 <label>게시판 목록 사각 배너</label>
-                <upload-image taxonomy="<?=ADVERTISEMENT_CATEGORY?>" entity="<?=$post->idx?>" code="<?=AD_POST_LIST_SQUARE?>"></upload-image>
+                <upload-image taxonomy="<?=POSTS?>" entity="<?=$post->idx?>" code="<?=AD_POST_LIST_SQUARE?>"></upload-image>
                 <small class="form-text text-muted">
                     너비: 320px. 높이: 320px.
                 </small>
@@ -100,9 +102,10 @@ if (in(CATEGORY_ID)) {
                 <small class="form-text text-muted">점(.)으로 분리하여 "게시판아이디.카테고리"를 입력. 예) qna.비자</small>
             </div>
 
-            <div class="form-group bg-light p-3">
-                <label>게시판 목록 텍스트 + 썸네일 배너</label>
-                <upload-image taxonomy="<?=ADVERTISEMENT_CATEGORY?>" entity="<?=$post->idx?>" code="<?=AD_POST_LIST_THUMBNAIL?>"></upload-image>
+            <div class="form-group bg-dark p-3">
+                <div class="alert alert-secondary">@TODO 아직 프리미엄 배너는 지원하지 않음. 광고주가 많아지면 개발 할 것.</div>
+                <label>프리미엄 배너(게시판 목록 썸네일+텍스트 광고)</label>
+                <upload-image taxonomy="<?=POSTS?>" entity="<?=$post->idx?>" code="<?=AD_POST_LIST_THUMBNAIL?>"></upload-image>
                 <small class="form-text text-muted">
                     너비: 320px. 높이: 320px.
                 </small>
@@ -112,9 +115,12 @@ if (in(CATEGORY_ID)) {
             </div>
 
 
-            <div class="mt-3 d-flex justify-content-end">
-                <a class="btn btn-warning mr-3" type="button" href="<?=postListUrl($category->id)?>" <?=hook()->run(HOOK_POST_EDIT_CANCEL_BUTTON_ATTR)?>><?=ln('cancel')?></a>
-                <button class="btn btn-success" type="submit"><?=ln('submit')?></button>
+            <div class="mt-3 d-flex justify-content-between">
+                <a class="btn btn-danger mr-3" type="button" href="<?=postDeleteUrl($post->idx)?>" onclick="return confirm('<?=ln('confirm_delete')?>')"><?=ln('delete')?></a>
+                <div>
+                    <a class="btn btn-warning mr-3" type="button" href="<?=postListUrl($category->id)?>"><?=ln('list')?></a>
+                    <button class="btn btn-success" type="submit"><?=ln('submit')?></button>
+                </div>
             </div>
 
         </form>

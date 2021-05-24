@@ -156,15 +156,6 @@ input.focus-none:focus {
   outline: none !important;
 }
 
-.banner-255x100 {
-  width: 255px;
-  height: 100px;
-}
-
-.banner {
-  background-color: #bcbcbc;
-}
-
 .pointer {
   cursor: pointer;
 }
@@ -231,6 +222,30 @@ input.focus-none:focus {
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+/**
+ * banner
+ */
+.banner {
+  background-color: #bcbcbc;
+}
+
+.ad-top {
+  width: 255px;
+  height: 100px;
+  overflow: hidden;
+}
+.ad-top img {
+  width: 100%;
+  border-radius: 1em;
+}
+
+.ad-wing img {
+  display: block;
+  margin-bottom: 6px;
+  width: 100%;
+  border-radius: 1em;
 }
 
 /**

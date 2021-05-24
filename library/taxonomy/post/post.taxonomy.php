@@ -220,11 +220,11 @@ class PostTaxonomy extends Forum {
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
         if ( $this->otherUserIdx ) return $this->error(e()->cannot_be_updated_due_to_other_user_idx);
 
-
         // beginAt 과 endAt 의 값이 문자열이면, strtotime 을 해서 저장한다.
         $in[BEGIN_AT] = dateToTime($in[BEGIN_AT] ?? '');
         $in[END_AT] = dateToTime($in[END_AT] ?? '');
 
+        //
         parent::update($in);
         $this->fixUploadedFiles($in);
         return $this;
@@ -460,8 +460,10 @@ class PostTaxonomy extends Forum {
      * Note, that it will ignore `?` and the string after it if it exists.
      * i.e) If the URL is `https://local.itsuda50.com/banana-6?lcategory=banana` then, `?lcategory=banana` is ignored.
      *
+     * 참고, 현재 페이지가 글 읽기 페이지가 아니면, DB 액세스 없이 바로 error 를 리턴한다.
+     *
      * @return self
-     * - error will be set into $this if post not exists.
+     * - error_post_path_is_empty will be set into $this if post not exists.
      * - or post object
      *
      * @example

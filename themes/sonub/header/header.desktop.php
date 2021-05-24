@@ -32,10 +32,10 @@
 
 
     <div class="d-flex justify-content-between l-content my-3 fs-sm">
-        <div class="mt-3">
-            <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner.jpg">
+        <div class="mt-3 ad-top">
+            <?php include widget('advertisement/banner', ['type' => AD_TOP, 'place' => 'L']) ?>
         </div>
-        <div class="mx-3 mx-lg-5 w-100">
+        <div class="mx-3 mx-lg-5 flex-grow-1">
             <a class="d-block fs-lg text-center mb-2" href="/">
                 <?php
                 // 로고 이미지가 있으면, 로고 이미지 표시
@@ -58,8 +58,8 @@
                 </div>
             </form>
         </div>
-        <div class="d-none d-lg-block mt-3">
-            <img class="banner-255x100 border-radius-md" src="/themes/sonub/tmp/banner2.jpg">
+        <div class="d-none d-lg-block mt-3 ad-top">
+            <?php include widget('advertisement/banner', ['type' => AD_TOP, 'place' => 'R']) ?>
         </div>
     </div>
 

@@ -1640,41 +1640,26 @@ https://local.itsuda50.com/?route=point.postCreate&idx=15130
 request('translation.get', {'code': 'list'}, console.log, alert);
 ```
 
-### phpThumb Displaying images
+# 이미지 썸네일
 
-- It uses `phpThumb` for reading images and thumbnail generating.
+- 이미지 썸네일을 위한 여러 라이브러리들이 많이 있지만, 아주 깔끔한 것이 없다. 믿었던 phpThumb 마저 알 수 없는 문제로 이미지 출력이 올바로 안된다.
+- 그래서 직접 만들어서 사용한다.
 
-- By default, images are saved under `files/uploads` folder and the images can be directly displayed using image url.
-  But it cannot display images with `file.idx`.
 
-- `phpThumb` does thumbnail generating and control expiration of image. And it even handles the `Last-Modified(Etag)`.
-  Chrome and other browsers do memory-cache.
-  Flutter can use a package to cache locally if file name is not modified.
-  So, caching wouldn't be a big matter but it handles caching machanism.
+예제) PHP 에서 생성해서 출력
 
-- It can use image path or `file.idx`. `phpThumb` also supports remote image by specifying image url.
-  It would be worthy to make a handy helper function to create this thumbnail generating url on each client.
-
-```html
-<img src="http://local.itsuda50.com/etc/phpThumb/phpThumb.php?src=67&wl=300&h=300&zc=1&f=jpeg&q=95">
-<img src="http://local.itsuda50.com/etc/phpThumb/phpThumb.php?src=/root/files/uploads/learn-24052061920-10.jpg&wl=300&h=300&zc=1&f=jpeg&q=95">
+```php
+$file = files()->getBy(); // 최근 파일 선택
+$th = thumbnailUrl($file->idx, 80, 80); // 썸네일 URL 을 가져온다.
+echo "<img src='$th'><br>"; // 썸네일 이미지 출력
+echo "<img src='{$file->url}'><br>"; // 원본 이미지 출력
 ```
 
-- You can get the original image by putting `&orignal=Y`.
-  - When you get the original image,
-    - It does not resize the image by giving width and height.
-    - It does not cache.
-  - Good benefit of getting original image is that, you want to get the original image, but you don't know the page of the image. Then, you can get it with file.idx.
+예제) img 태그나 Flutter 등에서 바로 출력하기
+
 ```html
-<img src="http://local.itsuda50.com/etc/phpThumb/phpThumb.php?src=67&original=Y">
+<img src="https://main.philov.com/etc/thumbnail.php?idx=293&w=140&h=140">
 ```
-
-
-#### phpThumb zoom crop
-
-- 기본적으로 Zoom Crop 옵션이 들어가 있다. 그래서 원래 이미지가 원하는 사이즈 보다 크면, 줌을 해서 crop 을 한다.
-  만약, zoom crop 을 안하면, 원래 이미지의 ratio 가 그대로 유지된다. 그래서 별로다.
-
 
 # Meta
 
@@ -2400,6 +2385,22 @@ include widget('post-edit/post-edit-default');
 ```
 
 - HOOK_POST_EDIT_RETURN_URL - you can edit return url of the post edit form.
+
+- HOOK_POST_LIST_ROW - 글 목록에서, 각 글의 사이에 출력한다.
+  `$rowNo` 는 0 부터 시작하며 총 글 수 만 큼, 각 라인 사이에 원하는 내용을 출력 할 수 있다.
+  `$rowNo` 가 0 이면, 첫 글 위에 출력하고, 맨 끝인지는 아래와 같이 할 수 있다.
+
+```php
+hook()->add(HOOK_POST_LIST_ROW, function(int $rowNo, array $posts) {
+    if ( $rowNo == 3 ) {
+        include widget('advertisement/banner', ['type' => AD_POST_LIST_SQUARE]);
+        echo "<hr>";
+    }
+    if ( count($posts) == $rowNo ) {
+        // This is the last line.
+    }
+});
+```
 
 
 ### 훅으로 HTML TITLE 변경하기
@@ -3626,6 +3627,38 @@ client_max_body_size    500M;
   - 왼쪽 또는 오른쪽 날개에 광고가 나오고,
   - 모바일 첫 화면에 나온다.
 
+- 광고가 없는 경우에는 각 place 별로 기본 광고가 노출된다. 기본 광고가 없는 광고가 있을 수도 있다.
+
+- 광고는 자동으로 노출되는 것이 아니라, theme 에서 위치 별로 적절하게 표시를 해 주어야 한다. 표시를 하는 방법은 아래의 항목을 참조한다.
+
+## 광고 표시 방법
+
+- 아래와 같이 type 에는 광고 타입을 기록하고, place 에서는 "게시판.카테고리"와 같이 표시한다.
+
+```php
+<?php include widget('advertisement/banner', ['type' => AD_TOP, 'place' => 'R']) ?>
+```
+
+### 게시판 목록에 광고 표시 방법
+
+- 아래의 예제는 게시판 맨 위에 광고를 표시한다.
+
+```php
+hook()->add(HOOK_POST_LIST_TOP, function() {
+    include widget('advertisement/banner', ['type' => AD_POST_LIST_SQUARE]);
+});
+```
+
+- 아래의 예제는 게시판 목록의 중간에 광고를 표시한다.
+
+```php
+hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
+    if ( $rowNo == 2 ) {
+        include widget('advertisement/banner', ['type' => AD_POST_LIST_SQUARE]);
+        echo "<hr>";
+    }
+});
+```
 
 
 
