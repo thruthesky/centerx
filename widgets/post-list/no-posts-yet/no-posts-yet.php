@@ -1,0 +1,1 @@
+<div class="pb-3 d-flex justify-content-center"><?= ln('No post yet') ?></div>

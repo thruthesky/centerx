@@ -18,7 +18,7 @@ $url = $post->url;
 ?>
 
 <div class="thumbnail-with-title-and-content">
-  <a class="body" href="<?= $url ?>">
+  <a class="body" href="<?= $url ?>" style="height: <?=$imageHeight?>">
     <?php if ($src) { ?>
       <img class="photo" src="<?= $src ?>">
     <?php } ?>
@@ -60,7 +60,6 @@ $url = $post->url;
 
   .thumbnail-with-title-and-content .body .photo {
     margin-right: 15px;
-    height: 90px;
   }
 
   .thumbnail-with-title-and-content .body .title-content {
