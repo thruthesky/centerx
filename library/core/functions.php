@@ -145,9 +145,12 @@ EOH;
 
 
 
-
-
 function canLiveReload(): bool {
+
+    // index.php 가 아니면, live reload 안 함.
+    if ( !isset($_SERVER['PHP_SELF']) || !str_ends_with($_SERVER['PHP_SELF'], 'index.php')  ) {
+        return false;
+    }
 
     if ( str_ends_with(in('p', ''), '.submit') ) {
         return false;
@@ -1391,15 +1394,21 @@ function short_date_time(int $stamp): string
  * @param int $fileIdx
  * @param int $width
  * @param int $height
- * @param int $quality
  * @return string
  */
-function thumbnailUrl(int $fileIdx, int $width=200, int $height=200, int $quality=100, bool $zoomCrop=true): string
+function thumbnailUrl(int $fileIdx, int $width=200, int $height=200): string
 {
-    if ( empty($fileIdx) ) return '';
-    $url = HOME_URL . "etc/phpThumb/phpThumb.php?src=$fileIdx&w=$width&h=$height&f=jpeg&q=$quality";
-    if ( $zoomCrop ) $url .= "&zc=1";
-    return $url;
+
+    if ( empty($fileIdx) ) return 'file.idx is empty.';
+    $file = files($fileIdx);
+    $thumbnailPath = zoomThumbnail($file->path, $width, $height);
+    $arr = explode('/files/', $thumbnailPath);
+    return HOME_URL . "files/$arr[1]";
+
+//    if ( empty($fileIdx) ) return '';
+//    $url = HOME_URL . "etc/phpThumb/phpThumb.php?src=$fileIdx&w=$width&h=$height&f=jpeg&q=$quality";
+//    if ( $zoomCrop ) $url .= "&zc=1";
+//    return $url;
 }
 
 
@@ -1714,4 +1723,126 @@ function daysBetween($stamp1, $stamp2) {
     $date1 = \Carbon\Carbon::createFromTimestamp($stamp1);
     $date2 = \Carbon\Carbon::createFromTimestamp($stamp2);
     return $date1->diffInDays($date2, false);
+}
+
+
+
+/**
+ * 이미지를 썸네일로 제작한다.
+ *
+ * "PHP 썸네일 - Zoom Crop" 요약 문서 - https://docs.google.com/document/d/1RWYRWiATRdgT02cqG5TbVtJCOTSKtlAzXxeOM2-NkXA/edit#heading=h.2ryanntdiu14
+ * 위 문서를 보면, 어떻게 zoom crop 을 하는지 알 수 있다.
+ *
+ * 큰 이미지를 비율에 맞추어 작게해서, 원하는 사이즈로 정확히 crop 한다. 예제는 문서를 참고한다.
+ *
+ * @return string - 썸네일 이미지 경로를 리턴한다.
+ */
+function zoomThumbnail(string $source_path, int $width=150, int $height=150): string {
+
+    // 저장 할 경로 찾기.
+    $destination_path = thumbnailPath($source_path, $width, $height);
+
+    // 이미 썸네일이 생성되어져 있으면 그 걸 리턴.
+    if ( file_exists($destination_path) ) {
+        debug_log('------------> $destination_path: exists: ' . $destination_path);
+        return $destination_path;
+    } else {
+        debug_log('------------> $destination_path: NOT exists: ' . $destination_path);
+    }
+
+
+
+    /*
+     * Add file validation code here
+     */
+
+    list($source_width, $source_height, $source_type) = getimagesize($source_path);
+
+    switch ($source_type) {
+        case IMAGETYPE_GIF:
+            $source_gdim = imagecreatefromgif($source_path);
+            break;
+        case IMAGETYPE_JPEG:
+            $source_gdim = imagecreatefromjpeg($source_path);
+            break;
+        case IMAGETYPE_PNG:
+            $source_gdim = imagecreatefrompng($source_path);
+            break;
+    }
+
+    $source_aspect_ratio = $source_width / $source_height;
+    $desired_aspect_ratio = $width / $height;
+
+    if ($source_aspect_ratio > $desired_aspect_ratio) {
+        /*
+         * Triggered when source image is wider
+         */
+        $temp_height = $height;
+        $temp_width = ( int )($height * $source_aspect_ratio);
+    } else {
+        /*
+         * Triggered otherwise (i.e. source image is similar or taller)
+         */
+        $temp_width = $width;
+        $temp_height = ( int )($width / $source_aspect_ratio);
+    }
+
+    /*
+     * Resize the image into a temporary GD image
+     */
+
+    $temp_gdim = imagecreatetruecolor($temp_width, $temp_height);
+    imagecopyresampled(
+        $temp_gdim,
+        $source_gdim,
+        0, 0,
+        0, 0,
+        $temp_width, $temp_height,
+        $source_width, $source_height
+    );
+
+    /*
+     * Copy cropped region from temporary image into the desired GD image
+     */
+
+    $x0 = ($temp_width - $width) / 2;
+    $y0 = ($temp_height - $height) / 2;
+    $desired_gdim = imagecreatetruecolor($width, $height);
+    imagecopy(
+        $desired_gdim,
+        $temp_gdim,
+        0, 0,
+        $x0, $y0,
+        $width, $height
+    );
+
+
+
+    // 파일 저장
+    imagejpeg($desired_gdim, $destination_path);
+
+
+    return $destination_path;
+    /*
+     * Add clean-up code here
+     */
+}
+
+function thumbnailPath($path, $w, $h) {
+    $ext = pathinfo($path, PATHINFO_EXTENSION);
+    $new_path = str_replace($ext, "{$w}x{$h}.$ext", $path);
+    $new_path = str_replace("uploads/", "thumbnails/", $new_path);
+    return $new_path;
+}
+
+
+function fileTable(): string {
+    return DB_PREFIX . FILES;
+}
+function postTable(): string {
+    return DB_PREFIX . POSTS;
+}
+
+function metaTable(): string {
+    return DB_PREFIX . METAS;
 }

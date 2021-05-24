@@ -10,7 +10,7 @@
 <div>
     <?php
     $o = getWidgetOptions();
-    $cacheCode = $o['cacheCode'] ?? "forecast";
+    $cacheCode = $o['cacheCode'] ?? "forecast1";
     $cacheTime = $o['cacheTime'] ?? 60 * 25;
 
     $country = get_current_country(clientIp());
