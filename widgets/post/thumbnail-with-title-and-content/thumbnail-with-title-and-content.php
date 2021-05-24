@@ -18,7 +18,7 @@ $url = $post->url;
 ?>
 
 <div class="thumbnail-with-title-and-content">
-  <a class="body" href="<?= $url ?>" style="height: <?=$imageHeight?>px">
+  <a class="body" href="<?= $url ?>" style="height: <?= $imageHeight ?>px">
     <?php if ($src) { ?>
       <img class="photo" src="<?= $src ?>">
     <?php } ?>
@@ -33,7 +33,7 @@ $url = $post->url;
   </a>
   <div class="meta">
     <div><?= category($post->categoryIdx)->id ?></div>
-    <div>79</div>
+    <?= ln('no_of_views') ?>: <?= $post->noOfViews ?>
     <div><?= $post->shortDate ?></div>
   </div>
 </div>

@@ -27,7 +27,8 @@ $posts = $o['posts'];
                     <a href="<?= $post->url ?>">
                         <div class="font-weight-bold">No. <?= $post->idx ?> <?= $post->title ?></div>
                         <div class="mt-2">
-                            <?= category($post->categoryIdx)->id ?> -
+                            [<?= category($post->categoryIdx)->id ?>] -
+                            <?=ln('no_of_views')?>: <?=$post->noOfViews?> -
                             <?= $post->shortDate ?>
                         </div>
                     </a>

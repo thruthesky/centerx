@@ -40,7 +40,7 @@ if (empty($posts)) return include widget('post-list/empty-post-list');
                         <div class="mt-1 text-muted">
                             <?= $_category ?>
                             <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?>
-                            [<?= $post->categoryId() ?>] <?= $post->shortDate ?>
+                            [<?= $post->categoryId() ?>] - <?=ln('no_of_views')?>: <?=$post->noOfViews?> - <?= $post->shortDate ?> 
                         </div>
                     </a>
                 </div>
