@@ -39,6 +39,8 @@ $posts = array_merge($posts, postMockData($lack));
   }
 
   .top-6-stories a {
+    text-decoration: none;
+    color: black;
     white-space: nowrap;
   }
 

@@ -5,8 +5,8 @@
  */
 ?>
 <section class="p-4 overflow-hidden" data-cy="admin-top-user-by-points-widget" style="height: 24rem">
-    <div class="text-muted fs-sm"><?= ek(' ', '사용자 수: ') ?><?= number_format(user()->count()) ?> <?= ek('users', ' ') ?></div>
-    <h6 class="mt-2 mb-4 fw-700"><?= ek('Top most user by points', '포인트가 많은 사용자 수') ?></h6>
+    <div class="text-muted fs-sm"><?= ln(['en' => 'No. of users', 'ko' => '사용자 수: ']) ?><?= number_format(user()->count()) ?> <?= ln(['en' => 'users', 'ko' => '사용자']) ?></div>
+    <h6 class="mt-2 mb-4 fw-700"><?= ln(['en' => 'Top most user by points', 'ko' => '포인트가 많은 사용자 수']) ?></h6>
     <?php
     foreach (user()->search(where: "point>?", params: [0],order: 'point', limit: 4, object: true) as $user) {
     ?>
@@ -18,7 +18,7 @@
             <?php } ?>
             <div class="text-overflow-ellipsis ml-4">
                 <div><strong><?=$user->nicknameOrName?></strong> <small>(ID. <?= $user->idx ?>)</small></div>
-                <div class="mt-1"><?= $user->point ?> <?= ek('Points', '포인트') ?></div>
+                <div class="mt-1"><?= $user->point ?> <?= ln(['en' => 'Points', 'ko' => '포인트']) ?></div>
             </div>
         </div>
     <?php } ?>

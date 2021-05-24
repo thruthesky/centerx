@@ -17,20 +17,20 @@ if (empty($posts)) return include widget('post-list/empty-post-list');
             $post = post(idx: $post->idx);
             $user = user(idx: $post->userIdx);
 
-            if ( in('categoryId') == null ) {
-                $_category = '('. $post->categoryId() . ')';
+            if (in('categoryId') == null) {
+                $_category = '(' . $post->categoryId() . ')';
             } else {
                 $_category = '';
             }
-            ?>
-            <?=hook()->run( HOOK_POST_LIST_ROW, $rowNo, $posts )?>
+        ?>
+            <?= hook()->run(HOOK_POST_LIST_ROW, $rowNo, $posts) ?>
             <div class="d-flex">
                 <?php include widget('user/user-avatar', ['photoUrl' => $user->shortProfile()['photoUrl'], 'size' => '50']) ?>
                 <a href="<?= $post->url ?>" style="text-decoration: none">
                     <div class="bold">No. <?= $post->idx ?> -
                         <?php
-                        if ( $post->isPrivate ) {
-                            if ( $post->userIdx == login()->idx || $post->otherUserIdx == login()->idx ) {
+                        if ($post->isPrivate) {
+                            if ($post->userIdx == login()->idx || $post->otherUserIdx == login()->idx) {
                                 echo $post->privateTitle;
                             }
                         } else {
@@ -39,17 +39,17 @@ if (empty($posts)) return include widget('post-list/empty-post-list');
                         ?>
                     </div>
                     <div class="mt-1 text-muted">
-                        <?=$_category?>
+                        <?= $_category ?>
                         <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?>
-                        [<?=$post->categoryId()?>] <?= $post->shortDate ?>
+                        [<?= $post->categoryId() ?>] - <?= ln('no_of_views') ?>: <?= $post->noOfViews ?> - <?= $post->shortDate ?>
                     </div>
                 </a>
             </div>
             <hr>
-            <?php
-            $rowNo ++;
+        <?php
+            $rowNo++;
         }
         ?>
-        <?=hook()->run( HOOK_POST_LIST_ROW, $rowNo, $posts )?>
+        <?= hook()->run(HOOK_POST_LIST_ROW, $rowNo, $posts) ?>
     </div>
 </section>

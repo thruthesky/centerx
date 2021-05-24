@@ -6,8 +6,8 @@
 ?>
 <section class="p-4 overflow-hidden" data-cy="admin-post-list-recent-summary-widget" style="height: 24rem">
 
-    <div class="text-muted fs-sm"><?= ek('Total number posts', '전체 글 수') ?>: <?= post()->count() ?></div>
-    <h6 class="mt-2 mb-4 fw-700"><?= ek('Recent Posts', '최근 글 목록') ?></h6>
+    <div class="text-muted fs-sm"><?= ln(['en' => 'Total number posts', 'ko' => '전체 글 수']) ?>: <?= post()->count() ?></div>
+    <h6 class="mt-2 mb-4 fw-700"><?= ln(['en' => 'Recent Posts', 'ko' => '최근 글 목록']) ?></h6>
 
     <?php foreach (post()->latest(limit: 4) as $post) {
         $user = user($post->userIdx)->shortProfile();

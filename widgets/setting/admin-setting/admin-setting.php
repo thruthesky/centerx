@@ -43,31 +43,31 @@ $ms = adminSettings()->get();
                     <input type="hidden" name="p" value="admin.index">
                     <input type="hidden" name="w" value="<?= in('w') ?>">
                     <input type="hidden" name="mode" value="update">
-                    <input type="text" class="form-control mb-2" name='siteName' value="<?= $ms['siteName'] ?? '' ?>" placeholder="<?= ek('Site name', '사이트 이름') ?>">
+                    <input type="text" class="form-control mb-2" name='siteName' value="<?= $ms['siteName'] ?? '' ?>" placeholder="<?= ln(['en' => 'Site name', 'ko' => '사이트 이름']) ?>">
                     <div class="hint">
-                        <?= ek(
-                            "Site name that will be shown as browser title. Do not input special charachters.",
-                            "웹 브라우저 상단 제목이나 검색 엔진에 색인 될 사이트 이름입니다. 가능한 특수 문자를 입력하지 마세요."
-                        ) ?>
+                        <?= ln([
+                            'en' => "Site name that will be shown as browser title. Do not input special charachters.",
+                            'ko' => "웹 브라우저 상단 제목이나 검색 엔진에 색인 될 사이트 이름입니다. 가능한 특수 문자를 입력하지 마세요."
+                        ]) ?>
                     </div>
 
-                    <input type="text" class="form-control mb-2" name='siteDescription' value="<?= $ms['siteDescription'] ?? '' ?>" placeholder="<?= ek('Site description', '사이트 설명') ?>">
+                    <input type="text" class="form-control mb-2" name='siteDescription' value="<?= $ms['siteDescription'] ?? '' ?>" placeholder="<?= ln(['en' => 'Site description', 'ko' => '사이트 설명']) ?>">
                     <div class="hint">
-                        <?= ek('Site description.', '검색 엔진에 색인 될 기본 사이트 설명입니다. 가능한 특수 문자를 입력하지마세요. 각 글 읽기 페이지는 글 내용에 대한 설명이 색인됩니다.') ?>
+                        <?= ln(['en' => 'Site description.', 'ko' => '검색 엔진에 색인 될 기본 사이트 설명입니다. 가능한 특수 문자를 입력하지마세요. 각 글 읽기 페이지는 글 내용에 대한 설명이 색인됩니다.']) ?>
                     </div>
 
                     <hr>
-                    <h2><?= ek("Global Forum Settings", "게시판 설정") ?></h2>
+                    <h2><?= ln(['en' => "Global Forum Settings", 'ko' => "게시판 설정"]) ?></h2>
 
                     <div>
-                        <label for="search_categories" class="form-label"><?= ek("Searchable Categories", "검색 가능한 카테고리") ?></label>
+                        <label for="search_categories" class="form-label"><?= ln(['en' => "Searchable Categories", 'ko' => "검색 가능한 카테고리"]) ?></label>
                         <input class="form-control" id="search_categories" type="text" name="search_categories" value="<?= $ms['search_categories'] ?? '' ?>">
                         <div class="hint">
-                            <?= ek(
-                                "Input categories to be searched. If it is unset, all categories will be searched.",
-                                "여기에 기록하는 카테고리만 검색이 됩니다. 공백으로 구분해서 입력 가능. 예) qna,job<br>
+                            <?= ln([
+                                'en' => "Input categories to be searched. If it is unset, all categories will be searched.",
+                                'ko' => "여기에 기록하는 카테고리만 검색이 됩니다. 공백으로 구분해서 입력 가능. 예) qna,job<br>
                         검색을 할 때, 전체 게시판 검색을 할 수 있게 하려면, 공백으로 두세요."
-                            ) ?>
+                            ]) ?>
                         </div>
 
 
@@ -75,17 +75,17 @@ $ms = adminSettings()->get();
 
 
                     <label>
-                        Like
+                        <?= ln('like') ?>
                     </label>
                     <div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" id="toggle_forum_like" type="radio" name="forum_like" value="Y" <?php if (isset($ms['forum_like']) && $ms['forum_like'] == 'Y') echo 'checked' ?>>
-                            <label class="form-check-label" for="toggle_forum_like"><?= ek('Show', '보이기') ?></label>
+                            <label class="form-check-label" for="toggle_forum_like"><?= ln('show') ?></label>
                         </div>
 
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" id="toggle_forum_like2" type="radio" name="forum_like" value="N" <?php if (!isset($ms['forum_like']) || $ms['forum_like'] != 'Y') echo 'checked' ?>>
-                            <label class="form-check-label" for="toggle_forum_like2"><?= ek('Hide', '숨기기') ?></label>
+                            <label class="form-check-label" for="toggle_forum_like2"><?= ln('hide') ?></label>
                         </div>
 
                     </div>
@@ -98,12 +98,12 @@ $ms = adminSettings()->get();
 
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" id="show_forum_dislike" type="radio" name="forum_dislike" value="Y" <?php if (isset($ms['forum_dislike']) && $ms['forum_dislike'] == 'Y') echo 'checked' ?>>
-                            <label class="form-check-label" for="show_forum_dislike"><?= ek('Show', '보이기') ?></label>
+                            <label class="form-check-label" for="show_forum_dislike"><?= ln('show') ?></label>
                         </div>
 
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" id="hide_forum_dislike" type="radio" name="forum_dislike" value="N" <?php if (!isset($ms['forum_dislike']) || $ms['forum_dislike'] != 'Y') echo 'checked' ?>>
-                            <label class="form-check-label" for="hide_forum_dislike"><?= ek('Hide', '숨기기') ?></label>
+                            <label class="form-check-label" for="hide_forum_dislike"><?= ln('hide') ?></label>
                         </div>
 
 

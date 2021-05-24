@@ -17,6 +17,9 @@ $lack = 2 - count($posts);
 $posts = array_merge($posts, postMockData($lack, photo: true));
 
 $topPost = $op['firstPost'] ?? firstPost();
+
+$imageHeight = $op['imageHeight'] ?? 152;
+$imageWidth = $op['imageWidth'] ?? 200;
 ?>
 
 <div class="two-left-photo-with-stories">
@@ -27,9 +30,11 @@ $topPost = $op['firstPost'] ?? firstPost();
   <div class="bottom">
     <div class="left">
       <?php foreach ($posts as $post) { ?>
-        <!-- <div class="photo"> -->
-          <?php include widget('post/photo-with-inline-text-at-bottom', ['post' => $post, 'imageHeight' => $op['imageHeight'] ?? 152, 'imageWidth' => $op['imageWidth'] ?? 200 ] ?? null); ?>
-        <!-- </div> -->
+        <?php include widget('post/photo-with-inline-text-at-bottom', [
+          'post' => $post,
+          'imageHeight' => $imageHeight,
+          'imageWidth' => $imageWidth
+        ]); ?>
       <?php } ?>
     </div>
     <div class="right">
@@ -39,10 +44,16 @@ $topPost = $op['firstPost'] ?? firstPost();
 </div>
 
 <style>
+  .two-left-photo-with-stories .top {
+    text-decoration: none;
+    color: black;
+  }
+
   .two-left-photo-with-stories .top .title {
     font-weight: bold;
     font-size: 1em;
   }
+
 
   .two-left-photo-with-stories .top .title,
   .two-left-photo-with-stories .top .content {

@@ -55,4 +55,9 @@ $posts = array_merge($posts, postMockData($lack));
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+  
+  .story-list-with-bullet ul li div a {
+    text-decoration: none;
+    color: black;
+  }
 </style>

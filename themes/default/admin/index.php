@@ -7,8 +7,8 @@ if (admin() == false) jsBack('You are not admin');
     <div class="container-fluid" style="background-color: #181c32;">
         <nav class="container navbar white py-0" style="height: 70px;">
             <div class="white py-3">
-                <a class="btn fw-700 fs-sm" href="/?p=admin.index"><?= ek('Dashboard', '관리자페이지') ?></a>
-                <a class="btn fw-700 fs-sm" href="/"><?= ek('Home', '홈') ?></a>
+                <a class="btn fw-700 fs-sm" href="/?p=admin.index"><?= ln('dashboard') ?></a>
+                <a class="btn fw-700 fs-sm" href="/"><?= ln('home') ?></a>
             </div>
             <div class="ml-auto white">
                 <a data-cy="admin-settings-button" class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-setting"><?= ln(['en' => 'Settings', 'ko' => '설정']) ?></a>
@@ -31,26 +31,26 @@ if (admin() == false) jsBack('You are not admin');
             <div class="d-flex h-100">
                 <a data-cy="admin-user-list-button" class="sub-menu-item <?= str_contains(in('w'), 'user/') ? 'active' : '' ?>" href="/?p=admin.index&w=user/admin-user-list">
                     <div class="sub-menu-item-label">
-                        <div class="sub-menu-title fw-700 color-dark-75"><?= ek('Users', '사용자') ?></div>
-                        <div class="sub-menu-desc fw-400"><?= ek('Recent activities', '최근 가입 사용자 목록') ?></div>
+                        <div class="sub-menu-title fw-700 color-dark-75"><?= ln(['en' => 'Users', 'ko' => '사용자']) ?></div>
+                        <div class="sub-menu-desc fw-400"><?= ln(['en' => 'Recent activities', 'ko' => '최근 가입 사용자 목록']) ?></div>
                     </div>
                 </a>
                 <a data-cy="admin-category-list-button" class="sub-menu-item <?= in('w') == 'category/admin-category-list' ? 'active' : '' ?>" href="/?p=admin.index&w=category/admin-category-list">
                     <div class="sub-menu-item-label border-left-grey">
                         <div class="sub-menu-title fw-700 color-dark-75">Forum</div>
-                        <div class="sub-menu-desc fw-400"><?= ek('Recent posts & comments', '게시판 관리') ?></div>
+                        <div class="sub-menu-desc fw-400"><?= ln(['en' => 'Recent posts & comments', 'ko' => '게시판 관리']) ?></div>
                     </div>
                 </a>
                 <a data-cy="admin-shopping-mall-button" class="sub-menu-item <?= in('w') == 'shopping-mall/admin-shopping-mall' ? 'active' : '' ?>" href="/?p=admin.index&w=shopping-mall/admin-shopping-mall">
                     <div class="sub-menu-item-label border-left-grey">
                         <div class="sub-menu-title fw-700 color-dark-75"><?= ln(['en' => 'Shopping Mall', 'ko' => '쇼핑몰']) ?></div>
-                        <div class="sub-menu-desc fw-400"><?= ek('Create Items, View Orders, ...', '쇼핑 상품 및 결제 관리') ?></div>
+                        <div class="sub-menu-desc fw-400"><?= ln(['en' => 'Create Items, View Orders, ...', 'ko' => '쇼핑 상품 및 결제 관리']) ?></div>
                     </div>
                 </a>
                 <a data-cy="admin-purchase-list-button" class="sub-menu-item <?= in('w') == 'in-app-purchase/admin-purchase-list' ? 'active' : '' ?>" href="/?p=admin.index&w=in-app-purchase/admin-purchase-list">
                     <div class="sub-menu-item-label border-left-grey">
                         <div class="sub-menu-title fw-700 color-dark-75"><?= ln(['en' => 'In App Purchase', 'ko' => '인앱 구매']) ?></div>
-                        <div class="sub-menu-desc fw-400"><?= ek('Purchases & stats', '인앱 구매 관리') ?></div>
+                        <div class="sub-menu-desc fw-400"><?= ln(['en' => 'Purchases & stats', 'ko' => '인앱 구매 관리']) ?></div>
                     </div>
                 </a>
             </div>
