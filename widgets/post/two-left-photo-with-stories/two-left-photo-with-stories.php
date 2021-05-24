@@ -30,11 +30,11 @@ $imageWidth = $op['imageWidth'] ?? 200;
   <div class="bottom">
     <div class="left">
       <?php foreach ($posts as $post) { ?>
-          <?php include widget('post/photo-with-inline-text-at-bottom', [
-            'post' => $post,
-            'imageHeight' => $imageHeight,
-            'imageWidth' => $imageWidth
-            ]); ?>
+        <?php include widget('post/photo-with-inline-text-at-bottom', [
+          'post' => $post,
+          'imageHeight' => $imageHeight,
+          'imageWidth' => $imageWidth
+        ]); ?>
       <?php } ?>
     </div>
     <div class="right">
@@ -44,10 +44,16 @@ $imageWidth = $op['imageWidth'] ?? 200;
 </div>
 
 <style>
+  .two-left-photo-with-stories .top {
+    text-decoration: none;
+    color: black;
+  }
+
   .two-left-photo-with-stories .top .title {
     font-weight: bold;
     font-size: 1em;
   }
+
 
   .two-left-photo-with-stories .top .title,
   .two-left-photo-with-stories .top .content {

@@ -15,7 +15,7 @@ foreach($posts as $post) {
     } else {
         $no = "";
     }
-    $out[] = "<a class='d-block p-1" . ($truncate ? ' truncate' : '') . "' href='{$post->url}'>$no{$post->title}</a>";
+    $out[] = "<a class='d-block p-1 text-decoration-none black" . ($truncate ? ' truncate' : '') . "' href='{$post->url}'>$no{$post->title}</a>";
 
 }
 echo implode($o['separator'] ?? '', $out);

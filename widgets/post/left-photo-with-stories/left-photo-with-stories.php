@@ -76,4 +76,9 @@ $posts = postMockData($lack, photo: false);
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .left-photo-with-stories .stories div a {
+    text-decoration: none;
+    color: black;
+  }
 </style>

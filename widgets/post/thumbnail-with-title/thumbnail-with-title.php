@@ -29,6 +29,8 @@ $url = $post->url;
   .thumbnail-with-title {
     display: flex;
     width: 100%;
+    text-decoration: none;
+    color: black;
     overflow: hidden;
   }
 

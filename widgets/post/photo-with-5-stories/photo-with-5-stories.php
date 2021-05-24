@@ -51,4 +51,9 @@ $imageWidth = $op['imageWidth'] ?? 100;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .photo-with-5-stories .stories div a {
+    text-decoration: none;
+    color: black;
+  }
 </style>

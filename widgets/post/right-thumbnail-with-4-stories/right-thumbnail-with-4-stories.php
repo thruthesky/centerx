@@ -57,8 +57,12 @@ $imageWidth = $op['imageWidth'] ?? 50;
     display: flex;
   }
 
-  .right-thumbnail-with-4-stories .top .number,
-  .right-thumbnail-with-4-stories .stories .number {
+  .right-thumbnail-with-4-stories .stories a {
+    text-decoration: none;
+    color: black;
+  }
+
+  .right-thumbnail-with-4-stories .number {
     margin-right: 8px;
   }
 </style>

@@ -28,6 +28,8 @@ $url = $post->url;
   .right-thumbnail-with-title {
     display: flex;
     width: 100%;
+    text-decoration: none;
+    color: black;
   }
 
   .right-thumbnail-with-title .title {
