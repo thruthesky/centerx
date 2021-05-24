@@ -28,6 +28,8 @@
                 })
         },
 
+    @position 'top-right', 'top-left', 'top-center', 'top-full', 'bottom-right', 'bottom-left', 'bottom-center', 'bottom-full',
+
  */
 mixins.push({
     data() {
@@ -42,8 +44,11 @@ mixins.push({
                   buttons = null,
                   cancelButton = null,
                   buttonAlignRight = false,
-                  append = false
+                  append = false,
+                  position= 'top-right',
+                  // position= 0,
               }) {
+
             const h = app.$createElement;
             const id = `toast-${app.toastCount++}`;
             const vNodesTitle = h( 'div', { class: ['mr-2'] },
@@ -99,12 +104,25 @@ mixins.push({
                     )
                 ]
             );
+
+            const toaster = [
+                'b-toaster-top-right',
+                'b-toaster-top-left',
+                'b-toaster-top-center',
+                'b-toaster-top-full',
+                'b-toaster-bottom-right',
+                'b-toaster-bottom-left',
+                'b-toaster-bottom-center',
+                'b-toaster-bottom-full',
+            ];
             app.$bvToast.toast([vNodesMsg], {
                 id: id,
                 title: [vNodesTitle],
                 autoHideDelay: 10000,
                 appendToast: append,
                 solid: true,
+                toaster: 'b-toaster-' + position
+                // toaster: toaster[position],
             })
         }
     }
