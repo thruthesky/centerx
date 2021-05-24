@@ -11,27 +11,27 @@ $category = category(in(ID));
     <table class="table">
         <thead class="fs-sm">
             <tr class="thead-light">
-                <th scope="col"><?= ek('Option', '옵션') ?></th>
-                <th scope="col"><?= ek('Setting', '설정') ?></th>
+                <th scope="col"><?= ln('option') ?></th>
+                <th scope="col"><?= ln('setting') ?></th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td><?= ek('Category ID', '카테고리 ID') ?></td>
+                <td><?= ln('category_id') ?></td>
                 <td>
                     <?= $category->id ?>
                 </td>
             </tr>
 
             <tr>
-                <td><?= ek('Title', '게시판 제목') ?></td>
+                <td><?= ln('title') ?></td>
                 <td>
                     <input data-cy="form-title" class="form-control" name="<?= TITLE ?>" value="<?= $category->title ?>">
                 </td>
             </tr>
 
             <tr>
-                <td><?= ek('Description', '설명') ?></td>
+                <td><?= ln('description') ?></td>
                 <td>
                     <input data-cy="form-description" class="form-control" name="<?= DESCRIPTION ?>" value="<?= $category->description ?>">
                 </td>
@@ -39,12 +39,12 @@ $category = category(in(ID));
 
 
             <tr class="table-dark fs-sm">
-                <td colspan="2"><?= ek('Subcategories', '서브 카테고리 설정') ?></td>
+                <td colspan="2"><?= ln('subcategories') ?></td>
             </tr>
             <tr class="table-light">
                 <td colspan="2">
                     <div class="hint">
-                        <?= ek('Add multi categories separating by comma.', '콤마로 여러개의 카테고리를 입력할 수 있습니다.') ?>
+                        <?= ln('subcategories_hint') ?>
                     </div>
                 </td>
             </tr>
@@ -56,37 +56,37 @@ $category = category(in(ID));
 
 
             <tr class="table-dark">
-                <td colspan="2"><?= ek('Point settings', '포인트 설정') ?></td>
+                <td colspan="2"><?= ln('point_settings') ?></td>
             </tr>
             <tr class="table-light">
                 <td colspan="2">
                     <div class="hint">
-                        <?= ek('Point for deletion must be set to 0 or negative value.', '포인트 설정에서 삭제 포인트는 0 또는 음수 값만 입력 할 수 있습니다.') ?>
+                        <?= ln('point_settings_hint') ?>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td><?= ek('Post Create Point', '글 쓰기 포인트') ?></td>
+                <td><?= ln('post_create_point') ?></td>
                 <td>
                     <input data-cy="form-post-create-point" class="form-control" type="number" name="<?= Actions::$createPost ?>" value="<?= $category->createPost ?>">
                 </td>
             </tr>
             <tr>
-                <td><?= ek('Post Delete Point', '글 삭제 포인트') ?></td>
+                <td><?= ln('post_delete_point') ?></td>
                 <td>
                     <input data-cy="form-post-delete-point" class="form-control" type="number" name="<?= Actions::$deletePost ?>" value="<?= $category->deletePost ?>">
                 </td>
             </tr>
 
             <tr>
-                <td><?= ek('Comment Create Point', '코멘트 쓰기 포인트') ?></td>
+                <td><?= ln('comment_create_point') ?></td>
                 <td>
                     <input data-cy="form-comment-create-point" class="form-control" type="number" name="<?= Actions::$createComment ?>" value="<?= $category->createComment ?>">
                 </td>
             </tr>
             <tr>
-                <td><?= ek('Comment Delete Point', '코멘트 삭제 포인트') ?></td>
+                <td><?= ln('comment_delete_point') ?></td>
                 <td>
                     <input data-cy="form-comment-delete-point" class="form-control" type="number" name="<?= Actions::$deleteComment ?>" value="<?= $category->deleteComment ?>">
                 </td>

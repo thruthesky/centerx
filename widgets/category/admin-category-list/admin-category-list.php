@@ -31,7 +31,7 @@ if ($editCategory) {
             <div class="col-<?= $lw ?>">
                 <?php if ($editCategory) {
                 ?>
-                    <h3 class="mb-3 pt-1"><?= ek('Category Update', '@T Category Update') ?></h3>
+                    <h3 class="mb-3 pt-1"><?= ln('category_update') ?></h3>
                     <?php
                     include 'sidebar.php';
                     ?>
@@ -39,15 +39,8 @@ if ($editCategory) {
                     <h3>Category</h3>
                 <?php } ?>
                 <ul class="fs-sm border-radius-sm px-4 py-2" style="border: 1px solid #e8e8e8;">
-                    <li class="fw-700"><?= ek('Click id to update.', '@T Click id to update.') ?></li>
-                    <li class="mt-2"><?= ek(
-                                            'If you click the "Create or Edit" button, the category is created if it does not exist, and if it does, it will be edited.
-                    However, it is recommended to use it only when creating categories.
-                    For reference, you can edit a category by clicking on the ID shown in the table.',
-                                            '"생성 또는 수정" 버튼을 클릭하면, 카테고리가 존재하지 않는 경우 생성을 하며, 존재하는 경우 수정을 합니다.
-                    하지만, 카테고리 생성을 할 때만 사용하는 것이 좋습니다.
-                    참고로, 카테고리 수정은 테이블에 나와있는 아이디를 클릭하면 수정을 할 수 있습니다.',
-                                        ) ?>
+                    <li class="fw-700"><?= ln('click_id_to_update') ?></li>
+                    <li class="mt-2"><?= ln('category_update_description') ?>
                     </li>
                 </ul>
             </div>
@@ -58,8 +51,8 @@ if ($editCategory) {
                         <input type="hidden" name="w" value="category/admin-category-list">
                         <input type="hidden" name="mode" value="create">
                         <div class="d-flex">
-                            <input data-cy="category-input" class="form-control mb-2" type="text" name='id' placeholder="<?= ek('Enter Category ID', '카테고리 아이디 입력') ?>">
-                            <button data-cy="category-submit" class="btn btn-primary ml-3 mb-2 w-50" type="submit"><?= ek('Create', '생성') ?></button>
+                            <input data-cy="category-input" class="form-control mb-2" type="text" name='id' placeholder="<?= ln('enter_category_id') ?>">
+                            <button data-cy="category-submit" class="btn btn-primary ml-3 mb-2 w-50" type="submit"><?= ln('create') ?></button>
                         </div>
                     </form>
                 </section>
@@ -69,9 +62,9 @@ if ($editCategory) {
                         <tr class="fs-sm">
                             <th scope="col">#</th>
                             <th scope="col">ID</th>
-                            <th scope="col"><?= ek('Title', '@T Title') ?></th>
-                            <th scope="col"><?= ek('Description', '@T Description') ?></th>
-                            <th scope="col"><?= ek('Action', '@T Action') ?></th>
+                            <th scope="col"><?= ln('title') ?></th>
+                            <th scope="col"><?= ln('description') ?></th>
+                            <th scope="col"><?= ln('action') ?></th>
                         </tr>
                     </thead>
                     <tbody>
