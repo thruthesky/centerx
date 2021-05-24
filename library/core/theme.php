@@ -134,13 +134,18 @@ class Theme
         if ( empty($p) ) { // /?p= 와 같이 p 값이 없는 경우, 즉, "https://domain.com/abc-def" 와 같이 그냥 URL 로만 들어오는 경우,
             $uri = $_SERVER['REQUEST_URI'];
             if (str_starts_with($uri, '/?') && strlen($uri) > 2) { // `/?` 으로 시작하고 추가 문자열이 있을 때,
+
                 $uri = str_replace('/?', '', $uri);
                 $uriParts = explode('&', $uri); // '&' 로 분리. 즉, `/?admin.index&mode=submit` 과 같을 때, &mode= 이후는 버림.
-                $arr = explode('.', $uriParts[0]); // `/?admin.index` 부분에서 점으로 분리.
-                if ( count($arr) > 0 && count($arr) <= 4 ) { // 점(.) 이 1개에서 3개까지이면,
-                    $p = $uriParts[0];
+                if ( str_contains($uriParts[0], '=') ) { // `/?mode=loggedIn` 와 같이 접속한 경우,
+                    $p = 'home';
                 } else {
-                    $p = 'home'; // `/?` 으로 시작하는데, 점이 없으면 그냥 홈
+                    $arr = explode('.', $uriParts[0]); // `/?admin.index` 부분에서 점으로 분리.
+                    if ( count($arr) > 0 && count($arr) <= 4 ) { // 점(.) 이 1개에서 3개까지이면,
+                        $p = $uriParts[0];
+                    } else {
+                        $p = 'home'; // `/?` 으로 시작하는데, 점이 없으면 그냥 홈
+                    }
                 }
 
             } else {                                // `/?` 으로 시작하지 않고,

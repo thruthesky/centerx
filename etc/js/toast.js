@@ -49,7 +49,7 @@ mixins.push({
                   // position= 0,
               }) {
 
-            const h = app.$createElement;
+            const h = this.$createElement;
             const id = `toast-${app.toastCount++}`;
             const vNodesTitle = h( 'div', { class: ['mr-2'] },
                 [ h('strong', { class: 'mr-2' }, title ?? ""), ]
@@ -115,7 +115,7 @@ mixins.push({
                 'b-toaster-bottom-center',
                 'b-toaster-bottom-full',
             ];
-            app.$bvToast.toast([vNodesMsg], {
+            this.$bvToast.toast([vNodesMsg], {
                 id: id,
                 title: [vNodesTitle],
                 autoHideDelay: 10000,

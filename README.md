@@ -807,6 +807,20 @@ with the latest android version, but the developer must code on the android app.
 
 
 
+# User
+
+## User login and registration tag
+
+- There is a special tag(HTTP params) for user login and register
+  - When user just logged in, `mode=loggedIn` is attached as HTTP params.
+  - When user has just registered, `mode=registered` is attached as HTTP params.
+
+- These may be used for extra code like `push token updating`.
+  
+- One might do `push token updating` with Ajax login or register.
+  But, there might be cases that Ajax will not work such as `login with Kakaotalk, Naver, Apple, Google, or Pass mobile login`
+
+
 
 # 데이터베이스
 
