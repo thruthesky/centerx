@@ -53,5 +53,6 @@ $translations = [
     'admin push' => [ 'en' => 'Admin Push', 'ko' => '@admin push' ],
     'post' => [ 'en' => 'Post', 'ko' => '게시하다' ],
     'comment' => [ 'en' => 'Comment', 'ko' => '논평' ],
-    'loading' => [ 'en' => 'Loading', 'ko' => '로딩' ]
+    'loading' => [ 'en' => 'Loading', 'ko' => '로딩' ],
+    'attached_files' => [ 'en' => 'Attached Files', 'ko' => '첨부된 사진(파일)' ]
 ];

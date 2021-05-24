@@ -12,7 +12,7 @@ $fileCount = count($files);
 
 if ($fileCount) { ?>
     <hr class="mb-0">
-    <div class="text-muted ml-1"><small><?= ek('Attached Files', '첨부된 사진(파일)') ?></small></div>
+    <div class="text-muted ml-1"><small><?= ln('attached_files') ?></small></div>
     <div class="container photos" style="border-radius: 12px">
         <div class="row">
             <?php

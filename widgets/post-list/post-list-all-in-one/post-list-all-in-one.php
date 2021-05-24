@@ -28,7 +28,7 @@ $posts = $o['posts'];
                         <div class="font-weight-bold">No. <?= $post->idx ?> <?= $post->title ?></div>
                         <div class="mt-2">
                             [<?= category($post->categoryIdx)->id ?>] -
-                            <?=ln('no_of_views')?>: <?=$post->noOfViews?> -
+                            <?= ln('no_of_views') ?>: <?= $post->noOfViews ?> -
                             <?= $post->shortDate ?>
                         </div>
                     </a>
@@ -37,25 +37,27 @@ $posts = $o['posts'];
                     <?= nl2br($post->content) ?>
                 </div>
                 <div class="files">
-                    <?php foreach ($post->files() as $file) { ?>
-                        <div class="position-relative">
-                            <img class="w-100" src="<?= $file->url ?>">
-                            <div class="position-absolute top white bg-black" onclick="onClickFileDelete(<?= $file->idx ?>);">[ X ]</div>
-                        </div>
-                    <?php } ?>
+                    <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
                 </div>
                 <div class="mt-3">
-                    <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>" text-submit="<?= ln('submit') ?>" text-cancel="<?= ln('cancel') ?>">
+                    <comment-form 
+                        root-idx="<?= $post->idx ?>" 
+                        parent-idx="<?= $post->idx ?>" 
+                        text-submit="<?= ln('submit') ?>" 
+                        text-cancel="<?= ln('cancel') ?>">
                     </comment-form>
                 </div>
-                <?php
-
-                ?>
                 <div class="comments mt-3">
                     <?php foreach ($post->comments() as $comment) { ?>
                         <div class="mb-2 p-1 rounded" style="margin-left: <?= $comment->depth * 16 ?>px; background-color: #e0e0e0;">
                             <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]); ?>
-                            <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $comment->idx ?>" text-submit="<?= ln('submit') ?>" text-cancel="<?= ln('cancel') ?>" v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'"></comment-form>
+                            <comment-form 
+                                root-idx="<?= $post->idx ?>" 
+                                parent-idx="<?= $comment->idx ?>" 
+                                text-submit="<?= ln('submit') ?>" 
+                                text-cancel="<?= ln('cancel') ?>" 
+                                v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'">
+                            </comment-form>
                         </div>
                     <?php } ?>
                 </div>
