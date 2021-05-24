@@ -11,6 +11,7 @@ if ( empty($posts) ) return include widget('post-list/empty-post-list');
 <section class="post-list-default p-2 px-lg-0">
     <div>
         <?php
+        $rowNo = 0;
         foreach ($posts as $post) {
             $post = post(idx: $post->idx);
             $user = user(idx: $post->userIdx);
@@ -21,6 +22,7 @@ if ( empty($posts) ) return include widget('post-list/empty-post-list');
                 $_category = '';
             }
             ?>
+            <?=hook()->run( HOOK_POST_LIST_ROW, $rowNo, $posts )?>
             <div class="d-flex">
                 <?php include widget('user/user-avatar', ['photoUrl' => $user->shortProfile()['photoUrl'], 'size' => '50']) ?>
                 <a href="<?= $post->url ?>" style="text-decoration: none">
@@ -43,7 +45,11 @@ if ( empty($posts) ) return include widget('post-list/empty-post-list');
                 </a>
             </div>
             <hr>
-        <?php } ?>
+            <?php
+            $rowNo ++;
+        }
+        ?>
+        <?=hook()->run( HOOK_POST_LIST_ROW, $rowNo, $posts )?>
     </div>
 </section>
 

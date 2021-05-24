@@ -176,10 +176,12 @@ class Entity {
      *
      * 이렇게 하면 idx 부터 모두 바뀌므로, 완전 다른 entity 가 된다.
      * @param array $data
+     * @return $this
      */
-    public function setMemoryData(array $data) {
+    public function setMemoryData(array $data): self {
         $this->data = $data;
         if ( isset($this->data[IDX]) ) $this->idx = $this->data[IDX];
+        return $this;
     }
 
 

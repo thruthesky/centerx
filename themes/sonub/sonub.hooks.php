@@ -28,5 +28,15 @@ hook()->add(HOOK_POST_LIST_COUNTRY_CODE, function(&$countryCode) {
 });
 
 hook()->add(HOOK_POST_LIST_TOP, function() {
-    include widget('banner/post-list-top');
+});
+
+
+hook()->add(HOOK_POST_LIST_ROW, function(int $rowNo, array $posts) {
+    if ( $rowNo == 3 ) {
+        include widget('advertisement/banner', ['type' => AD_POST_LIST_SQUARE]);
+        echo "<hr>";
+    }
+    if ( count($posts) == $rowNo ) {
+        // This is the last line.
+    }
 });
