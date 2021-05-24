@@ -37,7 +37,7 @@ $url = $post->url;
     }
 
     .photo-with-text-at-bottom .title {
-        padding: 1em;
+        padding: .5em;
         bottom: 0;
         left: 0;
         right: 0;
