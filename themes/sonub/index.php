@@ -36,6 +36,15 @@
     <?php } ?>
 </section>
 
+
+<?php if ( in('mode') == 'loggedIn' || in('mode') == 'registered' ) {?>
+    <script>
+        later(function() {
+            saveToken(localStorage.getItem('pushToken'), location.hostname);
+        })
+    </script>
+<?php } ?>
+
 <!-- Load polyfills to support older browsers before loading Vue and Bootstrap Vue -->
 <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver%2CObject.fromEntries" crossorigin="anonymous"></script>
 <?php js(HOME_URL . 'etc/js/common.js', 7)?>
