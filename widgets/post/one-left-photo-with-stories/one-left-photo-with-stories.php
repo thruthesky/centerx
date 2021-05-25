@@ -13,7 +13,7 @@ if (category($categoryId)->exists) {
   $primaryPost = post()->latest(categoryId: $categoryId, photo: true);
 }
 
-if (! count($primaryPost)) {
+if (!count($primaryPost)) {
   $primaryPost = firstPost(photo: true);
 } else {
   $primaryPost = $primaryPost[0];
@@ -29,9 +29,11 @@ $imageHeight = $o['imageHeight'] ?? 190;
 <div class="one-left-photo-with-stories">
   <div class="top"><a href="<?= $primaryPost->url ?>"><?= $primaryPost->title ?></a></div>
   <div class="bottom">
-    <a href="<?= $primaryPost->url ?>">
-      <img class="photo" src="<?= thumbnailUrl($primaryPost->files()[0]->idx, height: $imageHeight, width: 190) ?>" style="height: <?= $imageHeight ?>px;">
-    </a>
+    <?php if (count($primaryPost->files())) { ?>
+      <a href="<?= $primaryPost->url ?>">
+        <img class="photo" src="<?= thumbnailUrl($primaryPost->files()[0]->idx, height: $imageHeight, width: 190) ?>" style="height: <?= $imageHeight ?>px;">
+      </a>
+    <?php } ?>
     <div class="stories">
       <?php include widget('post/story-list-with-bullet', ['categoryId' => $categoryId, 'limit' => 7]) ?>
     </div>
