@@ -23,10 +23,12 @@
         <?php
         include theme()->file('header');
         ?>
-        <div class="container-xl">
+        <div class="container-xl position-relative">
+            <div class="left-wing">
+                <?php include theme()->file('left'); ?>
+            </div>
             <div class="row">
-                <div class="d-none d-lg-block col-2"><?php include theme()->file('left'); ?></div>
-                <div class="col-12 col-md-8 col-lg-7 px-1"><?php include theme()->page(); ?></div>
+                <div class="col-12 col-md-8 col-lg-9 px-1"><?php include theme()->page(); ?></div>
                 <div class="d-none d-md-block col-4 col-lg-3"><?php include theme()->file('right'); ?></div>
             </div>
         </div>

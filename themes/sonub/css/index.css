@@ -224,6 +224,12 @@ input.focus-none:focus {
   bottom: 0;
 }
 
+.left-wing {
+  position: absolute;
+  left: -156px;
+  width: 150px;
+}
+
 /**
  * banner
  */
