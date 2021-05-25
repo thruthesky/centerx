@@ -28,17 +28,17 @@ $op = getWidgetOptions();
     <div class="third-story">
         <div class="left">
             <?php
-            include widget('post/photo-with-text-at-bottom', ['post' => $op['thirdStories'][0] ?? null]);
+            include widget('post/photo-top-text-bottom', ['post' => $op['thirdStories'][0] ?? null]);
             ?>
         </div>
         <div class="middle">
             <?php
-            include widget('post/photo-with-text-at-bottom', ['post' => $op['thirdStories'][1] ?? null]);
+            include widget('post/photo-top-text-bottom', ['post' => $op['thirdStories'][1] ?? null]);
             ?>
         </div>
         <div class="right">
             <?php
-            include widget('post/photo-with-text-at-bottom', ['post' => $op['thirdStories'][2] ?? null]);
+            include widget('post/photo-top-text-bottom', ['post' => $op['thirdStories'][2] ?? null]);
             ?>
         </div>
     </div>

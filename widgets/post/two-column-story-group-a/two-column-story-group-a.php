@@ -16,66 +16,34 @@ $reminderPost = $o['reminderPost'] ?? null;
 
 ?>
 
-
-<div class="two-column-story-group-a">
-    <div class="column-a">
+<div class="two-column-story-group-a row">
+    <div class="column-a col-12 col-xl-7">
         <?php include widget('post/one-left-photo-with-stories', ['post' => $firstStoriesCategory]) ?>
         <?php include widget('post/reminder', ['post' => $reminderPost]) ?>
-        <?php include widget('post/four-photo-with-title', ['categoryId' => $secondStoriesCategory]) ?>
+        <div class="mt-3">
+            <?php include widget('post/four-photo-with-title', ['categoryId' => $secondStoriesCategory]) ?>
+        </div>
     </div>
-    <div class="column-b">
-        <?php include widget('post/four-stories-with-thumbnail', ['categoryId' => $thirdStoriesCategory, 'imageHeight' => 75]) ?>
-        <?php include widget('post/story-list-with-bullet', ['categoryId' => $fourthStoriesCategory, 'limit' => 5]) ?>
+    <div class="column-b mt-3 col-12 col-xl-5">
+        <?php include widget('post/2x2-photo-top-text-bottom', ['categoryId' => $thirdStoriesCategory, 'imageHeight' => 75]) ?>
+        <div class="bottom-stories bg-light p-3 border-radius-md">
+            <?php include widget('post/story-list-with-bullet', ['categoryId' => $fourthStoriesCategory, 'limit' => 5]) ?>
+        </div>
     </div>
 </div>
 
+
 <style>
-    ul {
-        list-style: none
+    .one-left-photo-with-stories .bottom li:first-child a,
+    .one-left-photo-with-stories .bottom li:nth-child(4) a,
+    .one-left-photo-with-stories .bottom li:last-child a {
+        color: #f00000 !important;
     }
-
-    li::before {
-        content: "•";
-    }
-
-
-    .two-column-story-group-a .column-a li::before {
-        color: #f00000;
-    }
-    .two-column-story-group-a .column-a .four-photo-with-title {
-        margin-top: 8px;
-    }
-
-    .two-column-story-group-a .column-b {
-        width: 100%;
-        font-size: .9em;
-    }
-
-    .two-column-story-group-a .column-b hr {
-        margin-bottom: .5em;
-    }
-
-
-    @media only screen and (min-width: 1200px) {
-        .two-column-story-group-a {
-            display: flex;
-            max-width: 855px;
-        }
-
-        .two-column-story-group-a .column-a {
-            max-width: 65%;
-        }
-
-        .two-column-story-group-a .column-b {
-            max-width: 35%;
-            margin-top: 8px;
-            margin-left: 16px;
-        }
-    }
-
-    @media only screen and (max-width: 1200px) {
-        .two-column-story-group-a .column-b {
-            margin-top: 16px;
+    @media all and (max-width: 768px) {
+        .one-left-photo-with-stories .bottom li:nth-child(5),
+        .one-left-photo-with-stories .bottom li:nth-child(6),
+        .one-left-photo-with-stories .bottom li:nth-child(7) {
+            display: none;
         }
     }
 </style>

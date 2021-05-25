@@ -31,5 +31,5 @@
 <section class="box">
     <h1>Latest Post</h1>
     <hr>
-    <?php include widget('post/four-stories-with-thumbnail'); ?>
+    <?php include widget('post/2x2-photo-top-text-bottom'); ?>
 </section>

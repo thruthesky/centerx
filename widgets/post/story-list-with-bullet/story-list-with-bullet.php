@@ -2,20 +2,21 @@
 
 /**
  * @size narrow
- * @options string 'categoryId', 'limit'
+ * @options string 'categoryId', 'limit',
  * @dependencies none
  */
 
-$op = getWidgetOptions();
+$opt = getWidgetOptions();
 
-$limit = $op['limit'] ?? 11;
+$limit = $opt['limit'] ?? 11;
 
 if ($limit > 11) $limit = 11;
 
 $categoryId = 'discussion';
-if (isset($op['categoryId'])) {
-  $categoryId = $op['categoryId'];
+if (isset($opt['categoryId'])) {
+  $categoryId = $opt['categoryId'];
 }
+
 
 $posts = [];
 if (category($categoryId)->exists) {
@@ -29,7 +30,6 @@ if (!count($posts)) return;
 ?>
 
 <div class="story-list-with-bullet">
-  <hr>
   <ul>
     <?php foreach ($posts as $post) { ?>
       <li>

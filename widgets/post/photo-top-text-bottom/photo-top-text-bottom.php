@@ -19,7 +19,7 @@ $url = $post->url;
 ?>
 
 
-<a class="photo-with-text-at-bottom" href="<?= $url ?>">
+<a class="photo-top-text-bottom" href="<?= $url ?>">
     <img src="<?= $src ?>" style="height: <?= $imageHeight ?>px;">
     <div class="title">
         <div class="inner"><?= $post->title ?></div>
@@ -27,13 +27,13 @@ $url = $post->url;
 </a>
 
 <style>
-    .photo-with-text-at-bottom img {
+    .photo-top-text-bottom img {
         display: block;
         width: 100%;
         border-radius: 5px;
     }
 
-    .photo-with-text-at-bottom .title {
+    .photo-top-text-bottom .title {
         padding: .5em;
         bottom: 0;
         left: 0;
@@ -42,7 +42,7 @@ $url = $post->url;
         color: black;
     }
 
-    .photo-with-text-at-bottom .title .inner {
+    .photo-top-text-bottom .title .inner {
         overflow: hidden;
         height: 2.1em;
         line-height: 1em;

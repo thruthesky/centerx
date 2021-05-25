@@ -36,7 +36,7 @@ $imageWidth = $op['imageWidth'] ?? 150;
     for ($i = 0; $i < count($posts); $i++) {
     ?>
       <div class="story story-<?= $i ?>">
-        <?php include widget('post/photo-with-text-at-bottom', [
+        <?php include widget('post/photo-top-text-bottom', [
           'post' => $posts[$i],
           'imageHeight' => $imageHeight,
           'imageWidth' => $imageWidth

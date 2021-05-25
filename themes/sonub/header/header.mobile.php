@@ -1,12 +1,11 @@
 <div class="d-flex justify-content-between bg-blue white">
     <div class="d-flex">
-        <a class="p-2" href="/"><?=cafe()->name()?></a>
-        <a class="p-2" href="/?p=forum.post.list&categoryId=discussion">자유게시판</a>
-        <a class="p-2" href="/?p=forum.post.list&categoryId=qna">질문게시판</a>
+        <a class="p-2" href="/">홈</a>
+        <a class="p-2" href="/?p=forum.post.list&categoryId=discussion">자유토론</a>
+        <a class="p-2" href="/?p=forum.post.list&categoryId=qna">질문</a>
         <a class="p-2" href="/?p=forum.post.list&categoryId=reminder">공지사항</a>
     </div>
-    <div>
-        <?php if (cafe()->isMainCafe()) {?><a class="p-2" href="/?cafe.create">카페개설</a><?php } ?>
+    <div class="d-flex align-items-center">
         <?php if ( admin() ) { ?>
         <a href="/?p=admin.index">관</a>
         <?php } ?>

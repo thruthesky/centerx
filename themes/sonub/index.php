@@ -3,9 +3,9 @@
 <head>
     <title>소너브!</title>
     <meta charset="utf-8">
-    <link rel="manifest" href="/themes/sonub/manifest.json">
-    <link rel="apple-touch-icon" href="/themes/sonub/img/philov-logo.png">
-    <meta name="theme-color" content="#1976d2">
+<link rel="manifest" href="/themes/sonub/manifest.json">
+<link rel="apple-touch-icon" href="/themes/sonub/img/philov-logo.png">
+<meta name="theme-color" content="#1976d2">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/etc/bootstrap-4/bootstrap-4.6.0-min.css">
     <link rel="stylesheet" href="/etc/bootstrap-vue-2.21.2/bootstrap-vue-2.21.2.min.css">
@@ -31,7 +31,7 @@
                 <?php include theme()->file('left'); ?>
             </div>
             <div class="row">
-                <div class="col-12 col-md-8 col-lg-9 px-1"><?php include theme()->page(); ?></div>
+                <div class="col-12 col-md-8 col-lg-9"><?php include theme()->page(); ?></div>
                 <div class="d-none d-md-block col-4 col-lg-3"><?php include theme()->file('right'); ?></div>
             </div>
         </div>
