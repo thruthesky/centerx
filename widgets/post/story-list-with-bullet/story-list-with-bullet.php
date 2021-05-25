@@ -2,7 +2,7 @@
 
 /**
  * @size narrow
- * @options string 'categoryId', 'limit'
+ * @options string 'categoryId', 'limit',
  * @dependencies none
  */
 
@@ -25,15 +25,14 @@ if (category($categoryId)->exists) {
 $lack = $limit - count($posts);
 $posts = array_merge($posts, postMockData($lack));
 
+if (!count($posts)) return;
 ?>
 
 <div class="story-list-with-bullet">
   <ul>
     <?php foreach ($posts as $post) { ?>
       <li>
-        <div>
-          <a href="<?= $post->url ?>"><?= $post->title ?></a>
-        </div>
+        <a href="<?= $post->url ?>"><?= $post->title ?></a>
       </li>
     <?php } ?>
   </ul>
@@ -41,23 +40,27 @@ $posts = array_merge($posts, postMockData($lack));
 
 <style>
   .story-list-with-bullet {
-    padding-left: 1.5em;
+    list-style-position: inside;
   }
 
   .story-list-with-bullet ul {
-    padding-left: 0;
+    padding: 0;
   }
 
-  .story-list-with-bullet ul li div {
+  .story-list-with-bullet ul li {
     margin-bottom: .3em;
     font-size: 1em;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-  
-  .story-list-with-bullet ul li div a {
+
+  .story-list-with-bullet ul li::before {
+    margin-right: 8px;
+  }
+
+  .story-list-with-bullet ul li a {
     text-decoration: none;
-    color: black;
+    /* color: black; */
   }
 </style>
