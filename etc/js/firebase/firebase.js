@@ -93,7 +93,7 @@ if (!("Notification" in window)) {
                 {
                     title: notification.title,
                     buttonAlignRight: true,
-                    position: "bottom-right",
+                    position: "bottom-center",
                     buttons:
                         [
                             {
