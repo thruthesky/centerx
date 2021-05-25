@@ -18,5 +18,11 @@ if ( $post->hasError ) {
     }
 }
 
-include_once widget($post->category()->postViewWidget ? $post->category()->postViewWidget : 'post-view/post-view-default');
+$category = $post->category();
+include_once widget($category->postViewWidget ? $category->postViewWidget : 'post-view/post-view-default');
 
+
+if ( $category->listOnView == 'Y' ) {
+    $_REQUEST[CATEGORY_ID] = $post->categoryId();
+    include theme()->file('forum.post.list');
+}
