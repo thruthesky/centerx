@@ -15,6 +15,8 @@ if (category($categoryId)->exists) {
 
 if (! count($primaryPost)) {
   $primaryPost = firstPost(photo: true);
+} else {
+  $primaryPost = $primaryPost[0];
 }
 
 // d($primaryPost);
