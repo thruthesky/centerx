@@ -31,3 +31,19 @@ $reminderPost = $o['reminderPost'] ?? null;
         </div>
     </div>
 </div>
+
+
+<style>
+    .one-left-photo-with-stories .bottom li:first-child a,
+    .one-left-photo-with-stories .bottom li:nth-child(4) a,
+    .one-left-photo-with-stories .bottom li:last-child a {
+        color: #f00000 !important;
+    }
+    @media all and (max-width: 768px) {
+        .one-left-photo-with-stories .bottom li:nth-child(5),
+        .one-left-photo-with-stories .bottom li:nth-child(6),
+        .one-left-photo-with-stories .bottom li:nth-child(7) {
+            display: none;
+        }
+    }
+</style>
