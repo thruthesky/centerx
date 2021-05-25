@@ -1617,6 +1617,21 @@ function postEditUrl(int|string $categoryId = '', string $subcategory=null, int 
     return $url;
 }
 
+function postViewUrl(PostTaxonomy $post): string {
+    $url = $post->url;
+
+    $tags = [];
+    if ( in('page') ) {
+        $tags[ 'page' ] = in('page');
+    }
+
+    if ( $tags ) {
+        $url .= '?' . http_build_query($tags);
+    }
+
+    return $url;
+}
+
 function postDeleteUrl(int $idx) {
     return "/?p=forum.post.delete.submit&idx=$idx";
 }

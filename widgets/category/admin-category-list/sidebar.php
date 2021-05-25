@@ -124,11 +124,11 @@ $category = category(in(ID));
                 <td><?= ln('ban_on_writing') ?></td>
                 <td>
                     <label>
-                        <input data-cy="form-ban-create-on-limit-Y" type="radio" name="<?= ActivityLimits::$banCreateOnLimit ?>" value="Y" <?php if ($category->banCreateOnLimit == 'Y') echo 'checked' ?>> <?= ek('Yes', '예') ?>,
+                        <input data-cy="form-ban-create-on-limit-Y" type="radio" name="<?= ActivityLimits::$banCreateOnLimit ?>" value="Y" <?php if ($category->banCreateOnLimit == 'Y') echo 'checked' ?>> <?= ln('yes') ?>,
                     </label>
                     &nbsp;
                     <label>
-                        <input data-cy="form-ban-create-on-limit-N" type="radio" name="<?= ActivityLimits::$banCreateOnLimit ?>" value="N" <?php if ($category->banCreateOnLimit != 'Y') echo 'checked' ?>> <?= ek('No', '아니오') ?>
+                        <input data-cy="form-ban-create-on-limit-N" type="radio" name="<?= ActivityLimits::$banCreateOnLimit ?>" value="N" <?php if ($category->banCreateOnLimit != 'Y') echo 'checked' ?>> <?= ln('no') ?>
                     </label>
                 </td>
             </tr>
@@ -182,11 +182,11 @@ $category = category(in(ID));
                 <td><?= ln('return_to_after_edit') ?></td>
                 <td>
                     <label>
-                        <input data-cy="form-return-to-after-post-edit-V" type="radio" name="returnToAfterPostEdit" value="V" <?php if ($category->returnToAfterPostEdit == 'V' || empty($category->returnToAfterPostEdit)) echo 'checked' ?>> <?= ek('Post view page', '글 읽기 페이지') ?>,
+                        <input data-cy="form-return-to-after-post-edit-V" type="radio" name="returnToAfterPostEdit" value="V" <?php if ($category->returnToAfterPostEdit == 'V' || empty($category->returnToAfterPostEdit)) echo 'checked' ?>> <?= ln(['en' => 'Post view page', 'ko' =>  '글 읽기 페이지']) ?>,
                     </label>
                     &nbsp;
                     <label>
-                        <input data-cy="form-return-to-after-post-edit-L" type="radio" name="returnToAfterPostEdit" value="L" <?php if ($category->returnToAfterPostEdit == 'L') echo 'checked' ?>> <?= ek('Post list page', '글 목록 페이지') ?>
+                        <input data-cy="form-return-to-after-post-edit-L" type="radio" name="returnToAfterPostEdit" value="L" <?php if ($category->returnToAfterPostEdit == 'L') echo 'checked' ?>> <?= ln(['en' => 'Post list page', 'ko' => '글 목록 페이지']) ?>
                     </label>
                 </td>
             </tr>
@@ -197,7 +197,7 @@ $category = category(in(ID));
             </tr>
 
             <tr>
-                <td><?= ek('Post Edit Widget', '글 수정 위젯') ?></td>
+                <td><?= ln(['en' => 'Post Edit Widget', 'ko' => '글 수정 위젯']) ?></td>
                 <td>
                     <?php select_list_widgets($category->idx, 'post-edit', 'postEditWidget'); ?>
                 </td>
@@ -207,7 +207,7 @@ $category = category(in(ID));
             <tr class="table-light">
                 <td colspan="2">
                     <div class="hint">
-                        <?= ek('Input post edit widget options', '글 생성/수정 옵션을 입력하세요.') ?>
+                        <?= ln(['en' => 'Input post edit widget options', 'ko' => '글 생성/수정 옵션을 입력하세요.']) ?>
                     </div>
                 </td>
             </tr>
@@ -218,7 +218,7 @@ $category = category(in(ID));
                 </td>
             </tr>
             <tr>
-                <td><?= ek('Post View Widget', '글 읽기 위젯') ?></td>
+                <td><?= ln(['en' => 'Post View Widget', 'ko' => '글 읽기 위젯']) ?></td>
                 <td>
                     <?php select_list_widgets($category->idx, 'post-view', 'postViewWidget'); ?>
                 </td>
@@ -228,7 +228,7 @@ $category = category(in(ID));
 
 
             <tr>
-                <td><?= ek('Forum List Header', '글 목록 헤더 위젯') ?></td>
+                <td><?= ln(['en' => 'Forum List Header', 'ko' => '글 목록 헤더 위젯']) ?></td>
                 <td>
                     <?php select_list_widgets($category->idx, 'post-list-header', 'postListHeaderWidget'); ?>
                 </td>
@@ -237,7 +237,7 @@ $category = category(in(ID));
 
 
             <tr>
-                <td><?= ek('Forum List Widget', '글 목록 위젯') ?></td>
+                <td><?= ln(['en' => 'Forum List Widget', 'ko' => '글 목록 위젯']) ?></td>
                 <td>
                     <?php select_list_widgets($category->idx, 'post-list', 'postListWidget'); ?>
                 </td>
@@ -245,7 +245,7 @@ $category = category(in(ID));
 
 
             <tr>
-                <td><?= ek('Forum List Pagination Widget', '네비게이션 위젯') ?></td>
+                <td><?= ln(['en' => 'Forum List Pagination Widget', 'ko' => '네비게이션 위젯']) ?></td>
                 <td>
                     <?php
                     select_list_widgets($category->idx, 'pagination', 'paginationWidget');
@@ -259,25 +259,25 @@ $category = category(in(ID));
 
 
             <tr>
-                <td><?= ek('Post list under view page', '글 읽기 아래 목록') ?></td>
+                <td><?= ln(['en' => 'Post list under view page', 'ko' => '글 읽기 아래 목록']) ?></td>
                 <td>
                     <label>
-                        <input data-cy="form-list-on-view-Y" type="radio" name="listOnView" value="Y" <?php if ($category->listOnView == 'Y') echo 'checked' ?>> <?= ek('Yes', '예') ?>,
+                        <input data-cy="form-list-on-view-Y" type="radio" name="listOnView" value="Y" <?php if ($category->listOnView == 'Y') echo 'checked' ?>> <?= ln('yes') ?>,
                     </label>
                     &nbsp;
                     <label>
-                        <input data-cy="form-list-on-view-N" type="radio" name="listOnView" value="N" <?php if ($category->listOnView != 'Y') echo 'checked' ?>> <?= ek('No', '아니오') ?>
+                        <input data-cy="form-list-on-view-N" type="radio" name="listOnView" value="N" <?php if ($category->listOnView != 'Y') echo 'checked' ?>> <?= ln('no') ?>
                     </label>
                 </td>
             </tr>
             <tr>
-                <td><?= ek('No of posts per page', '페이지 글 수') ?></td>
+                <td><?= ln(['en' => 'No of posts per page', 'ko' => '페이지 글 수']) ?></td>
                 <td>
                     <input data-cy="form-post-per-page" class="form-control" name="noOfPostsPerPage" type="text" value="<?= $category->noOfPostsPerPage ?>">
                 </td>
             </tr>
             <tr>
-                <td nowrap><?= ek('No of pages on navigator', '네이게이션 페이지 수') ?></td>
+                <td nowrap><?= ln(['en' => 'No of pages on navigator', 'ko' => '네이게이션 페이지 수']) ?></td>
                 <td>
                     <input data-cy="form-pages-on-nav" class="form-control" name="noOfPagesOnNav" type="text" value="<?= $category->noOfPagesOnNav ?>">
                 </td>
@@ -285,21 +285,21 @@ $category = category(in(ID));
 
 
             <tr class="table-dark">
-                <td colspan="2"><?= ek('App Widgets', '앱 위젯 설정') ?></td>
+                <td colspan="2"><?= ln(['en' => 'App Widgets', 'ko' => '앱 위젯 설정']) ?></td>
             </tr>
 
             <tr>
-                <td><?= ek('Post List Widget', '글 목록 위젯') ?></td>
+                <td><?= ln(['en' => 'Post List Widget', 'ko' => '글 목록 위젯']) ?></td>
                 <td>
                     <label class="">
-                        <input data-cy="form-mobile-post-list-text" type="radio" name="mobilePostListWidget" value="text" <?php if ($category->mobilePostListWidget == 'text') echo 'checked' ?>> <?= ek('Text', '텍스트') ?>
+                        <input data-cy="form-mobile-post-list-text" type="radio" name="mobilePostListWidget" value="text" <?php if ($category->mobilePostListWidget == 'text') echo 'checked' ?>> <?= ln(['en' => 'Text', 'ko' => '텍스트']) ?>
                     </label>
                     <label class="ps-2">
-                        <input data-cy="form-mobile-post-list-gallery" type="radio" name="mobilePostListWidget" value="gallery" <?php if ($category->mobilePostListWidget == 'gallery') echo 'checked' ?>> <?= ek('Gallery', '갤러리') ?>
+                        <input data-cy="form-mobile-post-list-gallery" type="radio" name="mobilePostListWidget" value="gallery" <?php if ($category->mobilePostListWidget == 'gallery') echo 'checked' ?>> <?= ln(['en' => 'Gallery', 'ko' => '갤러리']) ?>
                     </label>
 
                     <label class="ps-2">
-                        <input data-cy="form-mobile-post-list-thumbnail" type="radio" name="mobilePostListWidget" value="thumbnail" <?php if ($category->mobilePostListWidget == 'thumbnail') echo 'checked' ?>> <?= ek('Thumbnail', '썸네일') ?>
+                        <input data-cy="form-mobile-post-list-thumbnail" type="radio" name="mobilePostListWidget" value="thumbnail" <?php if ($category->mobilePostListWidget == 'thumbnail') echo 'checked' ?>> <?= ln(['en' => 'Thumbnail', 'ko' => '썸네일']) ?>
                     </label>
 
                 </td>
@@ -309,10 +309,10 @@ $category = category(in(ID));
                 <td><?= ln(['en' => 'Post View Widget', 'ko' => '글 읽기 위젯']) ?></td>
                 <td>
                     <label class="">
-                        <input data-cy="form-mobile-post-view-default" type="radio" name="mobilePostViewWidget" value="default" <?php if ($category->mobilePostViewWidget == 'default') echo 'checked' ?>> <?= ek('Default', '기본') ?>
+                        <input data-cy="form-mobile-post-view-default" type="radio" name="mobilePostViewWidget" value="default" <?php if ($category->mobilePostViewWidget == 'default') echo 'checked' ?>> <?= ln(['en' => 'Default', 'ko' => '기본']) ?>
                     </label>
                     <label class="ps-2">
-                        <input data-cy="form-mobile-post-view-slide" type="radio" name="mobilePostViewWidget" value="slide" <?php if ($category->mobilePostViewWidget == 'slide') echo 'checked' ?>> <?= ek('Slide', '슬라이드') ?>
+                        <input data-cy="form-mobile-post-view-slide" type="radio" name="mobilePostViewWidget" value="slide" <?php if ($category->mobilePostViewWidget == 'slide') echo 'checked' ?>> <?= ln(['en' => 'Slide', 'ko' => '슬라이드']) ?>
                     </label>
 
                 </td>
@@ -320,7 +320,7 @@ $category = category(in(ID));
 
             <tr>
                 <td colspan="2">
-                    <button class="btn btn-sm btn-success w-100" data-cy="form-submit" type="submit">Submit</button>
+                    <button class="btn btn-sm btn-success w-100" data-cy="form-submit" type="submit"><?=ln('submit')?></button>
                 </td>
             </tr>
         </tbody>

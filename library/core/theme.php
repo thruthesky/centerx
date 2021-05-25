@@ -65,6 +65,13 @@ class Theme
      *
      * Example) Loading Javascript file under 'js' folder.
      *  <script> <?php include theme()->file('js/prepare', extension: 'js'); ?> </style>
+     *
+     * 트릭) 아래의 예제 처럼, 파일 명 자체에 점(.)이 들어가면 forum/post/list 로 인식이 되는데,
+     *      맨 앞에 점을 하나 찍어주면 forum/post.list.php 로 인식하며,
+     *      맨 처름 슬래시(/) 대신, 점을 찍어주어도 된다.
+     *      이 것은 점을 최대 2개로 분리하기 때문이다.
+     *  include theme()->file('.forum/post.list'); // 이것은 아래와 동일
+     *  include theme()->file('forum.post.list'); // 위와 동일하게, forum/post.list.php 로 인식한다.
      */
     public function file(string $filename, bool $prefixThemeName = false, string $extension = 'php'): string
     {

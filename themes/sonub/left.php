@@ -5,26 +5,12 @@
 </div>
 
 
-
-<div class="box d-flex flex-column children-a-ellipsis">
-    <h1 class="p-1">최근 글</h1>
-    <?php include widget('post-latest/post-latest-default', ['id' => 'left-latest', 'categoryId' => 'qna']) ?>
-</div>
+@todo user avatars<br>
+Display newly registered users who has photo.<br>
+50% of men, and 50% of women.
 
 
+<hr>
 
-<div class="left-banner mt-2">
-    <?php
-    $posts = post()->latest(categoryId: 'qna', limit: 1);
-    $post = empty($posts) ? null : $posts[0];
-    include widget('post/photo-with-inline-text-at-bottom', ['post' => $post]);
-    ?>
-</div>
-
-<div class="left-banner mt-2">
-    <?php
-    $posts = post()->latest(categoryId: 'qna', limit: 1);
-    $post = empty($posts) ? null : $posts[0];
-    include widget('post/photo-with-text-at-bottom', ['post' => $post]);
-    ?>
-</div>
+@todo display latest photos<br>
+Community photos only.

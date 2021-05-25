@@ -1,6 +1,25 @@
 <?php
 
 $translations = [
+    'email' => ['en' => 'Email', 'ko' => '이메일'],
+    'firebase_uid' => ['en' => 'Firebase UID', 'ko' => '@T Firebase UID'],
+    'name' => ['en' => 'Name', 'ko' => '이름'],
+    'nickname' => ['en' => 'Nickname', 'ko' => '별명'],
+    'point' => ['en' => 'Point', 'ko' => '포인트'],
+    'phone_no' => ['en' => 'Phone No.', 'ko' => '전화 번호'],
+    'gender' => ['en' => 'Gender', 'ko' => '성별'],
+    'birthdate' => ['en' => 'Birthdate', 'ko' => '생일'],
+    'country_code' => ['en' => 'Country Code', 'ko' => '국가 코드'],
+    'province' => ['en' => 'Province', 'ko' => '지방'],
+    'city' => ['en' => 'City', 'ko' => '시티'],
+    'address' => ['en' => 'Address', 'ko' => '주소'],
+    'zipcode' => ['en' => 'Zipcode', 'ko' => '우편 번호'],
+    'created_at' => ['en' => 'Created At', 'ko' => '만든 날짜'],
+    'updated_at' => ['en' => 'Updated At', 'ko' => '업데이트 날짜'],
+    'select_gender' => ['en' => 'Select Gender', 'ko' => '성별을 선택하세요'],
+    'male' => ['en' => 'Male', 'ko' => '남성'],
+    'female' => ['en' => 'Select Gender', 'ko' => '여자'],
+
     'login' => ['en' => 'Login', 'ko' => '로그인'],
     'topic' => ['en' => 'Topic', 'ko' => '토픽'],
     'token' => ['en' => 'Tokens', 'ko' => '토큰'],
@@ -11,6 +30,12 @@ $translations = [
     'submit' => ['en' => 'Submit', 'ko' => '전송'],
     'reply' => ['en' => 'Reply', 'ko' => '댓글'],
     'edit' => ['en' => 'Edit', 'ko' => '수정'],
+    'delete' => ['en' => 'Delete', 'ko' => '삭제'],
+    'save' => ['en' => 'Save', 'ko' => '저장'],
+
+    'yes' => ['en' => 'Yes', 'ko' => '예'],
+    'no' => ['en' => 'No', 'ko' => '아니오'],
+
     'delete' => ['en' => 'Delete', 'ko' => '삭제'],
     'like' => ['en' => 'Like', 'ko' => '좋아요'],
     'dislike' => ['en' => 'Dislike', 'ko' => '싫어요'],
