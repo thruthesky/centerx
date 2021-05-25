@@ -15,7 +15,7 @@ $total = user()->count();
 <section data-cy="admin-user-list-page">
     <div class="d-flex justify-content-end mb-3">
         <div class="mt-2 fw-700">
-            <?= ek('No of Users', '검색된 사용자') ?>: <?= $total ?>
+            <?= ln(['en' => 'No of Users', 'ko' => '검색된 사용자']) ?>: <?= $total ?>
         </div>
 
         <span class="flex-grow-1"></span>
@@ -28,7 +28,7 @@ $total = user()->count();
                     <input type="text" class="form-control mb-2" name='key' placeholder="사용자 메일 주소, 이름을 입력해주세요." value="<?= $key ?>">
                 </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary mb-2"><?= ek('Submit', '@T Submit') ?></button>
+                    <button type="submit" class="btn btn-primary mb-2"><?= ln('submit') ?></button>
                 </div>
             </div>
         </form>
@@ -36,7 +36,7 @@ $total = user()->count();
 
 
     <div class="p-1 mb-3 border-radius-sm" style="border: 1px solid #e8e8e8;">
-        <div class="m-2"><?= ek('Fields', '@T Fields') ?></div>
+        <div class="m-2"><?= ln(['en' => 'Fields', 'ko' => '@T Fields']) ?></div>
         <div class="custom-control custom-checkbox custom-control-inline m-2 fs-sm align-middle" v-for="(option, key) in options" :key="key">
             <input :data-cy="key + '-option'" type="checkbox" class="custom-control-input" :id="key + '-option'" v-model="options[key]">
             <label class="custom-control-label text-capitalize" :for="key + '-option'">{{key}}</label>
@@ -48,22 +48,22 @@ $total = user()->count();
             <thead class="thead-dark">
                 <tr>
                     <th class="align-middle" scope="col">#</th>
-                    <th class="align-middle" data-cy="firebaseUid-col-header" scope="col" v-if="options.email"><?= ek('Email', '@T Email') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.firebaseUid"><?= ek('Firebase UID', '@T Firebase UID') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.name"><?= ek('Name', '@T Name') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.nickname"><?= ek('Nickname', '@T Nickname') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.point"><?= ek('Point', '@T Point') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.phoneNo"><?= ek('Phone No.', '@T Phone No.') ?></th>
-                    <th class="align-middle" data-cy="gender-col-header" scope="col" v-if="options.gender"><?= ek('Gender', '@T Gender') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.birthdate"><?= ek('Birthdate', '@T Birthdate') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.countryCode"><?= ek('Country Code', '@T Country Code') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.province"><?= ek('Province', '@T Province') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.city"><?= ek('City', '@T City') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.address"><?= ek('Address', '@T Address') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.zipcode"><?= ek('Zipcode', '@T Zipcode') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.createdAt"><?= ek('Created At', '@T Created At') ?></th>
-                    <th class="align-middle" scope="col" v-if="options.updatedAt"><?= ek('Updated At', '@T Updated At') ?></th>
-                    <th class="align-middle" scope="col"><?= ek('Edit', '@T Edit') ?></th>
+                    <th class="align-middle" data-cy="firebaseUid-col-header" scope="col" v-if="options.email"><?= ln('email') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.firebaseUid"><?= ln('firebase_uid') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.name"><?= ln('name') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.nickname"><?= ln('nickname') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.point"><?= ln('point') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.phoneNo"><?= ln('phone_no') ?></th>
+                    <th class="align-middle" data-cy="gender-col-header" scope="col" v-if="options.gender"><?= ln('gender') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.birthdate"><?= ln('birthdate') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.countryCode"><?= ln('country_code') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.province"><?= ln('province') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.city"><?= ln('city') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.address"><?= ln('address') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.zipcode"><?= ln('zipcode') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.createdAt"><?= ln('created_at') ?></th>
+                    <th class="align-middle" scope="col" v-if="options.updatedAt"><?= ln('updated_at') ?></th>
+                    <th class="align-middle" scope="col"><?= ln('edit') ?></th>
                 </tr>
             </thead>
             <tbody>
