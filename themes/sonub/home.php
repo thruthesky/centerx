@@ -25,7 +25,9 @@ a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9 a b c d 
 <template>
     <div class="mb-3">
         <b-button @click="toastNotification('Content')">Show Custom Toast</b-button>
-        <b-button @click="toast('Content', {append: true})">Show Toast (appended)</b-button>
+        <b-button
+                @click="toastNotification('Append Notification',{ title: 'append', position: 'bottom-full', append: true})">
+            Show Toast (appended)</b-button>
     </div>
 </template>
 
@@ -33,25 +35,30 @@ a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9 a b c d 
     console.log(mixins);
     mixins.push({
         methods: {
-            toastNotification(content, title = "Notification", url = `?p=forum.post.list&categoryId=qna`) {
-                this.toast(content, {
-                    title: title,
-                    // buttonAlignRight: true,
-                    position: 'bottom-center',
-                    buttons: [{
-                            text: "Close",
-                            class: "mr-3",
-                            onclick: () => console.log('Close')
-                        },
-                        {
-                            text: "Open",
-                            onclick: () => {
-                                console.log("Okay");
-                                location.href = url;
+            toastNotification: function(content, options) {
+                const o = Object.assign({
+                    title: '',
+                    buttons:
+                        [
+                            {
+                                text: "Close",
+                                class: "mr-3",
+                                onclick: function() {
+                                    console.log('Close');
+                                }
+                            },
+                            {
+                                text: "Open",
+                                onclick: function() {
+                                    console.log("Open");
+                                    console.log(o.url);
+                                    if( o.url ) location.href = o.url;
+                                }
                             }
-                        }
-                    ]
-                })
+                        ]
+                }, options);
+                
+                this.toast(content, o)
             },
         }
     });
