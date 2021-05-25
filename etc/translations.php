@@ -1,6 +1,22 @@
 <?php
 
 $translations = [
+    'email' => ['en' => 'Email', 'ko' => '@T Email'],
+    'firebase_uid' => ['en' => 'Firebase UID', 'ko' => '@T Firebase UID'],
+    'name' => ['en' => 'Name', 'ko' => '@T Name'],
+    'nickname' => ['en' => 'Nickname', 'ko' => '@T Nickname'],
+    'point' => ['en' => 'Point', 'ko' => '@T Point'],
+    'phone_no' => ['en' => 'Phone No.', 'ko' => '@T Phone No.'],
+    'gender' => ['en' => 'Gender', 'ko' => '@T Gender'],
+    'birthdate' => ['en' => 'Birthdate', 'ko' => '@T Birthdate'],
+    'country_code' => ['en' => 'Country Code', 'ko' => '@T Country Code'],
+    'province' => ['en' => 'Province', 'ko' => '@T Province'],
+    'city' => ['en' => 'City', 'ko' => '@T City'],
+    'address' => ['en' => 'Address', 'ko' => '@T Address'],
+    'zipcode' => ['en' => 'Zipcode', 'ko' => '@T Zipcode'],
+    'created_at' => ['en' => 'Created At', 'ko' => '@T Created At'],
+    'updated_at' => ['en' => 'Updated At', 'ko' => '@T Updated At'],
+
     'login' => ['en' => 'Login', 'ko' => '로그인'],
     'topic' => ['en' => 'Topic', 'ko' => '토픽'],
     'token' => ['en' => 'Tokens', 'ko' => '토큰'],
@@ -11,6 +27,11 @@ $translations = [
     'submit' => ['en' => 'Submit', 'ko' => '전송'],
     'reply' => ['en' => 'Reply', 'ko' => '댓글'],
     'edit' => ['en' => 'Edit', 'ko' => '수정'],
+    'delete' => ['en' => 'Delete', 'ko' => '삭제'],
+
+    'yes' => ['en' => 'Yes', 'ko' => '예'],
+    'no' => ['en' => 'No', 'ko' => '아니오'],
+
     'delete' => ['en' => 'Delete', 'ko' => '삭제'],
     'like' => ['en' => 'Like', 'ko' => '좋아요'],
     'dislike' => ['en' => 'Dislike', 'ko' => '싫어요'],
