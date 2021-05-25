@@ -13,7 +13,7 @@ $post = $o['post'] ?? firstPost();
 
 <div class="reminder">
   <a href="<?= $post->url ?>">
-    <span class="badge"><?= category($post->categoryIdx)->id ?></span>
+    <span class="badge"><?= $post->categoryIdx ? category($post->categoryIdx)->id : 'uncategorized' ?></span>
     <span class="title"><?= $post->title ?></span>
     <span><?= $post->content ?></span>
   </a>
