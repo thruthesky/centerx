@@ -45,7 +45,7 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
   }
 
   .four-stories-with-thumbnail .stories .story {
-    width: 48%;
+    width: 50%;
     padding: 2px;
   }
 
