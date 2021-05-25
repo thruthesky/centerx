@@ -20,6 +20,8 @@ if (category($categoryId)->exists) {
 
 $lack = 4 - count($posts);
 $posts = array_merge($posts, postMockData($lack, photo: true));
+
+if (!count($posts)) return;
 ?>
 
 <div class="four-stories-with-thumbnail">

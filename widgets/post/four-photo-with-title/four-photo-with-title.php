@@ -17,6 +17,8 @@ if (isset($o['categoryId'])) {
 $lack = 4 - count($posts);
 $posts = array_merge($posts, postMockData($lack, photo: true));
 
+if (!count($posts)) return;
+
 ?>
 
 <section class="four-photo-with-title">

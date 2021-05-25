@@ -25,13 +25,15 @@ if (category($categoryId)->exists) {
 $lack = $limit - count($posts);
 $posts = array_merge($posts, postMockData($lack));
 
+if (!count($posts)) return;
 ?>
 
 <div class="story-list-with-bullet">
+  <hr>
   <ul>
     <?php foreach ($posts as $post) { ?>
       <li>
-          <a href="<?= $post->url ?>"><?= $post->title ?></a>
+        <a href="<?= $post->url ?>"><?= $post->title ?></a>
       </li>
     <?php } ?>
   </ul>

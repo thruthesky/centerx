@@ -23,6 +23,8 @@ if (!count($primaryPost)) {
 // d($primaryPost->files());
 $imageHeight = $o['imageHeight'] ?? 190;
 
+if (!$primaryPost) return;
+
 ?>
 
 
