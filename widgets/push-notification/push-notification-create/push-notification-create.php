@@ -1,8 +1,8 @@
 <?php
 /**
- * @size wide
- * @options none
- * @dependency none
+//  * @size wide
+//  * @options none
+//  * @dependency none
  */
 ?>
 <h1><?=ln('push notification')?></h1>

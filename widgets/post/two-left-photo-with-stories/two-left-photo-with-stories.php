@@ -80,7 +80,7 @@ $imageWidth = $op['imageWidth'] ?? 200;
   }
 
   .two-left-photo-with-stories .bottom .right {
-    margin-left: 4px;
+    margin-left: 8px;
     width: 60%;
   }
 </style>

@@ -37,12 +37,14 @@ $url = $post->url;
   .thumbnail-with-title .title {
     display: block;
     margin-left: 8px;
+    padding: .25em;
     width: 70%;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: 1em;
   }
 
   .thumbnail-with-title .photo img {
+    border-radius: 5px;
     display: block;
     width: 100%;
     height: 100%;
