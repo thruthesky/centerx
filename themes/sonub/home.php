@@ -7,12 +7,10 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 
 
 
-
-
 ?>
 
 <!-- work -->
-<?php include widget('post/two-column-story-group-a') ?>
+<div class="mt-2 mt-lg-0"><?php include widget('post/two-column-story-group-a') ?></div>
 <!-- /work -->
 <hr>
 <div class="d-xl-flex m-5">
@@ -89,7 +87,8 @@ include widget('post/photos-and-texts-3-stories', [
 ?>
 
 
-<?php include widget('weather/openweathermapforecast') ?>
+<?php //include widget('weather/openweathermapforecast') ?>
+
 
 
 <div class="p-2 fs-sm">

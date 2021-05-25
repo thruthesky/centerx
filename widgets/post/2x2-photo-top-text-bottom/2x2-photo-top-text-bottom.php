@@ -25,10 +25,10 @@ if (!count($posts)) return;
 ?>
 
 <div class="widget-2x2-photo-top-text-bottom">
-  <div class="stories">
+  <div class="posts row">
     <?php
     foreach ($posts as $post) { ?>
-      <div class="story">
+      <div class="post col-6">
         <?php include widget('post/photo-top-text-bottom', [
           'post' => $post,
           'imageHeight' => $op['imageHeight'] ?? 100,
@@ -38,26 +38,3 @@ if (!count($posts)) return;
     <?php } ?>
   </div>
 </div>
-
-<style>
-  .widget-2x2-photo-top-text-bottom .stories {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-
-  .widget-2x2-photo-top-text-bottom .stories .story {
-    width: 50%;
-    padding: 2px;
-  }
-
-  .widget-2x2-photo-top-text-bottom .stories .story:first-child,
-  .widget-2x2-photo-top-text-bottom .stories .story:nth-child(3) {
-    padding-right: 6px;
-  }
-
-  .widget-2x2-photo-top-text-bottom .stories .story:last-child,
-  .widget-2x2-photo-top-text-bottom .stories .story:nth-child(2) {
-    padding-left: 6px;
-  }
-</style>
