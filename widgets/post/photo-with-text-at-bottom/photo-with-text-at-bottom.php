@@ -2,7 +2,7 @@
 
 /**
  * @size narrow
- * @options 'post'. The post must have an image. 'imageHeight', 'imageWidth'
+ * @options 'post'. The post must have an image. 'imageHeight'
  * @dependency none
  * @description The ratio of width and height is 3:2 for the image of post only. The post must have image.
  */
@@ -12,28 +12,25 @@ $files = $post->files();
 if (count($files) == 0) return;
 
 $imageHeight = $o['imageHeight'] ?? 160;
-$imageWidth = $o['imageWidth'] ?? 140;
+$imageWidth = $o['imageWidth'] ?? 160;
 
-$src = thumbnailUrl($files[0]->idx, $imageHeight, $imageWidth);
+$src = thumbnailUrl($files[0]->idx, height: $imageHeight, width: $imageWidth);
 $url = $post->url;
 ?>
 
 
 <a class="photo-with-text-at-bottom" href="<?= $url ?>">
-    <div class="photo" style="height: <?= $imageHeight ?>px;">
-        <img src="<?= $src ?>">
-    </div>
+    <img src="<?= $src ?>" style="height: <?= $imageHeight ?>px;">
     <div class="title">
         <div class="inner"><?= $post->title ?></div>
     </div>
 </a>
 
-
 <style>
-    .photo-with-text-at-bottom .photo img {
+    .photo-with-text-at-bottom img {
         display: block;
-        height: 100%;
         width: 100%;
+        border-radius: 5px;
     }
 
     .photo-with-text-at-bottom .title {
@@ -41,7 +38,7 @@ $url = $post->url;
         bottom: 0;
         left: 0;
         right: 0;
-        background-color: #ececec;
+        /* background-color: #ececec; */
         color: black;
     }
 

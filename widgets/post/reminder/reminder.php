@@ -12,17 +12,20 @@ $post = $o['post'] ?? firstPost();
 ?>
 
 <div class="reminder">
-  <span class="badge"><?=category($post->categoryIdx)->id?></span>
-  <span class="title"><?=$post->title?></span>
-  <span><?=$post->content ?></span>
+  <a href="<?= $post->url ?>">
+    <span class="badge"><?= category($post->categoryIdx)->id ?></span>
+    <span class="title"><?= $post->title ?></span>
+    <span><?= $post->content ?></span>
+  </a>
 </div>
 
 <style>
   .reminder {
-    padding: 0 8px;
+    padding: 4px 8px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    font-size: .9em;
     font-weight: bold;
     background-color: #ededed;
   }
@@ -33,12 +36,11 @@ $post = $o['post'] ?? firstPost();
   }
 
   .reminder .badge {
-    font-size: .8em;
     color: white;
     background-color: black;
   }
 
   .reminder .title {
-    color: #c90000;
+    color: #f00000;
   }
 </style>

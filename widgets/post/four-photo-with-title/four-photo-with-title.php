@@ -22,18 +22,18 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
 <section class="four-photo-with-title">
   <div class="top">
     <div class="left">
-      <?php include widget('post/thumbnail-with-title', ['post' => $posts[0], 'imageHeight' => 55, 'imageWidth' => 90]); ?>
+      <?php include widget('post/thumbnail-with-title', ['post' => $posts[0], 'imageHeight' => 50, 'imageWidth' => 80]); ?>
     </div>
     <div class="right">
-      <?php include widget('post/thumbnail-with-title', ['post' => $posts[1], 'imageHeight' => 55, 'imageWidth' => 90]); ?>
+      <?php include widget('post/thumbnail-with-title', ['post' => $posts[1], 'imageHeight' => 50, 'imageWidth' => 80]); ?>
     </div>
   </div>
   <div class="bottom">
     <div class="left">
-      <?php include widget('post/thumbnail-with-title', ['post' => $posts[2], 'imageHeight' => 55, 'imageWidth' => 90]); ?>
+      <?php include widget('post/thumbnail-with-title', ['post' => $posts[2], 'imageHeight' => 50, 'imageWidth' => 80]); ?>
     </div>
     <div class="right">
-      <?php include widget('post/thumbnail-with-title', ['post' => $posts[3], 'imageHeight' => 55, 'imageWidth' => 90]); ?>
+      <?php include widget('post/thumbnail-with-title', ['post' => $posts[3], 'imageHeight' => 50, 'imageWidth' => 80]); ?>
     </div>
   </div>
 </section>
@@ -42,6 +42,7 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
   .four-photo-with-title .top,
   .four-photo-with-title .bottom {
     display: flex;
+    font-size: .9em;
   }
 
   .four-photo-with-title .top .left,
@@ -57,6 +58,6 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
 
   .four-photo-with-title .top .right,
   .four-photo-with-title .bottom .right {
-    margin-left: 16px;
+    margin-left: 8px;
   }
 </style>

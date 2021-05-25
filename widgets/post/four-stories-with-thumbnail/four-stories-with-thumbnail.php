@@ -27,7 +27,11 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
     <?php
     foreach ($posts as $post) { ?>
       <div class="story">
-        <?php include widget('post/photo-with-text-at-bottom', ['post' => $post, 'imageHeight' => $op['imageHeight'] ?? 150, 'imageWidth' => $op['imageWidth'] ?? 150 ]); ?>
+        <?php include widget('post/photo-with-text-at-bottom', [
+          'post' => $post,
+          'imageHeight' => $op['imageHeight'] ?? 100,
+          'imageWidth' => $op['imageWidth'] ?? null
+        ]); ?>
       </div>
     <?php } ?>
   </div>
@@ -41,7 +45,17 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
   }
 
   .four-stories-with-thumbnail .stories .story {
-    width: 50%;
+    width: 48%;
     padding: 2px;
+  }
+
+  .four-stories-with-thumbnail .stories .story:first-child,
+  .four-stories-with-thumbnail .stories .story:nth-child(3) {
+    padding-right: 6px;
+  }
+
+  .four-stories-with-thumbnail .stories .story:last-child,
+  .four-stories-with-thumbnail .stories .story:nth-child(2) {
+    padding-left: 6px;
   }
 </style>

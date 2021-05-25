@@ -65,13 +65,14 @@ $imageHeight = $o['imageHeight'] ?? 190;
 
   .one-left-photo-with-stories .bottom .stories {
     max-width: 65%;
-    margin-left: 16px;
+    padding-left: 16px;
+    overflow: hidden;
     font-weight: bold;
   }
 
   .one-left-photo-with-stories .bottom li:first-child a,
   .one-left-photo-with-stories .bottom li:nth-child(4) a,
   .one-left-photo-with-stories .bottom li:last-child a {
-    color: #c90000 !important;
+    color: #f00000 !important;
   }
 </style>
