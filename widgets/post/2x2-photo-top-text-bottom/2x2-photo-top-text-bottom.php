@@ -24,12 +24,12 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
 if (!count($posts)) return;
 ?>
 
-<div class="four-stories-with-thumbnail">
+<div class="widget-2x2-photo-top-text-bottom">
   <div class="stories">
     <?php
     foreach ($posts as $post) { ?>
       <div class="story">
-        <?php include widget('post/photo-with-text-at-bottom', [
+        <?php include widget('post/photo-top-text-bottom', [
           'post' => $post,
           'imageHeight' => $op['imageHeight'] ?? 100,
           'imageWidth' => $op['imageWidth'] ?? null
@@ -40,24 +40,24 @@ if (!count($posts)) return;
 </div>
 
 <style>
-  .four-stories-with-thumbnail .stories {
+  .widget-2x2-photo-top-text-bottom .stories {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
   }
 
-  .four-stories-with-thumbnail .stories .story {
+  .widget-2x2-photo-top-text-bottom .stories .story {
     width: 50%;
     padding: 2px;
   }
 
-  .four-stories-with-thumbnail .stories .story:first-child,
-  .four-stories-with-thumbnail .stories .story:nth-child(3) {
+  .widget-2x2-photo-top-text-bottom .stories .story:first-child,
+  .widget-2x2-photo-top-text-bottom .stories .story:nth-child(3) {
     padding-right: 6px;
   }
 
-  .four-stories-with-thumbnail .stories .story:last-child,
-  .four-stories-with-thumbnail .stories .story:nth-child(2) {
+  .widget-2x2-photo-top-text-bottom .stories .story:last-child,
+  .widget-2x2-photo-top-text-bottom .stories .story:nth-child(2) {
     padding-left: 6px;
   }
 </style>

@@ -14,7 +14,8 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 <!-- work -->
 <?php include widget('post/two-column-story-group-a') ?>
 <!-- /work -->
-<div class="d-xl-flex">
+<hr>
+<div class="d-xl-flex m-5">
     <div><img class="w-100" src="/themes/sonub/tmp/main2-1.jpg"></div>
     <div><img class="w-100" src="/themes/sonub/tmp/main2-2.jpg"></div>
 </div>
