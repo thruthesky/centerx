@@ -11,8 +11,9 @@ $o = getWidgetOptions();
 $categoryId = $o['categoryId'] ?? 'discussion';
 if (category($categoryId)->exists) {
   $primaryPost = post()->latest(categoryId: $categoryId, photo: true);
-  $primaryPost = $primaryPost[0] ?? null;
-} else {
+}
+
+if (! count($primaryPost)) {
   $primaryPost = firstPost(photo: true);
 }
 
@@ -27,7 +28,7 @@ $imageHeight = $o['imageHeight'] ?? 190;
   <div class="top"><a href="<?= $primaryPost->url ?>"><?= $primaryPost->title ?></a></div>
   <div class="bottom">
     <a href="<?= $primaryPost->url ?>">
-      <img class="photo" src="<?= thumbnailUrl($primaryPost->files()[0]->idx, height: $imageHeight) ?>" style="height: <?= $imageHeight ?>px;">
+      <img class="photo" src="<?= thumbnailUrl($primaryPost->files()[0]->idx, height: $imageHeight, width: 190) ?>" style="height: <?= $imageHeight ?>px;">
     </a>
     <div class="stories">
       <?php include widget('post/story-list-with-bullet', ['categoryId' => $categoryId, 'limit' => 7]) ?>
