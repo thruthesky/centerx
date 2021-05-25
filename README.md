@@ -22,6 +22,8 @@
 - 개발은 Docker Container 를 통해서 하며, 실제 서버에서도 Docker Container 를 이용해도 무방하다.
 
 
+
+
 ### 주요 개발 요소
 
 CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요소들을 사용한다.
