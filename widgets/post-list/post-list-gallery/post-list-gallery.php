@@ -15,6 +15,7 @@ $posts = $o['posts'];
       <?php
       $_gi = 0;
       foreach ($posts as $post) {
+        if (!count($post->files())) continue;
         $_gi++;
         $isEven = $_gi % 2 === 0;
         $imageHeight = $isEven ? 300 : 150;
