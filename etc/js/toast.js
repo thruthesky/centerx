@@ -5,7 +5,7 @@
 
  * @example
  *
-         toastPushNotification(content, title = "Notification", url) {
+         toastPushNotification(content, title, url) {
             app.toast(content,
                 {
                     title: title,
@@ -15,7 +15,9 @@
                             {
                                 text: "Close",
                                 class: "mr-3",
-                                onclick: () => console.log('Close')
+                                onclick: function() {
+                                    console.log('Close');
+                                }
                             },
                             {
                                 text: "Open",
@@ -28,38 +30,40 @@
                 })
         },
 
-    @position 'top-right', 'top-left', 'top-center', 'top-full', 'bottom-right', 'bottom-left', 'bottom-center', 'bottom-full',
+    @position
+         'top-right', 'top-left', 'top-center', 'top-full',
+         'bottom-right', 'bottom-left', 'bottom-center', 'bottom-full',
 
  */
 mixins.push({
-    data() {
+    data: function() {
         return {
             toastCount: 0
         }
     },
     methods: {
-        toast(content,
-              {
-                  title,
-                  buttons = null,
-                  cancelButton = null,
-                  buttonAlignRight = false,
-                  append = false,
-                  position= 'top-right',
-                  // position= 0,
-              }) {
+        toast: function(content, options) {
+            const o = Object.assign({
+                title: '',
+                buttons: null,
+                cancelButton: null,
+                buttonAlignRight: false,
+                append: false,
+                position: 'bottom-right'
+            },options);
 
+            const __this = this;
             const h = this.$createElement;
-            const id = `toast-${app.toastCount++}`;
+            const id = "toast-" + __this.toastCount++;
             const vNodesTitle = h( 'div', { class: ['mr-2'] },
-                [ h('strong', { class: 'mr-2' }, title ?? ""), ]
+                [ h('strong', { class: 'mr-2' }, o.title), ]
             );
 
             const vNodesMsgButton = [];
 
-            if(buttons) {
-                for(let i in buttons) {
-                    const b = buttons[i];
+            if(o.buttons) {
+                for(let i in o.buttons) {
+                    const b = o.buttons[i];
                     vNodesMsgButton.push( h(
                         'b-button',
                         {
@@ -67,9 +71,9 @@ mixins.push({
                                 b != null && b['class'] != null ? b['class'] : ""
                             ],
                             on: {
-                                click: () => {
+                                click: function() {
                                     if (b != null && b['onclick'] != null ) b['onclick']();
-                                    app.$bvToast.hide(id);
+                                    __this.$bvToast.hide(id);
                                 }
                             },
                         }, b != null && b['text'] != null ? b['text'] : "")
@@ -80,15 +84,15 @@ mixins.push({
                     'b-button',
                     {
                         class: [
-                            cancelButton != null && cancelButton['class'] != null ? cancelButton['class'] : ""
+                            o.cancelButton != null && o.cancelButton['class'] != null ? o.cancelButton['class'] : ""
                         ],
                         on: {
-                            click: () => {
-                                if (cancelButton != null && cancelButton['onclick'] != null ) cancelButton['onclick']();
-                                app.$bvToast.hide(id);
+                            click: function() {
+                                if (o.cancelButton != null && o.cancelButton['onclick'] != null ) o.cancelButton['onclick']();
+                                __this.$bvToast.hide(id);
                             }
                         },
-                    }, cancelButton != null && cancelButton['text'] != null ? cancelButton['text'] : "close")
+                    }, o.cancelButton != null && o.cancelButton['text'] != null ? o.cancelButton['text'] : "close")
                 );
             }
 
@@ -96,33 +100,22 @@ mixins.push({
                 'div',
                 { class: ['mb-0'] },
                 [
-                    `${content}`,
+                    content,
                     h('hr'),
                     h(
-                        'div', {class: [ 'd-flex ' + (buttonAlignRight ? 'justify-content-end':'justify-content-start') ]},
+                        'div', {class: [ 'd-flex ' + (o.buttonAlignRight ? 'justify-content-end':'justify-content-start') ]},
                         vNodesMsgButton
                     )
                 ]
             );
 
-            const toaster = [
-                'b-toaster-top-right',
-                'b-toaster-top-left',
-                'b-toaster-top-center',
-                'b-toaster-top-full',
-                'b-toaster-bottom-right',
-                'b-toaster-bottom-left',
-                'b-toaster-bottom-center',
-                'b-toaster-bottom-full',
-            ];
             this.$bvToast.toast([vNodesMsg], {
                 id: id,
                 title: [vNodesTitle],
                 autoHideDelay: 10000,
-                appendToast: append,
+                appendToast: o.append,
                 solid: true,
-                toaster: 'b-toaster-' + position
-                // toaster: toaster[position],
+                toaster: 'b-toaster-' + o.position
             })
         }
     }

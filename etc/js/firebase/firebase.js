@@ -93,17 +93,19 @@ if (!("Notification" in window)) {
                 {
                     title: notification.title,
                     buttonAlignRight: true,
+                    position: "bottom-right",
                     buttons:
                         [
                             {
                                 text: "Close",
                                 class: "mr-3",
-                                onclick: () => console.log('Close')
+                                onclick: function() {
+                                    console.log('Close');
+                                }
                             },
                             {
                                 text: "Open",
-                                onclick: () => {
-                                    console.log("Okay");
+                                onclick: function() {
                                     if(url) location.href = url;
                                 }
                             }
