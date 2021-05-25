@@ -2,7 +2,7 @@
 
 /**
  * @size narrow
- * @options string 'categoryId', 'limit'
+ * @options string 'categoryId', 'limit',
  * @dependencies none
  */
 
@@ -29,7 +29,6 @@ if (!count($posts)) return;
 ?>
 
 <div class="story-list-with-bullet">
-  <hr>
   <ul>
     <?php foreach ($posts as $post) { ?>
       <li>

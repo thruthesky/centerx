@@ -25,7 +25,9 @@ $reminderPost = $o['reminderPost'] ?? null;
     </div>
     <div class="column-b">
         <?php include widget('post/four-stories-with-thumbnail', ['categoryId' => $thirdStoriesCategory, 'imageHeight' => 75]) ?>
-        <?php include widget('post/story-list-with-bullet', ['categoryId' => $fourthStoriesCategory, 'limit' => 5]) ?>
+        <div class="bottom-stories">
+            <?php include widget('post/story-list-with-bullet', ['categoryId' => $fourthStoriesCategory, 'limit' => 5]) ?>
+        </div>
     </div>
 </div>
 
@@ -42,6 +44,7 @@ $reminderPost = $o['reminderPost'] ?? null;
     .two-column-story-group-a .column-a li::before {
         color: #f00000;
     }
+
     .two-column-story-group-a .column-a .four-photo-with-title {
         margin-top: 8px;
     }
@@ -50,11 +53,10 @@ $reminderPost = $o['reminderPost'] ?? null;
         width: 100%;
         font-size: .9em;
     }
-
-    .two-column-story-group-a .column-b hr {
-        margin-bottom: .5em;
+    .two-column-story-group-a .column-b .bottom-stories {
+        border-top: 1px solid #f1f1f1;
+        padding-top: .5em;
     }
-
 
     @media only screen and (min-width: 1200px) {
         .two-column-story-group-a {
