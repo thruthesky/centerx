@@ -22,6 +22,8 @@
 - 개발은 Docker Container 를 통해서 하며, 실제 서버에서도 Docker Container 를 이용해도 무방하다.
 
 
+
+
 ### 주요 개발 요소
 
 CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요소들을 사용한다.
@@ -3167,6 +3169,41 @@ echo "현재 환율: $phpKwr";
 * 단,  PC 버전 보기 옵션을 두어서, 서브도메인으로 테마를 다르게 해서 PC 버전으로 볼 수 있도록 한다. 그래서 글 쓰기 등을 편하게 할 수 있도록 한다.
 * 본인인증을 하면, 커뮤니티 글 쓰기 가능. 카카오, 네이버로 접속하면, 장터 게시판에만 글 등록할 수 있도록만 한다.
 - 카페 도메인별 PWA 설정을 할 수 있도록 한다.
+
+
+# PWA
+
+
+## Service worker
+
+The goal of service worker registration is NOT to do the service worker cache, but to do app banner installation.
+
+- How to install service worker
+
+```html
+<script>
+    // Check that service workers are supported
+    if ('serviceWorker' in navigator) {
+        // Use the window load event to keep the page load performant
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/themes/sonub/js/service-worker.js.php', {
+                scope: '/'
+            });
+        });
+    }
+</script>
+```
+
+- Service worker script
+```html
+<?php
+header('Service-Worker-Allowed: /');
+header('Content-Type: application/javascript');
+?>
+console.log('hi, this is service worker');
+```
+
+## start_url
 
 
 # 국가 정보
