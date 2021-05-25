@@ -3171,6 +3171,41 @@ echo "현재 환율: $phpKwr";
 - 카페 도메인별 PWA 설정을 할 수 있도록 한다.
 
 
+# PWA
+
+
+## Service worker
+
+The goal of service worker registration is NOT to do the service worker cache, but to do app banner installation.
+
+- How to install service worker
+
+```html
+<script>
+    // Check that service workers are supported
+    if ('serviceWorker' in navigator) {
+        // Use the window load event to keep the page load performant
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/themes/sonub/js/service-worker.js.php', {
+                scope: '/'
+            });
+        });
+    }
+</script>
+```
+
+- Service worker script
+```html
+<?php
+header('Service-Worker-Allowed: /');
+header('Content-Type: application/javascript');
+?>
+console.log('hi, this is service worker');
+```
+
+## start_url
+
+
 # 국가 정보
 
 국가 정보를 wc_countries 테이블 에 저장 해 놓았으며, etc/sql/countries.sql 에 SQL 로 dump 해 놓았다.

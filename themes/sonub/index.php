@@ -3,6 +3,9 @@
 <head>
     <title>소너브!</title>
     <meta charset="utf-8">
+    <link rel="manifest" href="/themes/sonub/manifest.json">
+    <link rel="apple-touch-icon" href="/themes/sonub/img/philov-logo.png">
+    <meta name="theme-color" content="#1976d2">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/etc/bootstrap-4/bootstrap-4.6.0-min.css">
     <link rel="stylesheet" href="/etc/bootstrap-vue-2.21.2/bootstrap-vue-2.21.2.min.css">
@@ -46,6 +49,20 @@
         })
     </script>
 <?php } ?>
+
+<script>
+    // Check that service workers are supported
+    if ('serviceWorker' in navigator) {
+        // Use the window load event to keep the page load performant
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/themes/sonub/js/service-worker.js.php', {
+                scope: '/'
+            });
+        });
+    }
+</script>
+
+
 
 <!-- Load polyfills to support older browsers before loading Vue and Bootstrap Vue -->
 <script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver%2CObject.fromEntries" crossorigin="anonymous"></script>

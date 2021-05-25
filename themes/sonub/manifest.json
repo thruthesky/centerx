@@ -1,15 +1,25 @@
 {
+  "lang": "en",
   "background_color": "red",
-  "description": "Main philov com description",
+  "description": "description ... !",
   "display": "fullscreen",
   "icons": [
     {
-      "src": "/themes/sonub/img/philov-logo.png",
+      "src": "/themes/sonub/tmp/pwa-192.png",
       "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/themes/sonub/tmp/pwa-512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "name": "Main.Philov.com",
-  "short_name": "Philov",
-  "start_url": "/index.php"
+  "name": "name",
+  "short_name": "short_name",
+  "start_url": "/themes/sonub/pwa.php",
+  "orientation": "natural",
+  "theme_color": "aliceblue",
+  "scope": "/"
 }
