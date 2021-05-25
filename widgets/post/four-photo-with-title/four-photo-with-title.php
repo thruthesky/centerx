@@ -11,7 +11,7 @@ $o = getWidgetOptions();
 $posts = [];
 
 if (isset($o['categoryId'])) {
-  $posts = post()->latest($o['categoryId']);
+  $posts = post()->latest(categoryId: $o['categoryId']);
 }
 
 $lack = 4 - count($posts);
@@ -22,18 +22,18 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
 <section class="four-photo-with-title">
   <div class="top">
     <div class="left">
-      <?php include widget('post/thumbnail-with-title', ['post' => $posts[0], 'imageHeight' => 50, 'imageWidth' => 80]); ?>
+      <?php include widget('post/thumbnail-with-title', ['post' => $posts[0] ?? null, 'imageHeight' => 50, 'imageWidth' => 80]); ?>
     </div>
     <div class="right">
-      <?php include widget('post/thumbnail-with-title', ['post' => $posts[1], 'imageHeight' => 50, 'imageWidth' => 80]); ?>
+      <?php include widget('post/thumbnail-with-title', ['post' => $posts[1] ?? null, 'imageHeight' => 50, 'imageWidth' => 80]); ?>
     </div>
   </div>
   <div class="bottom">
     <div class="left">
-      <?php include widget('post/thumbnail-with-title', ['post' => $posts[2], 'imageHeight' => 50, 'imageWidth' => 80]); ?>
+      <?php include widget('post/thumbnail-with-title', ['post' => $posts[2] ?? null, 'imageHeight' => 50, 'imageWidth' => 80]); ?>
     </div>
     <div class="right">
-      <?php include widget('post/thumbnail-with-title', ['post' => $posts[3], 'imageHeight' => 50, 'imageWidth' => 80]); ?>
+      <?php include widget('post/thumbnail-with-title', ['post' => $posts[3] ?? null, 'imageHeight' => 50, 'imageWidth' => 80]); ?>
     </div>
   </div>
 </section>
