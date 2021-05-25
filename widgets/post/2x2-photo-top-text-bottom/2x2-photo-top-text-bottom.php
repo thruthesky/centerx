@@ -24,12 +24,12 @@ $posts = array_merge($posts, postMockData($lack, photo: true));
 if (!count($posts)) return;
 ?>
 
-<div class="four-stories-with-thumbnail">
-  <div class="stories">
+<div class="widget-2x2-photo-top-text-bottom">
+  <div class="posts row">
     <?php
     foreach ($posts as $post) { ?>
-      <div class="story">
-        <?php include widget('post/photo-with-text-at-bottom', [
+      <div class="post col-6">
+        <?php include widget('post/photo-top-text-bottom', [
           'post' => $post,
           'imageHeight' => $op['imageHeight'] ?? 100,
           'imageWidth' => $op['imageWidth'] ?? null
@@ -38,26 +38,3 @@ if (!count($posts)) return;
     <?php } ?>
   </div>
 </div>
-
-<style>
-  .four-stories-with-thumbnail .stories {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-
-  .four-stories-with-thumbnail .stories .story {
-    width: 50%;
-    padding: 2px;
-  }
-
-  .four-stories-with-thumbnail .stories .story:first-child,
-  .four-stories-with-thumbnail .stories .story:nth-child(3) {
-    padding-right: 6px;
-  }
-
-  .four-stories-with-thumbnail .stories .story:last-child,
-  .four-stories-with-thumbnail .stories .story:nth-child(2) {
-    padding-left: 6px;
-  }
-</style>

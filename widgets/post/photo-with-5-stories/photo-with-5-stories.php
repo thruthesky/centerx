@@ -21,7 +21,7 @@ $imageWidth = $op['imageWidth'] ?? 100;
 <div class="photo-with-5-stories">
 
   <div class="top">
-    <?php include widget('post/photo-with-text-at-bottom', [
+    <?php include widget('post/photo-top-text-bottom', [
       'post' => $post,
       'imageHeight' => $imageHeight,
       'imageWidth' => $imageWidth
