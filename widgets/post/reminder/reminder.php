@@ -9,6 +9,7 @@
 $o = getWidgetOptions();
 
 $post = $o['post'] ?? firstPost();
+if (!$post->idx) return;
 ?>
 
 <div class="reminder">
