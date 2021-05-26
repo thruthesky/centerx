@@ -103,7 +103,7 @@ a:hover {
 
 
 .white {
-  color: white;
+  color: white !important;
 }
 .white a {
   color: white;
@@ -118,7 +118,7 @@ a:hover {
   background-color: green;
 }
 .red {
-  color: red;
+  color: red !important;
 }
 .bg-red {
   background-color: red;

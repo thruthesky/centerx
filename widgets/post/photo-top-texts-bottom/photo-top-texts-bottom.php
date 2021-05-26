@@ -18,7 +18,7 @@ $imageHeight = $op['imageHeight'] ?? 160;
 $imageWidth = $op['imageWidth'] ?? 100;
 ?>
 
-<div class="photo-with-5-texts-at-bottom d-block">
+<div class="photo-top-texts-bottom d-block">
 
   <div class="top">
     <?php include widget('post/photo-top-text-bottom', [
@@ -37,7 +37,7 @@ $imageWidth = $op['imageWidth'] ?? 100;
 
 
 <style>
-  .photo-with-5-texts-at-bottom .posts div a {
+  .photo-top-texts-bottom .posts div a {
     text-decoration: none;
     color: black;
   }

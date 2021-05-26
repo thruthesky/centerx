@@ -17,13 +17,13 @@ if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, height: 
 $url = $post->url;
 ?>
 
-<div class="thumbnail-with-title-and-content">
+<div class="thumbnail-left-title-and-content-right">
   <a class="body" href="<?= $url ?>" style="height: <?= $imageHeight ?>px">
     <?php if ($src) { ?>
-      <img class="photo" src="<?= $src ?>">
+      <img class="mr-3" class="photo" src="<?= $src ?>">
     <?php } ?>
     <div class="title-content">
-      <div class="title">
+      <div class="title font-weight-bold">
         <?= $post->title ?>
       </div>
       <div class="content">
@@ -39,43 +39,38 @@ $url = $post->url;
 </div>
 
 <style>
-  .thumbnail-with-title-and-content,
-  .thumbnail-with-title-and-content .body {
+  .thumbnail-left-title-and-content-right,
+  .thumbnail-left-title-and-content-right .body {
     display: flex;
     max-height: 6em;
     width: 100%;
   }
 
-  .thumbnail-with-title-and-content .body {
+  .thumbnail-left-title-and-content-right .body {
     text-decoration: none;
     color: black;
   }
 
-  .thumbnail-with-title-and-content .meta {
+  .thumbnail-left-title-and-content-right .meta {
     display: block;
     margin-left: 15px;
     min-width: 90px;
     text-align: right;
   }
 
-  .thumbnail-with-title-and-content .body .photo {
-    margin-right: 15px;
-  }
-
-  .thumbnail-with-title-and-content .body .title-content {
+  .thumbnail-left-title-and-content-right .body .title-content {
     height: 100%;
     width: 100%;
     overflow: hidden;
   }
 
 
-  .thumbnail-with-title-and-content .body .title-content .title {
-    font-weight: bold;
+  .thumbnail-left-title-and-content-right .body .title-content .title {
     overflow: hidden;
   }
 
-  .thumbnail-with-title-and-content .body .title-content .title,
-  .thumbnail-with-title-and-content .body .title-content .content {
+  .thumbnail-left-title-and-content-right .body .title-content .title,
+  .thumbnail-left-title-and-content-right .body .title-content .content {
     height: 3em;
   }
 </style>

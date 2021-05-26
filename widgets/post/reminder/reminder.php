@@ -12,9 +12,9 @@ $post = $o['post'] ?? firstPost();
 if (!$post->idx) return;
 ?>
 
-<div class="reminder">
+<div class="reminder rounded">
   <a href="<?= $post->url ?>">
-    <span class="badge"><?= $post->categoryIdx ? category($post->categoryIdx)->id : 'uncategorized' ?></span>
+    <span class="badge bg-dark rounded"><?= $post->categoryIdx ? category($post->categoryIdx)->id : 'uncategorized' ?></span>
     <span class="title"><?= $post->title ?></span>
     <span><?= $post->content ?></span>
   </a>
@@ -31,14 +31,8 @@ if (!$post->idx) return;
     background-color: #ededed;
   }
 
-  .reminder,
-  .reminder .badge {
-    border-radius: 5px;
-  }
-
   .reminder .badge {
     color: white;
-    background-color: black;
   }
 
   .reminder .title {

@@ -22,18 +22,11 @@ if (!isset($secondStoriesOps['imageWidth'])) $secondStoriesOps['imageWidth'] = 1
 ?>
 
 
-<div class="right-thumbnail-and-texts-2-photo">
+<div class="right-thumbnail-top-texts-middle-2-photos-bottom">
   <div class="top">
-    <?php include widget('post/right-thumbnail-with-4-texts-at-bottom', ['post' => $primaryPost, 'displayNumber' => true ]); ?>
+    <?php include widget('post/text-left-thumbnail-right-top-4-texts-bottom', ['post' => $primaryPost, 'displayNumber' => true ]); ?>
   </div>
-  <div class="bottom">
+  <div class="bottom mt-2">
   <?php include widget('post/two-photos-with-inline-text-at-bottom', $secondStoriesOps); ?>
   </div>
 </div>
-
-<style>
-  .right-thumbnail-and-texts-2-photo .bottom {
-    margin-top: 5px;
-  }
-
-</style>

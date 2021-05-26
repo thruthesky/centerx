@@ -15,40 +15,26 @@ if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, height: 
 $url = $post->url;
 ?>
 
-<a class="right-thumbnail-with-title" href="<?= $url ?>" style="height: <?= $imageHeight ?>px;">
-  <div class="title">
+<a class="title-left-thumbnail-right d-flex w-100" href="<?= $url ?>" style="height: <?= $imageHeight ?>px;">
+  <div class="title mr-2 font-weight-bold">
     <?= $post->title ?>
   </div>
-  <div class="photo">
-    <img src="<?= $src ?>">
-  </div>
+  <img class="photo rounded h-100" src="<?= $src ?>">
 </a>
 
 <style>
-  .right-thumbnail-with-title {
-    display: flex;
-    width: 100%;
+  .title-left-thumbnail-right {
     text-decoration: none;
     color: black;
   }
 
-  .right-thumbnail-with-title .title {
+  .title-left-thumbnail-right .title {
     height: 3em;
-  }
-
-  .right-thumbnail-with-title .title {
     width: 70%;
-    margin-right: 8px;
     overflow: hidden;
-    font-weight: bold;
   }
 
-  .right-thumbnail-with-title .photo {
+  .title-left-thumbnail-right .photo {
     width: 30%;
-  }
-
-  .right-thumbnail-with-title .photo img {
-    height: 100%;
-    width: 100%;
   }
 </style>

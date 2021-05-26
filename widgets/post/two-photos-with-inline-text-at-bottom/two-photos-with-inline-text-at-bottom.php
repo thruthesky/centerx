@@ -27,15 +27,15 @@ $imageWidth = $op['imageWidth'] ?? 250;
 ?>
 
 
-<div class="two-photos-with-inline-text-at-bottom">
-  <div class="left-story">
+<div class="two-photos-with-inline-text-at-bottom d-flex w-100">
+  <div class="left-story w-50 h-100">
     <?php include widget('post/photo-with-inline-text-at-bottom', [
       'post' => $posts[0],
       'imageHeight' => $imageHeight,
       'imageWidth' => $imageWidth
     ]); ?>
   </div>
-  <div class="right-story">
+  <div class="right-story w-50 h-100 ml-3">
     <?php include widget('post/photo-with-inline-text-at-bottom', [
       'post' => $posts[1],
       'imageHeight' => $imageHeight,
@@ -43,20 +43,3 @@ $imageWidth = $op['imageWidth'] ?? 250;
     ]); ?>
   </div>
 </div>
-
-<style>
-  .two-photos-with-inline-text-at-bottom {
-    display: flex;
-    width: 100%;
-  }
-
-  .two-photos-with-inline-text-at-bottom .right-story {
-    margin-left: 8px;
-  }
-
-  .two-photos-with-inline-text-at-bottom .right-story,
-  .two-photos-with-inline-text-at-bottom .left-story {
-    width: 50%;
-    height: 100%;
-  }
-</style>

@@ -17,11 +17,11 @@ if (!isset($secondStoriesOps['imageWidth'])) $secondStoriesOps['imageWidth'] = 9
 
 
 <div class="three-column-story-group-b">
-  <div class="left">
+  <div class="left mr-2">
     <?php include widget('post/two-left-photo-with-stories', $firstStories); ?>
   </div>
   <div class="right">
-    <?php include widget('post/top-6-texts-and-4-photo-at-bottom', $secondStoriesOps); ?>
+    <?php include widget('post/6-texts-top-4-photos-bottom', $secondStoriesOps); ?>
   </div>
 </div>
 
@@ -33,7 +33,6 @@ if (!isset($secondStoriesOps['imageWidth'])) $secondStoriesOps['imageWidth'] = 9
 
   .three-column-story-group-b .left {
     width: 60%;
-    margin-right: 8px;
   }
 
   .three-column-story-group-b .right {

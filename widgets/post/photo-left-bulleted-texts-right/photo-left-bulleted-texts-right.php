@@ -28,7 +28,7 @@ if (!$primaryPost) return;
 ?>
 
 
-<div class="left-photo-with-bulleted-text-at-right w-100">
+<div class="photo-left-bulleted-texts-right w-100">
   <a class="h4" href="<?= $primaryPost->url ?>"><?= $primaryPost->title ?></a>
   <div class="bottom row mt-2">
     <?php if (count($primaryPost->files())) { ?>

@@ -36,7 +36,7 @@ $posts = postMockData($lack, photo: false);
 
 ?>
 
-<div class="left-photo-with-texts-at-right d-flex w-100">
+<div class="photo-left-texts-right d-flex w-100">
   <?php if (count($primary->files())) { ?>
     <a class="photo" href="<?= $primary->url ?>">
       <img class="w-100 rounded" src="<?= thumbnailUrl($primary->files()[0]->idx, 300, 200) ?>">
@@ -50,18 +50,18 @@ $posts = postMockData($lack, photo: false);
 </div>
 
 <style>
-  .left-photo-with-texts-at-right .photo {
+  .photo-left-texts-right .photo {
     width: 33%;
     line-height: 1em;
     height: 8em;
     overflow: hidden;
   }
 
-  .left-photo-with-texts-at-right .posts {
+  .photo-left-texts-right .posts {
     width: 66%;
   }
 
-  .left-photo-with-texts-at-right .posts div a {
+  .photo-left-texts-right .posts div a {
     text-decoration: none;
     color: black;
   }

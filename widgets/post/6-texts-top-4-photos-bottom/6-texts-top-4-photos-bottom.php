@@ -14,7 +14,7 @@ $secondStoriesOps = [
 ];
 ?>
 
-<div class="texts-and-4-photo">
+<div class="6-texts-top-4-photos-bottom">
   <div class="fs-bold">
     <?= (isset($op['title']) && $op['title']) ? $op['title'] : 'This is a sample title.' ?>
   </div>
