@@ -16,10 +16,10 @@ $imageWidth = $op['imageWidth'] ?? 50;
 ?>
 
 
-<div class="right-thumbnail-with-4-texts-at-bottom">
+<div class="text-left-thumbnail-right-top-4-texts-bottom">
   <div class="top d-flex">
     <?= $displayNumber ? '<span class="number mr-2">1</span>' : '' ?>
-    <?php include widget('post/right-thumbnail-with-title', [
+    <?php include widget('post/title-left-thumbnail-right', [
       'post' => $post,
       'imageHeight' => $imageHeight,
       'imageWidth' => $imageWidth
@@ -42,7 +42,7 @@ $imageWidth = $op['imageWidth'] ?? 50;
 
 
 <style>
-  .right-thumbnail-with-4-texts-at-bottom a {
+  .text-left-thumbnail-right-top-4-texts-bottom a {
     text-decoration: none;
     color: black;
   }

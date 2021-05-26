@@ -14,13 +14,13 @@ $imageWidth = $op['imageWidth'] ?? 150;
 ?>
 
 
-<div class="top-photo-and-left-texts-with-4-photos-at-bottom">
+<div class="photo-left-texts-right-top-4-photos-bottom">
   <h5 class="text-center">
     <?= $title ?>
   </h4>
 
   <div class="first-story">
-    <?php include widget('post/left-photo-with-texts-at-right', ['categoryId' => $op['firstCategoryId'] ?? null]); ?>
+    <?php include widget('post/photo-left-texts-right', ['categoryId' => $op['firstCategoryId'] ?? null]); ?>
   </div>
 
   <div class="posts d-flex mt-2 w-100">
@@ -46,12 +46,12 @@ $imageWidth = $op['imageWidth'] ?? 150;
 </div>
 
 <style>
-  .top-photo-and-left-texts-with-4-photos-at-bottom .posts .post-1 {
+  .photo-left-texts-right-top-4-photos-bottom .posts .post-1 {
     margin-right: 4px;
     margin-left: 8px;
   }
 
-  .top-photo-and-left-texts-with-4-photos-at-bottom .posts .post-2 {
+  .photo-left-texts-right-top-4-photos-bottom .posts .post-2 {
     margin-right: 8px;
     margin-left: 4px;
   }

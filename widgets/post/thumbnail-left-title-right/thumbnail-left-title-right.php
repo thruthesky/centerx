@@ -17,7 +17,7 @@ if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, height: 
 $url = $post->url;
 ?>
 
-<a class="thumbnail-with-title" href="<?= $url ?>" style="height: <?= $imageHeight ?>;">
+<a class="thumbnail-left-title-right" href="<?= $url ?>" style="height: <?= $imageHeight ?>;">
   <?php if (!!$src) { ?>
     <div class="photo" style="height: <?= $imageHeight ?>;">
       <img src="<?= $src ?>">
@@ -29,7 +29,7 @@ $url = $post->url;
 </a>
 
 <style>
-  .thumbnail-with-title {
+  .thumbnail-left-title-right {
     display: flex;
     width: 100%;
     text-decoration: none;
@@ -37,7 +37,7 @@ $url = $post->url;
     overflow: hidden;
   }
 
-  .thumbnail-with-title .title {
+  .thumbnail-left-title-right .title {
     display: block;
     margin-left: 8px;
     padding: .25em;
@@ -46,7 +46,7 @@ $url = $post->url;
     font-size: 1em;
   }
 
-  .thumbnail-with-title .photo img {
+  .thumbnail-left-title-right .photo img {
     border-radius: 5px;
     display: block;
     width: 100%;

@@ -19,7 +19,7 @@ $reminderPost = $o['reminderPost'] ?? null;
 
     <div class="two-column-story-group-a row">
         <div class="column-a col-12 col-lg-7">
-            <?php include widget('post/left-photo-with-bulleted-text-at-right', ['post' => $firstStoriesCategory]) ?>
+            <?php include widget('post/photo-left-bulleted-texts-right', ['post' => $firstStoriesCategory]) ?>
             <?php include widget('post/reminder', ['post' => $reminderPost]) ?>
             <div class="mt-3">
                 <?php include widget('post/2x2-photo-with-text-at-right', ['categoryId' => $secondStoriesCategory]) ?>
@@ -36,15 +36,15 @@ $reminderPost = $o['reminderPost'] ?? null;
 
 
 <style>
-    .left-photo-with-bulleted-text-at-right .bottom li:first-child a,
-    .left-photo-with-bulleted-text-at-right .bottom li:nth-child(4) a,
-    .left-photo-with-bulleted-text-at-right .bottom li:last-child a {
+    .photo-left-bulleted-texts-right .bottom li:first-child a,
+    .photo-left-bulleted-texts-right .bottom li:nth-child(4) a,
+    .photo-left-bulleted-texts-right .bottom li:last-child a {
         color: #f00000 !important;
     }
     @media all and (max-width: 768px) {
-        .left-photo-with-bulleted-text-at-right .bottom li:nth-child(5),
-        .left-photo-with-bulleted-text-at-right .bottom li:nth-child(6),
-        .left-photo-with-bulleted-text-at-right .bottom li:nth-child(7) {
+        .photo-left-bulleted-texts-right .bottom li:nth-child(5),
+        .photo-left-bulleted-texts-right .bottom li:nth-child(6),
+        .photo-left-bulleted-texts-right .bottom li:nth-child(7) {
             display: none;
         }
     }
