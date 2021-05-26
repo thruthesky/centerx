@@ -69,7 +69,7 @@ a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9 a b c d 
 
 
 
-include widget('post/photo-and-texts-4-stories', []);
+include widget('post/top-photo-and-left-texts-with-4-photos-at-bottom', []);
 
 $firstStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 2, photo: true);
 $thirdStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 3, photo: true);

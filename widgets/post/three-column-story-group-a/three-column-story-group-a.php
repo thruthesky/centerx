@@ -16,7 +16,7 @@ $rightStories = $op['rightStories'] ?? [];
 
 <div class="three-column-story-group-a">
   <div class="left">
-    <?php include widget('post/photo-with-5-stories', ['post' => $firstPost ?? firstPost(photo: true)]); ?>
+    <?php include widget('post/photo-with-5-texts-at-bottom', ['post' => $firstPost ?? firstPost(photo: true)]); ?>
   </div>
   <div class="middle">
     <?php include widget('post/photo-with-3-stories', ['post' => $secondPost ?? firstPost(photo: true)]); ?>

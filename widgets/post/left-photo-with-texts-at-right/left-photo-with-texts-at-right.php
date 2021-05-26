@@ -36,48 +36,32 @@ $posts = postMockData($lack, photo: false);
 
 ?>
 
-<div class="left-photo-with-stories">
+<div class="left-photo-with-texts-at-right d-flex w-100">
   <?php if (count($primary->files())) { ?>
-    <a class="section-image" href="<?= $primary->url ?>">
-      <img src="<?= thumbnailUrl($primary->files()[0]->idx, 300, 200) ?>">
+    <a class="photo" href="<?= $primary->url ?>">
+      <img class="w-100 rounded" src="<?= thumbnailUrl($primary->files()[0]->idx, 300, 200) ?>">
     </a>
   <?php } ?>
-  <div class="stories">
+  <div class="posts ml-2">
     <?php foreach ($posts as $post) { ?>
-      <div><a href="<?= $post->url ?>"><?= $post->title ?></a></div>
+      <div class="text-truncate"><a href="<?= $post->url ?>"><?= $post->title ?></a></div>
     <?php } ?>
   </div>
 </div>
 
 <style>
-  .left-photo-with-stories {
-    display: flex;
-    width: 100%;
-  }
-
-  .left-photo-with-stories .section-image {
+  .left-photo-with-texts-at-right .photo {
     width: 33%;
     line-height: 1em;
     height: 8em;
     overflow: hidden;
   }
 
-  .left-photo-with-stories .section-image img {
-    width: 100%;
-  }
-
-  .left-photo-with-stories .stories {
+  .left-photo-with-texts-at-right .posts {
     width: 66%;
-    margin-left: 8px;
   }
 
-  .left-photo-with-stories .stories div {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .left-photo-with-stories .stories div a {
+  .left-photo-with-texts-at-right .posts div a {
     text-decoration: none;
     color: black;
   }
