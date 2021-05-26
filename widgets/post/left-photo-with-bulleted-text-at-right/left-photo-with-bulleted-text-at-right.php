@@ -38,16 +38,8 @@ if (!$primaryPost) return;
             </a>
         </div>
     <?php } ?>
-    <div class="posts col-7">
-      <?php include widget('post/bulleted-text-list', ['categoryId' => $categoryId, 'limit' => 7]) ?>
+    <div class="stories col-7 pl-0">
+      <?php include widget('post/story-list-with-bullet', ['categoryId' => $categoryId, 'limit' => 7]) ?>
     </div>
   </div>
 </div>
-
-<style>
-    .left-photo-with-bulleted-text-at-right .posts {
-        padding-left: 16px;
-        overflow: hidden;
-        font-weight: bold;
-    }
-</style>
