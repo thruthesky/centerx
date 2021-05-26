@@ -47,7 +47,7 @@ if (in(CATEGORY_ID)) {
                 <div>
                     <input type="date" name="beginAt" value="<?=$post->beginAt ? date('Y-m-d', $post->beginAt) : 0?>">
                     <input type="date" name="endAt" value="<?=$post->endAt ? date('Y-m-d', $post->endAt) : 0?>">
-                    <span class="ml-2">남은 광고 일 수: <?=daysBetween($post->beginAt, $post->endAt)?></span>
+                    <span class="ml-2">남은 광고 일 수: <?=daysBetween(0, $post->endAt)?></span>
                 </div>
                 <small class="form-text text-muted">광고비 시작 날짜와 끝 날짜를 선택해주세요.</small>
                 <small class="form-text text-muted">참고: 날짜 입력은 직접 입력하지 않고, Input 태그의 달력에서 날짜를 선택한다. type=date 의 표시는 YYYY/MM/DD 이지만, PHP 로 전달은 YYYY-MM-DD 이다.</small>

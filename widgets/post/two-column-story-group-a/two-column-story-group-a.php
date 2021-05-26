@@ -22,12 +22,12 @@ $reminderPost = $o['reminderPost'] ?? null;
         <?php include widget('post/photo-left-bulleted-texts-right', ['post' => $firstStoriesCategory]) ?>
         <div class="my-4">
             <?php include widget('post/reminder', ['post' => $reminderPost]) ?>
-        </div>
-        <div class="mt-3">
-            <?php include widget('post/2x2-photo-with-text-at-right', ['categoryId' => $secondStoriesCategory]) ?>
+            <div class="mt-3">
+                <?php include widget('post/2x2-photo-with-text-at-right', ['categoryId' => $secondStoriesCategory]) ?>
+            </div>
         </div>
     </div>
-    <div class="column-b mt-4 col-12 col-lg-5">
+    <div class="column-b mt-3 col-12 col-lg-5">
         <?php include widget('post/2x2-photo-top-text-bottom', ['categoryId' => $thirdStoriesCategory, 'imageHeight' => 75]) ?>
         <div class="bottom-stories bg-light p-3 border-radius-md">
             <?php include widget('post/bulleted-text-list', ['categoryId' => $fourthStoriesCategory, 'limit' => 5]) ?>
@@ -43,8 +43,11 @@ $reminderPost = $o['reminderPost'] ?? null;
     }
 
     @media all and (max-width: 768px) {
+<<<<<<< HEAD
 
         .photo-left-bulleted-texts-right .bottom li:nth-child(5),
+=======
+>>>>>>> 581cb197d8acec67dcde2dcb5cee02826a8b30f3
         .photo-left-bulleted-texts-right .bottom li:nth-child(6),
         .photo-left-bulleted-texts-right .bottom li:nth-child(7) {
             display: none;

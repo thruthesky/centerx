@@ -22,15 +22,15 @@
         <label><?=ln('cafe_title_image')?></label>
             <upload-image taxonomy="<?=cafe()->taxonomy?>" entity="<?=cafe()->idx?>" code="title_image"></upload-image>
             <small class="form-text text-muted">
-                카페 로고 사진을 등록해주세요. 사이즈는 너비 1400 픽셀, 높이 200 픽셀, 용량 100Kb 이하로 해 주세요.
+                <?=ln('cafe_title_image_description')?>
             </small>
     </div>
 
     <div class="form-group">
-        <label for="categoryBox">카테고리</label>
+        <label for="categoryBox"><?=ln('category')?></label>
         <input type="text" class="form-control" id="categoryBox" name="subcategories" value="<?=cafe()->orgSubcategories?>">
         <small class="form-text text-muted">
-            콤마로 분리하여 여러개 입력 가능. 예) 속보,날씨,사회,경제,정보마당,부동산컬럼
+            <?=ln('cafe_category_description')?>
         </small>
     </div>
 

@@ -1732,9 +1732,16 @@ function dateToTime(int|string $date): int {
 }
 
 
-
+/**
+ * 두 시간 stamp 사이의 일 수를 구한다.
+ * $stamp1 에 값이 없으면 오늘 stamp 값이 기본 지정된다.
+ * @param $stamp1
+ * @param $stamp2
+ * @return int
+ */
 function daysBetween($stamp1, $stamp2) {
-    if ( empty($stamp1) || empty($stamp2) ) return 0;
+    if ( empty($stamp1) ) $stamp1 = time();
+    if ( empty($stamp2) ) return 0;
     $date1 = \Carbon\Carbon::createFromTimestamp($stamp1);
     $date2 = \Carbon\Carbon::createFromTimestamp($stamp2);
     return $date1->diffInDays($date2, false);
