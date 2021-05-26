@@ -19,7 +19,7 @@ $secondStoriesOps = [
     <?= (isset($op['title']) && $op['title']) ? $op['title'] : 'This is a sample title.' ?>
   </div>
   <div>
-    <?php include widget('post/top-6-stories', ['categoryId' => $op['firstCategory'] ?? null]); ?>
+    <?php include widget('post/top-6-post-list', ['categoryId' => $op['firstCategory'] ?? null]); ?>
   </div>
   <div class="mt-3">
     <?php include widget('post/2x2-photo-with-inline-text-at-bottom', $secondStoriesOps); ?>

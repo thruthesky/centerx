@@ -21,7 +21,7 @@ if (!isset($secondStoriesOps['imageWidth'])) $secondStoriesOps['imageWidth'] = 9
     <?php include widget('post/two-left-photo-with-stories', $firstStories); ?>
   </div>
   <div class="right">
-    <?php include widget('post/texts-and-4-photo', $secondStoriesOps); ?>
+    <?php include widget('post/top-6-texts-and-4-photo-at-bottom', $secondStoriesOps); ?>
   </div>
 </div>
 

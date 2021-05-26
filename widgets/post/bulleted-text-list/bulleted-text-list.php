@@ -29,10 +29,10 @@ $posts = array_merge($posts, postMockData($lack));
 if (!count($posts)) return;
 ?>
 
-<div class="story-list-with-bullet">
-  <ul>
+<div class="bulleted-text-list">
+  <ul class="p-0">
     <?php foreach ($posts as $post) { ?>
-      <li>
+      <li class="text-truncate">
         <a href="<?= $post->url ?>"><?= $post->title ?></a>
       </li>
     <?php } ?>
@@ -40,28 +40,16 @@ if (!count($posts)) return;
 </div>
 
 <style>
-  .story-list-with-bullet {
+  .bulleted-text-list {
     list-style-position: inside;
   }
 
-  .story-list-with-bullet ul {
-    padding: 0;
-  }
-
-  .story-list-with-bullet ul li {
-    margin-bottom: .3em;
-    font-size: 1em;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .story-list-with-bullet ul li::before {
+  .bulleted-text-list ul li::before {
     margin-right: 8px;
   }
 
-  .story-list-with-bullet ul li a {
+  .bulleted-text-list ul li a {
     text-decoration: none;
-    /* color: black; */
+    color: black;
   }
 </style>

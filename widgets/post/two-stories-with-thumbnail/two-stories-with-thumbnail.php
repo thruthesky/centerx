@@ -22,15 +22,9 @@ if (empty($posts)) {
 <div class="two-stories-with-thumbnail">
 
   <?php foreach ($posts as $post) { ?>
-    <div class="story">
+    <div class="post mb-2">
       <?php include widget('post/thumbnail-with-title-and-content', ['post' => $post]); ?>
     </div>
   <?php } ?>
 
 </div>
-
-<style>
-  .two-stories-with-thumbnail .story {
-    margin-bottom: 8px;
-  }
-</style>

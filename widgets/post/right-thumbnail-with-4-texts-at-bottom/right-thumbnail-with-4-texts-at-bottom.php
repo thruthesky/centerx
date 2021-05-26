@@ -16,24 +16,24 @@ $imageWidth = $op['imageWidth'] ?? 50;
 ?>
 
 
-<div class="right-thumbnail-with-4-stories">
-  <div class="top">
-    <?= $displayNumber ? '<span class="number">1</span>' : '' ?>
+<div class="right-thumbnail-with-4-texts-at-bottom">
+  <div class="top d-flex">
+    <?= $displayNumber ? '<span class="number mr-2">1</span>' : '' ?>
     <?php include widget('post/right-thumbnail-with-title', [
       'post' => $post,
       'imageHeight' => $imageHeight,
       'imageWidth' => $imageWidth
     ]); ?>
   </div>
-  <div class="stories">
+  <div class="posts">
     <?php
     $_i = 1;
     foreach ($posts as $post) {
       $_i++;
     ?>
-      <div>
+      <div class="mt-2 text-truncate">
         <a href="<?= $post->url ?>">
-          <?= $displayNumber ? '<span class="number">' . ($_i) . '</span>' : '' ?><?= $post->title ?>
+          <?= $displayNumber ? '<span class="number mr-2">' . ($_i) . '</span>' : '' ?><?= $post->title ?>
         </a>
       </div>
     <?php } ?>
@@ -42,27 +42,8 @@ $imageWidth = $op['imageWidth'] ?? 50;
 
 
 <style>
-  .right-thumbnail-with-4-stories .top {
-    display: flex;
-  }
-
-  .right-thumbnail-with-4-stories .stories div {
-    margin-top: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .right-thumbnail-with-4-stories .top {
-    display: flex;
-  }
-
-  .right-thumbnail-with-4-stories .stories a {
+  .right-thumbnail-with-4-texts-at-bottom a {
     text-decoration: none;
     color: black;
-  }
-
-  .right-thumbnail-with-4-stories .number {
-    margin-right: 8px;
   }
 </style>

@@ -27,7 +27,7 @@ $reminderPost = $o['reminderPost'] ?? null;
     <div class="column-b mt-3 col-12 col-xl-5">
         <?php include widget('post/2x2-photo-top-text-bottom', ['categoryId' => $thirdStoriesCategory, 'imageHeight' => 75]) ?>
         <div class="bottom-stories bg-light p-3 border-radius-md">
-            <?php include widget('post/story-list-with-bullet', ['categoryId' => $fourthStoriesCategory, 'limit' => 5]) ?>
+            <?php include widget('post/bulleted-text-list', ['categoryId' => $fourthStoriesCategory, 'limit' => 5]) ?>
         </div>
     </div>
 </div>
