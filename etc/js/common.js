@@ -139,6 +139,44 @@ function saveToken(token, topic) {
   );
 }
 
+/**
+ *
+ * Note that `app` is the Vue instance variable. You may adjust it if `app` is not the vue instance.
+ * @param title
+ * @param body
+ * @param buttons
+ *
+ *
+ * @example
+ *    toast('title', 'body');
+ *    
+ * @example
+ *    toast('title', 'body', [{
+ *      text: 'Close',
+ *      class: '',
+ *      onclick: function() { console.log('closed'); }
+ *    }, {
+ *      text: 'Open',
+ *      onclick: function() { if ( url ) location.href = url; }
+ *    }
+ *    ]);
+ */
+function toast(title, body, buttons) {
+
+
+  if (typeof app.toast === "function") {
+    app.toast(body,
+        {
+          title: title,
+          buttonAlignRight: true,
+          position: "bottom-center",
+          buttons: buttons
+        })
+  } else {
+    alert(notification.title + "\n" +notification.body);
+    if(url) location.href = url;
+  }
+}
 
 /**
  * Add/delete newValue to/from orgValue(separated by comma)
