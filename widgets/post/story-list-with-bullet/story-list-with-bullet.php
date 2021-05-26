@@ -30,7 +30,7 @@ if (!count($posts)) return;
 ?>
 
 <div class="story-list-with-bullet">
-  <ul>
+  <ul class="list-style-none">
     <?php foreach ($posts as $post) { ?>
       <li>
         <a href="<?= $post->url ?>"><?= $post->title ?></a>
@@ -38,30 +38,3 @@ if (!count($posts)) return;
     <?php } ?>
   </ul>
 </div>
-
-<style>
-  .story-list-with-bullet {
-    list-style-position: inside;
-  }
-
-  .story-list-with-bullet ul {
-    padding: 0;
-  }
-
-  .story-list-with-bullet ul li {
-    margin-bottom: .3em;
-    font-size: 1em;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .story-list-with-bullet ul li::before {
-    margin-right: 8px;
-  }
-
-  .story-list-with-bullet ul li a {
-    text-decoration: none;
-    /* color: black; */
-  }
-</style>

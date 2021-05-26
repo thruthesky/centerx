@@ -38,17 +38,8 @@ if (!$primaryPost) return;
             </a>
         </div>
     <?php } ?>
-    <div class="stories col-7">
+    <div class="stories col-7 pl-0">
       <?php include widget('post/story-list-with-bullet', ['categoryId' => $categoryId, 'limit' => 7]) ?>
     </div>
   </div>
 </div>
-
-<style>
-    .one-left-photo-with-stories .stories {
-        max-width: 65%;
-        padding-left: 16px;
-        overflow: hidden;
-        font-weight: bold;
-    }
-</style>
