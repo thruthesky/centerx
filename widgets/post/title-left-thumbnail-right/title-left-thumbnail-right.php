@@ -16,12 +16,10 @@ $url = $post->url;
 ?>
 
 <a class="title-left-thumbnail-right d-flex w-100" href="<?= $url ?>" style="height: <?= $imageHeight ?>px;">
-  <div class="title mr-2">
+  <div class="title mr-2 font-weight-bold">
     <?= $post->title ?>
   </div>
-  <div class="photo">
-    <img class="h-100 w-100" src="<?= $src ?>">
-  </div>
+  <img class="photo rounded h-100" src="<?= $src ?>">
 </a>
 
 <style>
@@ -32,12 +30,8 @@ $url = $post->url;
 
   .title-left-thumbnail-right .title {
     height: 3em;
-  }
-
-  .title-left-thumbnail-right .title {
     width: 70%;
     overflow: hidden;
-    font-weight: bold;
   }
 
   .title-left-thumbnail-right .photo {
