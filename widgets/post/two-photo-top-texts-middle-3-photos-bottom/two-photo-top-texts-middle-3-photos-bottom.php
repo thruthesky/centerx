@@ -6,7 +6,7 @@
  */
 $op = getWidgetOptions();
 ?>
-<div class="two-photo-with-texts-middle-and-3-photo-at-bottom">
+<div class="two-photo-top-texts-middle-3-photos-bottom">
     <div class="first-story d-flex mt-1">
         <div class="left w-50 mr-1">
             <?php
@@ -44,9 +44,9 @@ $op = getWidgetOptions();
     </div>
 </div>
 <style>
-    .two-photo-with-texts-middle-and-3-photo-at-bottom .third-story .left,
-    .two-photo-with-texts-middle-and-3-photo-at-bottom .third-story .middle,
-    .two-photo-with-texts-middle-and-3-photo-at-bottom .third-story .right {
+    .two-photo-top-texts-middle-3-photos-bottom .third-story .left,
+    .two-photo-top-texts-middle-3-photos-bottom .third-story .middle,
+    .two-photo-top-texts-middle-3-photos-bottom .third-story .right {
         width: 33%;
     }
 </style>

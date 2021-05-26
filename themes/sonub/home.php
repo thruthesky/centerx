@@ -73,7 +73,7 @@ include widget('post/photo-left-texts-right-top-4-photos-bottom', []);
 
 $firstStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 2, photo: true);
 $thirdStories = post()->latest(categoryId: 'qna', countryCode: cafe()->countryCode, limit: 3, photo: true);
-include widget('post/two-photo-with-texts-middle-and-3-photo-at-bottom', [
+include widget('post/two-photo-top-texts-middle-3-photos-bottom', [
     'firstStories' => $firstStories,
     'secondStories' => [
         'title' => 'Most read articles',

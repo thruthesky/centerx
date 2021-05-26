@@ -4,7 +4,7 @@
  * @size wide
  * @options 'categoryId'
  * @dependency none
- * @description displays 2 stacked post, each post contains a thumbnail with title and content. It use's 'thumbnail-with-title-and-content' as child widget.
+ * @description displays 2 stacked post, each post contains a thumbnail with title and content. It use's 'thumbnail-left-title-and-content-right' as child widget.
  */
 $op = getWidgetOptions();
 
@@ -23,7 +23,7 @@ if (empty($posts)) {
 
   <?php foreach ($posts as $post) { ?>
     <div class="post mb-2">
-      <?php include widget('post/thumbnail-with-title-and-content', ['post' => $post]); ?>
+      <?php include widget('post/thumbnail-left-title-and-content-right', ['post' => $post]); ?>
     </div>
   <?php } ?>
 
