@@ -39,7 +39,7 @@ if (!$primaryPost) return;
         </div>
     <?php } ?>
     <div class="stories col-7 pl-0">
-      <?php include widget('post/story-list-with-bullet', ['categoryId' => $categoryId, 'limit' => 7]) ?>
+      <?php include widget('post/bulleted-text-list', ['categoryId' => $categoryId, 'limit' => 7]) ?>
     </div>
   </div>
 </div>
