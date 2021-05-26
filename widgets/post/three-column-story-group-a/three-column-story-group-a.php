@@ -19,7 +19,7 @@ $rightStories = $op['rightStories'] ?? [];
     <?php include widget('post/photo-with-5-texts-at-bottom', ['post' => $firstPost ?? firstPost(photo: true)]); ?>
   </div>
   <div class="middle">
-    <?php include widget('post/photo-with-3-stories', ['post' => $secondPost ?? firstPost(photo: true)]); ?>
+    <?php include widget('post/top-photo-and-3-photo-with-text-right-at-bottom', ['post' => $secondPost ?? firstPost(photo: true)]); ?>
   </div>
   <div class="right">
     <?php include widget('post/right-thumbnail-and-texts-2-photo', $rightStories); ?>
