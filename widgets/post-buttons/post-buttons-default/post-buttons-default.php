@@ -1,4 +1,4 @@
-<?php 
+<?php
 $o = getWidgetOptions();
 $post = $o['post'];
 ?>
@@ -9,7 +9,9 @@ $post = $o['post'];
     <?php if ($post->isMine() == false) { ?><a class="btn btn-sm mr-2" href="<?= messageSendUrl($post->userIdx) ?>"><?= ln('send_message') ?></a><?php } ?>
   </div>
   <span class="flex-grow-1"></span>
-  <a class="btn btn-sm mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ln('list') ?></a>
+  <?php if (in('p') !== 'forum.post.list') { ?>
+    <a class="btn btn-sm mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ln('list') ?></a>
+  <?php } ?>
 
   <?php if ($post->isMine() || admin()) { ?>
     <b-dropdown size="lg" variant="link" toggle-class="text-decoration-none" dropleft no-caret>
