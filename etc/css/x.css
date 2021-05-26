@@ -204,4 +204,11 @@ a:hover {
   padding: 0 !important;
 }
 
+ul.ellipsis li {
+  font-size: 1em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 /*# sourceMappingURL=x.css.map */
