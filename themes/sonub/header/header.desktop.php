@@ -41,8 +41,8 @@
                 // 로고 이미지가 있으면, 로고 이미지 표시
                 // 아니면, 제목 표시
                 // 아니면, id 표시
-                $logo = cafe()->logo();
-                if ( $logo->ok ) echo "<img class='w-100' src='{$logo->url}'>";
+                $titleImage = cafe()->titleImage();
+                if ( $titleImage->ok ) echo "<img class='w-100' src='{$titleImage->url}'>";
                 else if ( cafe()->title ) echo cafe()->title;
                 else if ( cafe()->id ) echo cafe()->id;
                 else echo cafe()->rootCafeName();
