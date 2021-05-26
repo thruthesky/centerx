@@ -1,7 +1,3 @@
-<?php
-header('Service-Worker-Allowed: /');
-header('Content-Type: application/javascript');
-?>
 
 
 console.log('hi, this is service worker');
@@ -49,8 +45,8 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     // Skip cross-origin requests, like those for Google Analytics.
 
-    console.log(event);
-    console.log(self.location.origin);
+    console.log("event",event);
+    console.log("selft.location.origin",self.location.origin);
     //if (event.request.url.startsWith(self.location.origin)) {
     //    event.respondWith(
     //        caches.match(event.request).then(cachedResponse => {

@@ -283,8 +283,8 @@ class CafeTaxonomy extends CategoryTaxonomy
     }
 
 
-    public function logo(): FileTaxonomy {
-        return files()->findOne([TAXONOMY => $this->taxonomy, ENTITY => $this->idx, CODE => 'logo']);
+    public function titleImage(): FileTaxonomy {
+        return files()->findOne([TAXONOMY => $this->taxonomy, ENTITY => $this->idx, CODE => 'title_image']);
     }
 
 }

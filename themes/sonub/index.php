@@ -55,7 +55,8 @@
     if ('serviceWorker' in navigator) {
         // Use the window load event to keep the page load performant
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/themes/sonub/js/service-worker.js.php', {
+            navigator.serviceWorker.register('/themes/sonub/js/service-' +
+                'worker.php', {
                 scope: '/'
             });
         });

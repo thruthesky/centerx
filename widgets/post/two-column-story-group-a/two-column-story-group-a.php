@@ -33,8 +33,6 @@ $reminderPost = $o['reminderPost'] ?? null;
         </div>
     </div>
 
-
-
 <style>
     .photo-left-bulleted-texts-right .bottom li:first-child a,
     .photo-left-bulleted-texts-right .bottom li:nth-child(4) a,

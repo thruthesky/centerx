@@ -30,7 +30,7 @@ if (!count($posts)) return;
 ?>
 
 <div class="story-list-with-bullet">
-  <ul class="list-style-none">
+  <ul class="list-style-none ellipsis">
     <?php foreach ($posts as $post) { ?>
       <li class="text-truncate">
         <a href="<?= $post->url ?>"><?= $post->title ?></a>
