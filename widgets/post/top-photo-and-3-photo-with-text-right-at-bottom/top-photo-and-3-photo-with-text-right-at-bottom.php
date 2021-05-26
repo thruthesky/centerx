@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * @size narrow
  * @options PostTaxonomy $post
@@ -12,7 +10,7 @@ $post = $op['post'] ?? firstPost(photo: true);
 $posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 3, photo: true);
 ?>
 
-<div class="photo-with-3-story-list">
+<div class="top-photo-and-3-photo-with-text-right-at-bottom d-block">
   <div class="top">
     <?php include widget('post/photo-with-inline-text-at-bottom', [
       'post' => $post,
@@ -22,7 +20,7 @@ $posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 3, photo: true);
   </div>
   <div class="list">
     <?php foreach ($posts as $post) { ?>
-      <div class="story">
+      <div class="post mt-2">
         <?php include widget('post/thumbnail-with-title', [
           'post' => $post,
           'imageHeight' => 50,
@@ -32,13 +30,3 @@ $posts = post()->latest(categoryIdx: $post->categoryIdx, limit: 3, photo: true);
     <?php } ?>
   </div>
 </div>
-
-<style>
-  .photo-with-3-story-list {
-    display: block;
-  }
-
-  .photo-with-3-story-list .list .story {
-    margin-top: 8px;
-  }
-</style>

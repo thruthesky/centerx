@@ -192,3 +192,17 @@ a:hover {
     background-color: #0037ff;
   }
 }
+
+.list-style-none {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+
+ul.ellipsis li {
+  font-size: 1em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

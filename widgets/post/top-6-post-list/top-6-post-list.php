@@ -19,8 +19,7 @@ $posts = array_merge($posts, postMockData($lack));
 
 ?>
 
-<div class="top-6-stories">
-
+<div class="top-6-post-list">
   <?php
   $_num = 0;
   foreach ($posts as $post) {
@@ -33,22 +32,22 @@ $posts = array_merge($posts, postMockData($lack));
 </div>
 
 <style>
-  .top-6-stories {
+  .top-6-post-list {
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .top-6-stories a {
+  .top-6-post-list a {
     text-decoration: none;
     color: black;
     white-space: nowrap;
   }
 
-  .top-6-stories a .blue {
+  .top-6-post-list a .blue {
     color: darkcyan;
   }
 
-  .top-6-stories .number {
+  .top-6-post-list .number {
     font-weight: bold;
     margin-right: 8px;
   }

@@ -28,7 +28,7 @@ if (!$primaryPost) return;
 ?>
 
 
-<div class="one-left-photo-with-stories">
+<div class="left-photo-with-bulleted-text-at-right w-100">
   <a class="h4" href="<?= $primaryPost->url ?>"><?= $primaryPost->title ?></a>
   <div class="bottom row mt-2">
     <?php if (count($primaryPost->files())) { ?>
@@ -38,17 +38,8 @@ if (!$primaryPost) return;
             </a>
         </div>
     <?php } ?>
-    <div class="stories col-7">
-      <?php include widget('post/story-list-with-bullet', ['categoryId' => $categoryId, 'limit' => 7]) ?>
+    <div class="stories col-7 pl-0">
+      <?php include widget('post/bulleted-text-list', ['categoryId' => $categoryId, 'limit' => 7]) ?>
     </div>
   </div>
 </div>
-
-<style>
-    .one-left-photo-with-stories .stories {
-        max-width: 65%;
-        padding-left: 16px;
-        overflow: hidden;
-        font-weight: bold;
-    }
-</style>
