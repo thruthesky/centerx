@@ -8,42 +8,7 @@ $o = getWidgetOptions();
 $posts = $o['posts'];
 ?>
 
-<section class="post-list-gallery p-1" style="border-radius: 16px; background-color: #f4f4f4;">
-  <?php if (count($posts)) { ?>
-    <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "gutter": 5, "percentPosition": true, "horizontalOrder": true  }'>
 
-      <?php
-      $_gi = 0;
-      foreach ($posts as $post) {
-        if (!count($post->files())) continue;
-        $_gi++;
-        $isEven = $_gi % 2 === 0;
-        $imageHeight = $isEven ? 300 : 150;
-      ?>
-        <div class="grid-item <?= $isEven ? 'grid-item--height2' : '' ?>">
-          <div class="image-holder">
-            <?php include widget('post/photo-with-one-line-text-at-bottom', ['post' => $post, 'imageHeight' => $imageHeight]); ?>
-          </div>
-        </div>
-      <?php } ?>
-    </div>
-  <?php } else { ?>
-    <?php include widget('post-list/empty-post-list'); ?>
-  <?php } ?>
-</section>
-
-<style>
-  .grid-item {
-    float: left;
-    margin-bottom: 5px;
-    width: 32.5%;
-    height: 182px;
-    /* border: 1px black solid; */
-  }
-
-  .grid-item--height2 {
-    height: 332px;
-  }
-</style>
-
-<?php js('/etc/js/masonry-4.2.2.js', 1) ?>
+<div class="post-list-gallery">
+  <?php include widget('post/gallery-list-view', ['posts' => $posts, 'normalImageHeight' => 200, 'tallImageHeight' => 350]) ?>
+</div>
