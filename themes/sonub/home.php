@@ -1,7 +1,7 @@
 <?php
 if (cafe()->isSubCafe() && cafe()->notExists) {
 ?>
-    <div class="p-2 fs-sm alert alert-warning">앗, 존재하지 않는 카페로 접속을 하였습니다. <a href="?cafe.create">카페 개설하기</a></div>
+    <div class="p-2 fs-sm alert alert-warning">앗, 존재하지 않는 카페로 접속을 하였습니다. <a href="?cafe.create"><?=ln('create_cafe')?></a></div>
 <?php
 }
 
