@@ -29,8 +29,7 @@ if ( $ad_type == AD_TOP ) {
             echo "<a href='https://katalkenglish.com' target='_blank'><img src='/widgets/advertisement/banner/ad-top-left.jpg'></a>";
         }
     }
-} else if ( $ad_type == AD_WING  ) {
-
+} else if ( $ad_type == AD_WING && $place != 'main'  ) {
     // 현재 게시판 카테고리의 날개 배너를 먼저 보여준다.
     $q = advSql($ad_type, $place);
     $rows = db()->rows($q);
@@ -49,6 +48,19 @@ if ( $ad_type == AD_TOP ) {
             echo "<img src='{$file->url}'>";
         }
     }
+} else if ( $ad_type == AD_WING && $place == 'main'  ) {
+    $q = advSql($ad_type);
+    $rows = db()->rows($q);
+    if ( count($rows) ) {
+        echo "<div class='row px-1 {$bo['class']}'>";
+        foreach( $rows as $row ) {
+            $post = post($row['postIdx']);
+            $file = $post->fileByCode( $ad_type );
+            echo "<div class='col-4 mb-2 px-1'><img class='w-100' src='{$file->url}'></div>";
+        }
+        echo '</div>';
+    }
+
 } else if ( $ad_type == AD_POST_LIST_SQUARE ) {
     $rows = db()->rows(advSql($ad_type, $place));
     if ( $rows ) {
@@ -58,7 +70,7 @@ if ( $ad_type == AD_TOP ) {
                 <?php foreach($rows as $row) {
                     $post = post($row['postIdx']);
                     $file = $post->fileByCode( $ad_type );  ?>
-                    <div class="col-3 px-1 mb-2"><img class="w-100" src="<?=$file->url?>"></div>
+                    <div class="col-3 px-1 mb-2"><img src="<?=$file->url?>"></div>
                 <?php } ?>
             </div>
         </div>
