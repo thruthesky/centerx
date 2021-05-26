@@ -3345,6 +3345,19 @@ console.log('hi, this is service worker');
     - 관리자 페이지에서 설정하는 DB 설정 값, 그 다음
     - `$translations` 이다.
 
+## 테마별 언어화
+
+- 테마에서만 쓰이는 언어인 경우, `theme.defines.php` 에 아래와 같이 아래와 같이 추가를 하면 된다.
+
+```php
+global $translations;
+$translations = array_merge($translations, [
+    'cafe_admin' => [
+        'en' => 'Cafe Admin',
+        'ko' => '카페 관리자'
+    ]
+]);
+```
 
 # 관리자 페이지
 

@@ -3,7 +3,7 @@
 <head>
     <title>소너브!</title>
     <meta charset="utf-8">
-<link rel="manifest" href="/themes/sonub/manifest.json">
+<link rel="manifest" href="/themes/sonub/manifest.json.php">
 <link rel="apple-touch-icon" href="/themes/sonub/img/philov-logo.png">
 <meta name="theme-color" content="#1976d2">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

@@ -16,7 +16,7 @@
 </div>
 
 <section class="box mb-2">
-    <a href="/?cafe.create">카페 개설하기</a>
+    <a href="/?cafe.create"><?=ln('create_cafe')?></a>
 </section>
 
 <?php include widget('message/message-side-menu')?>
