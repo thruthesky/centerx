@@ -2,35 +2,28 @@
 
 /**
  * @size wide
- * @options Array(PostTaxonomy) 'posts', int 'normalImageHeight', int 'tallImageHeight'
+ * @options Array(PostTaxonomy) 'posts'
  * @dependencies none
  */
 $op = getWidgetOptions();
 $posts = $op['posts'] ?? [];
-
-$normalImageHeight = $op['normalImageHeight'] ?? 150;
-$tallImageHeight = $op['tallImageHeight'] ?? 300;
-
 if (empty($posts)) $posts = postMockData(10, photo: true);
 ?>
 
 
 <div class="gallery-list-view">
   <?php if (count($posts)) { ?>
-    <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "gutter": 5, "percentPosition": true, "horizontalOrder": true  }'>
+    <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "gutter": 10, "percentPosition": true  }'>
 
       <?php
-      $_gi = 0;
       foreach ($posts as $post) {
         if (!count($post->files())) continue;
-        $_gi++;
-        $isEven = $_gi % 2 === 0;
-        $imageHeight = $isEven ? $tallImageHeight : $normalImageHeight;
       ?>
-        <div class="grid-item <?= $isEven ? 'grid-item--height2' : '' ?>">
-          <div class="image-holder">
-            <?php include widget('post/photo-with-one-line-text-at-bottom', ['post' => $post, 'imageHeight' => $imageHeight]); ?>
-          </div>
+        <div class="grid-item">
+          <a href="<?= $post->url ?>">
+            <img class="w-100" src="<?= $post->files()[0]->url ?>" alt="">
+            <div class="text-truncate"><?= $post->title ?></div>
+          </a>
         </div>
       <?php } ?>
     </div>
@@ -41,15 +34,13 @@ if (empty($posts)) $posts = postMockData(10, photo: true);
 
 <style>
   .grid-item {
-    float: left;
     margin-bottom: 5px;
-    width: 32.5%;
-    height: <?= $normalImageHeight + 32 ?>px;
-    /* border: 1px black solid; */
+    width: 32%;
   }
 
-  .grid-item--height2 {
-    height: <?= $tallImageHeight + 32 ?>px;
+  .grid-item a {
+    text-decoration: none;
+    color: black;
   }
 </style>
 
