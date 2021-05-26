@@ -44,7 +44,7 @@ $url = $post->url;
 
     .photo-top-text-bottom .title .inner {
         overflow: hidden;
-        height: 2.1em;
+        height: 2em;
         line-height: 1em;
         font-size: 1em;
         text-align: center;
