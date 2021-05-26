@@ -12,7 +12,7 @@ $post = $o['post'];
   <a class="btn btn-sm mr-1" href="/?p=forum.post.list&categoryId=<?= $post->categoryId() ?>"><?= ln('list') ?></a>
 
   <?php if ($post->isMine() || admin()) { ?>
-    <b-dropdown size="lg" variant="link" toggle-class="text-decoration-none" no-caret>
+    <b-dropdown size="lg" variant="link" toggle-class="text-decoration-none" dropleft no-caret>
       <template #button-content>
         <i class="fa fa-ellipsis-h dark fs-md"></i><span class="sr-only">Search</span>
       </template>

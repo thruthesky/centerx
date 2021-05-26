@@ -31,35 +31,37 @@
     </div>
 
 
-    <div class="d-flex justify-content-between l-content my-3 fs-sm">
-        <div class="mt-3 ad-top">
-            <?php include widget('advertisement/banner', ['type' => AD_TOP, 'place' => 'L']) ?>
-        </div>
-        <div class="mx-3 mx-lg-5 flex-grow-1">
-            <a class="d-block fs-lg text-center mb-2" href="/">
-                <?php
-                // 로고 이미지가 있으면, 로고 이미지 표시
-                // 아니면, 제목 표시
-                // 아니면, id 표시
-                $titleImage = cafe()->titleImage();
-                if ( $titleImage->ok ) echo "<img class='w-100' src='{$titleImage->url}'>";
-                else if ( cafe()->title ) echo cafe()->title;
-                else if ( cafe()->id ) echo cafe()->id;
-                else echo cafe()->rootCafeName();
-                ?>
-            </a>
-            <form action="/">
-                <input type="hidden" name="p" value="forum.post.list">
-                <div class="position-relative">
-                    <input class="focus-none pl-3 pr-5 py-1 fs-lg w-100 border-radius-md border-grey" name="searchKey">
-                    <div class="position-absolute top right mr-1 fs-lg dark">
-                        <div style="padding: 0.6rem;"><i class="fa fa-search"></i></div>
+    <div class="container-xl mt-3">
+        <div class="row">
+            <div class="ad-top col-4 col-lg-3 pl-0 d-flex align-items-center">
+                <?php include widget('advertisement/banner', ['type' => AD_TOP, 'place' => 'L']) ?>
+            </div>
+            <div class="col-8 col-lg-6">
+                <a class="d-block fs-lg text-center mb-1" href="/">
+                    <?php
+                    // 로고 이미지가 있으면, 로고 이미지 표시
+                    // 아니면, 제목 표시
+                    // 아니면, id 표시
+                    $titleImage = cafe()->titleImage();
+                    if ( $titleImage->ok ) echo "<img class='w-100' src='{$titleImage->url}'>";
+                    else if ( cafe()->title ) echo cafe()->title;
+                    else if ( cafe()->id ) echo cafe()->id;
+                    else echo cafe()->rootCafeName();
+                    ?>
+                </a>
+                <form action="/">
+                    <input type="hidden" name="p" value="forum.post.list">
+                    <div class="position-relative">
+                        <input class="focus-none pl-3 pr-5 py-1 fs-lg w-100 border-radius-md border-grey" name="searchKey">
+                        <div class="position-absolute top right mr-1 fs-lg dark">
+                            <div style="padding: 0.6rem;"><i class="fa fa-search"></i></div>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
-        <div class="d-none d-lg-block mt-3 ad-top">
-            <?php include widget('advertisement/banner', ['type' => AD_TOP, 'place' => 'R']) ?>
+                </form>
+            </div>
+            <div class="ad-top d-none d-lg-flex col-3 pr-0 align-items-center">
+                <?php include widget('advertisement/banner', ['type' => AD_TOP, 'place' => 'R']) ?>
+            </div>
         </div>
     </div>
 
