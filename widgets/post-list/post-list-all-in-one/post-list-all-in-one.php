@@ -17,23 +17,28 @@ $posts = $o['posts'];
     <?php
     if (count($posts)) {
         foreach ($posts as $post) {
-            $_user = user($post->userIdx);
     ?>
             <div class="w-100 p-2 rounded mt-3" style="background-color: #f4f4f4;">
                 <div class="post-view-header d-flex">
                     <div>
-                        <?php include widget('avatar/avatar', ['photoUrl' => $_user->photoUrl]) ?>
+                        <?php include widget('avatar/avatar', ['photoUrl' => $post->user()->photoUrl, 'size' => 55]) ?>
                     </div>
                     <a href="<?= $post->url ?>">
-                        <div class="font-weight-bold">No. <?= $post->idx ?> <?= $post->title ?></div>
+                        <div class="font-weight-bold align-middle">
+                            <h5 class="d-inline-block m-0">
+                                <span class="mr-2"><small>No. <?= $post->idx ?></small></span>
+                                <?= $post->title ?>
+                            </h5>
+                        </div>
                         <div class="mt-2">
-                            [<?= category($post->categoryIdx)->id ?>] -
+                            <span class="font-weight-bold"><?= $post->user()->nicknameOrName ?></span> -
+                            <span class="badge badge-secondary text-uppercase"><?= category($post->categoryIdx)->id ?></span> -
                             <?= ln('no_of_views') ?>: <?= $post->noOfViews ?> -
                             <?= $post->shortDate ?>
                         </div>
                     </a>
                 </div>
-                <div class="content p-2 bg-white">
+                <div class="content mt-1 p-2 bg-white">
                     <?= nl2br($post->content) ?>
                 </div>
                 <div class="files">

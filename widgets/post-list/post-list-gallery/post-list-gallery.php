@@ -10,5 +10,5 @@ $posts = $o['posts'];
 
 
 <div class="post-list-gallery">
-  <?php include widget('post/gallery-list-view', ['posts' => $posts, 'normalImageHeight' => 200, 'tallImageHeight' => 350]) ?>
+  <?php include widget('post/gallery-list-view', ['posts' => $posts]) ?>
 </div>

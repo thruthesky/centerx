@@ -19,9 +19,8 @@ $url = $post->url;
 
 <a class="thumbnail-left-title-right" href="<?= $url ?>" style="height: <?= $imageHeight ?>;">
   <?php if (!!$src) { ?>
-    <div class="photo" style="height: <?= $imageHeight ?>;">
-      <img src="<?= $src ?>">
-    </div>
+      <img class="photo" src="<?= $src ?>" style="height: <?= $imageHeight ?>;">
+    
   <?php } ?>
   <div class="title">
     <?= $post->title ?>
@@ -41,15 +40,15 @@ $url = $post->url;
     display: block;
     margin-left: 8px;
     padding: .25em;
-    width: 70%;
+    width: 65%;
     /* font-weight: bold; */
     font-size: 1em;
   }
 
-  .thumbnail-left-title-right .photo img {
+  .thumbnail-left-title-right .photo {
     border-radius: 5px;
     display: block;
-    width: 100%;
+    width: 35%;
     height: 100%;
   }
 </style>
