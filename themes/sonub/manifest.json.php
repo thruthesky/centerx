@@ -18,8 +18,6 @@ if ( $icon->exists ) {
     $src = $icon->url;
 }
 
-
-
 ?>{
   "lang": "en",
   "background_color": "<?=$appColor?>",

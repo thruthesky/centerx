@@ -67,8 +67,6 @@ if (!("Notification" in window)) {
 
 // Handle incoming messages
     messaging.onMessage(function(payload) {
-        console.log('onMessage::',payload);
-        // console.log('loginIdx()::',loginIdx());
         const notification = payload.notification;
         const data = payload.data ? payload.data : {};
         let url = null;
