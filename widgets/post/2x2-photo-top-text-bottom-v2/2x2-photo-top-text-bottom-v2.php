@@ -17,7 +17,7 @@ $reminderPost = $o['reminderPost'] ?? null;
 ?>
 
 
-<div class="two-column-story-group-a row">
+<div class="widget-2x2-photo-top-text-bottom-v2 row">
     <div class="column-a col-12 col-lg-7">
         <?php include widget('post/photo-left-bulleted-texts-right', ['post' => $firstStoriesCategory]) ?>
         <div class="my-4">
@@ -28,7 +28,7 @@ $reminderPost = $o['reminderPost'] ?? null;
             </div>
         </div>
     </div>
-    <div class="column-b mt-3 col-12 col-lg-5">
+    <div class="column-b mt-0 mt-md-4 col-12 col-lg-5">
         <?=hook()->run('2x2-photo-top-text-bottom-right')?>
         <?php include widget('post/2x2-photo-top-text-bottom', ['categoryId' => $thirdStoriesCategory, 'imageHeight' => 75]) ?>
         <div class="bottom-stories bg-light p-3 border-radius-md">
