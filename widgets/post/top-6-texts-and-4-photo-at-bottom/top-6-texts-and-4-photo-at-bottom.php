@@ -15,26 +15,13 @@ $secondStoriesOps = [
 ?>
 
 <div class="texts-and-4-photo">
-  <div class="title">
+  <div class="fs-bold">
     <?= (isset($op['title']) && $op['title']) ? $op['title'] : 'This is a sample title.' ?>
   </div>
-  <div class="top">
-    <?php include widget('post/top-6-stories', ['categoryId' => $op['firstCategory'] ?? null]); ?>
+  <div>
+    <?php include widget('post/top-6-post-list', ['categoryId' => $op['firstCategory'] ?? null]); ?>
   </div>
-  <div class="bottom">
-    <?php include widget('post/four-stories-with-thumbnail-inline-text', $secondStoriesOps); ?>
+  <div class="mt-3">
+    <?php include widget('post/2x2-photo-with-inline-text-at-bottom', $secondStoriesOps); ?>
   </div>
 </div>
-
-<style>
-  .texts-and-4-photo .title {
-    font-weight: bold;
-  }
-
-  .texts-and-4-photo .top {
-    margin-top: 4px;
-  }
-  .texts-and-4-photo .bottom {
-    margin-top: 2px;
-  }
-</style>

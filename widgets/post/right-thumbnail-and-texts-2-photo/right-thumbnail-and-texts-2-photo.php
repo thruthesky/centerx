@@ -24,7 +24,7 @@ if (!isset($secondStoriesOps['imageWidth'])) $secondStoriesOps['imageWidth'] = 1
 
 <div class="right-thumbnail-and-texts-2-photo">
   <div class="top">
-    <?php include widget('post/right-thumbnail-with-4-stories', ['post' => $primaryPost, 'displayNumber' => true ]); ?>
+    <?php include widget('post/right-thumbnail-with-4-texts-at-bottom', ['post' => $primaryPost, 'displayNumber' => true ]); ?>
   </div>
   <div class="bottom">
   <?php include widget('post/two-photos-with-inline-text-at-bottom', $secondStoriesOps); ?>

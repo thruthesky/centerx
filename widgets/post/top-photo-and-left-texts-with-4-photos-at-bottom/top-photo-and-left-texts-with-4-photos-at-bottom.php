@@ -8,23 +8,22 @@
 
 $op = getWidgetOptions();
 
+$title = $op['title'] ?? 'This is a sample title';
 $imageHeight = $op['imageHeight'] ?? 150;
 $imageWidth = $op['imageWidth'] ?? 150;
 ?>
 
 
-<div class="photos-and-texts-2-stories">
-  <?php if (isset($op['title']) && $op['title']) { ?>
-    <div class="section-title">
-      <?= $op['title'] ?>
-    </div>
-  <?php } ?>
+<div class="top-photo-and-left-texts-with-4-photos-at-bottom">
+  <h5 class="text-center">
+    <?= $title ?>
+  </h4>
 
   <div class="first-story">
-    <?php include widget('post/left-photo-with-stories', ['categoryId' => $op['firstCategoryId'] ?? null]); ?>
+    <?php include widget('post/left-photo-with-texts-at-right', ['categoryId' => $op['firstCategoryId'] ?? null]); ?>
   </div>
 
-  <div class="second-story">
+  <div class="posts d-flex mt-2 w-100">
     <?php
     if (isset($op['secondCategoryId'])) {
       $posts = post()->latest(categoryId: $op['secondCategoryId'], limit: 4);
@@ -35,7 +34,7 @@ $imageWidth = $op['imageWidth'] ?? 150;
 
     for ($i = 0; $i < count($posts); $i++) {
     ?>
-      <div class="story story-<?= $i ?>">
+      <div class="post w-25 post-<?= $i ?>">
         <?php include widget('post/photo-top-text-bottom', [
           'post' => $posts[$i],
           'imageHeight' => $imageHeight,
@@ -47,27 +46,12 @@ $imageWidth = $op['imageWidth'] ?? 150;
 </div>
 
 <style>
-  .photos-and-texts-2-stories .section-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .photos-and-texts-2-stories .second-story {
-    margin-top: 8px;
-    display: flex;
-  }
-
-  .photos-and-texts-2-stories .second-story .story {
-    width: 25%;
-  }
-
-  .photos-and-texts-2-stories .second-story .story-1 {
+  .top-photo-and-left-texts-with-4-photos-at-bottom .posts .post-1 {
     margin-right: 4px;
     margin-left: 8px;
   }
 
-  .photos-and-texts-2-stories .second-story .story-2 {
+  .top-photo-and-left-texts-with-4-photos-at-bottom .posts .post-2 {
     margin-right: 8px;
     margin-left: 4px;
   }

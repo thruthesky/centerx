@@ -6,37 +6,37 @@
  */
 $op = getWidgetOptions();
 ?>
-<div class="photos-and-texts-3-stories">
-    <div class="first-story">
-        <div class="left">
+<div class="two-photo-with-texts-middle-and-3-photo-at-bottom">
+    <div class="first-story d-flex mt-1">
+        <div class="left w-50 mr-1">
             <?php
             include widget('post/photo-with-inline-text-at-bottom', ['post' => $op['firstStories'][0] ?? null]);
             ?>
         </div>
-        <div class="right">
+        <div class="right w-50 ml-1">
             <?php
             include widget('post/photo-with-inline-text-at-bottom', ['post' =>  $op['firstStories'][1] ?? null]);
             ?>
         </div>
     </div>
 
-    <div class="second-story">
+    <div class="second-story mt-1">
         <?php if (isset($op['secondStories']) && isset($op['secondStories']['title'])) { ?><div class="title"><?= $op['secondStories']['title'] ?></div><?php } ?>
         <?php include widget('post-latest/post-latest-default', $op['secondStories'] ?? []) ?>
     </div>
 
-    <div class="third-story">
-        <div class="left">
+    <div class="third-story d-flex mt-1">
+        <div class="left mr-1">
             <?php
             include widget('post/photo-top-text-bottom', ['post' => $op['thirdStories'][0] ?? null]);
             ?>
         </div>
-        <div class="middle">
+        <div class="middle mx-1">
             <?php
             include widget('post/photo-top-text-bottom', ['post' => $op['thirdStories'][1] ?? null]);
             ?>
         </div>
-        <div class="right">
+        <div class="right ml-1">
             <?php
             include widget('post/photo-top-text-bottom', ['post' => $op['thirdStories'][2] ?? null]);
             ?>
@@ -44,39 +44,9 @@ $op = getWidgetOptions();
     </div>
 </div>
 <style>
-    .photos-and-texts-3-stories .first-story {
-        display: flex;
-        margin-top: 1em;
-    }
-
-    .photos-and-texts-3-stories .first-story .left {
-        margin-right: 4px;
-        width: 50%;
-    }
-
-    .photos-and-texts-3-stories .first-story .right {
-        margin-left: 4px;
-        width: 50%;
-    }
-
-    .photos-and-texts-3-stories .third-story {
-        display: flex;
-        margin-top: 8px;
-    }
-
-    .photos-and-texts-3-stories .third-story .left {
-        margin-right: 4px;
-        width: 33%;
-    }
-
-    .photos-and-texts-3-stories .third-story .middle {
-        margin-left: 2px;
-        margin-right: 2px;
-        width: 33%;
-    }
-
-    .photos-and-texts-3-stories .third-story .right {
-        margin-left: 4px;
+    .two-photo-with-texts-middle-and-3-photo-at-bottom .third-story .left,
+    .two-photo-with-texts-middle-and-3-photo-at-bottom .third-story .middle,
+    .two-photo-with-texts-middle-and-3-photo-at-bottom .third-story .right {
         width: 33%;
     }
 </style>

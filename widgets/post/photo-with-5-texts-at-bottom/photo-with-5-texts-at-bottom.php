@@ -18,7 +18,7 @@ $imageHeight = $op['imageHeight'] ?? 160;
 $imageWidth = $op['imageWidth'] ?? 100;
 ?>
 
-<div class="photo-with-5-stories">
+<div class="photo-with-5-texts-at-bottom d-block">
 
   <div class="top">
     <?php include widget('post/photo-top-text-bottom', [
@@ -28,31 +28,16 @@ $imageWidth = $op['imageWidth'] ?? 100;
     ]); ?>
   </div>
 
-  <div class="stories">
+  <div class="posts mt-2">
     <?php foreach ($posts as $post) { ?>
-      <div><a href="<?= $post->url ?>"><?= $post->title ?></a></div>
+      <div class="mb-2 text-truncate"><a href="<?= $post->url ?>"><?= $post->title ?></a></div>
     <?php } ?>
   </div>
 </div>
 
 
 <style>
-  .photo-with-5-stories {
-    display: block;
-  }
-
-  .photo-with-5-stories .stories {
-    margin-top: 3px;
-  }
-
-  .photo-with-5-stories .stories div {
-    margin-bottom: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .photo-with-5-stories .stories div a {
+  .photo-with-5-texts-at-bottom .posts div a {
     text-decoration: none;
     color: black;
   }
