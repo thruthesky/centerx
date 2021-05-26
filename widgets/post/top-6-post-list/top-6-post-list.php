@@ -24,7 +24,7 @@ $posts = array_merge($posts, postMockData($lack));
   $_num = 0;
   foreach ($posts as $post) {
     $_num++; ?>
-    <a href="<?= $post->url ?>">
+    <a class="d-block text-truncate" href="<?= $post->url ?>">
       <span class="number <?= $_num < 4 ? 'blue' : ''?>"><?= $_num ?></span>
       <span><?= $post->title ?></span>
     </a>
@@ -40,7 +40,6 @@ $posts = array_merge($posts, postMockData($lack));
   .top-6-post-list a {
     text-decoration: none;
     color: black;
-    white-space: nowrap;
   }
 
   .top-6-post-list a .blue {

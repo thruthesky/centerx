@@ -31,7 +31,7 @@ $imageWidth = $op['imageWidth'] ?? 50;
     foreach ($posts as $post) {
       $_i++;
     ?>
-      <div class="mt-2 text-truncate">
+      <div class="mt-1 text-truncate">
         <a href="<?= $post->url ?>">
           <?= $displayNumber ? '<span class="number mr-2">' . ($_i) . '</span>' : '' ?><?= $post->title ?>
         </a>
