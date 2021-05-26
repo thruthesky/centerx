@@ -43,11 +43,6 @@ $reminderPost = $o['reminderPost'] ?? null;
     }
 
     @media all and (max-width: 768px) {
-<<<<<<< HEAD
-
-        .photo-left-bulleted-texts-right .bottom li:nth-child(5),
-=======
->>>>>>> 581cb197d8acec67dcde2dcb5cee02826a8b30f3
         .photo-left-bulleted-texts-right .bottom li:nth-child(6),
         .photo-left-bulleted-texts-right .bottom li:nth-child(7) {
             display: none;
