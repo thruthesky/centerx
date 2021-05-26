@@ -66,7 +66,7 @@
         <b-card no-body>
             <b-tabs card>
                 <?php foreach($forecast as $d => $day) { ?>
-                    <b-tab class="p-0" title="<?=$d?>">
+                    <b-tab class="p-0 overflow-auto" title="<?=$d?>">
                         <canvas id="<?=$d?>" ></canvas>
                         <div class="d-flex justify-content-between mb-3 text-center fs-xs">
                             <?php

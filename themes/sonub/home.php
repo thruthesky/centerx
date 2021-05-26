@@ -87,7 +87,7 @@ include widget('post/photos-and-texts-3-stories', [
 ?>
 
 
-<?php //include widget('weather/openweathermapforecast') ?>
+<?php include widget('weather/openweathermapforecast') ?>
 
 
 
