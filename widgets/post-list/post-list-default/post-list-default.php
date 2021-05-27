@@ -27,7 +27,7 @@ if (empty($posts)) return include widget('post-list/empty-post-list');
             <div class="d-flex">
                 <?php include widget('user/user-avatar', ['photoUrl' => $user->shortProfile()['photoUrl'], 'size' => '50']) ?>
                 <a href="<?=postViewUrl($post)?>" style="text-decoration: none">
-                    <div class="bold">No. <?= $post->idx ?> -
+                    <div class="bold">No. <?= $post->idx ?> • 
                         <?php
                         if ($post->isPrivate) {
                             if ($post->userIdx == login()->idx || $post->otherUserIdx == login()->idx) {
@@ -41,7 +41,9 @@ if (empty($posts)) return include widget('post-list/empty-post-list');
                     <div class="mt-1 text-muted">
                         <?= $_category ?>
                         <?= $post->subcategory ? "<span class='badge badge-info'> {$post->subcategory} </span>" : "" ?>
-                        [<?= $post->categoryId() ?>] - <?= ln('no_of_views') ?>: <?= $post->noOfViews ?> - <?= $post->shortDate ?>
+                        <span class="badge badge-info"><?= $post->categoryId() ?></span> • 
+                        <?= ln('no_of_views') ?>: <?= $post->noOfViews ?> • 
+                        <?= $post->shortDate ?>
                     </div>
                 </a>
             </div>

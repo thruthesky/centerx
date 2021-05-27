@@ -21,7 +21,7 @@ $post = $o['post'];
             <?php } ?>
         </div>
         <div class="text-muted">
-            <?= ln('date') ?>: <?= $post->shortDate ?>
+            <?= ln('date') ?>: <?= $post->shortDate ?> • 
             <?= ln('no_of_views') ?>: <?= $post->noOfViews ?>
         </div>
     </div>
