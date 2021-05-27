@@ -15,6 +15,11 @@
 </div>
 
 
+<div class="d-none m-2" :class="{ 'd-block': showMobileMenu == false }">
+    <?php include theme()->file('parts/search-box') ?>
+</div>
+
+
 <div class="d-none" :class="{ 'd-block': showMobileMenu }">
     <?php include theme()->file('pages/mobile-menu'); ?>
 </div>
