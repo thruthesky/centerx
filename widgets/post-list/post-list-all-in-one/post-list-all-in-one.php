@@ -9,7 +9,7 @@ $posts = $o['posts'];
 
 
 ?>
-<div class="d-none" :class="{'d-block': showPostForm}">
+<div class="d-none border-bottom border-top my-3" :class="{'d-block': showPostForm}">
     <?php include widget('post-edit/post-edit-default'); ?>
 </div>
 <section class="post-list-all-in-one">
