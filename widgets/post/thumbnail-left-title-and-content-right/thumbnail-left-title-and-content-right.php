@@ -17,36 +17,25 @@ if (!empty($post->files())) $src = thumbnailUrl($post->files()[0]->idx, height: 
 $url = $post->url;
 ?>
 
-<div class="thumbnail-left-title-and-content-right">
-  <a class="body" href="<?= $url ?>" style="height: <?= $imageHeight ?>px">
-    <?php if ($src) { ?>
-      <img class="mr-3" class="photo" src="<?= $src ?>">
-    <?php } ?>
-    <div class="title-content">
-      <div class="title font-weight-bold">
-        <?= $post->title ?>
-      </div>
-      <div class="content">
-        <?= $post->content ?>
-      </div>
+<a class="thumbnail-left-title-and-content-right" href="<?= $url ?>" style="height: <?= $imageHeight ?>px">
+  <?php if ($src) { ?>
+    <img class="mr-3 rounded" class="photo" src="<?= $src ?>">
+  <?php } ?>
+  <div class="title-content">
+    <div class="title font-weight-bold">
+      <?= $post->title ?>
     </div>
-  </a>
-  <div class="meta">
-    <div><?= category($post->categoryIdx)->id ?></div>
-    <?= ln('no_of_views') ?>: <?= $post->noOfViews ?>
-    <div><?= $post->shortDate ?></div>
+    <div class="content">
+      <?= $post->content ?>
+    </div>
   </div>
-</div>
+</a>
 
 <style>
-  .thumbnail-left-title-and-content-right,
-  .thumbnail-left-title-and-content-right .body {
+  .thumbnail-left-title-and-content-right {
     display: flex;
     max-height: 6em;
     width: 100%;
-  }
-
-  .thumbnail-left-title-and-content-right .body {
     text-decoration: none;
     color: black;
   }
@@ -58,19 +47,19 @@ $url = $post->url;
     text-align: right;
   }
 
-  .thumbnail-left-title-and-content-right .body .title-content {
+  .thumbnail-left-title-and-content-right .title-content {
     height: 100%;
     width: 100%;
     overflow: hidden;
   }
 
 
-  .thumbnail-left-title-and-content-right .body .title-content .title {
+  .thumbnail-left-title-and-content-right .title-content .title {
     overflow: hidden;
   }
 
-  .thumbnail-left-title-and-content-right .body .title-content .title,
-  .thumbnail-left-title-and-content-right .body .title-content .content {
+  .thumbnail-left-title-and-content-right .title-content .title,
+  .thumbnail-left-title-and-content-right .title-content .content {
     height: 3em;
   }
 </style>

@@ -6,5 +6,5 @@
 $o = getWidgetOptions();
 $user = $o['user'] ?? user();
 
-include widget('avatar/avatar', ['photoUrl' => $user->photoUrl]);
+include widget('avatar/avatar', ['photoUrl' => $user->photoUrl, 'size' => $o['size'] ?? null]);
 

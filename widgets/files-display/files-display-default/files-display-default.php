@@ -11,8 +11,8 @@ $files =  $o['files'];
 $fileCount = count($files);
 
 if ($fileCount) { ?>
-    <hr class="mb-0">
-    <div class="text-muted ml-1"><small><?= ln('attached_files') ?></small></div>
+    <hr class="my-0">
+    <div class="text-muted ml-1 my-2"><small><?= ln('attached_files') ?></small></div>
     <div class="container photos" style="border-radius: 12px">
         <div class="row">
             <?php

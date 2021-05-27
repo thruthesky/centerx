@@ -11,5 +11,5 @@ if ( isset($o['photoUrl']) ) {
 }
 $size = $o['size'] ?? '50';
 ?>
-<img class="mr-3" style="height: <?= $size ?>px !important; width: <?= $size ?>px !important; border-radius: 50%;" src="<?= $photoUrl ?>" />
+<img class="mr-3 shadow-sm" style="height: <?= $size ?>px !important; width: <?= $size ?>px !important; border-radius: 50%;" src="<?= $photoUrl ?>" />
 
