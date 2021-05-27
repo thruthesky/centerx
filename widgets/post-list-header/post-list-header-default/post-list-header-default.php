@@ -9,7 +9,7 @@ $category = $o['category'];
 ?>
 
 
-<section class="post-list-header-default px-2 px-lg-0">
+<section class="post-list-header-default p-2 px-lg-0">
     <div class="d-flex justify-content-end flex-wrap">
         <?php if ($category->exists) { ?>
             <div class="px-2">
@@ -23,7 +23,7 @@ $category = $o['category'];
             </div>
         <?php } ?>
         <span class="d-md-block flex-grow-1"></span>
-        <div class="d-flex mr-2">
+        <div class="d-flex align-items-center mr-2">
             <span class="mr-2">
                 <?php include widget('push-notification/push-notification-icon', ['topic' => NOTIFY_POST . $category->id, 'label' => ln('post')]) ?>
             </span>
