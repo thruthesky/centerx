@@ -40,12 +40,12 @@ Vue.component('comment-form', {
         '     </textarea>' +
         '       <div class="d-flex flex-column" v-if="!commenting && (form.content || uploadedFiles.length)">' +
         '         <button class="btn btn-primary ml-2" type="submit" v-if="!commenting">{{ textSubmit }}</button>' +
-        '         <button class="btn btn-link ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">{{ textCancel }}</button>' +
+        '         <button class="btn btn-warning mt-2 ml-2" type="button" v-on:click="onCommentEditCancelButtonClick()" v-if="commentIdx || parentIdx !== rootIdx">{{ textCancel }}</button>' +
         '       </div>' +
         '       <div class="text-center" v-if="commenting"><b-spinner class="ml-2" variant="success" type="grow" label="Spinning"></b-spinner></div>' +
         '   </div>' +
         '</section>' +
-        '   <progress-bar class="mt-2" :progress="percent"></progress-bar>' +
+        '   <progress-bar class="mt-2" :progress="percent" v-if="percent > 0"></progress-bar>' +
         '   <div class="mt-2 row photos" v-if="uploadedFiles.length">' +
         '       <div class="col-3 photo" v-for="file in uploadedFiles" :key="file.idx">' +
         '           <div clas="position-relative" style="height: 200px">' +
@@ -70,6 +70,7 @@ Vue.component('comment-form', {
                     console.log("success: res.path: ", res, res.path);
                     self.form.files = addByComma(self.form.files, res.idx);
                     self.uploadedFiles.push(res);
+                    self.percent = 0;
                 },
                 alert,
                 function(p) {

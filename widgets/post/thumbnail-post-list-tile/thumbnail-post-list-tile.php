@@ -35,7 +35,7 @@ $url = $post->url;
   <div class="meta">
     <strong><?= $post->user()->nicknameOrName ?></strong>
     <div>
-      <span class="badge badge-dark inline-block"><?= category($post->categoryIdx)->id ?></span>
+      <span class="badge badge-info inline-block"><?= category($post->categoryIdx)->id ?></span>
     </div>
     <?= ln('no_of_views') ?>: <?= $post->noOfViews ?>
     <div><?= $post->shortDate ?></div>
