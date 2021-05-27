@@ -16,8 +16,8 @@ if ( $post->hasError ) {
 $comments = $post->comments();
 ?>
     <section class="post-view-default p-3 mb-3 rounded" style="background-color: #f4f4f4;">
-        <div class="pb-1" style="word-break: normal">
-            <h4><?= $post->title ?></h4>
+        <div class="pb-3" style="word-break: normal">
+            <h4 class="m-0"><?= $post->title ?></h4>
         </div>
         <?php include widget('post-meta/post-meta-default', ['post' => $post]) ?>
         <section class="post-body">
