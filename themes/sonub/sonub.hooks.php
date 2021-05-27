@@ -40,3 +40,8 @@ hook()->add(HOOK_POST_LIST_ROW, function(int $rowNo, array $posts) {
         // This is the last line.
     }
 });
+
+
+hook()->add('2x2-photo-top-text-bottom-right', function() {
+    include widget('advertisement/banner', ['type' => AD_WING, 'place' => 'main', 'class' => 'd-lg-none']);
+});

@@ -13,13 +13,12 @@ if (empty($posts)) $posts = postMockData(10, photo: true);
 
 <div class="gallery-list-view">
   <?php if (count($posts)) { ?>
-    <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "gutter": 10, "percentPosition": true  }'>
-
+    <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "percentPosition": true }'>
       <?php
       foreach ($posts as $post) {
         if (!count($post->files())) continue;
       ?>
-        <div class="grid-item">
+        <div class="grid-item p-2">
           <a href="<?= $post->url ?>">
             <img class="w-100" src="<?= $post->files()[0]->url ?>" alt="">
             <div class="text-truncate"><?= $post->title ?></div>
@@ -34,8 +33,9 @@ if (empty($posts)) $posts = postMockData(10, photo: true);
 
 <style>
   .grid-item {
+    position: relative;
     margin-bottom: 5px;
-    width: 32%;
+    width: 33%;
   }
 
   .grid-item a {
