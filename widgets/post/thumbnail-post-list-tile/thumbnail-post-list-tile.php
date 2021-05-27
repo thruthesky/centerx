@@ -45,6 +45,7 @@ $url = $post->url;
 <style>
   .thumbnail-post-list-tile,
   .thumbnail-post-list-tile .body {
+    overflow: hidden;
     display: flex;
     max-height: 6em;
     width: 100%;
