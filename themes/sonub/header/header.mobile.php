@@ -9,13 +9,12 @@
         <?php if ( admin() ) { ?>
         <a href="/?p=admin.index">관</a>
         <?php } ?>
-        <?php if( str_contains(theme()->pageName(), 'menu')) { ?>
-            <a class="p-2 fs-lg" href="/"><i class="fas fa-times"></i></a>
-        <?php } else { ?>
-            <a class="p-2 fs-lg" href="/?pages.menu"><i class="fas fa-bars"></i></a>
-        <?php } ?>
+        <div class="d-none p-2 fs-lg" :class="{'d-block': showMobileMenu}" href="/" @click="showMobileMenu=false"><i class="fas fa-times"></i></div>
+        <div class="p-2 fs-lg" @click="showMobileMenu=true" v-if="showMobileMenu == false"><i class="fas fa-bars"></i></div>
     </div>
 </div>
 
-<?php
-include theme()->file('pages/menu');
+
+<div class="d-none" :class="{ 'd-block': showMobileMenu }">
+    <?php include theme()->file('pages/mobile-menu'); ?>
+</div>

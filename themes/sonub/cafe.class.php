@@ -112,6 +112,49 @@ class CafeTaxonomy extends CategoryTaxonomy
     ];
 
 
+
+    /**
+     * @var string[][]
+     */
+    public $cafeMenus = [
+        'community' => [
+            'qna' => [
+                'title' => '질문게시판',
+            ],
+            'discussion' => [
+                'title' => '자유게시판',
+            ],
+            'buyandsell' => [
+                'title' => '회원장터',
+            ],
+            'reminder' => [
+                'title' => '공지사항',
+            ],
+        ],
+        'business' => [
+            'job' => [
+                'title' => '구인구직',
+            ],
+            'rent_house' => [
+                'title' => '주택임대',
+            ],
+            'rent_car' => [
+                'title' => '렌트카',
+            ],
+            'im' => [
+                'title' => '이민',
+            ],
+            'real_estate' => [
+                'title' => '부동산',
+            ],
+            'money_exchange' => [
+                'title' => '환전',
+            ]
+        ],
+    ];
+
+
+
     public function __construct(int $idx)
     {
         parent::__construct($idx);

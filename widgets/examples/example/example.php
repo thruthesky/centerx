@@ -31,12 +31,29 @@ Note, `li` tag or its parent tag must have a limited with. It is better to use w
     </div>
 </div>
 
+<hr>
+<h3>.circle</h3>
+<div>
+    <a class="circle red bg-blue" href="#">
+        .circle
+    </a>
+</div>
 
+<hr>
 <h3>.progress-bar</h3>
 
 <div class="progress-bar">
     <div style="width: 50%">50%</div>
 </div>
+
+<hr>
+<h3>progress-bar component</h3>
+
+<progress-bar progress="55.5"></progress-bar>
+<progress-bar class="mt-3 w-50 fs-xxs" progress="55.5"></progress-bar>
+<progress-bar class="mt-3 w-50 fs-xxs" :progress="19 + 55.5"></progress-bar>
+
+<?php js('/etc/js/vue-js-components/progress-bar.js')?>
 
 <hr>
 
