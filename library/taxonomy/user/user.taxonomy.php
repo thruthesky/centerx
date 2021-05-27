@@ -35,6 +35,7 @@
  * @property-read string $plid - pass login
  * @property-read string $ci - pass login
  * @property-read string photoUrl
+ * @property-read int age - user's age
  */
 class UserTaxonomy extends Entity {
 
@@ -66,7 +67,16 @@ class UserTaxonomy extends Entity {
                     return '(No nameOrNickname or Email)';
                 }
             }
-        } else {
+        } else if ( $name == 'age' ) {
+            if ( strlen($this->birthdate) == 6) $birthYear = substr($this->birthdate, 0, 2);
+            else if ( strlen($this->birthdate) == 8) $birthYear = substr($this->birthdate, 2, 2);
+            else return '?';
+
+            if ( $birthYear < 30 ) $birthYear = "20$birthYear";
+            else $birthYear = "19$birthYear";
+            return (date('Y') - $birthYear) + 1;
+        }
+        else {
             return parent::__get($name);
         }
     }

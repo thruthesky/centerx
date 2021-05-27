@@ -1868,6 +1868,12 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 - URL 변수 `p=abc.submit` 과 같이 `.submit` 으로 끝나면, index.php 에 의해서 각 테마의 index.php 를 호출하지 않고, 바로 테마 페이지를 연다.
   즉, 테마 디자인을 생략하고(화면에 출력하지 않고), 곧 바로 테마 스크립트만 실행하는 것이다.
 
+## app.js
+
+- `app.js` 는 Vue.js instance 를 생성하고 관리하는 자바스크립트이다. 기본적으로 `/etc/js/app.js` 에 있는 것을 사용해도 되고, 복잡한 로직이
+  필요하다면, `/etc/js/app.js` 의 것을 각 theme folder 로 복사해서 사용하면 된다.
+  참고로, 웹 사이트에서 사용되는 모든 로직을 이 `app.js` 에 넣어도 되고, 필요한 Vue component 도 같이 넣어도 되고, 따로 분리해서 사용해도 된다.
+
 ## 인라인 스타일 태그와 자바스크립트 태그를 하단으로 이동
 
 - 바디 태그 사이(`<body>...</body>`)에 들어가는 인라인 스타일(`<style>...</style>`)이나 자바스크립트(`<script>...</script>`) 그리고 태그는

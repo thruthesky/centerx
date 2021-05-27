@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @name Default Post List Header
  */
@@ -8,30 +9,32 @@ $category = $o['category'];
 ?>
 
 
-<section class="post-list-header-default px-2 px-lg-0">
-    <div class="d-flex align-items-center p-2">
-
-        <?php if ( $category->exists && $category->subcategories ) { ?>
-            <div class="mr-2"><?=ln('category')?></div>
-            <div>
-                <a class="btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>">All</a>
-                <?php foreach ($category->subcategories as $cat) { ?>
-                    <a class="btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>&subcategory=<?= $cat ?>"><?= $cat ?></a>
+<section class="post-list-header-default p-2 px-lg-0">
+    <div class="d-flex justify-content-end flex-wrap">
+        <?php if ($category->exists) { ?>
+            <div class="px-2">
+                <span class="m-1 text-uppercase font-weight-bold"><?= $category->id ?></span>
+                <?php if ($category->subcategories) { ?>
+                    <a class="m-1 btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>">All</a>
+                    <?php foreach ($category->subcategories as $cat) { ?>
+                        <a class="m-1 btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>&subcategory=<?= $cat ?>"><?= $cat ?></a>
+                    <?php } ?>
                 <?php } ?>
             </div>
         <?php } ?>
-
-        <span class="flex-grow-1"></span>
-        <span class="mr-3">
-            <?php include widget('push-notification/push-notification-icon', [ 'topic' => NOTIFY_POST . $category->id, 'label' => ln('post') ]) ?>
-        </span>
-        <span class="mr-3">
-            <?php include widget('push-notification/push-notification-icon',  [ 'topic' => NOTIFY_COMMENT . $category->id, 'label' => ln('comment') ]) ?>
-        </span>
-
-        <a class="btn btn-sm btn-success" href="<?=postEditUrl(in(CATEGORY_ID), in('subcategory'))?>" <?=hook()->run(HOOK_POST_CREATE_BUTTON_ATTR)?>>
-            <?=ln('post_create')?>
-        </a>
-
+        <span class="d-md-block flex-grow-1"></span>
+        <div class="d-flex align-items-center mr-2 p-1">
+            <span class="mr-2">
+                <?php include widget('push-notification/push-notification-icon', ['topic' => NOTIFY_POST . $category->id, 'label' => ln('post')]) ?>
+            </span>
+            <span>
+                <?php include widget('push-notification/push-notification-icon',  ['topic' => NOTIFY_COMMENT . $category->id, 'label' => ln('comment')]) ?>
+            </span>
+            <span>
+                <a class="btn btn-sm btn-success" href="<?= postEditUrl(in(CATEGORY_ID), in('subcategory')) ?>" <?= hook()->run(HOOK_POST_CREATE_BUTTON_ATTR) ?>>
+                    <?= ln('post_create') ?>
+                </a>
+            </span>
+        </div>
     </div>
 </section>

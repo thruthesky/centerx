@@ -582,6 +582,14 @@ class PostTaxonomy extends Forum {
     public function increaseNoOfViews() {
         parent::update([NO_OF_VIEWS => $this->noOfViews + 1]);
     }
+
+    /**
+     * return the number of login user's posts.
+     * @return int
+     */
+    public function countMine(): int {
+        return $this->count(conds: [USER_IDX => login()->idx, PARENT_IDX => 0, DELETED_AT => 0]);
+    }
 }
 
 

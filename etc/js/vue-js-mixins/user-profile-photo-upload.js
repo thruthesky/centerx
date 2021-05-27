@@ -5,10 +5,12 @@ mixins.push({
         return {
             userProfilePhotoUploadPercentage: 0,
             userProfilePhotoUrl: '',
+            trLoginFirst: '',
         }
     },
     methods: {
         onUserProfilePhotoChange: function(event) {
+            if ( notLoggedIn() ) return alert(this.trLoginFirst);
             if (event.target.files.length === 0) {
                 console.log("User cancelled upload");
                 return;
@@ -25,6 +27,7 @@ mixins.push({
                 },
                 function (res) {
                     self.userProfilePhotoUrl = res.url;
+                    self.userProfilePhotoUploadPercentage = 0;
                 },
                 alert,
                 function (p) {

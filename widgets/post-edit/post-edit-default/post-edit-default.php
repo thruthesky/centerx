@@ -33,7 +33,7 @@ if (in(CATEGORY_ID)) {
             <input type="hidden" name="files" v-model="files">
 
             <div class="category d-flex">
-                <?=hook()->run('post-edit-title') ?? "<h6>Category: {$category->id}</h6>"?>
+                <?=hook()->run('post-edit-title') ?? "<h6>Category: <span class='text-uppercase'>{$category->id}<?span></h6>"?>
                 <span class="flex-grow-1"></span>
                 <?php if ($category->exists && $category->subcategories) { ?>
                     <select class="form-select form-select-lg mt-2" name="subcategory">

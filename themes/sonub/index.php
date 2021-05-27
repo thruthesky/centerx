@@ -30,7 +30,7 @@
             <div class="left-wing">
                 <?php include theme()->file('left'); ?>
             </div>
-            <div class="row">
+            <div class="row mt-2">
                 <div class="col-12 col-md-8 col-lg-9"><?php include theme()->page(); ?></div>
                 <div class="d-none d-md-block col-4 col-lg-3"><?php include theme()->file('right'); ?></div>
             </div>
@@ -82,7 +82,6 @@
 
 <?php js('/etc/js/bootstrap-vue-2.21.2.min.js', 3)?>
 <?php js( 'etc/js/toast.js', 0)?>
-<?php js(theme()->url . 'js/data.js', 3)?>
 <?php js(theme()->url . 'js/app.js', 0)?>
 </body>
 </html>

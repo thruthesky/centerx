@@ -16,8 +16,8 @@ if ( $post->hasError ) {
 $comments = $post->comments();
 ?>
     <section class="post-view-default p-3 mb-3 rounded" style="background-color: #f4f4f4;">
-        <div class="pb-1" style="word-break: normal">
-            <h4><?= $post->title ?></h4>
+        <div class="pb-3" style="word-break: normal">
+            <h4 class="m-0"><?= $post->title ?></h4>
         </div>
         <?php include widget('post-meta/post-meta-default', ['post' => $post]) ?>
         <section class="post-body">
@@ -41,12 +41,12 @@ $comments = $post->comments();
         </div>
 
         <?php if ( $comments ) { ?>
-            <hr class="mb-1">
+            <hr class="mb-2">
             <small class="text-muted"><?= count($comments) . ' ' . ln('comments') ?></small>
             <div class="comments mt-2">
                 <?php foreach ($comments as $comment) {
                     if (!$comment->deletedAt) { ?>
-                        <div class="mt-2 " style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
+                        <div class="mt-3" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                             <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>
                             <!-- comment reply form -->
                             <comment-form root-idx="<?= $post->idx ?>"

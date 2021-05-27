@@ -8,7 +8,7 @@ hook()->add('post-meta-3rd-line', function( PostTaxonomy $post ) {
 
     return <<<EOH
 No. {$post->idx} <span class="badge badge-primary">$countryCode</span>
-<span class="badge badge-dark">{$post->categoryId()}</span>
+<span class="badge badge-info">{$post->categoryId()}</span>
 EOH;
 
 });

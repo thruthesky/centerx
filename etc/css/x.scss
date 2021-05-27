@@ -64,23 +64,27 @@ a:hover {
  *
  */
 
+.fs-xxs {
+  font-size: 8px !important;
+}
+
 .fs-xs {
-  font-size: 11px;
+  font-size: 11px !important;
 }
 .fs-sm {
-  font-size: 13px;
+  font-size: 13px !important;
 }
 .fs-md {
-  font-size: 16px;
+  font-size: 16px !important;
 }
 .fs-lg {
-  font-size: 24px;
+  font-size: 24px !important;
 }
 .fs-xl {
-  font-size: 48px;
+  font-size: 48px !important;
 }
 .fs-xxl {
-  font-size: 96px;
+  font-size: 96px !important;
 }
 
 
@@ -157,6 +161,9 @@ a:hover {
 .opacity-0 {
   opacity: 0;
 }
+.opacity-5 {
+  opacity: .5;
+}
 
 .radius-50 {
   border-radius: 50%;
@@ -166,6 +173,20 @@ a:hover {
 .em {
   font-weight: bold;
 }
+
+// Cover the parent
+.cover {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-size: 100em;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 
 /**
  *
@@ -177,18 +198,21 @@ a:hover {
  *
  */
 
+.pointer {
+  cursor: pointer;
+}
 
 .progress-bar {
   background-color: #d4d4d4;
   border-radius: 13px;
   /* (height of inner div) / 2 + padding */
   padding: 3px;
+  /* By changing the font-size, the height will be changed. */
+  font-size: 12px;
   div {
     /* Change width by Javascript */
     width: 25%;
     border-radius: 10px;
-    /* By changing the font-size, the height will be changed. */
-    font-size: 12px;
     background-color: #0037ff;
   }
 }
@@ -205,4 +229,25 @@ ul.ellipsis li {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fafafa;
+  width: 100px;
+  height: 100px;
+  border-radius:50%;
+  -moz-border-radius:50%;
+  -webkit-border-radius:50%;
+}
+
+.no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+}
+.no-gutters > .col, .no-gutters > [class*="col-"] {
+  padding-right: 0;
+  padding-left: 0;
 }

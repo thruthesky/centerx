@@ -60,17 +60,16 @@ if ( $ad_type == AD_TOP ) {
         }
         echo '</div>';
     }
-
 } else if ( $ad_type == AD_POST_LIST_SQUARE ) {
     $rows = db()->rows(advSql($ad_type, $place));
     if ( $rows ) {
         ?>
-        <div class="mx-2 mx-md-2">
+        <div class="ad-post-list-square mx-0 mx-md-2">
             <div class="row">
                 <?php foreach($rows as $row) {
                     $post = post($row['postIdx']);
                     $file = $post->fileByCode( $ad_type );  ?>
-                    <div class="col-3 px-1 mb-2"><img src="<?=$file->url?>"></div>
+                    <div class="col-4 col-lg-3 px-1 mb-1 mb-lg-2"><img class="w-100" src="<?=$file->url?>"></div>
                 <?php } ?>
             </div>
         </div>

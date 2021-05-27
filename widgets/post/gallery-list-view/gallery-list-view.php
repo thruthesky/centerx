@@ -20,7 +20,7 @@ if (empty($posts)) $posts = postMockData(10, photo: true);
       ?>
         <div class="grid-item p-2">
           <a href="<?= $post->url ?>">
-            <img class="w-100" src="<?= $post->files()[0]->url ?>" alt="">
+            <img class="w-100 rounded" src="<?= $post->files()[0]->url ?>" alt="">
             <div class="text-truncate"><?= $post->title ?></div>
           </a>
         </div>

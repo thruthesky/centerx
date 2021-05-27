@@ -1,8 +1,12 @@
 
 const app = new Vue({
     el: '#app',
-    data: data,
+    data:  {
+        showMobileMenu: false,
+        loggedIn: loggedIn(),
+    },
     mixins: mixins,
-    methods: {}
+    methods: {
+    }
 });
 
