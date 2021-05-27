@@ -43,7 +43,7 @@ $comments = $post->comments();
             <div class="comments mt-2">
                 <?php foreach ($comments as $comment) {
                     if (!$comment->deletedAt) { ?>
-                        <div class="mt-2" style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
+                        <div class="mt-2 " style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
                             <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>
                             <!-- comment reply form -->
                             <comment-form root-idx="<?= $post->idx ?>"

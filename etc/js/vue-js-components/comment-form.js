@@ -27,7 +27,7 @@ Vue.component('comment-form', {
             }, alert);
         }
     },
-    template: '<form class="mt-2" v-on:submit.prevent="commentFormSubmit">' +
+    template: '<form class="mt-2 mb-0" v-on:submit.prevent="commentFormSubmit">' +
         '<input type="hidden" name="files" v-model="form.files">' +
         '<section class="d-flex">' +
         '   <div class="position-relative overflow-hidden" style="min-width: 32px">' +
@@ -46,7 +46,7 @@ Vue.component('comment-form', {
         '   </div>' +
         '</section>' +
         '   <progress-bar class="mt-2" :progress="percent"></progress-bar>' +
-        '   <div class="mt-2 row photos">' +
+        '   <div class="mt-2 row photos" v-if="uploadedFiles.length">' +
         '       <div class="col-3 photo" v-for="file in uploadedFiles" :key="file.idx">' +
         '           <div clas="position-relative" style="height: 200px">' +
         '               <img class="h-100 w-100" :src="file.url" style="border-radius: 10px;">' +

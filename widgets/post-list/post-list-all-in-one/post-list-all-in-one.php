@@ -18,7 +18,7 @@ $posts = $o['posts'];
     if (count($posts)) {
         foreach ($posts as $post) {
     ?>
-            <div class="w-100 p-2 rounded mt-3" style="background-color: #f4f4f4;">
+            <div class="w-100 p-3 rounded mt-3" style="background-color: #f4f4f4;">
                 <div class="post-view-header d-flex">
                     <div>
                         <?php include widget('avatar/avatar', ['photoUrl' => $post->user()->photoUrl, 'size' => 55]) ?>
@@ -38,12 +38,14 @@ $posts = $o['posts'];
                         </div>
                     </a>
                 </div>
-                <div class="content mt-1 p-2 bg-white">
+                <div class="content mt-3 p-2 bg-white">
                     <?= nl2br($post->content) ?>
                 </div>
-                <div class="files">
-                    <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
-                </div>
+                <?php if (!empty($post->files())) { ?>
+                    <div class="files mt-3">
+                        <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
+                    </div>
+                <?php } ?>
                 <div class="buttons">
                     <?php include widget('post-buttons/post-buttons-default', ['post' => $post]); ?>
                 </div>
@@ -51,15 +53,23 @@ $posts = $o['posts'];
                     <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $post->idx ?>" text-submit="<?= ln('submit') ?>" text-cancel="<?= ln('cancel') ?>">
                     </comment-form>
                 </div>
-                <div class="comments mt-3">
-                    <?php foreach ($post->comments() as $comment) { ?>
-                        <div class="mb-2 p-1 rounded" style="margin-left: <?= $comment->depth * 16 ?>px; background-color: #e0e0e0;">
-                            <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]); ?>
-                            <comment-form root-idx="<?= $post->idx ?>" parent-idx="<?= $comment->idx ?>" text-submit="<?= ln('submit') ?>" text-cancel="<?= ln('cancel') ?>" v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'">
-                            </comment-form>
-                        </div>
-                    <?php } ?>
-                </div>
+                <?php if (!empty($post->comments())) { ?>
+                    <hr class="mb-1">
+                    <small class="text-muted"><?= count($post->comments()) . ' ' . ln('comments') ?></small>
+                    <div class="comments mt-2">
+                        <?php foreach ($post->comments() as $comment) {
+                            if (!$comment->deletedAt) { ?>
+                                <div class="mt-2 " style="margin-left: <?= ($comment->depth - 1) * 16 ?>px">
+                                    <?php include widget('comment-view/comment-view-default', ['post' => $post, 'comment' => $comment]) ?>
+                                    <!-- comment reply form -->
+                                    <comment-form root-idx="<?= $post->idx ?>" parent-idx='<?= $comment->idx ?>' text-submit="<?= ln('submit') ?>" text-cancel="<?= ln('cancel') ?>" v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'"></comment-form>
+                                </div>
+                        <?php }
+                        } ?>
+                    </div>
+                <?php } else { ?>
+                    <p class="mt-2 mb-0 text-muted"><small><?= ln('no_comments_yet') ?></small></p>
+                <?php } ?>
             </div>
         <?php }
     } else { ?>

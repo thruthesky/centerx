@@ -18,7 +18,7 @@ $comment = $o['comment'];
                 <b><?= $comment->user()->nicknameOrName ?></b>
                 <div class="meta">
                     <small>
-                        No: <?= $comment->idx ?> -
+                        No: <?= $comment->idx ?> - 
                         <?= date('r', $comment->createdAt) ?>
                     </small>
                 </div>
