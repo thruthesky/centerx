@@ -173,8 +173,7 @@ function toast(title, body, buttons) {
           buttons: buttons
         })
   } else {
-    alert(notification.title + "\n" +notification.body);
-    if(url) location.href = url;
+    alert(title + "\n" + body);
   }
 }
 

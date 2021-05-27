@@ -98,16 +98,12 @@
 
     <script>
         later(function(){
-
             let dataset = <?=json_encode($forecastjs)?>;
-            // console.log(dataset);
-
             Object.keys(dataset).forEach(function(key) {
                 loadChart(key, dataset[key]);
             });
 
             function loadChart(id, data) {
-                // console.log(id, data);
                 $color = Math.floor(Math.random() * 8);
                 backgroundColor = ['rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -148,7 +144,6 @@
                         plugins: {
                             datalabels: {
                                 align: 'end',
-                                // anchor: 'end',
                                 font: {
                                     weight: 'bold'
                                 },

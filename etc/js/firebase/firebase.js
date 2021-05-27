@@ -67,8 +67,6 @@ if (!("Notification" in window)) {
 
 // Handle incoming messages
     messaging.onMessage(function(payload) {
-        console.log('onMessage::',payload);
-        // console.log('loginIdx()::',loginIdx());
         const notification = payload.notification;
         const data = payload.data ? payload.data : {};
         let url = null;
@@ -103,34 +101,6 @@ if (!("Notification" in window)) {
                 }
             }
         ]);
-
-        // if (typeof app.toast === "function") {
-        //     app.toast(notification.body,
-        //         {
-        //             title: notification.title,
-        //             buttonAlignRight: true,
-        //             position: "bottom-center",
-        //             buttons:
-        //                 [
-        //                     {
-        //                         text: "Close",
-        //                         class: "mr-3",
-        //                         onclick: function() {
-        //                             console.log('Close');
-        //                         }
-        //                     },
-        //                     {
-        //                         text: "Open",
-        //                         onclick: function() {
-        //                             if(url) location.href = url;
-        //                         }
-        //                     }
-        //                 ]
-        //         })
-        // } else {
-        //     alert(notification.title + "\n" +notification.body);
-        //     if(url) location.href = url;
-        // }
 
     });
 }
