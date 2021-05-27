@@ -12,7 +12,7 @@ $category = $o['category'];
 <section class="post-list-header-default px-2 px-lg-0">
     <div class="d-flex justify-content-end flex-wrap">
         <?php if ($category->exists) { ?>
-            <div>
+            <div class="px-2">
                 <span class="mr-2 text-uppercase font-weight-bold"><?= $category->id ?></span>
                 <?php if ($category->subcategories) { ?>
                     <a class="mr-2 mb-2 btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>">All</a>
@@ -22,7 +22,7 @@ $category = $o['category'];
                 <?php } ?>
             </div>
         <?php } ?>
-        <span class="flex-grow-1"></span>
+        <span class="d-md-block flex-grow-1"></span>
         <div class="d-flex mr-2">
             <span class="mr-2">
                 <?php include widget('push-notification/push-notification-icon', ['topic' => NOTIFY_POST . $category->id, 'label' => ln('post')]) ?>
