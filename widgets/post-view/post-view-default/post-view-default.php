@@ -2,7 +2,12 @@
 /**
  * @name Default Post View
  */
-$post = post()->current();
+
+$op = getWidgetOptions();
+
+$post = $op['post'];
+// $post = post()->current();
+
 if ( $post->hasError ) {
     $_uri = urldecode($_SERVER['REQUEST_URI']);
     return displayWarning("접속 경로 '$_uri' 에 해당하는 글이 없습니다.");
@@ -10,18 +15,16 @@ if ( $post->hasError ) {
 }
 $comments = $post->comments();
 ?>
-
-
-    <section class="post-view-default p-3 mb-5" style="border-radius: 16px; background-color: #f4f4f4;">
+    <section class="post-view-default p-3 mb-3 rounded" style="background-color: #f4f4f4;">
         <div class="pb-1" style="word-break: normal">
-            <h3><?= $post->title ?></h3>
+            <h4><?= $post->title ?></h4>
         </div>
         <?php include widget('post-meta/post-meta-default', ['post' => $post]) ?>
         <section class="post-body">
-            <div class="content box mt-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
+            <div class="content box my-3" style="white-space: pre-wrap;"><?= $post->content ?></div>
             <!-- FILES -->
             <?php include widget('files-display/files-display-default', ['files' => $post->files()]) ?>
-            <hr class="my-1">
+            <hr class="my-2">
             <!-- BUTTONS -->
             <?php include widget('post-buttons/post-buttons-default', ['post' => $post]); ?>
         </section>

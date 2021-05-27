@@ -7,7 +7,7 @@ $o = getWidgetOptions();
 $posts = $o['posts'];
 ?>
 
-<section class="post-list-text-with-thumbnail px-2 px-lg-0">
+<section class="post-list-text-with-thumbnail px-2 px-lg-0 mb-3">
   <?php
   if (!empty($posts)) {
     foreach ($posts as $post) {

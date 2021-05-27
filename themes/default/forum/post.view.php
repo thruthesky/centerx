@@ -19,7 +19,7 @@ if ( $post->hasError ) {
 }
 
 $category = $post->category();
-include_once widget($category->postViewWidget ? $category->postViewWidget : 'post-view/post-view-default');
+include_once widget($category->postViewWidget ? $category->postViewWidget : 'post-view/post-view-default', ['post' => $post]);
 
 
 if ( $category->listOnView == 'Y' ) {

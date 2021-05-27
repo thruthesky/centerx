@@ -9,7 +9,7 @@ $total = $o['total'];
 if (empty($posts)) return include widget('post-list/empty-post-list');
 ?>
 <?php include_once widget('post-list-reminder/post-list-reminder-default', ['reminders' => $o['reminders']]) ?>
-<section class="post-list-default p-2 px-lg-0">
+<section class="post-list-default px-2 px-lg-0 mb-3">
     <div>
         <?php
         $rowNo = 0;

@@ -9,6 +9,6 @@ $posts = $o['posts'];
 ?>
 
 
-<div class="post-list-gallery">
+<div class="post-list-gallery px-2 px-lg-0 mb-3">
   <?php include widget('post/gallery-list-view', ['posts' => $posts]) ?>
 </div>
