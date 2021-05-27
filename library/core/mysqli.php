@@ -172,17 +172,6 @@ class MySQLiDatabase {
 
 
     /**
-     * @deprecated - Use $this->row();
-     * @param $q
-     * @param string $_ - for backward compatibility.
-     * @return array
-     */
-    public function get_row($q, string $_=''): array {
-        die("Do not use db()->get_row()");
-        return $this->connection->query($q)->fetch_assoc();
-    }
-
-    /**
      * Returns a record.
      *
      * @param string $sql
@@ -195,6 +184,9 @@ class MySQLiDatabase {
 
         try {
             $stmt = $this->connection->prepare($sql);
+            if ( is_bool($stmt) ) {
+                $this->handleError("Connection prepare failed: You may have wrong SQL syntax or wrong fields.", $sql);
+            }
             if ( $values ) {
                 if ( is_array($values[0]) || is_object($values[0]) ) {
                     die("MySQLiDatabase::row() - The first value in \$values is not a scalar! It must be a mistake. Wrong parameter format.");
@@ -311,19 +303,6 @@ class MySQLiDatabase {
             $this->handleError($e->__toString(), $sql);
             return [];
         }
-    }
-
-    /**
-     * alias of column(). for backward compatibility.
-     * @deprecated
-     * @param $q
-     * @return mixed
-     */
-    public function get_var($q): mixed {
-
-        debug_print_backtrace();
-        die("Do not use db()->get_var()");
-        return $this->get_row($q)[0];
     }
 
     /**

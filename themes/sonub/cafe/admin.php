@@ -1,5 +1,6 @@
-<h1><?=ln('cafe_admin')?></h1>
-
+<?php
+    include theme()->file('cafe.admin.menu');
+?>
 <form action="/" method="post">
     <?=hiddens([], 'update', 'cafe.admin.submit', kvs: [IDX => cafe()->idx] )?>
     <div class="form-group">

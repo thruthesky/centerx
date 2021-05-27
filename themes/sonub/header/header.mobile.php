@@ -17,3 +17,5 @@
     </div>
 </div>
 
+<?php
+include theme()->file('pages/menu');
