@@ -9,11 +9,6 @@ if (cafe()->isSubCafe() && cafe()->notExists) {
 
 ?>
 
-<script>
-    later(function() {
-        toast('title', 'body');
-    });
-</script>
 
 <!-- work -->
 <div class="mt-2 mt-lg-0"><?php include widget('post/2x2-photo-top-text-bottom-v2') ?></div>

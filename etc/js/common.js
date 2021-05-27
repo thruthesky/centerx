@@ -149,7 +149,7 @@ function saveToken(token, topic) {
  *
  * @example
  *    toast('title', 'body');
- *    
+ *
  * @example
  *    toast('title', 'body', [{
  *      text: 'Close',

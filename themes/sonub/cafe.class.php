@@ -6,6 +6,7 @@
  * Class Cafe
  *
  * @property-read string $countryCode
+ * @property-read string $domain - cafe id is the cafe domain.
  *
  * @note README 를 참고한다.
  *
@@ -131,11 +132,9 @@ class CafeTaxonomy extends CategoryTaxonomy
      * @return mixed
      */
     public function __get($name): mixed {
-//        if ( $name == 'title' ) {
-//            if ( $this->isMainCafe() ) {
-//                return $this->rootDomainSettings()['name'];
-//            }
-//        }
+        if ( $name == 'domain' ) {
+            return $this->id;
+        }
 
         return parent::__get($name);
 
@@ -291,8 +290,21 @@ class CafeTaxonomy extends CategoryTaxonomy
         return $this->fileByCode('app_icon');
     }
 
+    /**
+     * Returns the file object of the image that is related with the cafe category.
+     * @param string $code
+     * @return FileTaxonomy
+     */
     public function fileByCode(string $code): FileTaxonomy {
         return files()->findOne([TAXONOMY => $this->taxonomy, ENTITY => $this->idx, CODE => $code]);
+    }
+
+    /**
+     * Returns number of tokens.
+     * @return int
+     */
+    public function countTokens(): int {
+        return token()->count(conds: [TOPIC => cafe()->domain]);
     }
 
 }

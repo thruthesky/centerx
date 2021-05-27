@@ -1,8 +1,3 @@
-<div class="bg-dark white">
-    모바일 메뉴입니다.
-</div>
-
-
 
 <div class="d-flex justify-content-center mt-3">
     <div class="position-relative">

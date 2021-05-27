@@ -46,3 +46,18 @@ hook()->add(HOOK_POST_LIST_ROW, function(int $rowNo, array $posts) {
 hook()->add('2x2-photo-top-text-bottom-right', function() {
     include widget('advertisement/banner', ['type' => AD_WING, 'place' => 'main', 'class' => 'd-lg-none']);
 });
+
+
+hook()->add('post-buttons-right-side', function(PostTaxonomy $post) {
+echo <<<EOH
+<div>
+  <b-dropdown size="sm"  variant="link" toggle-class="text-decoration-none" right no-caret>
+    <template #button-content>
+      Cafe Admin
+    </template>
+    <b-dropdown-item href="/?cafe.admin.message&postIdx={$post->idx}">Send push message</b-dropdown-item>
+  </b-dropdown>
+</div>
+EOH;
+
+});
