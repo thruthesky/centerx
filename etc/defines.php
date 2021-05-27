@@ -51,6 +51,7 @@ const CATEGORY_IDX = 'categoryIdx';
 const CATEGORY_ID = 'categoryId';
 const PARENT_IDX = 'parentIdx';
 const ROOT_IDX = 'rootIdx';
+const SEARCH_KEY = 'searchKey';
 
 const USER = 'user';
 const USER_IDX = 'userIdx';

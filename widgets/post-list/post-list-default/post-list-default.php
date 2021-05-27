@@ -26,7 +26,7 @@ if (empty($posts)) return include widget('post-list/empty-post-list');
             <?= hook()->run(HOOK_POST_LIST_ROW, $rowNo, $posts) ?>
             <div class="d-flex">
                 <?php include widget('user/user-avatar', ['photoUrl' => $user->shortProfile()['photoUrl'], 'size' => '50']) ?>
-                <a href="<?=postViewUrl($post)?>" style="text-decoration: none">
+                <a href="<?=postViewUrl($post)?>" <?=hook()->run(HOOK_POST_LIST_TITLE_ATTR, $post)?>>
                     <div class="bold">No. <?= $post->idx ?> • 
                         <?php
                         if ($post->isPrivate) {

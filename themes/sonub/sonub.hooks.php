@@ -61,3 +61,8 @@ echo <<<EOH
 EOH;
 
 });
+
+
+hook()->add(HOOK_POST_LIST_TITLE_ATTR, function($post) {
+    if ( in( SEARCH_KEY ) ) echo "target='_blank'";
+});

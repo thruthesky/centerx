@@ -1,6 +1,6 @@
 <?php
 
-$category = category(in(CATEGORY_ID) ? in(CATEGORY_ID) : 0);
+$category = category(in(CATEGORY_ID) ?? 0);
 
 if ($category->hasError && $category->getError() == e()->entity_not_found) {
     jsAlert('카테고리가 존재하지 않습니다.');
@@ -16,13 +16,16 @@ $posts = post()->search(where: $where, params: $params, page: in('page', 1), lim
 // 글 총(전체) 개수
 $total = post()->count(where: $where, params: $params);
 
-// 공지사항 추출
-$reminders = category(in(CATEGORY_ID))->reminders(in());
 
 
-if ( isset($in['searchKey']) ) saveSearchKeyword($in['searchKey']);
-
-
+// 검색인 경우,
+if ( in(SEARCH_KEY) ) {
+    saveSearchKeyword(in(SEARCH_KEY)); // 검색어 저장
+    $reminders = []; // 공지사항
+} else {
+    // 검색이 아닌 경우,
+    $reminders = category(in(CATEGORY_ID))->reminders(in()); // 공지사항 추출
+}
 
 // Hook for the very top of the post list page.
 hook()->run(HOOK_POST_LIST_TOP);
@@ -32,6 +35,7 @@ hook()->run(HOOK_POST_LIST_TOP);
 $post_list_path = $category->postListWidget ? $category->postListWidget : 'post-list/post-list-default';
 $post_list_top_path = str_replace('.php', '.top.php', get_widget_script_path($post_list_path));
 if ( file_exists($post_list_top_path) ) include_once $post_list_top_path;
+
 
 $post_list_header_path = $category->postListHeaderWidget ? $category->postListHeaderWidget : 'post-list-header/post-list-header-default';
 include_once widget($post_list_header_path, [

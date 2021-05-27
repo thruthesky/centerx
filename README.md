@@ -3757,6 +3757,10 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 
 
+# 팁, 트릭
+
+- 검색 후, 목록에서 글 보기 위해서 글 클릭하면, 새창을 띄워서 글 보여주기.
+  - HOOK_POST_LIST_TITLE_ATTR 훅을 사용해서, searchKey 에 값이 있으면, target=_blank 를 출력하면 된다.
 
 
 # Known Issues

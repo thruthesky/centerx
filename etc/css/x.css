@@ -92,6 +92,15 @@ a:hover {
   font-size: 96px !important;
 }
 
+@media all and (min-width: 992px) {
+  .fs-lg-md {
+    font-size: 16px !important;
+  }
+
+  .fs-lg-lg {
+    font-size: 24px !important;
+  }
+}
 .bold {
   font-weight: bold;
 }
@@ -133,9 +142,6 @@ a:hover {
   background-color: red;
 }
 
-.bg-lightgrey {
-  background-color: lightgrey;
-}
 /**
  *
  * -------------------------------------------------------------------------------------------

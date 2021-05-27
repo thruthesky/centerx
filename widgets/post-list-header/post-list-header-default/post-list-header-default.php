@@ -6,6 +6,8 @@
 $o = getWidgetOptions();
 $category = $o['category'];
 
+// If there is no category like when user search, then just return.
+if ( $category->exists == false ) return;
 ?>
 
 
