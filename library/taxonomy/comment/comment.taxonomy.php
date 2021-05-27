@@ -203,6 +203,16 @@ class CommentTaxonomy extends Forum {
     public function post(): PostTaxonomy {
         return post($this->rootIdx);
     }
+
+    /**
+     * return the number of login user's comments.
+     * @return int
+     */
+    public function countMine(): int {
+        $loginIdx = login()->idx;
+        return $this->count(where: "userIdx=$loginIdx AND parentIdx>0 AND deletedAt=0");
+    }
+
 }
 
 
