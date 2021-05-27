@@ -1,6 +1,43 @@
 <?php
 include theme()->file('cafe.admin.menu');
 
+d(cafe()->domain);
+
+$postIdx = !empty(in('postIdx')) ? in('postIdx') : 0;
+$post = post($postIdx);
+
+$title = in('title', '');
+$body = in('body', '');
+
+if($post->exists()) {
+    $title = $post->title;
+    $body = $post->content;
+}
+
+
+
+if(modeSubmit()) {
+    $click_action = '/' ;
+    $data = [];
+    if($post->exists) {
+        $click_action = $post->url;
+        $data = [
+            'type' => 'post',
+            'postIdx' => $post->idx
+        ];
+    }
+
+    $image_url = cafe()->appIcon()->url ?? '';
+
+    $res = sendMessageToTopic(cafe()->id, in('title', ''), in('body', ''), $click_action, $data, $image_url);
+
+    if($res['name']) {
+        jsAlert("Sending Push Notification Success");
+    }
+}
+
+
+
 ?>
 
 <ul>
@@ -28,15 +65,15 @@ include theme()->file('cafe.admin.menu');
 
 
 <form>
-    @todo if post is selected, then, display original post author, title, content, and input it onto title box and content box.
+    <?=hiddens(mode: 'submit', kvs: ['postIdx'=>in('postIdx'), 'p' => 'cafe.admin.message'])?>
     <div class="form-group">
         <label for="titleBox">Message Title</label>
-        <input type="text" class="form-control" id="titleBox" aria-describedby="input title">
+        <input type="text" class="form-control" id="titleBox" name="title" aria-describedby="input title" value="<?=$title??''?>">
         <small id="titleHelp" class="form-text text-muted">Input title in 20 letters</small>
     </div>
     <div class="form-group">
         <label for="bodyBox">Message Body</label>
-        <input type="text" class="form-control" id="bodyBox">
+        <input type="text" class="form-control" id="bodyBox" name="body" value="<?=$body??''?>">
         <small id="bodyHelp" class="form-text text-muted">Input body in 20 letters</small>
     </div>
 

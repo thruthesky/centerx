@@ -45,7 +45,9 @@
 <?php if ( in('mode') == 'loggedIn' || in('mode') == 'registered' ) {?>
     <script>
         later(function() {
-            saveToken(localStorage.getItem('pushToken'), location.hostname);
+            if(localStorage.getItem('pushToken')) {
+                saveToken(localStorage.getItem('pushToken'), location.hostname);
+            }
         })
     </script>
 <?php } ?>
