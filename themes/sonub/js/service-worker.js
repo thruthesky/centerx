@@ -1,6 +1,3 @@
-
-
-console.log('hi, this is service worker');
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
@@ -45,8 +42,9 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     // Skip cross-origin requests, like those for Google Analytics.
 
-    console.log("event",event);
-    console.log("selft.location.origin",self.location.origin);
+    // console.log("event",event);
+    // console.log("selft.location.origin",self.location.origin);
+
     //if (event.request.url.startsWith(self.location.origin)) {
     //    event.respondWith(
     //        caches.match(event.request).then(cachedResponse => {
