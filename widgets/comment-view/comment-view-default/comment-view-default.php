@@ -18,7 +18,7 @@ $comment = $o['comment'];
             <b><?= $comment->user()->nicknameOrName ?></b>
             <div class="meta text-muted">
                 <small>
-                    No. <?= $comment->idx ?> -
+                    No. <?= $comment->idx ?> • 
                     <?= ln('date') ?>: <?= $post->shortDate ?>
                 </small>
             </div>
