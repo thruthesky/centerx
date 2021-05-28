@@ -21,6 +21,10 @@ class PostRoute {
      * @return array|string
      */
     public function get($in) {
+        if ( isset($in['path']) ) {
+            $arr = explode('/', $in['path']);
+            return post()->getFromPath($arr[3])->response();
+        }
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
         return post($in[IDX])->response();
     }
