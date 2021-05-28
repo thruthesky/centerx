@@ -38,9 +38,9 @@ function isTrue($t, string $msg = '') {
 
 /**
  * Create a test user or login the test user that has just created for the test session.
- * @return UserTaxonomy
+ * @return UserModel
  */
-function createTestUser(): UserTaxonomy {
+function createTestUser(): UserModel {
     $email = 'user-register' . time() . '@test.com';
     $pw = '12345a';
     return user()->loginOrRegister([EMAIL=>$email, PASSWORD=>$pw, 'color' => 'blue']);

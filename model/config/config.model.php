@@ -5,9 +5,9 @@
 /**
  * Class Config
  *
- * There is no `config` taxonomy. Read the readme.
+ * There is no `config` model. Read the readme.
  */
-class ConfigTaxonomy {
+class ConfigModel {
 
 
     /**
@@ -72,29 +72,29 @@ class ConfigTaxonomy {
  * @param string $code
  *  - if $code is set, it returns the value of the config meta.
  * @param mixed|null $default_value
- * @return ConfigTaxonomy|int|string|array|null
+ * @return ConfigModel|int|string|array|null
  *
  * @example
  *  config(POINT_REGISTER, 0)
  *  config()->get(POINT_REGISTER);
  *  d( config(3)->getMetas() );
  */
-function config(string $code='', mixed $default_value=null): ConfigTaxonomy|int|string|array|null
+function config(string $code='', mixed $default_value=null): ConfigModel|int|string|array|null
 {
     if ( $code ) {
         $data = config()->get($code);
         if ( $data === null ) return $default_value;
         else return $data;
     }
-    return new ConfigTaxonomy('config');
+    return new ConfigModel('config');
 }
 
 
 /**
- * @return ConfigTaxonomy
+ * @return ConfigModel
  */
-function adminSettings(): ConfigTaxonomy {
-    return new ConfigTaxonomy('config', ADMIN_SETTINGS);
+function adminSettings(): ConfigModel {
+    return new ConfigModel('config', ADMIN_SETTINGS);
 }
 
 

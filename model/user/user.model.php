@@ -1,9 +1,9 @@
 <?php
 /**
- * @file user.taxonomy.php
- */
-/**
- * Class User
+ * @file user.model.php
+ *
+ * Class UserModel
+ *
  * @property-read string $email
  * @property-read string $password
  * @property-read string $sessionId
@@ -37,7 +37,7 @@
  * @property-read string photoUrl
  * @property-read int age - user's age
  */
-class UserTaxonomy extends Entity {
+class UserModel extends Entity {
 
     public function __construct(int $idx)
     {
@@ -118,7 +118,7 @@ class UserTaxonomy extends Entity {
      * 주의, 이 함수는 회원 가입만 하고, 쿠키에 로그인 정보를 저장하지 않는다. 즉, 회원 가입을 한 후, 별도로 쿠키에 저장을 해야 한다.
      *
      * @param array $in
-     * @return UserTaxonomy
+     * @return self
      */
     public function register(array $in): self {
         $this->resetError();
@@ -144,7 +144,7 @@ class UserTaxonomy extends Entity {
      * 비밀번호 변경
      *
      * @param string $newPassword
-     * @return UserTaxonomy
+     * @return self
      *
      * @example
      *      user()->by('thruthesky@gmail.com')->changePassword('abc123d')
@@ -328,7 +328,7 @@ class UserTaxonomy extends Entity {
      * - If there is no user by email, then error will be set.
      *
      */
-    public function by(int|string $uid): UserTaxonomy {
+    public function by(int|string $uid): self {
         if ( is_int($uid) ) return user($uid);
         return $this->findOne([EMAIL => $uid]);
     }
@@ -336,9 +336,9 @@ class UserTaxonomy extends Entity {
     /**
      * alias of by();
      * @param string $email
-     * @return UserTaxonomy
+     * @return self
      */
-    public function byEmail(string $email): UserTaxonomy {
+    public function byEmail(string $email): self {
         return $this->by($email);
     }
 
@@ -363,11 +363,11 @@ class UserTaxonomy extends Entity {
  *
  * $_COOKIE[SESSION_ID] 에 값이 있으면, 사용자가 로그인을 확인을 해서, 로그인이 맞으면 해당 사용자의 idx 를 기본 사용한다.
  * @param int $idx
- * @return UserTaxonomy
+ * @return UserModel
  */
-function user(int $idx=0): UserTaxonomy
+function user(int $idx=0): UserModel
 {
-    return new UserTaxonomy($idx);
+    return new UserModel($idx);
 }
 
 /**
@@ -381,7 +381,7 @@ function user(int $idx=0): UserTaxonomy
  * 만약, 로그인이 안된 상태에서 이 함수를 호출하면, login()->idx 의 값은 0 이 된다.
  *
  * @param string|null $field
- * @return UserTaxonomy|int|string|array|null
+ * @return UserModel|int|string|array|null
  *
  * Example)
  *  login()->update(['a' => 'apple']);
@@ -394,7 +394,7 @@ function user(int $idx=0): UserTaxonomy
  *  login()->color; // returns color meta also.
  */
 $__login_user_object = user(0); // memory cache
-function login(string $field=null): UserTaxonomy|int|string|array|null {
+function login(string $field=null): UserModel|int|string|array|null {
     global $__login_user_profile, $__login_user_object;
     $profile = $__login_user_profile;
     if ( $field ) {             // Want to get only 1 field?
@@ -409,7 +409,7 @@ function login(string $field=null): UserTaxonomy|int|string|array|null {
         }
     } else {
         if ( $__login_user_object->idx && $__login_user_object->idx == ($profile[IDX] ?? 0) ) return $__login_user_object;
-        $__login_user_object = new UserTaxonomy($profile[IDX] ?? 0);
+        $__login_user_object = new UserModel($profile[IDX] ?? 0);
         return $__login_user_object;
     }
 }

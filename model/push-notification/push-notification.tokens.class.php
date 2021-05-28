@@ -2,12 +2,12 @@
 use Kreait\Firebase\Messaging\MulticastSendReport;
 
 /**
- * Class PushNotificationTokenTaxonomy
+ * Class PushNotificationTokenModel
  *
  * @property-read string $topic
  * @property-read string $token
  */
-class PushNotificationTokenTaxonomy extends Entity {
+class PushNotificationTokenModel extends Entity {
     public function __construct(public int $idx = 0)
     {
         parent::__construct(PUSH_NOTIFICATION_TOKENS, $idx);
@@ -25,10 +25,9 @@ class PushNotificationTokenTaxonomy extends Entity {
      *  $in['token'] = 'token-abc...'
      *  $in['topic'] = 'Apple,Banana,Cherry'
      *
-     * @return PushNotificationTokenTaxonomy[]
+     * @return PushNotificationTokenModel[]
      */
     public function save(array $in): array {
-//        d($_SERVER);
         $token = $in[TOKEN];
         $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
 
@@ -114,12 +113,12 @@ class PushNotificationTokenTaxonomy extends Entity {
 
 /**
  * @param int|string $idx
- * @return PushNotificationTokenTaxonomy
+ * @return PushNotificationTokenModel
  */
-function token(int|string $idx=0): PushNotificationTokenTaxonomy
+function token(int|string $idx=0): PushNotificationTokenModel
 {
-    if ( is_numeric($idx) ) return new PushNotificationTokenTaxonomy($idx);
-    return (new PushNotificationTokenTaxonomy())->findOne([TOKEN => $idx]);
+    if ( is_numeric($idx) ) return new PushNotificationTokenModel($idx);
+    return (new PushNotificationTokenModel())->findOne([TOKEN => $idx]);
 }
 
 function sanitizedInput($in): array {

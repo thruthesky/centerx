@@ -3,7 +3,7 @@
  * @file Country.class.php
  */
 /**
- * Class Country
+ * Class CountryModel
  *
  * @property-read string $CountryNameKR 한글 국가 이름. 예) 아프가니스탄, 대한민국
  * @property-read string $CountryNameEN 영문 국가 이름. 예) Japan, South Korea
@@ -27,7 +27,7 @@
  *
  *
  */
-class CountryTaxonomy extends Entity
+class CountryModel extends Entity
 {
     public string $code;
     public string $city;
@@ -61,9 +61,9 @@ class CountryTaxonomy extends Entity
  *  문자열 값으로 입력되면, 국가 코드 또는 currencyCode 인식해서 현재 entity 에 설정한다.
  *  코드에 맞는 존재하지 않으면 에러가 설정된다.
  * @param bool $currencyCode - true 로 지정되면, 입력된 $idx 를 currencyCode 로 인식해서, currencyCode 와 일치하는 레코드를 찾는다.
- * @return CountryTaxonomy
+ * @return CountryModel
  */
-function country(int|string $idx = 0, bool $currencyCode = false): CountryTaxonomy
+function country(int|string $idx = 0, bool $currencyCode = false): CountryModel
 {
     if (is_string($idx) && strlen($idx) == 2 ) { // 두 자리 코드
         return country()->findOne(['2digitCode' => $idx]);
@@ -71,8 +71,8 @@ function country(int|string $idx = 0, bool $currencyCode = false): CountryTaxono
         if ( $currencyCode ) return country()->findOne(['currencyCode' => $idx]);
         else return country()->findOne(['3digitCode' => $idx]);
     } else {
-        if ( is_numeric($idx) ) return new CountryTaxonomy($idx); // 숫자
-        else return new CountryTaxonomy(0); // 그 외
+        if ( is_numeric($idx) ) return new CountryModel($idx); // 숫자
+        else return new CountryModel(0); // 그 외
     }
 }
 
@@ -87,11 +87,11 @@ function country(int|string $idx = 0, bool $currencyCode = false): CountryTaxono
  * 주의, IP 를 메모리 캐시하여, 동일한 IP 로 여러번 호출해도 한번만 DB 액세스를 한다.
  *
  * @param string|null $ip - the user ip address. if it's empty, then it takes the user's ip address.
- * @return CountryTaxonomy
+ * @return CountryModel
  * @throws \MaxMind\Db\Reader\InvalidDatabaseException
  */
 $__current_country = [];
-function get_current_country(string $ip = null): CountryTaxonomy {
+function get_current_country(string $ip = null): CountryModel {
     global $__current_country;
     if ( isset($__current_country[$ip]) ) return $__current_country[$ip];
 

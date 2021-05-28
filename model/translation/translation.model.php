@@ -1,7 +1,8 @@
 <?php
-
 /**
- * Class Translation
+ * @file translation.model.php
+ *
+ * Class TranslationModel
  *
  * Translation class can be used on both functional(inside PHP) and restful(by API calling).
  *
@@ -46,7 +47,7 @@
  * @property-read string $code
  * @property-read string $text
  */
-class TranslationTaxonomy extends Entity
+class TranslationModel extends Entity
 {
 
     public function __construct(int $idx)
@@ -98,7 +99,7 @@ class TranslationTaxonomy extends Entity
      * @return string
      * @throws \Kreait\Firebase\Exception\DatabaseException
      */
-    public function updateCode($in) {
+    public function updateCode($in):string {
         if ( !isset($in['code']) || empty($in['code']) ) return e()->empty_code;
 
         if ( $in['currentCodeName'] != $in['code'] ) {
@@ -128,7 +129,7 @@ class TranslationTaxonomy extends Entity
      *      [ apple => [ 'en' => 'Apple', 'ko' => '사과' ], banana => ... ]
      * @throws Exception
      */
-    public function load() {
+    public function load():array {
         $rets = [];
         foreach( ids($this->search(order: 'code', by: 'ASC', limit: 1234567)) as $idx ) {
             $tr = translation($idx);
@@ -145,7 +146,7 @@ class TranslationTaxonomy extends Entity
      *    For instance, it will be in the format of
      *      [ en => [ 'apple' => 'Apple', 'banana' => 'Banana', ... ], en => [ 'apple' => 삭과', ... ] ]
      */
-    public function loadByLanguageCode() {
+    public function loadByLanguageCode():array {
         $rets = [];
         foreach( ids($this->search(order: 'code', by: 'ASC', limit: 1234567)) as $idx ) {
             $tr = translation($idx);
@@ -165,9 +166,9 @@ class TranslationTaxonomy extends Entity
      *
      * @param string $language
      * @param string $code
-     * @return mixed|string
+     * @return mixed
      */
-    public function text(string $language, string $code) {
+    public function text(string $language, string $code): mixed {
 
         global $translationCache;
 
@@ -203,11 +204,11 @@ $translationCache = [];
  * Returns Translation instance.
  *
  * @param int $idx
- * @return TranslationTaxonomy
+ * @return TranslationModel
  */
-function translation(int $idx=0): TranslationTaxonomy
+function translation(int $idx=0): TranslationModel
 {
-    return new TranslationTaxonomy($idx);
+    return new TranslationModel($idx);
 }
 
 

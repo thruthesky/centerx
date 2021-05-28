@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Class ShoppingMallOrderTaxonomy
+ * Class ShoppingMallOrderModel
  *
  * @property-read int userIdx
  * @property-read string info
  * @property-read int confirmedAt
  *
  */
-class ShoppingMallOrderTaxonomy extends Entity {
+class ShoppingMallOrderModel extends Entity {
 
 
     public function __construct(int $idx)
@@ -22,7 +22,7 @@ class ShoppingMallOrderTaxonomy extends Entity {
      *
      * @return $this
      */
-    public function pointRestore(): ShoppingMallOrderTaxonomy {
+    public function pointRestore(): ShoppingMallOrderModel {
         // 현재 상품 정보
         $info = json_decode($this->info, true);
         // 현재 상품 주문자
@@ -73,11 +73,11 @@ class ShoppingMallOrderTaxonomy extends Entity {
 
 /**
  * @param int $idx
- * @return ShoppingMallOrderTaxonomy
+ * @return ShoppingMallOrderModel
  */
-function shoppingMallOrder(int $idx=0): ShoppingMallOrderTaxonomy
+function shoppingMallOrder(int $idx=0): ShoppingMallOrderModel
 {
-    return new ShoppingMallOrderTaxonomy($idx);
+    return new ShoppingMallOrderModel($idx);
 }
 
 

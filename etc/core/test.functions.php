@@ -1,20 +1,20 @@
 <?php
 
 // Alias of setUserAsLogin
-function setLogin(int|array $profile): UserTaxonomy {
+function setLogin(int|array $profile): UserModel {
     return setUserAsLogin($profile);
 }
 // Alias of setUserAsLogin
-function loginAs(UserTaxonomy $user): UserTaxonomy {
+function loginAs(UserModel $user): UserModel {
     return setUserAsLogin($user->idx);
 }
 
 // Login any user. It could be root user. Use it only for test.
-function setLoginAny(): UserTaxonomy {
+function setLoginAny(): UserModel {
     $users = user()->search(limit: 1, object: true);
     return setLogin($users[0]->idx);
 }
-function setLogin1stUser(): UserTaxonomy {
+function setLogin1stUser(): UserModel {
     return setLoginAny();
 }
 
@@ -23,9 +23,9 @@ function setLogin1stUser(): UserTaxonomy {
  * 이 함수는 2번째로 마지막에 가입된 사용자로 로그인을 한다.
  * 주의, 로그인을 하므로, setLoginAny() 와 같은 다른 로그인과 같이 쓰면 로그인이 꼬일 수 있다.
  * 두번 째 사용자 객체만 필요하면, getSecondUser() 함수를 사용한다.
- * @return UserTaxonomy
+ * @return UserModel
  */
-function setLogin2ndUser(): UserTaxonomy {
+function setLogin2ndUser(): UserModel {
     $users = user()->search(limit: 2, object: true);
     return setLogin($users[1]->idx);
 }
@@ -33,9 +33,9 @@ function setLogin2ndUser(): UserTaxonomy {
 /**
  * 맨 마지막에 가입한 사용자의 객체를 리턴한다.
  * 테스트에 사용.
- * @return UserTaxonomy
+ * @return UserModel
  */
-function getFirstUser(): UserTaxonomy {
+function getFirstUser(): UserModel {
     $users = user()->search(limit: 1, object: true);
     return $users[0];
 }
@@ -44,9 +44,9 @@ function getFirstUser(): UserTaxonomy {
 /**
  * 맨 마지막에서 두번째(가입한) 사용자의 객체를 리턴한다.
  * 테스트에 사용.
- * @return UserTaxonomy
+ * @return UserModel
  */
-function getSecondUser(): UserTaxonomy {
+function getSecondUser(): UserModel {
     $users = user()->search(limit: 2, object: true);
     return $users[1];
 }
@@ -54,9 +54,9 @@ function getSecondUser(): UserTaxonomy {
 /**
  * 맨 마지막에서 세번째(가입한) 사용자의 객체를 리턴한다.
  * 테스트에 사용.
- * @return UserTaxonomy
+ * @return UserModel
  */
-function getThirdUser(): UserTaxonomy {
+function getThirdUser(): UserModel {
     $users = user()->search(limit: 3, object: true);
     return $users[2];
 }
@@ -69,10 +69,10 @@ function getThirdUser(): UserTaxonomy {
  *
  * password is: 12345a
  *
- * @return UserTaxonomy
+ * @return UserModel
  */
 $__generateUserCount = 0;
-function registerUser(): UserTaxonomy {
+function registerUser(): UserModel {
     global $__generateUserCount;
     $__generateUserCount ++;
     $email = "random-$__generateUserCount-" . time() . "@test.com";
@@ -83,9 +83,9 @@ function registerUser(): UserTaxonomy {
 
 /**
  * Registers with random email and logs into the system.
- * @return UserTaxonomy
+ * @return UserModel
  */
-function registerAndLogin(): UserTaxonomy {
+function registerAndLogin(): UserModel {
     $user = registerUser();
     setLogin($user->idx);
     return $user;
@@ -94,12 +94,12 @@ function registerAndLogin(): UserTaxonomy {
 
 
 
-function createCategory(string $id = null): CategoryTaxonomy {
+function createCategory(string $id = null): CategoryModel {
     return category()->create([ID => $id ?? 'category-test-'. time()]);
 }
 
 
-function createPost(string $categoryId=null, string $title = null, string $content = null, string $files = ''): PostTaxonomy {
+function createPost(string $categoryId=null, string $title = null, string $content = null, string $files = ''): PostModel {
     if (category($categoryId ?? POINT)->exists() == false) category()->create([ID => $categoryId ?? POINT]); // create POINT category if not exists.
     return post()->create([CATEGORY_ID => $categoryId ?? POINT,
         TITLE => $title ?? TITLE,
@@ -108,7 +108,7 @@ function createPost(string $categoryId=null, string $title = null, string $conte
         ]);
 }
 
-function createComment(string $categoryId=null): CommentTaxonomy {
+function createComment(string $categoryId=null): CommentModel {
     if (category($categoryId ?? POINT)->exists() == false) category()->create([ID => $categoryId ?? POINT]); // create POINT category if not exists.
     $post = post()->create([CATEGORY_ID => $categoryId ?? POINT, TITLE => TITLE, CONTENT => CONTENT]);
     return comment()->create([ ROOT_IDX => $post->idx, CONTENT => 'comment content read' ]);
@@ -125,14 +125,14 @@ function createComment(string $categoryId=null): CommentTaxonomy {
  *
  * @param int $limit
  *
- * @return PostTaxonomy[]
+ * @return PostModel[]
  *
  * @attention only the first 5 post has image.
  */
 function postMockData(int $limit = 1, bool $photo = null ): array {
     return post()->first(limit: $limit, photo: $photo);
 }
-function firstPost(bool $photo = true ): PostTaxonomy {
+function firstPost(bool $photo = true ): PostModel {
     $posts = post()->first(photo: $photo);
     if ( empty($posts) ) return post();
     return $posts[0];

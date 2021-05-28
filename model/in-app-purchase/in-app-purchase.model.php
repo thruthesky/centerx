@@ -4,7 +4,7 @@
  */
 use ReceiptValidator\iTunes\Validator as iTunesValidator;
 /**
- * Class InAppPurchase
+ * Class InAppPurchaseModel
  *
  * @property-read int $idx
  * @property-read int $userIdx
@@ -27,7 +27,7 @@ use ReceiptValidator\iTunes\Validator as iTunesValidator;
  * @property-read int $createdAt
  * @property-read int $updatedAt
  */
-class InAppPurchaseTaxonomy extends Entity {
+class InAppPurchaseModel extends Entity {
 
 
     public function __construct(int $idx)
@@ -316,11 +316,10 @@ class InAppPurchaseTaxonomy extends Entity {
 
 /**
  * @param int $idx
- * @return InAppPurchaseTaxonomy
- *
+ * @return InAppPurchaseModel
  *
  */
-function inAppPurchase(int $idx = 0): InAppPurchaseTaxonomy
+function inAppPurchase(int $idx = 0): InAppPurchaseModel
 {
-    return new InAppPurchaseTaxonomy($idx);
+    return new InAppPurchaseModel($idx);
 }

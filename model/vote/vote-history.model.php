@@ -1,16 +1,15 @@
 <?php
 /**
- * @file vote-history.class.php
- */
-/**
- * Class VoteHistory
+ * @file vote-history.model.php
+ *
+ * Class VoteHistoryModel
  *
  * 추천은 글, 코멘트, 쇼핑몰 상품 등 posts 테이블의 글 뿐만아니라, 사용자, 첨부 파일 등에도 할 수 있도록 taxonomy 가 존재한다.
  *
  *
  * @property-read string $choice
  */
-class VoteHistoryTaxonomy extends Entity
+class VoteHistoryModel extends Entity
 {
 
     public function __construct(int $idx)
@@ -25,9 +24,9 @@ class VoteHistoryTaxonomy extends Entity
      * @param $userIdx
      * @param $taxonomy
      * @param $entity
-     * @return VoteHistoryTaxonomy
+     * @return self
      */
-    public function by($userIdx, $taxonomy, $entity) {
+    public function by($userIdx, $taxonomy, $entity): self {
         $idx = db()->column("SELECT idx FROM " . $this->getTable() . " WHERE userIdx=? AND taxonomy=? AND entity=?", $userIdx,$taxonomy,$entity);
         if ( $idx ) return voteHistory($idx);
         else return voteHistory(0);
@@ -41,11 +40,11 @@ class VoteHistoryTaxonomy extends Entity
  *
  *
  * @param int $idx - The `point_histories.idx`.
- * @return VoteHistoryTaxonomy
+ * @return VoteHistoryModel
  */
-function voteHistory(int $idx=0): VoteHistoryTaxonomy
+function voteHistory(int $idx=0): VoteHistoryModel
 {
-    return new VoteHistoryTaxonomy($idx);
+    return new VoteHistoryModel($idx);
 }
 
 

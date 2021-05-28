@@ -1,7 +1,8 @@
 <?php
-
-
-class MessageTaxonomy extends PostTaxonomy
+/**
+ * Class MessageModel
+ */
+class MessageModel extends PostModel
 {
 
     public function __construct(int $idx)
@@ -9,7 +10,7 @@ class MessageTaxonomy extends PostTaxonomy
         parent::__construct($idx);
     }
 
-    public function countInbox() {
+    public function countInbox(): int {
 
         $conds = [
             CATEGORY_IDX => category(MESSAGE_CATEGORY)->idx,
@@ -19,7 +20,7 @@ class MessageTaxonomy extends PostTaxonomy
 
         return $this->count(conds: $conds);
     }
-    public function countNewMessage() {
+    public function countNewMessage(): int {
 
         $conds = [
             CATEGORY_IDX => category(MESSAGE_CATEGORY)->idx,
@@ -53,10 +54,10 @@ class MessageTaxonomy extends PostTaxonomy
 
 /**
  * @param int $idx - 카테고리 번호 또는 문자열.
- * @return MessageTaxonomy
+ * @return MessageModel
  *
  */
-function message(int $idx = 0): MessageTaxonomy
+function message(int $idx = 0): MessageModel
 {
-    return new MessageTaxonomy($idx);
+    return new MessageModel($idx);
 }

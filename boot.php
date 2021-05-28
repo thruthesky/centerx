@@ -17,35 +17,35 @@ require_once ROOT_DIR . 'etc/core/theme.php';
 require_once ROOT_DIR . 'etc/core/mysqli.php';
 
 require_once ROOT_DIR . 'etc/core/entity.php';
-require_once ROOT_DIR . 'model/config/config.taxonomy.php';
-require_once ROOT_DIR . 'model/country/country.taxonomy.php';
-require_once ROOT_DIR . 'model/user/user.taxonomy.php';
-require_once ROOT_DIR . 'model/meta/meta.taxonomy.php';
-require_once ROOT_DIR . 'model/friend/friend.taxonomy.php';
+require_once ROOT_DIR . 'model/config/config.model.php';
+require_once ROOT_DIR . 'model/country/country.model.php';
+require_once ROOT_DIR . 'model/user/user.model.php';
+require_once ROOT_DIR . 'model/meta/meta.model.php';
+require_once ROOT_DIR . 'model/friend/friend.model.php';
 require_once ROOT_DIR . 'model/category/category.model.php';
 require_once ROOT_DIR . 'etc/core/forum.php';
-require_once ROOT_DIR . 'model/post/post.taxonomy.php';
-require_once ROOT_DIR . 'model/comment/comment.taxonomy.php';
+require_once ROOT_DIR . 'model/post/post.model.php';
+require_once ROOT_DIR . 'model/comment/comment.model.php';
 require_once ROOT_DIR . 'model/push-notification/push-notification.tokens.class.php';
 require_once ROOT_DIR . 'model/push-notification/push-notification.class.php';
-require_once ROOT_DIR . 'model/file/file.taxonomy.php';
+require_once ROOT_DIR . 'model/file/file.model.php';
 require_once ROOT_DIR . 'etc/core/error.php';
 require_once ROOT_DIR . 'model/user_activity/user_activity.defines.php';
 require_once ROOT_DIR . 'model/user_activity/user_activity.actions.php';
 require_once ROOT_DIR . 'model/user_activity/user_activity.base.php';
-require_once ROOT_DIR . 'model/user_activity/user_activity.taxonomy.php';
+require_once ROOT_DIR . 'model/user_activity/user_activity.model.php';
 
 
-require_once ROOT_DIR . 'model/message/message.taxonomy.php';
+require_once ROOT_DIR . 'model/message/message.model.php';
 
-require_once ROOT_DIR . 'model/vote/vote-history.taxonomy.php';
-require_once ROOT_DIR . 'model/shopping-mall-order/shopping-mall-order.taxonomy.php';
+require_once ROOT_DIR . 'model/vote/vote-history.model.php';
+require_once ROOT_DIR . 'model/shopping-mall-order/shopping-mall-order.model.php';
 require_once ROOT_DIR . 'model/cache/cache.model.php';
-require_once ROOT_DIR . 'model/translation/translation.taxonomy.php';
+require_once ROOT_DIR . 'model/translation/translation.model.php';
 require_once ROOT_DIR . 'etc/core/firebase.php';
 require_once ROOT_DIR . 'etc/core/test.functions.php';
 require_once ROOT_DIR . 'etc/core/data.php';
-require_once ROOT_DIR . 'model/in-app-purchase/in-app-purchase.taxonomy.php';
+require_once ROOT_DIR . 'model/in-app-purchase/in-app-purchase.model.php';
 require_once ROOT_DIR . 'etc/core/hook.php';
 
 

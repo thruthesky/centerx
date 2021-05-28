@@ -1,9 +1,9 @@
 <?php
 /**
- * @file meta.taxonomy.php
+ * @file meta.model.php
  */
 /**
- * Class MetaTaxonomy
+ * Class MetaModel
  *
  * It automatically serialize and unserialize for non-scalar values. @see tests/basic.meta.test.php for sample code.
  *
@@ -14,7 +14,7 @@
  * @property-read string $code
  * @property-read string $data
  */
-class MetaTaxonomy extends Entity {
+class MetaModel extends Entity {
 
     public function __construct(int $idx)
     {
@@ -245,9 +245,12 @@ class MetaTaxonomy extends Entity {
 
 }
 
-
-function meta(int $idx=0): MetaTaxonomy
+/**
+ * @param int $idx
+ * @return MetaModel
+ */
+function meta(int $idx=0): MetaModel
 {
-    return new MetaTaxonomy($idx);
+    return new MetaModel($idx);
 }
 

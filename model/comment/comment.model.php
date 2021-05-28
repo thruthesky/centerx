@@ -3,9 +3,9 @@
  * @file comment.class.php
  */
 /**
- * Class CommentTaxonomy
+ * Class CommentModel
  *
- * 코멘트는 PostTaxonomy 와 동일한 테이블을 사용한다. 따라서 PostTaxonomy 클래스와 비슷한 부분이 많다.
+ * 코멘트는 PostModel 와 동일한 테이블을 사용한다. 따라서 PostModel 클래스와 비슷한 부분이 많다.
  *
  * @property-read int $rootIdx
  * @property-read int $parentIdx
@@ -18,7 +18,7 @@
  * @property-read int $createdAt
  * @property-read int $deletedAt
  */
-class CommentTaxonomy extends Forum {
+class CommentModel extends Forum {
 
     /**
      * depth 는 재귀적 함수 호출에 의해서 결정되므로, DB 에 없는 필드이다. 따라서 재귀적 함수 호출 후에 설정을 해 주어야 한다.
@@ -131,7 +131,7 @@ class CommentTaxonomy extends Forum {
 
         parent::update($in);
 
-        // 업로드된 파일의 taxonomy 와 enttity 수정
+        // 업로드된 파일의 taxonomy 와 entity 수정
         $this->fixUploadedFiles($in);
 
         return $this;
@@ -198,9 +198,9 @@ class CommentTaxonomy extends Forum {
     /**
      * 현재 코멘트의 (최상위) 글을 객체로 리턴한다.
      *
-     * @return PostTaxonomy
+     * @return PostModel
      */
-    public function post(): PostTaxonomy {
+    public function post(): PostModel {
         return post($this->rootIdx);
     }
 
@@ -217,14 +217,14 @@ class CommentTaxonomy extends Forum {
 
 
 /**
- * Returns CommentTaxonomy instance.
+ * Returns CommentModel instance.
  *
- * @param int $idx - The `idx` is the field of `posts` table. CommentTaxonomy uses the same table of posts.
- * @return CommentTaxonomy
+ * @param int $idx - The `idx` is the field of `posts` table. CommentModel uses the same table of posts.
+ * @return CommentModel
  */
-function comment(int $idx=0): CommentTaxonomy
+function comment(int $idx=0): CommentModel
 {
-    return new CommentTaxonomy($idx);
+    return new CommentModel($idx);
 }
 
 

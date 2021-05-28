@@ -2,11 +2,11 @@
 
 
 /**
- * Class PostTaxonomy
+ * Class PostModel
  *
- * 글을 관리하는 Taxonomy 객체
+ * 글을 관리하는 Model 객체
  *
- * 글을 하나의 객체로 만들 때, new PostTaxonomy(123) 또는 post(123) 과 같이 할 수 있다. 이 때, 해당 글에 대해서만 데이터를 초기화 한다. 이 말은 post(1) 과
+ * 글을 하나의 객체로 만들 때, new PostModel(123) 또는 post(123) 과 같이 할 수 있다. 이 때, 해당 글에 대해서만 데이터를 초기화 한다. 이 말은 post(1) 과
  * 같이 할 때, 글이 저장된 레코드와 메타에는 url 정보가 존재하지 않는데, 처음 객체를 생성하거나 객체에 대한 변경 작업을 할 때, url 값을 초기화 한다.
  * 하지만, 현재 글이 아닌 것, 예를 들면 글 쓴이 정보, 첨부 파일 정보, 코멘트 정보, 카테고리 정보 등등은 초기화를 하지 않는다.
  * 따라서, 그러한 정보를 얻기 위해서는 $post->user(), $post->files(), $post->comments(), $post->category() 와 같은 함수를 호출해서 해당
@@ -31,7 +31,7 @@
  * @property-read int $noOfViews;
  * @property-read string $reminder;
  * @property-read int $listOrder;
- * @property-read FileTaxonomy[] $files;
+ * @property-read FileModel[] $files;
  * @property-read string $path;
  * @property-read string $url;
  * @property-read int $y;
@@ -49,10 +49,10 @@
  * @property-read int $readAt;
  * @property-read int $beginAt;
  * @property-read int $endAt;
- * @property-read CommentTaxonomy[] $comments;
+ * @property-read CommentModel[] $comments;
  * @property-read string $shortDate - 짧은 날짜 표시
  */
-class PostTaxonomy extends Forum {
+class PostModel extends Forum {
 
     public function __construct(int $idx)
     {
@@ -331,7 +331,7 @@ class PostTaxonomy extends Forum {
      *  - false 이면, 사진이 없는 것만,
      *  - 기본 값이 null 인데, 사진이 있든 없든 모두 추출한다.
      *
-     * @return PostTaxonomy[]
+     * @return PostModel[]
      *
      *
      * @example
@@ -395,7 +395,7 @@ class PostTaxonomy extends Forum {
         string $categoryId=null,
         string $countryCode = null,
         int $limit=10,
-        bool $photo = null) {
+        bool $photo = null): array {
         return $this->latest(
             categoryIdx: $categoryIdx,
             categoryId: $categoryId,
@@ -415,7 +415,7 @@ class PostTaxonomy extends Forum {
      * @param string $categoryId
      * @param int $page
      * @param int $limit
-     * @return PostTaxonomy[]
+     * @return PostModel[]
      */
     public function list(string $categoryId, int $page=1, int $limit=10): array
     {
@@ -539,7 +539,7 @@ class PostTaxonomy extends Forum {
      * 참고: getComments() 는 하위 코멘트의 구조만 담고 있다.
      *
      * @param bool $response - false 이면 객체로 리턴. true 이면 배열로 리턴.
-     * @return CommentTaxonomy[]
+     * @return CommentModel[]
      */
     public function comments(bool $response = false): array {
 
@@ -601,12 +601,12 @@ class PostTaxonomy extends Forum {
  *
  *
  * @param int|string $idx - 숫자이면 글번호로 인식. 아니면, 코드로 인식하여 글 객체를 리턴한다.
- * @return PostTaxonomy
+ * @return PostModel
  */
-function post(int|string $idx=0): PostTaxonomy
+function post(int|string $idx=0): PostModel
 {
-    if ( $idx == 0 ) return new PostTaxonomy(0); // 0 이면, 빈 글 객체 리턴.
-    else if ( is_numeric($idx) && $idx > 0 ) return new PostTaxonomy($idx); // 숫자이고 0 보다 크면, 해당 글 객체 리턴.
+    if ( $idx == 0 ) return new PostModel(0); // 0 이면, 빈 글 객체 리턴.
+    else if ( is_numeric($idx) && $idx > 0 ) return new PostModel($idx); // 숫자이고 0 보다 크면, 해당 글 객체 리턴.
     else return postByCode($idx); // 숫자가 아니면, 코드로 인식해서, 해당 글 객체 리턴.
 }
 
@@ -616,9 +616,9 @@ function post(int|string $idx=0): PostTaxonomy
  * 참고, 동일한 코드가 여러개 있다면, 그 중 하나만 리턴한다. 모든 코드의 글을 다 가져오려면, `search` 함수를 사용한다.
  *
  * @param string $code
- * @return PostTaxonomy
+ * @return PostModel
  */
-function postByCode(string $code): PostTaxonomy {
+function postByCode(string $code): PostModel {
     return post()->findOne(['code' => $code]);
 }
 

@@ -10,7 +10,7 @@ testCommentDelete();
 
 
 function testCommentEntity() {
-    isTrue( get_class(comment()) == 'CommentTaxonomy', 'is CommentTaxonomy');
+    isTrue( get_class(comment()) == 'CommentModel', 'is CommentModel');
 }
 
 function testCommentCreate() {

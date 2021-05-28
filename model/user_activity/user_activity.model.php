@@ -1,6 +1,9 @@
 <?php
 /**
- * @file user_activity.php
+ * @file user_activity.model.php
+ *
+ * Class UserActivityModel
+ *
  * @see readme.md
  *
  * @property-read int $fromUserIdx
@@ -16,7 +19,7 @@
  * @property-read int createdAt
  * @property-read int updatedAt
  */
-class UserActivityTaxonomy extends UserActivityBase {
+class UserActivityModel extends UserActivityBase {
 
 
 
@@ -33,47 +36,15 @@ class UserActivityTaxonomy extends UserActivityBase {
      *  - limit by daily/hourly
      *  - lack of point
      *
-     * @param CategoryTaxonomy $category
+     * @param CategoryModel $category
      * @return $this
      */
-    public function canCreatePost(CategoryTaxonomy $category ): self {
-
+    public function canCreatePost(CategoryModel $category ): self {
         return $this->canCreateForumRecord($category, Actions::$createPost);
-//        // 제한에 걸렸으면, 에러 리턴. error on limit.
-//        if ( $this->isCategoryBanOnLimit($category->idx) ) {
-//            $re = act()->checkCategoryLimit($category->idx);
-//            if ( $re ) return $this->error($re);
-//        }
-//
-//        // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러. error if user is lack of point.
-//        $pointToCreate = act()->getPostCreatePoint($category->idx);
-//        if ( $pointToCreate < 0 ) { // point deduction is set on category?
-//            if ( login()->getPoint() < abs( $pointToCreate ) ) { // user does not have enough point?
-//                return $this->error(e()->lack_of_point); //
-//            }
-//        }
-//
-//        // @todo if user is banned by the amount of point possession.
-//        return $this;
     }
 
-    public function canCreateComment(CategoryTaxonomy $category ):self {
+    public function canCreateComment(CategoryModel $category ):self {
         return $this->canCreateForumRecord($category, Actions::$createComment);
-
-        // If limiting, return an error. error on limit.
-//        if ( $this->isCategoryBanOnLimit($category->idx) ) {
-//            $re = act()->checkCategoryLimit($category->idx);
-//            if ( $re ) return $this->error($re);
-//        }
-//
-//        // If the point is set to decrease in writing/comment writing, if the points are insufficient, an error
-//        $pointToCreate = act()->getCommentCreatePoint($category->idx);
-//        if ( $pointToCreate < 0 ) {
-//            if ( login()->getPoint() < abs( $pointToCreate ) ) {
-//                return $this->error(e()->lack_of_point); //
-//            }
-//        }
-//        return $this;
     }
 
     /**
@@ -104,13 +75,13 @@ class UserActivityTaxonomy extends UserActivityBase {
     /**
      * Check if the login user can create a post or a comment.
      *
-     * @param CategoryTaxonomy $category
+     * @param CategoryModel $category
      * @param string $activity
      * @return $this
      *  - If there is an error, 'error code' will be set to the object.
      *  - No error, no error code will be set to the object.
      */
-    private function canCreateForumRecord(CategoryTaxonomy $category, string $activity) : self {
+    private function canCreateForumRecord(CategoryModel $category, string $activity) : self {
         // If limiting, return an error. error on limit.
         if ( $this->isCategoryBanOnLimit($category->idx) ) {
             $re = act()->checkCategoryCreateLimit($category->idx);
@@ -145,12 +116,12 @@ class UserActivityTaxonomy extends UserActivityBase {
     }
 
     /**
-     * @param UserTaxonomy $user
+     * @param UserModel $user
      * @return int|string
      *  - error code string if there is an error.
      *  - user.idx if success.
      */
-    public function register(UserTaxonomy $user) : int | string {
+    public function register(UserModel $user) : int | string {
         return $this->recordAction(
             action: Actions::$register,
             fromUserIdx: 0,
@@ -160,7 +131,7 @@ class UserActivityTaxonomy extends UserActivityBase {
         );
     }
 
-    public function login(UserTaxonomy $user): int|string {
+    public function login(UserModel $user): int|string {
         return $this->recordAction(
             action: Actions::$login,
             fromUserIdx: 0,
@@ -242,9 +213,9 @@ class UserActivityTaxonomy extends UserActivityBase {
      * Record action and change point for post creation
      *
      * Limitation check must be done before calling this method.
-     * @param PostTaxonomy $post
+     * @param PostModel $post
      */
-    public function createPost(PostTaxonomy $post):int|string {
+    public function createPost(PostModel $post):int|string {
         return $this->recordAction(
             Actions::$createPost,
             fromUserIdx: 0,
@@ -259,9 +230,9 @@ class UserActivityTaxonomy extends UserActivityBase {
 
     /**
      * Record action and change point for post delete
-     * @param PostTaxonomy $post
+     * @param PostModel $post
      */
-    public function deletePost(PostTaxonomy $post):int|string {
+    public function deletePost(PostModel $post):int|string {
         return $this->recordAction(
             Actions::$deletePost,
             fromUserIdx: 0,
@@ -280,9 +251,9 @@ class UserActivityTaxonomy extends UserActivityBase {
      * Record action and change point for comment creation
      *
      * Limitation check must be done before calling this method.
-     * @param CommentTaxonomy $comment
+     * @param CommentModel $comment
      */
-    public function createComment(CommentTaxonomy $comment):int|string {
+    public function createComment(CommentModel $comment):int|string {
         return $this->recordAction(
             Actions::$createComment,
             fromUserIdx: 0,
@@ -299,9 +270,9 @@ class UserActivityTaxonomy extends UserActivityBase {
      * Record action and change point for comment creation
      *
      * Limitation check must be done before calling this method.
-     * @param CommentTaxonomy $comment
+     * @param CommentModel $comment
      */
-    public function deleteComment(CommentTaxonomy $comment):int|string {
+    public function deleteComment(CommentModel $comment):int|string {
         return $this->recordAction(
             Actions::$deleteComment,
             fromUserIdx: 0,
@@ -386,9 +357,9 @@ class UserActivityTaxonomy extends UserActivityBase {
      * @param string $taxonomy
      * @param int $entity
      * @param string $action
-     * @return UserActivityTaxonomy
+     * @return self
      */
-    public function last(string $taxonomy, int $entity, string $action=''): UserActivityTaxonomy {
+    public function last(string $taxonomy, int $entity, string $action=''): self {
         $conds = [ TAXONOMY => $taxonomy, ENTITY => $entity ];
         if ( $action ) $conds['action'] = $action;
 
@@ -406,10 +377,10 @@ class UserActivityTaxonomy extends UserActivityBase {
  * @attention This method must return new object every time, for clearing the previous error message(or not to keep previous error message into new action)
  *
  * @param int $idx
- * @return UserActivityTaxonomy
+ * @return UserActivityModel
  */
-function act(int $idx=0): UserActivityTaxonomy
+function act(int $idx=0): UserActivityModel
 {
-    return new UserActivityTaxonomy($idx);
+    return new UserActivityModel($idx);
 }
 

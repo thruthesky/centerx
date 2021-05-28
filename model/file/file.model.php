@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Class File
+ * Class FileModel
  *
  * @property-read string path - file path
  * @property-read string url
  */
-class FileTaxonomy extends Entity {
+class FileModel extends Entity {
 
 
     public function __construct(int $idx)
@@ -79,13 +79,13 @@ class FileTaxonomy extends Entity {
         // HTML FORM 데이터가 HTTP POST 방식으로 업로드 되었는가?
         if ( is_uploaded_file($orgPath) ) {
             if ( move_uploaded_file($orgPath, $path) == false ) {
-                debug_log("FileTaxonomy::upload() -> move_uploaded_file() - Possible file upload attack!");
+                debug_log("FileModel::upload() -> move_uploaded_file() - Possible file upload attack!");
                 return $this->error(e()->move_uploaded_file_failed);
             }
         } else {
             // 아니면, 로컬 파일으로 간주해서 파일 복사.
             if ( copy($orgPath, $path) == false ) {
-                debug_log("FileTaxonomy::upload() -> copy() - failed");
+                debug_log("FileModel::upload() -> copy() - failed");
                 return $this->error(e()->copy_file_failed);
             }
         }
@@ -251,11 +251,11 @@ class FileTaxonomy extends Entity {
  * @note the function name is `files` since `file` exists as in PHP built-in function.
  *
  * @param array|int $idx - The `posts.idx` which is considered as comment idx. Or an array of the comment record.
- * @return FileTaxonomy
+ * @return FileModel
  */
-function files(array|int $idx=0): FileTaxonomy
+function files(array|int $idx=0): FileModel
 {
-    if ( is_array($idx) ) return new FileTaxonomy($idx[IDX]);
-    else return new FileTaxonomy($idx);
+    if ( is_array($idx) ) return new FileModel($idx[IDX]);
+    else return new FileModel($idx);
 }
 

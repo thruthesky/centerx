@@ -11,7 +11,7 @@ testLoadByLanguage();
 
 
 function testTranslationEntity() {
-    isTrue( get_class(translation()) == 'TranslationTaxonomy', 'is TranslationTaxonomy');
+    isTrue( get_class(translation()) == 'TranslationModel', 'is TranslationModel');
 }
 
 

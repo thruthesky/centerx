@@ -121,7 +121,7 @@ class CategoryModel extends Entity {
     }
 
     /**
-     * @return PostTaxonomy[]
+     * @return PostModel[]
      */
     public function reminders(array $in = []): array {
         $where = "categoryIdx={$this->idx} AND reminder='Y' AND parentIdx=0 AND deletedAt=0";

@@ -14,14 +14,14 @@ _testEntityUpdate();
 
 
 
-class TestTaxonomy extends PostTaxonomy {
+class TestModel extends PostModel {
     public function __construct(int $idx)
     {
         parent::__construct($idx);
     }
 }
-function tt($idx=0): TestTaxonomy {
-    return new TestTaxonomy($idx);
+function tt($idx=0): TestModel {
+    return new TestModel($idx);
 }
 
 function testEntityErrorHandling() {
@@ -56,12 +56,12 @@ function testEntityCreateWithMeta() {
 function testEntityTree() {
 
     $tt = tt(0);
-    isTrue(get_class($tt), 'TestTaxonomy');
+    isTrue(get_class($tt), 'TestModel');
 
 
     $created = $tt->create(['categoryIdx' => 0, 'userIdx' => 0, 'title' => 'text taxonomy']);
 
-    isTrue(get_class($created), 'TestTaxonomy');
+    isTrue(get_class($created), 'TestModel');
 
 }
 
@@ -75,7 +75,7 @@ function _testEntityCrud() {
     // 생성
     $email = 'test'.time().'@email.com';
     $user = entity(USERS)->create(['email' => $email, 'password' => $pw]);
-    isTrue($user->hasError === false, 'shoud be success');
+    isTrue($user->hasError === false, 'should be success');
 
 
     isTrue($user->exists(), 'should be exists');

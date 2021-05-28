@@ -3,13 +3,13 @@
  * @file friend.class.php
  */
 /**
- * Class Friend
+ * Class FriendModel
  *
  * @property-read int myIdx
  * @property-read int otherIdx
  * @property-read string block
  */
-class FriendTaxonomy extends Entity {
+class FriendModel extends Entity {
 
 
     public function __construct(int $idx)
@@ -55,7 +55,7 @@ class FriendTaxonomy extends Entity {
      * @param array $in
      * @return self
      */
-    public function block(array $in) {
+    public function block(array $in): self {
         $otherUser = user($in['otherIdx']);
         if ( $otherUser->hasError ) return $this->error( $otherUser->getError() );
 
@@ -83,7 +83,7 @@ class FriendTaxonomy extends Entity {
     }
 
 
-    public function unblock(array $in) {
+    public function unblock(array $in): self {
         if ( $this->findOne(['myIdx' => login()->idx, 'otherIdx' => $in['otherIdx']])->exists == false ) return $this->error(e()->not_added_as_friend);
         if ( !$this->block ) return $this->error(e()->not_blocked);
         return parent::update(['block' => '']);
@@ -104,7 +104,7 @@ class FriendTaxonomy extends Entity {
      * @param array $in
      * @return self
      */
-    public function relationship(array $in): FriendTaxonomy
+    public function relationship(array $in): self
     {
 
 
@@ -143,7 +143,7 @@ class FriendTaxonomy extends Entity {
      * 내가 친구 추가한 목록
      * @return array
      */
-    public function list() {
+    public function list(): array {
         $friends = $this->search(select: 'otherIdx', limit: 5000, conds: ['myIdx' => login()->idx, 'block' => '']);
         $rets = [];
         foreach($friends as $f) {
@@ -153,7 +153,7 @@ class FriendTaxonomy extends Entity {
     }
 
 
-    public function blockList() {
+    public function blockList(): array {
         $friends = $this->search(select: 'otherIdx', limit: 5000, conds: ['myIdx' => login()->idx, 'block' => 'Y']);
         $rets = [];
         foreach($friends as $f) {
@@ -166,10 +166,7 @@ class FriendTaxonomy extends Entity {
      * 관리자만 필요한 기능으로 관리자만 볼 수 있도록 하는 기능이 필요하다. 그리고 1천개만 목록하는데, 페이지네이션을 할 필요가 있다.
      * @return array
      */
-    public function reportList() {
-//        $friends = $this->search(select: '*', limit: 1000, conds: ['reason' => '']);
-//        $rows = db()->get_results("SELECT * FROM " . $this->getTable() . " WHERE reason <> ''", ARRAY_A);
-
+    public function reportList(): array {
         $rows = db()->rows("SELECT * FROM " . $this->getTable() . " WHERE reason <> ? ", '');
         $rets = [];
         foreach($rows as $row) {
@@ -186,8 +183,8 @@ class FriendTaxonomy extends Entity {
 
 /**
  * @param int $idx
- * @return FriendTaxonomy
+ * @return FriendModel
  */
-function friend(int $idx=0): FriendTaxonomy {
-    return new FriendTaxonomy($idx);
+function friend(int $idx=0): FriendModel {
+    return new FriendModel($idx);
 }

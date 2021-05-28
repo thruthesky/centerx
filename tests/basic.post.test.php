@@ -13,7 +13,7 @@ testPostLatest();
 
 
 function testPostEntity() {
-    isTrue( get_class(post()) == 'PostTaxonomy', 'is post');
+    isTrue( get_class(post()) == 'PostModel', 'is post');
 }
 
 function testPostCreate() {

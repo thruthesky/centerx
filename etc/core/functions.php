@@ -321,10 +321,10 @@ global $__login_user_profile;
  * @attention, it does not save login information into cookies. It only set the user login in current session.
  *
  * @param int|array $profile
- * @return UserTaxonomy
+ * @return UserModel
  * @todo memory cache login user object
  */
-function setUserAsLogin(int|array $profile): UserTaxonomy {
+function setUserAsLogin(int|array $profile): UserModel {
     global $__login_user_profile;
     if ( is_int($profile) ) $profile = user($profile)->getData();
     $__login_user_profile = $profile;
@@ -1007,7 +1007,7 @@ function parseDocBlock($str) {
  *
  * @attention  It will recursively read database records. Make it minimal.
  *
- * @todo move this method to `PostTaxonomy`
+ * @todo move this method to `PostModel`
  */
 function getCommentAncestors(int $idx): array
 {
@@ -1039,10 +1039,10 @@ function getCommentAncestors(int $idx): array
  *  get the tokens of the users_id and filtering those who want to get comment notification
  *
  *
- * @param CommentTaxonomy|PostTaxonomy $cp
+ * @param CommentModel|PostModel $cp
  * @throws Exception
  */
-function onCommentCreateSendNotification(CommentTaxonomy|PostTaxonomy $cp)
+function onCommentCreateSendNotification(CommentModel|PostModel $cp)
 {
 
     $post = post($cp->rootIdx);
@@ -1621,7 +1621,7 @@ function postEditUrl(int|string $categoryId = '', string $subcategory=null, int 
     return $url;
 }
 
-function postViewUrl(PostTaxonomy $post): string {
+function postViewUrl(PostModel $post): string {
     $url = $post->url;
 
     $tags = [];
