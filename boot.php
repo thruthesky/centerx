@@ -6,47 +6,49 @@ require ROOT_DIR . 'etc/kill-wrong-routes.php';
 
 require ROOT_DIR . 'vendor/autoload.php';
 
-require_once ROOT_DIR . 'library/core/functions.php';
-require_once ROOT_DIR . 'library/core/language.php';
+require_once ROOT_DIR . 'etc/core/functions.php';
+require_once ROOT_DIR . 'etc/core/language.php';
 
 require_once ROOT_DIR . 'etc/defines.php';
 require_once ROOT_DIR . 'etc/translations.php';
 
-require_once ROOT_DIR . 'library/core/theme.php';
+require_once ROOT_DIR . 'etc/core/theme.php';
 
-require_once ROOT_DIR . 'library/core/mysqli.php';
+require_once ROOT_DIR . 'etc/core/mysqli.php';
 
-require_once ROOT_DIR . 'library/core/entity.php';
-require_once ROOT_DIR . 'library/taxonomy/config/config.taxonomy.php';
-require_once ROOT_DIR . 'library/taxonomy/country/country.taxonomy.php';
-require_once ROOT_DIR . 'library/taxonomy/user/user.taxonomy.php';
-require_once ROOT_DIR . 'library/taxonomy/meta/meta.taxonomy.php';
-require_once ROOT_DIR . 'library/taxonomy/friend/friend.taxonomy.php';
-require_once ROOT_DIR . 'library/taxonomy/category/category.taxonomy.php';
-require_once ROOT_DIR . 'library/core/forum.php';
-require_once ROOT_DIR . 'library/taxonomy/post/post.taxonomy.php';
-require_once ROOT_DIR . 'library/taxonomy/comment/comment.taxonomy.php';
-require_once ROOT_DIR . 'library/taxonomy/push-notification/push-notification.tokens.class.php';
-require_once ROOT_DIR . 'library/taxonomy/push-notification/push-notification.class.php';
-require_once ROOT_DIR . 'library/taxonomy/file/file.taxonomy.php';
-require_once ROOT_DIR . 'library/core/error.php';
-require_once ROOT_DIR . 'library/taxonomy/user_activity/user_activity.defines.php';
-require_once ROOT_DIR . 'library/taxonomy/user_activity/user_activity.actions.php';
-require_once ROOT_DIR . 'library/taxonomy/user_activity/user_activity.base.php';
-require_once ROOT_DIR . 'library/taxonomy/user_activity/user_activity.taxonomy.php';
+require_once ROOT_DIR . 'etc/core/entity.php';
+require_once ROOT_DIR . 'model/config/config.taxonomy.php';
+require_once ROOT_DIR . 'model/country/country.taxonomy.php';
+require_once ROOT_DIR . 'model/user/user.taxonomy.php';
+require_once ROOT_DIR . 'model/meta/meta.taxonomy.php';
+require_once ROOT_DIR . 'model/friend/friend.taxonomy.php';
+require_once ROOT_DIR . 'model/category/category.taxonomy.php';
+require_once ROOT_DIR . 'etc/core/forum.php';
+require_once ROOT_DIR . 'model/post/post.taxonomy.php';
+require_once ROOT_DIR . 'model/comment/comment.taxonomy.php';
+require_once ROOT_DIR . 'model/push-notification/push-notification.tokens.class.php';
+require_once ROOT_DIR . 'model/push-notification/push-notification.class.php';
+require_once ROOT_DIR . 'model/file/file.taxonomy.php';
+require_once ROOT_DIR . 'etc/core/error.php';
+require_once ROOT_DIR . 'model/user_activity/user_activity.defines.php';
+require_once ROOT_DIR . 'model/user_activity/user_activity.actions.php';
+require_once ROOT_DIR . 'model/user_activity/user_activity.base.php';
+require_once ROOT_DIR . 'model/user_activity/user_activity.taxonomy.php';
 
 
-require_once ROOT_DIR . 'library/taxonomy/message/message.taxonomy.php';
+require_once ROOT_DIR . 'model/message/message.taxonomy.php';
 
-require_once ROOT_DIR . 'library/taxonomy/vote/vote-history.taxonomy.php';
-require_once ROOT_DIR . 'library/taxonomy/shopping-mall-order/shopping-mall-order.taxonomy.php';
-require_once ROOT_DIR . 'library/taxonomy/cache/cache.taxonomy.php';
-require_once ROOT_DIR . 'library/taxonomy/translation/translation.taxonomy.php';
-require_once ROOT_DIR . 'library/core/firebase.php';
-require_once ROOT_DIR . 'library/core/test.functions.php';
-require_once ROOT_DIR . 'library/core/data.php';
-require_once ROOT_DIR . 'library/taxonomy/in-app-purchase/in-app-purchase.taxonomy.php';
-require_once ROOT_DIR . 'library/core/hook.php';
+require_once ROOT_DIR . 'model/vote/vote-history.taxonomy.php';
+require_once ROOT_DIR . 'model/shopping-mall-order/shopping-mall-order.taxonomy.php';
+require_once ROOT_DIR . 'model/cache/cache.taxonomy.php';
+require_once ROOT_DIR . 'model/translation/translation.taxonomy.php';
+require_once ROOT_DIR . 'etc/core/firebase.php';
+require_once ROOT_DIR . 'etc/core/test.functions.php';
+require_once ROOT_DIR . 'etc/core/data.php';
+require_once ROOT_DIR . 'model/in-app-purchase/in-app-purchase.taxonomy.php';
+require_once ROOT_DIR . 'etc/core/hook.php';
+
+
 
 
 

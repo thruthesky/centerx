@@ -78,6 +78,28 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
 
 - [PHP + SPA](https://docs.google.com/document/d/1WG3caN7_3eXRhPthBgDAgzzkI-OrVir1Bvnrbt-nsR0/edit#heading=h.n7o87sszwfc6) 를 시도해 본다.
 
+- singular
+  
+- Change folder name form `library/toxonomy` to `model`.
+  - `library/taxonomy/user/user.taxonomy.php` -> `model/user/user.model.php`
+    - `UserTaxonomy` -> `UserModel`
+  
+- `library/core` -> `etc/core`
+
+- `themes` -> `view`
+
+- `route` -> `controller`
+  - Controller is a middle man between the client render view and model.
+  - The controller only return data in JSON format. That means, you cannot use (or shoud not use) PHP in view(or theme).
+  
+    
+- `SPA + SEO + IE11 + without compiling`
+
+
+
+
+
+
 - 다음 버전의 명칭
   - CenterX 대신 Matrix 로 변경
     - https://github.com/withcenter/matrix 로 repo 를 이동.
