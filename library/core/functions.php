@@ -496,6 +496,10 @@ function notLoggedIn(): bool {
 }
 
 
+/**
+ * Return true if login user is admin.
+ * @return bool
+ */
 function admin(): bool {
     if ( login()->idx == 0 ) return false;
     if ( str_contains(ADMIN_EMAIL, login()->email) ) return true;

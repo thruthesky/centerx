@@ -136,7 +136,13 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
     - Taxonomy 를 Model 로 변환( 폴더명 자체를 변경 )
     - Theme 을 View 로 변경. (폴더명 자체를 변경)
     - API 를 Controller 로 변경. (폴더명 자체를 변경).
-      - Controller 는 View 에서 쓰기도 하고, Rest API 에서도 그대로 쓰도록 한다.
+      
+    - 모든 접속을 Controller 로 한다.
+      - index.php 에서 ./controller/control.php 를 실행하고,
+        ./controller/post/list.php
+        ./controller/post/view.php
+        
+        등으로 View 에서 쓰기도 하고, Rest API 에서도 그대로 쓰도록 한다.
       - Controller 에서는 아래와 같이 할 수 있도록 한다.
         route.php 를 좀 더 업데이트한다.
 
