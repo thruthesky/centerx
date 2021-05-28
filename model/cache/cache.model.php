@@ -14,7 +14,7 @@
  *
  *
  */
-class CacheTaxonomy extends Entity
+class CacheModel extends Entity
 {
     public string $code;
 
@@ -41,6 +41,7 @@ class CacheTaxonomy extends Entity
             return $this;
         }
     }
+
 
     /**
      * 기존에 존재하는 캐시 데이터 업데이트 작업을 진행하는 경우, 이 함수를 호출한다.
@@ -95,11 +96,11 @@ class CacheTaxonomy extends Entity
  *
  *
  * @param string $code - code 값이 있으면, code 값을 찾아 현재 객체로 전환한다. 만약, 코드에 맞는 존재하지 않으면 에러가 설정된다.
- * @return CacheTaxonomy
+ * @return CacheModel
  */
-function cache(string $code=''): CacheTaxonomy
+function cache(string $code=''): CacheModel
 {
-    $cache = new CacheTaxonomy(0);
+    $cache = new CacheModel(0);
 
     if ( $code ) {
         $cache->code = $code;

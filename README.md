@@ -83,16 +83,23 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
 - Change folder name form `library/toxonomy` to `model`.
   - `library/taxonomy/user/user.taxonomy.php` -> `model/user/user.model.php`
     - `UserTaxonomy` -> `UserModel`
-  
-- `library/core` -> `etc/core`
-
-- `themes` -> `view`
+  - Make all tests pass.
 
 - `route` -> `controller`
   - Controller is a middle man between the client render view and model.
   - The controller only return data in JSON format. That means, you cannot use (or shoud not use) PHP in view(or theme).
-  
-    
+
+  - Add some tests.
+
+- `themes` -> `view`
+  - Change 0. View(theme) is loaded from controller not directly from index.php
+    - There will be `app.php` which render initial HTML for SPA.
+  - Change 1. you can still use PHP in view(theme) but, all the data for the site must come from controller in JSON format.
+  - Change 2. Since all data from controllers is in JSON format, the front-end should be SPA.
+
+  - Move `etc/core/theme.php` to `etc/core/view.php`.  
+  - Add some tests on `etc/core/view.php`
+
 - `SPA + SEO + IE11 + without compiling`
 
 

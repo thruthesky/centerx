@@ -22,7 +22,7 @@ require_once ROOT_DIR . 'model/country/country.taxonomy.php';
 require_once ROOT_DIR . 'model/user/user.taxonomy.php';
 require_once ROOT_DIR . 'model/meta/meta.taxonomy.php';
 require_once ROOT_DIR . 'model/friend/friend.taxonomy.php';
-require_once ROOT_DIR . 'model/category/category.taxonomy.php';
+require_once ROOT_DIR . 'model/category/category.model.php';
 require_once ROOT_DIR . 'etc/core/forum.php';
 require_once ROOT_DIR . 'model/post/post.taxonomy.php';
 require_once ROOT_DIR . 'model/comment/comment.taxonomy.php';

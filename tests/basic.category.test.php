@@ -9,7 +9,7 @@ testCategoryDelete();
 
 function testCategory() {
     $cat = category();
-    isTrue( get_class($cat) === 'CategoryTaxonomy', 'category() returns CategoryTaxonomy' );
+    isTrue( get_class($cat) === 'CategoryModel', 'category() returns CategoryModel' );
 }
 
 function testCategoryCreate() {
