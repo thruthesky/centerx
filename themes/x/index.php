@@ -42,7 +42,7 @@
     </main>
 </div>
 
-<?php js('/etc/js/common.js', 3)?>
+<?php js('/etc/js/common.js', 2)?>
 <?php js('https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js', 2)?>
 <?php js('https://unpkg.com/vue-router/dist/vue-router.min.js', 2)?>
 <script>
@@ -71,8 +71,7 @@
         '</div>',
         methods: {
             onSubmit: function(event) {
-                const formData = new FormData(event.target);
-                const data = Object.fromEntries(formData);
+                const data = serializeJSON(event.target);
                 console.log(data);
                 request('user.login', data, function(res) {
                     console.log(res);
@@ -99,8 +98,8 @@
         '</div>',
         methods: {
             onSubmit: function(event) {
-                const formData = new FormData(event.target);
-                const data = Object.fromEntries(formData);
+                const data = serializeJSON(event.target);
+
                 console.log(data);
                 request('user.register', data, function(res) {
                     console.log(res);
