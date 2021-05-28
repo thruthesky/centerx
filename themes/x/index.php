@@ -15,7 +15,10 @@
     <header class="m-2 bg-light">
         <a href="/">Home</a> |
         <a href="/user/register">User Register</a> |
-        <a href="/user/login">Login</a>, Logout, QnA, Discussion, Buyandsell, <span>Reminder</span>
+        <a href="/user/login">Login</a>, Logout,
+        <a href="/forum/qna/">QnA</a>,
+        <a href="/forum/discussion">Discussion</a>,
+        <a href="/forum/buyandsell">Buyandsell</a>, <span>Reminder</span>
     </header>
 
     <main>
