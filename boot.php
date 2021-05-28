@@ -40,7 +40,7 @@ require_once ROOT_DIR . 'model/message/message.taxonomy.php';
 
 require_once ROOT_DIR . 'model/vote/vote-history.taxonomy.php';
 require_once ROOT_DIR . 'model/shopping-mall-order/shopping-mall-order.taxonomy.php';
-require_once ROOT_DIR . 'model/cache/cache.taxonomy.php';
+require_once ROOT_DIR . 'model/cache/cache.model.php';
 require_once ROOT_DIR . 'model/translation/translation.taxonomy.php';
 require_once ROOT_DIR . 'etc/core/firebase.php';
 require_once ROOT_DIR . 'etc/core/test.functions.php';
