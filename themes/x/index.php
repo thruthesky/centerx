@@ -53,10 +53,60 @@
         }
     }, false);
 
+    const UserLoginComponent = { 
+        template: '<div>' +
+        '<h1>User Login</h1>' +
+        '<form @submit.prevent="onSubmit">' +
+            '<div class="form-group"> Email ' +
+            '<input type="text" name="email">' +
+            '</div>' +
+            '<div class="form-group"> Password ' +
+            '<input type="password" name="password">' +
+            '</div>' +
+            '<button type="submit" class="btn btn-primary">Submit</button>' +
+        '</form>' +
+        '</div>',
+        methods: {
+            onSubmit: function(event) {
+                const formData = new FormData(event.target);
+                const data = Object.fromEntries(formData);
+                console.log(data);
+                request('user.login', data, function(res) {
+                    console.log(res);
+                }, console.error);
+            }
+        }
+    };
+
+    const UserRegisterComponent = { 
+        template: '<div>' +
+        '<h1>User Register</h1>' +
+        '<form @submit.prevent="onSubmit">' +
+            '<div class="form-group"> Email ' +
+            '  <input type="text" name="email">' +
+            '</div>' +
+            '<div class="form-group"> Password ' +
+            '  <input type="password" name="password">' +
+            '</div>' +
+            '<div class="form-group"> Name ' +
+            '  <input type="text" name="name">' +
+            '</div>' +
+            '<button type="submit" class="btn btn-primary">Submit</button>' +
+        '</form>' +
+        '</div>',
+        methods: {
+            onSubmit: function(event) {
+                const formData = new FormData(event.target);
+                const data = Object.fromEntries(formData);
+                console.log(data);
+                request('user.register', data, function(res) {
+                    console.log(res);
+                }, console.error);
+            }
+        }
+    };
 
     const HomeComponent = { template: '<div><h1>Home Page</h1>Welcome to SPA.</div>' };
-    const UserRegisterComponent = { template: '<div><h1>Register</h1>UserRegisterComponent</div>' };
-    const UserLoginComponent = { template: '<div><h1>User Login</h1><form><input></form></div>' };
     const UserProfileComponent = {
         props: ['id'],
         template: '<div>User {{ id }}. <a href="#" @click="sayHi">Say Hi ^^;</a><div>{{ data }}</div><button @click="data.count--">Decrease</button></div>',
