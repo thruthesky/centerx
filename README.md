@@ -100,7 +100,8 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
   - Move `etc/core/theme.php` to `etc/core/view.php`.  
   - Add some tests on `etc/core/view.php`
 
-- `SPA + SEO + IE11 + without compiling`
+
+
 
 
 

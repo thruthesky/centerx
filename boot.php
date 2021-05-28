@@ -2,7 +2,8 @@
 
 //
 const ROOT_DIR = __DIR__ . '/';
-const VIEW_DIR = ROOT_DIR . 'view/';
+const VIEW_FOLDER_NAME = 'view';
+const VIEW_DIR = ROOT_DIR . VIEW_FOLDER_NAME . '/';
 
 
 // Restful Api
@@ -21,7 +22,7 @@ require_once ROOT_DIR . 'etc/defines.php';
 require_once ROOT_DIR . 'etc/translations.php';
 
 // @todo remove theme
-require_once ROOT_DIR . 'etc/core/theme.php';
+require_once ROOT_DIR . 'etc/core/view.php';
 
 
 require_once ROOT_DIR . 'etc/core/mysqli.php';

@@ -33,6 +33,7 @@
             <div class="row">
                 <div class="col-4 bg-lightgrey">
                     <?php include widget('post/bulleted-text-list')?>
+                    <?php include widget('weather/openweathermapcurrent')?>
                 </div>
                 <div class="col-8 bg-light">
                     <router-view :key="$route.path"></router-view>
@@ -53,9 +54,7 @@
 <?php js('https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js', 2)?>
 <?php js('https://unpkg.com/vue-router/dist/vue-router.min.js', 2)?>
 
-<script type="text/x-template" id="hello-world-template">
-    <p>Hello hello hello</p>
-</script>
+
 <script>
 
     // 모든 클릭을 캡쳐한다.

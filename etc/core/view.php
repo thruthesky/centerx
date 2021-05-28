@@ -27,7 +27,7 @@ class View
      */
     public function __get($name): mixed {
         if ( $name == 'url' ) {
-            return HOME_URL . 'themes/' . $this->folderName . '/';
+            return HOME_URL . VIEW_FOLDER_NAME . '/' . $this->folderName . '/';
         } else {
             return null;
         }
