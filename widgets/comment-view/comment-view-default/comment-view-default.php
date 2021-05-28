@@ -9,16 +9,23 @@ $post = $o['post'];
  * @var CommentTaxonomy $comment
  */
 $comment = $o['comment'];
+
+$avatarPopoverId = "user-avatar-" . $comment->idx;
+$usernamePopoverId = "user-name-" . $comment->idx;
 ?>
 
 <div class="comment-view-default p-3" style="border-radius: 10px; background-color: #e0e0e0">
     <div class="d-flex">
-        <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->shortProfile()['photoUrl'], 'size' => '50']) ?>
+        <div id="<?= $avatarPopoverId ?>" class="pointer" @click="openPopover('<?= $avatarPopoverId ?>')" tabindex="0">
+            <?php include widget('user/user-avatar', ['photoUrl' => $post->user()->shortProfile()['photoUrl'], 'size' => '50']) ?>
+        </div>
         <div>
-            <b><?= $comment->user()->nicknameOrName ?></b>
+            <b id="<?= $usernamePopoverId ?>" class="pointer block" @click="openPopover('<?= $usernamePopoverId ?>')" tabindex="0">
+                <?= $comment->user()->nicknameOrName ?>
+            </b>
             <div class="meta text-muted">
                 <small>
-                    No. <?= $comment->idx ?> • 
+                    No. <?= $comment->idx ?> •
                     <?= ln('date') ?>: <?= $post->shortDate ?>
                 </small>
             </div>
@@ -79,4 +86,9 @@ $comment = $o['comment'];
             .catch(alert);
     }
 </script>
+
+<forum-popup-menu :id="'<?= $avatarPopoverId ?>'"></forum-popup-menu>
+<forum-popup-menu :id="'<?= $usernamePopoverId ?>'"></forum-popup-menu>
+
+<?php js(HOME_URL . 'etc/js/vue-js-components/user-popup-menu.js') ?>
 <?php js('/etc/js/vue-js-components/vote-buttons.js', 1) ?>
