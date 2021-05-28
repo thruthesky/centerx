@@ -470,9 +470,9 @@ class PostModel extends Forum {
      * @example
      *   d(post()->getFromPath());
      */
-    public function getFromPath(): self {
+    public function getFromPath(string $path = null): self {
         if ( in('postIdx') ) return post(in('postIdx'));
-        $path = $_SERVER['REQUEST_URI'];
+        if ( $path === null ) $path = $_SERVER['REQUEST_URI'];
         if ( str_contains($path, '?') ) {
             $arr = explode('?', $path);
             $path = $arr[0];
