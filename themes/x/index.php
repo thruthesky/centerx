@@ -33,7 +33,7 @@
                     1) 특히 SEO 를 위해서, 사이드 메뉴에 "전체글 보기" 등의 링크를 걸어 넣고, 그 전체 글 보기 페이지에는 Vue 를 하지 않고, PHP 만으로 카테고리별로 아주 많은 글을 주욱 보여준다.
                         즉, 검색 로봇이 게시글 수집을 할 수 있는 링크를 연결해 주는 것이다.
                     2) 내용 부분을 &lt;router-vew&gt; 태그에 집어 넣고, 새로운 페이지의 내용을 컴포넌트화해서 이 router-view 태그에 집어 넣는 것만 한다.
-                    3) 홈페이지로 랜딩하나 글 목록이나 글 보기 페이지로 랜딩하나 모두 router-view 에 ajax 로 로딩해서 보여준다. 이 부분까지 SEO 로 할 필요 없다.
+                    3) 홈페이지로 랜딩하나 글 목록이나 글 보기 페이지로 랜딩하나 또는 SEO 가 필요 없는 모든 페이지에 대해서, 컴포넌트화 한 다음 router-view 로 보여주고, 데이터가 필요하면 ajax 로 로딩해서 보여준다. 이 부분까지 SEO 로 할 필요 없다.
                 </div>
             </div>
         </div>
@@ -45,7 +45,6 @@
             <div class="row">
                 <div class="col-4 bg-lightgrey">
                     <?php include widget('post/bulleted-text-list')?>
-                    <my-weather></my-weather>
                 </div>
                 <div class="col-8 bg-light">
                     <router-view :key="$route.path"></router-view>
@@ -62,7 +61,7 @@
     </main>
 </div>
 
-<?php js('/etc/js/common.js', 3)?>
+<?php js('/etc/js/common.js', 2)?>
 <?php js('https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js', 2)?>
 <?php js('https://unpkg.com/vue-router/dist/vue-router.min.js', 2)?>
 
@@ -80,19 +79,60 @@
         }
     }, false);
 
-    Vue.component('my-weather', {
-        template: '<h1>hi</h1>',
-        data: function() {
-            return {};
-        },
-        mounted: function() {
-            console.log('weather mounted');
+
+    const UserLoginComponent = { 
+        template: '<div>' +
+        '<h1>User Login</h1>' +
+        '<form @submit.prevent="onSubmit">' +
+            '<div class="form-group"> Email ' +
+            '<input type="text" name="email">' +
+            '</div>' +
+            '<div class="form-group"> Password ' +
+            '<input type="password" name="password">' +
+            '</div>' +
+            '<button type="submit" class="btn btn-primary">Submit</button>' +
+        '</form>' +
+        '</div>',
+        methods: {
+            onSubmit: function(event) {
+                const data = serializeJSON(event.target);
+                console.log(data);
+                request('user.login', data, function(res) {
+                    console.log(res);
+                }, console.error);
+            }
         }
-    });
+    };
+
+    const UserRegisterComponent = { 
+        template: '<div>' +
+        '<h1>User Register</h1>' +
+        '<form @submit.prevent="onSubmit">' +
+            '<div class="form-group"> Email ' +
+            '  <input type="text" name="email">' +
+            '</div>' +
+            '<div class="form-group"> Password ' +
+            '  <input type="password" name="password">' +
+            '</div>' +
+            '<div class="form-group"> Name ' +
+            '  <input type="text" name="name">' +
+            '</div>' +
+            '<button type="submit" class="btn btn-primary">Submit</button>' +
+        '</form>' +
+        '</div>',
+        methods: {
+            onSubmit: function(event) {
+                const data = serializeJSON(event.target);
+
+                console.log(data);
+                request('user.register', data, function(res) {
+                    console.log(res);
+                }, console.error);
+            }
+        }
+    };
 
     const HomeComponent = { template: '<div><h1>Home Page</h1>Welcome to SPA.</div>' };
-    const UserRegisterComponent = { template: '<div><h1>Register</h1>UserRegisterComponent</div>' };
-    const UserLoginComponent = { template: '<div><h1>User Login</h1><form><input></form></div>' };
     const UserProfileComponent = {
         props: ['id'],
         template: '<div>User {{ id }}. <a href="#" @click="sayHi">Say Hi ^^;</a><div>{{ data }}</div><button @click="data.count--">Decrease</button></div>',

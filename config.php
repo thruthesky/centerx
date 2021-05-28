@@ -20,6 +20,7 @@ const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
  */
 define('DOMAIN_THEMES', [
     'cherry.philov' => 'x',
+    'banana.philov' => 'x',
     'itsuda' => 'itsuda',
     '127.0.0.1' => 'default',
     'localhost' => 'dating',
