@@ -1,6 +1,9 @@
 <?php
-
 /**
+ * @file file.model.php
+ */
+/**
+ *
  * Class FileModel
  *
  * @property-read string path - file path

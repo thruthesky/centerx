@@ -1,6 +1,7 @@
 <?php
-
-
+/**
+ * @file post.model.php
+ */
 /**
  * Class PostModel
  *

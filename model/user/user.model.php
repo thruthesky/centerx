@@ -1,7 +1,8 @@
 <?php
 /**
  * @file user.model.php
- *
+ */
+/**
  * Class UserModel
  *
  * @property-read string $email

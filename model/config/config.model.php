@@ -1,9 +1,9 @@
 <?php
 /**
- * @file config.class.php
+ * @file config.model.php
  */
 /**
- * Class Config
+ * Class ConfigModel
  *
  * There is no `config` model. Read the readme.
  */

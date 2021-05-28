@@ -1,6 +1,6 @@
 <?php
 /**
- * @file Country.class.php
+ * @file Country.model.php
  */
 /**
  * Class CountryModel

@@ -1,6 +1,6 @@
 <?php
 /**
- * @file comment.class.php
+ * @file comment.model.php
  */
 /**
  * Class CommentModel

@@ -1,9 +1,9 @@
 <?php
 /**
- * @file cache.class.php
+ * @file cache.model.php
  */
 /**
- * Class Cache
+ * Class CacheModel
  *
  * @property-read mixed $data
  * @property-read mixed $createdAt

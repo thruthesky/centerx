@@ -1,5 +1,8 @@
 <?php
 /**
+ * @file message.model.php
+ */
+/**
  * Class MessageModel
  */
 class MessageModel extends PostModel

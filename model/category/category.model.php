@@ -1,8 +1,9 @@
 <?php
-
-
 /**
- * Class Category
+ * @file category.model.php
+ */
+/**
+ * Class CategoryModel
  *
  *
  * @property-read string $id - id

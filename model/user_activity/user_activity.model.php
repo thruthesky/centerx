@@ -1,7 +1,8 @@
 <?php
 /**
  * @file user_activity.model.php
- *
+ */
+/**
  * Class UserActivityModel
  *
  * @see readme.md

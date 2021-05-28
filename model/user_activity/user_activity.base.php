@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * @file user_activity.base.php
+ */
+/**
+ * Class UserActivityBase
+ */
 class UserActivityBase extends Entity {
 
 

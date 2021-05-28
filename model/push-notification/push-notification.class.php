@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * @file push-notification.class.php
+ */
+/**
+ * Class PushNotification
+ *
+ */
 class PushNotification {
 
 

@@ -26,7 +26,7 @@ require_once ROOT_DIR . 'model/category/category.model.php';
 require_once ROOT_DIR . 'etc/core/forum.php';
 require_once ROOT_DIR . 'model/post/post.model.php';
 require_once ROOT_DIR . 'model/comment/comment.model.php';
-require_once ROOT_DIR . 'model/push-notification/push-notification.tokens.class.php';
+require_once ROOT_DIR . 'model/push-notification/push-notification.tokens.model.php';
 require_once ROOT_DIR . 'model/push-notification/push-notification.class.php';
 require_once ROOT_DIR . 'model/file/file.model.php';
 require_once ROOT_DIR . 'etc/core/error.php';

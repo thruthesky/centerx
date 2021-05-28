@@ -1,6 +1,7 @@
 <?php
-use Kreait\Firebase\Messaging\MulticastSendReport;
-
+/**
+ * @file push-notification.token.model.php
+ */
 /**
  * Class PushNotificationTokenModel
  *

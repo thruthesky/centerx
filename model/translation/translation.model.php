@@ -1,7 +1,8 @@
 <?php
 /**
  * @file translation.model.php
- *
+ */
+/**
  * Class TranslationModel
  *
  * Translation class can be used on both functional(inside PHP) and restful(by API calling).

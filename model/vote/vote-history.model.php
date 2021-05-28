@@ -1,7 +1,8 @@
 <?php
 /**
  * @file vote-history.model.php
- *
+ */
+/**
  * Class VoteHistoryModel
  *
  * 추천은 글, 코멘트, 쇼핑몰 상품 등 posts 테이블의 글 뿐만아니라, 사용자, 첨부 파일 등에도 할 수 있도록 taxonomy 가 존재한다.

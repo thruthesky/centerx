@@ -1,6 +1,6 @@
 <?php
 /**
- * @file in-app-purchase.class.php
+ * @file in-app-purchase.model.php
  */
 use ReceiptValidator\iTunes\Validator as iTunesValidator;
 /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * @file friend.class.php
+ * @file friend.model.php
  */
 /**
  * Class FriendModel
