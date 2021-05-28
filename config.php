@@ -69,10 +69,10 @@ define('LOCAL_HOSTS',
 
 
 /// DB 접속 정보가 keys 폴더에 존재하는지 확인. 아니면 config.php 의 접속 정보를 사용.
-if ( file_exists( theme()->folder . 'keys/db.password.php') ) {
-    include theme()->folder . 'keys/db.password.php';
-} else if ( file_exists(ROOT_DIR . 'etc/keys/db.password.php') ) {
-    include ROOT_DIR . 'etc/keys/db.password.php';
+if ( file_exists( theme()->folder . 'keys/db.config.php') ) {
+    include theme()->folder . 'keys/db.config.php';
+} else if ( file_exists(ROOT_DIR . 'etc/keys/db.config.php') ) {
+    include ROOT_DIR . 'etc/keys/db.config.php';
 }
 
 

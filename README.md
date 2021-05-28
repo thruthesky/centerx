@@ -208,10 +208,7 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
       총 용량은 60분에 글 1M 로 제한, 사진 20M 로 제한.
       이것을 관리자 페이지에서 변경 할 수 있도록 한다.
 
-  - @later etc/configs 폴더에 각종 설정을 넣는다.
-    db.config.php
-    app.config.php
-    와 같이 분리를 한다. 그리고 db.config.php 가 존재하지 않으면 설치가 안된 것으로 한다.
+  - 그리고 db.config.php 가 존재하지 않으면 설치가 안된 것으로 한다.
 
 
 
@@ -379,7 +376,7 @@ cd etc/phpdoc
   - phpMyAdmin 접속 후, `centerx/etc/install/sql` 폴더에서 최신 sql 파일의 내용을 phpMyAdmin 에 입력하고 쿼리 실행을 한다.
     - 만약, 국가 정보를 원한다면, `wc_countries` 테이블을 삭제하고, `/centerx/etc/install/sql/countries.sql`
 
-  - 참고, phpMyAdmin 에서 root 와 사용자 계정 password 를 변경 할 수 있으며, 변경한 비밀번호를 `etc/keys/db.password.php` 파일에 저장하면 된다.
+  - 참고, phpMyAdmin 에서 root 와 사용자 계정 password 를 변경 할 수 있으며, 변경한 비밀번호를 `etc/keys/db.config.php` 파일에 저장하면 된다.
 
 - node modules 들을 설치한다.
   참고로 개발을 위해서만 npm install 을 하면 된다. 배포 서버에서는 할 필요 없다.
@@ -838,10 +835,10 @@ with the latest android version, but the developer must code on the android app.
 ## 데이터베이스 계정 설정
 
 - 가장 먼저 `keys` 폴더에 접속 정보가 존재하는지 확인을 한다.
-  DB 접속 정보는 공개되면 안된다. 그래서 .gitignore 에 포함되어져 있는 keys 폴더에 보관을 한다. 또는 `db.password.php` 파일이 .gitignore 에
+  DB 접속 정보는 공개되면 안된다. 그래서 .gitignore 에 포함되어져 있는 keys 폴더에 보관을 한다. 또는 `db.config.php` 파일이 .gitignore 에
   들어가 있다.
-  - 우선, `theme/theme-name/keys/db.passowrd.php` 파일이 존재하면 로드한다.
-  - 없으면, `etc/keys/db.password.php` 파일이 존재하는지 보고 있으면 로드한다.
+  - 우선, `theme/theme-name/keys/db.config.php` 파일이 존재하면 로드한다.
+  - 없으면, `etc/keys/db.config.php` 파일이 존재하는지 보고 있으면 로드한다.
   - 없으면, config.php 에 있는 접속 정보로 접속한다.
 
 
