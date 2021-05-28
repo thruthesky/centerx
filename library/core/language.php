@@ -16,8 +16,9 @@
  *  ln(['en' => 'English', 'ko' => 'Korean', 'ch' => '...', ... ]); // If the input is array, then the value of the array for that language will be returned.
  *  ln('users', ln(['en' => 'Users', 'ko' => '사용자'])) // 이 처럼 기본 자체를 언어화 할 수 있다.
  */
-function ln(array|string $code, mixed $default_value='', bool $translate=true): string
+function ln(array|string $code = null, mixed $default_value='', bool $translate=true): string
 {
+	if ( $code === null ) return $default_value;
     if ( FIX_LANGUAGE ) $language = FIX_LANGUAGE;
     else $language = get_user_language();
 
