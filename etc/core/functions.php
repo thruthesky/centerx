@@ -435,7 +435,10 @@ function getSessionId($profile) {
  * @return array|bool - 쿠키에 세션 정보가 없거나 올바르지 않으면 false 를 리턴한다.
  *
  * 예제) 쿠키에 있는 정보로 회원 로그인을 시킬 때, 아래와 같이 한다.
- *  setUserAsLogin(getProfileFromCookieSessionId());
+ *
+ * ```
+ * setUserAsLogin(getProfileFromCookieSessionId());
+ * ```
  */
 function getProfileFromCookieSessionId() : array|bool {
     $sid = getAppCookie(SESSION_ID);

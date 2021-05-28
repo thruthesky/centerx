@@ -5,7 +5,7 @@
  *
  * @property-read string $url
  */
-class Theme
+class View
 {
 
     public string $folderName;
@@ -81,13 +81,16 @@ class Theme
             $filename = implode('/', $arr);
         }
 
-        $file_path = ROOT_DIR . "themes/" . $this->folderName . '/' .
+        $file_path = VIEW_DIR . $this->folderName . '/' .
             ( $prefixThemeName ? $this->folderName . '.' : '') .
             $filename . '.' . $extension;
 
+        return $file_path;
+
+        // @todo delete below. This code is not used in v2
         if ( file_exists($file_path) ) return $file_path;
 
-        $default_file_path = ROOT_DIR . "themes/default/" .
+        $default_file_path = VIEW_DIR . "default/" .
             ( $prefixThemeName ? $this->folderName . '.' : '') .
             $filename . '.' . $extension;
 
@@ -189,15 +192,23 @@ class Theme
 }
 
 
-$__Theme = null;
+$__View = null;
 /**
- * @return Theme
+ * @return View
  */
-function theme(): Theme
+function view(): View
 {
-    global $__Theme;
-    if ( $__Theme == null ) {
-        $__Theme = new Theme();
+    global $__View;
+    if ( $__View == null ) {
+        $__View = new View();
     }
-    return $__Theme;
+    return $__View;
+}
+
+/**
+ * @deprecated Use `view()`
+ * @return View
+ */
+function theme(): View {
+    return view();
 }

@@ -1,7 +1,12 @@
 <?php
 
-
 include './boot.php'; // load booting scripts
+
+
+
+
+
+
 if ( in(ROUTE) ) return include ROOT_DIR . 'routes/index.php';
 
 

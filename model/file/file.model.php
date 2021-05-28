@@ -11,7 +11,6 @@
  */
 class FileModel extends Entity {
 
-
     public function __construct(int $idx)
     {
         parent::__construct(FILES, $idx);

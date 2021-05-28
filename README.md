@@ -107,7 +107,7 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
 
 
 
-- 다음 버전의 명칭
+- Git Repo 변경 및 다음 버전의 명칭
   - CenterX 대신 Matrix 로 변경
     - https://github.com/withcenter/matrix 로 repo 를 이동.
     - Matrix 에는 성장/발하는 모체라는 뜻이 있다.

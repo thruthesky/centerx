@@ -18,7 +18,7 @@ const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
  *
  * @see README.md for the details.
  */
-define('DOMAIN_THEMES', [
+const DOMAIN_THEMES = [
     'cherry.philov' => 'x',
     'itsuda' => 'itsuda',
     '127.0.0.1' => 'default',
@@ -33,7 +33,7 @@ define('DOMAIN_THEMES', [
     'sonub' => 'sonub',
     'goldenage50' => 'itsuda',
     'dating' => 'dating',
-]);
+];
 
 
 
@@ -46,7 +46,7 @@ define('DOMAIN_THEMES', [
  * 현재 사이트에서 사용하려는 도메인의 suffix 를 여기에 입력하면 된다. 예를 들어, abc.uk 도메인을 쓴다면, .uk 를 추가하면 된다.
  * 필요하다면, .com, .net, .org, .co.kr, .kr 등이 많이 쓰이는 도메인이므로 이것들을 추가하면 된다.
  */
-define('SUPPORTED_DOMAIN_SUFFIX', ['.com', '.co.kr', '.kr']);
+const SUPPORTED_DOMAIN_SUFFIX = ['.com', '.co.kr', '.kr'];
 
 
 
@@ -61,14 +61,15 @@ define('SUPPORTED_DOMAIN_SUFFIX', ['.com', '.co.kr', '.kr']);
  *
  * 참고, 테마 설정 파일에서 isLocalhost() 를 사용 할 수 있으므로, 테마 설정이 로드되기 전에 정의되어야 한다.
  */
-define('LOCAL_HOSTS',
-    ['localhost', '127.0.0.1', 'local.itsuda50.com', 'main.philov.com', 'apple.philov.com',
+const LOCAL_HOSTS = ['localhost', '127.0.0.1', 'local.itsuda50.com', 'main.philov.com', 'apple.philov.com',
     'banana.philov.com', 'cherry.philov.com', 'main.sonub.com', 'dating.com'
-]);
+];
 
 
 
-/// DB 접속 정보가 keys 폴더에 존재하는지 확인. 아니면 config.php 의 접속 정보를 사용.
+// Load database connection information.
+// `keys` folder is not added to github. so it is safe to put database information in this file.
+// DB 접속 정보가 keys 폴더에 존재하는지 확인. 아니면 config.php 의 접속 정보를 사용.
 if ( file_exists( theme()->folder . 'keys/db.config.php') ) {
     include theme()->folder . 'keys/db.config.php';
 } else if ( file_exists(ROOT_DIR . 'etc/keys/db.config.php') ) {
@@ -132,8 +133,8 @@ if ( !defined('COOKIE_DOMAIN') ) {
 /**
  * This can be an absolute or relative path.
  */
-define('UPLOAD_DIR', ROOT_DIR . 'files/uploads/');
-define('THUMBNAILS_DIR', ROOT_DIR . 'files/thumbnails/');
+const UPLOAD_DIR = ROOT_DIR . 'files/uploads/';
+const THUMBNAILS_DIR = ROOT_DIR . 'files/thumbnails/';
 
 
 /**
@@ -151,8 +152,8 @@ if ( isCli() ) {
 } else {
     define('HOME_URL', get_current_root_url());
 }
-define('UPLOAD_URL', HOME_URL . 'files/uploads/');
-define('THUMBNAILS_URL', HOME_URL . 'files/thumbnails/');
+const UPLOAD_URL = HOME_URL . 'files/uploads/';
+const THUMBNAILS_URL = HOME_URL . 'files/thumbnails/';
 
 
 
@@ -167,7 +168,7 @@ define('THUMBNAILS_URL', HOME_URL . 'files/thumbnails/');
  * I.e) 'thruthesky@gmail.com'
  * I.e) 'abc@domain.com,thruthesky@gmail.com,...'
  */
-define('ADMIN_EMAIL', 'admin@itsuda50.com,thruthesky@gmail.com');
+const ADMIN_EMAIL = 'admin@itsuda50.com,thruthesky@gmail.com';
 
 
 

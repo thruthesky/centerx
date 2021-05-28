@@ -1,18 +1,28 @@
 <?php
-define('ROOT_DIR', __DIR__ . '/');
 
+//
+const ROOT_DIR = __DIR__ . '/';
+const VIEW_DIR = ROOT_DIR . 'view/';
+
+
+// Restful Api
 require ROOT_DIR . 'etc/preflight.php';
+// Kill wrong access or malicious access.
 require ROOT_DIR . 'etc/kill-wrong-routes.php';
 
+// Autoload for PHP Composer modules
 require ROOT_DIR . 'vendor/autoload.php';
 
+//
 require_once ROOT_DIR . 'etc/core/functions.php';
 require_once ROOT_DIR . 'etc/core/language.php';
 
 require_once ROOT_DIR . 'etc/defines.php';
 require_once ROOT_DIR . 'etc/translations.php';
 
+// @todo remove theme
 require_once ROOT_DIR . 'etc/core/theme.php';
+
 
 require_once ROOT_DIR . 'etc/core/mysqli.php';
 
@@ -55,6 +65,8 @@ require_once ROOT_DIR . 'etc/core/hook.php';
 
 // config.php 에는 theme config 도 실행되므로, 사실 모든 종류의 코드가 다 필요하다. 단, DB 에 직접 접속 할 수 없고, 정히 필요하다면, hook 이나 route 를 통해서 할 수 있다.
 // 하지만, hook 이나 route 는 theme functions.php 에 저장되는 것이 좋다.
+//
+// Load global config.php that loads config.php in each theme.
 require_once ROOT_DIR . 'config.php';
 
 
@@ -63,6 +75,7 @@ if ( canHandleError() ) {
     set_error_handler("customErrorHandler");
 }
 
+// Load database model and connect to database.
 require_once ROOT_DIR . 'etc/db.php';
 
 
@@ -73,6 +86,9 @@ adjust_http_input();
 
 
 /**
+ * @deprecated
+ * @todo remove unused function since v2
+ *
  * @see README.md
  */
 function adjust_http_input() {
@@ -103,6 +119,9 @@ live_reload();
 // Leave a record, for stating that a new script run time begins.
 leave_starting_debug_log();
 
+
+// Login into PHP runtime.
+// @todo Is this really needed on v2? Everything can be done through Ajax.
 if ( API_CALL == false ) {
     setUserAsLogin(getProfileFromCookieSessionId());
 }
