@@ -6,7 +6,11 @@ $post = $o['post'];
 <div class="d-flex align-items-center buttons mt-2">
   <div class="d-flex">
     <vote-buttons parent-idx="<?= $post->idx ?>" y="<?= $post->Y ?>" n="<?= $post->N ?>" text-like="<?= ln('like') ?>" text-dislike="<?= ln('dislike') ?>"></vote-buttons>
-    <?php if ($post->isMine() == false) { ?><a class="btn btn-sm mr-2" href="<?= messageSendUrl($post->userIdx) ?>"><?= ln('send_message') ?></a><?php } ?>
+    <?php if ($post->isMine() == false) { ?>
+      <a class="btn btn-sm mr-2" href="<?= messageSendUrl($post->userIdx) ?>">
+        <span class="d-md-block d-none "><?= ln('send_message') ?></span>
+        <span class="d-md-none">💬</span>
+      </a><?php } ?>
   </div>
   <span class="flex-grow-1"></span>
 
@@ -17,7 +21,7 @@ $post = $o['post'];
 
 
 
-    <?=hook()->run('post-buttons-right-side', $post)?>
+  <?= hook()->run('post-buttons-right-side', $post) ?>
 
 
 

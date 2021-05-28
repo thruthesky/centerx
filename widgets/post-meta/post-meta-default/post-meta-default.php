@@ -32,7 +32,7 @@ $usernamePopoverId = "user-name-" . $post->idx;
     </div>
 </div>
 
-<forum-popup-menu :id="'<?= $avatarPopoverId ?>'"></forum-popup-menu>
-<forum-popup-menu :id="'<?= $usernamePopoverId ?>'"></forum-popup-menu>
+<forum-popup-menu :id="'<?= $avatarPopoverId ?>'" :user-id="'<?= $post->userIdx ?>'"></forum-popup-menu>
+<forum-popup-menu :id="'<?= $usernamePopoverId ?>'" :user-id="'<?= $post->userIdx ?>'"></forum-popup-menu>
 
 <?php js(HOME_URL . 'etc/js/vue-js-components/user-popup-menu.js') ?>

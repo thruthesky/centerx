@@ -1,16 +1,11 @@
 Vue.component('forum-popup-menu', {
   props: ['id', 'isMine', 'userId'],
-  // data: function() {
-  //   return {
-  //       id: '',
-  //   }
-  // },
   template: `
   <b-popover ref="popover" :target="id" triggers="click blur" placement="bottomright">
     <div class="d-block text-left" style="max-width: 200px">
       <a class="w-100 btn text-left">view profile</a>
       <a class="w-100 btn text-left">send message</a>
-      <a class="w-100 btn text-left">list posts of this user</a>
+      <a class="w-100 btn text-left" :href="'/?p=forum.post.list&userIdx=' + userId">list posts of this user</a>
       <a class="w-100 btn text-left">list comments of this user</a>
       <a class="w-100 btn text-left">list photos of this user</a>
     </div>

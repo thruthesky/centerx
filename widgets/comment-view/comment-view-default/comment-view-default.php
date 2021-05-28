@@ -42,7 +42,12 @@ $usernamePopoverId = "user-name-" . $comment->idx;
             <a class="btn btn-sm mr-2" v-if="displayCommentForm[<?= $comment->idx ?>] !== 'reply'" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, 'reply')"><?= ln('reply') ?></a>
             <a class="btn btn-sm mr-2" v-if="displayCommentForm[<?= $comment->idx ?>] === 'reply'" v-on:click="onCommentEditButtonClick(<?= $comment->idx ?>, '')"><?= ln('cancel') ?></a>
             <vote-buttons n="<?= $comment->N ?>" y="<?= $comment->Y ?>" parent-idx="<?= $comment->idx ?>" text-like="<?= ln('like') ?>" text-dislike="<?= ln('dislike') ?>"></vote-buttons>
-            <?php if (!$comment->isMine()) { ?><a class="btn btn-sm mr-2" href="<?= messageSendUrl($comment->userIdx) ?>"><?= ln('send_message') ?></a><?php } ?>
+            <?php if (!$comment->isMine()) { ?>
+                <a class="btn btn-sm mr-2" href="<?= messageSendUrl($comment->userIdx) ?>">
+                    <span class="d-md-block d-none "><?= ln('send_message') ?></span>
+                    <span class="d-md-none">💬</span>
+                </a>
+            <?php } ?>
             <span class="flex-grow-1"></span>
 
 
