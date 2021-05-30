@@ -108,8 +108,11 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
   `files.taxonomy` and `metas.taxonomy` are very fine.
   
 
-- Note, widgets may be used for admin page and extra ui design,
+- Note, widgets may be used for extra ui design,
   but will be removed in version 3.
+  
+- Admin page is completely re-written by Vue.js 2
+  
 - `files` folder will be moved into `/var/files`
 - `cypress` folder will be moved into `/etc`
 

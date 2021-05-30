@@ -4,6 +4,7 @@
 const ROOT_DIR = __DIR__ . '/';
 const VIEW_FOLDER_NAME = 'view';
 const VIEW_DIR = ROOT_DIR . VIEW_FOLDER_NAME . '/';
+const CONTROLLER_DIR = ROOT_DIR . 'controller/';
 
 
 // Restful Api
@@ -112,9 +113,9 @@ if ( file_exists($_path) ) {
     require_once $_path;
 }
 
-// Live reload.
+// Live reload is deprecated on v2.
 // @see README.md how to control live reload.
-live_reload();
+// live_reload();
 
 
 // Leave a record, for stating that a new script run time begins.
@@ -126,5 +127,4 @@ leave_starting_debug_log();
 if ( API_CALL == false ) {
     setUserAsLogin(getProfileFromCookieSessionId());
 }
-
 
