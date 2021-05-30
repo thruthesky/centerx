@@ -2,7 +2,7 @@
 
 include './boot.php'; // load booting scripts
 
-
+exit;
 
 
 

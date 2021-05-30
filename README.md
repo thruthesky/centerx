@@ -78,7 +78,11 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
 
 - [PHP + SPA](https://docs.google.com/document/d/1WG3caN7_3eXRhPthBgDAgzzkI-OrVir1Bvnrbt-nsR0/edit#heading=h.n7o87sszwfc6) 를 시도해 본다.
 
-- singular
+
+- Principle, Only controllers are the ones that deal with model.
+  - View can only connect to controller to use models and its functionalities.
+    View cannot connect to models directly.
+    View can only get data through controllers.
   
 - Change folder name form `library/toxonomy` to `model`.
   - `library/taxonomy/user/user.taxonomy.php` -> `model/user/user.model.php`
@@ -100,6 +104,14 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
   - Move `etc/core/theme.php` to `etc/core/view.php`.  
   - Add some tests on `etc/core/view.php`
 
+- @doc Continue using the term `taxonomy` as it is a term for classification data group.
+  `files.taxonomy` and `metas.taxonomy` are very fine.
+  
+
+- Note, widgets may be used for admin page and extra ui design,
+  but will be removed in version 3.
+- `files` folder will be moved into `/var/files`
+- `cypress` folder will be moved into `/etc`
 
 
 
@@ -123,6 +135,7 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
     - 만렙 제대로를 두어서, 처음에는 50레벨 까지만, 그 후 부터 10레벨씩 레벨을 푼다.
 
 - 공지사항을 beginAt 과 endAt 을 통해서, 언제 부터 언제까지인지 표시를 할 수 있도록 한다.
+
 
 
 - 사용자 프로필을
