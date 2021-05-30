@@ -166,6 +166,9 @@ const META_CODE_EXCEPTIONS = [
 ];
 
 
+/**
+ * ConfigModel 에서 관리자 설정이라는 것을 표시.
+ */
 const ADMIN_SETTINGS = 1;
 
 

@@ -185,6 +185,9 @@ class Entity {
     }
 
 
+
+
+
     /**
      * 입력된 $entity 의 모든 properties 를 현재 객체의 properties  업데이트해서 리턴한다.에
      * 즉, 현재 객체를 입력된 $entity 로 바꾸어서 리턴한다.

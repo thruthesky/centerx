@@ -47,11 +47,25 @@ function createTestUser(): UserModel {
 }
 
 
+// Does not support flag GLOB_BRACE
+function rglob($pattern, $flags = 0) {
+    $files = glob($pattern, $flags);
+    foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
+        $files = array_merge($files, rglob($dir.'/'.basename($pattern), $flags));
+    }
+    return $files;
+}
+
 
 echo "\n\n=====================================> Begin Test at: " . date('r') . "\n\n";
 
+$test_path_1 = $rootDir . '/controller/**/*.test.php';
+$test_path_2 = $rootDir . '/tests/*.test.php';
+echo "Searching path: $test_path_1, $test_path_2\n\n";
 
-foreach(glob($rootDir . '/tests/*.test.php') as $path) {
+$test_files = array_merge(glob($test_path_1), glob($test_path_2));
+
+foreach($test_files as $path) {
     if ( isset($argv[1]) ) {
         if ( strpos($path, $argv[1]) === false ) continue;
     }
@@ -59,6 +73,7 @@ foreach(glob($rootDir . '/tests/*.test.php') as $path) {
     include $path;
     echo "\n";
 }
+
 
 
 

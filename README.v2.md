@@ -80,3 +80,39 @@ d(view()->page());
 - controller 가 배열이나 에러 문자열 외의 값을 리턴하면 `error_malformed_response` 에러 발생.
 
 
+## Config
+
+### 일반 설정
+
+- taxonomy 는 `config` 이고, entity 가 0인 것은 모두 일반 설정이다.
+
+### 관리자 설정
+
+- 관리자만 설정 할 수 있는 것으로 taxonomy 가 `config` 이고, entity 는 1 이다.
+
+
+## 클라이언트 동작 방식
+
+- 앱이 부팅 할 때, 관리자가 설정한 것들을 로드해야 한다.
+  - 단, 양이 많은, 설정은 제외 할 수 있도록 관리자 설정을 관리한다.
+  
+- 필요한 게시판 설정을 미리 로드해야 한다.
+- 
+
+
+
+## Unit Testing
+
+- 테스트 경로는 `controller/**/*.test.php` 파일과 `tests/*.test.php` 파일들이다.
+
+
+### 테스트 예제
+
+- 아래는 `controller/app/app.controller.test.php` 파일의 예제이다.
+  controller 를 include 해서 테스트를 하면 된다.
+  
+```php
+<?php
+include "app.controller.php";
+isTrue((new AppController())->version(), "App version");
+```

@@ -6,6 +6,10 @@
  * Class ConfigModel
  *
  * There is no `config` model. Read the readme.
+ *
+ * `ConfigModel` 이 `MetaModel` 을 extends 하지 않는 이유는,
+ *      - 사실, extends 하는게 가장 좋지만,
+ *      - 생성자나 메소드에서 conflict 이 발생하기 때문이다. 편하게 쓰기 위해서 MetaModel 을 extends 하지 않는다.
  */
 class ConfigModel {
 
@@ -37,6 +41,9 @@ class ConfigModel {
      *  if $code is an array, then it updates multiple settings.
      * @param mixed $value
      * @return void
+     *
+     * 주의, 에러가 있어도 에러를 리턴하지 않는다. meta()->updates() 함수 자체가 에러가 있어도 무시를 한다.
+     *      따라서, 성공 여부를 확인해야 한다면, 데이터가 올바로 저장되었는지 읽어서 확인을 해야 한다.
      */
     public function set(array|string $code, mixed $value=null): void {
         if ( is_array($code) ) {
@@ -91,6 +98,8 @@ function config(string $code='', mixed $default_value=null): ConfigModel|int|str
 
 
 /**
+ * Taxonomy 는 config 로 하되, entity 는 1 로 주어서, 일반 설정이 아닌, 관리자 설정으로 표시한다.
+ * 즉, entity 가 1 이면, 관리자 설정인 것이다.
  * @return ConfigModel
  */
 function adminSettings(): ConfigModel {

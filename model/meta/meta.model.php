@@ -28,9 +28,13 @@ class MetaModel extends Entity {
      * @param string $taxonomy
      * @param int $entity
      * @param string|null $code
+     *  - $code 가 null 이면, 전체 taxonomy, entity 의 레코드들을 배열로 리턴.
+     *      만약, 결과 레코드가 없으면 빈 배열 리턴.
+     *  - $code 문장열이면, 값 1개를 리턴. 만약, 레코드가 없으면 null 리턴.
+     *
      * @return mixed
      *  - null on string $code, if there is no record.
-     *  - empty array on array $code, if there is no record.
+     *  - empty array if there is no record.
      *  - single value of scala on string $code.
      *  - array of scalar or object on array $code.
      */

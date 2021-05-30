@@ -122,7 +122,7 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
 
 - send push notification if somebody likes on my comments or posts.
 
-
+- Move test file into each controller and model folder.
 
 
 
@@ -2705,7 +2705,9 @@ chokidar '**/*.php' -c "docker exec [php_container_name] php [centerx_folder_nam
   - 테스트 파일 이름에 "app" 또는 "user" 라는 문자열이 있으면 실행한다.
 
 ```shell
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php"
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic."
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php controller"
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.db."
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.entity.search"
 chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.user_a"
