@@ -114,9 +114,13 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
 - Admin page is completely re-written by Vue.js 2
   
 - `files` folder will be moved into `/var/files`
-- `cypress` folder will be moved into `/etc`
+- delete `cypress` folder and cypress.json. Test will be done by Vue.js.
+- delete `node_modules` and `package.json`, `live-reload.js`, `.prettierrc.json`, `.eslint**`.
+  if needed, view is the one who need to set the node environment.
+  
+- delete `widgets` folder.
 
-
+- send push notification if somebody likes on my comments or posts.
 
 
 

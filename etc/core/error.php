@@ -22,9 +22,17 @@ class E {
     public string $user_not_found_by_that_session_id = 'error_user_not_found_by_that_session_id';
 
     public string $malformed_route = 'error_malformed_route';
+    /**
+     * @deprecated
+     * @var string
+     */
     public string $route_file_not_found = 'error_route_file_not_found';
     public string $route_function_not_found = 'error_route_function_not_found';
     public string $not_logged_in = 'error_not_logged_in';
+
+
+    public string $controller_file_not_found = 'error_controller_file_not_found';
+    public string $controller_method_not_found = 'error_controller_method_not_found';
 
     public string $blocked = 'error_blocked';
 
@@ -54,6 +62,7 @@ class E {
 
 
     public string $response_is_empty = 'error_response_is_empty';
+    public string $malformed_response = 'error_malformed_response';
     public string $entity_not_exists = 'error_entity_not_exists';
     public string $entity_not_found = 'error_entity_not_found';
 

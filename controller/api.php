@@ -1,2 +1,41 @@
 <?php
 
+// login if session id is provided.
+if ( in(SESSION_ID) ) {
+    $profile = getProfileFromSessionId( in(SESSION_ID) );
+    if ( isError($profile) ) error($profile);
+    setUserAsLogin( $profile );
+}
+
+
+$route= in(ROUTE);
+// User defined routes.
+if ( $func = getRoute($route) ) {
+    $response = $func(in());
+} else {
+    // Controller routes.
+    $arr = explode('.', $route, 2);
+    if (count($arr) != 2) error(e()->malformed_route);
+    $className = $arr[0];
+    $methodName = $arr[1];
+    $filePath = CONTROLLER_DIR . "{$className}.controller.php";
+    if ( ! file_exists($filePath) ) error(e()->controller_file_not_found);
+    include $filePath;
+    $className = str_replace('-', '', $className);
+    $instance = new ($className . 'Controller')();
+
+    if (!method_exists($instance, $methodName)) error(e()->controller_method_not_found);
+
+    $response = $instance->$methodName(in());
+}
+if ( is_array($response) ) {
+    success($response);
+} else if ( is_string($response) && str_starts_with($response, 'error_') ) {
+    error($response);
+} else if ( ! $response ) {
+    error(e()->response_is_empty);
+} else {
+    error(e()->malformed_response);
+}
+
+

@@ -120,11 +120,3 @@ if ( file_exists($_path) ) {
 
 // Leave a record, for stating that a new script run time begins.
 leave_starting_debug_log();
-
-
-// Login into PHP runtime.
-// @todo Is this really needed on v2? Everything can be done through Ajax.
-if ( API_CALL == false ) {
-    setUserAsLogin(getProfileFromCookieSessionId());
-}
-

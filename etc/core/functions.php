@@ -600,9 +600,11 @@ function success(mixed $data) {
 
 /**
  * Custom Api Route 를 추가한다.
+ *
  * $__routes holds routes functions.
  *
- * 참고로, 훅과 다르게 Api Route 는 같은 Route 에 여러개의 함수를 정의 할 수 없고, 하나만 정의 할 수 있다.
+ * 참고, 훅과 다르게 Api Route 는 같은 Route 에 여러개의 함수를 정의 할 수 없고, 하나만 정의 할 수 있다.
+ * 참고, view 에서 controller 에 존재하는 것들을 overwrite 할 수 있다.
  */
 $__routes = [];
 function addRoute($routeName, $func) {
