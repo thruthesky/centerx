@@ -35,35 +35,44 @@ function isTrue($t, string $msg = '') {
     $testCount ++;
 }
 
+function request(string $route, array $data = []) {
 
-/**
- * Create a test user or login the test user that has just created for the test session.
- * @return UserModel
- */
-function createTestUser(): UserModel {
-    $email = 'user-register' . time() . '@test.com';
-    $pw = '12345a';
-    return user()->loginOrRegister([EMAIL=>$email, PASSWORD=>$pw, 'color' => 'blue']);
+
+    $endpoint = 'http://www_docker_nginx/index.php';
+
+
+    $data['route'] = $route;
+    $postdata = http_build_query( $data );
+
+    $opts = array('http' =>
+        array(
+            'method'  => 'POST',
+            'header'  => 'Content-type: application/x-www-form-urlencoded',
+            'content' => $postdata
+        )
+    );
+
+    $context = stream_context_create($opts);
+
+    $result = file_get_contents($endpoint, false, $context);
+
+    $json = json_decode($result, true);
+
+    return $json['response'];
+
 }
 
-
-// Does not support flag GLOB_BRACE
-function rglob($pattern, $flags = 0) {
-    $files = glob($pattern, $flags);
-    foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
-        $files = array_merge($files, rglob($dir.'/'.basename($pattern), $flags));
-    }
-    return $files;
-}
 
 
 echo "\n\n=====================================> Begin Test at: " . date('r') . "\n\n";
 
+$test_path_0 = $rootDir . '/model/**/*.test.php';
 $test_path_1 = $rootDir . '/controller/**/*.test.php';
-$test_path_2 = $rootDir . '/tests/*.test.php';
-echo "Searching path: $test_path_1, $test_path_2\n\n";
+$test_path_2 = $rootDir . '/controller/*.test.php';
+$test_path_3 = $rootDir . '/tests/*.test.php';
+echo "Searching path: $test_path_0, $test_path_1, $test_path_2, $test_path_3\n\n";
 
-$test_files = array_merge(glob($test_path_1), glob($test_path_2));
+$test_files = array_merge(glob($test_path_0), glob($test_path_1), glob($test_path_2), glob($test_path_3));
 
 foreach($test_files as $path) {
     if ( isset($argv[1]) ) {

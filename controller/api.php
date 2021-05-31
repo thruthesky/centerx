@@ -28,6 +28,8 @@ if ( $func = getRoute($route) ) {
 
     $response = $instance->$methodName(in());
 }
+
+//
 if ( is_array($response) ) {
     success($response);
 } else if ( is_string($response) && str_starts_with($response, 'error_') ) {

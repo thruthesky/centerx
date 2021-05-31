@@ -135,3 +135,12 @@ d(view()->page());
 include "app.controller.php";
 isTrue((new AppController())->version(), "App version");
 ```
+
+
+### HTTP 로 컨트롤러 테스트 예제
+
+- php test 는 www_docker_php 컨테이너에서 실행되는데, nginx 는 www_docker_nginx 에 있다.
+  즉, www_docker_php 컨테이너에서 www_docker_nginx 컨테이너에 접속해서, nginx 에서 다시 PHP 실행을 위해서 www_docker_php 를 접속하는 것이다.
+  이 때, test php 코드에서 접속을 할 때, http://www_docker_nginx/index.php 와 같이 접속을 해야 한다.
+  그리고, nginx 설정에 www_docker_nginx 를 도메인으로 추가해 주고,
+  config.php 의 도메인 설정에도 추가를 해 주어야 한다.

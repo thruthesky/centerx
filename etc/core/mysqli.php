@@ -81,6 +81,23 @@ class MySQLiDatabase {
 
             $stmt = $this->connection->prepare($sql);
 
+            if ( is_bool($stmt) ) {
+                if ( $this->displayError ) {
+                    echo "<hr>\n\n";
+                    echo "Database connection->prepare error message: " . $this->connection->error . "\n";
+                    echo "SQL: $sql\nValues: ";
+                    print_r($values);
+                    echo "\n";
+                    die("db()->insert()");
+                } else {
+                    die("connection->prepare() returned bool. Enable `displayError` to see error message.");
+                }
+            }
+
+
+
+
+            //
             $types = $this->types($values);
             $stmt->bind_param($types, ...$values);
 

@@ -112,14 +112,14 @@ class CategoryModel extends Entity {
         return parent::update($in);
     }
 
-    /**
-     * @deprecated 이 함수를 삭제하고, 부모 함수의 것을 사용 할 것.
-     * @return array|string
-     */
-    public function response(): array|string {
-        if ( $this->hasError ) return $this->getError();
-        else return $this->getData();
-    }
+//    /**
+//     * @deprecated 이 함수를 삭제하고, 부모 함수의 것을 사용 할 것.
+//     * @return array|string
+//     */
+//    public function response(): array|string {
+//        if ( $this->hasError ) return $this->getError();
+//        else return $this->getData();
+//    }
 
     /**
      * @return PostModel[]

@@ -137,3 +137,16 @@ function firstPost(bool $photo = true ): PostModel {
     if ( empty($posts) ) return post();
     return $posts[0];
 }
+
+
+
+/**
+ * Create a test user or login the test user that has just created for the test session.
+ * @return UserModel
+ */
+function createTestUser(): UserModel {
+    $email = 'user-register' . time() . '@test.com';
+    $pw = '12345a';
+    return user()->loginOrRegister([EMAIL=>$email, PASSWORD=>$pw, 'color' => 'blue']);
+}
+
