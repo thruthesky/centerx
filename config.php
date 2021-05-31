@@ -22,6 +22,7 @@ const DOMAIN_THEMES = [
     'www_docker_nginx' => 'x',
     'x.philov' => 'x',
     'cherry.philov' => 'x',
+    'banana.philov' => 'x',
     'itsuda' => 'itsuda',
     '127.0.0.1' => 'default',
     'localhost' => 'dating',

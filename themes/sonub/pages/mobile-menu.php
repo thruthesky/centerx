@@ -20,9 +20,11 @@
             </div>
 
             <div class="row">
+                <?php if ( loggedIn() ) { ?>
                 <div class="col-5 d-flex justify-content-center p-2 fs-sm">
                     <?=login()->nicknameOrName?> (<?=ln(login()->gender, '?')?>/<?=login()->age?>세)
                 </div>
+                <?php } ?>
                 <div class="col-7 d-flex justify-content-center fs-sm">
 
                 </div>
