@@ -208,6 +208,18 @@ function e(mixed $errcode=null): E {
     return new E($errcode);
 }
 
+/**
+ * @param string $err_code
+ * @param string $err_message
+ * @return string
+ */
+function err(string $err_code, string $err_message): string {
+    return add_error_string($err_code, $err_message);
+}
+function add_error_string(string $err_code, string $err_message): string {
+    return $err_code . '::' . $err_message;
+}
+
 function isError($obj) {
     return e($obj)->isError;
 }

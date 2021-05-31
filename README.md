@@ -124,6 +124,13 @@ CenterX 는 Theme 별로 개별 사이트를 만들 수 있는데, 아래의 요
 
 - Move test file into each controller and model folder.
 
+- add `displayName` on user response.
+  
+- Do more work on backend. So, different client can do less work.
+  For isntance,
+    - sending push notification,
+    - preparing data like `displayName` which first get from nickname, or name, or email.
+  
 
 
 

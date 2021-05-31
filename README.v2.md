@@ -70,8 +70,15 @@ d(view()->page());
 ## Api Response
 
 - controller 의 리턴 값은 무조건 JSON 이며, 그 JSON 을 해독하면 response 키가 있는데, 그 키의 값이 컨트롤러 실행 후 결과 값이다.
+  - response 는 JSON 값인데, 이 값을 다시 Modelling 하거나 `entity()->setMemoryData()` 또는 `entity()->copyWith()` 으로 객체화 하지
+    않는다. 즉, 그냥 JSON 으로 사용한다.
+    그 이유는 우선, PHP 단에서 View 를 사용하는 전통적인 웹 사이트 개발 보다는, SPA 또는 Flutter 와 같이 'SPA 웹'이나 플러터 앱에서 JSON 데이터를
+    가져와서 사용하는 것을 권하기 때문이다.
+    즉, SPA 를 처음 띄우기 위해서는 view/view-name/index.php 를 사용해야 하지만, 그 후 부터는 SPA 로 실행하는 것을 권장한다.
+  
 - response 가 성공의 값을 담고 있다면, 반드시 배열이어야 한다.
 - response 가 에러의 값을 담고 있다면, 반드시 `error_` 로 시작하는 문자열이어야 한다.
+
 
 ## Api Error
 
@@ -79,6 +86,18 @@ d(view()->page());
 - controller 가 리턴하는 겂이 없으면 `error_response_is_empty` 에러 발생.
 - controller 가 배열이나 에러 문자열 외의 값을 리턴하면 `error_malformed_response` 에러 발생.
 
+- 에러 문자열 코드 뒤에 `::` 를 표시하고 그 뒤에 추가적인 에러 설명 메시지가 들어 갈 수 있다.
+  예) `error_user_not_found::thruthesky@gggg.com`
+  
+- 에러 관련 함수 중,
+  - `error()` 는 에러 결과를 JSON 으로 출력한다.
+  - `err()` 는 에러 코드와 에러 설명 메시지를 합친다.
+  - `e()` 는 에러 객체로 `e()->user_not_found` 와 같이 에러를 호출 할 수 있다.
+  위 함수 들 중에서 이름이 긴 순서로 포함을 한다. 짧은 함수 `e()` 가 에러 객체 또는 에러 메시지를 담고,
+    `err()` 이 에러를 더하고, `error()` 이 에러를 출력한다.
+    사실 `err()` 는 `add_error_string` 의 약자이다.
+    예) 
+    `error(err(e()->controller_file_not_found, $filePath));`
 
 ## Config
 

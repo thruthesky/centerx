@@ -18,8 +18,8 @@ if ( $func = getRoute($route) ) {
     if (count($arr) != 2) error(e()->malformed_route);
     $className = $arr[0];
     $methodName = $arr[1];
-    $filePath = CONTROLLER_DIR . "{$className}.controller.php";
-    if ( ! file_exists($filePath) ) error(e()->controller_file_not_found);
+    $filePath = CONTROLLER_DIR . "{$className}/{$className}.controller.php";
+    if ( ! file_exists($filePath) ) error(err(e()->controller_file_not_found, $filePath));
     include $filePath;
     $className = str_replace('-', '', $className);
     $instance = new ($className . 'Controller')();
