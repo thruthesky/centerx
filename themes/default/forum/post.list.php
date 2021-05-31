@@ -9,7 +9,6 @@ if ($category->hasError && $category->getError() == e()->entity_not_found) {
 
 list( $where, $params ) = parsePostListHttpParams(in());
 
-
 // 글 목록 추출
 $posts = post()->search(where: $where, params: $params, page: in('page', 1), limit: in('limit', 10), object: true);
 

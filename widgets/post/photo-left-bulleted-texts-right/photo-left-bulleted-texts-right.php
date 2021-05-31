@@ -9,6 +9,7 @@
 $o = getWidgetOptions();
 
 $categoryId = $o['categoryId'] ?? 'discussion';
+$primaryPost = [];
 if (category($categoryId)->exists) {
   $primaryPost = post()->latest(categoryId: $categoryId, photo: true);
 }

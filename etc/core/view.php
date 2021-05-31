@@ -186,7 +186,7 @@ class View
                 break;
             }
         }
-        $this->folder = ROOT_DIR . 'themes/' . $this->folderName . '/';
+        $this->folder = VIEW_DIR . $this->folderName . '/';
     }
     
 }
