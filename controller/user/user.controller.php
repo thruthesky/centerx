@@ -1,6 +1,11 @@
 <?php
+/**
+ * @file user.controller.php
+ */
 
-
+/**
+ * Class UserController
+ */
 class UserController
 {
 
