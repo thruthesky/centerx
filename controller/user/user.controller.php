@@ -24,6 +24,8 @@ class UserController
         return user()->loginOrRegister($in)->response();
     }
 
+    // Returns log-in user's profile.
+    // Use this method to refresh the login user's profile, also.
     public function profile($in)
     {
         if (notLoggedIn()) return e()->not_logged_in;

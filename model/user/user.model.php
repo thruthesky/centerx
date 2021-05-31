@@ -208,6 +208,8 @@ class UserModel extends Entity {
 
     /**
      *
+     * @attention This does not login to PHP run time. It will only return login session and user information.
+     *
      * @param array $in
      * @return self
      */
