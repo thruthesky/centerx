@@ -146,7 +146,7 @@ class Forum extends Entity {
      *
      * @param bool $response
      *  이 값이 참이면 file 레코드를 배열로 리턴한다.
-     * @return FileTaxonomy[]
+     * @return FileModel[]
      */
     public function files(bool $response = false): array {
         if ( $this->idx == 0 ) return [];

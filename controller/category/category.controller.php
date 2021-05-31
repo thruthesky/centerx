@@ -1,5 +1,11 @@
 <?php
+/**
+ * @file category.controller.php
+ */
 
+/**
+ * Class CategoryController
+ */
 class CategoryController {
     /**
      * @param $in
