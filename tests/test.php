@@ -53,7 +53,6 @@ function request(string $route, array $data = []) {
     );
     $context = stream_context_create($opts);
 
-    d($context);
     $result = file_get_contents($endpoint, false, $context);
 
     $json = json_decode($result, true);
