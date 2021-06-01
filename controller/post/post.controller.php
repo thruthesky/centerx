@@ -108,6 +108,7 @@ class PostController {
             by: $in['by'] ?? 'DESC',
             page: $in['page'] ?? 1,
             limit: $in['limit'] ?? 10,
+            object: true
         );
 
         if ( isset($in['searchKey']) ) saveSearchKeyword($in['searchKey']);
