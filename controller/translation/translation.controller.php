@@ -11,8 +11,8 @@ class TranslationController {
         return translation()->loadByLanguageCode();
     }
 
-    public function update() {
-        return translation()->updateCode(in());
+    public function update($in) {
+        return translation()->updateCode($in);
     }
 
     /**

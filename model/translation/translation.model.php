@@ -97,17 +97,19 @@ class TranslationModel extends Entity
      *   Example input)
      *      ['code' => '...', 'currentCodeName' => '...', 'en' => '...', 'ko' => '...']
      *
-     * @return string
-     * @throws \Kreait\Firebase\Exception\DatabaseException
+     * @return string|array
      */
-    public function updateCode($in):string {
+    public function updateCode($in): array|string {
         if ( !isset($in['code']) || empty($in['code']) ) return e()->empty_code;
+        $in['currentCodeName'] = $in['currentCodeName'] ?? $in['code'];
 
         if ( $in['currentCodeName'] != $in['code'] ) {
             if ( $this->exists([CODE => $in[CODE]]) ) return e()->code_exists;
         }
         $this->deleteCode($in['currentCodeName']);
-        return $this->createCode($in);
+        $res =  $this->createCode($in);
+        if($res != $in[CODE]) return $res;
+        return [ CODE => $res ];
     }
 
     /**

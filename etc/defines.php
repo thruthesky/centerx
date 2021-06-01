@@ -46,6 +46,7 @@ define('ADMIN', 'admin');
 
 const IDX = 'idx';
 const ID = 'id';
+const IDS = 'ids';
 const CATEGORY = 'category';
 const CATEGORY_IDX = 'categoryIdx';
 const CATEGORY_ID = 'categoryId';

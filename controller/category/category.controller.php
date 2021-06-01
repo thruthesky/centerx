@@ -21,14 +21,19 @@ class CategoryController {
         if ( admin() == false ) return e()->you_are_not_admin;
         return category($in[IDX] ?? $in[ID])->update($in)->response();
     }
-    public function get($in) {
+    public function get($in): array|string
+    {
         return category($in[IDX] ?? $in[ID])->response();
     }
-    public function delete($in) {
+    public function delete($in): array|string
+    {
+        if ( admin() == false ) return e()->you_are_not_admin;
         return category($in[IDX])->delete()->response();
     }
-    public function search($in) {
-        $cats = category()->search(limit: $in['limit']);
+    public function search($in): array
+    {
+        $cats = category()->search(limit: $in['limit'] ?? 10);
+
         $rets = [];
         foreach(ids($cats) as $idx) {
             $cat = category($idx);
@@ -43,10 +48,19 @@ class CategoryController {
      * @param $in
      * @return array|string
      */
-    public function gets($in) {
-        if ( empty($in['ids']) ) return e()->ids_is_empty;
+    public function gets($in): array|string
+    {
+        if ( empty($in[IDS]) ) return e()->ids_is_empty;
+
+        if (is_string($in[IDS])) {
+            $ids = explode(',', $in[IDS]);
+        } else {
+            $ids = $in[IDS];
+        }
+
+
         $rets = [];
-        foreach( $in['ids'] as $id ) {
+        foreach( $ids as $id ) {
             if ( category($id)->hasError ) continue;
             $rets[] = category($id)->response();
         }

@@ -50,14 +50,14 @@ function testTranslationUpdateCode() {
 
     //update code
     isTrue(  translation()->updateCode([])  == e()->empty_code, 'fail code is not set');
-    isTrue(  translation()->updateCode([CODE => $code1, CURRENT_CODE_NAME => $code1]) == $code1, 'update with same code.');
+    isTrue(  translation()->updateCode([CODE => $code1, CURRENT_CODE_NAME => $code1])[CODE] == $code1, 'update with same code.');
 
     // create code 2
     isTrue(  translation()->createCode([CODE => $code2]) == $code2, 'success return code2');
     // update code1 with code2. must error
     isTrue(  translation()->updateCode([CODE => $code2, CURRENT_CODE_NAME => $code1]) == e()->code_exists, 'code already exist');
     // update with not existing code
-    isTrue(  translation()->updateCode([CODE => $code1 . 'abcd', CURRENT_CODE_NAME => $code1]) == $code1 . 'abcd', 'success, new code ' . $code1 . 'abcd');
+    isTrue(  translation()->updateCode([CODE => $code1 . 'abcd', CURRENT_CODE_NAME => $code1])[CODE] == $code1 . 'abcd', 'success, new code ' . $code1 . 'abcd');
 }
 
 
