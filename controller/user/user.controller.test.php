@@ -24,3 +24,8 @@ isTrue($re[IDX], 'Register success on controller.');
 registerAndLogin();
 $re = $userController->profile([]);
 isTrue($re[IDX], 'register, login, profile');
+
+
+$admin = setLoginAsAdmin();
+isTrue(admin(), "admin() => The user is admin");
+

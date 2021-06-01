@@ -502,6 +502,8 @@ function notLoggedIn(): bool {
 /**
  * Return true if login user is admin.
  * @return bool
+ *
+ * @warning When tests run, `ADMIN` config will be changed, meaning you have to set it again.
  */
 function admin(): bool {
     if ( login()->idx == 0 ) return false;

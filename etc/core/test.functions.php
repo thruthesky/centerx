@@ -14,6 +14,16 @@ function setLoginAny(): UserModel {
     $users = user()->search(limit: 1, object: true);
     return setLogin($users[0]->idx);
 }
+
+// Login as admin.
+// Note that this will change admin configuration. So, admin need to reset the admin email on admin page.
+function setLoginAsAdmin(): UserModel {
+    $user = createTestUser();
+    config()->set(ADMIN, $user->email);
+    setLogin($user->response());
+    return $user;
+}
+
 function setLogin1stUser(): UserModel {
     return setLoginAny();
 }
@@ -82,7 +92,7 @@ function registerUser(): UserModel {
 }
 
 /**
- * Registers with random email and logs into the system.
+ * Registers with random email and logs into the PHP runtime(system).
  * @return UserModel
  */
 function registerAndLogin(): UserModel {

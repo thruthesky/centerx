@@ -48,24 +48,6 @@ class CategoryModel extends Entity {
 
 
     /**
-     *
-     * @param $name
-     * @return mixed
-    public function __get($name): mixed {
-//        if ( $name == 'title' ) {
-//            $title = parent::__get($name);
-//            if ( empty($title) ) $title = $this->id;
-//            return $title;
-//        }
-        return parent::__get($name);
-    }
-     */
-
-
-
-
-
-    /**
      * 카테고리 전처리
      *
      * subcategories 에 콤마로 구분된 카테고리 배열이 저장되는데, 이를 배열로 리턴한다.
@@ -112,14 +94,6 @@ class CategoryModel extends Entity {
         return parent::update($in);
     }
 
-//    /**
-//     * @deprecated 이 함수를 삭제하고, 부모 함수의 것을 사용 할 것.
-//     * @return array|string
-//     */
-//    public function response(): array|string {
-//        if ( $this->hasError ) return $this->getError();
-//        else return $this->getData();
-//    }
 
     /**
      * @return PostModel[]
