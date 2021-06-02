@@ -25,7 +25,8 @@ $title = "updateComment" . time();
 $re = request("comment.update", [
     SESSION_ID => $userA->sessionId,
     IDX=> $comment[IDX],
-    TITLE => $title
+    TITLE => $title,
+    CONTENT => "There, hello, hoare yo?"
 ]);
 isTrue($re[TITLE] == $title, 'comment update');
 
@@ -35,9 +36,10 @@ $get = request("comment.get", [
 isTrue($get[IDX] == $comment[IDX], 'comment get');
 
 $search = request("comment.search", [
-    'conds' => [ TITLE => $title]
+    'where' => "content LIKE ?",
+    'params' => ['hello']
 ]);
-isTrue($search[0][TITLE] == $title, 'comment search');
+isTrue( str_contains($search[0][CONTENT], 'hello') , 'comment search');
 
 $vote = request("comment.vote", [
     IDX => $comment[IDX],

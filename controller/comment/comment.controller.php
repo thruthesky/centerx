@@ -26,6 +26,7 @@ class CommentController {
         $comments = comment()->search(
             select: $in['select'] ?? '*',
             where: $in['where'] ?? '1',
+            params: $in['params'] ?? [],
             conds: $in['conds'] ?? [],
             order: $in['order'] ?? IDX,
             by: $in['by'] ?? 'DESC',
