@@ -167,9 +167,9 @@ class Forum extends Entity {
      * 현재 파일에 첨부된 파일 중 $code 와 일치하는 것을 리턴한다.
      *
      * @param string $code
-     * @return FileTaxonomy
+     * @return FileModel
      */
-    public function fileByCode(string $code): FileTaxonomy {
+    public function fileByCode(string $code): FileModel {
         return files()->getBy($this->taxonomy, $this->idx, $code);
     }
 

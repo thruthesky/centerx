@@ -26,11 +26,14 @@ class CommentController {
         $comments = comment()->search(
             select: $in['select'] ?? '*',
             where: $in['where'] ?? '1',
+            conds: $in['conds'] ?? [],
             order: $in['order'] ?? IDX,
             by: $in['by'] ?? 'DESC',
             page: $in['page'] ?? 1,
             limit: $in['limit'] ?? 10,
+            object: true
         );
+
         $res = [];
         foreach($comments as $comment) {
             $res[] = $comment->response();
