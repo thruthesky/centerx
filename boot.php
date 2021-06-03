@@ -35,6 +35,7 @@ require_once ROOT_DIR . 'model/user/user.model.php';
 require_once ROOT_DIR . 'model/meta/meta.model.php';
 require_once ROOT_DIR . 'model/friend/friend.model.php';
 require_once ROOT_DIR . 'model/category/category.model.php';
+require_once ROOT_DIR . 'model/cafe/cafe.model.php';
 require_once ROOT_DIR . 'etc/core/forum.php';
 require_once ROOT_DIR . 'model/post/post.model.php';
 require_once ROOT_DIR . 'model/comment/comment.model.php';

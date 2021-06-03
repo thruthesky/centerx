@@ -187,7 +187,12 @@ class E {
 
 
 
+    public string $empty_root_domain = 'error_empty_root_domain';
     public string $empty_country_code = 'error_empty_country_code';
+    public string $malformed_country_code = 'error_malformed_country_code';
+    public string $empty_domain = 'error_empty_domain';
+    public string $domain_too_long = 'error_domain_too_long';
+    public string $domain_should_be_alphanumeric_and_start_with_letter = 'error_domain_should_be_alphanumeric_and_start_with_letter';
 
 
 
