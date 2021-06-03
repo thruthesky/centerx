@@ -100,14 +100,14 @@ class PostModel extends Forum {
         }
 
         if ( $this->path ) {
-            $url = get_current_root_url() . $this->path;
-            $this->updateMemory('url', $url);
+            $this->updateMemoryData('url', get_current_root_url() . $this->path);
+            $this->updateMemoryData('relativeUrl', '/' . $this->path);
         }
 
         $this->patchPoint();
 
 
-        $this->updateMemory('shortDate', short_date_time($this->createdAt));
+        $this->updateMemoryData('shortDate', short_date_time($this->createdAt));
         return $this;
     }
 
