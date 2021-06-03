@@ -39,29 +39,30 @@ $search = request("comment.search", [
     'where' => "content LIKE ?",
     'params' => ['hello']
 ]);
-isTrue( str_contains($search[0][CONTENT], 'hello') , 'comment search');
+d($search, "search");
+//isTrue( str_contains($search[0][CONTENT], 'hello') , 'comment search');
 
-$vote = request("comment.vote", [
-    IDX => $comment[IDX],
-    CHOICE => 'Y',
-    SESSION_ID => $userA->sessionId
-]);
-isTrue($vote['Y'] == 1 , "vote Y:: Y = 1");
-
-$vote = request("comment.vote", [
-    IDX => $comment[IDX],
-    CHOICE => 'N',
-    SESSION_ID => $userA->sessionId
-]);
-isTrue($vote['N'] == 1,  "vote N:: N = 1");
-
-$vote = request("comment.vote", [
-    IDX => $comment[IDX],
-    CHOICE => 'N',
-    SESSION_ID => $userA->sessionId
-]);
-isTrue($vote['Y'] == 0 , "vote N again:: Y = 0");
-isTrue($vote['N'] == 0,  "vote N again:: N = 0");
-
-
-
+//$vote = request("comment.vote", [
+//    IDX => $comment[IDX],
+//    CHOICE => 'Y',
+//    SESSION_ID => $userA->sessionId
+//]);
+//isTrue($vote['Y'] == 1 , "vote Y:: Y = 1");
+//
+//$vote = request("comment.vote", [
+//    IDX => $comment[IDX],
+//    CHOICE => 'N',
+//    SESSION_ID => $userA->sessionId
+//]);
+//isTrue($vote['N'] == 1,  "vote N:: N = 1");
+//
+//$vote = request("comment.vote", [
+//    IDX => $comment[IDX],
+//    CHOICE => 'N',
+//    SESSION_ID => $userA->sessionId
+//]);
+//isTrue($vote['Y'] == 0 , "vote N again:: Y = 0");
+//isTrue($vote['N'] == 0,  "vote N again:: N = 0");
+//
+//
+//
