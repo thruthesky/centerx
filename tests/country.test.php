@@ -1,6 +1,6 @@
 <?php
 
-isTrue(get_class(country()) == 'CountryTaxonomy', 'CountryTaxonomy');
+isTrue(get_class(country()) == 'CountryModel', 'CountryModel');
 
 $country = country();
 $countries = $country->search(select: "*", limit: 1000);

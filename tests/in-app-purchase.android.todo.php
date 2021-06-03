@@ -3,10 +3,11 @@
 include_once ROOT_DIR . 'routes/in-app-purchase.route.php';
 
 define('TEST_USER_IDX', 1);
-testTranslationEntity();
+testIapLogin();
+setLoginAny();
+testIAPTranslationEntity();
 testServiceAccount();
 //
-testIapLogin();
 testIapPlatformTest();
 testIapInputTest();
 testAndroidFailure();
@@ -15,8 +16,8 @@ testAndroidFailure();
 //testAndroidRealData3();
 
 
-function testTranslationEntity() {
-    isTrue( get_class(inAppPurchase()) == 'InAppPurchaseTaxonomy', 'is InAppPurchaseTaxonomy');
+function testIAPTranslationEntity() {
+    isTrue( get_class(inAppPurchase()) == 'InAppPurchaseModel', 'is InAppPurchaseModel');
 }
 
 
@@ -24,7 +25,6 @@ function testTranslationEntity() {
 function testServiceAccount() {
     isTrue( file_exists(GCP_SERVICE_ACCOUNT_KEY_JSON_FILE_PATH) === true, 'Expected: service account json file exists');
 }
-
 
 function testIapLogin() {
     $inApp = inAppPurchase();

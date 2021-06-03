@@ -23,7 +23,6 @@ class CommentController {
         return comment($in[IDX])->response();
     }
     public function search($in) {
-        d($in);
         $comments = comment()->search(
             select: $in['select'] ?? '*',
             where: $in['where'] ?? '1',

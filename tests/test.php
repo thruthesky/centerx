@@ -57,6 +57,14 @@ function request(string $route, array $data = []) {
 
     $json = json_decode($result, true);
 
+    if ( $json === null ) {
+        echo "\n>\n>\n> json_decode() failed. There might an error on backend. Backend data:\n>\n>\n";
+        echo $result;
+        echo "\n\n\n";
+        return null;
+    }
+
+
     return $json['response'];
 
 }

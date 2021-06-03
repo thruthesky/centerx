@@ -593,9 +593,14 @@ class Entity {
 
 
     /**
-     * Switch `on` or `off` on the $optionName.
+     * Switch `on` or `off` on the $optionName field.
+     * `on` is saved as `Y`
+     * and `off` is saved as `N` in the table record.
      *
-     * To know if it is `on` or `off`, just use `$this->v($optionName)`. If it returns null, then it never switched.
+     * To know if it is `on` or `off`, just use `$this->v($optionName) == 'Y'`.
+     * If it returns null or empty, then it never switched.
+     *
+     * Note, use `$this->isOn(...)`, `$this->isOff(...)`, `$this->isNeverSwitched(...)` to know the value(status) of switch.
      *
      * @param string $optionName
      * @return self
@@ -604,10 +609,10 @@ class Entity {
         if ( empty($optionName) ) return $this->error(e()->option_is_empty);
 
         $v = $this->v($optionName);
-        if ( empty($v) || $v == 'off' ) {
-            $v = 'on';
+        if ( empty($v) || $v == 'N' ) {
+            $v = 'Y';
         } else {
-            $v = 'off';
+            $v = 'N';
         }
         return $this->update([$optionName => $v]);
     }
@@ -619,7 +624,7 @@ class Entity {
      * @return $this
      */
     public function switchOn(string $optionName): self {
-        return $this->update([$optionName => 'on']);
+        return $this->update([$optionName => 'Y']);
     }
 
     /**
@@ -629,8 +634,21 @@ class Entity {
      * @return $this
      */
     public function switchOff(string $optionName): self {
-        return $this->update([$optionName => 'off']);
+        return $this->update([$optionName => 'N']);
     }
+
+    public function isOn(string $fieldName): bool {
+        return $this->v($fieldName) == 'Y';
+    }
+    public function isOff(string $fieldName): bool {
+        return $this->v($fieldName) == 'N';
+    }
+    public function isNeverSwitched(string $fieldName): bool {
+        $v = $this->v($fieldName);
+        if ( empty($v) ) return true;
+        else return false;
+    }
+
 
 
     /**

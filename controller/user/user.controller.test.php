@@ -39,19 +39,19 @@ $re = request('user.switchOn', [
     SESSION_ID => $re['sessionId'],
     OPTION => "option$stamp",
 ]);
-isTrue($re["option$stamp"] == "on", "switchOn:: option$stamp on");
+isTrue($re["option$stamp"] == "Y", "switchOn:: option$stamp on");
 
 $re = request('user.switchOff', [
     SESSION_ID => $re['sessionId'],
     OPTION => "option$stamp",
 ]);
-isTrue($re["option$stamp"] == "off", "switchOn:: option$stamp off");
+isTrue($re["option$stamp"] == "N", "switchOn:: option$stamp off");
 
 $re = request('user.switch', [
     SESSION_ID => $re['sessionId'],
     OPTION => "option$stamp",
 ]);
-isTrue($re["option$stamp"] == "on", "switchOn:: option$stamp on");
+isTrue($re["option$stamp"] == "Y", "switchOn:: option$stamp on");
 
 
 $admin = setLoginAsAdmin();
