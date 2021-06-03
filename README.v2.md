@@ -144,3 +144,105 @@ isTrue((new AppController())->version(), "App version");
   이 때, test php 코드에서 접속을 할 때, http://www_docker_nginx/index.php 와 같이 접속을 해야 한다.
   그리고, nginx 설정에 www_docker_nginx 를 도메인으로 추가해 주고,
   config.php 의 도메인 설정에도 추가를 해 주어야 한다.
+  
+
+
+# 광고
+
+## 광고 기본, 설정 및 테이블 구조
+
+- 광고 테이블은 따로 없고, `posts` 테이블을 사용한다.
+
+- 게시판 아이디는 `ADVERTISE_CATEGORY` 에 기록되어져 있다.
+
+- 광고 시작과 종료
+  - 시작 날짜는 beginAt 에 저장하고,
+  - 종료 날짜는 endAt 에 저장한다.
+
+- 광고 사진을 등록 할 때, `files` 테이블에 code 별로 등록을 한다.
+  - 각 광고 code 는 광고 타입으로 `advertise.defines.php` 에 AD_XXX 로 등록되어져 있다.
+  - 예를 들면, 날개배너(AD_WING), 게시판 사각 배너(AD_POST_LIST_SQUARE) 등이다.
+  - 각 (광고 글)에 등록을 할 때, 각 code 별로 배너를 등록 할 수 있도록 해 준다.
+  - 즉, 하나의 광고에 여러 code 가 있는데, 사진을 모두 등록하면, 모든 광고 위치에 다 나온다.
+
+- 광고 표시를 할 때, `posts` 테이블에서 광고 기간이 남아 있는 것 중, `files` 테이블에서 원하는 광고 타입을 검색하는데, 그 광고 위치가 `metas` 에 있는 것을 뽑아낸다.
+  관련 함수는 model/advertise/advertise.model.php 를 참고한다.
+
+
+## 광고 배너의 크기
+
+- 각 사이트에서 얼마의 크기를 표시하느냐에 따라서, 각 상황에 맞춰서 배너 크기를 정하면 된다.
+
+
+## 광고 위치별 요약
+
+- 필고 처럼, 복잡하게 하지 않는다.
+
+- 최상위 배너(제호 배너)는
+  - 데스크톱 맨 위에 항상 표시되며,
+  - 글 읽기 페이지 맨 위에 표시된다.
+
+- 날개 배너
+  - 왼쪽 또는 오른쪽 날개에 광고가 나오고,
+  - 모바일 첫 화면에 나온다.
+
+- 광고가 없는 경우에는 각 place 별로 기본 광고가 노출된다. 기본 광고가 없는 광고가 있을 수도 있다.
+
+- 광고는 자동으로 노출되는 것이 아니라, 각 위치 별로 적절하게 표시를 해 주어야 한다. 표시를 하는 방법은 아래의 항목을 참조한다.
+
+## 광고 표시 방법
+
+- `?route=advertise.all` 을 통해서 한번에 통째로 모든 광고 정보를 가져온다. 사실 필요한 필드만 가져오면, 광고 개 수가 300개 내외라면 용량은 많지 않다.
+- 각 위치별 광고를 표시해 준다.
+
+### 버전 1.x 에서 위젯으로 출력하는 방법
+
+- 아래와 같이 type 에는 광고 타입을 기록하고, place 에서는 "게시판.카테고리"와 같이 표시한다.
+
+```php
+<?php include widget('advertisement/banner', ['type' => AD_TOP, 'place' => 'R']) ?>
+```
+
+### 게시판 목록에 광고 표시 방법
+
+- 아래의 예제는 게시판 맨 위에 광고를 표시한다.
+
+```php
+hook()->add(HOOK_POST_LIST_TOP, function() {
+    include widget('advertisement/banner', ['type' => AD_POST_LIST_SQUARE]);
+});
+```
+
+- 아래의 예제는 게시판 목록의 중간에 광고를 표시한다.
+
+```php
+hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
+    if ( $rowNo == 2 ) {
+        include widget('advertisement/banner', ['type' => AD_POST_LIST_SQUARE]);
+        echo "<hr>";
+    }
+});
+```
+
+
+
+## 세부 설정
+
+- 광고 게시판 카테고리를 `ADVERTISE_CATEGORY` 에 지정한다.
+  - 참고로 advertisement category 의 list, edit widget 을 선택해야 한다.
+  
+- 배너 1번 크기. Bootstrap 4 의 col-3 의 너비가 255px 이다. 그래서 배너 1번 크기를 255 x 100 으로 통일한다.
+  - 이 배너 크기를 날개 배너 등. 가능한 많은 곳에서 사용한다.
+  - 제작은 408x160 으로 한다.
+
+```css
+.banner-255x100 {
+    width: 255px;
+    height: 100px;
+}
+```
+
+- 배너 2번 크기. 정사각형 배너로 다자인을 하기 쉽고 활용을 할 곳도 많다.
+  - 배너의 기본 크기는 320x320 로 제작하지만, 가능한 모든 장소에서 비율을 유지한채, 더 작게 보일 수 있다.
+
+

@@ -310,6 +310,5 @@ if ( !defined('OPENWEATHERMAP_API_KEY' ) ) define('OPENWEATHERMAP_API_KEY', '7cb
 
 
 const MESSAGE_CATEGORY = 'message';
-const ADVERTISEMENT_CATEGORY = 'advertisement';
 
 
