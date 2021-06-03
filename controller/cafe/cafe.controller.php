@@ -1,16 +1,15 @@
 <?php
+/**
+ * @file cafe.controller.php
+ */
 
+/**
+ * Class CafeController
+ */
 
 class CafeController {
-    public function create($in) {
-        // check input;
-        // - countryCode
-        // - rootDomain
-        // - subDomain
-        // - subDomain must begin with alphabet, then continous alphanumeric.
-        // - domain must be less than 32 characters,
 
-
-        // then, create a forum category
+    public function create($in): array|string {
+        return cafe()->create($in)->response();
     }
 }
