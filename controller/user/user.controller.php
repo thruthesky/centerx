@@ -146,15 +146,25 @@ class UserController
     public function search($in)
     {
 
-        $name = $in[NAME] ?? '';;
-        if (empty($name)) return e()->empty_name;
-        $rows = db()->get_results("SELECT idx FROM " . entity(USERS)->getTable() . " WHERE name='$name' OR nickname='$name'", ARRAY_A);
-        $rets = [];
-        foreach ($rows as $row) {
-            $idx = $row[IDX];
-            $rets[] = user($idx)->shortProfile(firebaseUid: true);
+        // @todo filter base on domain or call different method
+
+
+        $users = user()->search(
+            select: $in['select'] ?? 'idx',
+            where: $in['where'] ?? '1',
+            params: $in['params'] ?? [],
+            order: $in['order'] ?? IDX,
+            by: $in['by'] ?? 'DESC',
+            page: $in['page'] ?? 1,
+            limit: $in['limit'] ?? 10,
+            object: true
+        );
+
+        $res = [];
+        foreach($users as $user) {
+            $res[] = $user->shortProfile(firebaseUid: true);
         }
-        return $rets;
+        return $res;
     }
 }
 
