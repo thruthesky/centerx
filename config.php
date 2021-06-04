@@ -23,6 +23,9 @@ const DOMAIN_THEMES = [
     'x.philov' => 'x',
     'cherry.philov' => 'x',
     'banana.philov' => 'x',
+    'philov' => 'x',
+    'sonub' => 'x',
+    'sonubtheme' => 'sonub',
     'itsuda' => 'itsuda',
     '127.0.0.1' => 'default',
     'localhost' => 'dating',
@@ -31,9 +34,7 @@ const DOMAIN_THEMES = [
     '192.168.100.17' => 'itsuda', // Charles Ip address
     '192.168.0.146' => 'itsuda', // Charles Ip address
 
-    'philov' => 'sonub',
     'tellvi' => 'sonub',
-    'sonub' => 'sonub',
     'goldenage50' => 'itsuda',
     'dating' => 'dating',
 ];
@@ -94,8 +95,7 @@ if ( file_exists($_path) ) {
 }
 
 
-
-define('APP_NAME', 'CenterX');
+const APP_NAME = 'CenterX';
 
 if ( !defined('DB_USER') ) define('DB_USER', 'centerx');
 if ( !defined('DB_PASS') ) define('DB_PASS', 'Wc~Cx7');
@@ -103,12 +103,14 @@ if ( !defined('DB_NAME') ) define('DB_NAME', 'centerx');
 if ( !defined('DB_HOST') ) define('DB_HOST', 'mariadb');
 
 
-define('DB_PREFIX', 'wc_');
+const DB_PREFIX = 'wc_';
 
 // @todo 안보이는데로 이동 시킬 것.
-define('META_TABLE', DB_PREFIX . 'metas');
+const META_TABLE = DB_PREFIX . 'metas';
 
 
+
+const DEFAULT_X_BOX_IMAGE = '/etc/img/x-box.jpg';
 
 /**
  * Cookie domain

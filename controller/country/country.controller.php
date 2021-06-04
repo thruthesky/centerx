@@ -8,6 +8,9 @@ class CountryController {
         foreach( country()->search(limit: 1000, object: true) as $co ) {
             $rets[ $co->v('2digitCode') ] = $co->v("CountryName$ln");
         }
+
+        asort($rets);
+
         return $rets;
     }
 }

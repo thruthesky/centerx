@@ -1413,13 +1413,13 @@ function thumbnailUrl(int $fileIdx, int $width=200, int $height=200): string
     if ( empty($fileIdx) ) return 'file.idx is empty.';
     $file = files($fileIdx);
     $thumbnailPath = zoomThumbnail($file->path, $width, $height);
-    $arr = explode('/files/', $thumbnailPath);
-    return HOME_URL . "files/$arr[1]";
+    if ( str_contains($thumbnailPath, '/files/') ) {
+        $arr = explode('/files/', $thumbnailPath);
+        return HOME_URL . "files/$arr[1]";
+    } else {
+        return $thumbnailPath;
+    }
 
-//    if ( empty($fileIdx) ) return '';
-//    $url = HOME_URL . "etc/phpThumb/phpThumb.php?src=$fileIdx&w=$width&h=$height&f=jpeg&q=$quality";
-//    if ( $zoomCrop ) $url .= "&zc=1";
-//    return $url;
 }
 
 
@@ -1784,6 +1784,10 @@ function zoomThumbnail(string $source_path, int $width=150, int $height=150): st
     }
 
 
+    // @todo return defualt image if the source files does not exists.
+    if ( file_exists($source_path) == false ) {
+        return DEFAULT_X_BOX_IMAGE;
+    }
 
     /*
      * Add file validation code here

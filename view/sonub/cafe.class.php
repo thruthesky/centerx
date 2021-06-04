@@ -1,22 +1,26 @@
 <?php
 /**
- * @file category.model.php
+ * @file cafe.class.php
  */
 /**
- * Class CategoryModel
+ * Class Cafe
+ *
+ * @property-read string $countryCode
+ * @property-read string $domain - cafe id is the cafe domain.
+ *
+ * @note README 를 참고한다.
+ *
+ *
+ *
  *
  */
-class CafeModel extends CategoryModel
+class CafeTaxonomy extends CategoryTaxonomy
 {
 
     /**
-     * Cafe main domains
      * 메인 카페 목록.
      *
-     * Note, these domains are the only domains that display cafe main page. All other domains are considers as sub cafe.
-     * You can add some domains to make the domain to display cafe main page for development.
      * 주의, 메인 카페 인지 아닌지만 판별한다.  설정은 domain settings 에서 한다.
-     *
      *
      * 여기에 기록된 메인 도메인은 2차 도메인이라도, 서브 카페(2차 도메인)로 인식되지 않고, 메인 카페로 인식된다.
      * 주로, sonub.com 또는 www.sonub.com 과 같이 기록이 되어야하고, 사용자가 이 도메인으로 접속하면, 메인 사이트로 인식을 하는 것이다.
@@ -29,15 +33,10 @@ class CafeModel extends CategoryModel
     ];
 
 
+
     /**
-     * Country domain.
      * 국가별 도메인 지정.
      *
-     * @attention add domains that belong to a country. For instance, domain `sonub.com` is used for world wide.
-     *  That means, when user visit `sonub.com`, they can create a cafe of any country by selecting the country on the form.
-     *  But, if a user visit a domain that is added here, the user cannot choose country because the domain is fixed for
-     *  that country only.
-     *  - Add only root domain.
      * 주의, 국가별 도메인만 입력한다. 설정은 domain settings 에서 한다.
      *
      * 카페의 루트 도메인 별로 특정 국가를 고정하고자할 때, 아래의 목록에 루트 도메인과 국가 코드, 사이트 이름, 홈 화면 이름 등을 추가하면 된다.
@@ -55,11 +54,9 @@ class CafeModel extends CategoryModel
         'philov.com',
     ];
 
+
     /**
-     * Root domain configuration.
      * 각 루트 도메인에 대한 설정이다.
-     *
-     * Add domain configuration for all root domains.
      *
      * sonub 에서 지원하는 모든 루트 도메인(국가 전용 도메인 포함)은 여기에 기록되어야 한다.
      * 만약, countryCode 값이 null 이면, 현재 사용자가 있는 곳의 국가가 자동으로 설정된다.
@@ -76,79 +73,82 @@ class CafeModel extends CategoryModel
     ];
 
 
+
+
     /**
      * @var string[][]
      */
     public $cafeMainMenus = [
         'qna' => [
-            'title' => ['en' => 'QnA', 'ko' => '질문게시판' ]
+            'title' => '질문게시판',
         ],
         'discussion' => [
-            'title' => ['en' => 'Discussion', 'ko' => '자유게시판' ]
+            'title' => '자유게시판',
         ],
         'buyandsell' => [
-            'title' => ['en' => 'Buy&sell', 'ko' => '회원장터' ]
+            'title' => '회원장터',
         ],
         'reminder' => [
-            'title' => ['en' => 'Reminder', 'ko' => '공지사항' ]
+            'title' => '공지사항',
         ],
         'job' => [
-            'title' => ['en' => 'Job', 'ko' => '구인구직' ]
+            'title' => '구인구직',
         ],
         'rent_house' => [
-            'title' => ['en' => 'Houses', 'ko' => '주택임대' ]
+            'title' => '주택임대',
         ],
         'rent_car' => [
-            'title' => ['en' => 'RentCar', 'ko' => '렌트카' ]
+            'title' => '렌트카',
         ],
         'im' => [
-            'title' => ['en' => 'Immigrant', 'ko' => '이민' ]
+            'title' => '이민',
         ],
         'real_estate' => [
-            'title' => ['en' => 'Realestate', 'ko' => '부동산' ]
+            'title' => '부동산',
         ],
         'money_exchange' => [
-            'title' => ['en' => 'Exchange', 'ko' => '환전' ]
+            'title' => '환전',
         ]
     ];
+
 
 
     /**
      * @var string[][]
      */
-    public $cafeSitemap = [
+    public $cafeMenus = [
         'community' => [
             'qna' => [
-                ['en' => 'QnA', 'ko' => '질문게시판' ]
+                'title' => '질문게시판',
             ],
             'discussion' => [
-                ['en' => 'Discussion', 'ko' => '자유게시판' ]
+                'title' => '자유게시판',
             ],
             'buyandsell' => [
-                ['en' => 'Buy&sell', 'ko' => '회원장터' ]
+                'title' => '회원장터',
             ],
             'reminder' => [
-                ['en' => 'Reminder', 'ko' => '공지사항' ]
+                'title' => '공지사항',
             ],
         ],
         'business' => [
             'job' => [
-                'title' => ['en' => 'Job', 'ko' => '구인구직' ]
+                'title' => '구인구직',
             ],
             'rent_house' => [
-                'title' => ['en' => 'Houses', 'ko' => '주택임대' ]
+                'title' => '주택임대',
             ],
             'rent_car' => [
-                'title' => ['en' => 'RentCar', 'ko' => '렌트카' ]
+                'title' => '렌트카',
             ],
             'im' => [
-                'title' => ['en' => 'Immigrant', 'ko' => '이민' ]
+                'title' => '이민',
             ],
             'real_estate' => [
-                'title' => ['en' => 'Realestate', 'ko' => '부동산' ]
+                'title' => '부동산',
             ],
             'money_exchange' => [
-                'title' => ['en' => 'Exchange', 'ko' => '환전' ]
+                'title' => '환전',
             ]
         ],
     ];
@@ -160,7 +160,7 @@ class CafeModel extends CategoryModel
         parent::__construct($idx);
         if ( $this->isMainCafe() ) {
             // 메인 사이트(카페)의 경우, wc_categories 에 해당하는 게시판 테이블 레코드가 없다. 그래서, 향후 에러가 나지 않도록, countryCode 를 기본 설정 해 준다.
-            // CafeModel 객체를 초기화 할 때, 각 카페의 경우, 국가 코드가 있지만, 메인 사이트는 없다.
+            // CafeTaxonomy 객체를 초기화 할 때, 각 카페의 경우, 국가 코드가 있지만, 메인 사이트는 없다.
             // 예를 들어, philov.com 과 같은 경우, 필리핀 전용 도메인으로 countryCode 가 있지만,
             // sonub.com 의 경우, 전 세계 글로벌 교민 사이트이므로, 특별히 countryCode 가 없다.
             // 그래서 여기서 초기화를 해 준다.
@@ -168,35 +168,6 @@ class CafeModel extends CategoryModel
             $this->updateMemoryData('countryCode', $this->countryCode());
         }
     }
-
-
-    public function create($in):self {
-        if( notLoggedIn() ) return $this->error(e()->not_logged_in);
-
-        if( !isset($in['rootDomain']) ) return $this->error(e()->empty_root_domain);
-
-        if( !isset($in['countryCode']) || empty($in['countryCode']) ) return $this->error(e()->empty_country_code);
-        if( strlen($in['countryCode']) != 2 || is_numeric($in['countryCode']) ) return $this->error(e()->malformed_country_code);
-
-        if( !isset($in['domain']) ) return $this->error(e()->empty_domain);
-
-        if( preg_match("/^[a-zA-z][0-9a-zA-z]+/", $in['domain']) !== 1 ) return $this->error(e()->domain_should_be_alphanumeric_and_start_with_letter);
-
-
-        $domain = strtolower($in['domain']) . '.' . $in['rootDomain'];
-
-        if( strlen($domain) > 32 ) return $this->error(e()->domain_too_long);
-
-        $data = [
-            USER_IDX => login()->idx,
-            ID => $domain,
-            DOMAIN => $in['rootDomain'],
-            'countryCode' => in('countryCode')
-        ];
-        return parent::create($data);
-    }
-
-
 
     /**
      *
@@ -280,9 +251,9 @@ class CafeModel extends CategoryModel
 
     /**
      * 현재 카페가 속한 국가 정보를 리턴한다.
-     * @return CountryModel
+     * @return CountryTaxonomy
      */
-    public function country(): CountryModel {
+    public function country(): CountryTaxonomy {
         return country($this->countryCode);
     }
 
@@ -354,20 +325,20 @@ class CafeModel extends CategoryModel
     }
 
 
-    public function titleImage(): FileModel {
+    public function titleImage(): FileTaxonomy {
         return $this->fileByCode('title_image');
     }
 
-    public function appIcon(): FileModel {
+    public function appIcon(): FileTaxonomy {
         return $this->fileByCode('app_icon');
     }
 
     /**
      * Returns the file object of the image that is related with the cafe category.
      * @param string $code
-     * @return FileModel
+     * @return FileTaxonomy
      */
-    public function fileByCode(string $code): FileModel {
+    public function fileByCode(string $code): FileTaxonomy {
         return files()->findOne([TAXONOMY => $this->taxonomy, ENTITY => $this->idx, CODE => $code]);
     }
 
@@ -379,24 +350,19 @@ class CafeModel extends CategoryModel
         return token()->count(conds: [TOPIC => cafe()->domain]);
     }
 
-
 }
 
 
-
-
 /**
- * Returns the current cafe category object.
  * Cafe 객체를 리턴한다.
  *
- * Note, this function returns previously create object. That means, it is a `Singleton`.
  * 해당 카페 객체를 한 번 생성하면, 그 다음 부터는 생성된 객체를 재 사용한다. 즉, Singleton 방식으로 사용한다.
  *
  *
- * @return CafeModel
+ * @return CafeTaxonomy
  */
 global $__cafe;
-function cafe(): CafeModel
+function cafe(): CafeTaxonomy
 {
     global $__cafe;
     // 메모리 캐시 되었으면, 이전 변수를 리턴.
@@ -405,16 +371,17 @@ function cafe(): CafeModel
     }
 
 
-    $__cafe = new CafeModel(0);      // 처음, 카페 객체 생성 이 후, 이 코드는 두번 실행되지 않는다.
+    $__cafe = new CafeTaxonomy(0);      // 처음, 카페 객체 생성 이 후, 이 코드는 두번 실행되지 않는다.
     $domain = get_domain();     // 현재 도메인
 
-    // If it is main cafe, return empty cafe(category) model.
     if ( $__cafe->isMainCafe() ) return $__cafe; // 현재 도메인이 메인 도메인 중 하라나면, 빈 Cafe 객체를 리턴.
 
-    // Or, return cafe category model.
     // 메인 도메인이 아니면, 해당 도메인의 카페를 찾아 리턴. 카페를 찾지 못하면 에러 설정 됨.
     // 즉, 맨 처음 1회, 현재 카페의 객체를 생성하고, 재 사용한다.
     $__cafe->findOne(['id' => $domain]);
     return $__cafe;
 }
+
+cafe(); // 함수를 최초 한번 실행한다.
+
 
