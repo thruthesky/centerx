@@ -100,8 +100,8 @@ class UserModel extends Entity {
         $data[SESSION_ID] = getSessionId($this->getData());
         $this->setMemoryData($data);
         $one = files()->findOne([CODE => 'photoUrl', USER_IDX => $this->idx]);
-        if ( $one->exists ) $this->updateMemory('photoIdx', $one->idx);
-        $this->updateMemory('photoUrl', $one->url);
+        if ( $one->exists ) $this->updateMemoryData('photoIdx', $one->idx);
+        $this->updateMemoryData('photoUrl', $one->url);
 
 //        if ( str_contains($this->photoUrl, 'kakao.') ) {
 //            $src = urlencode($this->photoUrl);
@@ -259,6 +259,10 @@ class UserModel extends Entity {
     }
 
     /**
+     *
+     * @attention The returned data is a slim version of User::response data.
+     *  And it has same field properties. Which means, it can be used by the same User Model on client side.
+     *
      * 글/코멘트/기타 용으로 전달할(보여줄) 간단한 프로필 정보를 리턴한다.
      *
      * 주의, 배열을 리턴한다.
@@ -275,8 +279,6 @@ class UserModel extends Entity {
             'point' => $this->point,
             'photoIdx' => $this->photoIdx ?? 0,
             'photoUrl' =>  $this->photoIdx ? thumbnailUrl($this->photoIdx ?? 0, 100, 100) : ($this->photoUrl ?? ''),
-//            'photoUrl' => thumbnailUrl($this->photoIdx ?? 0, 100, 100),
-
         ];
         if ( $firebaseUid ) {
             $ret['firebaseUid'] = $this->firebaseUid;

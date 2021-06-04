@@ -1656,10 +1656,13 @@ function postMessagingUrl(int $idx) {
  * 이 함수는 PHP 형식과 Restful Api 방식에서 공용으로 사용된다.
  *
  * 단, order, by, page, limit 등은 외부 함수에서 별도로 적절히 처리를 해야 한다.
+ *
+ * @attention both of categoryIdx and categoryId are set, then categoryIdx will be used.
+ *  if none of them are set, then it will search all the posts.
  */
 function parsePostListHttpParams(array $in): array {
 
-    $category = category( $in[CATEGORY_ID] ?? 0 );
+    $category = category( $in[CATEGORY_IDX] ?? $in[CATEGORY_ID] ?? 0 );
     $params = [];
 
     $where = "parentIdx=0 AND deletedAt=0";

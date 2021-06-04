@@ -194,7 +194,10 @@ class E {
     public string $domain_too_long = 'error_domain_too_long';
     public string $domain_should_be_alphanumeric_and_start_with_letter = 'error_domain_should_be_alphanumeric_and_start_with_letter';
 
-
+    // cafe
+    public string $cafe_exists = 'error_cafe_exists'; // already created
+    public string $cafe_not_exists = 'error_cafe_not_exists'; // not created.
+    public string $main_cafe_has_no_cafe_category_record = 'error_main_cafe_has_no_cafe_category_record';
 
 
     public bool $isError = false;

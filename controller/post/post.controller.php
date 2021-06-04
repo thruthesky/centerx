@@ -91,16 +91,6 @@ class PostController {
 
         list ($where, $params ) = parsePostListHttpParams($in);
 
-
-//        $onTop = null;
-//
-//        if ( isset($in['postOnTop']) && $in['postOnTop'] ) {
-//            $onTop = post($in['postOnTop']);
-//            if ($onTop->hasError) return $onTop->getError();
-//            $categoryId = $onTop->categoryId();
-//            $in['where'] = "categoryId=<$categoryId>";
-//        }
-
         $posts = post()->search(
             select: $in['select'] ?? 'idx',
             where: $where,
@@ -111,6 +101,8 @@ class PostController {
             limit: $in['limit'] ?? 10,
             object: true
         );
+
+//        debug_log("posts;", $posts);
 
         if ( isset($in['searchKey']) ) saveSearchKeyword($in['searchKey']);
 

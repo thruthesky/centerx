@@ -1,6 +1,11 @@
 # Matrix
 
 
+## Security
+
+- Controller must check `where` http var to not accept value. The `where` clause must have question mark only without right side value.
+  
+
 ## Boot
 
 
@@ -268,3 +273,17 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 * 단,  PC 버전 보기 옵션을 두어서, 서브도메인으로 테마를 다르게 해서 PC 버전으로 볼 수 있도록 한다. 그래서 글 쓰기 등을 편하게 할 수 있도록 한다.
 * 본인인증을 하면, 커뮤니티 글 쓰기 가능. 카카오, 네이버로 접속하면, 장터 게시판에만 글 등록할 수 있도록만 한다.
 - 카페 도메인별 PWA 설정을 할 수 있도록 한다.
+
+
+## Cafe Client Logic
+
+### Sub cafe logic
+
+- Get cafe category from localStorage into memory, and;
+  - display cafe name on render view.
+  - display admin menu if the user is cafe admin
+  - display cafe menu
+- When app is mounted(loaded), get the cafe category record and
+  - save it on localStorage for the next use.
+  - update the memory.
+

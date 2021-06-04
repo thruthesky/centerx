@@ -12,4 +12,12 @@ class CafeController {
     public function create($in): array|string {
         return cafe()->create($in)->response();
     }
+    public function get($in): array|string {
+        if ( cafe()->isMainCafe($in[DOMAIN]) ) {
+            return e()->main_cafe_has_no_cafe_category_record;
+        }
+        $res = cafe(domain: $in[DOMAIN])->response();
+        if ( $res == e()->entity_not_found ) return e()->cafe_not_exists;
+        return $res;
+    }
 }

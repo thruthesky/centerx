@@ -187,6 +187,8 @@ class CafeModel extends CategoryModel
 
         if( strlen($domain) > 32 ) return $this->error(e()->domain_too_long);
 
+        if ( category($domain)->exists ) return $this->error(e()->cafe_exists);
+
         $data = [
             USER_IDX => login()->idx,
             ID => $domain,
@@ -327,8 +329,8 @@ class CafeModel extends CategoryModel
      *      그냥 현재 접속 도메인을 가지고 비교를 한다.
      * @return bool
      */
-    public function isMainCafe(): bool {
-        return in_array(get_domain(), $this->cafeMainDomains);
+    public function isMainCafe(string $domain = null): bool {
+        return in_array($domain ?? get_domain(), $this->cafeMainDomains);
     }
 
     /**
@@ -385,6 +387,8 @@ class CafeModel extends CategoryModel
 
 
 
+
+global $__cafe;
 /**
  * Returns the current cafe category object.
  * Cafe 객체를 리턴한다.
@@ -392,12 +396,23 @@ class CafeModel extends CategoryModel
  * Note, this function returns previously create object. That means, it is a `Singleton`.
  * 해당 카페 객체를 한 번 생성하면, 그 다음 부터는 생성된 객체를 재 사용한다. 즉, Singleton 방식으로 사용한다.
  *
+ * @attention if $idx or $domain is given, it returns the cafe category without using cache data.
  *
+ *
+ * @param int $idx
+ * @param string $domain
  * @return CafeModel
  */
-global $__cafe;
-function cafe(): CafeModel
+function cafe(int $idx = 0, string $domain = ''): CafeModel
 {
+
+    if ( $idx ) {
+        return new CafeModel($idx);
+    }
+    if ( $domain ) {
+        return (new CafeModel(0))->findOne(['id' => $domain]);
+    }
+
     global $__cafe;
     // 메모리 캐시 되었으면, 이전 변수를 리턴.
     if ( isset($__cafe) && $__cafe ) {
