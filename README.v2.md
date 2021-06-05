@@ -1,15 +1,63 @@
 # Matrix
 
 
-## Security
+# References
+
+
+## Vue.js 클라이언트 모듈
+
+- Vue.js 모듈은 https://github.com/withcenter/x-vue 에 있다.
+
+- Vue.js 에서 x-vue/services/api.service.ts 를 직접 쓰지 말고, app.service.ts 를 두고, AppService.api 를 통해서만 쓰도록 한다.
+
+- App 과 Api 에서 상태를 같이 쓰기 위해서,
+  - Vue.js 에서 store/index.ts 에 반드시 store 파일이 존재해야하고,
+  - Api State 와 app state 를 합친다.
+  - 이 때, 개발자가 app 위해서 만든 기본 텍스트를 api 와 같이 사용 하게 할 수 있다.
+    그래서 api 에서 언어 번역 파일을 서버에서 읽어 들여, state 를 변경하면, 기본 텍스트를 덮어 써서 쓸 수 있는 것이다.
+
+```ts
+import { texts } from "@/service/translation";
+import { apiState } from "@/x-vue/services/api.store";
+
+// 여기에 앱의 state 관리 변수를 추가하면 된다.
+const state = {};
+
+// 앱의 기본 번역된 텍스트를 아래 처럼 지정하면 된다. 
+apiState.texts = texts;
+
+Vue.use(Vuex);
+export default new Vuex.Store({
+  state: Object.assign({}, state, apiState), // 앱의 state 와 api state 를 합쳐서 저장한다.
+  mutations: {},
+  actions: {},
+  modules: {},
+});
+```
+
+
+# 클라이언트 캐싱
+
+- 서버로 부터 데이터를 가져와야하는데, 통신 상태가 느리면, 화면에 정보가 늦게 보여지는데, 그러한 현상을 막고자 앱 내에서 캐시를 한다.
+  -  캐시를 하면, 서버가 죽은 경우 또는 오프라인에서도 데이터를 보여줄 수 있다.
+
+- 로직
+  - 앱에서 서버로 호출 할 때, 먼저 로컬(앱 내의 local storage)에 저장된 데이터를 불러와 상태 관리자에 업데이트한다.
+  - 그리고 서버로 부터 데이터를 가져 온 다음, 상태 관리자를 업데이트하고,
+    - 로컬에 저장한다.
+      즉, 다음에 앱이 실행되거나, 서버로 다시 호출 할 때, 최근에 저장된 내용을 먼저 쓰고, 서버로 부터 업데이트 된 내용을 쓰는 것이다.
+      
+
+
+# Security
 
 - Controller must check `where` http var to not accept value. The `where` clause must have question mark only without right side value.
   
 
-## Boot
+# Boot
 
 
-### PHP 스크립트 호출 순서
+## PHP 스크립트 호출 순서
 
 - `index.php`
   시작 스크립트
@@ -33,14 +81,14 @@
       그렇지 않으면 웹 브라우저에 보여 줄 View 를 로드하는 것으로 간주하여 `controller/view.php` 를 로드한다.
   
     
-## Restful Api
+# Restful Api
 
 - HTTP 입력 값에 route 가 있으면 `boot.php => controller/control.php => api.php` 의 순서로 실행된다.
 
 - `api.php` 에서 session id 로 로그인을 하고, 각 route 에 맞는 controller 를 실행한다.
 
 
-## View
+# View
 
 - HTTP 입력 값에 route 가 없으면 `boot.php => controller/control.php => view.php => view/view-name/index.php` 의 순서로
   각 view 폴더의 index.php 가 실행된다.
@@ -56,15 +104,15 @@
 - 각 view 스크립트에서는 controller 를 사용해서 model 로 접속한다.
 
 
-## Page Link
+# Page Link
 
 - `p` 태그를 통해서 다음 실행 페이지를 지정 할 수 있다. 그리고 `p=` 는 생략이 가능하다.
   예) `http://domain.com/?p=abc.def` 또는 `http://domain.com/?abc.def`
 
 
-## Model
+# Model
 
-### View Model
+## View Model
 
 ```php
 d(view()->file('index'));
@@ -72,7 +120,7 @@ d(view()->page());
 ```
 
 
-## Api Response
+# Api Response
 
 - controller 의 리턴 값은 무조건 JSON 이며, 그 JSON 을 해독하면 response 키가 있는데, 그 키의 값이 컨트롤러 실행 후 결과 값이다.
   - response 는 JSON 값인데, 이 값을 다시 Modelling 하거나 `entity()->setMemoryData()` 또는 `entity()->copyWith()` 으로 객체화 하지
@@ -85,7 +133,7 @@ d(view()->page());
 - response 가 에러의 값을 담고 있다면, 반드시 `error_` 로 시작하는 문자열이어야 한다.
 
 
-## Api Error
+# Api Error
 
 - response 의 값이 `error_` 로 시작하는 문자열이면 에러이다.
 - controller 가 리턴하는 겂이 없으면 `error_response_is_empty` 에러 발생.
@@ -104,18 +152,18 @@ d(view()->page());
     예) 
     `error(err(e()->controller_file_not_found, $filePath));`
 
-## Config
+# Config
 
-### 일반 설정
+## 일반 설정
 
 - taxonomy 는 `config` 이고, entity 가 0인 것은 모두 일반 설정이다.
 
-### 관리자 설정
+## 관리자 설정
 
 - 관리자만 설정 할 수 있는 것으로 taxonomy 가 `config` 이고, entity 는 1 이다.
 
 
-## 클라이언트 동작 방식
+# 클라이언트 동작 방식
 
 - 앱이 부팅 할 때, 관리자가 설정한 것들을 로드해야 한다.
   - 단, 양이 많은, 설정은 제외 할 수 있도록 관리자 설정을 관리한다.
@@ -125,12 +173,12 @@ d(view()->page());
 
 
 
-## Unit Testing
+# Unit Testing
 
 - 테스트 경로는 `controller/**/*.test.php` 파일과 `tests/*.test.php` 파일들이다.
 
 
-### 테스트 예제
+## 테스트 예제
 
 - 아래는 `controller/app/app.controller.test.php` 파일의 예제이다.
   controller 를 include 해서 테스트를 하면 된다.
@@ -142,7 +190,7 @@ isTrue((new AppController())->version(), "App version");
 ```
 
 
-### HTTP 로 컨트롤러 테스트 예제
+## HTTP 로 컨트롤러 테스트 예제
 
 - php test 는 www_docker_php 컨테이너에서 실행되는데, nginx 는 www_docker_nginx 에 있다.
   즉, www_docker_php 컨테이너에서 www_docker_nginx 컨테이너에 접속해서, nginx 에서 다시 PHP 실행을 위해서 www_docker_php 를 접속하는 것이다.
@@ -275,7 +323,46 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 - 카페 도메인별 PWA 설정을 할 수 있도록 한다.
 
 
-## Cafe Client Logic
+## 카페 로고 제작법
+
+- 메인 카페와 서브 카페 모두 적용되는 것으로
+  - 너비 500px, 높이 72px 로 고정되어져 있다.
+  - 만약, 로고 디자인을 너비 300px 로 하고 싶다면,
+    - 전체 이미지 너비는 500px 로 하고, 실제 디자인 내용을 300px 로 하고, 이미지의 중간에 위치시키면 된다.
+      즉, 남는 여백은 그냥 빈 칸으로 두는 것이다.
+
+## 카페 클라이언트 로직
+
+### 설정, 초기 메뉴 설정 등
+
+- 최대한 빠르게 카페 별 설정이 필요하다.
+  - 예를 들면, 사용자가 최초로 philov.com 에 접속하는 경우, 서버로 부터 데이터를 가져오기 까지 시간이 너무 걸린다.
+  - 그래서, index.html 에 Javascript 로 설정을 바로 출력을 해서 Vue.js 에서 사용 할 수 있도록 할 수 있다.
+    - 문제: 서버에서 PHP 로 index.html 을 변경하면, PWA 는?
+      - 괜찮은 것 같다. manifest.json 에서 어느 파일을 업데이트하는지 기록한다. 즉, index.html 이 바뀌어도 상관 없다.
+    
+  - 참고로, Vue.js 에서는 index.html 에 넣고,
+    - Flutter 에서는 그냥 내부 소스 코드 설정에 추가를 해야 한다.
+    
+  - index.html 에 들어가는 설정에는 간단한 카페 이름, 로고, 메뉴 정도만 index.html 에 집어 넣고, 나머지는 route=cafe.settings 로 가져온다.
+    
+  - 만약, 메뉴 변경이 필요하면, php 로 index.html 을 바꾸어야 한다.
+
+- 참고로, 카페 전체 설정을 가져오는 경우,
+  - 앱에서 부팅 후, route=cafe.settings 로 가져온 후, 로컬에 캐시를 해 놓고 빠르게 쓰면 된다.
+
+- 요약,
+  - 첫 로딩시 빨리 표시해야하는 정보 외에는 서버에서 가져온 데이터를 표시한다.
+  - 카페 메인이면, index.html 의 settings 에 카페 메인에 해당하는 로고와 메뉴를 보여주면 된다.
+
+#### Vue.js 에서 작업
+
+- 
+
+- index.php 파일은 아래와 같이 간단하게 하고,
+
+- index.html 에 name, logo, menu 가 들어간다.
+  - 여기에 menu 는 카페 메인 메뉴이고, 카페 별 메뉴는 서버에서 가져와서 보여 주어야 한다.
 
 ### Sub cafe logic
 

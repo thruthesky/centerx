@@ -85,7 +85,7 @@
 
         </div>
         <?php
-        foreach( cafe()->cafeMainMenus as $categoryId => $m ) {
+        foreach( cafe()->mainMenus as $categoryId => $m ) {
             ?>
             <a class="a py-2" href="/?p=forum.post.list&categoryId=<?=$categoryId?>"><?=$m['title']?></a>
         <?php } ?>

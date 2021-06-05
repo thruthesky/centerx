@@ -61,7 +61,7 @@ class CafeTaxonomy extends CategoryTaxonomy
      * sonub 에서 지원하는 모든 루트 도메인(국가 전용 도메인 포함)은 여기에 기록되어야 한다.
      * 만약, countryCode 값이 null 이면, 현재 사용자가 있는 곳의 국가가 자동으로 설정된다.
      */
-    public $cafeRootDomainSettings = [
+    public $rootDomainSettings = [
         'sonub.com' => [
             'name' => '필러브',
             'countryCode' => null,
@@ -78,7 +78,7 @@ class CafeTaxonomy extends CategoryTaxonomy
     /**
      * @var string[][]
      */
-    public $cafeMainMenus = [
+    public $mainMenus = [
         'qna' => [
             'title' => '질문게시판',
         ],
@@ -190,8 +190,8 @@ class CafeTaxonomy extends CategoryTaxonomy
      */
     private function rootDomainSettings(): array|null {
         $rootDomain = get_root_domain();
-        if ( isset($this->cafeRootDomainSettings[$rootDomain]) ) {
-            return $this->cafeRootDomainSettings[$rootDomain];
+        if ( isset($this->rootDomainSettings[$rootDomain]) ) {
+            return $this->rootDomainSettings[$rootDomain];
         } else {
             return null;
         }
@@ -220,7 +220,7 @@ class CafeTaxonomy extends CategoryTaxonomy
      * @return bool
      */
     public function isCountryDomain(): bool {
-        return in_array(get_root_domain(), $this->cafeCountryDomains);
+        return in_array(get_root_domain(), $this->countryDomains);
     }
 
     /**
@@ -299,7 +299,7 @@ class CafeTaxonomy extends CategoryTaxonomy
      * @return bool
      */
     public function isMainCafe(): bool {
-        return in_array(get_domain(), $this->cafeMainDomains);
+        return in_array(get_domain(), $this->mainDomains);
     }
 
     /**

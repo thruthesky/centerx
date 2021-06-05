@@ -9,6 +9,16 @@
 
 class CafeController {
 
+    public function settings($in): array {
+        $cafe = cafe();
+        return [
+            'mainDomains' => $cafe->mainDomains,
+            'countryDomains' => $cafe->countryDomains,
+            'rootDomainSettings' => $cafe->rootDomainSettings,
+            'mainMenus' => $cafe->mainMenus,
+            'sitemap' => $cafe->sitemap,
+        ];
+    }
     public function create($in): array|string {
         return cafe()->create($in)->response();
     }

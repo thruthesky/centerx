@@ -23,7 +23,7 @@ class CafeModel extends CategoryModel
      * 하지만, 테스트를 위해서, 개발자 컴퓨터에서 /etc/hosts 에 main.sonub.com 을 등록하고 main.sonub.com 과 같이 접속을 하면, 메인 사이트로 인식을 한다.
      */
 
-    public $cafeMainDomains = [
+    public $mainDomains = [
         'philov.com', 'www.philov.com', 'main.philov.com',
         'sonub.com', 'www.sonub.com', 'main.sonub.com',
     ];
@@ -51,7 +51,7 @@ class CafeModel extends CategoryModel
      *
      * @see sonub/README.md
      */
-    public $cafeCountryDomains = [
+    public $countryDomains = [
         'philov.com',
     ];
 
@@ -64,7 +64,7 @@ class CafeModel extends CategoryModel
      * sonub 에서 지원하는 모든 루트 도메인(국가 전용 도메인 포함)은 여기에 기록되어야 한다.
      * 만약, countryCode 값이 null 이면, 현재 사용자가 있는 곳의 국가가 자동으로 설정된다.
      */
-    public $cafeRootDomainSettings = [
+    public $rootDomainSettings = [
         'sonub.com' => [
             'name' => '필러브',
             'countryCode' => null,
@@ -79,7 +79,7 @@ class CafeModel extends CategoryModel
     /**
      * @var string[][]
      */
-    public $cafeMainMenus = [
+        public $mainMenus = [
         'qna' => [
             'title' => ['en' => 'QnA', 'ko' => '질문게시판' ]
         ],
@@ -116,7 +116,7 @@ class CafeModel extends CategoryModel
     /**
      * @var string[][]
      */
-    public $cafeSitemap = [
+    public $sitemap = [
         'community' => [
             'qna' => [
                 ['en' => 'QnA', 'ko' => '질문게시판' ]
@@ -221,8 +221,8 @@ class CafeModel extends CategoryModel
      */
     private function rootDomainSettings(): array|null {
         $rootDomain = get_root_domain();
-        if ( isset($this->cafeRootDomainSettings[$rootDomain]) ) {
-            return $this->cafeRootDomainSettings[$rootDomain];
+        if ( isset($this->rootDomainSettings[$rootDomain]) ) {
+            return $this->rootDomainSettings[$rootDomain];
         } else {
             return null;
         }
@@ -251,7 +251,7 @@ class CafeModel extends CategoryModel
      * @return bool
      */
     public function isCountryDomain(): bool {
-        return in_array(get_root_domain(), $this->cafeCountryDomains);
+        return in_array(get_root_domain(), $this->countryDomains);
     }
 
     /**
@@ -330,7 +330,7 @@ class CafeModel extends CategoryModel
      * @return bool
      */
     public function isMainCafe(string $domain = null): bool {
-        return in_array($domain ?? get_domain(), $this->cafeMainDomains);
+        return in_array($domain ?? get_domain(), $this->mainDomains);
     }
 
     /**
