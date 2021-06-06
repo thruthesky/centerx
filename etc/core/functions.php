@@ -1409,13 +1409,12 @@ function short_date_time(int $stamp): string
  */
 function thumbnailUrl(int $fileIdx, int $width=200, int $height=200): string
 {
-
     if ( empty($fileIdx) ) return 'file.idx is empty.';
     $file = files($fileIdx);
     $thumbnailPath = zoomThumbnail($file->path, $width, $height);
     if ( str_contains($thumbnailPath, '/files/') ) {
         $arr = explode('/files/', $thumbnailPath);
-        return HOME_URL . "files/$arr[1]";
+        return UPLOAD_SERVER_URL . "files/$arr[1]";
     } else {
         return $thumbnailPath;
     }

@@ -35,6 +35,7 @@
  * @property-read FileModel[] $files;
  * @property-read string $path;
  * @property-read string $url;
+ * @property-read string $relativeUrl - url 이 절대 경로인데 반해, 상대경로를 리턴한다.
  * @property-read int $y;
  * @property-read int $n;
  * @property-read int $report;

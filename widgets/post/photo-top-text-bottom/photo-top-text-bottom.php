@@ -15,7 +15,7 @@ $imageHeight = $o['imageHeight'] ?? 160;
 $imageWidth = $o['imageWidth'] ?? 160;
 
 $src = thumbnailUrl($files[0]->idx, height: $imageHeight, width: $imageWidth);
-$url = $post->url;
+$url = $post->relativeUrl;
 ?>
 
 

@@ -4,6 +4,32 @@
 # References
 
 
+# 클라이언트
+
+## 클라이언트 초기 설정 로직
+
+- 앱이 부팅하면 초기 설정 정보(메뉴 등)을 최대한 빠르게 보여 줄 필요가 있다.
+  - 예를 들면, 사용자가 최초로 philov.com 에 접속하는 경우, 서버로 부터 데이터를 가져오기 까지 시간이 너무 걸린다.
+  - 그래서, Vue.js 내에서 초기 설정 값들 저장하고, 앱 부팅시 바로 보여준다.
+
+- 참고로, 웹 서버의 PHP 에서 index.html 에 자바스크립트로 초기 설정하는 것은 PWA 의 경우,
+  index.html 을 service worker cache 를 해서, 웹 서버로 부터 최초 1회(한 번) 가져오면,
+  manifest 에 있는 cache code 가 바뀌기 전까지는 다시 가져오지 않기 때문에 index.html 에 동적 정보를 넣으면 안된다.
+  
+
+- 따라서 PWA 를 하는 경우, Flutter 로 하던, Vue.js 로 하던 그냥, 앱 내의 소스에 기본 설정 값을 추가해 놓고,
+  앱이 부팅하면, 서버로 부터 데이터를 가져와서 사용해야 한다.
+  - 참고: 본 문서의 앱 내 로컬 캐시
+
+- 참고로, 카페 전체 설정을 가져오는 경우,
+  - 앱에서 부팅 후, route=cafe.settings 로 가져온 후, 로컬에 캐시를 해 놓고 빠르게 쓰면 된다.
+
+- 요약,
+  - 첫 로딩시 빨리 표시해야하는 정보는 앱 내 저장.
+  - 그리고 서버에서 가져온 데이터를 표시. 로컬 캐시 필요.
+
+# Vue.js & SPA & PWA
+
 ## Vue.js 클라이언트 모듈
 
 - Vue.js 모듈은 https://github.com/withcenter/x-vue 에 있다.
@@ -34,6 +60,50 @@ export default new Vuex.Store({
   modules: {},
 });
 ```
+
+## PWA
+
+- Offline support 를 위해서 서비스 워커 캐시를 하는데, 이 경우 index.html 파일을 다시 서버로 부터 불러오지 않는다.
+  - 따라서 서버에서 index.html 을 변경해 봐야 소용이 없다.
+  
+- 참고, 본 문서의 카페 설정 참고.
+  
+
+
+# 독립 스크립트
+
+- 일반적으로 아무 도메인(예: sonub.com)에서 `https://sonub.com/index.php?route=...` 와 같이 접속하면
+  `ROOT_DIR/index.php` 가 실행된다.
+  - 하지만, Vue.js 나 기타 경우 홈페이지의 접속 경로를 `/view/x` 와 같이 해야 할 필요가 있다. 그래야 개발이 편하기 때문이다.
+    nginx 의 root 폴더가 `/view/x` 로 되는데,
+    웹 브라우저로 접속시 `ROOT_DIR/index.php` 가 실행되는 것이 아니라, `ROOT_DIR/view/x/index.php` 가 실행된다.
+    이와 같은 경우에도 CenterX 가 실행이 가능하다.
+```php
+include '../../boot.php';
+if ( isset($_REQUEST['route']) ) {
+    include ROOT_DIR .'controller/control.php';
+    return;
+}
+include ROOT_DIR . 'var/cafe.index.php';
+include view()->folder . 'index.html';
+```
+
+- 다만, 주의해야 할 점은 Api 접속을 받아 들이기 위해서, `index.php?route=...` 와 같이 들어오면 controller 를 실행 해 주어야 한다.
+
+- 이 때, 문제는 홈페이지 경로가 변경되어, 이미지 표시를 위해서 `https://sonub.com/files/abc.jpg` 와 같은 경로가 연결되지 않는다.
+  - 이렇게 하기 위해서는 nginx.conf 에 별도의 도메인(예: file.sonub.com)을 두어서, 그 file.sonub.com 도메인의 root 폴더를 `/view/x` 가
+    아닌 CenterX 의 루트 폴더로 한다.
+    그리고, config.php 의 `UPLOAD_SERVER_URL` 이 이미지 서버 주소인데, 이를 HOME_URL 로 하지 않고, `view-name.config.php` 로
+    `UPLOAD_SERVER_URL` 을 다른 도메인으로 덮어 쓴다.
+  - 그러면 이미지 경로가 `https://sonub.com` 이 아닌 `https://file.sonub.com` 이 된다.
+
+
+# Restful API
+
+## Api 경로
+
+- 본 문서의 `# 독립 스크립트` 를 참조한다.
+    
 
 
 # 클라이언트 캐싱
@@ -88,7 +158,7 @@ export default new Vuex.Store({
 - `api.php` 에서 session id 로 로그인을 하고, 각 route 에 맞는 controller 를 실행한다.
 
 
-# View
+# View, Theme
 
 - HTTP 입력 값에 route 가 없으면 `boot.php => controller/control.php => view.php => view/view-name/index.php` 의 순서로
   각 view 폴더의 index.php 가 실행된다.
@@ -331,30 +401,12 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
     - 전체 이미지 너비는 500px 로 하고, 실제 디자인 내용을 300px 로 하고, 이미지의 중간에 위치시키면 된다.
       즉, 남는 여백은 그냥 빈 칸으로 두는 것이다.
 
-## 카페 클라이언트 로직
+# 카페 클라이언트 로직
 
-### 설정, 초기 메뉴 설정 등
+## 카페 설정, 초기 메뉴 설정 등
 
-- 최대한 빠르게 카페 별 설정이 필요하다.
-  - 예를 들면, 사용자가 최초로 philov.com 에 접속하는 경우, 서버로 부터 데이터를 가져오기 까지 시간이 너무 걸린다.
-  - 그래서, index.html 에 Javascript 로 설정을 바로 출력을 해서 Vue.js 에서 사용 할 수 있도록 할 수 있다.
-    - 문제: 서버에서 PHP 로 index.html 을 변경하면, PWA 는?
-      - 괜찮은 것 같다. manifest.json 에서 어느 파일을 업데이트하는지 기록한다. 즉, index.html 이 바뀌어도 상관 없다.
-    
-  - 참고로, Vue.js 에서는 index.html 에 넣고,
-    - Flutter 에서는 그냥 내부 소스 코드 설정에 추가를 해야 한다.
-    
-  - index.html 에 들어가는 설정에는 간단한 카페 이름, 로고, 메뉴 정도만 index.html 에 집어 넣고, 나머지는 route=cafe.settings 로 가져온다.
-    
-  - 만약, 메뉴 변경이 필요하면, php 로 index.html 을 바꾸어야 한다.
-
-- 참고로, 카페 전체 설정을 가져오는 경우,
-  - 앱에서 부팅 후, route=cafe.settings 로 가져온 후, 로컬에 캐시를 해 놓고 빠르게 쓰면 된다.
-
-- 요약,
-  - 첫 로딩시 빨리 표시해야하는 정보 외에는 서버에서 가져온 데이터를 표시한다.
-  - 카페 메인이면, index.html 의 settings 에 카페 메인에 해당하는 로고와 메뉴를 보여주면 된다.
-
+- 참고: 본 문서의 클라이언트 초기 설정 로직
+  
 #### Vue.js 에서 작업
 
 - 
@@ -374,3 +426,8 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
   - save it on localStorage for the next use.
   - update the memory.
 
+## 카페 프로토콜
+
+### 전체 설정 가져오기
+
+- `route=cafe.settings`

@@ -139,7 +139,7 @@ if ( !defined('COOKIE_DOMAIN') ) {
  * This can be an absolute or relative path.
  */
 const UPLOAD_DIR = ROOT_DIR . 'files/uploads/';
-const THUMBNAILS_DIR = ROOT_DIR . 'files/thumbnails/';
+
 
 
 /**
@@ -157,10 +157,11 @@ if ( isCli() ) {
 } else {
     define('HOME_URL', get_current_root_url());
 }
-const UPLOAD_URL = HOME_URL . 'files/uploads/';
-const THUMBNAILS_URL = HOME_URL . 'files/thumbnails/';
 
-
+/// 이미지 다운로드 경로
+if ( ! defined('UPLOAD_SERVER_URL') ) {
+    define('UPLOAD_SERVER_URL', HOME_URL);
+}
 
 
 

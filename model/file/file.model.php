@@ -148,7 +148,7 @@ class FileModel extends Entity {
     public function read(int $idx = 0): Entity
     {
         parent::read($idx);
-        $url = UPLOAD_URL . $this->v(PATH);// $data[PATH];
+        $url = UPLOAD_SERVER_URL . 'files/uploads/' . $this->v(PATH);// $data[PATH];
         $this->updateMemoryData('url', $url);
         $this->updateMemoryData('path', UPLOAD_DIR . $this->path);
         return $this;
