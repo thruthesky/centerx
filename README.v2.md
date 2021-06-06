@@ -1,10 +1,14 @@
 # Matrix
 
 
-# References
 
 
 # 클라이언트
+
+## 클라이언트 작업시 참고 사항
+
+- [Vue.js 프로젝트 진행시 참고 사항](https://docs.google.com/document/d/1WG3caN7_3eXRhPthBgDAgzzkI-OrVir1Bvnrbt-nsR0/edit#heading=h.lmaeoe85dwyn)
+
 
 ## 클라이언트 초기 설정 로직
 
@@ -27,6 +31,20 @@
 - 요약,
   - 첫 로딩시 빨리 표시해야하는 정보는 앱 내 저장.
   - 그리고 서버에서 가져온 데이터를 표시. 로컬 캐시 필요.
+  
+
+### 클라이언트에 초기 설정 값 지정하는 방법
+
+- 초기 설정 값을 지정 할 때, router 로 부터 가져온 결과 값을 JSON 으로 보관하면 된다.
+  - 예를 들어 카페 초기 설정 값을 지정하고자 한다면, `/?route=cafe.settings` 로 접속을 하면, 아래와 같은 값을 얻을 수 있다.
+  
+```json
+{"response":{"mainDomains":["philov.com","www.philov.com","main.philov.com","sonub.com","www.sonub.com","main.sonub.com"],"countryDomains":["philov.com"],"rootDomainSettings":{"sonub.com":{"name":"\ud544\ub7ec\ube0c","countryCode":null},"philov.com":{"name":"\ud544\ub7ec\ube0c","countryCode":"PH"}},"mainMenus":{"qna":{"title":{"en":"QnA","ko":"\uc9c8\ubb38\uac8c\uc2dc\ud310"}},"discussion":{"title":{"en":"Discussion","ko":"\uc790\uc720\uac8c\uc2dc\ud310"}},"buyandsell":{"title":{"en":"Buy&sell","ko":"\ud68c\uc6d0\uc7a5\ud130"}},"reminder":{"title":{"en":"Reminder","ko":"\uacf5\uc9c0\uc0ac\ud56d"}},"job":{"title":{"en":"Job","ko":"\uad6c\uc778\uad6c\uc9c1"}},"rent_house":{"title":{"en":"Houses","ko":"\uc8fc\ud0dd\uc784\ub300"}},"rent_car":{"title":{"en":"RentCar","ko":"\ub80c\ud2b8\uce74"}},"im":{"title":{"en":"Immigrant","ko":"\uc774\ubbfc"}},"real_estate":{"title":{"en":"Realestate","ko":"\ubd80\ub3d9\uc0b0"}},"money_exchange":{"title":{"en":"Exchange","ko":"\ud658\uc804"}}},"sitemap":{"community":{"qna":[{"en":"QnA","ko":"\uc9c8\ubb38\uac8c\uc2dc\ud310"}],"discussion":[{"en":"Discussion","ko":"\uc790\uc720\uac8c\uc2dc\ud310"}],"buyandsell":[{"en":"Buy&sell","ko":"\ud68c\uc6d0\uc7a5\ud130"}],"reminder":[{"en":"Reminder","ko":"\uacf5\uc9c0\uc0ac\ud56d"}]},"business":{"job":{"title":{"en":"Job","ko":"\uad6c\uc778\uad6c\uc9c1"}},"rent_house":{"title":{"en":"Houses","ko":"\uc8fc\ud0dd\uc784\ub300"}},"rent_car":{"title":{"en":"RentCar","ko":"\ub80c\ud2b8\uce74"}},"im":{"title":{"en":"Immigrant","ko":"\uc774\ubbfc"}},"real_estate":{"title":{"en":"Realestate","ko":"\ubd80\ub3d9\uc0b0"}},"money_exchange":{"title":{"en":"Exchange","ko":"\ud658\uc804"}}}}},"request":{"route":"cafe.settings"}}
+```
+
+위에서 response 부분을 추출해서 앱 내의 설정 부분에 보관하면 된다.
+
+
 
 # Vue.js & SPA & PWA
 
@@ -91,12 +109,14 @@ include view()->folder . 'index.html';
 - 다만, 주의해야 할 점은 Api 접속을 받아 들이기 위해서, `index.php?route=...` 와 같이 들어오면 controller 를 실행 해 주어야 한다.
 
 - 이 때, 문제는 홈페이지 경로가 변경되어, 이미지 표시를 위해서 `https://sonub.com/files/abc.jpg` 와 같은 경로가 연결되지 않는다.
-  - 이렇게 하기 위해서는 nginx.conf 에 별도의 도메인(예: file.sonub.com)을 두어서, 그 file.sonub.com 도메인의 root 폴더를 `/view/x` 가
-    아닌 CenterX 의 루트 폴더로 한다.
-    그리고, config.php 의 `UPLOAD_SERVER_URL` 이 이미지 서버 주소인데, 이를 HOME_URL 로 하지 않고, `view-name.config.php` 로
-    `UPLOAD_SERVER_URL` 을 다른 도메인으로 덮어 쓴다.
-  - 그러면 이미지 경로가 `https://sonub.com` 이 아닌 `https://file.sonub.com` 이 된다.
-
+  - 이렇게 하기 위해서는 아래의 두 가지 방법을 사용 할 수 있다.
+    - 첫째, 간단하게 /files/*/*.(jpg|jpeg|png|gif) 의 root folder 를 /docker/home/center/files 로 변경한다.
+    - 둘째, nginx.conf 에 별도의 도메인(예: file.sonub.com)을 두어서,
+      그 file.sonub.com 도메인의 root 폴더를 `/view/x` 가 아닌 CenterX 의 루트 폴더로 하고,
+      config.php 의 `UPLOAD_SERVER_URL` 이 이미지 서버 주소인데,
+      이를 HOME_URL 로 하지 않고, `view-name.config.php` 로 `UPLOAD_SERVER_URL` 을 다른 도메인으로 덮어 쓴다.
+      그러면 이미지 경로가 `https://sonub.com` 이 아닌 `https://file.sonub.com` 이 된다.
+    위 두 방법 중에서, 간단하게 root folder 를 변경하는 것을 추천한다.
 
 # Restful API
 
@@ -431,3 +451,215 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 ### 전체 설정 가져오기
 
 - `route=cafe.settings`
+
+
+
+# 데이터베이스 및 테이블 구조
+
+- 모든 테이블에는 idx, createdAt, updatedAt 이 존재한다.(존재 해야 한다.)
+- 레코드가 사용자의 소유를 나타낼 때에는 추가적으로 userIdx 가 존재해야 한다.
+
+## 데이터베이스 계정 설정
+
+- 가장 먼저 `keys` 폴더에 접속 정보가 존재하는지 확인을 한다.
+  DB 접속 정보는 공개되면 안된다. 그래서 .gitignore 에 포함되어져 있는 keys 폴더에 보관을 한다. 또는 `db.config.php` 파일이 .gitignore 에
+  들어가 있다.
+  - 우선, `theme/theme-name/keys/db.config.php` 파일이 존재하면 로드한다.
+  - 없으면, `etc/keys/db.config.php` 파일이 존재하는지 보고 있으면 로드한다.
+  - 없으면, config.php 에 있는 접속 정보로 접속한다.
+
+
+
+## 사용자 테이블
+
+- `birthdate` 에는 YYYYMMDD 의 8자리 숫자 값이 들어간다. 만약, 앱으로 부터 년도 4자리 값만 입력을 받는다면, 19730000 와 같이 월/일의 값은 0으로 입력하면 된다.
+- `provider` 는 로그인 기능을 제공하는 업체 코드이다. naver, kakao, google, facebook, 등이 들어가면 된다.
+- `verification` 은 사용자 인증을 제공하는 업체 코드이다. `passlogin`, `danal` 등과 같이 들어가면 된다.
+
+
+### 사용자 사진, 프로필 사진
+
+- 사용자가 사진을 올릴 때, `file.userIdx` 에 회원 번호, `file.code` 에 `photoUrl` 이라고 입력하면, 해당 사진은 그 사용자의 프로필 사진이 된다.
+  주의: 1.0.x 에서는 `file.code` 가 아닌 `file.taxonomy` 에 `photoUrl` 이라고 저장했다.
+  회원 사진을 사진을 업로드 할 때나 변경 할 때, `file.code` 값이 `photoUrl` 인 것을 사용하면 된다.
+
+  회원 정보를 클라이언트로 전달 할 때, `photoIdx` 에 그 `file.idx` 가 전달된다.
+  사용자 프로필 사진을 삭제할 때, `file.code = 'photoUrl' AND file.userIdx='사용자번호'` 조건에 맞는 사진을 삭제 할 수 있다.
+  물론 `file.idx=photoIdx` 인 것을 삭제해도 된다.
+
+- `users.photoUrl` 은 사용자 테이블에 저장된다.
+  참고, 버전 1.x 에서는 meta 에 저장되었다.
+  주의, 사용자가 프로필 사진을 업로드하면 그 사진이 업로드 되고, 프로필 사진 정보가 `files` 테이블에 기록된다.
+  이 때, `users.photoUrl` 의 값은 무시된다.
+  즉, 프로필 사진을 업로드했으면, `users.photoUrl` 은 무시되어야 하는 것이다.
+  그러면 이 `users.photoUrl` 은 어떨때 사용될까?
+  예를 들어 카카오톡 로그인을 하는 경우, 카카오톡 프로필 사진을 `users.photoUrl` 에 저장하는 것이다.
+  참고로, 카톡 프로필 사진을 https 로 가져올 수 있다.
+  
+
+
+## wc_posts, 게시판 테이블, posts 테이블, posts table
+
+- `userIdx` 글 쓴이 idx.
+- `otherUserIdx` 에는 글을 받는 사람의 idx 가 들어간다.
+  예를 들어, 쪽지나 메일을 전송 할 때, 게시판 테이블을 활용하게되는데, 이 때, 받는이가 `otherUserIdx` 에 저장된다.
+  중요한 점은, 이 때, 글을 수정 할 수 없다. Entity 로직에서 에러가 발생한다.
+  삭제는 오직, 받는이 `otherUserIdx` 만 할 수 있다. 글 쓴이가 하려면, Entity 로직에서 에러가 발생한다.
+  글 읽기는 양쪽 모두 가능하다. 주의: 이 부분은 Entity 로직에서 처리가 안되고, 위젯에서 구현해야 한다.
+
+- `relationIdx` 는 현재 글이 어느 것(또는 다른 taxonomy 의 entity)과 연결되어져 있는지 표시 할 때 사용한다.
+  예를 들면, 쇼핑몰에서 상품에 대한 후기는 코멘트로 남기고, 후기는 별도의 inquiry 게시판에 남기고자 한다.
+  즉, 상품 A 에 대한 문의는 inquiry 게시판에 모두 기록된다.
+  참고, 일반적인 문의는 채팅방 형식으로 해도 좋다. 1:1 문의는 채팅방이 적당하나, 공개를 할 수 없다. 즉, 공개 문의를 할 수 없다.
+  참고, 쇼핑몰 상품 A 에 대한 후기는 코멘트로 남기는 것이 좋다.
+  참고, 문의가 상품 별로 공개 문의 또는 사용자 선택에 의해서 비밀 문의로 되어져야 한다면, 별도의 게시판에 문의를 작성해야한다.
+  이 때, (문의 게시판에 작성된) 문의가 어느 (쇼핑몰)상품의 것과 연관되어져 있는지를 relationIdx 로 표시 할 수 있다.
+  즉, 이 때는 relationIdx 는 쇼핑몰 상품 번호가 되는 것이다.
+
+  이 처럼 `relationIdx` 는 글과 글의 연결성을 표시하는 데에 사용되며, 여러 가지 방식으로 활용 할 수 있다.
+
+- `private` 은 현재 글이 비밀글인지 아닌지를 'Y' 또는 공백으로 표시한다.
+  주의: `private` 일 때에는 글 제목과 내용을 `privateTitle` 과 `privateContent` 로 저장한다. 그래서 검색에서 완전 배제를 한다.
+  참고로 글 작성시, `private=Y` 로 전달하면, taxonomy 에서 title 과 content 를 자동으로 `private_title` 과 `privateContent`에 저장한다.
+  검색을 할 때, private 이 아닌 글을 검색하고자 한다면, 공백인 것을 검색하면 된다.
+
+- 'Y' 는 찬성(또는 like) 수
+- 'N' 은 반대(또는 dislke) 수
+
+- `Ymd` 는 글을 쓴 시점의 날짜(YYYYMMDD)의 값이 자동으로 들어간다.
+
+- `noOfComments` 는 각 게시글의 코멘트 수를 표시한다. 게시판에서 코멘트 많은 순서로 글을 추출 하고자 할 때 사용 가능하다.
+  참고로, 게시판 글 코멘트 삭제 기능은 없다. 삭제를 하지 못하고, 삭제됨 표시만 하는 것이다. 따라서, 코멘트 수는 증가만 하고, 감소를 하지 않는다.
+  - 각 게시판 별 글 수, 코멘트 수가 필요한 경우는 count(*) 로 해서 처리를 한다.
+
+
+- `code` 는 게시글에 부여되는 특별한 코드이고, 그 코드를 바탕으로 글을 추출 할 수 있다.
+- `report` 는 신고된 회 수를 저장한다. 신고가 될 때마다 1씩 증가한다.
+
+- `createdAt` 글이 작성된 시간 stamp. 처음 1회만 저장.
+- `updatedAt` 글이 수정된 시간 stamp. 자주 업데이트 될 수 있음.
+- `readAt` 글이 읽혀진 시간 stamp
+- `deletedAt` 글이 삭제된 시간 stamp. 글이 삭제된 시간.
+- `beginAt` 글이 시작되는 시간 stamp. 예를 들어, 해당 글이 언제 부터 보여져야 할 지, 또는 광고 프로그램에서, 광고가 언제 부터 시작되어야 할지
+- `endAt` 글이 끝나는 시간 stamp. 글이 언제 부터 안보여져야 할 지. 광고 배너가 언제 끝나는 지 등.
+  참고, beginAt 과 endAt 에 숫자 값이 입력되면 그대로 저장을 하지만, 문자열 값으로 입력되면, 날짜 문자열로 인식하여 자동으로 stamp 로 변환해서 저장한다.
+  문자 날짜 값은 `input type='date'` 에서 사용하는 형식인 `YYYY-MM-DD` 로 표현되어야 한다. 예) 2021-05-26
+
+
+- 참고, 글이 삭제되면, 실제 레코드 지우지 않고,
+  title, privateTitle, content, privateContent 만 빈 문자열로 저장한다.
+  즉, 글의 작성자, 첨부 파일이나 코멘트 등은 그대로 살아있다.
+
+- 'files' 필드는 글에 등록된 파일 들의 idx 를 콤마로 분리해서 저장한다. 예) "123,456"
+  하지만, 글을 읽을 때에는 'files' 필드를 참조하지 않고, wc_files 의 entity 를 보고, 해당 글에 연결된 모든 파일을 가져온다.
+  다만, 글 검색을 할 때, 'files' 필드에 값이 있으면 첨부 파일/사진이 있는 것으로 간주하여, 사진이 있는 파일만 가져오게 할 수 있다.
+
+- `listOrder` - 코멘트의 목록 순서는 parentIdx 를 바탕으로하는 재귀 함수를 통해서 정렬을 한다.
+  그래서 코멘트 정렬에서 listOrder 가 사용되지는 않지만, 공지 사항 목록 우선 순위나 배너 표시 우선 순위 등 여러가지 상황에서 활용을 할 수 있다.
+
+- `reminder` - 'Y' 이면 공지사항이라는 뜻이며, 'Y' 가 아니면(빈 값 또는 N)이면 일반 글이라는 뜻이다.
+
+- `noOfViews` 는 조회수이다. 앱이나 SPA 에서는 라우트를 통해서 업데이트 해야하며, 검색 로봇 조회나, 이중 업데이트를 방지해야 한다.
+
+
+
+
+## files, 파일 테이블
+
+
+- taxonomy, entity 는 예를 들어, posts taxonomy 의 어떤 글 번호에 연결이 되었는지 또는 users taxonomy 의 어떤 사용자와 연결이 되었는지 나타낸다.
+- code 는 파일의 코드 값으로 예를 들어, taxonomy=users AND entity=사용자번호 AND code=profilePhoto 와 같이 업로드된 파일의 특성을 나타낼 때 사용 할 수 있다.
+
+- 파일이 꼭 게시판에 등록 될 필요는 없다.
+  - taxonomy, entity 만 잘 활용해서 하면 된다.
+  - 예를 들어, 사진이 특정 카테고리에 적용이 되어야 하는 경우, 특히, 서브 사이트나 카페를 만들 때, 하나의 카테고리마다 사진이 여러개 등록되어야하는 경우,
+    taxonomy=cafe
+    entity=cafe.idx
+    code=logo 또는 code=icon 등으로 여러개의 사진/파일을 연결 할 수 있다.
+
+
+## 카테고리 테이블. Category table
+
+- userIdx 는 게시판 관리자이다. 카페인 경우, 카페 주인이 된다.
+- domain 은 게시판의 도메인이다. 홈페이지 도메인일 수도 있고, 그냥 그룹일 수도 있다. 카페의 경우, 카페 도메인이 된다.
+- countryCode 는 국가 코드이다. 해당 게시판(또는 카페가) 어느 국가에 속해 있는지 표시를 하는 것이다.
+
+
+- postCreateLimit - users who has less points than this cannot create post
+  For instance, this value is 1000 and user has 999. Then the user cannot create post.
+- commentCreateLimit - users who has less points than this cannot create comment
+- readLimit - users who has less points than this cannot create comment
+  - @attention When a user creates a post, it reads the post internally.
+    Which means, for post creating, user will read the post and if user has less point of 'readLimit' when creating, it will fail.
+  - @attention, readLimit is only for post reading, not for comment reading.
+
+- banCreateOnLimit - User cannot create post/comment if the user reaches the limit.
+
+- createPost - is the Points to be given to the author on post creation. It can be minus value like -100.
+- deletePost - is the Points to be given to the author on post deletion. It can be minus value like -100.
+- createComment - is the Points to be given to the author on comment creation. It can be minus value like -100.
+- deleteComment - is the Points to be given to the author on comment deletion. It can be minus value like -100.
+
+
+- createHourLimit - Create limitation for hours.
+- createHourLimitCount - How many can the user create post/comment within the `createHourLimit` hour.
+- createDailyLimitCount - How many can the user create post/comment in a day.
+
+
+## User Activity
+
+This logs all user activities.
+
+
+
+
+
+- User activities are recorded in the `user_activities`.
+  The actions may be user register, login, post create, delete, like, dislike, and more.
+
+  - When an entity of `posts` is created, taxonomy is `posts`, and the entity is the idx of the record, and categoryIdx is the category.idx.
+    An entity of `posts` may be a post, a comment, or any record in `posts` table.
+
+  - `fromUserIdx` is the user who trigger the action.
+  - `toUserIdx` is the user who takes the benefit.
+  - If the values of `fromUserIdx` and `toUserIdx` are same, then, `fromUserIdx` may be 0. Like user register, login, post create, delete, comment create, delete.
+  - Note that, when a user like or dislike on his own post or comment, there will be no point history.
+
+- For like and dislike, the history is saved under `post_vote_histories` but that has no information about who liked who.
+
+### Vote activity logic
+
+- Admin can set global vote point on point settings menu.
+- Admin can set daily limit and hourly limit on global settings.
+  - If it is not set, then there is no limit.
+  - If it is set, the point will be changed only until it reaches the limit and user can still votes, but point will not be changed.
+
+
+### How to record a user activity
+
+
+- add the name of activity in `user_activity.defines.php`
+
+- add activity name as a static member variable in Actions class.
+
+- add a method like 'canXxxx()' in `user_acitivity.taxonomy.php` if it needs to check the permission before the activity
+  - And add it to somewhere before the activity.
+  - For instance `act()->canCreatePost()`
+
+- add a method of recording activity in `user_acitivity.taxonomy.php`.
+  - And add it after the activity.
+  - For instance, `act()->register()`
+  - If it needs to deduct point, deduct the point in this method.
+
+- For instance, 'UserActivityTaxonomy::canRegister()' checks if the user can register, and 'UserActivityTaxonomy::register()' method records.
+
+
+
+
+## 친구 관리 테이블
+
+- 테이블 이름: friends
+- 친구 목록은 n:n 관계이다. 그래서 별도의 테이블이 존재해야한다.
+- myIdx 는 나의 회원 번호
+- otherIdx 는 내 친구로 등록된 (다른 사용자의) 회원 번호.
+- block 은 친구 신고를 하거나, 차단하는 경우, 'Y' 의 값을 가진다. 'N' 의 값을 가지지 않으며, 기본적으로는 빈(문자열) 값이다.

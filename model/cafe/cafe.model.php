@@ -67,11 +67,13 @@ class CafeModel extends CategoryModel
     public $rootDomainSettings = [
         'sonub.com' => [
             'name' => '필러브',
-            'countryCode' => null,
+            'countryCode' => '',
+            'logo' => '/img/cafe/root-domain-logo/no-logo.jpg',
         ],
         'philov.com' => [
             'name' => '필러브',
             'countryCode' => 'PH',
+            'logo' => '/img/cafe/root-domain-logo/philov-logo.jpg',
         ]
     ];
 
@@ -79,37 +81,18 @@ class CafeModel extends CategoryModel
     /**
      * @var string[][]
      */
-        public $mainMenus = [
-        'qna' => [
-            'title' => ['en' => 'QnA', 'ko' => '질문게시판' ]
-        ],
-        'discussion' => [
-            'title' => ['en' => 'Discussion', 'ko' => '자유게시판' ]
-        ],
-        'buyandsell' => [
-            'title' => ['en' => 'Buy&sell', 'ko' => '회원장터' ]
-        ],
-        'reminder' => [
-            'title' => ['en' => 'Reminder', 'ko' => '공지사항' ]
-        ],
-        'job' => [
-            'title' => ['en' => 'Job', 'ko' => '구인구직' ]
-        ],
-        'rent_house' => [
-            'title' => ['en' => 'Houses', 'ko' => '주택임대' ]
-        ],
-        'rent_car' => [
-            'title' => ['en' => 'RentCar', 'ko' => '렌트카' ]
-        ],
-        'im' => [
-            'title' => ['en' => 'Immigrant', 'ko' => '이민' ]
-        ],
-        'real_estate' => [
-            'title' => ['en' => 'Realestate', 'ko' => '부동산' ]
-        ],
-        'money_exchange' => [
-            'title' => ['en' => 'Exchange', 'ko' => '환전' ]
-        ]
+    public $mainMenus = [
+        'qna',
+        'discussion',
+        'buyandsell',
+        'reminder',
+        'job',
+        'rent_house',
+        'rent_car',
+        'im',
+        'real_estate',
+        'money_exchange',
+        'sitemap',
     ];
 
 
@@ -118,38 +101,18 @@ class CafeModel extends CategoryModel
      */
     public $sitemap = [
         'community' => [
-            'qna' => [
-                ['en' => 'QnA', 'ko' => '질문게시판' ]
-            ],
-            'discussion' => [
-                ['en' => 'Discussion', 'ko' => '자유게시판' ]
-            ],
-            'buyandsell' => [
-                ['en' => 'Buy&sell', 'ko' => '회원장터' ]
-            ],
-            'reminder' => [
-                ['en' => 'Reminder', 'ko' => '공지사항' ]
-            ],
+            'qna',
+            'discussion',
+            'buyandsell',
+            'reminder',
         ],
         'business' => [
-            'job' => [
-                'title' => ['en' => 'Job', 'ko' => '구인구직' ]
-            ],
-            'rent_house' => [
-                'title' => ['en' => 'Houses', 'ko' => '주택임대' ]
-            ],
-            'rent_car' => [
-                'title' => ['en' => 'RentCar', 'ko' => '렌트카' ]
-            ],
-            'im' => [
-                'title' => ['en' => 'Immigrant', 'ko' => '이민' ]
-            ],
-            'real_estate' => [
-                'title' => ['en' => 'Realestate', 'ko' => '부동산' ]
-            ],
-            'money_exchange' => [
-                'title' => ['en' => 'Exchange', 'ko' => '환전' ]
-            ]
+            'job' ,
+            'rent_house',
+            'rent_car',
+            'im',
+            'real_estate',
+            'money_exchange',
         ],
     ];
 

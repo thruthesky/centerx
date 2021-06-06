@@ -382,11 +382,11 @@ function setLoginCookies(array|int $profile): void {
 
     setAppCookie(SESSION_ID , $profile[SESSION_ID]);
     if ( isset($profile[NICKNAME]) ) setAppCookie ( NICKNAME , $profile[NICKNAME] );
-    if ( isset($profile[PROFILE_PHOTO_URL]) ) setAppCookie ( PROFILE_PHOTO_URL , $profile[PROFILE_PHOTO_URL] );
+    if ( isset($profile[PHOTO_URL]) ) setAppCookie ( PHOTO_URL , $profile[PHOTO_URL] );
 
 //    setcookie ( SESSION_ID , $profile[SESSION_ID], time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
 //    if ( isset($profile[NICKNAME]) ) setcookie ( NICKNAME , $profile[NICKNAME] , time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
-//    if ( isset($profile[PROFILE_PHOTO_URL]) ) setcookie ( PROFILE_PHOTO_URL , $profile[PROFILE_PHOTO_URL] , time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
+//    if ( isset($profile[PHOTO_URL]) ) setcookie ( PHOTO_URL , $profile[PHOTO_URL] , time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
 }
 
 /**
@@ -398,7 +398,7 @@ function setLoginCookies(array|int $profile): void {
 function unsetLoginCookies() {
     removeAppCookie(SESSION_ID);
     removeAppCookie(NICKNAME);
-    removeAppCookie(PROFILE_PHOTO_URL);
+    removeAppCookie(PHOTO_URL);
 }
 
 function setAppCookie($name, $value) {

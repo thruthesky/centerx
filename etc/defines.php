@@ -78,7 +78,8 @@ const END_AT = 'endAt';
 
 const SESSION_ID = 'sessionId';
 const NICKNAME = 'nickname';
-const PROFILE_PHOTO_URL = 'profilePhotoUrl';
+const PHOTO_URL = 'photoUrl';
+const PROFILE_PHOTO_URL = PHOTO_URL;
 
 const TITLE = 'title';
 const CONTENT = 'content';
