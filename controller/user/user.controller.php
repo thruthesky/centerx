@@ -30,6 +30,8 @@ class UserController
             PASSWORD => LOGIN_PASSWORD_SALT,
             NICKNAME => $in['naickname'] ?? '',
             PHOTO_URL => $in['photoUrl'] ?? '',
+            DOMAIN => $in[DOMAIN],
+            PROVIDER => PROVIDER_KAKAO,
         ];
 
         return user()->loginOrRegister($data)->response();

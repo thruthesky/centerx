@@ -44,9 +44,10 @@ if($status_code == 200 && isset($re['access_token'])) {
 
         $user_id = $data['response']['id'];
         $user = user()->loginOrRegister([
-            'email' => "naver$user_id@naver.com",
-            'password' => LOGIN_PASSWORD_SALT,
-            'provider' => PROVIDER_NAVER,
+            EMAIL => "naver$user_id@naver.com",
+            PASSWORD => LOGIN_PASSWORD_SALT,
+            PROVIDER => PROVIDER_NAVER,
+            DOMAIN => $state,
         ]);
         if ( $user->hasError ) displayWarning($user->getError());
         else {

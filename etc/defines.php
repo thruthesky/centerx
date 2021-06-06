@@ -60,6 +60,7 @@ const USER_IDX = 'userIdx';
 const OTHER_USER_IDX = 'otherUserIdx';
 const EMAIL = 'email';
 const PASSWORD = 'password';
+const PROVIDER = 'provider';
 const NAME = 'name';
 const TMP_NAME = 'tmp_name';
 const SIZE = 'size';
