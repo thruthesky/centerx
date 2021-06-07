@@ -193,9 +193,12 @@ class MySQLiDatabase {
     /**
      * Returns a record.
      *
+     * @attention It is always right to add `LIMIT 1` on the $sql since you will get only 1 record.
+     *
      * @param string $sql
      * @param mixed ...$values
      *  ...$values can be a empty variable format. It work without any SQL condition. Like `SELECT COUNT(*) FROM TABLE`.
+     *
      * @return array
      *  - empty row if there is no record (or there is an error)
      */
