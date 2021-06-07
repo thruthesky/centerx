@@ -868,7 +868,7 @@ class Entity {
      *
      *
      *
-     * @return array - empty array([]), If there is no record found.
+     * @return $this[] - empty array([]), If there is no record found.
      *  - empty array([]), If there is no record found.
      *
      *

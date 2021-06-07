@@ -110,9 +110,26 @@ class PostController {
 //        if ( $onTop ) $res[] = $onTop->response();
         foreach($posts as $post) {
 //            if ( $onTop?->idx == $post->idx ) continue;
-            $res[] = $post->response();
+            $res[] = $post->response(comments: $in['comments'] ?? -1);
         }
         return $res;
+    }
+
+
+    /**
+     * 조건에 맞는 글 수를 리턴한다. 코멘트는 제외.
+     * @param $in
+     * @return array
+     */
+    public function count($in): array {
+
+        list ($where, $params ) = parsePostListHttpParams($in);
+
+        $count =  post()->count(
+            where: $where,
+            params: $params,
+        );
+        return [ 'count' => $count ];
     }
 
 
@@ -133,18 +150,4 @@ class PostController {
     }
 
 
-    /**
-     * 조건에 맞는 글 수를 리턴한다. 코멘트는 제외.
-     * @param $in
-     * @return array
-     */
-    public function count($in): array {
-        $count =  post()->count(
-            where: $in['where'] ?? '1',
-            params: $in['params'] ?? [],
-            conds:  $in['conds'] ?? [],
-            conj: $in['conj'] ?? 'AND'
-        );
-        return [ 'count' => $count ];
-    }
 }

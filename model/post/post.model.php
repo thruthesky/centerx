@@ -288,24 +288,47 @@ class PostModel extends Forum {
     /**
      * - 코멘트가 없으면 'comments' 에 빈 배열이 지정됨.
      * - 첨부 파일이 없으면 'files' 에 빈 배열이 지정됨.
+     * - 사용자 정보가 없으면 'user' 에 빈 배열이 지정됨.
+     *
+     * @param int $comments - comments 에
+     *  - 0 가 입력되면, 코멘트 정보를 리턴하지 않는다.
+     *  - 음수, -1 이 입력되면, 모든 코멘트를 리턴한다. 기본 값은 -1 로서, 모든 코멘트를 리턴한다.
+     *  - @todo 양수가 입력되면 그 갯수 만큼 맨 마지막 글들 중에서 리턴한다.
+     *
+     * @attention $comments 가 0 이면, 실제로 해당 글에 코멘트가 있어도, noOfComments 도 0 이 된다.
+     *  따라서, noOfComments 의 값을 얻기 위해서는 반드시, $comments 가 0 이 아니어야 한다. $comment 가 1 이어도,
+     *  전체 코멘트 수를 가져온다.
      *
      * @return array|string
      * - 에러가 있으면 에러 문자열.
      * - 아니면, 클라이언트에 전달할 글 내용
      */
-    public function response(): array|string {
+    public function response(int $comments = -1): array|string {
         if ( $this->hasError ) return $this->getError();
         $post = $this->getData();
 
-        $post['comments'] = $this->comments(response: true);
+        if ( $comments == 0 ) {
+            $post['comments'] = [];
+            $post['noOfComments'] = count($post['comments']);
+        }
+        else {
+            $post['comments'] = $this->comments(response: true);
+            $post['noOfComments'] = count($post['comments']);
+            if ( $post['comments'] && $comments > 0 ) {
+                $newArr = array_reverse($post['comments']);
+                $post['comments'] = array_slice($newArr, 0, $comments);
+            }
+        }
 
 
         // taxonomy 와 entity 를 기반으로 첨부 파일을 가져온다.
         $post[FILES] = $this->files(response: true);
 
 
-        if ( $post[USER_IDX] ) {
+        if ( isset($post[USER_IDX]) ) {
             $post['user'] = user($post[USER_IDX])->shortProfile(firebaseUid: true);
+        } else {
+            $post['user'] = [];
         }
 
         return $post;

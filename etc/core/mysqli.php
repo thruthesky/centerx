@@ -251,24 +251,6 @@ class MySQLiDatabase {
     
 
 
-    /**
-     * Backward compatibility
-     *
-     * @deprecated user $this->rows().
-     * @param $q
-     * @param string $_ - backward compatibility
-     * @return array
-     */
-    public function get_results($q, $_=''): array {
-        debug_print_backtrace();
-        die("\ndie() - Do not use db()->get_result()");
-        $rets = [];
-        $result = $this->connection->query($q);
-        while ($row = $result->fetch_assoc()) {
-            $rets[] = $row;
-        }
-        return $rets;
-    }
 
 
     /**
