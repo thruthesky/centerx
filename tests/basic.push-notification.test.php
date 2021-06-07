@@ -1,5 +1,5 @@
 <?php
-require_once ROOT_DIR . 'routes/notification.route.php';
+require_once ROOT_DIR . 'controller/notification/notification.controller.php';
 
 setLogout();
 testSaveToken();
@@ -11,7 +11,7 @@ testGetTokensAndTopics();
 
 
 function testSaveToken() {
-    $notificationRoute = new NotificationRoute();
+    $notificationRoute = new NotificationController();
     registerAndLogin();
     $re = $notificationRoute->updateToken([]);
     isTrue(  $re == e()->token_is_empty, 'should be token is empty');
@@ -21,7 +21,7 @@ function testSaveToken() {
 }
 
 function testUpdateToken() {
-    $notificationRoute = new NotificationRoute();
+    $notificationRoute = new NotificationController();
     registerAndLogin();
     $token = 'testUpdateToken' . time();
     $token1 = $notificationRoute->updateToken([TOKEN => $token]);
@@ -30,10 +30,9 @@ function testUpdateToken() {
     isTrue( $token2["newTopic"] == true , 'newTopic was created');
 }
 
-
 function testUpdateTokenWithMultipleTopics()
 {
-    $notificationRoute = new NotificationRoute();
+    $notificationRoute = new NotificationController();
     $topic1 = 'topic' . time();
     $topic2 = 'topic' . time() + 5;
     $topic3 = 'topic' . time() + 10;
@@ -49,7 +48,7 @@ function testUpdateTokenWithMultipleTopics()
 function errorTestUpdateTokenWithMultipleTopics()
 {
     disableTesting();
-    $notificationRoute = new NotificationRoute();
+    $notificationRoute = new NotificationController();
     $topic1 = 'topic' . time();
     $topic2 = 'topic' . time() + 5;
     $topic3 = 'topic' . time() + 10;
@@ -65,7 +64,7 @@ function errorTestUpdateTokenWithMultipleTopics()
 
 
 function testGetTokensAndTopics(){
-    $notificationRoute = new NotificationRoute();
+    $notificationRoute = new NotificationController();
     $topic1 = 'topic' . time();
     $topic2 = 'topic' . time() + 5;
     $topic3 = 'topic' . time() + 10;

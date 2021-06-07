@@ -1,11 +1,12 @@
 <?php
 
-require_once ROOT_DIR . 'routes/friend.route.php';
+require_once ROOT_DIR . 'controller/friend/friend.controller.php';
 
 db()->query("TRUNCATE " . friend()->getTable());
 
 
-$friendRoute = new FriendRoute();
+
+$friendRoute = new FriendController();
 setLoginAny();
 
 

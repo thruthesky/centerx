@@ -15,9 +15,6 @@ deleteTest();
 
 
 
-
-
-
 function connectionTest() {
     /// Cannot hide error message
 //    $conn = new MySQLiDatabase(DB_HOST, DB_NAME, DB_USER, 'wrong password yo');
@@ -64,7 +61,10 @@ function rowTest() {
     $t = time();
     $key = 'k-' . $t;
     db()->insert(DB_PREFIX . 'search_keys', ['searchKey' => $key, 'createdAt' => $t, 'updatedAt' => time() ]);
-    $row = db()->row("SELECT * FROM " . DB_PREFIX . 'search_keys' . " WHERE searchKey=?", $key);
+
+    $row = db()->row("SELECT * FROM " . DB_PREFIX . 'search_keys' . " WHERE searchKey=? LIMIT 1", $key);
+
+
     isTrue($row['searchKey'] == $key, "key match: $key");
     isTrue($row['createdAt'] == $t, "time match: $key");
 }
