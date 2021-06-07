@@ -90,8 +90,14 @@ class UserModel extends Entity {
      * 참고, 현재 객체에 read() 메소드를 정의하면, 부모 클래스의 read() 메소드를 overridden 한다. 그래서 부모 함수를 호출해야한다.
      * read() 메소드를 정의하지 않고, 그냥 constructor 에서 정의 할 수 있는데, 그렇게하면 각종 상황에서 read() 가 호출되는데, 그 때 적절한 패치를 못할 수 있다.
      *
+     *
+     * - 참고, 관리자 인지 아닌지 판단은 read() 와 response() 둘 다 한다.
+     *   - PHP 에서 객체로 쓸 때, response() 는 호출되지 않고,
+     *   - 컨트롤러로 로그인된 사용자의 response() 만 호출할 때, read() 가 호출되지 않는다.
+     *
      * @param int $idx
      * @return self
+     *
      */
     public function read(int $idx = 0): self
     {
@@ -103,10 +109,7 @@ class UserModel extends Entity {
         if ( $one->exists ) $this->updateMemoryData('photoIdx', $one->idx);
         $this->updateMemoryData('photoUrl', $one->url);
 
-//        if ( str_contains($this->photoUrl, 'kakao.') ) {
-//            $src = urlencode($this->photoUrl);
-//            $this->updateMemory('photoUrl', HOME_URL . "etc/phpThumb/phpThumb.php?src=$src");
-//        }
+        $data[ADMIN] = admin($this->email) ? 'Y' : 'N';
 
         return $this;
     }
@@ -236,12 +239,15 @@ class UserModel extends Entity {
      *
      * - 주의, 로그인을 안해도, 여기서는 절대 빈 배열을 리턴해서는 안된다. 다른 사용자의 정보를 리턴 할 수도 있다.
      * - 로그인을 안했거나 $this->data 에 정보가 없으면 {'admin': 'N'} 정도만 리턴된다.
+     * - 참고, 관리자 인지 아닌지 판단은 read() 와 response() 둘 다 한다.
+     *   - PHP 에서 객체로 쓸 때, response() 는 호출되지 않고,
+     *   - 컨트롤러로 로그인된 사용자의 response() 만 호출할 때, read() 가 호출되지 않는다.
      */
     public function response(): array|string {
         if ( $this->hasError ) return $this->getError();
         $data = $this->getData();
         unset($data[PASSWORD]);
-        $data[ADMIN] = admin() ? 'Y' : 'N';
+        $data[ADMIN] = admin($this->email) ? 'Y' : 'N';
         return $data;
     }
 

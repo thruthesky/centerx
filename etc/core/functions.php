@@ -505,10 +505,13 @@ function notLoggedIn(): bool {
  *
  * @warning When tests run, `ADMIN` config will be changed, meaning you have to set it again.
  */
-function admin(): bool {
-    if ( login()->idx == 0 ) return false;
-    if ( str_contains(ADMIN_EMAIL, login()->email) ) return true;
-    return login()->email === config()->get(ADMIN);
+function admin(string $email = null): bool {
+    if ( $email == null ) {
+        if ( login()->idx == 0 ) return false;
+        $email = login()->email;
+    }
+    if ( str_contains(ADMIN_EMAIL, $email) ) return true;
+    return str_contains(config()->get(ADMIN), $email);
 }
 
 function debug_log($message, $data='') {

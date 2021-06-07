@@ -26,7 +26,7 @@ class UserController
 
     public function kakaoLogin($in) {
         $data = [
-            EMAIL => 'id' . $in['id'] . '@kakao.com',
+            EMAIL => 'kakao' . $in['id'] . '@kakao.com',
             PASSWORD => LOGIN_PASSWORD_SALT,
             NICKNAME => $in['naickname'] ?? '',
             PHOTO_URL => $in['photoUrl'] ?? '',
