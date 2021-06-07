@@ -2,6 +2,7 @@
 postCRUD();
 postFetch();
 postVoteAndReport();
+//postSearch();
 function postCRUD() {
     $re = request("post.create");
     isTrue($re == e()->not_logged_in, "user must login first");
@@ -101,12 +102,12 @@ function postFetch() {
     $postSearch = request("post.search", [
         SEARCH_KEY => $time
     ]);
-    isTrue(count($postSearch) == 2, "get posts via search");
+    isTrue(count($postSearch) == 2, "get posts via search SEARCH_KEY => $time");
 
     $postCount = request("post.count", [
         'conds' => [ USER_IDX => $userA->idx ]
     ]);
-    isTrue($postCount['count'] == 1, "get posts via search");
+    isTrue($postCount['count'] > 0, "get posts via search 'conds' => [ USER_IDX => $userA->idx ]");
 }
 
 function postVoteAndReport() {
@@ -176,3 +177,11 @@ function postVoteAndReport() {
     ]);
     isTrue($report['report'] == 2 , "other report the post");
 }
+
+
+//function postSearch() {
+//    $key = "a";
+//    $where = "name LIKE '%?%' OR nickname LIKE '%?%' OR email LIKE '%?%' OR phoneNo LIKE '%?%'";
+//    $users = user()->search(where: $where, params: [$key, $key, $key, $key]);
+//    d($users);
+//}

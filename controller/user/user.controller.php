@@ -180,6 +180,17 @@ class UserController
         }
         return $res;
     }
+
+    public  function count($in) : array | string {
+        $count = user()->count(
+            where: $in['where'] ?? '1',
+            params: $in['params'] ?? [],
+            conds: $in['conds'] ?? [],
+            conj: $in['conj'] ?? "AND",
+        );
+
+        return [ 'count' => $count];
+    }
 }
 
 
