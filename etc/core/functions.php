@@ -1659,10 +1659,17 @@ function postMessagingUrl(int $idx) {
  *
  * 단, order, by, page, limit 등은 외부 함수에서 별도로 적절히 처리를 해야 한다.
  *
+ * @params array $in
+ *  - categoryId
+ *  - categoryIdx
+ *  - searchKey
+ *  - userIdx
+ *  - otherUserIdx
+ *
  * @attention both of categoryIdx and categoryId are set, then categoryIdx will be used.
  *  if none of them are set, then it will search all the posts.
  */
-function parsePostListHttpParams(array $in): array {
+function parsePostSearchHttpParams(array $in): array {
 
     $category = category( $in[CATEGORY_IDX] ?? $in[CATEGORY_ID] ?? 0 );
     $params = [];
@@ -1706,6 +1713,38 @@ function parsePostListHttpParams(array $in): array {
     return [ $where, $params ];
 }
 
+/**
+ *
+ * @param array $in
+ *  - searchKey
+ *
+ *
+ * @return array
+ *
+ */
+function parseUserSearchHttpParams(array $in): array {
+    $params = [];
+    $conds = [];
+
+    if ( isset($in['searchKey']) && $in['searchKey'] ) {
+        $conds[] = "(name LIKE ? OR nickname LIKE ? OR email LIKE ? OR phoneNo LIKE ? OR firebaseUid=? OR domain=?) ";
+        $params[] = '%' . $in['searchKey'] . '%';
+        $params[] = '%' . $in['searchKey'] . '%';
+        $params[] = '%' . $in['searchKey'] . '%';
+        $params[] = '%' . $in['searchKey'] . '%';
+        $params[] = $in['searchKey'];
+        $params[] = $in['searchKey'];
+    }
+
+    if ( $conds ) {
+
+        $where = implode(' AND ', $conds);
+    } else {
+        $where = '1';
+    }
+
+    return [ $where, $params ];
+}
 
 /**
  * Saves the search keyword for listing(searching) posts.

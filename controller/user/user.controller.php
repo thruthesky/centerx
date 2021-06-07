@@ -162,11 +162,12 @@ class UserController
 
         // @todo filter base on domain or call different method
 
+        list ($where, $params ) = parseUserSearchHttpParams($in);
 
         $users = user()->search(
             select: $in['select'] ?? 'idx',
-            where: $in['where'] ?? '1',
-            params: $in['params'] ?? [],
+            where: $where,
+            params: $params,
             order: $in['order'] ?? IDX,
             by: $in['by'] ?? 'DESC',
             page: $in['page'] ?? 1,
@@ -182,9 +183,10 @@ class UserController
     }
 
     public  function count($in) : array | string {
+        list ($where, $params ) = parseUserSearchHttpParams($in);
         $count = user()->count(
-            where: $in['where'] ?? '1',
-            params: $in['params'] ?? [],
+            where: $where,
+            params: $params,
             conds: $in['conds'] ?? [],
             conj: $in['conj'] ?? "AND",
         );

@@ -82,7 +82,7 @@ class PostRoute {
     public function search($in): array|string
     {
 
-        list ($where, $params ) = parsePostListHttpParams($in);
+        list ($where, $params ) = parsePostSearchHttpParams($in);
 
 
 //        $onTop = null;

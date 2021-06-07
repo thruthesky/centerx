@@ -82,14 +82,16 @@ class PostController {
 
 
     /**
-     * @param $in
+     * @param array $in - See `parsePostSearchHttpParams()` for detail input.
      * @return array|string
-     * @todo 코드를 복잡하게 하지 않는다. onTop 이나 기타 기능을 제공하지 않는다.
+     * 
+     * 
+     * 
      */
     public function search($in): array|string
     {
 
-        list ($where, $params ) = parsePostListHttpParams($in);
+        list ($where, $params ) = parsePostSearchHttpParams($in);
 
         $posts = post()->search(
             select: $in['select'] ?? 'idx',
@@ -123,7 +125,7 @@ class PostController {
      */
     public function count($in): array {
 
-        list ($where, $params ) = parsePostListHttpParams($in);
+        list ($where, $params ) = parsePostSearchHttpParams($in);
 
         $count =  post()->count(
             where: $where,
