@@ -23,16 +23,24 @@ class PostController {
     }
 
     /**
-     * @param $in
+     *
+     * @param array $in
+     *  - $in['idx'] 값이 문자열이면, path 로 인식하고, 숫자이면, idx 로 인식한다.
      * @return array|string
      */
-    public function get($in) {
-        if ( isset($in['path']) ) {
-            $arr = explode('/', $in['path']);
-            return post()->getFromPath($arr[3])->response();
-        }
+    public function get(array $in) {
+
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
-        return post($in[IDX])->response();
+        else return post($in[IDX])->response();
+
+
+
+//        if ( isset($in['path']) ) {
+//            $arr = explode('/', $in['path']);
+//            return post()->getFromPath($arr[3])->response();
+//        }
+//        if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
+//        return post($in[IDX])->response();
     }
 
     /**

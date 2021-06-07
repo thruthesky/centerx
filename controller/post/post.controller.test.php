@@ -42,7 +42,7 @@ function postCRUD() {
 
 
     $getPostFromPath = request("post.get", [
-        'path' => $post['url'],
+        'idx' => $post['path'],
         SESSION_ID => $user->sessionId
     ]);
     isTrue($getPostFromPath[IDX] == $post[IDX], "Expected:: post get success");

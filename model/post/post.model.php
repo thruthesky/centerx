@@ -625,14 +625,15 @@ class PostModel extends Forum {
  * Note, that it might be a comment or something else as long as it users 'posts' table. Meaning, you can get post object of a comment.
  *
  *
- * @param int|string $idx - 숫자이면 글번호로 인식. 아니면, 코드로 인식하여 글 객체를 리턴한다.
+ * @param int|string $idx - 숫자이면 글번호로 인식. 아니면, 경로로 인식해서 글 객체를 리턴한다.
  * @return PostModel
  */
 function post(int|string $idx=0): PostModel
 {
     if ( $idx == 0 ) return new PostModel(0); // 0 이면, 빈 글 객체 리턴.
     else if ( is_numeric($idx) && $idx > 0 ) return new PostModel($idx); // 숫자이고 0 보다 크면, 해당 글 객체 리턴.
-    else return postByCode($idx); // 숫자가 아니면, 코드로 인식해서, 해당 글 객체 리턴.
+    else return post()->getFromPath($idx);
+//    else return postByCode($idx); // 숫자가 아니면, 코드로 인식해서, 해당 글 객체 리턴.
 }
 
 /**
