@@ -46,17 +46,23 @@ class UserController
         return login()->response();
     }
 
-    public function otherUserProfile($in)
+    public function get($in)
     {
         if (isset($in['idx'])) {
-            return user($in['idx'])->shortProfile(firebaseUid: true);
+            $user =  user($in['idx']);
         } else if (isset($in['email'])) {
-            return user($in['email'])->shortProfile(firebaseUid: true);
+            $user =  user($in['email']);
         } else if (isset($in['firebaseUid'])) {
-            return user()->findOne(['firebaseUid' => $in['firebaseUid']])->shortProfile(firebaseUid: true);
+            $user =  user()->findOne(['firebaseUid' => $in['firebaseUid']]);
         } else {
             return e()->user_not_found;
         }
+
+        if (isset($in['full']) && $in['full'] && admin()) {
+            return $user->profile();
+        }
+        return $user->shortProfile(firebaseUid: true);
+
     }
 
     public function update($in)
@@ -160,8 +166,6 @@ class UserController
     public function search($in)
     {
 
-        // @todo filter base on domain or call different method
-
         list ($where, $params ) = parseUserSearchHttpParams($in);
 
         $users = user()->search(
@@ -177,7 +181,13 @@ class UserController
 
         $res = [];
         foreach($users as $user) {
-            $res[] = $user->shortProfile(firebaseUid: true);
+//            $res[] = $user->shortProfile(firebaseUid: true);
+            if (isset($in['full']) && $in['full'] && admin()) {
+                $res[] =  $user->profile();
+            } else {
+                $res[] =  $user->shortProfile(firebaseUid: true);
+            }
+
         }
         return $res;
     }
