@@ -1,4 +1,6 @@
-# CenterX ..
+# CenterX
+
+- jaeho
 
 - CenterX 는 웹사이트 개발 및 Restful Api 를 통해서 Mobile App 의 백엔드로 개발 할 있도록 하는 프레임워크이다.
 - CenterX 를 직접 개발한 이유는
