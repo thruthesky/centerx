@@ -275,6 +275,7 @@ class MySQLiDatabase {
      * @param mixed ...$values
      *  - If this is a empty (or no parameters), then it does not bind params. Just executes the statement.
      * @return array
+     *
      */
     public function rows(string $sql, ...$values): array {
 
@@ -302,6 +303,7 @@ class MySQLiDatabase {
             $stmt->execute();
             $result = $stmt->get_result(); // get the mysqli result
 
+            // @todo DB 에서 에러가 발생하면, 심각한 에러로 빈 배열을 리턴하는 대신, 프로그램 종료를 해야하지 않는가?
             if ( $result === false ) {
 
                 $this->handleError("SQL ERROR on row()", $sql);
