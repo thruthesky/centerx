@@ -94,9 +94,6 @@ class MySQLiDatabase {
                 }
             }
 
-
-
-
             //
             $types = $this->types($values);
             $stmt->bind_param($types, ...$values);
@@ -206,52 +203,6 @@ class MySQLiDatabase {
         $rows = $this->rows($sql, ...$values);
         if ( count($rows) ) return $rows[0];
         else return [];
-
-//        try {
-//            $stmt = $this->connection->prepare($sql);
-//            if ( is_bool($stmt) ) {
-//                $this->handleError("Connection prepare failed: You may have wrong SQL syntax or wrong fields.", $sql);
-//            }
-//            if ( $values ) {
-//                if ( is_array($values[0]) || is_object($values[0]) ) {
-//                    die("MySQLiDatabase::row() - The first value in \$values is not a scalar! It must be a mistake. Wrong parameter format.");
-//                }
-//                $types = $this->types($values);
-//                if ( $types == 'b' ) {
-//                    die("MySQLiDatabase::row() - types == 'b'. We don't use binary as values in statement prepare.");
-//                }
-//                $stmt->bind_param($types, ...$values);
-//            }
-//
-//            $stmt->execute();
-//            $result = $stmt->get_result(); // get the mysqli result
-//
-//            if ( $result === false ) {
-//
-//                $this->handleError("SQL ERROR on row()", $sql);
-//
-//                d($sql);
-//                d($values);
-//                d($result);
-//
-//                return [];
-//            }
-//
-//            if ( $this->displaySql ) {
-//                d($sql);
-//                d($values);
-//                d($result);
-//            }
-//
-//
-//            if( $result->num_rows == 0) return []; // if the fetch data is empty return empty array
-//
-//            return $result->fetch_assoc(); // fetch data
-//        } catch(mysqli_sql_exception $e) {
-//            // This is critical SQL error.
-//            $this->handleError($e->__toString(), $sql);
-//            return [];
-//        }
     }
 
 

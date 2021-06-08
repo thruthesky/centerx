@@ -174,7 +174,7 @@ class CommentModel extends Forum {
      * - 에러가 있으면 에러 문자열
      * - 아니면, 배열
      */
-    public function response(): array|string {
+    public function response(string $fields = null): array|string {
         if ( $this->hasError ) return $this->getError();
 
         $comment = $this->getData();

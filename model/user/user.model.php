@@ -243,7 +243,7 @@ class UserModel extends Entity {
      *   - PHP 에서 객체로 쓸 때, response() 는 호출되지 않고,
      *   - 컨트롤러로 로그인된 사용자의 response() 만 호출할 때, read() 가 호출되지 않는다.
      */
-    public function response(): array|string {
+    public function response(string $fields = null): array|string {
         if ( $this->hasError ) return $this->getError();
         $data = $this->getData();
         unset($data[PASSWORD]);

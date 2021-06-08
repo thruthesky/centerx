@@ -4,11 +4,6 @@
  */
 
 
-use function ezsql\functions\{
-    eq,
-    get_results
-};
-
 
 /**
  * Class Entity
@@ -39,6 +34,11 @@ class Entity {
      * @var array
      */
     private array $data = [];
+
+    /**
+     * @var array Entity 를 담는 객체 배열
+     */
+    private array $dataObjects = [];
 
     /**
      * @var string 에러가 있으면 에러 메시지를 지정한다.
@@ -132,11 +132,39 @@ class Entity {
      *
      * 사용처, 이 함수는 클라이언트로 현재 entity 의 data 값을 보내기 위해서 사용된다.
      *
+     * @change $this->dataObjects 에 값이 있으면, 그 객체 배열의 data 를 배열로 리턴한다.
+     *
+     * @param string|null $fields
+     *  - 특정 필드만 response 결과에 집어 넣는다.
      * @return array|string
+     *
+     * @example
+     * ```
+     * return cafe()->mine()->response('idx, domain');
+     * ```
      */
-    public function response(): array|string {
+    public function response(string $fields=null): array|string {
+
         if ( $this->hasError ) return $this->getError();
-        else return $this->getData();
+        else if ( $this->dataObjects ) {
+            $res= [];
+            foreach( $this->dataObjects as $obj ) {
+                if ( $fields ) {
+                    $trim = str_replace(' ', '', $fields);
+                    $ex = explode(',', $trim);
+                    $res[] = array_intersect_key($obj->getData(), array_flip($ex));
+                } else {
+                    $res[] = $obj->getData();
+                }
+            }
+            return $res;
+        }
+        else {
+            if ( $fields ) {
+                return array_fill_keys($this->getData(), array_flip(explode(",", str_replace(' ', '', $fields))));
+            }
+            return $this->getData();
+        }
     }
 
     /**
@@ -947,9 +975,10 @@ class Entity {
         if ( $object == false ) return $rows;
 
 
-        /// 현재 entity 를 객체에 넣어 리턴 받기 원하면,
-        /// Note, if the return data of should be entity objects, then it will load all the record and its meta into the entity object.
-        /// So, 'select' is ignored.
+        /// 현재 entity 를 객체에 넣어 리턴 받기 원하면, 특정 필드만 가져오는 것은 안되고, 전체 필드와 전체 메타를 다 가져온다.
+        /// Note, if the return data of should be entity objects,
+        /// then it will load all the record fields and its meta into the entity object.
+        /// So, 'select' param is ignored.
         $rets = [];
         foreach( ids($rows) as $idx ) {
             $entity = clone $this;
@@ -1012,8 +1041,9 @@ class Entity {
      * @param string $by
      * @return array
      */
-    public function my(int $page=1, string $order='idx', string $by='DESC', int $limit=10 ): array {
+    public function my(int $page=1, string $order='idx', string $by='DESC', int $limit=10, string $select = "idx" ): array {
         return $this->search(
+            select: $select,
             where: "userIdx=?", params: [ login()->idx ],
             order: $order,
             by: $by,
@@ -1021,6 +1051,21 @@ class Entity {
             limit: $limit,
             object: true
         );
+    }
+
+
+    /**
+     * 나의 전체 레코드를 추출해서, $this->dataObjects 배열에 넣고, 현재 객체를 리턴한다.
+     * @return self
+     *
+     * @example
+     * ```
+     *  return cafe()->mine()->response();
+     * ```
+     */
+    public function mine($select = "idx"): self {
+        $this->dataObjects = $this->my(limit: 900000, select: $select);
+        return $this;
     }
 
 

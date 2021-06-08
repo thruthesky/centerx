@@ -157,7 +157,7 @@ class FileModel extends Entity {
     /**
      * @return array|string
      */
-    public function response(): array|string {
+    public function response(string $fields = null): array|string {
         if ( $this->hasError ) return $this->getError();
         $data = $this->getData();
 

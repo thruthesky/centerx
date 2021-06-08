@@ -379,6 +379,7 @@ Line Banner |Category|Always|Always/Always|5 global banners. 30 category banners
   - then, input click_url
     - or upload banner content image and input "text content" (without title) to show when clicked.
   - save.
+  - then, select which country sites(cafes) to show the banner.
   - then, select how many days the advertisement will be displayed
   - then, deduct user's point.
 

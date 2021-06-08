@@ -303,7 +303,7 @@ class PostModel extends Forum {
      * - 에러가 있으면 에러 문자열.
      * - 아니면, 클라이언트에 전달할 글 내용
      */
-    public function response(int $comments = -1): array|string {
+    public function response(string $fields = null, int $comments = -1): array|string {
         if ( $this->hasError ) return $this->getError();
         $post = $this->getData();
 
