@@ -1,6 +1,10 @@
 # Matrix
 
+- It was `CenterX` on the previous version.
 
+# Reference
+
+- To see alpha version of Matrix 2 which has widgets and themes, see `next-2-alpha-1` branch.
 
 
 # 클라이언트

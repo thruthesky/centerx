@@ -1,1 +1,0 @@
-default privacy policy
