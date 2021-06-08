@@ -1,5 +1,7 @@
 # CenterX
-charles
+
+- jaeho
+  
 - CenterX 는 웹사이트 개발 및 Restful Api 를 통해서 Mobile App 의 백엔드로 개발 할 있도록 하는 프레임워크이다.
 - CenterX 를 직접 개발한 이유는
   - PHP 버전 8 으로 업데이트 될 때, 새로운 기능을 사용하고 싶었는데, 기존의 프레임워크들이 즉각적인 지원을 하지 않았다.
