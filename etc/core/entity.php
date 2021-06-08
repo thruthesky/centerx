@@ -142,6 +142,15 @@ class Entity {
      * ```
      * return cafe()->mine()->response('idx, domain');
      * ```
+     *
+     * @todo $this->dataObjects 배열에 Entity 객체가 담겨져 있으면 response() 를 할 때,
+     * @todo $this->data 의 결과를 리턴하는 것이 아닌, $this->dataObjects 의 각 Entity 의
+     * $todo $data 멤버 변수의 값을 2차원 배열로 리턴한다.
+     * @todo 주요한 용도는 search() 또는 검색과 연관되는 find() 등에서 사용 할 수 있다.
+     * @todo post()->search()->response() 또는 category()->find()->response() 와 같이
+     * @todo 쓸 수 있도록 충분한 테스트를 하고, 문서 정리를 한다.
+     *
+     * @todo response() 에 원하는 필드만 선택적으로 가져 올 수 있다. 이 부분의 코드를 간소화하고 문서화 한다.
      */
     public function response(string $fields=null): array|string {
 
