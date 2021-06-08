@@ -59,7 +59,7 @@ class UserController
         }
 
         if (isset($in['full']) && $in['full'] && admin()) {
-            return $user->profile();
+            return $user->read()->profile();
         }
         return $user->shortProfile(firebaseUid: true);
 
@@ -68,7 +68,12 @@ class UserController
     public function update($in)
     {
         if (notLoggedIn()) return e()->not_logged_in;
-        return login()->update($in)->response();
+
+        if (isset($in['idx']) && admin()) {
+            return user($in['idx'])->update($in)->response();
+        } else {
+            return login()->update($in)->response();
+        }
     }
 
     /**
