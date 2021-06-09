@@ -1,6 +1,23 @@
 # Matrix
 
-- It was `CenterX` on the previous version.
+- Matrix 는 단어의 뜻 그대로 웹/앱 또는 프로젝트 수행에 있어 모체(기반)이 되는 백엔드 프레임 워크이다.
+- 버전 1.x 에서의 이름은 CenteX 이었으며 버전 2 에서 Matrix 로 변경이 되었다. 버전 2 에서는 Matrix 와 CenterX 라는 단어를 같이 쓰고 있으며, 버전 3 에서는 CenterX 라는 표기를 완전히 없앨 예정이다.
+- Matrix 는 웹사이트 개발 및 Restful Api 를 통해서 Mobile App 의 백엔드로 개발 할 있도록 하는 프레임워크이며, 매우 직관적이 간단하여 다른 개발자들이 쉽게 이해하고 사용 할 수 있다.
+
+# 목표
+
+- 최대한 쉽고 짧은 소스 코드로 단순한 프레임워크 개발
+
+# 개발 환경 및 방향
+
+- 도커 + Nginx + PHP + MariaDB 로 구성되어져 있으며, 도커없이 직접 원하는 OS 에 설치를 해도된다.
+- 버전 1 에서는 백엔드로 Restful API 를 완전히 지원하며, PHP 에서 직접 웹사이트를 랜더링을 하는 것도 하나의 방향이었는데,
+  버전 2 에서는 백엔드와 클라이언트엔드를 완전히 분리시켜 작업하는 것을 권장하고 있다.
+
+- 클라이언트 모듈
+  - Vue.js 2(IE11 이 많이 사용되고 있어, Vue.js 2 선택)에서 작업이 편하도록 Github submodule 로 개발되어져 있다.
+  - 플러터 패키지. Matrix 와 Restful API 통신을 하는 모듈이 pub.dev 패키지로 등록되어져 있다.
+  
 
 # Reference
 
@@ -50,7 +67,25 @@
 
 
 
-# Vue.js & SPA & PWA
+# Vue.js & SEO & SPA & PWA
+
+## SEO
+
+- SPA 의 특징으로 인해 SEO 가 어렵다. SSR 을 SEO 가 Native 하지(직관적인지) 못하고 하기에는 개발 환경 설정 및 빌드가 번거롭게 느껴 질 수 있다.
+  이와 같은 경우, PHP 로 Native SEO 를 할 수 있다.
+
+- Vue.js 빌드를 하면 결과물을 dist 폴더에 저장하는데, 이를 Matrix 의 view 폴더로 지정한다. 즉, 빌드하면 바로 웹 폴더에 저장되는 것이다.
+
+- 이 때, Vue.js 의 public 폴더에 index.php 를 둔다. index.php 는 vue.js 에서 인식하는 코드가 아니지만, 빌드를 할 때,
+  Vue.js 가 빌드 폴더를 삭제해 버린다. 즉, index.php 는 index.html 과 함께 빌드 폴더에 존재해야하는데 매번 삭제되므로 아예 public 폴더에
+  넣어 주는 것이다.
+  - index.php 아주 간소하게 `include '../../var/domain/index.php'` 와 같이 다른 스크립트를 로드하는 코드만 넣는다.
+    그리고 실질적인 코드는 `../../var/domain/index.php'` 에 기록하는 것이다.
+    이 `var/../index.php` 에 `function display_latest_posts()` 와 같이 A 태그가 있는 게시물 링크 등을 뿌려 주는 함수를 준비해 놓고, Vue.js 가 빌드한 `index.html` 을 include 한다.
+    그리고 이 `index.html` 에 PHP 코드를 `<?=display_latest_post()?>` 와 같이 함수를 호출하는 코드만 만들어 준다.
+    요약을 하면, php 를 통해서 검색 로봇이 다른 글, 페이지로 크롤링을 할 수 있는 링크를 만들어 주는 것이다.
+    그리고 도착하는 링크(글)에는 새로운 글들과 게시판 링크를 두어 크롤러가 인덱싱을 해 주는 것이다.
+  - 이 때, Vue.js 의 index.html 에 `<div id="app">...</div>` 내에 `<?=display_latest_posts()?>` 를 두지 말고, 밖에 두어 Vue.js 가 관리하는 영역과 잘 조화가 되게 디자인을 하는 것이 좋다.
 
 ## Vue.js 클라이언트 모듈
 

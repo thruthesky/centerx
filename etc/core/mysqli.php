@@ -299,6 +299,11 @@ class MySQLiDatabase {
     /**
      *
      * Gets an array of fields and values and returns 'fields', 'placeholders', 'values' for statement execution.
+     *
+     *
+     * @note 사용자로 부터 입력되는 값은 무조건 escape 또는 Statement prepare & binding 형식으로 해야 한다.
+     *      참고로, 이 함수는 statement prepare & binding 형식으로 처리하기 위한 정보를 가공해서 리턴한다.
+     *
      * @param array $record
      *  - Record can have field, expression, value.
      *     If the record has an array of "['count >' => 5]", then, the placeholder will be "count > ?".
@@ -312,13 +317,18 @@ class MySQLiDatabase {
      * @return array
      *
      * @example
-     *  $record = ['a' => 'apple', 'b' => 'banana', 'count >' => 5],
-     *  return
-     *      ['a', 'b', 'c'],
-     *      ['a=?', 'b=?', 'count>?'],
-     *      ['apple', 'banana', 5],
+     * ````
+     *  $record = ['a' => 'apple', 'b' => 'banana', 'count >' => 5, 'title LIKE ?' => 'yo%'] // 와 같이 입력하면,
      *
-     * @todo 값을 escape 해야 한다. SQL Injection 문제가 발생할 수 있다.
+     *  // 아래와 같이 2차원 배열에 각 배열은 fields 만 다음 배열, 조건식이 있는 배열, 값만 있는 배열이 리턴된다.
+     *  return [
+     *      ['a', 'b', 'c', 'title'],
+     *      ['a=?', 'b=?', 'count>?', 'title LIKE ?'],
+     *      ['apple', 'banana', 5, 'yo%'],
+     *  ];
+     * ```
+     *
+     *
      */
     public function parseRecord(array $record, string $type='', string $glue=',') {
         $fields = [];
@@ -330,10 +340,13 @@ class MySQLiDatabase {
         foreach ( $record as $field => $value ) {
 
             $values[] = $value;
+            // SQL Query 가 UPDATE 인 경우, 조합이 간단하다.
             if ( $type == 'update') {
                 $fields[] = $field;
                 $placeholders[] = $field . '=?';
             } else if ( $type == 'select' || $type == 'where' ) {
+                // SELECT 나 기타 DELETE, UPDATE 에서 사용하는 경우, 조금 복잡하다.
+                // @todo 더 많은 테스트 필요
                 if ( str_contains($field, ' ')) {
                     $ke = explode(' ', $field, 2);
                     $field = $ke[0];
