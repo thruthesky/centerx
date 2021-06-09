@@ -315,3 +315,47 @@ if ( !defined('OPENWEATHERMAP_API_KEY' ) ) define('OPENWEATHERMAP_API_KEY', '7cb
 const MESSAGE_CATEGORY = 'message';
 
 
+
+
+/**
+ * Banner Settings
+ *
+ * 'point' is the point for that banner per 1 day.
+ */
+const TOP_BANNER = 'top';
+const SIDEBAR_BANNER = 'sidebar';
+const SQUARE_BANNER = 'square';
+const LINE_BANNER = 'line';
+const BANNER_TYPES = [ TOP_BANNER, SIDEBAR_BANNER, SQUARE_BANNER, LINE_BANNER ];
+const ADVERTISEMENT_SETTINGS = [
+    'types' => BANNER_TYPES,
+    'point'=>[
+        'default' => [
+            TOP_BANNER => 1000,
+            SIDEBAR_BANNER => 500,
+            SQUARE_BANNER => 500,
+            LINE_BANNER => 400,
+        ],
+        'PH' => [
+            TOP_BANNER => 2000,
+            SIDEBAR_BANNER => 1000,
+            SQUARE_BANNER => 1000,
+            LINE_BANNER => 800,
+        ],
+        'US' => [
+            TOP_BANNER => 2500,
+            SIDEBAR_BANNER => 1500,
+            SQUARE_BANNER => 1400,
+            LINE_BANNER => 1200,
+        ]
+    ],
+    // Input which forum category that user can post banners.
+    'categories' => [
+        'qna',
+        'discussion',
+        'job',
+        'rent_house',
+        'rent_car',
+        'money_exchange',
+    ]
+];

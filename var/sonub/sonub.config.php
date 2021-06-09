@@ -20,3 +20,4 @@ if (!defined('NAVER_CALLBACK_URL')) {
 if (!defined('NAVER_API_URL')) {
     define('NAVER_API_URL', "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" . NAVER_CLIENT_ID . "&redirect_uri=" . NAVER_CALLBACK_URL . "&state=1");
 }
+

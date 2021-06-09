@@ -346,6 +346,15 @@ isTrue((new AppController())->version(), "App version");
 
 # 광고, Advertisement
 
+- 최대한 간단하게 작성
+  - 필고 처럼 복잡하게 하지 않는다. 특히 Sonub 는 국가까지 선택을 하므로, 더 복잡해 질 수 있다.
+  - 게시판 별 금액을 따로 두지 않는다.
+    - 차라리 게시판을 세분화 하고, 통합이 필요하면, 커뮤니티 전체, 비지니스 전체를 그룹화해서 보여주도록 한다.
+  - 특히, 위치별 금액을 따로 두지 않는다.
+    예를 들어, 최상단 배너가, 글로벌인 경우, 1만 포인트, 구인 구직에만 노출되는 경우, 5천 포인트로 하지 않는다.
+    똑 같이 1만 포인트로 한다.
+    다만, 글로벌의 경우 여러개 광고가 번갈아가면서 보인다.
+
 ## Terms & Conditions
 
 - Category banner.
@@ -361,12 +370,24 @@ isTrue((new AppController())->version(), "App version");
   Banner price is different on each place. It is set by admin page.
 
 - Cancellation.
-  When user create the banner, the total point and periods(days) must be recorded. So, when user wants to cancel the
-  banner, the system can compute how much to return to the user.
+  There is no cancellation. User must can get refund.
   
 - Refund penalty
-  - The system will return 80% of the rest point for the periods(days) that are not served.
-  - The not served periods are less than 10 days, then the point is not refundable.
+  - Refund penalty is 5%.
+    - For instande, user paid 10,000 points for 10 days advertisement.
+      - The user want to refund on the very first day,
+        - Then, the unserved days are 9 days. The current day(today) is considered as served.
+          So, the refund will be 5% of 9,000 pionts.
+  - If the not-served-yet-days are 0 days, then the point is not refundable.
+
+  - To refund the point, the system must know how much point was set(paid) for 1 day.
+    The charge (of point) may be changed often by admin.
+    So, When user create the banner, the total point and periods(days) must be recorded.
+    And, when user wants to cancel/refund the banner, the system can compute how much to return to the user.
+
+- If the advertisement has not started yet, then 100% of the point will be refunded without penalty.
+  - User can set the begin date of the advertisement and the user want to cancel the advertisement before the begin date,
+  then 100% will be refunded.
 
 - Each banner must be a png or jpg file. that means, GIF animation is not allowed.
 

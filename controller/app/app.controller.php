@@ -5,6 +5,10 @@
 
 /**
  * Class AppController
+ *
+ * This controller handles the request of backend and app settings, system information query, etc.
+ * For instance, If the app needs to know some settings of the app, especially if the settings are in config files,
+ * Then, this controller should deliver the information to client end.
  */
 class AppController
 {
@@ -19,6 +23,15 @@ class AppController
     }
 
 
+    /**
+     * Returns app settings to client.
+     *
+     * The app settings contains
+     *  - the settings that are set by admin in admin page.
+     * All the app should get this settings on boot.
+     *
+     * @return mixed
+     */
     public function settings()
     {
         return adminSettings()->get();
@@ -40,5 +53,9 @@ class AppController
     }
 
 
+
+    public function advertisementSettings($in): array {
+        return ADVERTISEMENT_SETTINGS;
+    }
 
 }

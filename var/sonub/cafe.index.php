@@ -9,11 +9,12 @@ if (isset($_REQUEST['route'])) {
 
 
 
-$title = "HTML TITLE";
 
-ob_start();
-include widget('post/2x2-photo-top-text-bottom');
-$latest_posts = ob_get_clean();
-
+function display_title() {
+    echo "HTML TITLE";
+}
+function display_latest_posts() {
+    echo "Yo<hr>";
+}
 
 include view()->folder . 'index.html';
