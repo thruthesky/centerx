@@ -233,8 +233,8 @@ class MySQLiDatabase {
         try {
             $stmt = $this->connection->prepare($sql);
             if ( is_bool($stmt) && $stmt === false ) {
-		$this->handleError("SQL Error on mysqli::rows()", $sql);
-		exit(-1);
+                $this->handleError("SQL Error on mysqli::rows()", $sql);
+                exit(-1);
             }
 
             if ( $values ) {
