@@ -24,6 +24,164 @@
 - To see alpha version of Matrix 2 which has widgets and themes, see `next-2-alpha-1` branch.
 
 
+
+# 설치와 기본 설정
+
+본 문서에서는 우분투 서버에서 도커를 통해 centerx 설치하는 방벙에 대해 설명한다.
+
+코어 개발자들이 개발 작업을 할 때에는 우분투 서버에서 작업을 하는 것이 아니라 윈도우즈, 맥, CentOS 등 여러 시스템에서 도커를 설치하고 테스트 개발을 한다.
+즉, 우분투 뿐만아니라 도커가 실행되는 환경이면 centerx 가 잘 운영된다.
+다만, 실제 서비스를 할 때에는 우분투 서버(또는 CentoOS 서버)를 추천한다.
+도커를 사용하지 않고 직접 Nginx(Apache), PHP, MariaDB(MySQL)을 설치하여 CenterX 를 운영 할 수 있다.
+
+## 설치 요약
+
+- 먼저 도커를 설치하고 실행한다.\
+  [우분투 도커 설치 참고](https://docs.docker.com/engine/install/ubuntu/)
+  
+- 도커는 docker-compose 를 통해서 실행하는데, CenterX 를 위한 기본 설정이 되어져 있는 Github repo 가 있다.
+  아래와 같이 Docker compose 설정을 GitHub 에서 다운로드 또는 clone(또는 fork)
+  한다.
+  그리고 루트 계정으로 `/docker` 에 설치를 한다.
+
+  - `git clone https://github.com/thruthesky/docker /docker`
+
+- 그리고 docker-compose.yml 에서 MYSQL_PASSWORD 와 MYSQL_ROOT_PASSWORD 를 적절한 비밀번호로 변경한다.
+  - `cd /docker`
+  - `vi docker-compose.yml`
+
+- 참고로, Nginx 서버 설정은 `/docker/etc/nginx/nginx.conf` 이며, 기본 홈페이지 경로는 `/docker/home/default` 이다.
+
+- Nginx 에서 사용할 로그 파일을 생성한다.
+  - `mkdir etc/nginx/logs`
+
+- 그리고 아래와 같이 docker compose 를 실행한다.
+  - `docker-compose up -d`
+  - 여기 까지 하면, 도커가 실행되어 Nginx + PHP + MariaDB 가 구동되는 상태이다.
+    
+
+- 그리고 `centerx` 를 `/docker/home` 폴더 아래에 fork 후 clone 한다.
+  참고, 도커 실행을 위한 docker-compose 설정은 루트 계정으로 `/docker` 폴더에 하지만, centerx 설치와 centerx 관련 작업은 사용자 계정으로 하는 것이
+  좋다.
+  참고로,
+  - `/docker` repo 의 .gitignore 에 `home` 폴더가 들어가 있어서
+  - `/docker/home` 폴더 아래에 `centerx` repo 를 추가해도,
+  - `/docker` repo 에 추가되지 않는다.
+
+- 루트로 사용자 계정을 만든다.
+  - `# useradd -m -d /docker/home/centerx centerx` 와 같이 하면 사용자 계정 `centerx` 의 홈 폴더가 `/docker/home/centerx` 가 된다.
+  - `# su - centerx`
+    - `$ git init`
+    - `$ git remote add origin https://github.com/thruthesky/centerx`
+    - `$ git fetch`
+    - `$ git checkout main`
+    - `$ chmod -R 777 files`
+    - `$ chmod -R 777 var/logs`
+
+- phpMyAdmin 을 통한 데이터베이스 테이블 설치
+  웹 브라우저로 phpMyAdmin 에 접속을 해서 SQL 스키마를 DB 에 넣는다.
+  - `/docker/home/default/etc/phpMyAdmin` 에 phpMyAdmin 이 설치되어져 있다.
+    접속은 IP 주소를 이용하여, `http://1.2.3.4/etc/phpMyAdmin/index.php` 와 같이 접속하면 된다.
+    데이터베이스 관리자 아이디는 root 이며, 비밀번호는 위에서 변경 한 것을 입력한다.
+    참고로 기본 비밀번호는 Wc~Cx7 인데 꼭 변경해서 사용하기 바란다.
+
+  - phpMyAdmin 접속 후, `centerx/etc/install/sql` 폴더에서 최신 sql 파일의 내용을 phpMyAdmin 에 입력하고 쿼리 실행을 한다.
+    - 만약, 국가 정보를 원한다면, `wc_countries` 테이블을 삭제하고, `/centerx/etc/install/sql/countries.sql`
+
+  - 참고, phpMyAdmin 에서 root 와 사용자 계정 password 를 변경 할 수 있으며, 변경한 비밀번호를 `etc/keys/db.config.php` 파일에 저장하면 된다.
+
+- Database 접속에서 아래의 에러가 나는 경우,
+  데이터베이스 계정을 두 개 생성하여 Host 에 `localhost` 와 `172.18.0.2` 를 각각 추가해 주거나
+  또는 데이터베이스 계정을 하나만 생성하여, `%` 를 포함하는 host 하만 추가한다.
+  이 것은 로컬 접속과 다른 네트워크의 접속과 관련된 문제로 자세한 정보는 관련 문서를 참고한다.
+  
+```shell
+mysqli::__construct(): (HY000/1045): Access denied for user 'sonub'@'172.18.0.2' (using password: YES) 
+```
+
+
+- node modules 들을 설치한다.
+  참고로 개발을 위해서만 npm install 을 하면 된다. 배포 서버에서는 할 필요 없다.
+  - `npm i`
+
+- `keys` 폴더에 각종 키를 설정한다.
+  - Firebase 접속을 위한 Admin SDK Account Key 를 설정.
+
+- `config.php` 에 각종 api key 를 설정한다.
+  - Firebase 접속을 위한 Web access key 를 설정.
+  - 카카오 로그인 설정.
+  - 네이버 로그인 설정.
+  - 날씨 Api 설정
+  - 환율 Api 설정
+    등 원하는 것만 설정하면 된다.
+
+- 만약, 다른 도메인으로 다른 홈페이지를 추가 개발을 하고 싶다면, `/docker/etc/nginx.conf` 를 수정하여, 홈 경로를 `/docker/home` 폴더 아래로 하면 된다.
+
+
+
+
+## Host setting
+
+- To work with real domain(for example, `itsuda50.com`), add a fake domain like `local.itsuda50.com` on `hosts` file.
+  - So, when you access `www.itsuda50.com` it goes to real domain. And `local.itsuda50.com` goes local host.
+
+```text
+127.0.0.1       local.itsuda50.com
+```
+
+- Then, get SSL. You may get it from `certbot`.
+
+- Then, set the domain and SSL in `docker/etc/nginx.conf`
+
+- Then, set the domain and theme in `config.php`.
+```php
+define('DOMAIN_THEMES', [
+    'itsuda' => 'itsuda50.com',
+    '127.0.0.1' => 'itsuda50.com',
+    'localhost' => 'itsuda50.com',
+    '169.254.115.59' => 'itsuda50.com', // JaeHo Song's Emulator Access Point to Host OS.
+]);
+```
+
+- Then, try to access `local.itsuda50.com` and it should open local development site.
+
+- Then, open Emulator and access `http://http://169.254.115.59/` and it should open the site.
+  - You should find proper IP address to use from Emulator. If you are using Mac, `ifconfig | grep inet` command may help.
+
+- Now you are ready.
+
+
+## Nginx 설정
+
+- 기본적으로 Nginx 로 설정되어져 있다. Apache web server 를 사용하려 한다면, 직접 적절한 설정을 해야 한다.
+
+- `etc/nginx.conf` 에 nginx 설정이 있다.
+
+- `nginx` 설정에서 루트 경로는 `docker-compose.yml` 의 설정에 따른다.
+  각종 경로만 잘 지정하면, `nginx` 설정 방법을 그대로 활용하면 된다.
+
+
+
+
+
+
+
+## 각종 설정
+
+- `centerx` - The project folder.
+- `docker` - All docker things are saved.
+  - `docker/etc` - Settings for Nginx, PHP and others.
+  - `docker/logs` - Log files of Nginx and other logs.
+  - `docker/mysqldata` - MariaDB database files are saved in this folder.
+  - `docker/docker-compose.yml` - Docker Compose file.
+
+
+## Live reload
+
+아래의 live reload 항목 참고
+
+
+
 # 클라이언트
 
 ## 클라이언트 작업시 참고 사항
@@ -395,13 +553,21 @@ isTrue((new AppController())->version(), "App version");
 
 ## Banner Place & Display
 
----------------------------------
-Banner|Where(Place/Type)|Desktop|Mobile|Limit
+The table below explains how banners are dipslayed.
+
+You can read it from left to right.
+
+For instance, "Top banner is displayed on Top. And displayed always on Desktop. And displayed on always on Mobile.".
+
+Banner Type|Place on Desktop|Place on Mobile|Class|Limit
 ------|-----|-------|------|-----
-Top Banner|Top|Always|Always|10 global banners. 2 category banners. @see # Top banner rotation
-Sidebar Banner|Sidebar|Always|Main|4 global banners. 2 category banners. @see # Sidebar banner rotation
-Category Square Banner|Category|Always|Always|5 global banners. 30 category banners.
-Line Banner |Category|Always|Always/Always|5 global banners. 30 category banners.
+Top Banner|Top|Top|Global & Category|10 global banners. 2 category banners.
+Sidebar Banner|Sidebar|Main|Global & Category|4 global banners. 2 category banners.
+Square Banner|Category page|Category page|Category only|5 global banners. 30 category banners.
+Line Banner |Category page|Category page|Category only|5 global banners. 30 category banners.
+
+* Class\
+  If the banner type has `global & category` class, global banner will take place when there is no category banner for that category.
 
 ### Top banner rotation
 

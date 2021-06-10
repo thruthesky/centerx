@@ -25,11 +25,11 @@ class MySQLiDatabase {
 
     private function handleError(string $msg, string $sql='') {
 
-        $this->error = "$msg\n";
+	    $this->error = "\n>\n>\n> {$this->connection->error}\n>\n>\n";
+        $this->error .= "$msg\n";
         if ( $sql ) $this->error .= "SQL: $sql\n";
         if ( $this->displayError && isLocalhost() ) {
-            d($msg);
-            d($sql);
+            d($this->error);
             debug_print_backtrace();
         }
         debug_log($this->error);
@@ -233,9 +233,8 @@ class MySQLiDatabase {
         try {
             $stmt = $this->connection->prepare($sql);
             if ( is_bool($stmt) && $stmt === false ) {
-                d("SQL Error: $sql");
-                d("Params: ");
-                d($values);
+                $this->handleError("SQL Error on mysqli::rows()", $sql);
+                exit(-1);
             }
 
             if ( $values ) {

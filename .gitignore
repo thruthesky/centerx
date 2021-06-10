@@ -1,6 +1,7 @@
 .ash_history
 .idea
 .phpdoc
+.gitconfig
 docs
 buid
 etc/phpdoc/build
