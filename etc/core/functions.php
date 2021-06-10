@@ -1791,8 +1791,8 @@ function dateToTime(int|string $date): int {
 /**
  * 두 시간 stamp 사이의 일 수를 구한다.
  * $stamp1 에 값이 없으면 오늘 stamp 값이 기본 지정된다.
- * @param $stamp1
- * @param $stamp2
+ * @param int $stamp1
+ * @param int $stamp2
  * @return int
  */
 function daysBetween($stamp1, $stamp2) {
