@@ -1727,13 +1727,14 @@ function parseUserSearchHttpParams(array $in): array {
     $conds = [];
 
     if ( isset($in['searchKey']) && $in['searchKey'] ) {
-        $conds[] = "(name LIKE ? OR nickname LIKE ? OR email LIKE ? OR phoneNo LIKE ? OR firebaseUid=? OR domain=?) ";
+//        $conds[] = "(name LIKE ? OR nickname LIKE ? OR email LIKE ? OR phoneNo LIKE ? OR firebaseUid=? OR domain=?) ";
+        $conds[] = "(name LIKE ? OR nickname LIKE ? OR email LIKE ? OR phoneNo LIKE ? OR firebaseUid=?) ";
         $params[] = '%' . $in['searchKey'] . '%';
         $params[] = '%' . $in['searchKey'] . '%';
         $params[] = '%' . $in['searchKey'] . '%';
         $params[] = '%' . $in['searchKey'] . '%';
         $params[] = $in['searchKey'];
-        $params[] = $in['searchKey'];
+//        $params[] = $in['searchKey'];
     }
 
     if ( $conds ) {
