@@ -118,11 +118,11 @@ class UserActivityModel extends UserActivityBase {
 
     /**
      * @param UserModel $user
-     * @return int|string
+     * @return self
      *  - error code string if there is an error.
      *  - user.idx if success.
      */
-    public function register(UserModel $user) : int | string {
+    public function register(UserModel $user) : self {
         return $this->recordAction(
             action: Actions::$register,
             fromUserIdx: 0,
@@ -132,7 +132,11 @@ class UserActivityModel extends UserActivityBase {
         );
     }
 
-    public function login(UserModel $user): int|string {
+    /**
+     * @param UserModel $user
+     * @return $this
+     */
+    public function login(UserModel $user): self {
         return $this->recordAction(
             action: Actions::$login,
             fromUserIdx: 0,
@@ -148,7 +152,7 @@ class UserActivityModel extends UserActivityBase {
      * @param Forum $forum
      * @param string $Yn
      */
-    public function vote(Forum $forum, string $Yn) {
+    public function vote(Forum $forum, string $Yn): self {
         $actions = [ Actions::$like, Actions::$dislike ];
 
 
@@ -198,7 +202,8 @@ class UserActivityModel extends UserActivityBase {
                 $toUserPoint = 0;
             }
         }
-        $this->recordAction(
+
+        return $this->recordAction(
             $action,
             fromUserIdx: login()->idx,
             fromUserPoint: $fromUserPoint,
@@ -216,7 +221,7 @@ class UserActivityModel extends UserActivityBase {
      * Limitation check must be done before calling this method.
      * @param PostModel $post
      */
-    public function createPost(PostModel $post):int|string {
+    public function createPost(PostModel $post):  self {
         return $this->recordAction(
             Actions::$createPost,
             fromUserIdx: 0,
@@ -232,8 +237,9 @@ class UserActivityModel extends UserActivityBase {
     /**
      * Record action and change point for post delete
      * @param PostModel $post
+     * @return UserActivityModel
      */
-    public function deletePost(PostModel $post):int|string {
+    public function deletePost(PostModel $post): self {
         return $this->recordAction(
             Actions::$deletePost,
             fromUserIdx: 0,
@@ -247,14 +253,14 @@ class UserActivityModel extends UserActivityBase {
     }
 
 
-
     /**
      * Record action and change point for comment creation
      *
      * Limitation check must be done before calling this method.
      * @param CommentModel $comment
+     * @return UserActivityModel
      */
-    public function createComment(CommentModel $comment):int|string {
+    public function createComment(CommentModel $comment):self {
         return $this->recordAction(
             Actions::$createComment,
             fromUserIdx: 0,
@@ -272,8 +278,9 @@ class UserActivityModel extends UserActivityBase {
      *
      * Limitation check must be done before calling this method.
      * @param CommentModel $comment
+     * @return UserActivityModel
      */
-    public function deleteComment(CommentModel $comment):int|string {
+    public function deleteComment(CommentModel $comment): self {
         return $this->recordAction(
             Actions::$deleteComment,
             fromUserIdx: 0,
@@ -380,8 +387,16 @@ class UserActivityModel extends UserActivityBase {
  * @param int $idx
  * @return UserActivityModel
  */
-function act(int $idx=0): UserActivityModel
-{
+function userActivity(int $idx=0): UserActivityModel {
     return new UserActivityModel($idx);
 }
 
+/**
+ * @deprecated Use `userActivity()` instead.
+ * @param int $idx
+ * @return UserActivityModel
+ */
+function act(int $idx=0): UserActivityModel
+{
+    return userActivity($idx);
+}

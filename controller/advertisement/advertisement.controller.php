@@ -14,15 +14,48 @@ class AdvertisementController {
      */
     public function edit($in) {
         if ( isset($in['idx']) && $in['idx'] ) {
-            // @todo check point
 
 
             $in['pointPerDay'] = 0;
+            $beginAt = dateToTime($in[BEGIN_AT] ?? '');
+            $endAt = dateToTime($in[END_AT] ?? '');
+            $days = daysBetween($beginAt, $endAt);
+
+            if ( isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]]) ) {
+                $settings = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
+            } else {
+                $settings = ADVERTISEMENT_SETTINGS['point']['default'];
+            }
+
+            $pointPerDay = $settings[$in[CODE]];
+
+            $pointToDeduct = $pointPerDay * $days;
+
+            // check if the user has enough point
+            if ( login()->getPoint() < $pointToDeduct ) {
+                return e()->lack_of_point;
+            }
+
+            $category = category(ADVERTISE_CATEGORY);
 
 
+            // Record for post creation and change point.
+            $activity = userActivity()->recordAction(
+                action: 'advertisement',
+                fromUserIdx: 0,
+                fromUserPoint: 0,
+                toUserIdx: login()->idx,
+                toUserPoint: -$pointToDeduct,
+                taxonomy: POSTS,
+                categoryIdx: $category->idx,
+            );
 
+            $in[CATEGORY_ID] = ADVERTISE_CATEGORY;
+            $post = post()->create($in);
 
-            return post()->create($in)->response();
+            $activity->update([ENTITY => $post->idx]);
+            return $post->response();
+
         } else {
             $post = post($in[IDX]);
             if ( $post->isMine() == false ) return  e()->not_your_post;

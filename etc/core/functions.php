@@ -1779,6 +1779,12 @@ function isSubscribedToTopic($topic): bool
  *  - if $date is int, return $date
  *  - if $date is string, return after `strtotime`.
  *  - else return 0.
+ *
+ * @example
+ * ```
+ * dateToTime("2021-12-30");
+ * dateToTime($in[BEGIN_AT] ?? '');
+ * ```
  */
 function dateToTime(int|string $date): int {
     if ( empty($date) ) return 0;
@@ -1794,6 +1800,12 @@ function dateToTime(int|string $date): int {
  * @param int $stamp1
  * @param int $stamp2
  * @return int
+ *
+ * @example
+ * ```
+ * daysBetween($post->beginAt, $post->endAt)
+ * daysBetween(0, $post->endAt)
+ * ```
  */
 function daysBetween($stamp1, $stamp2) {
     if ( empty($stamp1) ) $stamp1 = time();

@@ -19,7 +19,7 @@
  *
  * @attention
  * User entity 의 변수는 기본적으로 캐시가 된다. 즉, point 의 값을 변경했는데, 기존의 변경되지 않은 값이 읽혀질 수 있다.
- * 그래서, DB 에서 변경된, 새로운 point 값이 필요한 경우, 이 변수를 사용하지 말고, DB 에서 직접 가져오는 getPoint() 를 사용해야 한다.
+ * 그래서, DB 에서 변경된, 새로운 point 값이 필요한 경우, 이 변수를 사용하지 말고, 가능한, DB 에서 직접 가져오는 getPoint() 를 사용해야 한다.
  * @property-read string $point
  *
  * @property-read int $birthdate
