@@ -260,10 +260,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/js/kakao.min.js"
   },
   {
-    "revision": "09b9c7ab4a9c406c35f47b3aadbc4cc9",
-    "url": "/keys/db.config.php"
-  },
-  {
     "revision": "d602e8168a4d832cf60b70d09bc737f9",
     "url": "/manifest.json"
   },
@@ -282,9 +278,5 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "39393735608245e0f2463af28f38fa0b",
     "url": "/tmp/right-banner.jpg"
-  },
-  {
-    "revision": "45c30c9f1ca6281696b117ba0af01f0f",
-    "url": "/x.config.php"
   }
 ]);
