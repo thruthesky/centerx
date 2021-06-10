@@ -32,7 +32,10 @@ class CategoryController {
     }
     public function search($in): array
     {
-        $cats = category()->search(limit: $in['limit'] ?? 10);
+        $cats = category()->search(
+            page: $in['page'] ?? 1,
+            limit: $in['limit'] ?? 10,
+        );
 
         $rets = [];
         foreach(ids($cats) as $idx) {
@@ -40,6 +43,11 @@ class CategoryController {
             $rets[] = $cat->response();
         }
         return $rets;
+    }
+
+    public  function count($in) : array | string {
+        $count = category()->count();
+        return [ 'count' => $count];
     }
 
     /**
