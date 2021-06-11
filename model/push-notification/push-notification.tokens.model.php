@@ -30,10 +30,17 @@ class PushNotificationTokenModel extends Entity {
      */
     public function save(array $in): array {
         $token = $in[TOKEN];
-        $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
+        if (isset($in[TOPIC]) && $in[TOPIC]) {
+            $multiTopics = $in[TOPIC];
+        } else {
+            $multiTopics = DEFAULT_TOPIC;
+        }
+
+
+//        $multiTopics = $in[TOPIC] ?? DEFAULT_TOPIC;
 
         $topics = explode(',', $multiTopics);
-
+//        d($topics);
         $rets = [];
         foreach($topics as $topic) {
 
