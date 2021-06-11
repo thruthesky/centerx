@@ -144,6 +144,7 @@ class E {
     public string $entity_or_code_not_set = 'error_entity_or_code_not_set';
 
 
+
     public string $empty_platform = 'error_empty_platform';
     public string $empty_product_id = 'error_empty_product_id';
     public string $empty_purchase_id = 'error_empty_purchase_id';
@@ -202,6 +203,8 @@ class E {
 
     // advertisement
     public string $advertisement_is_active = 'error_advertisement_is_active';
+    public string $advertisement_point_deduction_failed = 'error_advertisement_point_deduction_failed';
+    public string $advertisement_point_refund_failed = 'error_advertisement_point_refund_failed';
 
 
     public bool $isError = false;

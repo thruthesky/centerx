@@ -532,11 +532,11 @@ isTrue((new AppController())->version(), "App version");
   
 - Refund penalty
   - Refund penalty is 5%.
-    - For instande, user paid 10,000 points for 10 days advertisement.
+    - For instance, user paid 10,000 points for 10 days advertisement.
       - The user want to refund on the very first day,
         - Then, the unserved days are 9 days. The current day(today) is considered as served.
           So, the refund will be 5% of 9,000 pionts.
-  - If the not-served-yet-days are 0 days, then the point is not refundable.
+  - If the not-served-yet-days are 2 days, then the point is not refundable.
 
   - To refund the point, the system must know how much point was set(paid) for 1 day.
     The charge (of point) may be changed often by admin.
@@ -810,6 +810,8 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 ## wc_posts, 게시판 테이블, posts 테이블, posts table
 
+- `post.model.php` 의 주석을 잘 보고 이해를 하면 좋다.
+
 - `userIdx` 글 쓴이 idx.
 - `otherUserIdx` 에는 글을 받는 사람의 idx 가 들어간다.
   예를 들어, 쪽지나 메일을 전송 할 때, 게시판 테이블을 활용하게되는데, 이 때, 받는이가 `otherUserIdx` 에 저장된다.
@@ -854,6 +856,10 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 - `endAt` 글이 끝나는 시간 stamp. 글이 언제 부터 안보여져야 할 지. 광고 배너가 언제 끝나는 지 등.
   참고, beginAt 과 endAt 에 숫자 값이 입력되면 그대로 저장을 하지만, 문자열 값으로 입력되면, 날짜 문자열로 인식하여 자동으로 stamp 로 변환해서 저장한다.
   문자 날짜 값은 `input type='date'` 에서 사용하는 형식인 `YYYY-MM-DD` 로 표현되어야 한다. 예) 2021-05-26
+  
+- `beginDate` 과 `endDate` 은 `YYYY-MM-DD` 의 값을 가지는 데, DB 에 저장 할 때에는 `beginAt` 과 `endAt` 에 stamp 로 기록된다.
+  즉, `beginDate` 과 `endDate` 은 필드에 존재하지는 않지만, 그리고 meta 속성으로도 저장되지 않지만,
+  저장 할 때, `beginDate` 과 `endDate` 에 `YYYY-MM-DD` 로 저장 할 수 있고, 글을 읽을 때에도 이 값이 들어가 있다.
 
 
 - 참고, 글이 삭제되면, 실제 레코드 지우지 않고,
@@ -1037,3 +1043,21 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 특히, 사진을 코드별로 업로드하는 위젯에서 `[upload-by-code]` 를 php.ini 방식의 입력을 통해서 여러개 사진을 업로드 할 수 있다.
 
+
+
+# Restful API Protocol
+
+- See `rest-client.http` for working examples
+
+## App
+
+### app.version
+
+### app.time
+
+```http request
+https://main.philov.com/?route=app.time
+```
+```json
+{"response":{"time":"Fri, 11 Jun 2021 15:11:07 +0900"},"request":{"route":"app.time"}}
+```

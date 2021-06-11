@@ -100,15 +100,24 @@ class PostModel extends Forum {
             return $this->error( $act->getError() );
         }
 
+        // post view url
         if ( $this->path ) {
             $this->updateMemoryData('url', get_current_root_url() . $this->path);
             $this->updateMemoryData('relativeUrl', '/' . $this->path);
         }
 
+        // update point for the post create
         $this->patchPoint();
 
 
+
+        // short date for the post create time
         $this->updateMemoryData('shortDate', short_date_time($this->createdAt));
+
+
+        // Return the date of beginAt and endAt in the format of HTML input date.
+        $this->updateMemoryData('beginDate', date('Y-m-d', $this->beginAt));
+        $this->updateMemoryData('endDate', date('Y-m-d', $this->endAt));
         return $this;
     }
 
@@ -158,9 +167,8 @@ class PostModel extends Forum {
         $in[PATH] = $this->getSeoPath($in['title'] ?? '');
         $in['Ymd'] = date('Ymd');
 
-        // beginAt 과 endAt 의 값이 문자열이면, strtotime 을 해서 저장한다.
-        $in[BEGIN_AT] = dateToTime($in[BEGIN_AT] ?? '');
-        $in[END_AT] = dateToTime($in[END_AT] ?? '');
+        $in = $this->updateBeginEndDate($in);
+
         // Create a post
         parent::create($in);
         if ( $this->hasError ) return $this;
@@ -222,9 +230,7 @@ class PostModel extends Forum {
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
         if ( $this->otherUserIdx ) return $this->error(e()->cannot_be_updated_due_to_other_user_idx);
 
-        // beginAt 과 endAt 의 값이 문자열이면, strtotime 을 해서 저장한다.
-        $in[BEGIN_AT] = dateToTime($in[BEGIN_AT] ?? '');
-        $in[END_AT] = dateToTime($in[END_AT] ?? '');
+        $in = $this->updateBeginEndDate($in);
 
         //
         parent::update($in);

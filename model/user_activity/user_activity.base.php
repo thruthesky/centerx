@@ -94,7 +94,43 @@ class UserActivityBase extends Entity {
 
 
     /**
-     * Records user action
+     * An alias of recordAction()
+     * @param string $action
+     * @param int $fromUserIdx
+     * @param int $fromUserPoint
+     * @param int $toUserIdx
+     * @param int $toUserPoint
+     * @param string $taxonomy
+     * @param int $entity
+     * @param int $categoryIdx
+     * @return $this
+     */
+    public function changePoint(
+        string $action,
+        int $fromUserIdx,
+        int $fromUserPoint,
+        int $toUserIdx,
+        int $toUserPoint,
+        string $taxonomy = '',
+        int $entity = 0,
+        int $categoryIdx = 0,
+    ): self {
+        return $this->recordAction(
+            $action,
+            $fromUserIdx,
+            $fromUserPoint,
+            $toUserIdx,
+            $toUserPoint,
+            $taxonomy,
+            $entity,
+            $categoryIdx,
+        );
+    }
+
+    /**
+     * Records user action.
+     *
+     * @attention All of the user action(or events) should be recorded whether the point is being changed or not.
      *
      * @attention This deducts or increases user point.
      *
@@ -181,7 +217,7 @@ class UserActivityBase extends Entity {
         $fromUserPointAfter = 0;
         $toUserPointApply = 0;
 
-        if ( ! $toUserIdx ) return e()->user_activity_record_action_to_user_idx_is_empty;
+        if ( ! $toUserIdx ) return $this->error(e()->user_activity_record_action_to_user_idx_is_empty);
 
         if ( $fromUserIdx ) {
             $fromUser = user($fromUserIdx);
@@ -226,10 +262,10 @@ class UserActivityBase extends Entity {
      * Return changed amount after increase or decrease point.
      *
      * @logic
-     *  - The point does not go below 0. That means no user gets minus point.
+     *  - The point does not go below 0. That means no user have minus point(less than 0).
      *  - If the returned value is bigger than 0, then the point has increased.
      *  - If the returned value is lower than 0, then the point has decreased.
-     *  - If the user is lack of point, than it deducts only the user's amount.
+     *  - If the user is lack of point, than it deducts only amount of the point that the user has.
      *      For instance, the system point for dislike deduction is 500, and the user has only 300.
      *      then, 300 point will be deducted. and 300 will be returned.
      *
@@ -240,7 +276,7 @@ class UserActivityBase extends Entity {
      * - 적용된 포인트를 음/양의 값으로 리턴한다. 이 리턴되는 값을 from_user_point_apply 또는 to_user_point_apply 에 넣으면 된다.
      * - 입력된 $point 가 올바르지 않거나, 증가되지 않으면 0을 리턴한다.
      */
-    public function changeUserPoint($userIdx, $point): int
+    protected function changeUserPoint($userIdx, $point): int
     {
         if ( !$point ) return 0;
         $user = user($userIdx);

@@ -1770,7 +1770,7 @@ function isSubscribedToTopic($topic): bool
 
 
 /**
- * Convert the input to timestamp
+ * Convert the input to timestamp if the input is not number.
  *
  * @see https://www.php.net/manual/en/datetime.formats.date.php for details
  *
