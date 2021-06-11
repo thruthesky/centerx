@@ -37,7 +37,8 @@ class AdvertisementController
 
             $in = post()->updateBeginEndDate($in);
 
-            $days = daysBetween($in[BEGIN_AT], $in[END_AT]);
+            // add 1 to include beggining date.
+            $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
 
             if (isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
                 $settings = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
@@ -105,7 +106,8 @@ class AdvertisementController
         $post = post($in[IDX]);
 
         // get number of days to refund.
-        $days = daysBetween($post->beginAt, $post->endAt);
+        // add 1 to include beggining date.
+        $days = daysBetween($post->beginAt, $post->endAt) + 1;
 
         // update Begin and End date to 0, marking it as inactive advertisement.
         $in = $post->updateBeginEndDate([]);
@@ -163,15 +165,15 @@ class AdvertisementController
 
         // get number of days to refund.
         $now = new DateTime();
-        $days = daysBetween($now->getTimestamp(), $post->endAt);
+        // add 1 to include beggining date (now).
+        $days = daysBetween($now->getTimestamp(), $post->endAt) + 1;
 
         $pointToRefund = 0;
         // If the not-served-yet-days are 2 days, then the point is not refundable.
         if ($days > 2) {
             // Refund penalty is 5%.
             $advertisementPoint = $settings[$post->code] * $days;
-            $penaltyPercent = 5 / 100;
-            $penalty = $penaltyPercent * $advertisementPoint;
+            $penalty = $advertisementPoint * 0.05;
             $pointToRefund = $advertisementPoint - $penalty;
         }
 
