@@ -262,10 +262,10 @@ class UserActivityBase extends Entity {
      * Return changed amount after increase or decrease point.
      *
      * @logic
-     *  - The point does not go below 0. That means no user gets minus point.
+     *  - The point does not go below 0. That means no user have minus point(less than 0).
      *  - If the returned value is bigger than 0, then the point has increased.
      *  - If the returned value is lower than 0, then the point has decreased.
-     *  - If the user is lack of point, than it deducts only the user's amount.
+     *  - If the user is lack of point, than it deducts only amount of the point that the user has.
      *      For instance, the system point for dislike deduction is 500, and the user has only 300.
      *      then, 300 point will be deducted. and 300 will be returned.
      *

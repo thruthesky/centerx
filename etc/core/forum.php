@@ -228,6 +228,47 @@ class Forum extends Entity {
     }
 
 
+    /**
+     * If `beginAt` and `endAt` are string, then Convert it into timestamp.
+     * If `beginAt` and `endAt` are empty and `beginDate` and `endDate` are not,
+     *  then convert `beginDate` and `endDate` into timestamp and save it in `beginAt`, `endAt`.
+     *  then, unset `beginDate` and `endDate`.
+     *
+     *
+     * @param $in
+     *
+     * @example
+     * ```
+     * $in = post()->updateBeginEndDate($in);
+     * ```
+     *
+     * @todo do test on it
+     */
+    public function updateBeginEndDate($in): array {
+
+        if ( isset($in[BEGIN_AT]) && $in[BEGIN_AT] ) {
+            $in[BEGIN_AT] = dateToTime($in[BEGIN_AT] ?? '');
+        } else if ( isset($in['beginDate']) && $in['beginDate'] ) {
+            $in[BEGIN_AT] = dateToTime($in['beginDate']);
+            unset($in['beginDate']);
+        } else {
+            $in[BEGIN_AT] = 0;
+        }
+
+        if ( isset($in[END_AT]) && $in[END_AT] ) {
+            $in[END_AT] = dateToTime($in[END_AT] ?? '');
+        } else if ( isset($in['endDate']) && $in['endDate'] ) {
+            $in[END_AT] = dateToTime($in['endDate']);
+            unset($in['endDate']);
+        } else {
+            $in[END_AT] = 0;
+        }
+
+
+        return $in;
+
+    }
+
 
 }
 

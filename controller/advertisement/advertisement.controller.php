@@ -12,19 +12,32 @@ class AdvertisementController
      * @return array|string
      * @throws \Kreait\Firebase\Exception\FirebaseException
      * @throws \Kreait\Firebase\Exception\MessagingException
+     *
+     * @todo do tests
+     * @todo test - check input
+     * @todo test - check point deduction
+     * @todo test - check cancel
+     * @todo test - check refund
+     * @todo test - change dates after create banner and check days left.
+     * @todo test - compare the point history.
      */
     public function edit($in)
     {
-        if (isset($in['idx']) && $in['idx']) {
 
+        if ( !isset($in[CODE]) || empty($in[CODE]) ) return e()->empty_code;
+
+        if (isset($in['idx']) && $in['idx']) {
             $post = post($in[IDX]);
             if ($post->isMine() == false) return  e()->not_your_post;
             return $post->update($in)->response();
         } else {
+
+            // Save point per day. This will be saved in meta.
             $in['pointPerDay'] = 0;
-            $beginAt = dateToTime($in[BEGIN_AT] ?? '');
-            $endAt = dateToTime($in[END_AT] ?? '');
-            $days = daysBetween($beginAt, $endAt);
+
+            $in = post()->updateBeginEndDate($in);
+
+            $days = daysBetween($in[BEGIN_AT], $in[END_AT]);
 
             if (isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
                 $settings = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
@@ -32,12 +45,13 @@ class AdvertisementController
                 $settings = ADVERTISEMENT_SETTINGS['point']['default'];
             }
 
-            $pointPerDay = $settings[$in[CODE]];
+            $in['pointPerDay'] = $settings[$in[CODE]];
 
-            $pointToDeduct = $pointPerDay * $days;
+            // Save total point for the advertisement periods.
+            $in['advertisementPoint'] = $in['pointPerDay'] * $days;
 
             // check if the user has enough point
-            if (login()->getPoint() < $pointToDeduct) {
+            if (login()->getPoint() < $in['advertisementPoint']) {
                 return e()->lack_of_point;
             }
 
@@ -49,12 +63,24 @@ class AdvertisementController
                 fromUserIdx: 0,
                 fromUserPoint: 0,
                 toUserIdx: login()->idx,
-                toUserPoint: -$pointToDeduct,
+                toUserPoint: -$in['advertisementPoint'],
                 taxonomy: POSTS,
                 categoryIdx: $category->idx,
             );
 
+            debug_log("apply point; {$activity->toUserPointApply} != {$in['advertisementPoint']}");
+            if ( $activity->toUserPointApply != -$in['advertisementPoint'] ) {
+                // @attention !! If this error happens, it is a critical problem.
+                // The admin must investigate the database and restore user's point.
+                // Then, it needs to rollback the SQL query and needs to have race condition test to prevent the same incident.
+                return e()->advertisement_point_deduction_failed;
+            }
+
             $in[CATEGORY_ID] = ADVERTISE_CATEGORY;
+
+
+            // Save total deducted point from user which the total point for the advertisement.
+
             $post = post()->create($in);
 
             $activity->update([ENTITY => $post->idx]);

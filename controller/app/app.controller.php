@@ -58,4 +58,8 @@ class AppController
         return ADVERTISEMENT_SETTINGS;
     }
 
+    public function time($in): array {
+        return ['time' => date('r')];
+    }
+
 }
