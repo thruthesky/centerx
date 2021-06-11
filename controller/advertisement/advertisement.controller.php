@@ -88,14 +88,15 @@ class AdvertisementController
         }
     }
 
+    /**
+     * @param $in
+     * - $in['idx'] - the advertisement idx.
+     */
     public function cancel($in)
     {
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
         $post = post($in[IDX]);
-
-        $days = daysBetween($post->beginAt, $post->endAt);
-
 
         // update Begin and End date to 0, marking it as inactive advertisement.
         $in = $post->updateBeginEndDate([]);
@@ -107,6 +108,7 @@ class AdvertisementController
         }
 
         // get points to refund.
+        $days = daysBetween($post->beginAt, $post->endAt);
         $pointToRefund = $settings[$post->code] * $days;
 
         // Record for post creation and change point.
@@ -117,6 +119,7 @@ class AdvertisementController
             toUserIdx: login()->idx,
             toUserPoint: $pointToRefund,
             taxonomy: POSTS,
+            categoryIdx: $post->categoryIdx,
             entity: $post->idx
         );
 
