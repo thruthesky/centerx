@@ -43,9 +43,8 @@ class AdvertisementController
 
             $category = category(ADVERTISE_CATEGORY);
 
-
             // Record for post creation and change point.
-            $activity = userActivity()->recordAction(
+            $activity = userActivity()->changePoint(
                 action: 'advertisement',
                 fromUserIdx: 0,
                 fromUserPoint: 0,
