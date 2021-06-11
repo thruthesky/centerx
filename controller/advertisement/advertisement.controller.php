@@ -89,14 +89,23 @@ class AdvertisementController
     }
 
     /**
+     * Cancel advertisement.
+     * 
+     * Advertisement can be cancelled, if the begin date is not 
+     * 
      * @param $in
      * - $in['idx'] - the advertisement idx.
+     * 
+     * @todo check begin date if not past.
      */
     public function cancel($in)
     {
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
         $post = post($in[IDX]);
+
+        // get number of days to refund.
+        $days = daysBetween($post->beginAt, $post->endAt);
 
         // update Begin and End date to 0, marking it as inactive advertisement.
         $in = $post->updateBeginEndDate([]);
@@ -108,7 +117,6 @@ class AdvertisementController
         }
 
         // get points to refund.
-        $days = daysBetween($post->beginAt, $post->endAt);
         $pointToRefund = $settings[$post->code] * $days;
 
         // Record for post creation and change point.
@@ -132,8 +140,70 @@ class AdvertisementController
         return $post->response();
     }
 
+    /**
+     * Refund remaining days from an advertisement.
+     * 
+     * If the advertisement's remaining days is less than or equal to 2, no point will be refunded the user.
+     * 
+     * @todo check if post begin date is not future.
+     */
+    public function refund($in)
+    {
+        if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
+        $post = post($in[IDX]);
+
+        // update Begin and End date to 0, marking it as inactive advertisement.
+        $in = $post->updateBeginEndDate([]);
+
+        if (isset(ADVERTISEMENT_SETTINGS['point'][$post->countryCode])) {
+            $settings = ADVERTISEMENT_SETTINGS['point'][$post->countryCode];
+        } else {
+            $settings = ADVERTISEMENT_SETTINGS['point']['default'];
+        }
+
+        // get number of days to refund.
+        $now = new DateTime();
+        $days = daysBetween($now->getTimestamp(), $post->endAt);
+
+        $pointToRefund = 0;
+        // If the not-served-yet-days are 2 days, then the point is not refundable.
+        if ($days >= 2) {
+            // Refund penalty is 5%.
+            $advertisementPoint = $settings[$post->code] * $days;
+            $penalty = $advertisementPoint / 0.05;
+            $pointToRefund = $advertisementPoint - $penalty;
+        }
+
+        // Record for post creation and change point.
+        $activity = userActivity()->changePoint(
+            action: 'advertisement',
+            fromUserIdx: 0,
+            fromUserPoint: 0,
+            toUserIdx: login()->idx,
+            toUserPoint: $pointToRefund,
+            taxonomy: POSTS,
+            categoryIdx: $post->categoryIdx,
+            entity: $post->idx
+        );
+
+        debug_log("refund apply point; {$activity->toUserPointApply} != {$pointToRefund}");
+        if ($activity->toUserPointApply != $pointToRefund) {
+            return e()->advertisement_point_refund_failed;
+        }
+
+        $post = $post->update($in);
+        return $post->response();
+    }
+
+    /**
+     * Delete advertisement
+     * 
+     * Advertisements can be deleted if it is inactive, meaning the user's point is refunded.
+     */
     public function delete($in)
     {
+        if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
+
         $post = post($in[IDX]);
         if ($post->endAt) return e()->advertisement_is_active;
         return post($in[IDX])->markDelete()->response();
