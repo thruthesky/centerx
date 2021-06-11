@@ -1,6 +1,7 @@
 <?php
 
-class AdvertisementController {
+class AdvertisementController
+{
 
     /**
      * @param $in
@@ -12,16 +13,20 @@ class AdvertisementController {
      * @throws \Kreait\Firebase\Exception\FirebaseException
      * @throws \Kreait\Firebase\Exception\MessagingException
      */
-    public function edit($in) {
-        if ( isset($in['idx']) && $in['idx'] ) {
+    public function edit($in)
+    {
+        if (isset($in['idx']) && $in['idx']) {
 
-
+            $post = post($in[IDX]);
+            if ($post->isMine() == false) return  e()->not_your_post;
+            return $post->update($in)->response();
+        } else {
             $in['pointPerDay'] = 0;
             $beginAt = dateToTime($in[BEGIN_AT] ?? '');
             $endAt = dateToTime($in[END_AT] ?? '');
             $days = daysBetween($beginAt, $endAt);
 
-            if ( isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]]) ) {
+            if (isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
                 $settings = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
             } else {
                 $settings = ADVERTISEMENT_SETTINGS['point']['default'];
@@ -32,7 +37,7 @@ class AdvertisementController {
             $pointToDeduct = $pointPerDay * $days;
 
             // check if the user has enough point
-            if ( login()->getPoint() < $pointToDeduct ) {
+            if (login()->getPoint() < $pointToDeduct) {
                 return e()->lack_of_point;
             }
 
@@ -55,17 +60,12 @@ class AdvertisementController {
 
             $activity->update([ENTITY => $post->idx]);
             return $post->response();
-
-        } else {
-            $post = post($in[IDX]);
-            if ( $post->isMine() == false ) return  e()->not_your_post;
-            return $post->update($in)->response();
         }
     }
-    public function delete($in) {
+    public function delete($in)
+    {
         $post = post($in[IDX]);
-        if ( $post->endAt ) return e()->advertisement_is_active;
+        if ($post->endAt) return e()->advertisement_is_active;
         return post($in[IDX])->markDelete()->response();
     }
-
 }
