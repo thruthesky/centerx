@@ -96,40 +96,84 @@ class UserActivityBase extends Entity {
     /**
      * Records user action
      *
-     * @attention All the check & test must be done before calling this method.
+     * @attention This deducts or increases user point.
+     *
+     * @attention All the check & test must be done before calling this method. Or it may cause an unexpected result!
+     *
      *      If the user has reached the limit of voting point change, then the input of toUserPoint must be 0, so it
      *      will record the action without point change.
      *
      * @attention If the user point is less than the deduction, then user point will be 0.
      *
      *
-     * @param string $action - the action ( or the user's activity )
+     * @param string $action - the action ( or the user's activity ). For instance, 'vote', 'create', or any event name you like.
+     *
      * @param int $fromUserIdx - the user(or system) that gives point to the other user.
+     *  - If the from user is you, then you will lose your point and the other will get your point.
+     *  - If the from user is you, and the other user(toUser) is you, then from user and its point must be 0.
      *
      *  - If the system is the one that give points to 'toUserIdx', then it should be 0.
      *      For instance 'register' or 'login' actions, the system is the one that give point to user.
-     *      For vote, one user triggers the action and that effects to the other user.
-     *      So, 'fromUser' is the user who votes, and 'toUser' is the user who wrote the post(or comment)
      *
-     *  - If fromUserIdx would be the same idx of toUserIdx, then fromUserIdx should be 0.
      *
-     * @param int $fromUserPoint - the point to apply to $fromUserIdx
-     * @param int $toUserIdx - the user that will receive point.
-     * @param int $toUserPoint - the point to apply to $toUserIdx.
+     *  - If the point should be changed on both user(fromUser and toUser), then set fromUser.
+     *    For instance, vote(like or dislike), one user triggers the action and that effects to the other user.
+     *    So, 'fromUser' is the user who does the voting, and 'toUser' is the user who wrote the post(or comment)
+     *    And if fromUserPoint is set, the fromUser will lose(or gain by the admin setting) his point,
+     *      And the other user will get(or lose by the admin setting) his point.
+     *
+     * @param int $fromUserPoint - the amount of the point to apply to(or to deduct from) $fromUserIdx
+     * @param int $toUserIdx - the user that will receive point from $fromUserIdx.
+     * @param int $toUserPoint - the amount of the point to apply to $toUserIdx.
      * @param string $taxonomy
      * @param int $entity
      * @param int $categoryIdx
-     * @return int|string
+     *
+     * @return $this
+     * It returns the created object.
+     * - if it has error, then error will be set on the object.
+     *
+     *
+     * @example User A wants give 100 points to User B by 'point-transfer'. Then,
+     * ```
+     * $this->recordAction(
+     *  action: 'point-transfer',
+     *  fromUserIdx: A's idx,
+     *  fromUserFrom: 100,
+     *  toUserIdx: B's idx,
+     *  toUserPoint: 100,
+     *  // ...
+     * )
+     * ```
+     *
+     * @example User A loses 200 points by creating a job posting, then,
+     * ```
+     * $this->recordAction(
+     *  action: 'job-posting',
+     *  fromUserIdx: 0,
+     *  fromUserFrom: 0,
+     *  toUserIdx: A's idx,
+     *  toUserPoint: -200,
+     *  // ...
+     * )
+     * ```
+     *
+     * @note You may need to record twice by calling `recordAction()` two times for a specific actions like voting.
+     *
      *
      * - 적용된 포인트를 음/양의 값으로 리턴한다. 이 리턴되는 값을 from_user_point_apply 또는 to_user_point_apply 에 넣으면 된다.
      * - 입력된 $point 가 올바르지 않거나, 증가되지 않으면 0을 리턴한다.
      */
     public function recordAction(
-        string $action, int $fromUserIdx, int $fromUserPoint, int $toUserIdx, int $toUserPoint,
+        string $action,
+        int $fromUserIdx,
+        int $fromUserPoint,
+        int $toUserIdx,
+        int $toUserPoint,
         string $taxonomy = '',
         int $entity = 0,
         int $categoryIdx = 0,
-    ): int|string {
+    ): self {
         // d("recordAction( action: $action, fromUserIdx: $fromUserIdx, toUserIdx: $toUserIdx, toUserPoint: $toUserPoint");
         // prepare
         $toUser = user($toUserIdx);
@@ -165,11 +209,13 @@ class UserActivityBase extends Entity {
             'toUserPointAfter' => $toUserPointAfter,
         ];
 //        d($record);
-        $created = $this->create($record);
 
+        return $this->create($record);
 
-        if ( $created->hasError ) return $created->getError();
-        else return $created->idx;
+//        $created = $this->create($record);
+//
+//        if ( $created->hasError ) return $created->getError();
+//        else return $created->idx;
     }
 
 

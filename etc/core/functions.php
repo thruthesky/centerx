@@ -1779,6 +1779,12 @@ function isSubscribedToTopic($topic): bool
  *  - if $date is int, return $date
  *  - if $date is string, return after `strtotime`.
  *  - else return 0.
+ *
+ * @example
+ * ```
+ * dateToTime("2021-12-30");
+ * dateToTime($in[BEGIN_AT] ?? '');
+ * ```
  */
 function dateToTime(int|string $date): int {
     if ( empty($date) ) return 0;
@@ -1791,9 +1797,15 @@ function dateToTime(int|string $date): int {
 /**
  * 두 시간 stamp 사이의 일 수를 구한다.
  * $stamp1 에 값이 없으면 오늘 stamp 값이 기본 지정된다.
- * @param $stamp1
- * @param $stamp2
+ * @param int $stamp1
+ * @param int $stamp2
  * @return int
+ *
+ * @example
+ * ```
+ * daysBetween($post->beginAt, $post->endAt)
+ * daysBetween(0, $post->endAt)
+ * ```
  */
 function daysBetween($stamp1, $stamp2) {
     if ( empty($stamp1) ) $stamp1 = time();

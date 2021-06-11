@@ -34,6 +34,6 @@ class CafeController {
     }
 
     public function mine($in): array|string {
-        return cafe()->mine()->response('idx, domain');
+        return cafe()->mine()->response('idx, id, domain');
     }
 }

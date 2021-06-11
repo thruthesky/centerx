@@ -200,6 +200,10 @@ class E {
     public string $main_cafe_has_no_cafe_category_record = 'error_main_cafe_has_no_cafe_category_record';
 
 
+    // advertisement
+    public string $advertisement_is_active = 'error_advertisement_is_active';
+
+
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)
     {

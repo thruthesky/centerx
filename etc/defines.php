@@ -38,6 +38,8 @@ define('SHOPPING_MALL_ORDERS', 'shopping_mall_orders');
 
 define('TRANSLATIONS', 'translations');
 
+const COUNTRY_CODE = 'countryCode';
+
 
 
 define('ROUTE', 'route');

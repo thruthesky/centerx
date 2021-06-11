@@ -918,11 +918,7 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 ## User Activity
 
-This logs all user activities.
-
-
-
-
+- All actions(or events) should be recorded using `userActivity()->recordAction()`.
 
 - User activities are recorded in the `user_activities`.
   The actions may be user register, login, post create, delete, like, dislike, and more.

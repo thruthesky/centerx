@@ -31,7 +31,7 @@ $re = request('user.update', [
 isTrue($re[IDX], 'update name and nickname');
 
 
-$other = request('user.otherUserProfile', [IDX => $re[IDX]]);
+$other = request('user.get', [IDX => $re[IDX]]);
 isTrue($other[NAME] == "name$stamp", 'otherUserProfile Expect:: ' . "name$stamp");
 
 

@@ -182,7 +182,7 @@ const ADMIN_EMAIL = 'admin@itsuda50.com,thruthesky@gmail.com,pinedaclp@gmail.com
  * Firebase Admin Service Account Key, for firebase connection
  */
 if ( ! defined('FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH') ) {
-    define("FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH", view()->folder . "keys/firebase-admin-sdk.json");
+    define("FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH", ROOT_DIR . "etc/keys/firebase-admin-sdk.json");
 }
 if ( ! defined('FIREBASE_DATABASE_URI') ) {
     define("FIREBASE_DATABASE_URI", "https://itsuda50-default-rtdb.firebaseio.com/");
