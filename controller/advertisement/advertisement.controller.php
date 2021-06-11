@@ -24,7 +24,7 @@ class AdvertisementController
     public function edit($in)
     {
 
-        if ( !isset($in[CODE]) || empty($in[CODE]) ) return e()->empty_code;
+        if (!isset($in[CODE]) || empty($in[CODE])) return e()->empty_code;
 
         if (isset($in['idx']) && $in['idx']) {
             $post = post($in[IDX]);
@@ -69,7 +69,7 @@ class AdvertisementController
             );
 
             debug_log("apply point; {$activity->toUserPointApply} != {$in['advertisementPoint']}");
-            if ( $activity->toUserPointApply != -$in['advertisementPoint'] ) {
+            if ($activity->toUserPointApply != -$in['advertisementPoint']) {
                 // @attention !! If this error happens, it is a critical problem.
                 // The admin must investigate the database and restore user's point.
                 // Then, it needs to rollback the SQL query and needs to have race condition test to prevent the same incident.
@@ -87,6 +87,48 @@ class AdvertisementController
             return $post->response();
         }
     }
+
+    public function cancel($in)
+    {
+        if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
+
+        $post = post($in[IDX]);
+
+        $days = daysBetween($post->beginAt, $post->endAt);
+
+
+        // update Begin and End date to 0, marking it as inactive advertisement.
+        $in = $post->updateBeginEndDate([]);
+
+        if (isset(ADVERTISEMENT_SETTINGS['point'][$post->countryCode])) {
+            $settings = ADVERTISEMENT_SETTINGS['point'][$post->countryCode];
+        } else {
+            $settings = ADVERTISEMENT_SETTINGS['point']['default'];
+        }
+
+        // get points to refund.
+        $pointToRefund = $settings[$post->code] * $days;
+
+        // Record for post creation and change point.
+        $activity = userActivity()->changePoint(
+            action: 'advertisement',
+            fromUserIdx: 0,
+            fromUserPoint: 0,
+            toUserIdx: login()->idx,
+            toUserPoint: $pointToRefund,
+            taxonomy: POSTS,
+            entity: $post->idx
+        );
+
+        debug_log("refund apply point; {$activity->toUserPointApply} != {$pointToRefund}");
+        if ($activity->toUserPointApply != $pointToRefund) {
+            return e()->advertisement_point_refund_failed;
+        }
+
+        $post = $post->update($in);
+        return $post->response();
+    }
+
     public function delete($in)
     {
         $post = post($in[IDX]);

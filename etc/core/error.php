@@ -204,6 +204,7 @@ class E {
     // advertisement
     public string $advertisement_is_active = 'error_advertisement_is_active';
     public string $advertisement_point_deduction_failed = 'error_advertisement_point_deduction_failed';
+    public string $advertisement_point_refund_failed = 'error_advertisement_point_refund_failed';
 
 
     public bool $isError = false;
