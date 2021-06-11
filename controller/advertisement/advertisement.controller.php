@@ -119,7 +119,7 @@ class AdvertisementController
         // get points to refund.
         $pointToRefund = $settings[$post->code] * $days;
 
-        // Record for post creation and change point.
+        // Record for change point.
         $activity = userActivity()->changePoint(
             action: 'advertisement',
             fromUserIdx: 0,
@@ -167,14 +167,15 @@ class AdvertisementController
 
         $pointToRefund = 0;
         // If the not-served-yet-days are 2 days, then the point is not refundable.
-        if ($days >= 2) {
+        if ($days > 2) {
             // Refund penalty is 5%.
             $advertisementPoint = $settings[$post->code] * $days;
-            $penalty = $advertisementPoint / 0.05;
+            $penaltyPercent = 5 / 100;
+            $penalty = $penaltyPercent * $advertisementPoint;
             $pointToRefund = $advertisementPoint - $penalty;
         }
 
-        // Record for post creation and change point.
+        // Record change point.
         $activity = userActivity()->changePoint(
             action: 'advertisement',
             fromUserIdx: 0,
