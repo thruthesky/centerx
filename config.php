@@ -20,6 +20,7 @@ const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
  */
 const DOMAIN_THEMES = [
     'www_docker_nginx' => 'x',
+    'flutterkorea' => 'flutterkorea',
     'x.philov' => 'x',
     'cherry.philov' => 'x',
     'banana.philov' => 'x',
