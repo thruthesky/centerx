@@ -2243,37 +2243,7 @@ echo Markdown::render ($md);
 
 # Unit Testing
 
-- 2021년 3월 기준, PHPUnit 이 PHP8 을 완벽히 지원하지 않는 것인지, 실행이 잘 안된다. 하지만, 에러가 나는 부분이 EzSQL 인 것을 감안하면, EzSQL 에 문제가 있지 싶다.
-  - 그래서, 테스트 로직을 직접 작성했다.
-
-- 아래와 같이 실행하면, `tests/*.test.php` PHP 스크립트(파일)을 실행한다.
-  - php container 이름과 centerx 설치 폴더를 잘 지정하면 된다.
-
-```shell
-chokidar '**/*.php' -c "docker exec [php_container_name] php [centerx_folder_name]/tests/test.php"
-```
-
-- 원한다면, 아래와 같이 테스트 파일의 일부 문자열을 포함하는 파일만 실행 할 수 있다.
-  - 테스트 파일 이름에 "app" 또는 "user" 라는 문자열이 있으면 실행한다.
-
-```shell
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php"
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic."
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php controller"
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.db."
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.entity.search"
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.user_a"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php app"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php user"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php point"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php shopping-mall"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php getter"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php purchase.android"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php next"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php next.entity.search"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
-```
-
+- @see new readme file
 
 # 사진업로드, 파일업로드
 
