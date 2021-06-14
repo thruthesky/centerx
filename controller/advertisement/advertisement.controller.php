@@ -19,15 +19,14 @@ class AdvertisementController
      * @todo test - check cancel /
      * @todo test - check refund /
      * @todo test - change dates after create banner and check days left.
-     * @todo test - compare the point history.
-     * @todo test - get banners on a specific 
-     *    - banner type/place (code)
-     *    - category(subcategory)
-     *    - and countryCode.
+     * @todo test - compare the point history. /
+     * @todo test - get banners on a specific /
+     *    - banner type/place (code) /
+     *    - category(subcategory) /
+     *    - and countryCode. /
      */
     public function edit($in)
     {
-
         if ( notLoggedIn() ) return e()->not_logged_in;
 
         if (!isset($in[CODE]) || empty($in[CODE])) return e()->empty_code;
