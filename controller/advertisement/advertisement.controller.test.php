@@ -6,7 +6,10 @@ setLogout();
 advertisementFetch();
 
 
-
+/**
+ * @todo test - change dates after create banner and check days left.
+ * @todo test - compare the point history.
+ */
 function advertisementCRUD()
 {
 
@@ -130,11 +133,10 @@ function advertisementFetch()
 
     $searchParams[COUNTRY_CODE] = "PH";
     $re = request("post.search", $searchParams);
-
-    d($re);
+    // d($re);
 
     // Advertisement search with subcategory and PH country code.
-    // isTrue(count($re) == 1, "Should have 1 advertisement with category(subcategory) of " . $subcategory . " with PH country code");
+    isTrue(count($re) == 1, "Should have 1 advertisement with category(subcategory) of " . $subcategory . " with PH country code");
 
     // $searchParams[COUNTRY_CODE] = "US";
     // $re = request("post.search", $searchParams);
