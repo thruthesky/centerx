@@ -227,6 +227,15 @@ define('DOMAIN_THEMES', [
 
 # Vue.js & SEO & SPA & PWA
 
+## Vue.js 로 작업을 하는 경우 주의 점
+
+- Vue.js 는 SPA 로 백엔드와 분리되어져 있다. 이 때, Nginx 에서 도메인과 홈 경로 지정을 `/docker/home/centerx` 가 아닌
+  `/docker/home/centerx/view/view-name` 와 같이 지정한다. 즉, 홈 폴더가 `/docker/home/centerx` 가 아닌 것이다. 이 부분에 대해서 혼동하지
+  않도록 해야 한다.
+  
+- 특히, `/docker/home/centerx/view/view-name/index.php` 는 Vue.js 의 `/public/index.php` 에서 넘어오고 이 파일은 단순히 실제 로직이
+  있는 파일을 include 하는 역할만 한다.
+
 ## SEO
 
 - SPA 의 특징으로 인해 SEO 가 어렵다. SSR 을 SEO 가 Native 하지(직관적인지) 못하고 하기에는 개발 환경 설정 및 빌드가 번거롭게 느껴 질 수 있다.
@@ -1159,6 +1168,44 @@ https://main.philov.com/?route=app.time
   `category.idx` must be used, instead of `category.id`.
   - Client app should load the forum configuration at startup and cache for the next boot. So, they can use `category.idx`.
 
+
+
+# 테스트, Unit Testing
+
+- 처음 CenterX 를 시작 할 때, PHPUnit 이 PHP8 을 지원하지 않아, 직접 테스트 환경을 개발하였다.
+  - 이 후, 굳이 PHPUnit 의 필요성을 느끼지 못하여 계속해서 직접 개발한 테스트 환경을 사용하고 있다.
+
+- 참고, 테스트를 하면, test.php 에서 `boot.php` 를 실행한다. 하지만, `controller/control.php`는 실행하지 않는다.
+  - 다만, test.php 의 `request()` 함수가 Nginx 를 통한 접속을 하므로, 그 때에는 Matrix 의 index.php 가 실행되어야 한다.
+
+- 아래와 같이 실행하면, `tests/*.test.php` PHP 스크립트(파일)을 실행한다.
+  - php container 이름과 centerx 설치 폴더를 잘 지정하면 된다.
+
+```shell
+docker exec [php_container_name] php [centerx_folder_name]/tests/test.php
+chokidar '**/*.php' -c "docker exec [php_container_name] php [centerx_folder_name]/tests/test.php"
+```
+
+- 원한다면, 아래와 같이 테스트 파일의 일부 문자열을 포함하는 파일만 실행 할 수 있다.
+  - 테스트 파일 이름에 "app" 또는 "user" 라는 문자열이 있으면 실행한다.
+
+```shell
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php"
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic."
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php controller"
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.db."
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.entity.search"
+chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.user_a"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php app"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php user"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php point"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php shopping-mall"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php getter"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php purchase.android"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php next"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php next.entity.search"
+chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
+```
 
 
 # 문제점

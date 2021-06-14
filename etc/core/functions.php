@@ -1667,6 +1667,9 @@ function postMessagingUrl(int $idx) {
  *  - searchKey
  *  - userIdx
  *  - otherUserIdx
+ *  - code
+ *  - files - it is set to truthy value, then it searches for posts that has attached files.
+ *  If it is falsy value like empty string, false, 0, then it searches posts that has no attached files.
  *
  * @return array|string
  *
@@ -1691,13 +1694,39 @@ function parsePostSearchHttpParams(array $in): array|string {
         $where .= " AND categoryIdx=" . $category->idx;
     }
 
+    // sub category
     if (isset($in['subcategory'])) {
         $where .= " AND subcategory=?";
         $params[] = $in['subcategory'];
     }
 
+    // code
+    if (isset($in['code'])) {
+        $where .= " AND code=?";
+        $params[] = $in['code'];
+    }
+
+    // files
+    if (isset($in['files'])) {
+        if ($in['files']) {
+            $where .= " AND files<>''";
+        } else {
+            $where .= " AND files=''";
+        }
+    }
+
+
     // 국가 코드 훅. @see README `HOOK_POST_LIST_COUNTRY_CODE` 참고
-    if ( $countryCode = hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $in['countryCode']) ) {
+    // Get country code from input
+    $countryCode = $in['countryCode'] ?? '';
+    // Run hook to update country code
+    $updatedCountryCode = hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $countryCode);
+    // If there is updated country code, use it
+    if ( $updatedCountryCode ) {
+        $where .= " AND countryCode=?";
+        $params[] = $updatedCountryCode;
+    } else if ( $countryCode ) {
+        // Or if there is country code, then use it.
         $where .= " AND countryCode=?";
         $params[] = $countryCode;
     }
