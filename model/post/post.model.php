@@ -342,6 +342,59 @@ class PostModel extends Forum {
 
 
     /**
+     * This searches posts based the HTTP input. And if there is no HTTP input, then it searches with the function
+     * parameters.
+     *
+     * @param string $select
+     * @param string $where
+     * @param array $params
+     * @param array $conds
+     * @param string $conj
+     * @param string $order
+     * @param string $by
+     * @param int $page
+     * @param int $limit
+     * @param bool $object
+     * @param array $in
+     * @return array
+     */
+    public function search(
+        string $select='idx',
+        string $where='1',
+        array $params = [],
+        array $conds=[],
+        string $conj = 'AND',
+        string $order='idx',
+        string $by='DESC',
+        int $page=1,
+        int $limit=10,
+        bool $object = false,
+        array $in = []): array {
+
+        if ( $in ) {
+            $re = parsePostSearchHttpParams($in);
+            if ( isError($re) ) return $re;
+            list ($where, $params ) = $re;
+        }
+
+
+        // Save search keyword if there is any.
+        if ( isset($in['searchKey']) ) saveSearchKeyword($in['searchKey']);
+
+        //
+        return parent::search(
+            select: $in['select'] ?? $select,
+            where: $where,
+            params: $params,
+            order: $in['order'] ?? $order,
+            by: $in['by'] ?? $by,
+            page: $in['page'] ?? $page,
+            limit: $in['limit'] ?? $limit,
+            object: $object
+        );
+    }
+
+    /**
      * @deprecated User post()->search()
      *
      * 최신 글을 추출 할 때 유용하다. 글만 추출. 코멘트와 첨부 파일은 추출하지 않음.
