@@ -1697,7 +1697,16 @@ function parsePostSearchHttpParams(array $in): array|string {
     }
 
     // 국가 코드 훅. @see README `HOOK_POST_LIST_COUNTRY_CODE` 참고
-    if ( $countryCode = hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $in['countryCode']) ) {
+    // Get country code from input
+    $countryCode = $in['countryCode'] ?? '';
+    // Run hook to update country code
+    $updatedCountryCode = hook()->run(HOOK_POST_LIST_COUNTRY_CODE, $countryCode);
+    // If there is updated country code, use it
+    if ( $updatedCountryCode ) {
+        $where .= " AND countryCode=?";
+        $params[] = $updatedCountryCode;
+    } else if ( $countryCode ) {
+        // Or if there is country code, then use it.
         $where .= " AND countryCode=?";
         $params[] = $countryCode;
     }

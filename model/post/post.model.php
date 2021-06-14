@@ -342,6 +342,8 @@ class PostModel extends Forum {
 
 
     /**
+     * @deprecated User post()->search()
+     *
      * 최신 글을 추출 할 때 유용하다. 글만 추출. 코멘트와 첨부 파일은 추출하지 않음.
      *
      * 여러가지 옵션이 있으면, 특히 `by` 파라메타를 'ASC' 로 입력하면 처음 글들을 추출할 수 있다.
