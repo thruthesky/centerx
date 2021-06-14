@@ -14,15 +14,21 @@ class AdvertisementController
      * @throws \Kreait\Firebase\Exception\MessagingException
      *
      * @todo do tests
-     * @todo test - check input
-     * @todo test - check point deduction
-     * @todo test - check cancel
-     * @todo test - check refund
+     * @todo test - check input /
+     * @todo test - check point deduction /
+     * @todo test - check cancel /
+     * @todo test - check refund /
      * @todo test - change dates after create banner and check days left.
      * @todo test - compare the point history.
+     * @todo test - get banners on a specific 
+     *    - banner type/place (code)
+     *    - category(subcategory)
+     *    - and countryCode.
      */
     public function edit($in)
     {
+
+        if ( notLoggedIn() ) return e()->not_logged_in;
 
         if (!isset($in[CODE]) || empty($in[CODE])) return e()->empty_code;
 
@@ -40,7 +46,7 @@ class AdvertisementController
             // add 1 to include beggining date.
             $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
 
-            if (isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
+            if (isset($in[COUNTRY_CODE]) && isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
                 $settings = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
             } else {
                 $settings = ADVERTISEMENT_SETTINGS['point']['default'];
@@ -202,6 +208,8 @@ class AdvertisementController
      * Delete advertisement
      * 
      * Advertisements can be deleted if it is inactive, meaning the user's point is refunded.
+     * 
+     * @todo test to see if the advertisement is active
      */
     public function delete($in)
     {

@@ -98,28 +98,25 @@ class PostController {
      */
     public function search($in): array|string
     {
-
-        list ($where, $params ) = parsePostSearchHttpParams($in);
-
-        $posts = post()->search(
-            select: $in['select'] ?? 'idx',
-            where: $where,
-            params: $params,
-            order: $in['order'] ?? IDX,
-            by: $in['by'] ?? 'DESC',
-            page: $in['page'] ?? 1,
-            limit: $in['limit'] ?? 10,
-            object: true
-        );
-
-//        debug_log("posts;", $posts);
-
-        if ( isset($in['searchKey']) ) saveSearchKeyword($in['searchKey']);
+//        $re = parsePostSearchHttpParams($in);
+//        if ( isError($re) ) return $re;
+//        list ($where, $params ) = $re;
+//
+//        $posts = post()->search(
+//            select: $in['select'] ?? 'idx',
+//            where: $where,
+//            params: $params,
+//            order: $in['order'] ?? IDX,
+//            by: $in['by'] ?? 'DESC',
+//            page: $in['page'] ?? 1,
+//            limit: $in['limit'] ?? 10,
+//            object: true
+//        );
+//
+        $posts = post()->search(object: true, in: $in);
 
         $res = [];
-//        if ( $onTop ) $res[] = $onTop->response();
         foreach($posts as $post) {
-//            if ( $onTop?->idx == $post->idx ) continue;
             $res[] = $post->response(comments: $in['comments'] ?? -1);
         }
         return $res;
@@ -133,8 +130,9 @@ class PostController {
      */
     public function count($in): array {
 
-        list ($where, $params ) = parsePostSearchHttpParams($in);
-
+        $re = parsePostSearchHttpParams($in);
+        if ( isError($re) ) return $re;
+        list ($where, $params ) = $re;
         $count =  post()->count(
             where: $where,
             params: $params,

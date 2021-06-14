@@ -774,43 +774,6 @@ setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
 
 - `login()->idx` in PHP is equal to `loginIdx()` in Javascript
 
-# 쪽지 기능, Message Functionality
-
-- 쪽지 기능은 게시판과 매우 흡사하다. 그래서 게시판 테이블과 대부분의 게시판 기능을 사용한다. 단, post-edit-default 위젯을 상속하기에는 좀 복잡해서 직접
-  위젯을 만들어 쓴다.
-  - 참고, 글 쓰기: message-edit-default.php
-  - 참고, 글 읽기: message-view-default.php
-  - 참고, 글 목록: message-list-default.php
-
-
-- 게시판 category.id 는 어떤 것이라도 상관없지만, 규칙을 두고, 각종 링크에서 공용으로 사용하기 위해서 MESSAGE_CATEGORY 에 게시판 카테고리를 정의한다.
-  기본적으로 'message' 게시판을 사용한다.
-  즉, 쪽지 목록 메뉴 링크를 걸 때, `<a href="<?=postListUrl(MESSAGE_CATEGORY)?>">쪽지</a>` 로 하면 된다.
-  만약, 다른 게시판으로 하려면, MESSAGE_CATEGORY 를 다른 값으로 변경하면 된다.
-
-- 주의 할 것은 게시판 목록, 읽기, 쓰기 위젯 등을 쪽지 위젯으로 설정을 해야 한다.
-  기본적으로 post-list/message-list-default, post-view/message-view-default, post-edit/message-edit-default 가 존재한다.
-
-  
-- 글 목록, 페이지내에션, 검색 등에서 비슷하게 사용된다.
-  다만, 외부에서 검색이 되지 않도록 100% 보장하기 위해서, title 과 content 필드 대신에 privateTitle, privateContent 에 기록을 한다.
-  이 때, private 에 Y 의 값을 기록해야 한다.
-  
-- 글을 저장 할때, private = Y 옵션을 서버로 전송하면, 서버에서는 자동으로 title 과 content 값을 privateTitle 과 privateContent 에 기록한다.
-- 단, 글을 읽을 때에는 private = Y 이면, privateTitle 과 privateContent 를 직접 화면에 표시해야 한다.
-
-- otherUserIdx 에 받는 사람 정보가 들어간다.
-
-- readAt 에 글을 읽은 시간이 들어간다.
-
-
-## 쪽지 기능 사운드 알림
-
-- 새로운 쪽지가 있으면, 소리를 낸다.
-- 사용자가 on/off 할 수 있다.
-- sound-on-off.php 위젯으로 사용이 가능한데, 중복으로 사용되어도 소리 파일은 중복으로 출력하지 않는다.
-  sound-on-off.php 내부적으로 `new-message-sound-on-off` 컴포넌트를 사용하는데, 이 컴포넌트에서 사운드 on/off 를 한다.
-
 
 # Widget System
 
@@ -840,8 +803,6 @@ setAppCookie('sessionId', '3330-9622d005fbba90d96ea1a967e142a5ce');
 ## Widget samples
 
 - visit `/?widget.samples` to see what kinds of widgets are available.
-
-
 
 ## 재 사용가능한 위젯 샘플, Making Re usable widgets
 
@@ -2282,37 +2243,7 @@ echo Markdown::render ($md);
 
 # Unit Testing
 
-- 2021년 3월 기준, PHPUnit 이 PHP8 을 완벽히 지원하지 않는 것인지, 실행이 잘 안된다. 하지만, 에러가 나는 부분이 EzSQL 인 것을 감안하면, EzSQL 에 문제가 있지 싶다.
-  - 그래서, 테스트 로직을 직접 작성했다.
-
-- 아래와 같이 실행하면, `tests/*.test.php` PHP 스크립트(파일)을 실행한다.
-  - php container 이름과 centerx 설치 폴더를 잘 지정하면 된다.
-
-```shell
-chokidar '**/*.php' -c "docker exec [php_container_name] php [centerx_folder_name]/tests/test.php"
-```
-
-- 원한다면, 아래와 같이 테스트 파일의 일부 문자열을 포함하는 파일만 실행 할 수 있다.
-  - 테스트 파일 이름에 "app" 또는 "user" 라는 문자열이 있으면 실행한다.
-
-```shell
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php"
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic."
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php controller"
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.db."
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.entity.search"
-chokidar '**/*.php' -c "docker exec www_docker_php php /docker/home/centerx/tests/test.php basic.user_a"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php app"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php user"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php point"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php shopping-mall"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php getter"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php purchase.android"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php next"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php next.entity.search"
-chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
-```
-
+- @see new readme file
 
 # 사진업로드, 파일업로드
 
@@ -2918,52 +2849,6 @@ console.log('hi, this is service worker');
 
 
 
-# Forum & Post & Comment
-
-## Post list parameters
-
-- 게시판 목록에서 검색에 사용되는
-
-- `categoryId` 는 글 카테고리. 카테고리 번호를 숫자로 입력해도 된다.
-
-- `subcategory` is the subcategory.
-
-- `countryCode`
-  국가별 글 목록을 할 때 사용한다.
-  국가 코드의 경우, hook 을 통해서 수정 할 수 있다.
-  예를 들어, 특정 theme 에서는 무조건 특정 국가의 글만 목록하고자 할 때, 사용 할 수 있다. 예를 들면 소너브에서 도메인/카페 별로 특정 국가의 글만 목록하고자 할 때 사용한다.
-
-
-- `nsub` 사용법.
-  - 사용자가 전체 카테고리에서 글 생성할 때, 'abc' 카테고리를 선택한다면, 그 글은 'abc' 카테고리 글이다.
-    '전체카테고리'와 'abc' 카테고리 중 어떤 카테고리를 보여주어야 할까?
-    정답은 전체 카테고리이다.
-    글 쓰기 FORM 을 열 때, HTTP PARAM 으로 subcategory 값이 전달되지 않은 경우, nsub=all 로 전송을 한다.
-
-  - 사용자가 전체 카테고리 목록에서, 특정 글을 수정 할 때, 그 글의 카테고리가 'abc' 라면, 글 작성 후, 전체 카테고리를 보여줘야 할까? 'abc' 카테고리만
-    보여줘야 할까?
-    정답은 전체 카테고리이다.
-    글 쓰기 FORM 을 열 때, HTTP PARAM 으로 subcategory 값이 전달되지 않은 경우, nsub=all 로 전송을 한다.
-
-  - 사용자가 'abc' 카테고리에서 글을 생성하면, 'abc' 카테고리를 보여줘야 한다.
-
-  - 사용자가 'abc' 카테고리에서 글을 하나 수정할 때, 그 글의 카테고리를 'def' 로 바꾸면, 'abc' 와 'def' 중 어떤 카테고리를 보여줘야 할까?
-    정답은 def 카테고리이다.
-
-  - 요약을 하면, `nsub` 는 글 생성, 수정, 삭제를 할 때, 그 직전의 페이지 목록이 서브카테고리가 아닌 경우, FORM 전송 후 전체 카테고리로 보여주기 위한 것이다.
-
-
-- `searchKey` 검색어
-  - searchKey 에 값이 들어오면, `(title LIKE '%searchKey%' OR content LIKE '%searchKey%')` 있으면 그 것을 검색한다.
-
-- userIdx 는 사용자 번호
-  - 그 사용자가 쓴 글을 검색한다.
-    예) `https://local.itsuda50.com/?p=forum.post.list&categoryId=qna&userIdx=2&searchKey=hello`
-
-- categoryId 는 글 카테고리 아이디(또는 번호)
-
-- subcategory 는 검색을 할 서브 카테고리이다.
-
 
 
 # 언어화, Translation, 번역
@@ -3150,14 +3035,6 @@ content[tip]=내용사진입니다.
 ```
 "ext-mysqli": "*"
 ```
-
-
-
-# Post list
-
-- For listing posts under a category, it requires `category.idx`. Whether the client is using SQL or prepared params,
-  `category.idx` must be used, instead of `category.id`.
-  - Client app should load the forum configuration at startup and cache for the next boot. So, they can use `category.idx`.
 
 
 # CSS, 공용 CSS

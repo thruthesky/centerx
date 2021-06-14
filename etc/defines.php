@@ -51,6 +51,7 @@ const ID = 'id';
 const IDS = 'ids';
 const IDXES = 'idxes';
 const CATEGORY = 'category';
+const SUB_CATEGORY = 'subcategory';
 const CATEGORY_IDX = 'categoryIdx';
 const CATEGORY_ID = 'categoryId';
 const PARENT_IDX = 'parentIdx';

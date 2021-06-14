@@ -101,7 +101,8 @@ function testPostResponse() {
 function testPostLatest() {
     $p1 = createPost('post-latest');
     $p2 = createPost('post-latest');
-    $posts = post()->latest(photo: false, limit: 2);
+//    $posts = post()->latest(photo: false, limit: 2);
+    $posts = post()->search( limit: 2, in: [ 'files' => false ]);
     isTrue(count($posts) == 2, 'Get latest posts');
 //d($posts);
 //    $posts = post()->latest(photo: true, limit: 2);
