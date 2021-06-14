@@ -25,6 +25,8 @@ class AdvertisementController
     public function edit($in)
     {
 
+        if ( notLoggedIn() ) return e()->not_logged_in;
+
         if (!isset($in[CODE]) || empty($in[CODE])) return e()->empty_code;
 
         if (isset($in['idx']) && $in['idx']) {
