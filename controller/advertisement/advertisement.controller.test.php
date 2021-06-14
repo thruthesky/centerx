@@ -35,20 +35,20 @@ function advertisementCRUD()
     ]);
 
     // check point deduction for 1 day * 1000 (default TOP_BANNER).
-    isTrue($user->getPoint() == 9000, "create TOP_BANNER for 1 day. deduct 1000 points to user.");
+    isTrue($user->getPoint() == 9000, "Expect: user points decrease from 10000 to 9000.");
 
     // check if point deduction matches user activity record.
     $activity = userActivity()->last(taxonomy: POSTS, entity: $re[IDX], action: 'advertisement');
-    isTrue($activity->toUserPointApply == -1000, "check if deducted point is recorded.");
-    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
+    isTrue($activity->toUserPointApply == -1000, "Expect: user activity record deduct 1000 points to user.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
 
     // Both total advertisement point and point per day must be equal to 1000.
-    isTrue($re['advertisementPoint'] == 1000, "create TOP_BANNER for 1 day. 'advertisementPoint' => 1000");
-    isTrue($re['pointPerDay'] == 1000, "create TOP_BANNER for 1 day. 'pointPerDay' => 1000");
+    isTrue($re['advertisementPoint'] == 1000, "Expect: 'advertisementPoint' => 1000");
+    isTrue($re['pointPerDay'] == 1000, "Expect: 'pointPerDay' => 1000");
 
     // Error deleting active advertisement.
     $del = request("advertisement.delete", [ SESSION_ID => login()->sessionId, IDX => $re[IDX] ]);
-    isTrue($del == e()->advertisement_is_active, "error deleting active advertisement.");
+    isTrue($del == e()->advertisement_is_active, "Expect: error deleting active advertisement.");
 
     $advToCancel = request("advertisement.edit", [
         SESSION_ID => login()->sessionId,
@@ -58,13 +58,14 @@ function advertisementCRUD()
     ]);
 
     // check point deduction for 5 days * 500 (default SIDEBAR_BANNER).
-    isTrue($user->getPoint() == 6500, "create SIDEBAR_BANNER for 5 days. deduct 2500 points to user.");
+    isTrue($user->getPoint() == 6500, "Expect: user points decrease from 9000 to 6500");
 
     // check if point deduction matches user activity record.
     $activity = userActivity()->last(taxonomy: POSTS, entity: $advToCancel[IDX], action: 'advertisement');
-    isTrue($activity->toUserPointApply == -2500, "check if deducted point is recorded.");
-    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
-    isTrue($advToCancel['advertisementPoint'] == 2500, "create SIDEBAR_BANNER for 5 days. 'advertisementPoint' => 2500");
+    isTrue($activity->toUserPointApply == -2500, "Expect: recorded user activity deducted 2500 points to user.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: Expect: recorded user activity points equal current user points.");
+    isTrue($advToCancel['advertisementPoint'] == 2500, "Expect: 'advertisementPoint' => 2500");
+    isTrue($advToCancel['pointPerDay'] == 500, "Expect: 'pointPerDay' => 500");
 
     
     // Error cancelling advertisement without IDX.
@@ -79,13 +80,13 @@ function advertisementCRUD()
     isTrue($re[END_AT] == 0, "advertisement cancelled, end date reset.");
 
     // User point will be refunded 100%
-    isTrue($user->getPoint() == 9000, "advertisement cancelled, end date reset.");
+    isTrue($user->getPoint() == 9000, "Expect: user points increase from 6500 to 9000.");
 
     // Check if point is refunded to user (2500).
     // Check if user total point is changed (9000).
     $activity = userActivity()->last(taxonomy: POSTS, entity: $re[IDX], action: 'advertisement');
-    isTrue($activity->toUserPointApply == 2500, "check if deducted point is recorded.");
-    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
+    isTrue($activity->toUserPointApply == 2500, "Expect: recorded user activity refunded 2500 points to user.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
 
     $update = [
         SESSION_ID => login()->sessionId,
@@ -99,22 +100,22 @@ function advertisementCRUD()
     // Edit cancelled advertisement to 6 days.
     $updatedAdv = request("advertisement.edit", $update);
 
-    isTrue($updatedAdv[NAME] == $update[NAME], "Advertisement name updated.");
-    isTrue($updatedAdv[BEGIN_AT] == $update[BEGIN_AT], "Begin date updated.");
-    isTrue($updatedAdv[END_AT] == $update[END_AT], "Begin date updated.");
+    isTrue($updatedAdv[NAME] == $update[NAME], "Expect: Advertisement name updated to " . $update[NAME] . ".");
+    isTrue($updatedAdv[BEGIN_AT] == $update[BEGIN_AT], "Expect: Begin date updated to " . $update[BEGIN_AT] . ".");
+    isTrue($updatedAdv[END_AT] == $update[END_AT], "Expect: End date updated to " . $update[END_AT] . ".");
 
     // Total advertisement point must be equal to 3500.
-    isTrue($updatedAdv['advertisementPoint'] == 3500, "create SIDEBAR_BANNER for 1 day. 'advertisementPoint' => 3500");
+    isTrue($updatedAdv['advertisementPoint'] == 3500, "Expect: 'advertisementPoint' changed from 2500 to 3500.");
     
     // Compare updated user point (9000 - 3500).
-    isTrue($user->getPoint() == 5500, "create SIDEBAR_BANNER for 5 days. deduct 2500 points to user.");
+    isTrue($user->getPoint() == 5500, "Expect: user points decrease from 9000 to 5500.");
 
     // Check updated record.
     $activity = userActivity()->last(taxonomy: POSTS, entity: $advToCancel[IDX], action: 'advertisement');
-    isTrue($activity->toUserPointApply == -3500, "check if deducted point is recorded.");
-    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
+    isTrue($activity->toUserPointApply == -3500, "Expect: recorded user activity deducted 3500 points to user.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
 
-    // // Advertisement to Refund 1 week duration. Begin date starting now (now is considered served).
+    // Advertisement to Refund 1 week duration. Begin date starting now (now is considered served).
     $advToRefund = request("advertisement.edit", [
         SESSION_ID => login()->sessionId,
         CODE => SIDEBAR_BANNER,
@@ -123,18 +124,19 @@ function advertisementCRUD()
     ]);
 
     // check point deduction for 7 days (default SIDEBAR_BANNER: 5500 - (500 * 7) ).
-    isTrue($user->getPoint() == 2000, "create SIDEBAR_BANNER for 7 days. deduct 3500 points to user.");
-    isTrue($advToRefund['advertisementPoint'] == 3500, "create SIDEBAR_BANNER for 7 days. 'advertisementPoint' => 3500");
+    isTrue($user->getPoint() == 2000, "Expect: user points decrease from 5500 to 2000.");
+    isTrue($advToRefund['advertisementPoint'] == 3500, "Expect. 'advertisementPoint' => 3500");
+    isTrue($advToRefund['pointPerDay'] == 500, "Expect. 'pointPerDay' => 500");
     
     // Check if point is deducted to user (3500).
     // Check if user total point is changed (5500).
     $activity = userActivity()->last(taxonomy: POSTS, entity: $advToRefund[IDX], action: 'advertisement');
-    isTrue($activity->toUserPointApply == -3500, "check if deducted point is recorded.");
-    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
+    isTrue($activity->toUserPointApply == -3500, "Expect: recorded user activity deducted 3500 points to user.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
 
     // Error refunding advertisement without IDX.
     $re = request("advertisement.refund", [ SESSION_ID => login()->sessionId ]);
-    isTrue($re == e()->idx_is_empty, "advertisement IDX is empty.");
+    isTrue($re == e()->idx_is_empty, "Expect: error, advertisement IDX is empty.");
 
     // Refund advertisement.
     $re = request("advertisement.refund", [ SESSION_ID => login()->sessionId, IDX => $advToRefund[IDX] ]);
@@ -148,15 +150,19 @@ function advertisementCRUD()
     // 3000 * 5% = 150 (refund penalty).
     // 3000 - 150 = 2850 (Total refundable points).
     // 2000 + 2850 = 4850 (Current user points after refund).
-    isTrue($user->getPoint() == 4850, "advertisement refunded. end date reset. 1 day and 5% deducted.");
+    isTrue($user->getPoint() == 4850, "Expect: user points increased from 2000 to 4850.");
 
     // check if refunded matcher user activity record, including the penalty.
     $activity = userActivity()->last(taxonomy: POSTS, entity: $advToRefund[IDX], action: 'advertisement');
 
     // Check if point is refunded to user (2850).
     // Check if user total point is changed (5350).
-    isTrue($activity->toUserPointApply == 2850, "check if deducted point is recorded.");
-    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
+    isTrue($activity->toUserPointApply == 2850, "Expect: recorded user activity refunded 2850 points to user.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
+
+    // Error deleting active advertisement.
+    $del = request("advertisement.delete", [ SESSION_ID => login()->sessionId, IDX => $re[IDX] ]);
+    isTrue($del[DELETED_AT] != 0, "Expect: refunded advertisement is deleted.");
 }
 
 
