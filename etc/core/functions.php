@@ -419,13 +419,13 @@ function getAppCookie($name) {
 
 /**
  * 사용자의 세션 ID 를 리턴한다.
- * 비밀번호를 변경하면, 세션 ID 도 같이 변경한다. 즉, 세션 ID 는 변경이 된다.
+ * 비밀번호를 세션 ID 생성에 포함하지 않는다. 즉, 비밀번호를 변경해도 로그인이 풀리지 않는다.
  * @param $profile
  * @return false|string|null
  */
 function getSessionId($profile) {
     if ( !$profile || !isset($profile[IDX]) ) return null;
-    $str= $profile[IDX] . $profile[CREATED_AT] . $profile[PASSWORD];
+    $str= $profile[IDX] . $profile[CREATED_AT] . $profile[EMAIL] . LOGIN_PASSWORD_SALT;
     return $profile[IDX] . '-' . md5($str);
 }
 
@@ -1659,24 +1659,35 @@ function postMessagingUrl(int $idx) {
  *
  * 단, order, by, page, limit 등은 외부 함수에서 별도로 적절히 처리를 해야 한다.
  *
- * @params array $in
+ *
+ * @param array $in
+ *
  *  - categoryId
  *  - categoryIdx
  *  - searchKey
  *  - userIdx
  *  - otherUserIdx
  *
+ * @return array|string
+ *
+ *
  * @attention both of categoryIdx and categoryId are set, then categoryIdx will be used.
  *  if none of them are set, then it will search all the posts.
  */
-function parsePostSearchHttpParams(array $in): array {
+function parsePostSearchHttpParams(array $in): array|string {
 
-    $category = category( $in[CATEGORY_IDX] ?? $in[CATEGORY_ID] ?? 0 );
     $params = [];
-
     $where = "parentIdx=0 AND deletedAt=0";
 
-    if ($category->exists()) {
+
+    // 카테고리 idx 또는 카테고리 id 또는 0
+    $catIdx = $in[CATEGORY_IDX] ?? $in[CATEGORY_ID] ?? 0;
+
+    // 카테고리가 지정된 경우,
+    if ($catIdx) {
+        $category = category( $catIdx );
+        // 카테고리가 존재하지 않으면, 에러
+        if ( $category->exists() == false ) return e()->category_not_exists;
         $where .= " AND categoryIdx=" . $category->idx;
     }
 

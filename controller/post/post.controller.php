@@ -98,8 +98,9 @@ class PostController {
      */
     public function search($in): array|string
     {
-
-        list ($where, $params ) = parsePostSearchHttpParams($in);
+        $re = parsePostSearchHttpParams($in);
+        if ( isError($re) ) return $re;
+        list ($where, $params ) = $re;
 
         $posts = post()->search(
             select: $in['select'] ?? 'idx',
@@ -133,8 +134,9 @@ class PostController {
      */
     public function count($in): array {
 
-        list ($where, $params ) = parsePostSearchHttpParams($in);
-
+        $re = parsePostSearchHttpParams($in);
+        if ( isError($re) ) return $re;
+        list ($where, $params ) = $re;
         $count =  post()->count(
             where: $where,
             params: $params,

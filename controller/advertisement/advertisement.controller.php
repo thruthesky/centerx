@@ -20,6 +20,7 @@ class AdvertisementController
      * @todo test - check refund
      * @todo test - change dates after create banner and check days left.
      * @todo test - compare the point history.
+     * @todo test - get banners on a specific banner type(place), category, and countryCode.
      */
     public function edit($in)
     {
