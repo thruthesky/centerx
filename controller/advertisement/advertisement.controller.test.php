@@ -2,8 +2,8 @@
 
 setLogout();
 
-// advertisementCRUD();
-advertisementFetch();
+advertisementCRUD();
+// advertisementFetch();
 
 
 /**
@@ -37,6 +37,7 @@ function advertisementCRUD()
     isTrue($user->getPoint() == 9000, "create TOP_BANNER for 1 day. deduct 1000 points to user.");
     // check if right category
     isTrue(category($re[CATEGORY_IDX])->id == 'advertisement', "create TOP_BANNER for 1 day. deduct 1000 points to user.");
+    isTrue($re['advertisementPoint'] == 1000, "create TOP_BANNER for 1 day. 'advertisementPoint' => 1000");
 
     $advToCancel = request("advertisement.edit", [
         SESSION_ID => login()->sessionId,
@@ -46,6 +47,7 @@ function advertisementCRUD()
     ]);
     // check point deduction for 5 days * 500 (default SIDEBAR_BANNER).
     isTrue($user->getPoint() == 6500, "create SIDEBAR_BANNER for 5 days. deduct 2500 points to user.");
+    isTrue($advToCancel['advertisementPoint'] == 2500, "create SIDEBAR_BANNER for 5 days. 'advertisementPoint' => 2500");
 
     $re = request("advertisement.cancel", [
         SESSION_ID => login()->sessionId,
@@ -73,6 +75,7 @@ function advertisementCRUD()
 
     // check point deduction for 7 days * 500 (default SIDEBAR_BANNER).
     isTrue($user->getPoint() == 5500, "create SIDEBAR_BANNER for 7 days. deduct 3500 points to user.");
+    isTrue($advToRefund['advertisementPoint'] == 3500, "create SIDEBAR_BANNER for 7 days. 'advertisementPoint' => 3500");
 
     $re = request("advertisement.refund", [
         SESSION_ID => login()->sessionId,
@@ -131,15 +134,16 @@ function advertisementFetch()
     // Advertisement search with subcategory
     isTrue(count($re) == 4, "Should have 4 advertisement with category(subcategory) of " . $subcategory);
 
-    $searchParams[COUNTRY_CODE] = "PH";
+    $searchParams['countryCode'] = "PH";
     $re = request("post.search", $searchParams);
     // d($re);
 
     // Advertisement search with subcategory and PH country code.
-    isTrue(count($re) == 1, "Should have 1 advertisement with category(subcategory) of " . $subcategory . " with PH country code");
+    isTrue(count($re) == 1, "Should have 1 advertisement with category(subcategory) of " . $subcategory . " and PH country code");
 
     // $searchParams[COUNTRY_CODE] = "US";
     // $re = request("post.search", $searchParams);
-    // // Advertisement search with subcategory and US country code.
-    // isTrue(count($re) == 2, "Should have 2 advertisement with category(subcategory) of " . $subcategory . " with US country code");
+
+    // Advertisement search with subcategory and US country code.
+    // isTrue(count($re) == 2, "Should have 2 advertisement with category(subcategory) of " . $subcategory . " and US country code");
 }
