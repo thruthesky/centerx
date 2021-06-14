@@ -87,7 +87,34 @@ function advertisementCRUD()
     isTrue($activity->toUserPointApply == 2500, "check if deducted point is recorded.");
     isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
 
-    // Advertisement to Refund 1 week duration. Begin date starting now (now is considered served).
+    $update = [
+        SESSION_ID => login()->sessionId,
+        CODE => SIDEBAR_BANNER,
+        NAME => 'Advertisement' . time(),
+        BEGIN_AT => strtotime("+1 days"),
+        END_AT => strtotime("+1 week"),
+        IDX => $advToCancel[IDX]
+    ];
+
+    // Edit cancelled advertisement to 6 days.
+    $updatedAdv = request("advertisement.edit", $update);
+
+    isTrue($updatedAdv[NAME] == $update[NAME], "Advertisement name updated.");
+    isTrue($updatedAdv[BEGIN_AT] == $update[BEGIN_AT], "Begin date updated.");
+    isTrue($updatedAdv[END_AT] == $update[END_AT], "Begin date updated.");
+
+    // Total advertisement point must be equal to 3500.
+    isTrue($updatedAdv['advertisementPoint'] == 3500, "create SIDEBAR_BANNER for 1 day. 'advertisementPoint' => 3500");
+    
+    // Compare updated user point (9000 - 3500).
+    isTrue($user->getPoint() == 5500, "create SIDEBAR_BANNER for 5 days. deduct 2500 points to user.");
+
+    // Check updated record.
+    $activity = userActivity()->last(taxonomy: POSTS, entity: $advToCancel[IDX], action: 'advertisement');
+    isTrue($activity->toUserPointApply == -3500, "check if deducted point is recorded.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
+
+    // // Advertisement to Refund 1 week duration. Begin date starting now (now is considered served).
     $advToRefund = request("advertisement.edit", [
         SESSION_ID => login()->sessionId,
         CODE => SIDEBAR_BANNER,
@@ -95,8 +122,8 @@ function advertisementCRUD()
         END_AT => strtotime("+6 days"),
     ]);
 
-    // check point deduction for 7 days * 500 (default SIDEBAR_BANNER).
-    isTrue($user->getPoint() == 5500, "create SIDEBAR_BANNER for 7 days. deduct 3500 points to user.");
+    // check point deduction for 7 days (default SIDEBAR_BANNER: 5500 - (500 * 7) ).
+    isTrue($user->getPoint() == 2000, "create SIDEBAR_BANNER for 7 days. deduct 3500 points to user.");
     isTrue($advToRefund['advertisementPoint'] == 3500, "create SIDEBAR_BANNER for 7 days. 'advertisementPoint' => 3500");
     
     // Check if point is deducted to user (3500).
@@ -120,14 +147,14 @@ function advertisementCRUD()
     // 3500 - 500 = 3000 (served day deducted).
     // 3000 * 5% = 150 (refund penalty).
     // 3000 - 150 = 2850 (Total refundable points).
-    // 5500 + 2850 = 8350 (Current user points after refund).
-    isTrue($user->getPoint() == 8350, "advertisement refunded. end date reset. 1 day and 5% deducted.");
+    // 2000 + 2850 = 4850 (Current user points after refund).
+    isTrue($user->getPoint() == 4850, "advertisement refunded. end date reset. 1 day and 5% deducted.");
 
     // check if refunded matcher user activity record, including the penalty.
     $activity = userActivity()->last(taxonomy: POSTS, entity: $advToRefund[IDX], action: 'advertisement');
 
     // Check if point is refunded to user (2850).
-    // Check if user total point is changed (8350).
+    // Check if user total point is changed (5350).
     isTrue($activity->toUserPointApply == 2850, "check if deducted point is recorded.");
     isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
 }

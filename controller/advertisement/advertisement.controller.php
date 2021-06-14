@@ -27,34 +27,52 @@ class AdvertisementController
      */
     public function edit($in)
     {
-        if ( notLoggedIn() ) return e()->not_logged_in;
+        if (notLoggedIn()) return e()->not_logged_in;
 
         if (!isset($in[CODE]) || empty($in[CODE])) return e()->empty_code;
 
+
+        // Save point per day. This will be saved in meta.
+        $in['pointPerDay'] = 0;
+
+        $in = post()->updateBeginEndDate($in);
+
+        // add 1 to include beggining date.
+        $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
+
+        if (isset($in[COUNTRY_CODE]) && isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
+            $settings = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
+        } else {
+            $settings = ADVERTISEMENT_SETTINGS['point']['default'];
+        }
+
+        $in['pointPerDay'] = $settings[$in[CODE]];
+
+        // Save total point for the advertisement periods.
+        $in['advertisementPoint'] = $in['pointPerDay'] * $days;
+
+        // Update
         if (isset($in['idx']) && $in['idx']) {
+
             $post = post($in[IDX]);
             if ($post->isMine() == false) return  e()->not_your_post;
+
+            $activity = userActivity()->changePoint(
+                action: 'advertisement',
+                fromUserIdx: 0,
+                fromUserPoint: 0,
+                toUserIdx: login()->idx,
+                toUserPoint: -$in['advertisementPoint'],
+                taxonomy: POSTS,
+                categoryIdx: $post->categoryIdx,
+                entity: $post->idx,
+            );
+
             return $post->update($in)->response();
-        } else {
-
-            // Save point per day. This will be saved in meta.
-            $in['pointPerDay'] = 0;
-
-            $in = post()->updateBeginEndDate($in);
-
-            // add 1 to include beggining date.
-            $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
-
-            if (isset($in[COUNTRY_CODE]) && isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
-                $settings = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
-            } else {
-                $settings = ADVERTISEMENT_SETTINGS['point']['default'];
-            }
-
-            $in['pointPerDay'] = $settings[$in[CODE]];
-
-            // Save total point for the advertisement periods.
-            $in['advertisementPoint'] = $in['pointPerDay'] * $days;
+        } 
+        
+        // Create
+        else {
 
             // check if the user has enough point
             if (login()->getPoint() < $in['advertisementPoint']) {
