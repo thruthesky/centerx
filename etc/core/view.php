@@ -179,11 +179,16 @@ class View
     private function parseDomainTheme(): void
     {
         $_host = get_host_name();
-        $this->folderName = 'default';
-        foreach (DOMAIN_THEMES as $_domain => $_theme) {
-            if (stripos($_host, $_domain) !== false) {
-                $this->folderName = $_theme;
-                break;
+        debug_log("view::parseDOmainTheme():: $_host");
+        if ( empty($_host) ) {
+            $this->folderName = DOMAIN_THEMES['_'];
+        } else {
+            $this->folderName = 'default';
+            foreach (DOMAIN_THEMES as $_domain => $_theme) {
+                if (stripos($_host, $_domain) !== false) {
+                    $this->folderName = $_theme;
+                    break;
+                }
             }
         }
         $this->folder = VIEW_DIR . $this->folderName . '/';

@@ -19,12 +19,15 @@ const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
  * @see README.md for the details.
  */
 const DOMAIN_THEMES = [
+    // $_SERVER['HTTP_HOST'] return empty string when the test runs on 'docker php container'.
+    // So, when test runs, you can choose which view(theme) do you wan to use by specifying the view into '_' key.
+    '_' => 'default',
     'www_docker_nginx' => 'x',
     'flutterkorea' => 'flutterkorea',
     'x.philov' => 'x',
     'cherry.philov' => 'x',
     'banana.philov' => 'x',
-    'philov' => 'x',
+    'philov' => 'sonub',
     'sonub' => 'x',
     'sonubtheme' => 'sonub',
     'itsuda' => 'itsuda',

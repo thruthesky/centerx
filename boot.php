@@ -81,6 +81,7 @@ require_once ROOT_DIR . 'etc/core/hook.php';
 // Load global config.php that loads config.php in each theme.
 require_once ROOT_DIR . 'config.php';
 
+debug_log("_______ view(theme) folderName: " . view()->folderName );
 
 // set error handler
 if ( canHandleError() ) {
@@ -118,10 +119,13 @@ function adjust_http_input() {
  * 각 Theme 의 theme-name.functions.php 가 존재하면, 실행한다.
  */
 $_path = theme()->file( filename: 'functions', prefixThemeName: true );
-debug_log("Theme functions path: $_path");
 if ( file_exists($_path) ) {
+    debug_log("Loading view(theme) functions path: $_path");
     require_once $_path;
+} else {
+    debug_log("View funcitons php script not exists. View(theme) functions path: $_path");
 }
+
 
 // Live reload is deprecated on v2.
 // @see README.md how to control live reload.
