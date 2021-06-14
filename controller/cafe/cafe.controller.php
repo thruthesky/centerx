@@ -24,6 +24,12 @@ class CafeController {
         return cafe()->create($in)->response();
     }
 
+    public function update($in): array|string
+    {
+        if ( cafe()->mine() == false ) return e()->you_are_not_admin;
+        return category($in[IDX] ?? $in[ID])->update($in)->response();
+    }
+
     public function get($in): array|string {
         if ( cafe()->isMainCafe($in[DOMAIN]) ) {
             return e()->main_cafe_has_no_cafe_category_record;
