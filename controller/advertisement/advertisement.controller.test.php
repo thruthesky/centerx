@@ -183,7 +183,9 @@ function advertisementFetch()
         CATEGORY_ID => 'advertisement',
         SUB_CATEGORY => $subcategory,
     ];
-
+    
+    // Square
+    $editParams[CODE] = SQUARE_BANNER;
     $re = request("advertisement.edit", $editParams);
 
     // US 2 - 1 - top, 1 - sidebar, 2 - line
@@ -204,7 +206,7 @@ function advertisementFetch()
     $re = request("post.search", $searchParams);
 
     // Advertisement search with subcategory
-    isTrue(count($re) == 4, "Should have 4 advertisement with category(subcategory) of " . $subcategory);
+    isTrue(count($re) == 6, "Should have 4 advertisement with category(subcategory) of " . $subcategory);
 
     $searchParams[COUNTRY_CODE] = "PH";
     $re = request("post.search", $searchParams);
@@ -216,7 +218,7 @@ function advertisementFetch()
     $re = request("post.search", $searchParams);
 
     // Advertisement search with subcategory and US country code.
-    isTrue(count($re) == 2, "Should have 2 advertisement with category(subcategory) of " . $subcategory . " and US country code");
+    isTrue(count($re) == 4, "Should have 2 advertisement with category(subcategory) of " . $subcategory . " and US country code");
 
     unset($searchParams[COUNTRY_CODE]);
     $searchParams[CODE] = TOP_BANNER;
