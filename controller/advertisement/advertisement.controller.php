@@ -202,6 +202,8 @@ class AdvertisementController
      * Delete advertisement
      * 
      * Advertisements can be deleted if it is inactive, meaning the user's point is refunded.
+     * 
+     * @todo test to see if the advertisement is active
      */
     public function delete($in)
     {
