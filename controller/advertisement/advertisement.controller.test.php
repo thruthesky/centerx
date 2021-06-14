@@ -3,7 +3,7 @@
 setLogout();
 
 advertisementCRUD();
-// advertisementFetch();
+advertisementFetch();
 
 
 /**
