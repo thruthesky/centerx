@@ -3,7 +3,7 @@
 setLogout();
 
 advertisementCRUD();
-advertisementFetch();
+// advertisementFetch();
 
 
 /**
@@ -33,11 +33,22 @@ function advertisementCRUD()
         BEGIN_AT => $now->getTimestamp(),
         END_AT => $now->getTimestamp(),
     ]);
+
     // check point deduction for 1 day * 1000 (default TOP_BANNER).
     isTrue($user->getPoint() == 9000, "create TOP_BANNER for 1 day. deduct 1000 points to user.");
-    // check if right category
-    isTrue(category($re[CATEGORY_IDX])->id == 'advertisement', "create TOP_BANNER for 1 day. deduct 1000 points to user.");
+
+    // check if point deduction matches user activity record.
+    $activity = userActivity()->last(taxonomy: POSTS, entity: $re[IDX], action: 'advertisement');
+    isTrue($activity->toUserPointApply == -1000, "check if deducted point is recorded.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
+
+    // Both total advertisement point and point per day must be equal to 1000.
     isTrue($re['advertisementPoint'] == 1000, "create TOP_BANNER for 1 day. 'advertisementPoint' => 1000");
+    isTrue($re['pointPerDay'] == 1000, "create TOP_BANNER for 1 day. 'pointPerDay' => 1000");
+
+    // Error deleting active advertisement.
+    $del = request("advertisement.delete", [ SESSION_ID => login()->sessionId, IDX => $re[IDX] ]);
+    isTrue($del == e()->advertisement_is_active, "error deleting active advertisement.");
 
     $advToCancel = request("advertisement.edit", [
         SESSION_ID => login()->sessionId,
@@ -45,27 +56,38 @@ function advertisementCRUD()
         BEGIN_AT => strtotime("+3 days"),
         END_AT => strtotime("+1 week"),
     ]);
+
     // check point deduction for 5 days * 500 (default SIDEBAR_BANNER).
     isTrue($user->getPoint() == 6500, "create SIDEBAR_BANNER for 5 days. deduct 2500 points to user.");
+
+    // check if point deduction matches user activity record.
+    $activity = userActivity()->last(taxonomy: POSTS, entity: $advToCancel[IDX], action: 'advertisement');
+    isTrue($activity->toUserPointApply == -2500, "check if deducted point is recorded.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
     isTrue($advToCancel['advertisementPoint'] == 2500, "create SIDEBAR_BANNER for 5 days. 'advertisementPoint' => 2500");
 
-    $re = request("advertisement.cancel", [
-        SESSION_ID => login()->sessionId,
-    ]);
-    // error no advertisement IDX
+    
+    // Error cancelling advertisement without IDX.
+    $re = request("advertisement.cancel", [ SESSION_ID => login()->sessionId ]);
     isTrue($re == e()->idx_is_empty, "advertisement IDX is empty.");
 
-    $re = request("advertisement.cancel", [
-        SESSION_ID => login()->sessionId,
-        IDX => $advToCancel[IDX],
-    ]);
+    // Advertisement cancellation.
+    $re = request("advertisement.cancel", [ SESSION_ID => login()->sessionId, IDX => $advToCancel[IDX] ]);
+
     // Begin date and End date should be reset.
     isTrue($re[BEGIN_AT] == 0, "advertisement cancelled, begin date reset.");
     isTrue($re[END_AT] == 0, "advertisement cancelled, end date reset.");
 
-    // user point will be refunded 100%
+    // User point will be refunded 100%
     isTrue($user->getPoint() == 9000, "advertisement cancelled, end date reset.");
 
+    // Check if point is refunded to user (2500).
+    // Check if user total point is changed (9000).
+    $activity = userActivity()->last(taxonomy: POSTS, entity: $re[IDX], action: 'advertisement');
+    isTrue($activity->toUserPointApply == 2500, "check if deducted point is recorded.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
+
+    // Advertisement to Refund 1 week duration. Begin date starting now (now is considered served).
     $advToRefund = request("advertisement.edit", [
         SESSION_ID => login()->sessionId,
         CODE => SIDEBAR_BANNER,
@@ -76,17 +98,20 @@ function advertisementCRUD()
     // check point deduction for 7 days * 500 (default SIDEBAR_BANNER).
     isTrue($user->getPoint() == 5500, "create SIDEBAR_BANNER for 7 days. deduct 3500 points to user.");
     isTrue($advToRefund['advertisementPoint'] == 3500, "create SIDEBAR_BANNER for 7 days. 'advertisementPoint' => 3500");
+    
+    // Check if point is deducted to user (3500).
+    // Check if user total point is changed (5500).
+    $activity = userActivity()->last(taxonomy: POSTS, entity: $advToRefund[IDX], action: 'advertisement');
+    isTrue($activity->toUserPointApply == -3500, "check if deducted point is recorded.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
 
-    $re = request("advertisement.refund", [
-        SESSION_ID => login()->sessionId,
-    ]);
-    // error no advertisement IDX
+    // Error refunding advertisement without IDX.
+    $re = request("advertisement.refund", [ SESSION_ID => login()->sessionId ]);
     isTrue($re == e()->idx_is_empty, "advertisement IDX is empty.");
 
-    $re = request("advertisement.refund", [
-        SESSION_ID => login()->sessionId,
-        IDX => $advToRefund[IDX],
-    ]);
+    // Refund advertisement.
+    $re = request("advertisement.refund", [ SESSION_ID => login()->sessionId, IDX => $advToRefund[IDX] ]);
+
     // Begin date and End date should be reset.
     isTrue($re[BEGIN_AT] == 0, "advertisement refunded, begin date reset.");
     isTrue($re[END_AT] == 0, "advertisement refunded, end date reset.");
@@ -97,6 +122,14 @@ function advertisementCRUD()
     // 3000 - 150 = 2850 (Total refundable points).
     // 5500 + 2850 = 8350 (Current user points after refund).
     isTrue($user->getPoint() == 8350, "advertisement refunded. end date reset. 1 day and 5% deducted.");
+
+    // check if refunded matcher user activity record, including the penalty.
+    $activity = userActivity()->last(taxonomy: POSTS, entity: $advToRefund[IDX], action: 'advertisement');
+
+    // Check if point is refunded to user (2850).
+    // Check if user total point is changed (8350).
+    isTrue($activity->toUserPointApply == 2850, "check if deducted point is recorded.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "check if recorded user activity point after match current user point.");
 }
 
 
@@ -110,7 +143,6 @@ function advertisementFetch()
     $subcategory = 'xyz' . time();
     $editParams = [
         SUB_CATEGORY => $subcategory,
-        CODE => SIDEBAR_BANNER,
         SESSION_ID => login()->sessionId
     ];
 
@@ -121,29 +153,48 @@ function advertisementFetch()
 
     $re = request("advertisement.edit", $editParams);
 
-    $params[COUNTRY_CODE] = "US";
+    // US 2 - 1 - top, 1 - sidebar, 2 - line
+    $editParams[COUNTRY_CODE] = "US";
+    $editParams[CODE] = TOP_BANNER;
+    request("advertisement.edit", $editParams);
+    $editParams[CODE] = SIDEBAR_BANNER;
+    request("advertisement.edit", $editParams);
+    $editParams[CODE] = LINE_BANNER;
     request("advertisement.edit", $editParams);
     request("advertisement.edit", $editParams);
 
-    $params[COUNTRY_CODE] = "PH";
+    // PH 1 - top
+    $editParams[COUNTRY_CODE] = "PH";
+    $editParams[CODE] = TOP_BANNER;
     request("advertisement.edit", $editParams);
-
 
     $re = request("post.search", $searchParams);
 
     // Advertisement search with subcategory
     isTrue(count($re) == 4, "Should have 4 advertisement with category(subcategory) of " . $subcategory);
 
-    $searchParams['countryCode'] = "PH";
+    $searchParams[COUNTRY_CODE] = "PH";
     $re = request("post.search", $searchParams);
-    // d($re);
 
     // Advertisement search with subcategory and PH country code.
     isTrue(count($re) == 1, "Should have 1 advertisement with category(subcategory) of " . $subcategory . " and PH country code");
 
-    // $searchParams[COUNTRY_CODE] = "US";
-    // $re = request("post.search", $searchParams);
+    $searchParams[COUNTRY_CODE] = "US";
+    $re = request("post.search", $searchParams);
 
     // Advertisement search with subcategory and US country code.
-    // isTrue(count($re) == 2, "Should have 2 advertisement with category(subcategory) of " . $subcategory . " and US country code");
+    isTrue(count($re) == 2, "Should have 2 advertisement with category(subcategory) of " . $subcategory . " and US country code");
+
+    unset($searchParams[COUNTRY_CODE]);
+    $searchParams[CODE] = TOP_BANNER;
+    $re = request("post.search", $searchParams);
+    isTrue(count($re) == 2, "Should have 2 advertisement with category(subcategory) of " . $subcategory . " and 'top' banner type/place(code)");
+
+    $searchParams[CODE] = SIDEBAR_BANNER;
+    $re = request("post.search", $searchParams);
+    isTrue(count($re) == 1, "Should have 2 advertisement with category(subcategory) of " . $subcategory . " and 'sidebar' banner type/place(code)");
+
+    $searchParams[CODE] = LINE_BANNER;
+    $re = request("post.search", $searchParams);
+    isTrue(count($re) == 2, "Should have 2 advertisement with category(subcategory) of " . $subcategory . " and 'line' banner type/place(code)");
 }
