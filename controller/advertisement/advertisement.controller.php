@@ -61,7 +61,7 @@ class AdvertisementController
             // Note, only deduct points when updating an inactive advertisement.
             if (! $post->endAt) {
                 $activity = userActivity()->changePoint(
-                    action: 'advertisement',
+                    action: 'advertisement.update',
                     fromUserIdx: 0,
                     fromUserPoint: 0,
                     toUserIdx: login()->idx,
@@ -86,7 +86,7 @@ class AdvertisementController
 
             // Record for post creation and change point.
             $activity = userActivity()->changePoint(
-                action: 'advertisement',
+                action: 'advertisement.create',
                 fromUserIdx: 0,
                 fromUserPoint: 0,
                 toUserIdx: login()->idx,

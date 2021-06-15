@@ -537,15 +537,11 @@ isTrue((new AppController())->version(), "App version");
   Banner price is different on each place. It is set by admin page.
 
 - Cancellation.
-  There is no cancellation. User must can get refund.
+  Advertisement can be cancelled before it begins.
   
 - Refund penalty
-  - Refund penalty is 5%.
-    - For instance, user paid 10,000 points for 10 days advertisement.
-      - The user want to refund on the very first day,
-        - Then, the unserved days are 9 days. The current day(today) is considered as served.
-          So, the refund will be 5% of 9,000 pionts.
-  - If the not-served-yet-days are 2 days, then the point is not refundable.
+  - If the banner had been display only a second, then the day will be treated as served.
+  - If the not-served-yet-days(excluding today) is 0 days, then the point is not refundable.
 
   - To refund the point, the system must know how much point was set(paid) for 1 day.
     The charge (of point) may be changed often by admin.
