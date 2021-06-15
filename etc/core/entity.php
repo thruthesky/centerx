@@ -136,6 +136,7 @@ class Entity {
      *
      * @param string|null $fields
      *  - 특정 필드만 response 결과에 집어 넣는다.
+     *      Returns only the fields that are stated in $fields.
      * @return array|string
      *
      * @example
@@ -172,9 +173,19 @@ class Entity {
             if ( $fields ) {
 //                debug_log(array_flip(explode(",", str_replace(' ', '', $fields))));
 //                debug_log(array_fill_keys($this->getData(), array_flip(explode(",", str_replace(' ', '', $fields)))));
-                return array_fill_keys($this->getData(), array_flip(explode(",", str_replace(' ', '', $fields))));
+//                return array_fill_keys($this->getData(), array_flip(explode(",", str_replace(' ', '', $fields))));
+                $arr = explode(',', $fields);
+                $rets = [];
+                foreach( $arr as $k ) {
+                    $k = trim($k);
+                    if ( $k ) {
+                        $rets[] = $this->getData( $k );
+                    }
+                }
+                return $rets;
+            } else {
+                return $this->getData();
             }
-            return $this->getData();
         }
     }
 
