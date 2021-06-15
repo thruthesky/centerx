@@ -344,6 +344,10 @@ class CafeModel extends CategoryModel
         return token()->count(conds: [TOPIC => cafe()->domain]);
     }
 
+//    public function sendMessage($in): array|string {
+//
+//    }
+
 
 }
 

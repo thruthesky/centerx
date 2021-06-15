@@ -44,7 +44,12 @@ class CafeController {
         return cafe()->mine()->response('idx, id, domain');
     }
 
+    /*
+     * send push notification via topic using domain as topic
+     */
     public function sendMessage($in): array|string {
-        return cafe()->sendMessage($in);
+        if ( !isset($in[DOMAIN] ) && isset( $in[DOMAIN]) ) e()->empty_domain;
+        if ( cafe()->mine() == false ) return e()->you_are_not_admin;
+        return sendMessageToTopic(cafe()->domain, $in);
     }
 }
