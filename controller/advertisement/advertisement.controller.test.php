@@ -6,11 +6,6 @@ setLogout();
 advertisementCRUDsetB();
 // advertisementFetch();
 
-
-/**
- * @todo test - change dates after create banner and check days left.
- * @todo test - compare the point history.
- */
 function advertisementCRUD()
 {
 
