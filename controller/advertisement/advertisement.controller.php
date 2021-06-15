@@ -41,15 +41,8 @@ class AdvertisementController
         if (!isset($in[CODE]) || empty($in[CODE])) return e()->empty_code;
 
         // check dates input
-        if (
-            (!isset($in[BEGIN_AT]) || empty($in[BEGIN_AT])) &&
-            (!isset($in['beginDate']) || empty($in['beginDate']))
-        ) return e()->empty_begin_date;
-
-        if (
-            (!isset($in[END_AT]) || empty($in[END_AT])) &&
-            (!isset($in['endDate']) || empty($in['endDate']))
-        ) return e()->empty_end_date;
+        if ( !isset($in['beginDate']) || empty($in['beginDate']) ) return e()->empty_begin_date;
+        if ( !isset($in['endDate']) || empty($in['endDate']) ) return e()->empty_end_date;
 
         // Save point per day. This will be saved in meta.
         $in['pointPerDay'] = 0;
