@@ -37,7 +37,7 @@ class AdvertisementController
 
         $in = post()->updateBeginEndDate($in);
 
-        // add 1 to include beggining date.
+        // add 1 to include beginning date.
         $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
 
         if (isset($in[COUNTRY_CODE]) && isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
@@ -57,17 +57,20 @@ class AdvertisementController
             $post = post($in[IDX]);
             if ($post->isMine() == false) return  e()->not_your_post;
 
-            $activity = userActivity()->changePoint(
-                action: 'advertisement',
-                fromUserIdx: 0,
-                fromUserPoint: 0,
-                toUserIdx: login()->idx,
-                toUserPoint: -$in['advertisementPoint'],
-                taxonomy: POSTS,
-                categoryIdx: $post->categoryIdx,
-                entity: $post->idx,
-            );
-
+            // Inactive advertisement.
+            // Note, only deduct points when updating an inactive advertisement.
+            if (! $post->endAt) {
+                $activity = userActivity()->changePoint(
+                    action: 'advertisement',
+                    fromUserIdx: 0,
+                    fromUserPoint: 0,
+                    toUserIdx: login()->idx,
+                    toUserPoint: -$in['advertisementPoint'],
+                    taxonomy: POSTS,
+                    categoryIdx: $post->categoryIdx,
+                    entity: $post->idx,
+                );
+            }
             return $post->update($in)->response();
         } 
         

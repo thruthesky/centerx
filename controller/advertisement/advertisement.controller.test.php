@@ -2,11 +2,12 @@
 
 setLogout();
 
-// advertisementCRUDsetA();
+advertisementCRUDsetA();
 advertisementCRUDsetB();
-// advertisementFetch();
+advertisementCRUDsetC();
+advertisementFetch();
 
-function advertisementCRUD()
+function advertisementCRUDsetA()
 {
 
     $now = new DateTime();
@@ -199,6 +200,7 @@ function advertisementCRUDsetB() {
     isTrue($activity->toUserPointApply == 4000, "Expect: activity refunded 4000 to user.");
     isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
 
+
     // EDIT
     // Square banner (1400) - US
     // 6 days
@@ -246,6 +248,43 @@ function advertisementCRUDsetB() {
 
 }
 
+/**
+ * Scenario
+ * 
+ * User creates advertisement.
+ * User updated advertisement name.
+ * 
+ * Expected: Upon updating, user points must not be deducted.
+ */
+function advertisementCRUDsetC() {
+
+    $now = new DateTime();
+    $user = registerAndLogin();
+    $user->setPoint(3000);
+
+    $adName = 'adv-' . time();
+    $re = request("advertisement.edit", [
+        SESSION_ID => login()->sessionId,
+        CODE => TOP_BANNER,
+        BEGIN_AT => $now->getTimestamp(),
+        END_AT => $now->getTimestamp(),
+        NAME => $adName,
+    ]);
+    
+    isTrue($user->getPoint() == 2000, "Expect: user points should be the same.");
+    isTrue($re[NAME] == $adName, "Expect: advertisement name equal to " . $adName);
+
+    $adName = 'up-adv-' . time();
+    $re = request("advertisement.edit", [
+        SESSION_ID => login()->sessionId,
+        CODE => TOP_BANNER,
+        IDX => $re[IDX],
+        NAME => $adName,
+    ]);
+
+    isTrue($user->getPoint() == 2000, "Expect: user points should be the same.");
+    isTrue($re[NAME] == $adName, "Expect: advertisement name updated to " . $adName);
+}
 
 function advertisementFetch()
 {
