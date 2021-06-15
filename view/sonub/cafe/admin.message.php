@@ -29,7 +29,14 @@ if(modeSubmit()) {
 
     $image_url = cafe()->appIcon()->url ?? '';
 
-    $res = sendMessageToTopic(cafe()->id, in('title', ''), in('body', ''), $click_action, $data, $image_url);
+    $req = [
+        TITLE =>in('title', ''),
+        BODY =>in('body', ''),
+        CLICK_ACTION => $click_action,
+        DATA => $data,
+        IMAGE_URL => $image_url
+    ];
+    $res = sendMessageToTopic(cafe()->id, $req);
 
     if($res['name']) {
         jsAlert("Sending Push Notification Success");

@@ -48,8 +48,14 @@ class PushNotification {
     public function send(array|string $tokens='', string $title='', string $body='', string $clickAction='/',
                                         string $imageUrl='', array $data=[]): array|string {
         if ( !isset($tokens) ) return e()->tokens_is_empty;
-        $data['senderIdx'] = login()->idx;
-        $re = sendMessageToTokens($tokens, $title, $body, $clickAction, $data, $imageUrl);
+        $req = [
+          TITLE =>$title,
+          BODY => $body,
+          CLICK_ACTION => $clickAction,
+          DATA => $data,
+          IMAGE_URL => $imageUrl
+        ];
+        $re = sendMessageToTokens($tokens, $req);
         $res = [];
         foreach($re->getItems() as $item) {
             $res[] = $item->result();

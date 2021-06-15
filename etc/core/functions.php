@@ -1118,7 +1118,13 @@ function onCommentCreateSendNotification(CommentModel|PostModel $cp)
     /**
      * send notification to users who subscribe to comment topic
      */
-    sendMessageToTopic(NOTIFY_COMMENT . $cat->id, $title, $body, $click_url, $data);
+    $req = [
+        'title' => $title,
+        'body' => $body,
+        'click_url' => $click_url,
+        'data' =>$data
+    ];
+    sendMessageToTopic(NOTIFY_COMMENT . $cat->id, $req);
 
 //    debug_log('tokens: ', $tokens);
 
@@ -1126,7 +1132,13 @@ function onCommentCreateSendNotification(CommentModel|PostModel $cp)
     /**
      * send notification to comment ancestors who enable reaction notification
      */
-    if (!empty($tokens)) sendMessageToTokens( $tokens, $title, $body, $click_url, $data);
+    $req = [
+        'title' => $title,
+        'body' => $body,
+        'click_url' => $click_url,
+        'data' =>$data
+    ];
+    if (!empty($tokens)) sendMessageToTokens($tokens, $req);
 }
 
 

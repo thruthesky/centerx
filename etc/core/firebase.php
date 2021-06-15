@@ -4,9 +4,12 @@
  */
 
 use Kreait\Firebase\Database;
+use Kreait\Firebase\Exception\FirebaseException;
+use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\ApnsConfig;
 use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\MulticastSendReport;
 use Kreait\Firebase\Messaging\Notification;
 use Kreait\Firebase\Messaging\AndroidConfig;
 
@@ -44,74 +47,49 @@ function getRealtimeDatabase() {
 
 
 /**
- * @param string|array $tokens
- * @param string $title
- * @param string $body
- * @param string $click_action
- * @param array $data
- * @param string $imageUrl
- * @param string $sound
- * @param string $channel
- * @return \Kreait\Firebase\Messaging\MulticastSendReport
- * @throws \Kreait\Firebase\Exception\FirebaseException
- * @throws \Kreait\Firebase\Exception\MessagingException
+ * @param array|string $tokens
+ * @param array $in
+ * @return array | MulticastSendReport
+ * @throws FirebaseException
+ * @throws MessagingException
  */
-function sendMessageToTokens(
-    string|array $tokens,
-    string $title,
-    string $body,
-    string $click_action,
-    array $data = [],
-    string $imageUrl="",
-    string $sound = "default",
-    string $channel = ''
-) {
-//    if ( get_phpunit_mode() ) return null;
+function sendMessageToTokens(array|string $tokens, array $in): array|MulticastSendReport
+{
+    /// If it's phpunit test mode, then don't send it.
+    if ( isTesting() ) return [];
+    $in = sanitizedNotificationInput($in);
     $message = CloudMessage::fromArray([
-        'notification' => getNotificationData($title, $body, $click_action, $data, $imageUrl),
-        'webpush' => getWebPushData($title, $body, $click_action, $data, $imageUrl),
-        'android' => getAndroidPushData($channel, $sound),
-        'apns' => getIosPushData($title, $body, $sound)->withBadge(1)->jsonSerialize(),
-        'data' => $data,
+        'notification' => getNotificationData($in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']),
+        'webpush' => getWebPushData($in['title'], $in['body'], $in['click_action'], $in['data'],$in['imageUrl']),
+        'android' => getAndroidPushData($in['channel'], $in['sound']),
+        'apns' => getIosPushData($in['title'], $in['body'], $in['sound'])->withBadge(1)->jsonSerialize(),
+        'data' =>$in['data'],
     ]);
-//    debug_log($message);
 
-    if (gettype($tokens) == 'string') $tokens = explode(',', $tokens);
+    if (gettype($tokens) == 'string') {
+        $tokens = explode(',', $tokens);
+    }
     return getMessaging()->sendMulticast($message, $tokens);
 }
 
 /**
  * @param string $topic
- * @param string $title
- * @param string $body
- * @param string $click_action
- * @param array $data
- * @param string $imageUrl
- * @param string $sound
- * @param string $channel
+ * @param array $in
  * @return array
- * @throws \Kreait\Firebase\Exception\FirebaseException
- * @throws \Kreait\Firebase\Exception\MessagingException
+ * @throws FirebaseException
+ * @throws MessagingException
  */
-function sendMessageToTopic(
-    string $topic,
-    string $title,
-    string $body,
-    string $click_action,
-    array $data = [],
-    string $imageUrl="",
-    string $sound = "default",
-    string $channel = ''
-): array {
+function sendMessageToTopic(string $topic, array $in): array{
     /// If it's phpunit test mode, then don't send it.
     if ( isTesting() ) return [];
+    $in = sanitizedNotificationInput($in);
     $message = CloudMessage::fromArray([
         'topic' => $topic,
-        'notification' => getNotificationData($title, $body, $click_action, $data, $imageUrl),
-        'webpush' => getWebPushData($title, $body, $click_action, $data, $imageUrl),
-        'android' => getAndroidPushData($channel, $sound),
-        'apns' => getIosPushData($title, $body, $sound)->withBadge(1)->jsonSerialize(),
-        'data' => $data,
+        'notification' => getNotificationData($in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']),
+        'webpush' => getWebPushData($in['title'], $in['body'], $in['click_action'], $in['data'], $in['imageUrl']),
+        'android' => getAndroidPushData($in['channel'], $in['sound']),
+        'apns' => getIosPushData($in['title'], $in['body'], $in['sound'])->withBadge(1)->jsonSerialize(),
+        'data' => $in['data'],
     ]);
 
     return getMessaging()->send($message);
@@ -205,11 +183,11 @@ function getWebPushData($title, $body, $clickUrl, $data, $imageUrl) {
             'title' => $title,
             'body' => $body,
             'icon' => $imageUrl,
-            'click_action' => $clickUrl ?? "/",
+            'click_action' => $clickUrl,
             'data' => $data
         ],
         'fcm_options' => [
-            'link' => $clickUrl ?? "/",
+            'link' => $clickUrl,
         ],
     ];
 }
@@ -269,5 +247,18 @@ function setRealtimeDatabaseDocument($documentPath, $data) {
 //    $reference->set($data);
 }
 
+
+function sanitizedNotificationInput($in): array {
+    if ( !isset($in[TITLE])) $in[TITLE] = '';
+    if ( !isset($in[BODY])) $in[BODY] = '';
+    if ( !isset($in[CLICK_ACTION])) $in[CLICK_ACTION] = '/';
+    if ( !isset($in[IMAGE_URL])) $in[IMAGE_URL] = '';
+    if ( !isset($in[SOUND])) $in[SOUND] = 'default';
+    if ( !isset($in[CHANNEL])) $in[CHANNEL] = '';
+    if ( !isset($in[DATA])) $in[DATA] = [];
+    if ( !isset($in[DATA][IDX]) && isset($in[IDX])) $in[DATA][IDX] = $in[IDX];
+    $in[DATA]['senderIdx'] = login()->idx;
+    return $in;
+}
 
 

@@ -196,12 +196,17 @@ class PostModel extends Forum {
                 $title = "New photo was uploaded";
             }
         }
-        $data = [
-            'senderIdx' => login()->idx,
-            'idx' => $this->idx,
-            'type' => 'post'
+
+        $req = [
+            TITLE => $title,
+            BODY => $in[CONTENT] ?? '',
+            CLICK_ACTION => $this->url ?? '',
+            DATA => [
+                'idx' => $this->idx,
+                'type' => 'post'
+            ]
         ];
-        sendMessageToTopic(NOTIFY_POST . $category->id, $title, $in[CONTENT] ?? '', $this->url ?? '', $data);
+        sendMessageToTopic(NOTIFY_POST . $category->id, $req);
 
         return $this;
     }

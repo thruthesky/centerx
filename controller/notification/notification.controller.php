@@ -46,8 +46,7 @@ class NotificationController {
      */
     public function sendMessageToTokens($in): array|string {
         if ( !isset($in[TOKENS]) ) return e()->tokens_is_empty;
-        $in = sanitizedInput($in);
-        $re = sendMessageToTokens($in[TOKENS], $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL], $in[SOUND], $in[CHANNEL]);
+        $re = sendMessageToTokens($in[TOKENS], $in);
 //        d($re->getItems());exit;
         $res = [
             'success' => [],
@@ -76,8 +75,7 @@ class NotificationController {
      */
     public function sendMessageToTopic($in): array|string {
         if ( !isset($in[TOPIC]) ) return e()->topic_is_empty;
-        $in = sanitizedInput($in);
-        return sendMessageToTopic($in[TOPIC], $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL], $in[SOUND], $in[CHANNEL]);
+        return sendMessageToTopic($in[TOPIC], $in);
     }
 
 

@@ -133,6 +133,9 @@ define('SOUND', 'sound');
 define('CHANNEL', 'channel');
 
 
+const EMAILS = 'emails';
+
+
 define('USERFILE', 'userfile');
 define('SHOPPING_MALL', 'shopping_mall');
 

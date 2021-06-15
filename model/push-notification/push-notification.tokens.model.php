@@ -2,6 +2,10 @@
 /**
  * @file push-notification.token.model.php
  */
+
+use Kreait\Firebase\Exception\FirebaseException;
+use Kreait\Firebase\Exception\MessagingException;
+
 /**
  * Class PushNotificationTokenModel
  *
@@ -129,70 +133,105 @@ function token(int|string $idx=0): PushNotificationTokenModel
     return (new PushNotificationTokenModel())->findOne([TOKEN => $idx]);
 }
 
-function sanitizedInput($in): array {
-    if ( !isset($in[TITLE])) $in[TITLE] = '';
-    if ( !isset($in[BODY])) $in[BODY] = '';
-    if ( !isset($in[CLICK_ACTION])) $in[CLICK_ACTION] = '/';
-    if ( !isset($in[IMAGE_URL])) $in[IMAGE_URL] = '';
-    if ( !isset($in[SOUND])) $in[SOUND] = 'default';
-    if ( !isset($in[CHANNEL])) $in[CHANNEL] = '';
-    if ( !isset($in[DATA])) $in[DATA] = [];
-    if ( !isset($in[DATA][IDX]) && isset($in[IDX])) $in[DATA][IDX] = $in[IDX];
-    $in[DATA]['senderIdx'] = login()->idx;
-    return $in;
-}
-
 /**
- * Send messages to all users in $in['users']
+ * Send messages to all users in $in['users'] and/or $in['emails']
  *
  * @param $in
- *  - $in['users'] is an array of user id.
+ *  - $in['users'] is an array of user idx.
+ *  - $in['emails'] is an array of user email.
  *
  *
  * @return array|string
- * @throws Exception
  */
 function send_message_to_users($in): array|string
 {
-    if (!isset($in[USERS])) return e()->users_is_empty;
+    if (!isset($in[USERS]) && !isset($in[EMAILS])) return e()->users_and_emails_is_empty;
     if (!isset($in[TITLE])) return e()->title_is_not_exist;
     if (!isset($in[BODY])) return e()->body_is_not_exist;
-    $all_tokens = [];
 
-    if (gettype($in[USERS]) == 'array') {
-        $users = $in[USERS];
-    } else {
-        $users = explode(',', $in[USERS]);
-    }
-    foreach ($users as $userIdx) {
 
-        if (is_numeric($userIdx)) {
-            $user = user($userIdx);
+    $users = [];
+
+    /**
+     * check if [emails] is exist and not empty
+     * it get the user idx and pass to $users
+     */
+    if (isset($in[EMAILS]) && !empty($in[EMAILS])) {
+        if (gettype($in[EMAILS]) == 'array') {
+            $emails = $in[EMAILS];
         } else {
-            $user = user()->findOne(['firebaseUid'=> $userIdx]);
+            $emails = preg_replace('/\s+/', '', $in[EMAILS]);
+            $emails = explode(',', $emails);
         }
 
-        if ( isset($in[SUBSCRIPTION]) ) {
-            if ( $user->v($in[SUBSCRIPTION]) == OFF ) continue;
+        // check if email exist and get user idx
+        foreach ($emails as $email) {
+            $u = user()->findOne([EMAIL => $email]);
+            if ($u->hasError) continue; // if user() has error continue. entity not found
+            $users[] = $u->idx;
         }
 
-        $tokens = token()->getTokens($user->idx);
-        $all_tokens = array_merge($all_tokens, $tokens);
     }
-    /// If there are no tokens to send, then it will return empty array.
-//    if (empty($all_tokens)) return e()->token_is_empty;
+
+    /**
+     * check if [users] is exist and not empty
+     * merge user idx to $users
+     */
+    if (isset($in[USERS]) && !empty($in[USERS])) {
+        if (gettype($in[USERS]) == 'array') {
+            $users = array_merge($users, $in[USERS]);
+        } else {
+            $users = preg_replace('/\s+/', '', $in[USERS]);
+            $users = array_merge($users, explode(',', $users));
+        }
+    }
+
+    $all_tokens = [];
+    if($users) {
+        // remove duplicate idx
+        $users = array_unique($users);
+
+        // get user tokens
+        foreach ($users as $userIdx) {
+
+            if (is_numeric($userIdx)) {
+                $user = user($userIdx);
+            } else {
+                $user = user()->findOne(['firebaseUid'=> $userIdx]);
+                if ($user->hasError) continue;
+            }
+
+            if ( isset($in[SUBSCRIPTION]) ) {
+                if ( $user->v($in[SUBSCRIPTION]) == OFF ) continue;
+            }
+
+            $tokens = token()->getTokens($user->idx);
+            $all_tokens = array_merge($all_tokens, $tokens);
+        }
+    }
+
 
     /// if no token to send then simply return empty array.
     if (empty($all_tokens)) return [];
-    $in = sanitizedInput($in);
-    $re = sendMessageToTokens($all_tokens, $in[TITLE], $in[BODY], $in[CLICK_ACTION], $in[DATA], $in[IMAGE_URL], $in[SOUND]);
-    $res = [];
-    foreach($re->getItems() as $item) {
-        $res[] = $item->result();
+
+    // remove duplicate tokens
+    $all_tokens = array_unique($all_tokens);
+
+    //send message to all unique tokens
+    try {
+        $re = sendMessageToTokens($all_tokens, $in);
+    } catch (MessagingException | FirebaseException $e) {
+        return err(e()->failed_send_message_to_tokens, $e);
     }
 
-    // @todo handle invalid/unknown tokends..
-    // @how to properly return response here.
+    $res = [
+        'success' => [],
+        'error' => []
+    ];
+    foreach($re->getItems() as $item) {
+        if ($item->isSuccess()) $res['success'][] = $item->result();
+        else if ($item->isFailure()) $res['error'][] = $item->error()->getMessage();
+    }
 
     return $res;
 }

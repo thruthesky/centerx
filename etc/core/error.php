@@ -92,8 +92,10 @@ class E {
     public string $topic_is_empty = 'error_topic_is_empty';
     public string $topic_subscription = 'error_topic_subscription';
     public string $users_is_empty = 'error_users_is_empty';
+    public string $users_and_emails_is_empty = 'error_users_and_emails_is_empty';
     public string $title_is_not_exist = 'error_title_is_not_exist';
     public string $body_is_not_exist = 'error_body_is_not_exist';
+    public string $failed_send_message_to_tokens = 'error_failed_send_message_to_tokens';
 
     public string $empty_vote_choice = 'error_empty_vote_choice';
     public string $empty_wrong_choice = 'error_empty_wrong_choice';
