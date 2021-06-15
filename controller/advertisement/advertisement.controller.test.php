@@ -1,5 +1,7 @@
 <?php
 
+use Kreait\Firebase\Database\Query\Filter\EndAt;
+
 setLogout();
 
 advertisementCRUDsetA();
@@ -251,23 +253,24 @@ function advertisementCRUDsetB() {
 /**
  * Scenario
  * 
- * User creates advertisement.
+ * User creates advertisement which starts today and ends tomorrow.
  * User updated advertisement name.
  * 
  * Expected: Upon updating, user points must not be deducted.
+ * Expected: Upon refunding, user point should not be changed since it is only 2 day advertisement.
  */
 function advertisementCRUDsetC() {
 
     $now = new DateTime();
     $user = registerAndLogin();
-    $user->setPoint(3000);
+    $user->setPoint(4000);
 
     $adName = 'adv-' . time();
     $re = request("advertisement.edit", [
         SESSION_ID => login()->sessionId,
         CODE => TOP_BANNER,
         BEGIN_AT => $now->getTimestamp(),
-        END_AT => $now->getTimestamp(),
+        END_AT => strtotime('+1 day'),
         NAME => $adName,
     ]);
     
@@ -284,6 +287,14 @@ function advertisementCRUDsetC() {
 
     isTrue($user->getPoint() == 2000, "Expect: user points should be the same.");
     isTrue($re[NAME] == $adName, "Expect: advertisement name updated to " . $adName);
+
+    $re = request("advertisement.refund", [
+        SESSION_ID => login()->sessionId,
+        IDX => $re[IDX],
+    ]);
+
+    isTrue($user->getPoint() == 2000, "Expect: user points should be the same.");
+    isTrue($re[END_AT] == 0, "Expect: End date should be reset.");
 }
 
 function advertisementFetch()
