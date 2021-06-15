@@ -1204,6 +1204,51 @@ chokidar '**/*.php' -c "docker exec docker_php php /root/tests/test.php friend"
 ```
 
 
+# PWA, Service Worker
+
+
+
+When, manifiest.json has changed by the server,
+do one of the following to test if the changed json applies
+
+
+- open the manifest.json from browser, then, Unregister the service worker, then refresh to to see updated manifest.json
+
+
+
+- Do one of the following, to get the changed manifest.json and cache it into service worker cache.
+
+- Clear the site data, then, close browser, then open browser, then see the updated manifest.json
+- Or visit with new browser
+
+
+For the real service,
+
+- When manifeset.json is changed, only new users will get the new manifest.json
+  So, changing it by admin page will not affect to users who already visited the site.
+
+- Or rebuild the Vue.js WITH UPDATED manfiest.json and deploy, then all users will get new manifest.json
+  The developer must change manifest.json or the cache id may not change and new manifest.json modified by server may not apply.
+
+
+
+
+## Service worker errors
+
+- The error message below explains that the icon src url in `manifest.json` is wrong and not downloadable.
+
+```text
+Error while trying to use the following icon from the Manifest: https://wwnymous.png/ (Download error or resource isn't a valid image)
+```
+
+- The error message below explains that the icon size in `manifest.json` is different from the actual image. 아래와 같은 에러는 manifest.json icon src url 의 사이즈가 잘못된 경우이다.
+
+```text
+Error while trying to use the following icon from the Manifest: https://www.ontue.com/assets/img/anonymous.png (Resource size is not correct - typo in the Manifest?)
+```
+
+
+
 # 문제점
 
 - `sessionId` 의 암호화 강화.

@@ -264,7 +264,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/js/kakao.min.js"
   },
   {
-    "revision": "d602e8168a4d832cf60b70d09bc737f9",
+    "revision": "d602e8168a4d832cf60b70d09bc737f9--xx",
     "url": "/manifest.json"
   },
   {
