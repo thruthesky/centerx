@@ -225,7 +225,8 @@ function advertisementCRUD()
     // 6 days * 1400 = 8400
     // 8400 - 1 day served (1400) = 7000
     // 5% of 7000 = 350 penalty.
-    // Total refundable points: 7000 - 350 = 6650 
+    // Total refundable points: 7000 - 350 = 6650
+    // User point after refund: 1600 + 6650 = 8250
     $re = request("advertisement.refund", [
         SESSION_ID => login()->sessionId,
         IDX => $re[IDX],
