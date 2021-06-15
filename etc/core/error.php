@@ -207,6 +207,8 @@ class E {
     public string $advertisement_is_active = 'error_advertisement_is_active';
     public string $advertisement_point_deduction_failed = 'error_advertisement_point_deduction_failed';
     public string $advertisement_point_refund_failed = 'error_advertisement_point_refund_failed';
+    public string $empty_begin_date = 'error_empty_begin_date';
+    public string $empty_end_date = 'error_empty_end_date';
 
 
     public bool $isError = false;
