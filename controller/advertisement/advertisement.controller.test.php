@@ -2,8 +2,9 @@
 
 setLogout();
 
-advertisementCRUD();
-advertisementFetch();
+// advertisementCRUDsetA();
+advertisementCRUDsetB();
+// advertisementFetch();
 
 
 /**
@@ -162,8 +163,12 @@ function advertisementCRUD()
     // Error deleting active advertisement.
     $del = request("advertisement.delete", [SESSION_ID => login()->sessionId, IDX => $re[IDX]]);
     isTrue($del[DELETED_AT] != 0, "Expect: refunded advertisement is deleted.");
+}
 
-
+function advertisementCRUDsetB() {
+    
+    $now = new DateTime();
+    $user = registerAndLogin();
     $user->setPoint(10000);
 
     // CREATE
@@ -243,6 +248,7 @@ function advertisementCRUD()
     // DELETE
     $re = request("advertisement.delete", [SESSION_ID => login()->sessionId, IDX => $re[IDX]]);
     isTrue($re[DELETED_AT] > 0, "Expect: refunded advertisement is deleted.");
+
 }
 
 
@@ -286,7 +292,7 @@ function advertisementFetch()
     $re = request("post.search", $searchParams);
 
     // Advertisement search with subcategory
-    isTrue(count($re) == 6, "Should have 4 advertisement with category(subcategory) of " . $subcategory);
+    isTrue(count($re) == 6, "Should have 6 advertisement with category(subcategory) of " . $subcategory);
 
     $searchParams[COUNTRY_CODE] = "PH";
     $re = request("post.search", $searchParams);
@@ -298,7 +304,7 @@ function advertisementFetch()
     $re = request("post.search", $searchParams);
 
     // Advertisement search with subcategory and US country code.
-    isTrue(count($re) == 4, "Should have 2 advertisement with category(subcategory) of " . $subcategory . " and US country code");
+    isTrue(count($re) == 4, "Should have 4 advertisement with category(subcategory) of " . $subcategory . " and US country code");
 
     unset($searchParams[COUNTRY_CODE]);
     $searchParams[CODE] = TOP_BANNER;
