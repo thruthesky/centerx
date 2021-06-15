@@ -171,15 +171,13 @@ class Entity {
         }
         else {
             if ( $fields ) {
-//                debug_log(array_flip(explode(",", str_replace(' ', '', $fields))));
-//                debug_log(array_fill_keys($this->getData(), array_flip(explode(",", str_replace(' ', '', $fields)))));
 //                return array_fill_keys($this->getData(), array_flip(explode(",", str_replace(' ', '', $fields))));
                 $arr = explode(',', $fields);
                 $rets = [];
                 foreach( $arr as $k ) {
                     $k = trim($k);
                     if ( $k ) {
-                        $rets[] = $this->getData( $k );
+                        $rets[$k] = $this->getData( $k );
                     }
                 }
                 return $rets;

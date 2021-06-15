@@ -35,11 +35,16 @@ class CafeController {
             return e()->main_cafe_has_no_cafe_category_record;
         }
         $res = cafe(domain: $in[DOMAIN])->response();
+        $res['tokenCount'] = cafe(domain: $in[DOMAIN])->count();
         if ( $res == e()->entity_not_found ) return e()->cafe_not_exists;
         return $res;
     }
 
     public function mine($in): array|string {
         return cafe()->mine()->response('idx, id, domain');
+    }
+
+    public function sendMessage($in): array|string {
+        return cafe()->sendMessage($in);
     }
 }
