@@ -139,7 +139,7 @@ class AdvertisementController
         // get settings
         $in[COUNTRY_CODE] = $post->countryCode;
         $settings = $this->getAdvertisementSetting($in);
-        
+
 
         // get points to refund.
         $pointToRefund = $settings[$post->code] * $days;
@@ -172,15 +172,13 @@ class AdvertisementController
      * Delete advertisement
      * 
      * Advertisements can be deleted if it is inactive, meaning the user's point is refunded.
-     * 
-     * @todo test to see if the advertisement is active
      */
     public function delete($in)
     {
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
         $post = post($in[IDX]);
-        if ($post->endAt) return e()->advertisement_is_active;
+        if ($post->advertisementPoint) return e()->advertisement_is_active;
         return post($in[IDX])->markDelete()->response();
     }
 }
