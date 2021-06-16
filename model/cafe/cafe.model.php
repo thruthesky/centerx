@@ -4,6 +4,8 @@
  */
 /**
  * Class CategoryModel
+ * @property-read string $app_name
+ * @property-read string $app_background_color
  *
  */
 class CafeModel extends CategoryModel
@@ -150,7 +152,10 @@ class CafeModel extends CategoryModel
 
         if( strlen($domain) > 32 ) return $this->error(e()->domain_too_long);
 
+        if (in_array($domain, $this->mainDomains)) return $this->error(e()->cafe_exists);
+
         if ( category($domain)->exists ) return $this->error(e()->cafe_exists);
+
 
         $data = [
             USER_IDX => login()->idx,

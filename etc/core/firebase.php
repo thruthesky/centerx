@@ -256,7 +256,7 @@ function sanitizedNotificationInput($in): array {
     if ( !isset($in[SOUND])) $in[SOUND] = 'default';
     if ( !isset($in[CHANNEL])) $in[CHANNEL] = '';
     if ( !isset($in[DATA])) $in[DATA] = [];
-    if ( !isset($in[DATA][IDX]) && isset($in[IDX])) $in[DATA][IDX] = $in[IDX];
+    if ( !isset($in[DATA][IDX]) && isset($in[IDX]) && !empty($in[IDX])) $in[DATA][IDX] = $in[IDX];
     $in[DATA]['senderIdx'] = login()->idx;
     return $in;
 }

@@ -141,6 +141,7 @@ class E {
 
     public string $ids_is_empty = 'error_ids_is_empty';
     public string $you_are_not_admin = 'error_you_are_not_admin';
+    public string $this_is_not_your_cafe = 'error_this_is_not_your_cafe';
 
 
     public string $entity_or_code_not_set = 'error_entity_or_code_not_set';

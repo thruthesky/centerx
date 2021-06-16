@@ -26,7 +26,7 @@ class CafeController {
 
     public function update($in): array|string
     {
-        if ( cafe()->mine() == false ) return e()->you_are_not_admin;
+        if ( cafe()->mine() == false ) return e()->this_is_not_your_cafe;
         return category($in[IDX] ?? $in[ID])->update($in)->response();
     }
 
@@ -48,8 +48,17 @@ class CafeController {
      * send push notification via topic using domain as topic
      */
     public function sendMessage($in): array|string {
-        if ( !isset($in[DOMAIN] ) && isset( $in[DOMAIN]) ) e()->empty_domain;
-        if ( cafe()->mine() == false ) return e()->you_are_not_admin;
-        return sendMessageToTopic(cafe()->domain, $in);
+        if ( !isset($in[DOMAIN]) || empty( $in[DOMAIN]) ) return e()->empty_domain;
+        $cafe = cafe(domain: $in[DOMAIN]);
+        if ( $cafe->hasError ) return $cafe->getError();
+        if ( $cafe->mine() == false ) return e()->this_is_not_your_cafe;
+        if ( $cafe->appIcon()->ok ) $in[IMAGE_URL] = $cafe->appIcon()->url;
+        if ( isset($in[IDX]) && !empty($in[IDX])) {
+            $post = post($in[IDX]);
+            if($post->ok) {
+                $in[CLICK_ACTION] = $post->relativeUrl;
+            }
+        }
+        return sendMessageToTopic($cafe->domain, $in);
     }
 }
