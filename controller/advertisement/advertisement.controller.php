@@ -3,6 +3,16 @@
 class AdvertisementController
 {
 
+    private function getAdvertisementSetting($in)
+    {
+        if (isset($in[COUNTRY_CODE]) && isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
+            $setting = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
+        } else {
+            $setting = ADVERTISEMENT_SETTINGS['point']['default'];
+        }
+        return $setting;
+    }
+
     /**
      * @param $in
      * - $in['code'] - is the banner type(position)
@@ -41,8 +51,8 @@ class AdvertisementController
         if (!isset($in[CODE]) || empty($in[CODE])) return e()->empty_code;
 
         // check dates input
-        if ( !isset($in['beginDate']) || empty($in['beginDate']) ) return e()->empty_begin_date;
-        if ( !isset($in['endDate']) || empty($in['endDate']) ) return e()->empty_end_date;
+        if (!isset($in['beginDate']) || empty($in['beginDate'])) return e()->empty_begin_date;
+        if (!isset($in['endDate']) || empty($in['endDate'])) return e()->empty_end_date;
 
         // Save point per day. This will be saved in meta.
         $in['pointPerDay'] = 0;
@@ -52,11 +62,7 @@ class AdvertisementController
         // add 1 to include beginning date.
         $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
 
-        if (isset($in[COUNTRY_CODE]) && isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
-            $settings = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
-        } else {
-            $settings = ADVERTISEMENT_SETTINGS['point']['default'];
-        }
+        $settings = $this->getAdvertisementSetting($in);
 
         $in['pointPerDay'] = $settings[$in[CODE]];
 
@@ -104,7 +110,8 @@ class AdvertisementController
      * 
      * This method handles refund.
      * 
-     * It checks if the advertisement
+     * It the advertisement begin date is future, it will cancel the advertisement with full refund.
+     * If the begin date is today or past days, it will deduct the points equivalent to served days of the advertisement.
      */
     public function stop($in)
     {
@@ -112,38 +119,37 @@ class AdvertisementController
 
         $post = post($in[IDX]);
 
-
-        // reset advertisementPoint marking it as inactive.
-        $in['advertisementPoint'] = 0;
-
-        if (isset(ADVERTISEMENT_SETTINGS['point'][$post->countryCode])) {
-            $settings = ADVERTISEMENT_SETTINGS['point'][$post->countryCode];
-        } else {
-            $settings = ADVERTISEMENT_SETTINGS['point']['default'];
-        }
-
         // get number of days to refund.
         $days = 0;
+        $action = 'advertisement.stop';
         $pointToRefund = 0;
+
         // if days between now and beginAt is bigger than 0, it means begin date is future.
         // Full refund. 
         if (daysBetween(0, $post->beginAt) > 0) {
+            $action = 'advertisement.cancel';
             $days = daysBetween($post->beginAt, $post->endAt) + 1;
         }
         // else, past days including today will be deducted.
-        // will only count 
         else {
             $days = daysBetween(0, $post->endAt);
             if ($days < 1) $days = 0;
             else $days++;
         }
+        // get settings
+        $in[COUNTRY_CODE] = $post->countryCode;
+        $settings = $this->getAdvertisementSetting($in);
+        
 
         // get points to refund.
         $pointToRefund = $settings[$post->code] * $days;
 
+        // reset advertisementPoint marking it as inactive.
+        $in['advertisementPoint'] = 0;
+
         // Record for change point.
         $activity = userActivity()->changePoint(
-            action: 'advertisement.stop',
+            action: $action,
             fromUserIdx: 0,
             fromUserPoint: 0,
             toUserIdx: login()->idx,

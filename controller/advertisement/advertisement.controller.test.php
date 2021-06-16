@@ -22,16 +22,16 @@ function test1()
     $re = request("advertisement.start", [
         SESSION_ID => $user->sessionId,
         CODE => TOP_BANNER,
-        BEGIN_AT => time(),
-        END_AT => time(),
+        'beginDate' => time(),
+        'endDate' => time(),
     ]);
     isTrue($re == e()->idx_is_empty, "Expect: Error, empty advertisement IDX.");
 
     $re = request("advertisement.start", [
         SESSION_ID => $user->sessionId,
         IDX => $post[IDX],
-        BEGIN_AT => time(),
-        END_AT => time(),
+        'beginDate' => time(),
+        'endDate' => time(),
     ]);
     isTrue($re == e()->empty_code, "Expect: Error, empty advertisement code (banner type/place).");
 
@@ -39,7 +39,7 @@ function test1()
         SESSION_ID => $user->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
-        END_AT => time(),
+        'endDate' => time(),
     ]);
     isTrue($re == e()->empty_begin_date, "Expect: Error, empty advertisement begin date.");
 
@@ -47,7 +47,7 @@ function test1()
         SESSION_ID => $user->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
-        BEGIN_AT => time(),
+        'beginDate' => time(),
     ]);
     isTrue($re == e()->empty_end_date, "Expect: Error, empty advertisement end date.");
 
@@ -57,8 +57,8 @@ function test1()
         SESSION_ID => $user->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
-        BEGIN_AT => time(),
-        END_AT => time(),
+        'beginDate' => time(),
+        'endDate' => time(),
     ]);
 
     isTrue($user->getPoint() == 9000, "Expect: user points decrease from 10000 to 9000.");
@@ -84,8 +84,8 @@ function test1()
         SESSION_ID => $user->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
-        BEGIN_AT => time(),
-        END_AT => strtotime('+3 days'),
+        'beginDate' => time(),
+        'endDate' => strtotime('+3 days'),
     ]);
 
     isTrue($user->getPoint() == 5000, "Expect: decrease user points from 9000 to 5000.");
@@ -111,8 +111,8 @@ function test1()
         SESSION_ID => $user->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
-        BEGIN_AT => strtotime('+2 days'),
-        END_AT => strtotime('+3 days'),
+        'beginDate' => strtotime('+2 days'),
+        'endDate' => strtotime('+3 days'),
     ]);
 
     isTrue($user->getPoint() == 6000, "Expect: decrease user points from 8000 to 6000.");
@@ -128,7 +128,7 @@ function test1()
     ]);
 
     isTrue($user->getPoint() == 8000, "Expect: increase user points from 6000 to 8000.");
-    $activity = userActivity()->last(taxonomy: POSTS, entity: $post[IDX], action: 'advertisement.stop');
+    $activity = userActivity()->last(taxonomy: POSTS, entity: $post[IDX], action: 'advertisement.cancel');
     isTrue($activity->toUserPointApply == 2000, "Expect: user activity record refunded 2000 user points (no served days).");
     isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
 
@@ -137,8 +137,8 @@ function test1()
         SESSION_ID => $user->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
-        BEGIN_AT => strtotime('-1 day'),
-        END_AT => strtotime('-3 day'),
+        'beginDate' => strtotime('-1 day'),
+        'endDate' => strtotime('-3 day'),
     ]);
 
     $user->setPoint(10);
@@ -151,6 +151,33 @@ function test1()
     isTrue($user->getPoint() == 10, "Expect: no refunds for due advertisements.");
     $activity = userActivity()->last(taxonomy: POSTS, entity: $post[IDX], action: 'advertisement.stop');
     isTrue($activity->toUserPointApply == 0, "Expect: user activity record 0 refund since advertisement is due.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
+
+    $user->setPoint(10000);
+
+    $re = request("advertisement.start", [
+        SESSION_ID => $user->sessionId,
+        IDX => $post[IDX],
+        CODE => TOP_BANNER,
+        COUNTRY_CODE => 'PH',
+        'beginDate' => time(),
+        'endDate' => strtotime('+4 day'),
+    ]);
+
+    isTrue($user->getPoint() == 0, "Expect: decrease user points from 10000 to 0.");
+    $activity = userActivity()->last(taxonomy: POSTS, entity: $post[IDX], action: 'advertisement.start');
+    isTrue($activity->toUserPointApply == -10000, "Expect: user activity record 10000 deduction.");
+    isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
+
+    
+    request("advertisement.stop", [
+        SESSION_ID => $user->sessionId,
+        IDX => $post[IDX],
+    ]);
+
+    isTrue($user->getPoint() == 8000, "Expect: incrase user points from 0 to 8000.");
+    $activity = userActivity()->last(taxonomy: POSTS, entity: $post[IDX], action: 'advertisement.stop');
+    isTrue($activity->toUserPointApply == 8000, "Expect: user activity record 8000 refund.");
     isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
 }
 
