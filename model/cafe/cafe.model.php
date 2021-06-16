@@ -369,6 +369,9 @@ global $__cafe;
  * 해당 카페 객체를 한 번 생성하면, 그 다음 부터는 생성된 객체를 재 사용한다. 즉, Singleton 방식으로 사용한다.
  *
  * @attention if $idx or $domain is given, it returns the cafe category without using cache data.
+ * @attention `cafe()` return the current cafe object.
+ *  So, if you do `cafe()->mine()->response()`, then it will return current cafe if there is no cafe by `mine()`.
+ *  To do this work, `(new CafeModel(0))->mine()->response();`
  *
  *
  * @param int $idx
