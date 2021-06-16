@@ -35,10 +35,6 @@ class Entity {
      */
     private array $data = [];
 
-    /**
-     * @var array Entity 를 담는 객체 배열
-     */
-    private array $dataObjects = [];
 
     /**
      * @var string 에러가 있으면 에러 메시지를 지정한다.
@@ -132,59 +128,34 @@ class Entity {
      *
      * 사용처, 이 함수는 클라이언트로 현재 entity 의 data 값을 보내기 위해서 사용된다.
      *
-     * @change $this->dataObjects 에 값이 있으면, 그 객체 배열의 data 를 배열로 리턴한다.
      *
      * @param string|null $fields
      *  - 특정 필드만 response 결과에 집어 넣는다.
      *      Returns only the fields that are stated in $fields.
      * @return array|string
+     *  - error string if the object has set with an error
+     *  - empty array if the object does not exists but the object has not set with error.
+     *  - or an array of fields of the data.
      *
-     * @example
-     * ```
-     * return cafe()->mine()->response('idx, domain');
-     * ```
-     *
-     * @todo $this->dataObjects 배열에 Entity 객체가 담겨져 있으면 response() 를 할 때,
-     * @todo $this->data 의 결과를 리턴하는 것이 아닌, $this->dataObjects 의 각 Entity 의
-     * $todo $data 멤버 변수의 값을 2차원 배열로 리턴한다.
-     * @todo 주요한 용도는 search() 또는 검색과 연관되는 find() 등에서 사용 할 수 있다.
-     * @todo post()->search()->response() 또는 category()->find()->response() 와 같이
-     * @todo 쓸 수 있도록 충분한 테스트를 하고, 문서 정리를 한다.
-     *
-     * @todo response() 에 원하는 필드만 선택적으로 가져 올 수 있다. 이 부분의 코드를 간소화하고 문서화 한다.
      */
     public function response(string $fields=null): array|string {
 
         if ( $this->hasError ) return $this->getError();
-        else if ( $this->dataObjects ) {
-            $res= [];
-            foreach( $this->dataObjects as $obj ) {
-                if ( $fields ) {
-                    $trim = str_replace(' ', '', $fields);
-                    $ex = explode(',', $trim);
-                    $res[] = array_intersect_key($obj->getData(), array_flip($ex));
-                } else {
-                    $res[] = $obj->getData();
+        if ( $this->exists == false ) return [];
+        if ( $fields ) {
+            $arr = explode(',', $fields);
+            $rets = [];
+            foreach( $arr as $k ) {
+                $k = trim($k);
+                if ( $k ) {
+                    $rets[$k] = $this->getData( $k );
                 }
             }
-            return $res;
+            return $rets;
+        } else {
+            return $this->getData();
         }
-        else {
-            if ( $fields ) {
-//                return array_fill_keys($this->getData(), array_flip(explode(",", str_replace(' ', '', $fields))));
-                $arr = explode(',', $fields);
-                $rets = [];
-                foreach( $arr as $k ) {
-                    $k = trim($k);
-                    if ( $k ) {
-                        $rets[$k] = $this->getData( $k );
-                    }
-                }
-                return $rets;
-            } else {
-                return $this->getData();
-            }
-        }
+
     }
 
     /**
@@ -1062,6 +1033,8 @@ class Entity {
      * @return array
      */
     public function my(int $page=1, string $order='idx', string $by='DESC', int $limit=10, string $select = "idx" ): array {
+
+
         return $this->search(
             select: $select,
             where: "userIdx=?", params: [ login()->idx ],
@@ -1075,17 +1048,17 @@ class Entity {
 
 
     /**
-     * 나의 전체 레코드를 추출해서, $this->dataObjects 배열에 넣고, 현재 객체를 리턴한다.
-     * @return self
+     * 나의 전체 레코드를 추출해서, 배열에 넣고, 현재 객체를 리턴한다.
+     *
+     * @return array
      *
      * @example
      * ```
      *  return cafe()->mine()->response();
      * ```
      */
-    public function mine($select = "idx"): self {
-        $this->dataObjects = $this->my(limit: 900000, select: $select);
-        return $this;
+    public function mine($select = "idx"): array {
+        return $this->my(limit: 900000, select: $select);
     }
 
 
