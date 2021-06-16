@@ -118,6 +118,7 @@ class AdvertisementController
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
         $post = post($in[IDX]);
+        if ($post->isMine() == false) return  e()->not_your_post;
 
         // get number of days to refund.
         $days = 0;
@@ -178,6 +179,7 @@ class AdvertisementController
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
         $post = post($in[IDX]);
+        if ($post->isMine() == false) return  e()->not_your_post;
         if ($post->advertisementPoint) return e()->advertisement_is_active;
         return post($in[IDX])->markDelete()->response();
     }
