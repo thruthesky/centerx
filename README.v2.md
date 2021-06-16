@@ -794,7 +794,10 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 ### 사용자 사진, 프로필 사진
 
-- 사용자가 사진을 올릴 때, `file.userIdx` 에 회원 번호, `file.code` 에 `photoUrl` 이라고 입력하면, 해당 사진은 그 사용자의 프로필 사진이 된다.
+- 사용자가 프로필 사진을 올릴 때,
+  `file.userIdx` 에 회원 번호, `file.code` 에 `photoUrl` 이라고 입력하면, 해당 사진은 그 사용자의 프로필 사진이 된다.
+  이 때, `file.taxonomy` 와 `file.entity` 의 값은 무시된다. 즉 아무 값이나 들어가도 상관 없다.
+  
   주의: 1.0.x 에서는 `file.code` 가 아닌 `file.taxonomy` 에 `photoUrl` 이라고 저장했다.
   회원 사진을 사진을 업로드 할 때나 변경 할 때, `file.code` 값이 `photoUrl` 인 것을 사용하면 된다.
 
