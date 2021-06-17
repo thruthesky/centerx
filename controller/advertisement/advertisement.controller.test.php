@@ -14,11 +14,11 @@ function inputTest()
     // test post.
     $post = request("post.create", [
         CATEGORY_ID => 'advertisement',
-        SESSION_ID => $user->sessionId
+        SESSION_ID => login()->sessionId
     ]);
 
     $re = request("advertisement.start", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
         'beginDate' => time(),
@@ -29,7 +29,7 @@ function inputTest()
     $user->setPoint(10000);
 
     $re = request("advertisement.start", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         CODE => TOP_BANNER,
         'beginDate' => time(),
         'endDate' => time(),
@@ -37,7 +37,7 @@ function inputTest()
     isTrue($re == e()->idx_is_empty, "Expect: Error, empty advertisement IDX.");
 
     $re = request("advertisement.start", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
         'beginDate' => time(),
         'endDate' => time(),
@@ -45,7 +45,7 @@ function inputTest()
     isTrue($re == e()->empty_code, "Expect: Error, empty advertisement code (banner type/place).");
 
     $re = request("advertisement.start", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
         'endDate' => time(),
@@ -53,7 +53,7 @@ function inputTest()
     isTrue($re == e()->empty_begin_date, "Expect: Error, empty advertisement begin date.");
 
     $re = request("advertisement.start", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
         'beginDate' => time(),
@@ -70,13 +70,13 @@ function startStopTest()
     // test post.
     $post = request("post.create", [
         CATEGORY_ID => 'advertisement',
-        SESSION_ID => $user->sessionId
+        SESSION_ID => login()->sessionId
     ]);
 
     // Top banner for 1 day (Begin and end date set today, 1000 points).
     // 10000 -> 9000 user points.
     $re = request("advertisement.start", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
         'beginDate' => time(),
@@ -108,7 +108,7 @@ function startStopTest()
     // Top banner for 4 days (4000 points).
     // 9000 -> 5000 user points.
     $re = request("advertisement.start", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
         'beginDate' => time(),
@@ -138,7 +138,7 @@ function startStopTest()
     // Top banner for 2 days (2000 points).
     // 8000 -> 6000 user points.
     request("advertisement.start", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
         'beginDate' => strtotime('+2 days'),
@@ -165,7 +165,7 @@ function startStopTest()
     // due advertisement
     // Expectation: nothing will be refunded to user point since it is already due.
     request("advertisement.start", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
         'beginDate' => strtotime('-1 day'),
@@ -175,7 +175,7 @@ function startStopTest()
     $user->setPoint(10);
 
     request("advertisement.stop", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
     ]);
 
@@ -187,7 +187,7 @@ function startStopTest()
     $user->setPoint(10000);
 
     request("advertisement.start", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
         COUNTRY_CODE => 'PH',
@@ -202,7 +202,7 @@ function startStopTest()
 
 
     request("advertisement.stop", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
     ]);
 
@@ -212,7 +212,7 @@ function startStopTest()
     isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
 
     $re = request("advertisement.start", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
         'beginDate' => time(),
@@ -225,14 +225,14 @@ function startStopTest()
     isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
 
     $re = request("advertisement.delete", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
     ]);
     
     isTrue($re == e()->advertisement_is_active, "Expect: Error, can't delete active advertisement.");
 
     $re = request("advertisement.stop", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
     ]);
 
@@ -242,10 +242,9 @@ function startStopTest()
     isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: recorded user activity points equal current user points.");
 
     $re = request("advertisement.delete", [
-        SESSION_ID => $user->sessionId,
+        SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
     ]);
 
     isTrue($re[DELETED_AT] > 0, "Expect: Success deleting advertisement.");
-    isTrue($re['advertisementPoint'] == 0, "Expect: 'advertisementPoint' should be equal to 0.");
 }
