@@ -350,7 +350,10 @@
 
 //   unset($searchParams[COUNTRY_CODE]);
 //   $searchParams[CODE] = TOP_BANNER;
-//   $re = request("post.search", $searchParams);
+//   $re = request("post.search", [
+//     CATEGORY_ID => 'advertisement',
+//     SUB_CATEGORY => $subcategory,
+//   ]);
 //   isTrue(count($re) == 2, "Should have 2 advertisement with category(subcategory) of " . $subcategory . " and 'top' banner type/place(code)");
 
 //   $searchParams[CODE] = SIDEBAR_BANNER;
