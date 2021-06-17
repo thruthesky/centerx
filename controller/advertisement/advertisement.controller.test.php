@@ -4,30 +4,31 @@ setLogout();
 
 $at = new AdvertisementTest();
 
-$at->lackOfPoint();
-$at->emptyIdx();
-$at->emptyCode();
-$at->beginDateEmpty();
-$at->endDateEmpty();
+//$at->lackOfPoint();
+//$at->emptyIdx();
+//$at->emptyCode();
+//$at->beginDateEmpty();
+//$at->endDateEmpty();
 
 $at->startDeduction();
-$at->startWithPHCountryDeduction();
 
-$at->stopNoRefund();
-$at->stopExpiredNoRefund();
-
-$at->stopWithDeductedRefund();
-$at->stopWithPHCountryAndDeductedRefund();
-
-$at->stopFullRefund();
-$at->stopWithUSCountryFullRefund();
-
-$at->errorDeleteActiveAdvertisement();
-$at->deleteAdvertisement();
-
-$at->startStopChangeDatesAndCountry();
-
-$at->fetchWithCategoryCountryAndCode();
+//$at->startWithPHCountryDeduction();
+//
+//$at->stopNoRefund();
+//$at->stopExpiredNoRefund();
+//
+//$at->stopWithDeductedRefund();
+//$at->stopWithPHCountryAndDeductedRefund();
+//
+//$at->stopFullRefund();
+//$at->stopWithUSCountryFullRefund();
+//
+//$at->errorDeleteActiveAdvertisement();
+//$at->deleteAdvertisement();
+//
+//$at->startStopChangeDatesAndCountry();
+//
+//$at->fetchWithCategoryCountryAndCode();
 
 /**
  * 
@@ -130,22 +131,23 @@ class AdvertisementTest
         isTrue($re == e()->end_date_empty, "Expect: Error, empty advertisement end date.");
     }
 
+
     /**
      * 1 day * 1000 (Top banner - default)
      */
     function startDeduction()
     {
-
+        $bp = advertisement()->topBannerPoint();
         $this->loginSetPoint(10000);
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => time()]);
 
-        isTrue($ad['pointPerDay'] == 1000, "Expect: 'pointPerDay' == 1000.");
-        isTrue($ad['advertisementPoint'] == 1000, "Expect: 'advertisementPoint' == 1000.");
+        isTrue($ad['pointPerDay'] == $bp, "Expect: 'pointPerDay' == " . $bp);
+        isTrue($ad['advertisementPoint'] == $bp, "Expect: 'advertisementPoint' == " . $bp);
 
-        isTrue(login()->getPoint() == 9000, "Expect: user points == 9000.");
+        isTrue(login()->getPoint() == 10000 - $bp, "Expect: user points == " . (10000 - $bp));
 
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
-        isTrue($activity->toUserPointApply == -1000, "Expect: activity->toUserPointApply == -1000.");
+        isTrue($activity->toUserPointApply == -$bp, "Expect: activity->toUserPointApply == -$bp.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 

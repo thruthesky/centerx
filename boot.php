@@ -60,7 +60,8 @@ require_once ROOT_DIR . 'etc/core/data.php';
 require_once ROOT_DIR . 'model/in-app-purchase/in-app-purchase.model.php';
 
 
-require_once ROOT_DIR . 'model/advertise/advertise.defines.php';
+
+require_once ROOT_DIR . 'model/advertisement/advertisement.model.php';
 
 
 // cafe

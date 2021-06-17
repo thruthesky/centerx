@@ -335,10 +335,10 @@ const ADVERTISEMENT_SETTINGS = [
     'types' => BANNER_TYPES,
     'point'=>[
         'default' => [
-            TOP_BANNER => 1000,
-            SIDEBAR_BANNER => 500,
-            SQUARE_BANNER => 500,
-            LINE_BANNER => 400,
+            TOP_BANNER => 800,
+            SIDEBAR_BANNER => 400,
+            SQUARE_BANNER => 300,
+            LINE_BANNER => 350,
         ],
         'PH' => [
             TOP_BANNER => 2000,
@@ -363,3 +363,5 @@ const ADVERTISEMENT_SETTINGS = [
         'money_exchange',
     ]
 ];
+
+
