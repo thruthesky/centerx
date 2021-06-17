@@ -674,7 +674,20 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
   The maximum banner size will be 114px. But it can be smaller than this.
   The maximum width of top banner will be 285px but it may be shown narrower when the screen size becomes smaller.
   
-### 버전 1.x 에서 위젯으로 출력하는 방법
+
+## Banner management
+
+- Admin may set the point of a banner in `config.php` to 0.
+  Then users can advertise without any point.
+  
+~~If a banner point in `config.php` is set to 0, then the banner can be deleted without stopping the banner when it is active.
+  That is because, when the banner stopped, the system sets 0 to `advertisementPoint` on database,
+    and the system considers if it is 0, the banner is inactive.
+    So, it is not a good idea to set the point of a banner to 0.~~~
+  
+
+
+## 버전 1.x 에서 위젯으로 출력하는 방법
 
 - 아래와 같이 type 에는 광고 타입을 기록하고, place 에서는 "게시판.카테고리"와 같이 표시한다.
 
@@ -682,7 +695,7 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
 <?php include widget('advertisement/banner', ['type' => AD_TOP, 'place' => 'R']) ?>
 ```
 
-### 버전 1.x 에서 게시판 목록에 광고 표시 방법
+## 버전 1.x 에서 게시판 목록에 광고 표시 방법
 
 - 아래의 예제는 게시판 맨 위에 광고를 표시한다.
 

@@ -43,6 +43,8 @@ $at->fetchWithCategoryCountryAndCode();
  *    - banner type/place (code) /
  *    - category(subcategory) /
  *    - and countryCode. /
+ *
+ * @todo test - MAX_END_DAYS
  */
 class AdvertisementTest
 {
@@ -86,6 +88,8 @@ class AdvertisementTest
             SESSION_ID => login()->sessionId
         ]);
 
+        $bp = advertisement()->topBannerPoint();
+
         $options = [
             SESSION_ID => login()->sessionId,
             IDX => $post[IDX],
@@ -93,9 +97,12 @@ class AdvertisementTest
             'beginDate' => time(),
             'endDate' => time(),
         ];
-
         $re = request("advertisement.start", $options);
-        isTrue($re == e()->lack_of_point, "Expect: Error, user lacks point to create advertisement.");
+        if ( $bp ) {
+            isTrue($re == e()->lack_of_point, "Expect: Error, user lacks point to create advertisement.");
+        } else {
+            isTrue($re[IDX], "Advertisement started with 0 point");
+        }
     }
 
 
@@ -158,10 +165,12 @@ class AdvertisementTest
      */
     function startWithPHCountryDeduction()
     {
-        $userPoint = 10000;
+        $userPoint = 1000000;
         $this->loginSetPoint($userPoint);
         $adOpts = [CODE => TOP_BANNER, COUNTRY_CODE => 'PH', 'beginDate' => time(), 'endDate' => strtotime('+2 day')];
         $ad = $this->createAndStartAdvertisement($adOpts);
+
+
         
         $bp = advertisement()->topBannerPoint('PH');
         $advPoint = $bp * 3;
@@ -188,7 +197,7 @@ class AdvertisementTest
      */
     function stopNoRefund()
     {
-        $userPoint = 10000;
+        $userPoint = 1000000;
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => time()]);
         
@@ -218,7 +227,7 @@ class AdvertisementTest
      */
     function stopExpiredNoRefund()
     {
-        $userPoint = 10000;
+        $userPoint = 1000000;
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('-8 days'), 'endDate' => strtotime('-3 days')]);
         
@@ -244,7 +253,7 @@ class AdvertisementTest
      */
     function stopWithDeductedRefund()
     {
-        $userPoint = 10000;
+        $userPoint = 1000000;
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('-2 days'), 'endDate' => strtotime('+3 days')]);
         
@@ -273,7 +282,7 @@ class AdvertisementTest
      */
     function stopWithPHCountryAndDeductedRefund()
     {
-        $userPoint = 13000;
+        $userPoint = 1300000;
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([
             CODE => TOP_BANNER,
@@ -310,7 +319,7 @@ class AdvertisementTest
     function stopFullRefund()
     {
 
-        $userPoint = 9000;
+        $userPoint = 900000;
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([
             CODE => LINE_BANNER,
@@ -344,7 +353,7 @@ class AdvertisementTest
     function stopWithUSCountryFullRefund()
     {
 
-        $userPoint = 15000;
+        $userPoint = 1500000;
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([
             CODE => LINE_BANNER,
@@ -374,7 +383,7 @@ class AdvertisementTest
      */
     function errorDeleteActiveAdvertisement()
     {
-        $this->loginSetPoint(15000);
+        $this->loginSetPoint(1500000);
         $ad = $this->createAndStartAdvertisement([CODE => LINE_BANNER, 'beginDate' => time(), 'endDate' => time()]);
 
         $ad = request('advertisement.delete', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
@@ -387,7 +396,7 @@ class AdvertisementTest
      */
     function deleteAdvertisement()
     {
-        $this->loginSetPoint(15000);
+        $this->loginSetPoint(1500000);
         $ad = $this->createAndStartAdvertisement([CODE => LINE_BANNER, 'beginDate' => time(), 'endDate' => time()]);
 
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
@@ -414,7 +423,7 @@ class AdvertisementTest
      */
     function startStopChangeDatesAndCountry()
     {
-        $userPoint = 8000;
+        $userPoint = 800000;
         $this->loginSetPoint($userPoint);
         
         // first create

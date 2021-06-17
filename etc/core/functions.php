@@ -1867,6 +1867,19 @@ function daysBetween($stamp1, $stamp2) {
     return $date1->diffInDays($date2, false);
 }
 
+/**
+ * Returns true if the $stamp is between the first and second.
+ * @param $stamp
+ * @param $firstStamp
+ * @param $secondStamp
+ */
+function isBetween($stamp, $firstStamp, $secondStamp) {
+    $curr = \Carbon\Carbon::createFromTimestamp($stamp);
+    $first = \Carbon\Carbon::createFromTimestamp($firstStamp);
+    $second = \Carbon\Carbon::createFromTimestamp($secondStamp);
+    return $curr->between($first, $second);
+}
+
 
 
 /**

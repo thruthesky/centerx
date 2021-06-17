@@ -14,6 +14,28 @@ class AdvertisementController
     }
 
     /**
+     * @param array $in - See `parsePostSearchHttpParams()` for detail input.
+     * @return array|string
+     *
+     *
+     *
+     */
+    public function search($in): array|string
+    {
+        $posts = post()->search(object: true, in: $in);
+        $res = [];
+        $now = time();
+        foreach($posts as $post) {
+            if ( $post->beginAt < $now ) $post->setMemoryData(['status' => 'waiting']);
+            else if ( isBetween($now, $post->beginAt, $post->endAt ) ) $post->setMemoryData(['status' => 'active']);
+            else $post->setMemoryData(['status' => 'inactive']);
+            $res[] = $post->response(comments: 0);
+        }
+        return $res;
+    }
+
+
+    /**
      * @param $in
      * - $in['code'] - is the banner type(position)
      * - $in['countryCode'] is the cafe country.
@@ -145,7 +167,7 @@ class AdvertisementController
         // get points to refund.
         $pointToRefund = $settings[$post->code] * $days;
 
-        // reset advertisementPoint marking it as inactive.
+        // set advertisementPoint to 0 when the advertisement has stopped.
         $in['advertisementPoint'] = 0;
 
         // Record for change point.

@@ -361,7 +361,7 @@ class PostModel extends Forum {
      * @param int $limit
      * @param bool $object
      * @param array $in
-     * @return array
+     * @return self[]
      */
     public function search(
         string $select='idx',
