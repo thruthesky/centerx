@@ -9,12 +9,19 @@ $at->emptyIdx();
 $at->emptyCode();
 $at->beginDateEmpty();
 $at->endDateEmpty();
+
 $at->startDeduction();
-$at->startDeductionWithPHCountry();
+$at->startWithPHCountryDeduction();
+
 $at->stopNoRefund();
 $at->stopExpiredNoRefund();
+
 $at->stopWithDeductedRefund();
+$at->stopWithPHCountryAndDeductedRefund();
+
 $at->stopFullRefund();
+$at->stopWithUSCountryFullRefund();
+
 $at->errorDeleteActiveAdvertisement();
 $at->deleteAdvertisement();
 
@@ -127,7 +134,7 @@ class AdvertisementTest
     /**
      * 3 days * 2000 (Top banner - PH)
      */
-    function startDeductionWithPHCountry()
+    function startWithPHCountryDeduction()
     {
 
         $this->loginSetPoint(10000);
@@ -155,7 +162,7 @@ class AdvertisementTest
     {
         $this->loginSetPoint(10000);
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => time()]);
-        
+
         isTrue(login()->getPoint() == 9000, "Expect: user's points => 9000.");
 
         $ad = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
@@ -213,6 +220,59 @@ class AdvertisementTest
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 
+    /**
+     * begin date - 2 days ago
+     * end date - 3 days from now
+     * 6 days * 2000 (Top banner - PH)
+     */
+    function stopWithPHCountryAndDeductedRefund()
+    {
+        $this->loginSetPoint(13000);
+        $ad = $this->createAndStartAdvertisement([
+            CODE => TOP_BANNER,
+            COUNTRY_CODE => 'PH',
+            'beginDate' => strtotime('-2 days'),
+            'endDate' => strtotime('+3 days')
+        ]);
+
+        isTrue(login()->getPoint() == 1000, "Expect: user points == 1000.");
+
+        $ad = request("advertisement.stop", [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
+
+        isTrue(login()->getPoint() == 7000, "Expect: user points == 7000.");
+
+        $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.stop');
+        isTrue($activity->toUserPointApply == 6000, "Expect: activity->toUserPointApply == 6000.");
+        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
+    }
+
+    /**
+     * begin date - 3 days in future
+     * end date - 11 days in future
+     * 9 days * 400 (Line banner - default)
+     * 
+     * Cancel (full refund)
+     */
+    function stopFullRefund()
+    {
+
+        $this->loginSetPoint(9000);
+        $ad = $this->createAndStartAdvertisement([
+            CODE => LINE_BANNER,
+            'beginDate' => strtotime('+3 days'),
+            'endDate' => strtotime('+1 week 4 days')
+        ]);
+
+        isTrue(login()->getPoint() == 5400, "Expect: user's points => 5400.");
+
+        $ad = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
+
+        isTrue(login()->getPoint() == 9000, "Expect: user's points => 9000.");
+
+        $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.cancel');
+        isTrue($activity->toUserPointApply == 3600, "Expect: activity->toUserPointApply == 0.");
+        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
+    }
 
     /**
      * begin date - 3 days in future
@@ -221,7 +281,7 @@ class AdvertisementTest
      * 
      * Cancel (full refund)
      */
-    function stopFullRefund()
+    function stopWithUSCountryFullRefund()
     {
 
         $this->loginSetPoint(15000);
@@ -262,7 +322,7 @@ class AdvertisementTest
     function deleteAdvertisement()
     {
         $this->loginSetPoint(15000);
-        $ad = $this->createAndStartAdvertisement([ CODE => LINE_BANNER, 'beginDate' => time(), 'endDate' => time() ]);
+        $ad = $this->createAndStartAdvertisement([CODE => LINE_BANNER, 'beginDate' => time(), 'endDate' => time()]);
 
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
         $ad = request('advertisement.delete', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
