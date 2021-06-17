@@ -106,8 +106,10 @@ class UserModel extends Entity {
         $data[SESSION_ID] = getSessionId($this->getData());
         $this->setMemoryData($data);
         $one = files()->findOne([CODE => 'photoUrl', USER_IDX => $this->idx]);
-        if ( $one->exists ) $this->updateMemoryData('photoIdx', $one->idx);
-        $this->updateMemoryData('photoUrl', $one->url);
+        if ( $one->exists ) {
+            $this->updateMemoryData('photoIdx', $one->idx);
+            $this->updateMemoryData('photoUrl', $one->url);
+        }
 
         $data[ADMIN] = admin($this->email) ? 'Y' : 'N';
 
