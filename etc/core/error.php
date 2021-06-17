@@ -39,6 +39,9 @@ class E {
 
     public string $id_is_empty = 'error_id_is_empty';
     public string $idx_is_empty = 'error_idx_is_empty';
+    public string $code_is_empty = 'error_code_is_empty';
+
+
 
     public string $post_not_exists = 'error_post_not_exists';
 
@@ -125,7 +128,6 @@ class E {
     public string $order_not_confirmed = 'error_order_not_confirmed';
     public string $already_reviewed = 'error_already_reviewed';
 
-    public string $empty_code = 'error_empty_code';
     public string $code_exists = 'error_code_exists';
 
     public string $empty_name = 'error_empty_name';

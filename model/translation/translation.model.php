@@ -66,7 +66,7 @@ class TranslationModel extends Entity
      * - 저장을 했으면, 'code' 값이 리턴된다.
      */
     public function createCode($in): string {
-        if ( !isset($in['code']) || empty($in['code']) ) return e()->empty_code;
+        if ( !isset($in['code']) || empty($in['code']) ) return e()->code_is_empty;
         if ( $this->exists([CODE => $in[CODE]]) ) return e()->code_exists;
         foreach( SUPPORTED_LANGUAGES as $ln ) {
 
@@ -100,7 +100,7 @@ class TranslationModel extends Entity
      * @return string|array
      */
     public function updateCode($in): array|string {
-        if ( !isset($in['code']) || empty($in['code']) ) return e()->empty_code;
+        if ( !isset($in['code']) || empty($in['code']) ) return e()->code_is_empty;
         $in['currentCodeName'] = $in['currentCodeName'] ?? $in['code'];
 
         if ( $in['currentCodeName'] != $in['code'] ) {

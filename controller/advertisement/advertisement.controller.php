@@ -48,7 +48,7 @@ class AdvertisementController
         if ($post->isMine() == false) return  e()->not_your_post;
 
         // check code input
-        if (!isset($in[CODE]) || empty($in[CODE])) return e()->empty_code;
+        if (!isset($in[CODE]) || empty($in[CODE])) return e()->code_is_empty;
 
         // check dates input
         if (!isset($in['beginDate']) || empty($in['beginDate'])) return e()->empty_begin_date;

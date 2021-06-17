@@ -1,7 +1,7 @@
 <?php
 
 $re = request("translation.update");
-isTrue($re == e()->empty_code, 'update empty code');
+isTrue($re == e()->code_is_empty, 'update empty code');
 
 $code = 'create' . time();
 $re = request(

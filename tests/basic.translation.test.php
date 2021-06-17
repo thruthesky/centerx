@@ -18,7 +18,7 @@ function testTranslationEntity() {
 function testTranslationCreateCode() {
     $code = 'create' . time();
     // create code
-    isTrue(  translation()->createCode([]) == e()->empty_code, 'params empty on createCode');
+    isTrue(  translation()->createCode([]) == e()->code_is_empty, 'params empty on createCode');
     isTrue(  translation()->createCode([CODE => $code]) == $code, 'success return code');
     // try to create with the same code
     isTrue(  translation()->createCode([CODE => $code]) == e()->code_exists, 'create with the same code');
@@ -49,7 +49,7 @@ function testTranslationUpdateCode() {
     isTrue(  translation()->createCode([CODE => $code1]) == $code1, 'success return code1');
 
     //update code
-    isTrue(  translation()->updateCode([])  == e()->empty_code, 'fail code is not set');
+    isTrue(  translation()->updateCode([])  == e()->code_is_empty, 'fail code is not set');
     isTrue(  translation()->updateCode([CODE => $code1, CURRENT_CODE_NAME => $code1])[CODE] == $code1, 'update with same code.');
 
     // create code 2

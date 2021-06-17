@@ -39,7 +39,7 @@ function pass_login_callback($in): array|string
     //   Array ( [code] => lzRdPT, [state] => apple_banana_cherry )
     // 와 같은 값이 넘어 온다.
     // 이, code 로, 사용자 정보를 가져온다.
-    if (!isset($in['code'])) return e()->empty_code;
+    if (!isset($in['code'])) return e()->code_is_empty;
     $code = $in['code'];
     $state = $in['state'] ?? '';
 

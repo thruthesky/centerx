@@ -79,7 +79,7 @@ $test_path_0 = $rootDir . '/model/**/*.test.php';
 $test_path_1 = $rootDir . '/controller/**/*.test.php';
 $test_path_2 = $rootDir . '/controller/*.test.php';
 $test_path_3 = $rootDir . '/tests/*.test.php';
-echo "\n>\n>\n>Searching path: $test_path_0, $test_path_1, $test_path_2, $test_path_3\n>\n>\n";
+echo "\n>\n>\n> Searching path: $test_path_0, $test_path_1, $test_path_2, $test_path_3\n>\n>\n";
 
 $test_files = array_merge(glob($test_path_0), glob($test_path_1), glob($test_path_2), glob($test_path_3));
 
