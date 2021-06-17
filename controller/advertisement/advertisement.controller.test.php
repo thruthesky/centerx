@@ -17,47 +17,36 @@ function inputTest()
         SESSION_ID => login()->sessionId
     ]);
 
-    $re = request("advertisement.start", [
+    $options = [
         SESSION_ID => login()->sessionId,
         IDX => $post[IDX],
         CODE => TOP_BANNER,
         'beginDate' => time(),
         'endDate' => time(),
-    ]);
+    ];
+
+    $re = request("advertisement.start", $options);
     isTrue($re == e()->lack_of_point, "Expect: Error, user lacks point to create advertisement.");
 
     $user->setPoint(10000);
 
-    $re = request("advertisement.start", [
-        SESSION_ID => login()->sessionId,
-        CODE => TOP_BANNER,
-        'beginDate' => time(),
-        'endDate' => time(),
-    ]);
+    unset($options[IDX]);
+    $re = request("advertisement.start", $options);
     isTrue($re == e()->idx_is_empty, "Expect: Error, empty advertisement IDX.");
 
-    $re = request("advertisement.start", [
-        SESSION_ID => login()->sessionId,
-        IDX => $post[IDX],
-        'beginDate' => time(),
-        'endDate' => time(),
-    ]);
+    $options[IDX] = $post[IDX];
+    unset($options[CODE]);
+    $re = request("advertisement.start", $options);
     isTrue($re == e()->empty_code, "Expect: Error, empty advertisement code (banner type/place).");
 
-    $re = request("advertisement.start", [
-        SESSION_ID => login()->sessionId,
-        IDX => $post[IDX],
-        CODE => TOP_BANNER,
-        'endDate' => time(),
-    ]);
+    $options[CODE] = TOP_BANNER;
+    unset($options['beginDate']);
+    $re = request("advertisement.start", $options);
     isTrue($re == e()->empty_begin_date, "Expect: Error, empty advertisement begin date.");
 
-    $re = request("advertisement.start", [
-        SESSION_ID => login()->sessionId,
-        IDX => $post[IDX],
-        CODE => TOP_BANNER,
-        'beginDate' => time(),
-    ]);
+    $options['beginDate'] = time();
+    unset($options['endDate']);
+    $re = request("advertisement.start", $options);
     isTrue($re == e()->empty_end_date, "Expect: Error, empty advertisement end date.");
 }
 
