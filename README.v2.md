@@ -674,7 +674,20 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
   The maximum banner size will be 114px. But it can be smaller than this.
   The maximum width of top banner will be 285px but it may be shown narrower when the screen size becomes smaller.
   
-### 버전 1.x 에서 위젯으로 출력하는 방법
+
+## Banner management
+
+- Admin may set the point of a banner in `config.php` to 0.
+  Then users can advertise without any point.
+  
+~~If a banner point in `config.php` is set to 0, then the banner can be deleted without stopping the banner when it is active.
+  That is because, when the banner stopped, the system sets 0 to `advertisementPoint` on database,
+    and the system considers if it is 0, the banner is inactive.
+    So, it is not a good idea to set the point of a banner to 0.~~~
+  
+
+
+## 버전 1.x 에서 위젯으로 출력하는 방법
 
 - 아래와 같이 type 에는 광고 타입을 기록하고, place 에서는 "게시판.카테고리"와 같이 표시한다.
 
@@ -682,7 +695,7 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
 <?php include widget('advertisement/banner', ['type' => AD_TOP, 'place' => 'R']) ?>
 ```
 
-### 버전 1.x 에서 게시판 목록에 광고 표시 방법
+## 버전 1.x 에서 게시판 목록에 광고 표시 방법
 
 - 아래의 예제는 게시판 맨 위에 광고를 표시한다.
 
@@ -1133,9 +1146,21 @@ https://main.philov.com/?route=app.time
   예를 들어, 특정 theme 에서는 무조건 특정 국가의 글만 목록하고자 할 때, 사용 할 수 있다. 예를 들면 소너브에서 도메인/카페 별로 특정 국가의 글만 목록하고자 할 때 사용한다.
 
 
-- `nsub` 사용법.
-  - 참고. `nsub` 관련된 내용은 버전 1.x 에서 사용되는 것으로 더 이상 사용하지 않는다.
+- `sc`
+  `sc` holds the choice of subcategory when user is navigating.
+  Whenever user choose a subcategory, `sc` will be set with the subcateogry.
+  and pass the sc all the way on the navigation including creating and commenting, next page, etc..
+  And when the app needs to show the list (after create, edit, or clicking list button), show the subcategory of `sc`.
+  
+  - For instance, User clicked `beta` subcategory under qna forum. The `sc` is `beta`.
+    And the user goes to next page, then, creates a post and a comments,
+    And when the user clicked `back to list` button, then the app should show `beta` subcategory under qna forum.
+      So, the app needs to pass `sc` through all the navigation.
+  - Another instance is that, the user goes to qna forum. The `sc` is emtpy. and you don't have to pass `sc` on the navigation.
+    and edit a post that has `beta` category.
+    after edit, the app shoud show qna forum list not the `beta` subcategory list because `sc` is empty.
     
+  - ~~참고. `nsub` 관련된 내용은 버전 1.x 에서 사용되는 것으로 더 이상 사용하지 않는다.~~
   - ~~사용자가 전체 카테고리에서 글 생성할 때, 'abc' 카테고리를 선택한다면, 그 글은 'abc' 카테고리 글이다.
     '전체카테고리'와 'abc' 카테고리 중 어떤 카테고리를 보여주어야 할까?
     정답은 전체 카테고리이다.
