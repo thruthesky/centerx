@@ -98,7 +98,7 @@ function startStopTest()
         IDX => $post[IDX],
     ]);
 
-    isTrue($re['advertisementPoint'] == 0, "Expect: 'advertisementPoint' should be equal to 1000.");
+    isTrue($re['advertisementPoint'] == 0, "Expect: 'advertisementPoint' should be equal to 0.");
 
     isTrue($user->getPoint() == 9000, "Expect: user retains it points to 9000.");
     $activity = userActivity()->last(taxonomy: POSTS, entity: $post[IDX], action: 'advertisement.stop');
