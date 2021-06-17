@@ -317,7 +317,7 @@ class PostModel extends Forum {
     public function response(string $fields = null, int $comments = -1): array|string {
         if ( $this->hasError ) return $this->getError();
         $post = $this->getData();
-
+        $post['categoryId'] = $this->categoryId();
         if ( $comments == 0 ) {
             $post['comments'] = [];
             $post['noOfComments'] = count($post['comments']);

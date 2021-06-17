@@ -28,7 +28,8 @@ class PostController {
      *  - $in['idx'] 값이 문자열이면, path 로 인식하고, 숫자이면, idx 로 인식한다.
      * @return array|string
      */
-    public function get(array $in) {
+    public function get(array $in): array|string
+    {
 
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
         else return post($in[IDX])->response();
