@@ -1146,9 +1146,21 @@ https://main.philov.com/?route=app.time
   예를 들어, 특정 theme 에서는 무조건 특정 국가의 글만 목록하고자 할 때, 사용 할 수 있다. 예를 들면 소너브에서 도메인/카페 별로 특정 국가의 글만 목록하고자 할 때 사용한다.
 
 
-- `nsub` 사용법.
-  - 참고. `nsub` 관련된 내용은 버전 1.x 에서 사용되는 것으로 더 이상 사용하지 않는다.
+- `sc`
+  `sc` holds the choice of subcategory when user is navigating.
+  Whenever user choose a subcategory, `sc` will be set with the subcateogry.
+  and pass the sc all the way on the navigation including creating and commenting, next page, etc..
+  And when the app needs to show the list (after create, edit, or clicking list button), show the subcategory of `sc`.
+  
+  - For instance, User clicked `beta` subcategory under qna forum. The `sc` is `beta`.
+    And the user goes to next page, then, creates a post and a comments,
+    And when the user clicked `back to list` button, then the app should show `beta` subcategory under qna forum.
+      So, the app needs to pass `sc` through all the navigation.
+  - Another instance is that, the user goes to qna forum. The `sc` is emtpy. and you don't have to pass `sc` on the navigation.
+    and edit a post that has `beta` category.
+    after edit, the app shoud show qna forum list not the `beta` subcategory list because `sc` is empty.
     
+  - ~~참고. `nsub` 관련된 내용은 버전 1.x 에서 사용되는 것으로 더 이상 사용하지 않는다.~~
   - ~~사용자가 전체 카테고리에서 글 생성할 때, 'abc' 카테고리를 선택한다면, 그 글은 'abc' 카테고리 글이다.
     '전체카테고리'와 'abc' 카테고리 중 어떤 카테고리를 보여주어야 할까?
     정답은 전체 카테고리이다.
