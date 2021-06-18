@@ -50,7 +50,9 @@ class CategoryModel extends Entity {
     /**
      * 카테고리 전처리
      *
-     * subcategories 에 콤마로 구분된 카테고리 배열이 저장되는데, 이를 배열로 리턴한다.
+     * subcategoriesArray 에 콤마로 구분된 카테고리 배열이 저장되는데, 이를 배열로 리턴한다.
+     *
+     *
      *
      * @param int $idx
      * @return self
@@ -58,8 +60,10 @@ class CategoryModel extends Entity {
     public function read(int $idx = 0): self
     {
         parent::read($idx);
-        $this->updateMemoryData('orgSubcategories', $this->subcategories);
-        $this->updateMemoryData('subcategories', separateByComma($this->subcategories));
+//        $this->updateMemoryData('orgSubcategories', $this->subcategories);
+//        $this->updateMemoryData('subcategories', separateByComma($this->subcategories));
+//
+        $this->updateMemoryData('subcategoriesArray', separateByComma($this->subcategories));
         return $this;
     }
 

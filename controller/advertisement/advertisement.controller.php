@@ -3,42 +3,33 @@
 class AdvertisementController
 {
 
-    private function getAdvertisementSetting($in): array
-    {
-        if (isset($in[COUNTRY_CODE]) && isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
-            $setting = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
-        } else {
-            $setting = ADVERTISEMENT_SETTINGS['point']['default'];
-        }
-        return $setting;
-    }
 
-    private function getStatus(PostModel $post): string
-    {
-        $now = time();
-        $post->updateMemoryData('between', isBetweenDay($now, $post->beginAt, $post->endAt));
-        if (isset($post->advertisementPoint) && ! empty($post->advertisementPoint)) {
-            if (daysBetween($now, $post->beginAt) > 0) return 'waiting';
-            else if (isBetweenDay($now, $post->beginAt, $post->endAt)) return 'active';
-            else return 'inactive';
-        }
-        return 'inactive';
-    }
+
 
     /**
+     * Returns active banners of the country of the cafe.
+     *
      * @param array $in - See `parsePostSearchHttpParams()` for detail input.
      * @return array|string
      *
      *
-     *
+     * url, clickUrl, bannerUrl, category
      */
-    public function search($in): array|string
+    public function loadBanners(array $in): array|string
     {
-        $posts = post()->search(object: true, in: $in);
+        $cafe = cafe($in['cafeDomain']);
+        $where = "countryCode=? AND beginAt<? AND endAt>?";
+        $params = [ $cafe->countryCode, time(), time() ];
+
+        $posts = advertisement()->search(where: $where, params: $params, object: true);
         $res = [];
         foreach ($posts as $post) {
-            $post->updateMemoryData('status', $this->getStatus($post));
-            $res[] = $post->response(comments: 0);
+            $res[] = [
+                'url' => $post->url,
+                'clickUrl' => $post->clickUrl,
+                'bannerUrl' => $post->fileByCode('banner')->url,
+                'category' => $post->subcategory,
+            ];
         }
         return $res;
     }
@@ -54,7 +45,7 @@ class AdvertisementController
         if (!isset($in[IDX])) return e()->idx_is_empty;
 
         $post = post($in[IDX]);
-        $post->updateMemoryData('status', $this->getStatus($post));
+        $post->updateMemoryData('status', advertisement()->getStatus($post));
         return $post->response();
     }
 
@@ -72,7 +63,7 @@ class AdvertisementController
             if ($post->isMine() == false) return  e()->not_your_post;
 
             $post->update($in);
-            $post->updateMemoryData('status', $this->getStatus($post));
+            $post->updateMemoryData('status', advertisement()->getStatus($post));
 
             return $post->response();
         }
@@ -131,7 +122,7 @@ class AdvertisementController
         // Save point per day. This will be saved in meta.
         $in['pointPerDay'] = 0;
 
-        $settings = $this->getAdvertisementSetting($in);
+        $settings = advertisement()->getAdvertisementSetting($in);
 
         $in['pointPerDay'] = $settings[$in[CODE]];
 
@@ -166,7 +157,7 @@ class AdvertisementController
         // Save total deducted point from user which the total point for the advertisement.
 
         $post = $post->update($in);
-        $post->updateMemoryData('status', $this->getStatus($post));
+        $post->updateMemoryData('status', advertisement()->getStatus($post));
         return $post->response();
     }
 
@@ -209,7 +200,7 @@ class AdvertisementController
         }
         // get settings
         $in[COUNTRY_CODE] = $post->countryCode;
-        $settings = $this->getAdvertisementSetting($in);
+        $settings = advertisement()->getAdvertisementSetting($in);
 
 
         // get points to refund.

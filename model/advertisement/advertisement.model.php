@@ -1,11 +1,27 @@
 <?php
-
+/**
+ * @file advertisement.model.php
+ */
+/**
+ * Class AdvertisementModel
+ * @property-read string $clickUrl
+ */
 class AdvertisementModel extends PostModel
 {
 
     public function __construct(int $idx)
     {
         parent::__construct($idx);
+    }
+
+    public function getAdvertisementSetting($in): array
+    {
+        if (isset($in[COUNTRY_CODE]) && isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
+            $setting = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
+        } else {
+            $setting = ADVERTISEMENT_SETTINGS['point']['default'];
+        }
+        return $setting;
     }
 
 
@@ -30,6 +46,18 @@ class AdvertisementModel extends PostModel
     public function SquareBannerPoint(string $countryCode=''): int {
         return $this->bannerPoint(SQUARE_BANNER, $countryCode);
     }
+
+    public function getStatus(PostModel $post): string
+    {
+        $now = time();
+        if (isset($post->advertisementPoint) && $post->advertisementPoint) {
+            if (daysBetween($now, $post->beginAt) > 0) return 'waiting';
+            else if (isBetweenDay($now, $post->beginAt, $post->endAt)) return 'active';
+            else return 'inactive';
+        }
+        return 'inactive';
+    }
+
 }
 
 

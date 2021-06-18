@@ -1680,6 +1680,8 @@ function postMessagingUrl(int $idx) {
  *  - userIdx
  *  - otherUserIdx
  *  - code
+ *  - countryCode - the country code.
+ *
  *  - files - it is set to truthy value, then it searches for posts that has attached files.
  *  If it is falsy value like empty string, false, 0, then it searches posts that has no attached files.
  *

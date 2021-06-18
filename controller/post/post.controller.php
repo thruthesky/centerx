@@ -113,7 +113,7 @@ class PostController {
      * @param $in
      * @return array
      */
-    public function count($in): array {
+    public function count($in): array|string {
 
         $re = parsePostSearchHttpParams($in);
         if ( isError($re) ) return $re;

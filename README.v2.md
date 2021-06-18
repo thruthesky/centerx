@@ -643,10 +643,12 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
 
 ## Banner display
 
-- Get all the banners at once on app booting. It is not expected that there will be more than 10,000 active banners.
-  If there is less than 1,000 banners, then it is a good way to collect all the banners with minimum json data like
-  banner place, image url and click url only.
-
+- Get all the banners on app booting.
+  - Get minimum data from backend.
+  - Most of case, active banners will be less than 1,000.
+    If there is less than 1,000 banners, then it is a good way to collect all the banners with minimum json data like
+    banner place, image url and click url only.
+    
 - When advertisement banner is being display(when the user clicked the banner), the post author's information should not
   be shown, nor the post title, dates, etc. And the banner image must not being shown.
   So, there must a special design(view page) for advertisement.
@@ -921,6 +923,9 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 - domain 은 게시판의 도메인이다. 홈페이지 도메인일 수도 있고, 그냥 그룹일 수도 있다. 카페의 경우, 카페 도메인이 된다.
 - countryCode 는 국가 코드이다. 해당 게시판(또는 카페가) 어느 국가에 속해 있는지 표시를 하는 것이다.
 
+- subcategories - A string with many subcategories separated by comma(,).
+  For instance, "apple,banana,cherry"
+  This subcategories may be seen on post list or post edit and each post can have one subcategory at `posts.subcategory`.
 
 - postCreateLimit - users who has less points than this cannot create post
   For instance, this value is 1000 and user has 999. Then the user cannot create post.
@@ -1158,7 +1163,7 @@ https://main.philov.com/?route=app.time
       So, the app needs to pass `sc` through all the navigation.
   - Another instance is that, the user goes to qna forum. The `sc` is emtpy. and you don't have to pass `sc` on the navigation.
     and edit a post that has `beta` category.
-    after edit, the app shoud show qna forum list not the `beta` subcategory list because `sc` is empty.
+    after edit, the app should show qpona forum list not the `beta` subcategory list because `sc` is empty.
     
   - ~~참고. `nsub` 관련된 내용은 버전 1.x 에서 사용되는 것으로 더 이상 사용하지 않는다.~~
   - ~~사용자가 전체 카테고리에서 글 생성할 때, 'abc' 카테고리를 선택한다면, 그 글은 'abc' 카테고리 글이다.
