@@ -376,11 +376,7 @@ class PostModel extends Forum {
         bool $object = false,
         array $in = []): array {
 
-        if ( $in ) {
-            $re = parsePostSearchHttpParams($in);
-            if ( isError($re) ) return $re;
-            list ($where, $params ) = $re;
-        }
+
 
 
         // Save search keyword if there is any.
@@ -389,8 +385,8 @@ class PostModel extends Forum {
         //
         return parent::search(
             select: $in['select'] ?? $select,
-            where: $where,
-            params: $params,
+            where: $in['where'],
+            params: $in['params'],
             order: $in['order'] ?? $order,
             by: $in['by'] ?? $by,
             page: $in['page'] ?? $page,

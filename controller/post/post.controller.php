@@ -99,6 +99,14 @@ class PostController {
      */
     public function search($in): array|string
     {
+        if ( $in ) {
+            $re = parsePostSearchHttpParams($in);
+            if ( isError($re) ) return $re;
+            list ($where, $params ) = $re;
+            $in['where'] = $where;
+            $in['params'] = $params;
+        }
+
         $posts = post()->search(object: true, in: $in);
         $res = [];
         foreach($posts as $post) {
