@@ -212,6 +212,7 @@ class E {
     public string $advertisement_point_refund_failed = 'error_advertisement_point_refund_failed';
     public string $begin_date_empty = 'error_begin_date_empty';
     public string $end_date_empty = 'error_end_date_empty';
+    public string $maximum_advertising_days = 'error_max_advertising_days';
 
 
     public bool $isError = false;

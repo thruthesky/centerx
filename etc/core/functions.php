@@ -1877,10 +1877,11 @@ function isBetween($stamp, $firstStamp, $secondStamp) {
     $curr = \Carbon\Carbon::createFromTimestamp($stamp);
     $first = \Carbon\Carbon::createFromTimestamp($firstStamp);
     $second = \Carbon\Carbon::createFromTimestamp($secondStamp);
-    return $curr->between($first, $second);
+    
+    if ($curr->diffInDays($first) == 0) return true;
+    if ($curr->diffInDays($second) == 0) return true;
+    return $curr->betweenIncluded($first, $second);
 }
-
-
 
 /**
  * 이미지를 썸네일로 제작한다.

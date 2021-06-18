@@ -338,6 +338,7 @@ const BANNER_TYPES = [ TOP_BANNER, SIDEBAR_BANNER, SQUARE_BANNER, LINE_BANNER ];
 const MAXIMUM_ADVERTISING_DAYS = 70;
 const ADVERTISEMENT_SETTINGS = [
     'types' => BANNER_TYPES,
+    'maximum_advertising_days' => MAXIMUM_ADVERTISING_DAYS,
     'point'=>[
         'default' => [
             TOP_BANNER => 3000,
