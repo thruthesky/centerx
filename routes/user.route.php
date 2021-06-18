@@ -110,7 +110,7 @@ class UserRoute {
 
     public function search($in) {
 
-        $name = $in[NAME] ?? '';;
+        $name = $in[NAME] ?? '';
         if ( empty($name) ) return e()->empty_name;
         $rows = db()->get_results("SELECT idx FROM " . entity(USERS)->getTable() . " WHERE name='$name' OR nickname='$name'", ARRAY_A);
         $rets = [];
