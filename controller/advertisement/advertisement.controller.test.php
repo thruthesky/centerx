@@ -5,10 +5,12 @@ setLogout();
 $at = new AdvertisementTest();
 
 $at->lackOfPoint();
-$at->emptyIdx();
 $at->emptyCode();
 $at->beginDateEmpty();
 $at->endDateEmpty();
+$at->maximumAdvertisementDays();
+
+$at->statusCheck();
 
 $at->startDeduction();
 
@@ -29,6 +31,11 @@ $at->deleteAdvertisement();
 $at->startStopChangeDatesAndCountry();
 
 $at->fetchWithCategoryCountryAndCode();
+
+/**
+ * doesn't work now since when editting without IDX will result to creating instead of update.
+ */
+// $at->emptyIdx();
 
 /**
  * 
@@ -58,7 +65,7 @@ class AdvertisementTest
     private function createAdvertisement()
     {
         registerAndLogin();
-        return request("post.create", [
+        return request("advertisement.edit", [
             CATEGORY_ID => 'advertisement',
             SESSION_ID => login()->sessionId
         ]);
@@ -67,7 +74,7 @@ class AdvertisementTest
     private function createAndStartAdvertisement($options)
     {
 
-        $post = request("post.create", [
+        $post = request("advertisement.edit", [
             CATEGORY_ID => 'advertisement',
             SESSION_ID => login()->sessionId
         ]);
@@ -83,7 +90,7 @@ class AdvertisementTest
         registerAndLogin();
 
         // test post.
-        $post = request("post.create", [
+        $post = request("advertisement.edit", [
             CATEGORY_ID => 'advertisement',
             SESSION_ID => login()->sessionId
         ]);
@@ -98,7 +105,7 @@ class AdvertisementTest
             'endDate' => time(),
         ];
         $re = request("advertisement.start", $options);
-        if ( $bp ) {
+        if ($bp) {
             isTrue($re == e()->lack_of_point, "Expect: Error, user lacks point to create advertisement.");
         } else {
             isTrue($re[IDX], "Advertisement started with 0 point");
@@ -106,6 +113,11 @@ class AdvertisementTest
     }
 
 
+    /**
+     * @deprecated
+     * 
+     * doesn't work now since when editting without IDX will result to creating instead of update.
+     */
     function emptyIdx()
     {
         registerAndLogin();
@@ -139,12 +151,85 @@ class AdvertisementTest
     }
 
 
+    function maximumAdvertisementDays()
+    {
+        $this->loginSetPoint(1000000);
+        $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime('+100 days')]);
+        if (MAXIMUM_ADVERTISING_DAYS > 0) {
+            isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
+        } else {
+            isTrue($re[IDX], "Expect: success, no advertising day limit.");
+        }
+
+        $max = MAXIMUM_ADVERTISING_DAYS;
+
+        // Equivalent to $max + 1 days since begin date is counted to the total ad serving days.
+        $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$max days")]);
+        if ($max > 0) {
+            isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
+        } else {
+            isTrue($re[IDX], "Expect: success, no advertising day limit.");
+        }
+    }
+
+
+    /**
+     * TODO
+     */
+    function statusCheck()
+    {
+        $this->loginSetPoint(1000000);
+        // Advertisement begin date same as now, considered as active.
+        $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime('+1 days')]);
+        isTrue($re['status'] == 'active', "Expect: Status == 'active'");
+
+        // Advertisement end date same as now, considered as active.
+        $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('-1 days'), 'endDate' => time()]);
+        isTrue($re['status'] == 'active', "Expect: Status == 'active'");
+        
+        // considered as inactive.
+        $re = request("advertisement.stop", [
+            CATEGORY_ID => 'advertisement',
+            SESSION_ID => login()->sessionId,
+            IDX => $re[IDX]
+        ]);
+        isTrue($re['status'] == 'inactive', "Expect: Status == 'inactive'");
+        
+        // Advertisement started but not served yet, considered as waiting.
+        $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('+3 days'), 'endDate' => strtotime('+4 days')]);
+        isTrue($re['status'] == 'waiting', "Expect: Status == 'waiting'");
+
+        // Expired advertisement, considered as inactive
+        $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('-5 days'), 'endDate' => strtotime('-2 days')]);
+        isTrue($re['status'] == 'inactive', "Expect: Status == 'inactive'");
+
+        // Advertisement created with begin and end date same as now but not started yet
+        // considered as inactive.
+        $re = request("advertisement.edit", [
+            CATEGORY_ID => 'advertisement',
+            SESSION_ID => login()->sessionId,
+            'beginDate' => time(),
+            'endDate' => time()
+        ]);
+        isTrue($re['status'] == 'inactive', "Expect: Status == 'inactive'");
+
+        // Advertisement created with begin and end date set to future dates but not started yet
+        // considered as inactive.
+        $re = request("advertisement.edit", [
+            CATEGORY_ID => 'advertisement',
+            SESSION_ID => login()->sessionId,
+            'beginDate' => strtotime('+3 days'),
+            'endDate' => strtotime('+10 days')
+        ]);
+        isTrue($re['status'] == 'inactive', "Expect: Status == 'inactive'");
+    }
+
     /**
      * 1 day * Top banner point (default)
      */
     function startDeduction()
     {
-        $userPoint = 10000;
+        $userPoint = 1000000;
         $bp = advertisement()->topBannerPoint();
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => time()]);
@@ -157,6 +242,21 @@ class AdvertisementTest
 
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
         isTrue($activity->toUserPointApply == -$bp, "Expect: activity->toUserPointApply == -$bp.");
+        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
+
+        
+        $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('+1 days'), 'endDate' => strtotime('+3 days')]);
+        
+        $advPoint = $bp * 3;
+        $userPoint -= $advPoint;
+
+        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
+
+        isTrue($ad['pointPerDay'] == $bp, "Expect: 'pointPerDay' == " . $bp);
+        isTrue($ad['advertisementPoint'] == $advPoint, "Expect: 'advertisementPoint' == " . $advPoint);
+
+        $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
+        isTrue($activity->toUserPointApply == -$advPoint, "Expect: activity->toUserPointApply == -$advPoint.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 
@@ -171,7 +271,7 @@ class AdvertisementTest
         $ad = $this->createAndStartAdvertisement($adOpts);
 
 
-        
+
         $bp = advertisement()->topBannerPoint('PH');
         $advPoint = $bp * 3;
         $userPoint -= $advPoint;
@@ -200,7 +300,7 @@ class AdvertisementTest
         $userPoint = 1000000;
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => time()]);
-        
+
         $bp = advertisement()->topBannerPoint();
         $advPoint = $bp;
         $userPoint -= $advPoint;
@@ -230,7 +330,7 @@ class AdvertisementTest
         $userPoint = 1000000;
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('-8 days'), 'endDate' => strtotime('-3 days')]);
-        
+
         $bp = advertisement()->topBannerPoint();
         $advPoint = $bp * 6;
         $userPoint -= $advPoint;
@@ -256,7 +356,7 @@ class AdvertisementTest
         $userPoint = 1000000;
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('-2 days'), 'endDate' => strtotime('+3 days')]);
-        
+
         $bp = advertisement()->topBannerPoint();
         $advPoint = $bp * 6;
         $refund = $bp * 3;
@@ -290,7 +390,7 @@ class AdvertisementTest
             'beginDate' => strtotime('-2 days'),
             'endDate' => strtotime('+3 days')
         ]);
-        
+
         $bp = advertisement()->topBannerPoint('PH');
         $advPoint = $bp * 6;
         $refund = $bp * 3;
@@ -326,7 +426,7 @@ class AdvertisementTest
             'beginDate' => strtotime('+3 days'),
             'endDate' => strtotime('+1 week 4 days')
         ]);
-        
+
         $bp = advertisement()->LineBannerPoint();
         $advPoint = $bp * 9;
 
@@ -361,7 +461,7 @@ class AdvertisementTest
             'beginDate' => strtotime('+3 days'),
             'endDate' => strtotime('+1 week 4 days')
         ]);
-        
+
         $bp = advertisement()->LineBannerPoint('US');
         $advPoint = $bp * 9;
 
@@ -425,14 +525,14 @@ class AdvertisementTest
     {
         $userPoint = 800000;
         $this->loginSetPoint($userPoint);
-        
+
         // first create
         $ad = $this->createAndStartAdvertisement([
             CODE => LINE_BANNER,
             'beginDate' => strtotime('+3 days'),
             'endDate' => strtotime('+8 days')
         ]);
-        
+
         $bp = advertisement()->LineBannerPoint();
         $advPoint = $bp * 6;
         $userPoint -= $advPoint;
@@ -464,7 +564,7 @@ class AdvertisementTest
             'beginDate' => time(),
             'endDate' => strtotime('+2 days')
         ]);
-        
+
         $bp = advertisement()->SquareBannerPoint('US');
         $advPoint = $bp * 3;
         $refund = $bp * 2;

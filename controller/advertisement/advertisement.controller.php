@@ -3,7 +3,7 @@
 class AdvertisementController
 {
 
-    private function getAdvertisementSetting($in)
+    private function getAdvertisementSetting($in): array
     {
         if (isset($in[COUNTRY_CODE]) && isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
             $setting = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
@@ -11,6 +11,18 @@ class AdvertisementController
             $setting = ADVERTISEMENT_SETTINGS['point']['default'];
         }
         return $setting;
+    }
+
+    private function getStatus(PostModel $post): string
+    {
+        $now = time();
+        $post->updateMemoryData('between', isBetweenDay($now, $post->beginAt, $post->endAt));
+        if (isset($post->advertisementPoint) && ! empty($post->advertisementPoint)) {
+            if (daysBetween($now, $post->beginAt) > 0) return 'waiting';
+            else if (isBetweenDay($now, $post->beginAt, $post->endAt)) return 'active';
+            else return 'inactive';
+        }
+        return 'inactive';
     }
 
     /**
@@ -24,16 +36,47 @@ class AdvertisementController
     {
         $posts = post()->search(object: true, in: $in);
         $res = [];
-        $now = time();
-        foreach($posts as $post) {
-            if ( $post->beginAt < $now ) $post->setMemoryData(['status' => 'waiting']);
-            else if ( isBetween($now, $post->beginAt, $post->endAt ) ) $post->setMemoryData(['status' => 'active']);
-            else $post->setMemoryData(['status' => 'inactive']);
+        foreach ($posts as $post) {
+            $post->updateMemoryData('status', $this->getStatus($post));
             $res[] = $post->response(comments: 0);
         }
         return $res;
     }
 
+    /**
+     *
+     * @param array $in
+     *  - $in['idx'] 값이 문자열이면, path 로 인식하고, 숫자이면, idx 로 인식한다.
+     * @return array|string
+     */
+    public function get(array $in)
+    {
+        if (!isset($in[IDX])) return e()->idx_is_empty;
+
+        $post = post($in[IDX]);
+        $post->updateMemoryData('status', $this->getStatus($post));
+        return $post->response();
+    }
+
+
+    public function edit($in)
+    {
+        if (!isset($in[IDX]) || empty($in[IDX])) {
+
+            $post = post()->create($in);
+            $post->updateMemoryData('status', 'inactive');
+            return $post->response();
+        } else {
+
+            $post = post($in[IDX]);
+            if ($post->isMine() == false) return  e()->not_your_post;
+
+            $post->update($in);
+            $post->updateMemoryData('status', $this->getStatus($post));
+
+            return $post->response();
+        }
+    }
 
     /**
      * @param $in
@@ -76,13 +119,17 @@ class AdvertisementController
         if (!isset($in['beginDate']) || empty($in['beginDate'])) return e()->begin_date_empty;
         if (!isset($in['endDate']) || empty($in['endDate'])) return e()->end_date_empty;
 
-        // Save point per day. This will be saved in meta.
-        $in['pointPerDay'] = 0;
 
         $in = $post->updateBeginEndDate($in);
-
+        
         // add 1 to include beginning date.
         $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
+        if (ADVERTISEMENT_SETTINGS['maximum_advertising_days']) {
+            if (ADVERTISEMENT_SETTINGS['maximum_advertising_days'] < $days) return e()->maximum_advertising_days;
+        }
+
+        // Save point per day. This will be saved in meta.
+        $in['pointPerDay'] = 0;
 
         $settings = $this->getAdvertisementSetting($in);
 
@@ -119,6 +166,7 @@ class AdvertisementController
         // Save total deducted point from user which the total point for the advertisement.
 
         $post = $post->update($in);
+        $post->updateMemoryData('status', $this->getStatus($post));
         return $post->response();
     }
 
@@ -168,7 +216,7 @@ class AdvertisementController
         $pointToRefund = $settings[$post->code] * $days;
 
         // set advertisementPoint to 0 when the advertisement has stopped.
-        $in['advertisementPoint'] = 0;
+        $in['advertisementPoint'] = '';
 
         // Record for change point.
         $activity = userActivity()->changePoint(
@@ -188,6 +236,7 @@ class AdvertisementController
         }
 
         $post = $post->update($in);
+        $post->updateMemoryData('status', 'inactive');
         return $post->response();
     }
 
