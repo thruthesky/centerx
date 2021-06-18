@@ -17,7 +17,7 @@ class AdvertisementController
     {
         $now = time();
         $post->updateMemoryData('between', isBetweenDay($now, $post->beginAt, $post->endAt));
-        if (isset($post->advertisementPoint) && $post->advertisementPoint > -1) {
+        if (isset($post->advertisementPoint) && ! empty($post->advertisementPoint)) {
             if (daysBetween($now, $post->beginAt) > 0) return 'waiting';
             else if (isBetweenDay($now, $post->beginAt, $post->endAt)) return 'active';
             else return 'inactive';
@@ -216,7 +216,7 @@ class AdvertisementController
         $pointToRefund = $settings[$post->code] * $days;
 
         // set advertisementPoint to 0 when the advertisement has stopped.
-        $in['advertisementPoint'] = 0;
+        $in['advertisementPoint'] = '';
 
         // Record for change point.
         $activity = userActivity()->changePoint(
