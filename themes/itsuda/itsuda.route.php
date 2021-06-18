@@ -2,6 +2,69 @@
 
 
 
+addRoute('user.newSearch', function($in) {
+
+    if ( isset($in['name']) ) {
+        $name = $in['name'];
+        $q = "SELECT idx FROM wc_users WHERE name='$name' OR nickname='$name'";
+    } else {
+        $q = "SELECT idx FROM wc_users";
+    }
+
+    if ( isset($in['page']) ) {
+        $page = $in['page'];
+        if ( $page < 1 ) $page = 1;
+    } else {
+        $page = 1;
+    }
+    $from = ( $page - 1 ) * ($in['limit'] ?? 10);
+    $to = $in['limit'] ?? 10;
+    $q .= " LIMIT $from, $to";
+
+
+    $rows = db()->get_results($q, ARRAY_A);
+
+    if ( $rows ) {
+        $res = [];
+        foreach($rows as $row) {
+            $user = user($row['idx']);
+            if (isset($in['full']) && $in['full'] && admin()) {
+                $res[] =  $user->profile();
+            } else {
+                $res[] =  $user->shortProfile(firebaseUid: true);
+            }
+        }
+        return $res;
+    } else {
+        return [];
+    }
+
+
+//
+//
+//
+//    $users = user()->search(
+//        select: $in['select'] ?? 'idx',
+//        where: $where,
+//        params: $params,
+//        page: $in['page'] ?? 1,
+//        limit: $in['limit'] ?? 10,
+//        object: true
+//    );
+//
+//    $res = [];
+//    foreach($users as $user) {
+//        if (isset($in['full']) && $in['full'] && admin()) {
+//            $res[] =  $user->profile();
+//        } else {
+//            $res[] =  $user->shortProfile(firebaseUid: true);
+//        }
+//    }
+//    return $res;
+
+});
+
+
 
 addRoute('health.point', function($in) {
     $beginStamp = mktime(0, 0, 0, $in['month'], 1, $in['year']);
