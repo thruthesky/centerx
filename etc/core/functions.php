@@ -1878,6 +1878,20 @@ function isBetween($stamp, $firstStamp, $secondStamp) {
     $first = \Carbon\Carbon::createFromTimestamp($firstStamp);
     $second = \Carbon\Carbon::createFromTimestamp($secondStamp);
     
+    return $curr->betweenIncluded($first, $second);
+}
+
+/**
+ * Returns true if the $stamp is between the first and second.
+ * @param $stamp
+ * @param $firstStamp
+ * @param $secondStamp
+ */
+function isBetweenDay($stamp, $firstStamp, $secondStamp) {
+    $curr = \Carbon\Carbon::createFromTimestamp($stamp);
+    $first = \Carbon\Carbon::createFromTimestamp($firstStamp);
+    $second = \Carbon\Carbon::createFromTimestamp($secondStamp);
+    
     if ($curr->diffInDays($first) == 0) return true;
     if ($curr->diffInDays($second) == 0) return true;
     return $curr->betweenIncluded($first, $second);

@@ -16,10 +16,10 @@ class AdvertisementController
     private function getStatus(PostModel $post): string
     {
         $now = time();
-        $post->updateMemoryData('between', isBetween($now, $post->beginAt, $post->endAt));
+        $post->updateMemoryData('between', isBetweenDay($now, $post->beginAt, $post->endAt));
         if (isset($post->advertisementPoint) && $post->advertisementPoint > -1) {
             if (daysBetween($now, $post->beginAt) > 0) return 'waiting';
-            else if (isBetween($now, $post->beginAt, $post->endAt)) return 'active';
+            else if (isBetweenDay($now, $post->beginAt, $post->endAt)) return 'active';
             else return 'inactive';
         }
         return 'inactive';
