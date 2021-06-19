@@ -180,7 +180,10 @@ define('DOMAIN_THEMES', [
 
 
 
+## 파이어베이스 설정
 
+- Matrix 는 Firebase 설정을 하지 않음면 올바로 동작하지 않습니다. 즉, Firebase 연동은 필수입니다.
+- Firebase Admin SDK Key Json 파일을 `keys` 폴더 아래에 저장하고 config 에 연결하면 됩니다.
 
 
 
