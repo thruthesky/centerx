@@ -91,13 +91,17 @@ class PostController {
 
 
     /**
+     * 글 검색 후 리턴
+     *
+     * 참고, 입력 값은 `parsePostSearchHttpParams()` 를 참고한다.
+     *
      * @param array $in - See `parsePostSearchHttpParams()` for detail input.
      * @return array|string
      * 
      * 
      * 
      */
-    public function search($in): array|string
+    public function search(array $in): array|string
     {
         if ( $in ) {
             $re = parsePostSearchHttpParams($in);

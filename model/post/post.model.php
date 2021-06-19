@@ -140,7 +140,7 @@ class PostModel extends Forum {
 
 
         // 기본 값 지정.
-        if ( !$in['listOrder'] ) $in['listOrder'] = 0;
+        $in['listOrder'] ??= 0;
 
         // Save category.idx
         $in[CATEGORY_IDX] = $category->idx;
