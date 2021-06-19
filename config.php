@@ -23,7 +23,7 @@ const DOMAIN_THEMES = [
     // So, when test runs, you can choose which view(theme) do you wan to use by specifying the view into '_' key.
     '_' => 'default',
     'www_docker_nginx' => 'x',
-    'flutterkorea' => 'x',
+    'flutterkorea' => 'default',
     'x.philov' => 'x',
     'cherry.philov' => 'x',
     'banana.philov' => 'x',
