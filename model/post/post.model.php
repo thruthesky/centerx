@@ -138,6 +138,10 @@ class PostModel extends Forum {
         $category = category($in[CATEGORY_ID]);
         if ( $category->notFound ) return $this->error(e()->category_not_exists); // The category really exists in database?
 
+
+        // 기본 값 지정.
+        if ( !$in['listOrder'] ) $in['listOrder'] = 0;
+
         // Save category.idx
         $in[CATEGORY_IDX] = $category->idx;
 
@@ -168,6 +172,7 @@ class PostModel extends Forum {
         $in['Ymd'] = date('Ymd');
 
         $in = $this->updateBeginEndDate($in);
+
 
         // Create a post
         parent::create($in);
