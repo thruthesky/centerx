@@ -23,7 +23,17 @@
 
 - To see alpha version of Matrix 2 which has widgets and themes, see `next-2-alpha-1` branch.
 
-# 버전 안내
+# 버전 별 변경 사항 및 향후 전략
+
+## 버전 3
+
+- `centerx` 라는 명칭을 완전히 제거.
+- PHP 에서 화면에 직접 렌더링하는 부분은 `view/admin` 빼고는 모두 제거.
+  - `live-reload` 등 관련된 사항 재 정립
+- `widgets` 폴더 제거
+- Git repo 를 `https://github.com/withcenter/matrix` 로 이동.
+
+
 
 ## 버전 2
 
