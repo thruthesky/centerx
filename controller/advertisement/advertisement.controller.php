@@ -17,7 +17,7 @@ class AdvertisementController
      */
     public function loadBanners(array $in): array|string
     {
-        $cafe = cafe($in['cafeDomain']);
+        $cafe = cafe(domain: $in['cafeDomain']);
         $where = "countryCode=? AND beginAt<? AND endAt>?";
         $params = [ $cafe->countryCode, time(), time() ];
 
