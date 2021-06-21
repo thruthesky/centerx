@@ -23,8 +23,36 @@
 
 - To see alpha version of Matrix 2 which has widgets and themes, see `next-2-alpha-1` branch.
 
+# 버전 별 변경 사항 및 향후 전략
+
+## 버전 3
+
+- `centerx` 라는 명칭을 완전히 제거.
+- PHP 에서 화면에 직접 렌더링하는 부분은 `view/admin` 빼고는 모두 제거.
+  - `live-reload` 등 관련된 사항 재 정립
+- `widgets` 폴더 제거
+- Git repo 를 `https://github.com/withcenter/matrix` 로 이동.
 
 
+
+## 버전 2
+
+- 버전 2 에서 이름이 Centerx 에서 Matrix 로 변경이 되었다.
+- 버전 1 에서 사용되던 MVC 패턴이 버전 2 에서는 보다 체계적으로 사용된다.
+  - Model 에는 로직이들어가며 직접 DB 에서 데이터를 가져온다.
+    Controller 에서는 DB 에 직접 액세스를 못하며, Model 을 통해서만 가능하다.
+    View 화면을 보여주는 클랑이언트이다. SPA 또는 모바일앱 등에서 Restful API 로 Controller 에 접속하여 데이터를 DB 에 저장하거나 가져온다.
+- 버전 1 에서 사용되던 widget 개념은 더 이상 사용되지 않을 것이며 다음 버전에서 widgets 폴더가 삭제될 것이다.
+  현재 widgets 폴더는 관리자 페이지 등에서 사용되기 때문에 그대로 남아있다.
+  
+- 버전 1 에서는 theme 폴더를 통해서 PHP 에서 직접 화면에 렌더링을 하였으나 버전 2 에서는 권장하지 않고,
+  PHP 는 오직 백엔드만 담당하고 클라이언트엔드는 Vue.js 또는 모바일앱과 같이 완전히 분리하여 작업하는 것을 권장한다.
+
+- 참고로, 버전 2로 변경이 되면서, 많은 변화가 있었는데, 버전 1의 관리자 페이지가 버전 2로 모두 컨버팅 되지 않았다.
+  현재 회원 정보 관리, 게시판 관리가 우선 지원되며, Vue.js SPA 로 대체될 예정이다.
+  
+
+  
 # 설치와 기본 설정
 
 본 문서에서는 우분투 서버에서 도커를 통해 centerx 설치하는 방벙에 대해 설명한다.
@@ -162,7 +190,10 @@ define('DOMAIN_THEMES', [
 
 
 
+## 파이어베이스 설정
 
+- Matrix 는 Firebase 설정을 하지 않음면 올바로 동작하지 않습니다. 즉, Firebase 연동은 필수입니다.
+- Firebase Admin SDK Key Json 파일을 `keys` 폴더 아래에 저장하고 config 에 연결하면 됩니다.
 
 
 
