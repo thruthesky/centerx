@@ -138,6 +138,10 @@ class PostModel extends Forum {
         $category = category($in[CATEGORY_ID]);
         if ( $category->notFound ) return $this->error(e()->category_not_exists); // The category really exists in database?
 
+
+        // 기본 값 지정.
+        $in['listOrder'] ??= 0;
+
         // Save category.idx
         $in[CATEGORY_IDX] = $category->idx;
 
@@ -168,6 +172,7 @@ class PostModel extends Forum {
         $in['Ymd'] = date('Ymd');
 
         $in = $this->updateBeginEndDate($in);
+
 
         // Create a post
         parent::create($in);
@@ -347,6 +352,10 @@ class PostModel extends Forum {
 
 
     /**
+     * 글을 검색한다.
+     *
+     * 입력 값 중에 $in 에 값이 들어오면 그 값을 먼저 사용한다.
+     *
      * This searches posts based the HTTP input. And if there is no HTTP input, then it searches with the function
      * parameters.
      *
@@ -377,16 +386,14 @@ class PostModel extends Forum {
         array $in = []): array {
 
 
-
-
         // Save search keyword if there is any.
         if ( isset($in['searchKey']) ) saveSearchKeyword($in['searchKey']);
 
         //
         return parent::search(
             select: $in['select'] ?? $select,
-            where: $in['where'],
-            params: $in['params'],
+            where: $in['where'] ?? $where,
+            params: $in['params'] ?? $params,
             order: $in['order'] ?? $order,
             by: $in['by'] ?? $by,
             page: $in['page'] ?? $page,

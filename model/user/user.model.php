@@ -51,37 +51,63 @@ class UserModel extends Entity {
      * @param $name
      * @return mixed
      */
-    public function __get($name): mixed {
-        if ( $name == 'verified' ) {
-            return $this->verifier;
-        } else if ( $name == 'nicknameOrName' ) {
-            if ( $this->nickname ) return $this->nickname;
-            else if ( $this->name ) return $this->name;
-            else {
-                $email = $this->email;
-                if ( str_contains($email, '@') ) {
-                    $arr = explode('@', $email, 2);
-                    $account_name = $arr[0];
-                    if ( strlen($account_name) < 3 ) return 'xxx';
-                    return substr($account_name, 0, strlen($account_name)-3) . 'xxx';
-                } else {
-                    return '(No nameOrNickname or Email)';
-                }
-            }
-        } else if ( $name == 'age' ) {
-            if ( strlen($this->birthdate) == 6) $birthYear = substr($this->birthdate, 0, 2);
-            else if ( strlen($this->birthdate) == 8) $birthYear = substr($this->birthdate, 2, 2);
-            else return '?';
+//    public function __get($name): mixed {
+//        if ( $name == 'verified' ) {
+//            return $this->verifier;
+//        } else if ( $name == 'nicknameOrName' ) {
+//            if ( $this->nickname ) return $this->nickname;
+//            else if ( $this->name ) return $this->name;
+//            else {
+//                $email = $this->email;
+//                if ( str_contains($email, '@') ) {
+//                    $arr = explode('@', $email, 2);
+//                    $account_name = $arr[0];
+//                    if ( strlen($account_name) < 3 ) return 'xxx';
+//                    return substr($account_name, 0, strlen($account_name)-3) . 'xxx';
+//                } else {
+//                    return '(No nameOrNickname or Email)';
+//                }
+//            }
+//        } else if ( $name == 'age' ) {
+//            if ( strlen($this->birthdate) == 6) $birthYear = substr($this->birthdate, 0, 2);
+//            else if ( strlen($this->birthdate) == 8) $birthYear = substr($this->birthdate, 2, 2);
+//            else return '?';
+//
+//            if ( $birthYear < 30 ) $birthYear = "20$birthYear";
+//            else $birthYear = "19$birthYear";
+//            return (date('Y') - $birthYear) + 1;
+//        }
+//        else {
+//            return parent::__get($name);
+//        }
+//    }
 
-            if ( $birthYear < 30 ) $birthYear = "20$birthYear";
-            else $birthYear = "19$birthYear";
-            return (date('Y') - $birthYear) + 1;
-        }
+    public function nicknameOrName() {
+        if ( $this->nickname ) return $this->nickname;
+        else if ( $this->name ) return $this->name;
         else {
-            return parent::__get($name);
+            $email = $this->email;
+            if ( str_contains($email, '@') ) {
+                $arr = explode('@', $email, 2);
+                $account_name = $arr[0];
+                if ( strlen($account_name) < 3 ) return 'xxx';
+                return substr($account_name, 0, strlen($account_name)-3) . 'xxx';
+            } else {
+                return '(No nameOrNickname or Email)';
+            }
         }
     }
 
+    /// 나이를 계산할 수 없으면 -1 을 리터한다.
+    public function age() {
+        if ( strlen($this->birthdate) == 6) $birthYear = substr($this->birthdate, 0, 2);
+        else if ( strlen($this->birthdate) == 8) $birthYear = substr($this->birthdate, 2, 2);
+        else return -1;
+
+        if ( $birthYear < 30 ) $birthYear = "20$birthYear";
+        else $birthYear = "19$birthYear";
+        return (intval(date('Y')) - intval($birthYear)) + 1;
+    }
 
     /**
      * 회원 정보를 읽어서 data 에 보관한다.
@@ -110,6 +136,9 @@ class UserModel extends Entity {
             $this->updateMemoryData('photoIdx', $one->idx);
             $this->updateMemoryData('photoUrl', $one->url);
         }
+        $this->updateMemoryData('nicknameOrName', $this->nicknameOrName());
+        $this->updateMemoryData('age', $this->age());
+        $this->updateMemoryData('verified', $this->verifier);
 
         $data[ADMIN] = admin($this->email) ? 'Y' : 'N';
 
@@ -280,10 +309,13 @@ class UserModel extends Entity {
     public function shortProfile(bool $firebaseUid = false): array {
         $ret = [
             'idx' => $this->idx,
-            'name' => $this->name ? $this->name : '',
+            'name' => $this->name != null ? $this->name : '',
             'nickname' => $this->nickname,
+            'nicknameOrName' => $this->nicknameOrName,
             'gender' => $this->gender,
             'birthdate' => $this->birthdate,
+            'age' => $this->age,
+            'verified' => $this->verified,
             'point' => $this->point,
             'photoIdx' => $this->photoIdx ?? 0,
             'photoUrl' =>  $this->photoIdx ? thumbnailUrl($this->photoIdx ?? 0, 100, 100) : ($this->photoUrl ?? ''),

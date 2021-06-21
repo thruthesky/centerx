@@ -44,8 +44,15 @@ https://itsuda50.com/?route=post.get&true&idx=22
 https://local.itsuda50.com/?route=post.delete&true&idx=12602&sessionId=5592-52f7119495484c1d56cf8629e9664001
 
 
-###
-https://local.itsuda50.com/?route=post.search&where=(categoryId=<qna> or categoryId=<banana>)&page=1&limit=3&order=idx&by=ASC
+### 모든 게시판에서 최근 글 10 개를 가져온다.
+http://localhost/?route=post.search
+
+
+### 질문 게시판에서 최근 글 5 개를 가져온다.
+http://localhost/?route=post.search&categoryId=qna&limit=5
+
+### 질문 게시판에서 최근 글 중 2번 째 페이지에서 15 개를 가져온다.
+http://localhost/?route=post.search&categoryId=qna&page=2&limit=15
 
 
 ###

@@ -12,9 +12,9 @@ class CafeController {
     public function settings($in): array {
         $cafe = cafe();
         return [
-            'mainDomains' => $cafe->mainDomains,
+            'mainCafeDomains' => $cafe->mainCafeDomains,
             'countryDomains' => $cafe->countryDomains,
-            'rootDomainSettings' => $cafe->rootDomainSettings,
+            'mainCafeSettings' => $cafe->mainCafeSettings,
             'mainMenus' => $cafe->mainMenus,
             'sitemap' => $cafe->sitemap,
         ];

@@ -180,18 +180,18 @@ class Forum extends Entity {
      *
      * 참고로 현재 글/코멘트 객체가 올바른지는 이 함수 호출 전에 검사를 해야 한다.
      *
-     * @return UserTaxonomy
+     * @return UserModel
      */
-    public function user(): UserTaxonomy {
+    public function user(): UserModel {
         return user($this->userIdx);
     }
 
     /**
      * 현재 글/코멘트의 카테고리를 객체로 리턴한다.
      *
-     * @return CategoryTaxonomy
+     * @return CategoryModel
      */
-    public function category(): CategoryTaxonomy {
+    public function category(): CategoryModel {
         return category($this->categoryIdx);
     }
 

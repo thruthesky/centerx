@@ -1,0 +1,144 @@
+.layout {
+  background: #ecf1f3;
+  font-family: "Poppins", Helvetica, sans-serif;
+}
+.menu a[href*="<?=in('w')?>"] {
+  color: #d10c0c !important;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
+}
+
+.fs-xxs {
+  font-size: 8px;
+}
+.fs-xs {
+  font-size: 12px;
+}
+.fs-sm {
+  font-size: 14px;
+}
+.fs-md {
+  font-size: 16px;
+}
+.fs-lg {
+  font-size: 28px;
+}
+.fs-xl {
+  font-size: 36px;
+}
+.fs-xxl {
+  font-size: 52px;
+}
+
+.h-52px {
+  height: 52px;
+}
+
+.white {
+  color: white;
+}
+.white a {
+  color: white;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.fw-700 {
+  font-weight: 700;
+}
+
+.fw-500 {
+  font-weight: 500;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+.fw-400 {
+  font-weight: 400;
+}
+
+.hw-50x50 {
+  min-height: 50px;
+  min-width: 50px;
+  max-height: 50px;
+  max-width: 50px;
+}
+.hw-54x54 {
+  min-height: 54px !important;
+  min-width: 54px !important;
+  max-height: 54px !important;
+  max-width: 54px !important;
+}
+
+.border-radius-50 {
+  border-radius: 50%;
+}
+
+.border-radius-md {
+  border-radius: 16px;
+}
+.border-radius-sm {
+  border-radius: 8px;
+}
+.border-radius-xs {
+  border-radius: 4px;
+}
+
+.bg-skyblue {
+  background: #caf9ff;
+}
+.color-lightblue {
+  color: #00b4cb;
+}
+
+.text-overflow-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.border-left-grey {
+  border-left: 1px solid #ebedf3;
+}
+
+.sub-menu .active {
+  border-bottom: 2px solid #0bb783;
+}
+
+.sub-menu-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sub-menu-item-label {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.sub-menu-title {
+  font-size: .95rem !important;
+}
+
+.sub-menu-desc {
+  font-size: 13px !important;
+  color: #b5b5c3 !important;
+}
+
+.navbar div a {
+  color: #adb1c7;
+}
+
+.navbar div a:hover {
+  color: white;
+}

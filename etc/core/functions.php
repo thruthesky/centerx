@@ -1674,12 +1674,12 @@ function postMessagingUrl(int $idx) {
  *
  * @param array $in
  *
- *  - categoryId
- *  - categoryIdx
- *  - searchKey
- *  - userIdx
- *  - otherUserIdx
- *  - code
+ *  - categoryId - 글 아이디
+ *  - categoryIdx - 글 번호
+ *  - searchKey - 검색어
+ *  - userIdx - 사용자 번호
+ *  - otherUserIdx - 다른 사용자 번호
+ *  - code - 글 코드
  *  - countryCode - the country code.
  *
  *  - files - it is set to truthy value, then it searches for posts that has attached files.
@@ -1694,7 +1694,7 @@ function postMessagingUrl(int $idx) {
 function parsePostSearchHttpParams(array $in): array|string {
 
     $params = [];
-    $where = "parentIdx=0 AND deletedAt=0";
+    $where = "parentIdx=0";
 
 
     // 카테고리 idx 또는 카테고리 id 또는 0

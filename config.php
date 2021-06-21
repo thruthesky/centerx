@@ -23,7 +23,7 @@ const DOMAIN_THEMES = [
     // So, when test runs, you can choose which view(theme) do you wan to use by specifying the view into '_' key.
     '_' => 'default',
     'www_docker_nginx' => 'x',
-    'flutterkorea' => 'flutterkorea',
+    'flutterkorea' => 'default',
     'x.philov' => 'x',
     'cherry.philov' => 'x',
     'banana.philov' => 'x',
@@ -32,7 +32,7 @@ const DOMAIN_THEMES = [
     'sonubtheme' => 'sonub',
     'itsuda' => 'itsuda',
     '127.0.0.1' => 'default',
-    'localhost' => 'dating',
+    'localhost' => 'default',
     '169.254.194.6' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
     '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.
     '192.168.100.17' => 'itsuda', // Charles Ip address

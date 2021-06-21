@@ -23,8 +23,36 @@
 
 - To see alpha version of Matrix 2 which has widgets and themes, see `next-2-alpha-1` branch.
 
+# 버전 별 변경 사항 및 향후 전략
+
+## 버전 3
+
+- `centerx` 라는 명칭을 완전히 제거.
+- PHP 에서 화면에 직접 렌더링하는 부분은 `view/admin` 빼고는 모두 제거.
+  - `live-reload` 등 관련된 사항 재 정립
+- `widgets` 폴더 제거
+- Git repo 를 `https://github.com/withcenter/matrix` 로 이동.
 
 
+
+## 버전 2
+
+- 버전 2 에서 이름이 Centerx 에서 Matrix 로 변경이 되었다.
+- 버전 1 에서 사용되던 MVC 패턴이 버전 2 에서는 보다 체계적으로 사용된다.
+  - Model 에는 로직이들어가며 직접 DB 에서 데이터를 가져온다.
+    Controller 에서는 DB 에 직접 액세스를 못하며, Model 을 통해서만 가능하다.
+    View 화면을 보여주는 클랑이언트이다. SPA 또는 모바일앱 등에서 Restful API 로 Controller 에 접속하여 데이터를 DB 에 저장하거나 가져온다.
+- 버전 1 에서 사용되던 widget 개념은 더 이상 사용되지 않을 것이며 다음 버전에서 widgets 폴더가 삭제될 것이다.
+  현재 widgets 폴더는 관리자 페이지 등에서 사용되기 때문에 그대로 남아있다.
+  
+- 버전 1 에서는 theme 폴더를 통해서 PHP 에서 직접 화면에 렌더링을 하였으나 버전 2 에서는 권장하지 않고,
+  PHP 는 오직 백엔드만 담당하고 클라이언트엔드는 Vue.js 또는 모바일앱과 같이 완전히 분리하여 작업하는 것을 권장한다.
+
+- 참고로, 버전 2로 변경이 되면서, 많은 변화가 있었는데, 버전 1의 관리자 페이지가 버전 2로 모두 컨버팅 되지 않았다.
+  현재 회원 정보 관리, 게시판 관리가 우선 지원되며, Vue.js SPA 로 대체될 예정이다.
+  
+
+  
 # 설치와 기본 설정
 
 본 문서에서는 우분투 서버에서 도커를 통해 centerx 설치하는 방벙에 대해 설명한다.
@@ -162,7 +190,10 @@ define('DOMAIN_THEMES', [
 
 
 
+## 파이어베이스 설정
 
+- Matrix 는 Firebase 설정을 하지 않음면 올바로 동작하지 않습니다. 즉, Firebase 연동은 필수입니다.
+- Firebase Admin SDK Key Json 파일을 `keys` 폴더 아래에 저장하고 config 에 연결하면 됩니다.
 
 
 
@@ -720,10 +751,52 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 
 
+
 # 카페, Cafe
 
+- Cafe functionality is a unique function for `sonub.com` site. So, it may not be appropriate for the model and
+  controller to be under `controller` and `model` folder. Rather, they should be inside its view folder.
+  But to make it easy to work, it is under the system folder temporarily.
+
+- Cafe is like a group of small community in the site.
+- Cafe is actually a category. That means, a cafe is a forum. So cafe can have its category title, description,
+  subcategories, and more of what category has.
+
+- The cafe in sonub site is targeting a global travel information sharing service.
+  - Any one can create a cafe and they can share their interests or introduce their service.
+  
+
+- Cafe admin is the user who created the cafe.
+  - User can create a cafe by subbmitting the cafe create form.
+  - When user creates a cafe, the user can choose which country the cafe belongs to and sub domain of which root domain
+    he wants to use.
+    
+- Cafe main site, main-cafe.
+  - A cafe that are recorded in `CafeModel::$mainCafeDomains` are the main cafes.
+    - And if it not main cafe, then it will be a sub-cafe.
+  - Main cafe is not a category. Which means, it has no title, nor description, nor subscategories and nothing like
+    what a subcafe has.
+  - Main cafe has its settings inside `CafeModel::$mainCafeSettings`
+  
+
+- When user visits main-cafe,
+  - It displays menus inside `$mainCafeSettings`.
+  
+- When user visits sub-cafe,
+  - It displays subcategories of the sub-cafe, together with th main-cafe menus.
+  
+## Cafe PWA
+
+- All cafe (both main-cafe and sub-cafe) works as PWA.
+- All cafe (both main-cafe and sub-cafe) can be installed as A2HS.
+  - Main cafe will use main cafe settings to patch manifest.json
+  - Sub cafe will use its category settings to patch manifest.json
+  
 
 
+
+    
+## 카페 부연 설명
 
 * 게시판 1개를 카페로 해서, 최소한의 기능만으로 카페 또는 전세계 교민 카페를 만든다.
   * 카페 당 게시판 1개가 할당된다.
@@ -1053,7 +1126,83 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 
 
-# 관리자 페이지
+# 관리자 페이지, Admin Page
+
+- Starting Matrix(version 2), PHP does not render web pages directly to web browser. So, it needs a client-end to
+  display admin site.
+  The default website and its admin page is built-in Vue.js.
+
+- Most of the admin page and its functionalities comes from Vue.js components. The components are inside
+  `x-vue/components/admin` folder.
+  And by simply adding admin routes in the `routes/index.ts` in Vue.js app, the Vue.js app can use admin pages.
+  
+```ts
+import Vue from "vue";
+import VueRouter, { RouteConfig } from "vue-router";
+import Home from "../views/Home.vue";
+
+Vue.use(VueRouter);
+
+const routes: Array<RouteConfig> = [
+  {
+    path: "/",
+    name: "Home",
+    component: Home,
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: () => import("@/x-vue/components/admin/Admin.vue"),
+    children: [
+      {
+        path: "",
+        name: "AdminUserList",
+        component: () => import("@/x-vue/components/admin/AdminUserList.vue"),
+      },
+      {
+        path: "user",
+        name: "AdminUserList",
+        component: () => import("@/x-vue/components/admin/AdminUserList.vue"),
+      },
+      {
+        path: "category",
+        name: "AdminCategoryList",
+        component: () =>
+                import("@/x-vue/components/admin/AdminCategoryList.vue"),
+      },
+      {
+        path: "post",
+        name: "AdminPostList",
+        component: () => import("@/x-vue/components/admin/AdminPostList.vue"),
+      },
+      {
+        path: "file",
+        name: "AdminFileList",
+        component: () => import("@/x-vue/components/admin/AdminFileList.vue"),
+      },
+      {
+        path: "setting",
+        name: "AdminSetting",
+        component: () => import("@/x-vue/components/admin/AdminSetting.vue"),
+      },
+      {
+        path: "messaging",
+        name: "AdminPushNotification",
+        component: () =>
+                import("@/x-vue/components/admin/AdminPushNotification.vue"),
+      },
+    ],
+  },
+];
+
+const router = new VueRouter({
+  mode: "history",
+  base: process.env.BASE_URL,
+  routes,
+});
+
+export default router;
+```
 
 ## 관리자 설정
 
