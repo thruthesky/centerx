@@ -16,7 +16,7 @@ if ( isset($_SERVER['PHP_SELF']) && str_contains($_SERVER['PHP_SELF'], 'manifest
     $json['scope'] = "/";
     $json['theme_color'] = "#ffffff";
 
-    if (!in_array(get_host_name(), $cafe->mainDomains)) {
+    if (!in_array(get_host_name(), $cafe->mainCafeDomains)) {
         $json['background_color'] = $cafe->app_background_color;
         $json['name'] = $cafe->title;
         $json['short_name'] = $cafe->app_name;

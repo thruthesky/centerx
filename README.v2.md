@@ -751,10 +751,52 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 
 
+
 # 카페, Cafe
 
+- Cafe functionality is a unique function for `sonub.com` site. So, it may not be appropriate for the model and
+  controller to be under `controller` and `model` folder. Rather, they should be inside its view folder.
+  But to make it easy to work, it is under the system folder temporarily.
+
+- Cafe is like a group of small community in the site.
+- Cafe is actually a category. That means, a cafe is a forum. So cafe can have its category title, description,
+  subcategories, and more of what category has.
+
+- The cafe in sonub site is targeting a global travel information sharing service.
+  - Any one can create a cafe and they can share their interests or introduce their service.
+  
+
+- Cafe admin is the user who created the cafe.
+  - User can create a cafe by subbmitting the cafe create form.
+  - When user creates a cafe, the user can choose which country the cafe belongs to and sub domain of which root domain
+    he wants to use.
+    
+- Cafe main site, main-cafe.
+  - A cafe that are recorded in `CafeModel::$mainCafeDomains` are the main cafes.
+    - And if it not main cafe, then it will be a sub-cafe.
+  - Main cafe is not a category. Which means, it has no title, nor description, nor subscategories and nothing like
+    what a subcafe has.
+  - Main cafe has its settings inside `CafeModel::$mainCafeSettings`
+  
+
+- When user visits main-cafe,
+  - It displays menus inside `$mainCafeSettings`.
+  
+- When user visits sub-cafe,
+  - It displays subcategories of the sub-cafe, together with th main-cafe menus.
+  
+## Cafe PWA
+
+- All cafe (both main-cafe and sub-cafe) works as PWA.
+- All cafe (both main-cafe and sub-cafe) can be installed as A2HS.
+  - Main cafe will use main cafe settings to patch manifest.json
+  - Sub cafe will use its category settings to patch manifest.json
+  
 
 
+
+    
+## 카페 부연 설명
 
 * 게시판 1개를 카페로 해서, 최소한의 기능만으로 카페 또는 전세계 교민 카페를 만든다.
   * 카페 당 게시판 1개가 할당된다.
@@ -1084,7 +1126,83 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 
 
-# 관리자 페이지
+# 관리자 페이지, Admin Page
+
+- Starting Matrix(version 2), PHP does not render web pages directly to web browser. So, it needs a client-end to
+  display admin site.
+  The default website and its admin page is built-in Vue.js.
+
+- Most of the admin page and its functionalities comes from Vue.js components. The components are inside
+  `x-vue/components/admin` folder.
+  And by simply adding admin routes in the `routes/index.ts` in Vue.js app, the Vue.js app can use admin pages.
+  
+```ts
+import Vue from "vue";
+import VueRouter, { RouteConfig } from "vue-router";
+import Home from "../views/Home.vue";
+
+Vue.use(VueRouter);
+
+const routes: Array<RouteConfig> = [
+  {
+    path: "/",
+    name: "Home",
+    component: Home,
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: () => import("@/x-vue/components/admin/Admin.vue"),
+    children: [
+      {
+        path: "",
+        name: "AdminUserList",
+        component: () => import("@/x-vue/components/admin/AdminUserList.vue"),
+      },
+      {
+        path: "user",
+        name: "AdminUserList",
+        component: () => import("@/x-vue/components/admin/AdminUserList.vue"),
+      },
+      {
+        path: "category",
+        name: "AdminCategoryList",
+        component: () =>
+                import("@/x-vue/components/admin/AdminCategoryList.vue"),
+      },
+      {
+        path: "post",
+        name: "AdminPostList",
+        component: () => import("@/x-vue/components/admin/AdminPostList.vue"),
+      },
+      {
+        path: "file",
+        name: "AdminFileList",
+        component: () => import("@/x-vue/components/admin/AdminFileList.vue"),
+      },
+      {
+        path: "setting",
+        name: "AdminSetting",
+        component: () => import("@/x-vue/components/admin/AdminSetting.vue"),
+      },
+      {
+        path: "messaging",
+        name: "AdminPushNotification",
+        component: () =>
+                import("@/x-vue/components/admin/AdminPushNotification.vue"),
+      },
+    ],
+  },
+];
+
+const router = new VueRouter({
+  mode: "history",
+  base: process.env.BASE_URL,
+  routes,
+});
+
+export default router;
+```
 
 ## 관리자 설정
 
