@@ -152,7 +152,7 @@ class CafeModel extends CategoryModel
 
         if( strlen($domain) > 32 ) return $this->error(e()->domain_too_long);
 
-        if (in_array($domain, $this->mainCafeDomains)) return $this->error(e()->cafe_exists);
+        if (in_array($domain, $this->mainCafeDomains)) return $this->error(e()->cafe_main_domain);
 
         if ( category($domain)->exists ) return $this->error(e()->cafe_exists);
 
