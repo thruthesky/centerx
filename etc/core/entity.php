@@ -504,7 +504,7 @@ class Entity {
      * Delete records.
      *
      * 참고, 이전에 에러가 발생했으면, 삭제하지 않고, 그냥 현재 객체를 리턴한다.
-     * 참고, 삭제 후, $this->data 는 빈 배열로 되지만, $this->idx 값은 유지한다.
+     * 참고, 삭제 후, 실제 DB table record 는 사라지지만, $this->data 값은 유지한다.
      * 참고, 에러가 있으면 에러가 설정된다.
      *
      * @attention When it is deleted, the entity record had removed immediately from the table but the data still exists

@@ -76,6 +76,7 @@ class FileController {
      * 파일 삭제 라우트
      *
      * 파일 삭제는 오직 이 라우트를 통해서만 이루어져야 한다. PHP 프로그램적으로 삭제해서도 안되고, 오직 이 라우트를 통해서만 삭제한다.
+     * 삭제 후 전체 레코드를 리턴한다.
      *
      * @param $in
      * @return array|string

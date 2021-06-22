@@ -1000,6 +1000,10 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
   For instance, "apple,banana,cherry"
   This subcategories may be seen on post list or post edit and each post can have one subcategory at `posts.subcategory`.
 
+  - `subcategoriesArray` - subcategories 로 부터 콤마로 구분된 카테고리를 분리하여 배열에 저장하고 클라이언트로 전달한다.
+    참고로, 가능한 원래 record field 이름은 유지하고, 가공한 정보를 새로운 이름으로 해서 클라이어늩로 전달한다.
+    단, `wc_posts.files` 의 경우는 예외이다.
+
 - postCreateLimit - users who has less points than this cannot create post
   For instance, this value is 1000 and user has 999. Then the user cannot create post.
 - commentCreateLimit - users who has less points than this cannot create comment
