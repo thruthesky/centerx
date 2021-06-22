@@ -767,7 +767,7 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
   
 
 - Cafe admin is the user who created the cafe.
-  - User can create a cafe by subbmitting the cafe create form.
+  - User can create a cafe by submitting the cafe create form.
   - When user creates a cafe, the user can choose which country the cafe belongs to and sub domain of which root domain
     he wants to use.
     

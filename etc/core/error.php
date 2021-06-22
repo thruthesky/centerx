@@ -206,6 +206,9 @@ class E {
     public string $main_cafe_has_no_cafe_category_record = 'error_main_cafe_has_no_cafe_category_record';
 
 
+    public string $cafe_main_domain = 'error_cafe_main_domain';
+
+
     // advertisement
     public string $advertisement_is_active = 'error_advertisement_is_active';
     public string $advertisement_point_deduction_failed = 'error_advertisement_point_deduction_failed';
