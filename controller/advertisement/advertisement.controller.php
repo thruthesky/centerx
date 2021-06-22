@@ -18,17 +18,19 @@ class AdvertisementController
     public function loadBanners(array $in): array|string
     {
         $cafe = cafe(domain: $in['cafeDomain']);
-        $where = "countryCode=? AND beginAt<? AND endAt>?";
+        $where = "countryCode=? AND beginAt<? AND endAt>? AND files<>''";
         $params = [ $cafe->countryCode, time(), time() ];
 
         $posts = advertisement()->search(where: $where, params: $params, object: true);
         $res = [];
         foreach ($posts as $post) {
             $res[] = [
-                'url' => $post->url,
+                'idx' => $post->idx,
+                'url' => $post->relativeUrl,
                 'clickUrl' => $post->clickUrl,
                 'bannerUrl' => $post->fileByCode('banner')->url,
                 'category' => $post->subcategory,
+                'code' => $post->code,
             ];
         }
         return $res;
