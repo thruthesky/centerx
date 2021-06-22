@@ -5,7 +5,11 @@
 ?>
 
     <h1>Default Theme</h1>
-
+<?php
+echo date('r', time()) . '<hr>';
+echo date('r', 1624287600) . '<hr>';
+echo date('r', 1624374000);
+?>
 <?php if ( loggedIn() ) { ?>
     어서오세요, <?=login()->name?>님.
 <?php } else { ?>

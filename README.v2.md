@@ -612,7 +612,8 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
 - when there is only 1 global banner, the global banner will be displayed on left, and default banner will be displayed on right.
 - when there are 2 global banners, they will be displayed on one left side, and the other right side.
 - when there are more than 2 global banners, the will be divided into two group and one group will be displayed on left, and the other group will be displayed on right.
-- If a category has no category banner, then, global banner will be displayed just the way it is displayed as globally
+- If a category has no category banner, then, global banner will be displayed just the way it is displayed as globally.
+  If there no global banner, then default banner will be displayed.
 - If a category has only one category banner, then the category banner will be display on left side and all the global
   banners will be displayed on right side.
 

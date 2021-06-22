@@ -11,17 +11,22 @@ class AdvertisementController
      *
      * @param array $in - See `parsePostSearchHttpParams()` for detail input.
      * @return array|string
+     * - url
+     * - clickUrl
+     * - bannerUrl
+     * - subcategory
      *
-     *
-     * url, clickUrl, bannerUrl, category
+     * @attention if subcaetgory is empty, it is set to 'global'.
      */
     public function loadBanners(array $in): array|string
     {
         $cafe = cafe(domain: $in['cafeDomain']);
-        $where = "countryCode=? AND beginAt<? AND endAt>? AND files<>''";
-        $params = [$cafe->countryCode, time(), time()];
+        $where = "countryCode=? AND code <> '' AND beginAt<? AND endAt>=? AND files<>''";
+        $params = [$cafe->countryCode, time(), today()];
 
-        $posts = advertisement()->search(where: $where, params: $params, object: true);
+//        debug_log('tomorrow; ', tomorrow());
+
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true);
         $res = [];
         foreach ($posts as $post) {
             $res[] = [
@@ -29,7 +34,7 @@ class AdvertisementController
                 'url' => $post->relativeUrl,
                 'clickUrl' => $post->clickUrl,
                 'bannerUrl' => $post->fileByCode('banner')->url,
-                'category' => $post->subcategory,
+                'subcategory' => $post->subcategory ? $post->subcategory : 'global',
                 'code' => $post->code,
             ];
         }

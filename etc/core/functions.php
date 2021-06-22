@@ -1883,6 +1883,22 @@ function isBetween($stamp, $firstStamp, $secondStamp) {
     return $curr->betweenIncluded($first, $second);
 }
 
+
+/**
+ * Stamp of 0 second of today. That is the beginning of today.
+ * @return int
+ */
+function today(): int {
+    return \Carbon\Carbon::today()->getTimestamp();
+}
+/**
+ * Stamp of 0 second of tomorrow. That is the beginning of tomorrow.
+ * @return int
+ */
+function tomorrow(): int {
+    return \Carbon\Carbon::tomorrow()->getTimestamp();
+}
+
 /**
  * Returns true if the $stamp is between the first and second.
  * @param $stamp
