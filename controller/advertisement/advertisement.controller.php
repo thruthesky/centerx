@@ -19,7 +19,7 @@ class AdvertisementController
     {
         $cafe = cafe(domain: $in['cafeDomain']);
         $where = "countryCode=? AND beginAt<? AND endAt>? AND files<>''";
-        $params = [ $cafe->countryCode, time(), time() ];
+        $params = [$cafe->countryCode, time(), time()];
 
         $posts = advertisement()->search(where: $where, params: $params, object: true);
         $res = [];
@@ -32,6 +32,36 @@ class AdvertisementController
                 'category' => $post->subcategory,
                 'code' => $post->code,
             ];
+        }
+        return $res;
+    }
+
+    /**
+     * 글 검색 후 리턴
+     *
+     * 참고, 입력 값은 `parsePostSearchHttpParams()` 를 참고한다.
+     *
+     * @param array $in - See `parsePostSearchHttpParams()` for detail input.
+     * @return array|string
+     * 
+     * 
+     * 
+     */
+    public function search(array $in): array|string
+    {
+        if ($in) {
+            $re = parsePostSearchHttpParams($in);
+            if (isError($re)) return $re;
+            list($where, $params) = $re;
+            $in['where'] = $where;
+            $in['params'] = $params;
+        }
+
+        $posts = post()->search(object: true, in: $in);
+        $res = [];
+        foreach ($posts as $post) {
+            $post->updateMemoryData('status', advertisement()->getStatus($post));
+            $res[] = $post->response(comments: 0);
         }
         return $res;
     }
@@ -114,7 +144,7 @@ class AdvertisementController
 
 
         $in = $post->updateBeginEndDate($in);
-        
+
         // add 1 to include beginning date.
         $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
         if (ADVERTISEMENT_SETTINGS['maximum_advertising_days']) {
