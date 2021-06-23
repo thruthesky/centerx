@@ -605,8 +605,17 @@ class AdvertisementTest
 
     function loadActiveBanners()
     {
-        $re = request("advertisement.loadBanners", ['cafeDomain' => 'a']);
-        d($re);
-    }
+        $userPoint = 800000;
+        $this->loginSetPoint($userPoint);
 
+        $this->createAndStartAdvertisement([
+            CODE => LINE_BANNER,
+            COUNTRY_CODE => 'PH',
+            'beginDate' => strtotime('-1 day'),
+            'endDate' => strtotime('+8 days')
+        ]);
+
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.philov.com']);
+        isTrue(count($re) > 0, 'Expect: active banner is not empty');
+    }
 }
