@@ -20,6 +20,8 @@ class AdvertisementController
      */
     public function loadBanners(array $in): array|string
     {
+        if(!isset($in['cafeDomain']) || empty($in['cafeDomain'])) return e()->empty_domain;
+
         $cafe = cafe(domain: $in['cafeDomain']);
         $where = "countryCode=? AND code <> '' AND beginAt<? AND endAt>=? AND files<>''";
         $params = [$cafe->countryCode, time(), today()];
