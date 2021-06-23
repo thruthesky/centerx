@@ -11,10 +11,13 @@ class AdvertisementController
      *
      * @param array $in - See `parsePostSearchHttpParams()` for detail input.
      * @return array|string
+     * - idx
      * - url
      * - clickUrl
      * - bannerUrl
      * - subcategory
+     * - code
+     *  - title : if code is 'line', it will be included .
      *
      * @attention if subcaetgory is empty, it is set to 'global'.
      */
@@ -38,8 +41,9 @@ class AdvertisementController
                 'bannerUrl' => $post->fileByCode('banner')->url,
                 'subcategory' => $post->subcategory ? $post->subcategory : 'global',
                 'code' => $post->code,
-                'title' => $post->title,
             ];
+
+            if ($post->code == LINE_BANNER) $res['title'] = $post->title;
         }
         return $res;
     }
