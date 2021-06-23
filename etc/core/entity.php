@@ -420,7 +420,8 @@ class Entity {
 
         $idx = db()->insert( $this->getTable(), $record );
 
-        if ( !$idx ) return $this->error(e()->insert_failed);
+        /// error if return from insert() is 0.
+        if ( $idx == 0 ) return $this->error(e()->insert_failed);
 
         meta()->creates($this->taxonomy, $idx, $this->getMetaFields($in));
 

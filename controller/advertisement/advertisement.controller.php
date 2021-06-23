@@ -26,10 +26,14 @@ class AdvertisementController
         if (!isset($in['cafeDomain']) || empty($in['cafeDomain'])) return e()->empty_domain;
 
         $cafe = cafe(domain: $in['cafeDomain']);
-        $where = "countryCode=? AND code <> '' AND beginAt<? AND endAt>=? AND files<>''";
+        if ( $cafe->exists == false ) return e()->cafe_not_exists;
+        $where = "countryCode=? AND code != '' AND beginAt < ? AND endAt >= ? AND files != ''";
         $params = [$cafe->countryCode, time(), today()];
 
         //        debug_log('tomorrow; ', tomorrow());
+
+//        d($where);
+//        d($params);
 
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true);
         $res = [];

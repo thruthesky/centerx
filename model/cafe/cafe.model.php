@@ -135,6 +135,13 @@ class CafeModel extends CategoryModel
     }
 
 
+    /**
+     * @param array $in
+     * - rootDomain as 'abc.com'
+     * - domain as 'user'. So, the final domain would look 'user.abc.com'.
+     * - countryCode as 'PH'.
+     * @return $this
+     */
     public function create($in):self {
         if( notLoggedIn() ) return $this->error(e()->not_logged_in);
 
@@ -161,7 +168,7 @@ class CafeModel extends CategoryModel
             USER_IDX => login()->idx,
             ID => $domain,
             DOMAIN => $in['rootDomain'],
-            'countryCode' => in('countryCode')
+            'countryCode' => $in['countryCode'],
         ];
         return parent::create($data);
     }

@@ -79,7 +79,9 @@ class MySQLiDatabase {
         try {
             $sql = "INSERT INTO {$table} ({$fields}) VALUES ({$placeholders})";
 
+
             $stmt = $this->connection->prepare($sql);
+
 
             if ( is_bool($stmt) ) {
                 if ( $this->displayError ) {
@@ -106,6 +108,9 @@ class MySQLiDatabase {
             // 위 코드에서 language 가 빠져서 에러가 난다.
 
 
+//            d($sql);
+//            d($values);
+//            d($stmt->affected_rows > 0, "---- result: ---");
 
             // Check for successful insertion
             if ( $stmt->affected_rows > 0 ) {
@@ -113,6 +118,7 @@ class MySQLiDatabase {
                 if ( $id ) return $id;
                 else return 1;
             } else if ( $stmt->affected_rows == 0 ) {
+                $this->handleError($stmt->error, $sql);
                 return 0;
             } else {
                 $this->handleError($stmt->error, $sql);

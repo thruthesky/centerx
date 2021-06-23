@@ -608,14 +608,24 @@ class AdvertisementTest
         $userPoint = 800000;
         $this->loginSetPoint($userPoint);
 
-        $this->createAndStartAdvertisement([
+        $rootDomain = 'a' . time() . '.com';
+        $countryCode = 'UU';
+
+        $re = cafe()->create(['rootDomain' => $rootDomain, 'domain' => 'abc', 'countryCode' => $countryCode]);
+        isTrue( $re->ok, 'cafe for banner test has been created');
+        $domain = 'abc.' . $rootDomain;
+
+        $re = $this->createAndStartAdvertisement([
             CODE => LINE_BANNER,
-            COUNTRY_CODE => 'PH',
+            COUNTRY_CODE => $countryCode,
             'beginDate' => strtotime('-1 day'),
-            'endDate' => strtotime('+8 days')
+            'endDate' => strtotime('+8 days'),
+            'files' => '1',
         ]);
 
-        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.philov.com']);
+
+        $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
+
         isTrue(count($re) > 0, 'Expect: active banner is not empty');
     }
 }
