@@ -605,7 +605,7 @@ class AdvertisementTest
 
     function loadActiveBanners()
     {
-        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.philov.com']);
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'a']);
         d($re);
     }
 
