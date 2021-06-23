@@ -186,7 +186,7 @@ class AdvertisementTest
         // Advertisement end date same as now, considered as active.
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('-1 days'), 'endDate' => time()]);
         isTrue($re['status'] == 'active', "Expect: Status == 'active'");
-        
+
         // considered as inactive.
         $re = request("advertisement.stop", [
             CATEGORY_ID => 'advertisement',
@@ -194,7 +194,7 @@ class AdvertisementTest
             IDX => $re[IDX]
         ]);
         isTrue($re['status'] == 'inactive', "Expect: Status == 'inactive'");
-        
+
         // Advertisement started but not served yet, considered as waiting.
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('+3 days'), 'endDate' => strtotime('+4 days')]);
         isTrue($re['status'] == 'waiting', "Expect: Status == 'waiting'");
@@ -244,9 +244,9 @@ class AdvertisementTest
         isTrue($activity->toUserPointApply == -$bp, "Expect: activity->toUserPointApply == -$bp.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
 
-        
+
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('+1 days'), 'endDate' => strtotime('+3 days')]);
-        
+
         $advPoint = $bp * 3;
         $userPoint -= $advPoint;
 
@@ -309,7 +309,7 @@ class AdvertisementTest
 
         $ad = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
 
-        isTrue($ad['advertisementPoint'] == 0, "Expect: 'advertisementPoint' => 0.");
+        isTrue($ad['advertisementPoint'] == '', "Expect: 'advertisementPoint' => 0.");
 
         isTrue(login()->getPoint() == $userPoint, "Expect: user's points => $userPoint.");
 
@@ -550,7 +550,7 @@ class AdvertisementTest
         $ad = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
         $userPoint += $advPoint;
 
-        isTrue($ad['advertisementPoint'] == 0, "Expect: 'advertisementPoint' == 0.");
+        isTrue($ad['advertisementPoint'] == '', "Expect: 'advertisementPoint' == 0.");
         isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
 
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.cancel');
@@ -583,7 +583,7 @@ class AdvertisementTest
         $newAd = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $newAd[IDX]]);
 
         $userPoint += $refund;
-        isTrue($newAd['advertisementPoint'] == 0, "Expect: 'advertisementPoint' == 0.");
+        isTrue($newAd['advertisementPoint'] == '', "Expect: 'advertisementPoint' == 0.");
         isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
 
         $activity = userActivity()->last(taxonomy: POSTS, entity: $newAd[IDX], action: 'advertisement.stop');

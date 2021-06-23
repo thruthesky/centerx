@@ -20,13 +20,13 @@ class AdvertisementController
      */
     public function loadBanners(array $in): array|string
     {
-        if(!isset($in['cafeDomain']) || empty($in['cafeDomain'])) return e()->empty_domain;
+        if (!isset($in['cafeDomain']) || empty($in['cafeDomain'])) return e()->empty_domain;
 
         $cafe = cafe(domain: $in['cafeDomain']);
         $where = "countryCode=? AND code <> '' AND beginAt<? AND endAt>=? AND files<>''";
         $params = [$cafe->countryCode, time(), today()];
 
-//        debug_log('tomorrow; ', tomorrow());
+        //        debug_log('tomorrow; ', tomorrow());
 
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true);
         $res = [];
@@ -38,6 +38,7 @@ class AdvertisementController
                 'bannerUrl' => $post->fileByCode('banner')->url,
                 'subcategory' => $post->subcategory ? $post->subcategory : 'global',
                 'code' => $post->code,
+                'title' => $post->title,
             ];
         }
         return $res;
@@ -102,7 +103,6 @@ class AdvertisementController
             if ($post->isMine() == false) return  e()->not_your_post;
 
             $post->update($in);
-            $post->updateMemoryData('status', advertisement()->getStatus($post));
 
             return $post->response();
         }
@@ -245,7 +245,7 @@ class AdvertisementController
         // get points to refund.
         $pointToRefund = $settings[$post->code] * $days;
 
-        // set advertisementPoint to 0 when the advertisement has stopped.
+        // set advertisementPoint to empty ('') when the advertisement has stopped.
         $in['advertisementPoint'] = '';
 
         // Record for change point.
