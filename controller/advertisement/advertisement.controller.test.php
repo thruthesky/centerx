@@ -9,7 +9,7 @@ $at = new AdvertisementTest();
 // $at->beginDateEmpty();
 // $at->endDateEmpty();
 // $at->maximumAdvertisementDays();
-$at->domainEmpty();
+// $at->domainEmpty();
 
 // $at->statusCheck();
 
@@ -31,12 +31,14 @@ $at->domainEmpty();
 
 // $at->startStopChangeDatesAndCountry();
 
-// $at->fetchWithCategoryCountryAndCode();
+$at->loadActiveBanners();
+
 
 /**
  * doesn't work now since when editting without IDX will result to creating instead of update.
  */
 // $at->emptyIdx();
+// $at->fetchWithCategoryCountryAndCode();
 
 /**
  * 
@@ -175,15 +177,11 @@ class AdvertisementTest
 
     function domainEmpty()
     {
-        $this->loginSetPoint(1000000);
         $re = request("advertisement.loadBanners");
         isTrue($re == e()->empty_domain, "Expect: error, no domain when fetching active banners.");
 
         $re = request("advertisement.loadBanners", ['cafeDomain' => '']);
         isTrue($re == e()->empty_domain, "Expect: error, no domain when fetching active banners.");
-        
-        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.philov.com']);
-        d($re);
     }
 
 
@@ -605,132 +603,135 @@ class AdvertisementTest
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 
-    function fetchWithCategoryCountryAndCode()
+    function loadActiveBanners()
     {
-
-
-
-        // $alpha = 'alpha' . time();
-        // $omega = 'omega' . time();
-        // $adOpts = [
-        //     CODE => TOP_BANNER,
-        //     'beginDate' => time(),
-        //     'endDate' => time()
-        // ];
-
-        // $this->loginSetPoint(1000000);
-
-        // $adOpts[SUB_CATEGORY] = $alpha;
-        // $adOpts[COUNTRY_CODE] = "US";
-        // $adOpts[CODE] = TOP_BANNER;
-        // $this->createAndStartAdvertisement($adOpts); // a - us - top
-        // $this->createAndStartAdvertisement($adOpts); // a - us - top
-
-        // $adOpts[CODE] = SIDEBAR_BANNER;
-        // $this->createAndStartAdvertisement($adOpts); // a - us - side
-        // $this->createAndStartAdvertisement($adOpts); // a - us - side
-
-        // $adOpts[COUNTRY_CODE] = "PH";
-        // $this->createAndStartAdvertisement($adOpts); // a - ph - side
-        // $this->createAndStartAdvertisement($adOpts); // a - ph - side
-
-        // $adOpts[CODE] = LINE_BANNER;
-        // $this->createAndStartAdvertisement($adOpts); // a - ph - line
-
-        // $adOpts[SUB_CATEGORY] = $omega;
-        // $adOpts[CODE] = SQUARE_BANNER;
-        // $this->createAndStartAdvertisement($adOpts); // o - ph - square
-        // $this->createAndStartAdvertisement($adOpts); // o - ph - square
-
-        // $adOpts[COUNTRY_CODE] = "US";
-        // $this->createAndStartAdvertisement($adOpts); // o - us - square
-        // $this->createAndStartAdvertisement($adOpts); // o - us - square
-
-        // $adOpts[CODE] = SIDEBAR_BANNER;
-        // $this->createAndStartAdvertisement($adOpts); // o - us - side
-
-        // $adOpts[CODE] = TOP_BANNER;
-        // $this->createAndStartAdvertisement($adOpts); // o - us - top
-
-        // $adOpts[CODE] = LINE_BANNER;
-        // $this->createAndStartAdvertisement($adOpts); // o - us - line
-        // $this->createAndStartAdvertisement($adOpts); // o - us - line
-
-
-        // --- fetch with category (subcategory) --- //
-        // alpha
-        // $searchOpts[SUB_CATEGORY] = $alpha;
-        // $re = request("advertisement.loadBanners", $searchOpts);
-        // isTrue(count($re) == 7, "Expect: 7 advertisement with " . $alpha . " category.");
-
-        // omega
-        // $searchOpts[SUB_CATEGORY] = $omega;
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 8, "Expect: 8 advertisement with " . $omega . " category.");
-
-
-        // // --- fetch with category (subcategory) and country code. --- //
-        // // omega - PH
-        // $searchOpts[COUNTRY_CODE] = "PH";
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 2, "Expect: 2 advertisement with " . $omega . " category and PH country code");
-
-        // // omega - US
-        // $searchOpts[COUNTRY_CODE] = "US";
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 6, "Expect: 6 advertisement with " . $omega . " category and US country code");
-
-        // // alpha - US
-        // $searchOpts[SUB_CATEGORY] = $alpha;
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 4, "Expect: 4 advertisement with " . $omega . " category and US country code");
-
-        // // alpha - PH
-        // $searchOpts[COUNTRY_CODE] = "PH";
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 3, "Expect: 3 advertisement with " . $omega . " category and PH country code");
-
-        // unset($searchOpts[COUNTRY_CODE]);
-
-        // // --- fetch with category (subcategory) and banner type (code). --- //
-        // // alpha - top
-        // $searchOpts[CODE] = TOP_BANNER;
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 2, "Expect: 2 advertisement with " . $alpha . " category and top banner type.");
-
-        // // alpha - side
-        // $searchOpts[CODE] = SIDEBAR_BANNER;
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 4, "Expect: 4 advertisement with " . $alpha . " category and sidebar banner type.");
-
-        // // alpha - line
-        // $searchOpts[CODE] = LINE_BANNER;
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 1, "Expect: 1 advertisement with " . $alpha . " category and line banner type.");
-
-        // // alpha - square
-        // $searchOpts[CODE] = SQUARE_BANNER;
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 0, "Expect: 0 advertisement with " . $alpha . " category and square banner type.");
-
-        // // omega - square
-        // $searchOpts[SUB_CATEGORY] = $omega;
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 4, "Expect: 4 advertisement with " . $omega . " category and square banner type.");
-
-        // // omega - top
-        // $searchOpts[CODE] = TOP_BANNER;
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 1, "Expect: 1 advertisement with " . $omega . " category and top banner type.");
-
-        // // omega - side
-        // $searchOpts[CODE] = SIDEBAR_BANNER;
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 1, "Expect: 1 advertisement with " . $omega . " category and sidebar banner type.");
-
-        // // omega - line
-        // $searchOpts[CODE] = LINE_BANNER;
-        // $re = request("post.search", $searchOpts);
-        // isTrue(count($re) == 2, "Expect: 2 advertisement with " . $omega . " category and line banner type.");
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.philov.com']);
+        d($re);
     }
+
+    // function fetchWithCategoryCountryAndCode()
+    // {
+    // $alpha = 'alpha' . time();
+    // $omega = 'omega' . time();
+    // $adOpts = [
+    //     CODE => TOP_BANNER,
+    //     'beginDate' => time(),
+    //     'endDate' => time()
+    // ];
+
+    // $this->loginSetPoint(1000000);
+
+    // $adOpts[SUB_CATEGORY] = $alpha;
+    // $adOpts[COUNTRY_CODE] = "US";
+    // $adOpts[CODE] = TOP_BANNER;
+    // $this->createAndStartAdvertisement($adOpts); // a - us - top
+    // $this->createAndStartAdvertisement($adOpts); // a - us - top
+
+    // $adOpts[CODE] = SIDEBAR_BANNER;
+    // $this->createAndStartAdvertisement($adOpts); // a - us - side
+    // $this->createAndStartAdvertisement($adOpts); // a - us - side
+
+    // $adOpts[COUNTRY_CODE] = "PH";
+    // $this->createAndStartAdvertisement($adOpts); // a - ph - side
+    // $this->createAndStartAdvertisement($adOpts); // a - ph - side
+
+    // $adOpts[CODE] = LINE_BANNER;
+    // $this->createAndStartAdvertisement($adOpts); // a - ph - line
+
+    // $adOpts[SUB_CATEGORY] = $omega;
+    // $adOpts[CODE] = SQUARE_BANNER;
+    // $this->createAndStartAdvertisement($adOpts); // o - ph - square
+    // $this->createAndStartAdvertisement($adOpts); // o - ph - square
+
+    // $adOpts[COUNTRY_CODE] = "US";
+    // $this->createAndStartAdvertisement($adOpts); // o - us - square
+    // $this->createAndStartAdvertisement($adOpts); // o - us - square
+
+    // $adOpts[CODE] = SIDEBAR_BANNER;
+    // $this->createAndStartAdvertisement($adOpts); // o - us - side
+
+    // $adOpts[CODE] = TOP_BANNER;
+    // $this->createAndStartAdvertisement($adOpts); // o - us - top
+
+    // $adOpts[CODE] = LINE_BANNER;
+    // $this->createAndStartAdvertisement($adOpts); // o - us - line
+    // $this->createAndStartAdvertisement($adOpts); // o - us - line
+
+
+    // --- fetch with category (subcategory) --- //
+    // alpha
+    // $searchOpts[SUB_CATEGORY] = $alpha;
+    // $re = request("advertisement.loadBanners", $searchOpts);
+    // isTrue(count($re) == 7, "Expect: 7 advertisement with " . $alpha . " category.");
+
+    // omega
+    // $searchOpts[SUB_CATEGORY] = $omega;
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 8, "Expect: 8 advertisement with " . $omega . " category.");
+
+
+    // // --- fetch with category (subcategory) and country code. --- //
+    // // omega - PH
+    // $searchOpts[COUNTRY_CODE] = "PH";
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 2, "Expect: 2 advertisement with " . $omega . " category and PH country code");
+
+    // // omega - US
+    // $searchOpts[COUNTRY_CODE] = "US";
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 6, "Expect: 6 advertisement with " . $omega . " category and US country code");
+
+    // // alpha - US
+    // $searchOpts[SUB_CATEGORY] = $alpha;
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 4, "Expect: 4 advertisement with " . $omega . " category and US country code");
+
+    // // alpha - PH
+    // $searchOpts[COUNTRY_CODE] = "PH";
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 3, "Expect: 3 advertisement with " . $omega . " category and PH country code");
+
+    // unset($searchOpts[COUNTRY_CODE]);
+
+    // // --- fetch with category (subcategory) and banner type (code). --- //
+    // // alpha - top
+    // $searchOpts[CODE] = TOP_BANNER;
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 2, "Expect: 2 advertisement with " . $alpha . " category and top banner type.");
+
+    // // alpha - side
+    // $searchOpts[CODE] = SIDEBAR_BANNER;
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 4, "Expect: 4 advertisement with " . $alpha . " category and sidebar banner type.");
+
+    // // alpha - line
+    // $searchOpts[CODE] = LINE_BANNER;
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 1, "Expect: 1 advertisement with " . $alpha . " category and line banner type.");
+
+    // // alpha - square
+    // $searchOpts[CODE] = SQUARE_BANNER;
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 0, "Expect: 0 advertisement with " . $alpha . " category and square banner type.");
+
+    // // omega - square
+    // $searchOpts[SUB_CATEGORY] = $omega;
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 4, "Expect: 4 advertisement with " . $omega . " category and square banner type.");
+
+    // // omega - top
+    // $searchOpts[CODE] = TOP_BANNER;
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 1, "Expect: 1 advertisement with " . $omega . " category and top banner type.");
+
+    // // omega - side
+    // $searchOpts[CODE] = SIDEBAR_BANNER;
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 1, "Expect: 1 advertisement with " . $omega . " category and sidebar banner type.");
+
+    // // omega - line
+    // $searchOpts[CODE] = LINE_BANNER;
+    // $re = request("post.search", $searchOpts);
+    // isTrue(count($re) == 2, "Expect: 2 advertisement with " . $omega . " category and line banner type.");
+    // }
 }

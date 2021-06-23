@@ -34,7 +34,7 @@ class AdvertisementController
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true);
         $res = [];
         foreach ($posts as $post) {
-            $res[] = [
+            $data = [
                 'idx' => $post->idx,
                 'url' => $post->relativeUrl,
                 'clickUrl' => $post->clickUrl,
@@ -43,7 +43,10 @@ class AdvertisementController
                 'code' => $post->code,
             ];
 
-            if ($post->code == LINE_BANNER) $res['title'] = $post->title;
+            if ($post->code == LINE_BANNER) $data['title'] = $post->title;
+
+            $res[] = $data;
+
         }
         return $res;
     }
