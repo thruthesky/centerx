@@ -4,32 +4,32 @@ setLogout();
 
 $at = new AdvertisementTest();
 
-// $at->lackOfPoint();
-// $at->emptyCode();
-// $at->beginDateEmpty();
-// $at->endDateEmpty();
-// $at->maximumAdvertisementDays();
-// $at->domainEmpty();
+$at->lackOfPoint();
+$at->emptyCode();
+$at->beginDateEmpty();
+$at->endDateEmpty();
+$at->maximumAdvertisementDays();
+$at->domainEmpty();
 
-// $at->statusCheck();
+$at->statusCheck();
 
-// $at->startDeduction();
+$at->startDeduction();
 
-// $at->startWithPHCountryDeduction();
+$at->startWithPHCountryDeduction();
 
-// $at->stopNoRefund();
-// $at->stopExpiredNoRefund();
+$at->stopNoRefund();
+$at->stopExpiredNoRefund();
 
-// $at->stopWithDeductedRefund();
-// $at->stopWithPHCountryAndDeductedRefund();
+$at->stopWithDeductedRefund();
+$at->stopWithPHCountryAndDeductedRefund();
 
-// $at->stopFullRefund();
-// $at->stopWithUSCountryFullRefund();
+$at->stopFullRefund();
+$at->stopWithUSCountryFullRefund();
 
-// $at->errorDeleteActiveAdvertisement();
-// $at->deleteAdvertisement();
+$at->errorDeleteActiveAdvertisement();
+$at->deleteAdvertisement();
 
-// $at->startStopChangeDatesAndCountry();
+$at->startStopChangeDatesAndCountry();
 
 $at->loadActiveBannersByCountryCode();
 
