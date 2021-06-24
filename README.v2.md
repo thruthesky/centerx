@@ -1436,6 +1436,23 @@ Error while trying to use the following icon from the Manifest: https://www.ontu
 
 
 
+# 날씨, OpenWeatherMap
+
+- `matrix` supports weather api from https://openweathermap.org/
+- define open weather map api key in config.php
+```php
+define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
+```
+
+- You can use `openweathermap.onecall` with `lat` and `lon`.
+
+
+- ~~@see widgets/weather/openweathermap for example.~~
+
+
+
+
+
 # 문제점
 
 - `sessionId` 의 암호화 강화.

@@ -1420,17 +1420,6 @@ $metas = entity(METAS)->search("taxonomy='users' AND code='topic_qna' AND data='
 define('CURRCONV_API_KEY', 'bd6ed497a84496be7ee9');
 ```
 
-# Weather
-
-- the system support weather api from https://openweathermap.org/
-- define open weather map api key in config.php
-```php
-define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
-```
-
-- @see widget/openweathermap for example.
-
-
 
 # Settings
 
