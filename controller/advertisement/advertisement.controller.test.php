@@ -321,7 +321,7 @@ class AdvertisementTest
 
         $ad = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
 
-        isTrue($ad['advertisementPoint'] == '', "Expect: 'advertisementPoint' => 0.");
+        isTrue($ad['advertisementPoint'] == '', "Expect: 'advertisementPoint' => ''.");
 
         isTrue(login()->getPoint() == $userPoint, "Expect: user's points => $userPoint.");
 
@@ -333,7 +333,7 @@ class AdvertisementTest
     /**
      * begin date - 8 days ago
      * end date - 3 days ago
-     * 6 days * 1000 (Top banner - default)
+     * 6 days * Top banner (default)
      * 
      * No refund (expired advertisement)
      */
@@ -342,18 +342,26 @@ class AdvertisementTest
         $userPoint = 1000000;
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('-8 days'), 'endDate' => strtotime('-3 days')]);
+        // d(login()->getPoint());
 
         $bp = advertisement()->topBannerPoint();
         $advPoint = $bp * 6;
         $userPoint -= $advPoint;
 
+        // d(login()->getPoint());
         isTrue(login()->getPoint() == $userPoint, "Expect: user's points => $userPoint.");
 
         $ad = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
 
+        // d(login()->getPoint());
+        // d($userPoint);
+
         isTrue(login()->getPoint() == $userPoint, "Expect: user's points => $userPoint.");
 
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.stop');
+
+        d($activity->toUserPointApply);
+
         isTrue($activity->toUserPointApply == 0, "Expect: activity->toUserPointApply == 0.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }

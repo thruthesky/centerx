@@ -228,27 +228,23 @@ class AdvertisementController
     {
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
-//        $post = post($in[IDX]);
         $advertisement = advertisement($in[IDX]);
         if ($advertisement->isMine() == false) return  e()->not_your_post;
 
-        // get number of days to refund.
-        $action = 'advertisement.stop';
-
-
-
         /// If advertisement started (including today), then, it needs +1 day.
         /// For instance, advertisement starts today and ends tomorrow. The left days must be 1.
+        /// past days including today will be deducted.
         if ( $advertisement->started() ) {
+            $action = 'advertisement.stop';
+            // if advertisement is expired, meaning it's end date is either past or today. (no refund).
+            if ( $advertisement->expired() ) $days = 0;
+            // else it is set tomorrow or beyond, we add 1. (deducted refund).
+            else $days = daysBetween(time(), $advertisement->endAt) + 1;
+        }
+        /// else, advertisement is not yet started. ( full refund )
+        else {
             $action = 'advertisement.cancel';
             $days = daysBetween($advertisement->beginAt, $advertisement->endAt) + 1;
-        }
-        /// else, past days including today will be deducted.
-        else {
-            $days = daysBetween(time(), $advertisement->endAt);
-            //
-            if ($days < 1) $days = 0;
-            else $days++;
         }
         // get settings
         $in[COUNTRY_CODE] = $advertisement->countryCode;

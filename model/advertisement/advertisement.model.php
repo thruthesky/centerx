@@ -66,6 +66,14 @@ class AdvertisementModel extends PostModel
         return isTodayOrPast( $this->beginAt );
     }
 
+    /**
+     * Returns true if the advertisement is expired, meaning the end date is either past or today.
+     * @return bool
+     */
+    public function expired(): bool {
+        return isTodayOrPast( $this->endAt );
+    }
+
 }
 
 
