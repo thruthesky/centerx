@@ -360,7 +360,7 @@ class AdvertisementTest
 
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.stop');
 
-        d($activity->toUserPointApply);
+        // d($activity->toUserPointApply);
 
         isTrue($activity->toUserPointApply == 0, "Expect: activity->toUserPointApply == 0.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
@@ -505,10 +505,12 @@ class AdvertisementTest
     {
         $this->loginSetPoint(1500000);
         $ad = $this->createAndStartAdvertisement([CODE => LINE_BANNER, 'beginDate' => time(), 'endDate' => time()]);
+        $re = request('advertisement.delete', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
+        isTrue($re == e()->advertisement_is_active, "Expect: Error. Cannot delete active advertisement.");
 
-        $ad = request('advertisement.delete', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
-
-        isTrue($ad == e()->advertisement_is_active, "Expect: Error. Cannot delete active advertisement.");
+        $ad2 = $this->createAndStartAdvertisement([CODE => LINE_BANNER, 'beginDate' => strtotime('+2 days'), 'endDate' => strtotime('+3 days')]);
+        $re = request('advertisement.delete', [SESSION_ID => login()->sessionId, IDX => $ad2[IDX]]);
+        isTrue($re == e()->advertisement_is_active, "Expect: Error. Cannot delete active advertisement.");
     }
 
     /**

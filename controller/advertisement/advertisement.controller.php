@@ -222,7 +222,8 @@ class AdvertisementController
      * This method handles refund.
      * 
      * It the advertisement begin date is future, it will cancel the advertisement with full refund.
-     * If the begin date is today or past days, it will deduct the points equivalent to served days of the advertisement.
+     * If the begin date is today or past days, it will refund points equivalent to remaining days.
+     * If the end date is past day or today, it will not refund points.
      */
     public function stop($in)
     {
@@ -283,14 +284,19 @@ class AdvertisementController
      * Delete advertisement
      * 
      * Advertisements can be deleted if it is inactive, meaning the user's point is refunded.
+     * 
+     * If the advertisement's status is either 'active' or 'waiting', it will return error.
      */
     public function delete($in)
     {
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
-        $post = post($in[IDX]);
-        if ($post->isMine() == false) return  e()->not_your_post;
-        if ($post->advertisementPoint) return e()->advertisement_is_active;
-        return post($in[IDX])->markDelete()->response();
+        $advertisement = advertisement($in[IDX]);
+        if ($advertisement->isMine() == false) return  e()->not_your_post;
+        
+        $status = advertisement()->getStatus($advertisement);
+        if ( $status == 'active' || $status == 'waiting' ) return e()->advertisement_is_active;
+
+        return $advertisement->markDelete()->response();
     }
 }
