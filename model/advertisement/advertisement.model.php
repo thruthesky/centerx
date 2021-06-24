@@ -61,6 +61,7 @@ class AdvertisementModel extends PostModel
 
     /**
      * Returns true if the advertisement has started.
+     * Checks 'beginAt' if is equivalent to today or past days.
      * @return bool
      */
     public function started(): bool {
@@ -69,6 +70,7 @@ class AdvertisementModel extends PostModel
 
     /**
      * Returns true if the advertisement is expired, meaning the end date is either past or today.
+     * Checks 'endAt' if is equivalent to today or past days.
      * @return bool
      */
     public function expired(): bool {
