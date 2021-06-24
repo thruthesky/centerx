@@ -90,6 +90,7 @@ function isLocalhost(): bool
     if ( isset($_SERVER['SERVER_ADDR']) ) {
         if ( str_starts_with($_SERVER['SERVER_ADDR'], '127.') ) return true;
         if ( str_starts_with($_SERVER['SERVER_ADDR'], '192.') ) return true;
+        if ( str_starts_with($_SERVER['SERVER_ADDR'], "172.22.")) return true;
     }
     if ( in_array(get_domain_name(), LOCAL_HOSTS) ) return true;
 
