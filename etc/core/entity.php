@@ -208,7 +208,7 @@ class Entity {
 
 
     /**
-     * 입력된 $entity 의 모든 properties 를 현재 객체의 properties  업데이트해서 리턴한다.에
+     * 입력된 $entity 의 모든 properties 를 현재 객체의 properties  업데이트해서 리턴한다. 즉, 입력된 entity 를 현재 entity 로 복사하는 것이다.
      * 즉, 현재 객체를 입력된 $entity 로 바꾸어서 리턴한다.
      * 다시 말하면, 객체 entity $A, $B 가 있는 경우, $A 의 이전 값들을 모두 버리고, $B 의 것을 복사해서 쓰기 위한 것이다.
      * read() 와 비슷한데, read 는 DB 로 부터 레코드를 읽어, 현재 객체에 지정하는데, 만약, 다른 객체의 레코드를 read() 해야 한다면, copyWith() 은 DB 접속을 한 번 줄일 수 있게 해 준다.
