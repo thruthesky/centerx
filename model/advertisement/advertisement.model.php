@@ -58,6 +58,22 @@ class AdvertisementModel extends PostModel
         return 'inactive';
     }
 
+    /**
+     * Returns true if the advertisement has started.
+     * @return bool
+     */
+    public function started(): bool {
+        return isTodayOrPast( $this->beginAt );
+    }
+
+    /**
+     * Returns true if the advertisement is expired, meaning the end date is either past or today.
+     * @return bool
+     */
+    public function expired(): bool {
+        return isTodayOrPast( $this->endAt );
+    }
+
 }
 
 

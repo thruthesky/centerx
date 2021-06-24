@@ -1916,6 +1916,21 @@ function isBetweenDay($stamp, $firstStamp, $secondStamp) {
 }
 
 /**
+ * Returns true if the input stamp is today or future. ( not past )
+ */
+function isTodayOrFuture(int $stamp): bool {
+    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+    return  $carbon->isToday() || $carbon->isFuture();
+}
+/**
+ * Returns true if the input stamp is today or past. ( not future )
+ */
+function isTodayOrPast(int $stamp): bool {
+    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+    return  $carbon->isToday() || $carbon->isPast();
+}
+
+/**
  * 이미지를 썸네일로 제작한다.
  *
  * "PHP 썸네일 - Zoom Crop" 요약 문서 - https://docs.google.com/document/d/1RWYRWiATRdgT02cqG5TbVtJCOTSKtlAzXxeOM2-NkXA/edit#heading=h.2ryanntdiu14

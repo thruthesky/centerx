@@ -228,33 +228,31 @@ class AdvertisementController
     {
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
-        $post = post($in[IDX]);
-        if ($post->isMine() == false) return  e()->not_your_post;
+        $advertisement = advertisement($in[IDX]);
+        if ($advertisement->isMine() == false) return  e()->not_your_post;
 
-        // get number of days to refund.
-        $days = 0;
-        $action = 'advertisement.stop';
-        $pointToRefund = 0;
-
-        // if days between now and beginAt is bigger than 0, it means begin date is future.
-        // Full refund. 
-        if (daysBetween(0, $post->beginAt) > 0) {
-            $action = 'advertisement.cancel';
-            $days = daysBetween($post->beginAt, $post->endAt) + 1;
+        /// If advertisement started (including today), then, it needs +1 day.
+        /// For instance, advertisement starts today and ends tomorrow. The left days must be 1.
+        /// past days including today will be deducted.
+        if ( $advertisement->started() ) {
+            $action = 'advertisement.stop';
+            // if advertisement is expired, meaning it's end date is either past or today. (no refund).
+            if ( $advertisement->expired() ) $days = 0;
+            // else it is set tomorrow or beyond, we add 1. (deducted refund).
+            else $days = daysBetween(time(), $advertisement->endAt) + 1;
         }
-        // else, past days including today will be deducted.
+        /// else, advertisement is not yet started. ( full refund )
         else {
-            $days = daysBetween(0, $post->endAt);
-            if ($days < 1) $days = 0;
-            else $days++;
+            $action = 'advertisement.cancel';
+            $days = daysBetween($advertisement->beginAt, $advertisement->endAt) + 1;
         }
         // get settings
-        $in[COUNTRY_CODE] = $post->countryCode;
+        $in[COUNTRY_CODE] = $advertisement->countryCode;
         $settings = advertisement()->getAdvertisementSetting($in);
 
 
         // get points to refund.
-        $pointToRefund = $settings[$post->code] * $days;
+        $pointToRefund = $settings[$advertisement->code] * $days;
 
         // set advertisementPoint to empty ('') when the advertisement has stopped.
         $in['advertisementPoint'] = '';
@@ -267,8 +265,8 @@ class AdvertisementController
             toUserIdx: login()->idx,
             toUserPoint: $pointToRefund,
             taxonomy: POSTS,
-            categoryIdx: $post->categoryIdx,
-            entity: $post->idx
+            categoryIdx: $advertisement->categoryIdx,
+            entity: $advertisement->idx
         );
 
         debug_log("refund apply point; {$activity->toUserPointApply} != {$pointToRefund}");
@@ -276,7 +274,7 @@ class AdvertisementController
             return e()->advertisement_point_refund_failed;
         }
 
-        $post = $post->update($in);
+        $post = $advertisement->update($in);
         $post->updateMemoryData('status', 'inactive');
         return $post->response();
     }
