@@ -297,6 +297,6 @@ class AdvertisementController
         $status = advertisement()->getStatus($advertisement);
         if ( $status == 'active' || $status == 'waiting' ) return e()->advertisement_is_active;
 
-        return $advertisement->markDelete()->response();
+        return post($advertisement->idx)->markDelete()->response();
     }
 }

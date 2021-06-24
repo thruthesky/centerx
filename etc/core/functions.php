@@ -1694,7 +1694,7 @@ function postMessagingUrl(int $idx) {
 function parsePostSearchHttpParams(array $in): array|string {
 
     $params = [];
-    $where = "parentIdx=0";
+    $where = "parentIdx=0 AND deletedAt=''";
 
 
     // 카테고리 idx 또는 카테고리 id 또는 0
