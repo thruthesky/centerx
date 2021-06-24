@@ -31,7 +31,7 @@ $at = new AdvertisementTest();
 
 // $at->startStopChangeDatesAndCountry();
 
-$at->loadActiveBanners();
+$at->loadActiveBannersByCountryCode();
 
 
 /**
@@ -603,29 +603,70 @@ class AdvertisementTest
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 
-    function loadActiveBanners()
+    function loadActiveBannersByCountryCode()
     {
         $userPoint = 800000;
         $this->loginSetPoint($userPoint);
 
         $rootDomain = 'a' . time() . '.com';
-        $countryCode = 'UU';
+        $countryCodeA = 'AS';
+        $countryCodeB = 'AV';
 
-        $re = cafe()->create(['rootDomain' => $rootDomain, 'domain' => 'abc', 'countryCode' => $countryCode]);
-        isTrue( $re->ok, 'cafe for banner test has been created');
+        $cafe = cafe()->create(['rootDomain' => $rootDomain, 'domain' => 'abc', 'countryCode' => $countryCodeA]);
+        
+        // d($cafe->idx);
+        // d($cafe->countryCode);
+        
+        isTrue($cafe->ok, 'cafe for banner test has been created');
         $domain = 'abc.' . $rootDomain;
 
-        $re = $this->createAndStartAdvertisement([
+        $advOpts = [
             CODE => LINE_BANNER,
-            COUNTRY_CODE => $countryCode,
-            'beginDate' => strtotime('-1 day'),
-            'endDate' => strtotime('+8 days'),
+            'beginDate' => time(),
+            'endDate' => time(),
             'files' => '1',
-        ]);
+        ];
 
+        $advOpts[COUNTRY_CODE] = $countryCodeA;
+        $adv1 = $this->createAndStartAdvertisement($advOpts);
+        $adv2 = $this->createAndStartAdvertisement($advOpts);
+        $adv3 = $this->createAndStartAdvertisement($advOpts);
+        $adv4 = $this->createAndStartAdvertisement($advOpts);
+
+        $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
+        // d($re);
+        isTrue(count($re) == 4, 'Expect: active banners == 4');
+
+        $advOpts[COUNTRY_CODE] = $countryCodeB;
+        post($adv1[IDX])->update($advOpts);
+        post($adv2[IDX])->update($advOpts);
+
+        $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
+        isTrue(count($re) == 2, 'Expect: active banners == 2');
+        
+        $cafe = cafe($cafe->idx)->update([COUNTRY_CODE => $countryCodeB]);
+        isTrue($cafe->countryCode == $countryCodeB, "Expect: country code changed from $countryCodeA to $countryCodeB.");
 
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
 
-        isTrue(count($re) > 0, 'Expect: active banner is not empty');
+        // d($re);
+        isTrue(count($re) == 2, 'Expect: active banners == 2.');
+        
+        post($adv3[IDX])->update($advOpts);
+        $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
+        isTrue(count($re) == 3, 'Expect: active banners == 3');
+
+        $advOpts[COUNTRY_CODE] = '';
+        post($adv1[IDX])->update([COUNTRY_CODE => '']);
+        post($adv2[IDX])->update([COUNTRY_CODE => '']);
+        post($adv3[IDX])->update([COUNTRY_CODE => '']);
+        post($adv4[IDX])->update([COUNTRY_CODE => '']);
+
+        $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
+        isTrue(count($re) == 0, 'Expect: active banners == 0. cafe country code => ' . $cafe->countryCode);
+
+        $cafe = cafe($cafe->idx)->update([COUNTRY_CODE => $countryCodeB]);
+        $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
+        isTrue(count($re) == 0, 'Expect: active banners == 0. cafe country code => ' . $cafe->countryCode);
     }
 }
