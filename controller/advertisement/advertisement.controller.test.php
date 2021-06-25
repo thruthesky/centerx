@@ -35,19 +35,19 @@ $at->loadActiveBannersByCountryCode();
 
 /**
  * 
- * @todo do tests
- * @todo test - check input /
- * @todo test - check point deduction /
- * @todo test - check cancel /
- * @todo test - check refund /
- * @todo test - change dates after create banner and check days left.
- * @todo test - compare the point history. /
- * @todo test - get banners on a specific /
- *    - banner type/place (code) /
- *    - category(subcategory) /
- *    - and countryCode. /
+ * do tests
+ *  - check input.
+ *  - check point deduction.
+ *  - check cancel.
+ *  - check refund.
+ *  - change dates after create banner and check days left.
+ *  - compare the point history.
+ *  - get banners on a specific.
+ *   - banner type/place (code).
+ *   - category(subcategory).
+ *   - and countryCode.
  *
- * @todo test - MAX_END_DAYS
+ * - MAX_END_DAYS
  */
 class AdvertisementTest
 {
