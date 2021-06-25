@@ -33,13 +33,6 @@ $at->startStopChangeDatesAndCountry();
 
 $at->loadActiveBannersByCountryCode();
 
-
-/**
- * doesn't work now since when editting without IDX will result to creating instead of update.
- */
-// $at->emptyIdx();
-// $at->fetchWithCategoryCountryAndCode();
-
 /**
  * 
  * @todo do tests
@@ -116,18 +109,6 @@ class AdvertisementTest
     }
 
 
-    /**
-     * @deprecated
-     * 
-     * doesn't work now since when editting without IDX will result to creating instead of update.
-     */
-    function emptyIdx()
-    {
-        registerAndLogin();
-        $options = [SESSION_ID => login()->sessionId];
-        $re = request("advertisement.start", $options);
-        isTrue($re == e()->idx_is_empty, "Expect: Error, empty advertisement IDX.");
-    }
 
     function emptyCode()
     {
