@@ -25,7 +25,8 @@ class ConfigModel {
     }
 
     /**
-     * 설정을 읽는다. 설정은 metas 테이블에 저장되며, taxonomy=config, entity=0 이 된다.
+     * 설정을 읽어 그 값(레코드)을 리턴한다.
+     * 설정은 metas 테이블에 저장되며, taxonomy=config 이며, entity 는 0 이면, 일반 설정, 1 이면 관리자 설저이다.
      *
      * @param string|null $code - 코드 값이 주어지면 1개의 값만, 아니면, 현재 taxonomy 와 entity 의 전체 값을 리턴한다.
      * @return mixed - 값이 없으면 null 이 리턴된다.
@@ -42,8 +43,10 @@ class ConfigModel {
      * @param mixed $value
      * @return void
      *
+     * 주의, 값 자체에는 배열을 저장하지 못한다.
+     *
      * 주의, 에러가 있어도 에러를 리턴하지 않는다. meta()->updates() 함수 자체가 에러가 있어도 무시를 한다.
-     *      따라서, 성공 여부를 확인해야 한다면, 데이터가 올바로 저장되었는지 읽어서 확인을 해야 한다.
+     *      따라서, 성공 여부를 확인해야 한다면, 데이터가 올바로 저장되었는지, 저장한 값을 읽어서 확인을 해야 한다.
      */
     public function set(array|string $code, mixed $value=null): void {
         if ( is_array($code) ) {

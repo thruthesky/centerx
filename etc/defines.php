@@ -170,6 +170,7 @@ const META_CODE_EXCEPTIONS = [
     'nsub', // category list tracking. This is not being used on 2.x. delete on 3.x
     'sc', //
     'photoIdx', // 이 키는 meta 로 저장되면 안되고, user()->read() 에서 프로그램적으로 임의로 생성된다.
+    'test',
 ];
 
 

@@ -887,6 +887,7 @@ class Entity {
      *  the returned entity will load all the data into entity.
      *
      *
+     * @note, $conds 로 조건 값을 입력해도, statement 로 처리한다. 즉, 모든 쿼리를 Statement/Prepare 처리하므로 SQL Injection 으로 부터 안전하다.
      *
      * @return $this[] - empty array([]), If there is no record found.
      *  - empty array([]), If there is no record found.
@@ -925,8 +926,7 @@ class Entity {
      *      order: "noOfComments",
      *      limit: 5);
      * ```
-     * @todo SQL injection
-     * @todo $where 에 따옴표 처리.
+     *
      *
      *
      */

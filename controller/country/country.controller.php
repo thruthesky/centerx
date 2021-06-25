@@ -25,7 +25,7 @@ class CountryController {
      *
      * @param $in
      */
-    public function currencies($in) {
+    public function currencies($in): array | string {
         $rets = [];
         foreach( country()->search(limit: 1000, object: true) as $co ) {
             if ( isset($in['ln']) && $in['ln'] == 'ko' ) {
@@ -43,6 +43,7 @@ class CountryController {
             }
         }
         ksort($rets);
+//        d($rets);
         return $rets;
     }
 }

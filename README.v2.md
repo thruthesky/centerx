@@ -494,7 +494,7 @@ d(view()->page());
     예) 
     `error(err(e()->controller_file_not_found, $filePath));`
 
-# Config
+# 설정, Config
 
 ## 일반 설정
 
@@ -503,6 +503,8 @@ d(view()->page());
 ## 관리자 설정
 
 - 관리자만 설정 할 수 있는 것으로 taxonomy 가 `config` 이고, entity 는 1 이다.
+- `app.setConfig` 라우트는 오직 관리자만 이용 할 수 있는 라우트이다.
+  이 라우트로 저장하는 정보는 `app.settings` 를 할 때 정보가 같이 클라이언트로 다운로드 된다.
 
 
 # 클라이언트 동작 방식
@@ -589,7 +591,10 @@ isTrue((new AppController())->version(), "App version");
 
 ## Banner Place & Display
 
-The table below explains how banners are dipslayed.
+
+- Banner types are saved in `BANNER_TYPES` inside `config.php`.
+
+- The table below explains how banners are displayed.
 
 You can read it from left to right.
 
@@ -657,7 +662,7 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
   
 ## 광고 기본, 설정 및 테이블 구조, Advertisement database table structure
 
-- Advertisement does not have its own table.
+- Advertisement banners does not have its own table.
   It uses `posts` table.
   (광고 테이블은 따로 없고, `posts` 테이블을 사용한다.)
 
@@ -671,7 +676,20 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
 - Advertisement type is recorded at `code`.
 - The banner image is saved as `files.code=banner`
 - And when the advertisement content is being shown, the banner should not be shown.
+
+## Advertisement settings table.
+
+- There is no table for Advertisement banners. But there is one for advertisement settings.
+
+- if 'countryCode' is empty, then that is the default settings.
+  Otherwise each record has its own settings for the countryCode.
   
+- `maximumAdvertisementDays` is the maximum adverting days from tdoay. it is saved in meta table.
+
+- `advertisementCategories` has the categories for user to post their banners on. It is saved in meta table.
+  It can have many categories separating by comma(,).
+  For instance, "qna,discussion,job".
+
 
 ## Banner display
 

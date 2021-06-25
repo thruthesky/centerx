@@ -1,37 +1,39 @@
 <?php
 
 setLogout();
-
+enableTesting();
 $at = new AdvertisementTest();
 
-$at->lackOfPoint();
-$at->emptyCode();
-$at->beginDateEmpty();
-$at->endDateEmpty();
-$at->maximumAdvertisementDays();
-$at->domainEmpty();
-
-$at->statusCheck();
-
-$at->startDeduction();
-
-$at->startWithPHCountryDeduction();
-
-$at->stopNoRefund();
-$at->stopExpiredNoRefund();
+//$at->lackOfPoint();
+//$at->emptyCode();
+//$at->beginDateEmpty();
+//$at->endDateEmpty();
+//$at->maximumAdvertisementDays();
+//$at->domainEmpty();
+//
+//$at->statusCheck();
+//
+//$at->startDeduction();
+//
+//$at->startWithPHCountryDeduction();
+//
+//$at->stopNoRefund();
+//$at->stopExpiredNoRefund();
 
 $at->stopWithDeductedRefund();
-$at->stopWithPHCountryAndDeductedRefund();
 
-$at->stopFullRefund();
-$at->stopWithUSCountryFullRefund();
+//$at->stopWithPHCountryAndDeductedRefund();
+//
+//$at->stopFullRefund();
+//$at->stopWithUSCountryFullRefund();
+//
+//$at->errorDeleteActiveAdvertisement();
+//$at->deleteAdvertisement();
+//
+//$at->startStopChangeDatesAndCountry();
+//
+//$at->loadActiveBannersByCountryCode();
 
-$at->errorDeleteActiveAdvertisement();
-$at->deleteAdvertisement();
-
-$at->startStopChangeDatesAndCountry();
-
-$at->loadActiveBannersByCountryCode();
 
 /**
  * 
@@ -223,6 +225,7 @@ class AdvertisementTest
         isTrue($re['status'] == 'inactive', "Expect: Status == 'inactive'");
     }
 
+
     /**
      * 1 day * Top banner point (default)
      */
@@ -360,7 +363,7 @@ class AdvertisementTest
      */
     function stopWithDeductedRefund()
     {
-        $userPoint = 1000000;
+        $userPoint = 1000000; // 1m
         $this->loginSetPoint($userPoint);
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('-2 days'), 'endDate' => strtotime('+3 days')]);
 
@@ -370,12 +373,14 @@ class AdvertisementTest
 
         $userPoint -= $advPoint;
 
-        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
+        isTrue(login()->getPoint() == $userPoint, "stopWithDeductedRefund after deduction for 6 days. Expect: user points == $userPoint.");
 
         $ad = request("advertisement.stop", [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
 
+
+
         $userPoint += $refund;
-        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint");
+        isTrue(login()->getPoint() == $userPoint, "Banner point: $bp, Expect: user points to be $userPoint but the user point is " . login()->getPoint());
 
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.stop');
         isTrue($activity->toUserPointApply == $refund, "Expect: activity->toUserPointApply == $refund.");

@@ -44,6 +44,9 @@ function request(string $route, array $data = []) {
 
 
     $data['route'] = $route;
+
+    /// By giving &test=1, it enables the test mode on backend.
+    $data['test'] = 1;
     $postdata = http_build_query( $data );
 
     $opts = array('http' =>
