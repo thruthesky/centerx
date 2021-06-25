@@ -490,6 +490,7 @@ class Point {
                 fromUserIdx: login()->idx,
                 toUserPointApply: $toUserPointApply,
                 fromUserPointApply: $fromUserPointApply,
+                entity: $post->idx,
             );
         }
     }
