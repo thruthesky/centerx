@@ -29,6 +29,9 @@ class PointHistoryRoute {
             if ( isset($history['toUserIdx']) ) {
                 $history['toUser'] = user($history['toUserIdx'])->shortProfile();
             }
+            if ( $history[ENTITY] ) {
+                $history[TITLE] = post( $history[ENTITY] )->title;
+            }
             $rets[] = $history;
         }
         return $rets;
