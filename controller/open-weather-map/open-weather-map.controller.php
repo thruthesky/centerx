@@ -29,9 +29,9 @@ class OpenWeatherMapController {
         $lang = get_user_language();
         if ( $lang == 'ko' ) $lang = 'kr';
 
-        $cacheTime = $o['cacheTime'] ?? 60 * 25;
+
         $weather = cache("current" . $lang . $city);
-        if ( $weather->expired( $cacheTime  ) ) {
+        if ( $weather->expired( 60 * 25  ) ) {
             $weather->renew();
             $url = "https://api.openweathermap.org/data/2.5/weather?q=$city,$twoDigitCode&lang=$lang&units=metric&appid=" . OPENWEATHERMAP_API_KEY;
             $res = file_get_contents($url);
@@ -40,6 +40,7 @@ class OpenWeatherMapController {
         } else {
             $re = json_decode($weather->data, true);
         }
+        // If json decode has an error.
         if (!$re) return [];
 
         return $re;

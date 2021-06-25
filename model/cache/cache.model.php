@@ -24,10 +24,15 @@ class CacheModel extends Entity
     }
 
     /**
+     * Set cache data.
+     *
+     * It saves cache data into cache table.
+     *
      * 캐시를 처음 생성하는 것이면 레코드를 생성한다.
      * 캐시가 존재하면, 업데이트를 한다.
      *
      * @param mixed $data
+     *  숫자, 문자열 등 scalar 값만 저장 가능. 객체는 저장 안됨.
      * @return self
      */
     public function set(mixed $data): self {
@@ -60,7 +65,7 @@ class CacheModel extends Entity
         if ( $this->idx ) { // 캐시가 존재하면,
             $stamp = time(); // 현재 시간을,
             $this->update([CREATED_AT => $stamp]); // DB 에서 업데이트하고,
-            $this->updateMemory(CREATED_AT, $stamp); // 메모리 변수에서도 업데이트 한다.
+            $this->updateMemoryData(CREATED_AT, $stamp); // 메모리 변수에서도 업데이트 한다.
         }
     }
 
