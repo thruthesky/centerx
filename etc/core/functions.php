@@ -1864,8 +1864,8 @@ function dateToTime(int|string $date): int {
 function daysBetween($stamp1, $stamp2) {
     if ( empty($stamp1) ) $stamp1 = time();
     if ( empty($stamp2) ) return 0;
-    $date1 = \Carbon\Carbon::createFromTimestamp($stamp1);
-    $date2 = \Carbon\Carbon::createFromTimestamp($stamp2);
+    $date1 = \Carbon\Carbon::createFromTimestamp($stamp1)->startOfDay();
+    $date2 = \Carbon\Carbon::createFromTimestamp($stamp2)->startOfDay();
     return $date1->diffInDays($date2, false);
 }
 

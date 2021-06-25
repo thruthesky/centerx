@@ -33,7 +33,7 @@ class AdvertisementController
         if ($cafe->exists == false) {
             if (!$cafe->isMainCafe()) return e()->cafe_not_exists;
         }
-        
+
         $where = "countryCode=? AND code != '' AND beginAt < ? AND endAt >= ? AND files != ''";
         $params = [$cafe->countryCode, time(), today()];
 
@@ -240,8 +240,8 @@ class AdvertisementController
             $action = 'advertisement.stop';
             // if advertisement is expired, meaning it's end date is either past or today. (no refund).
             if ($advertisement->expired()) $days = 0;
-            // else it is set tomorrow or beyond, we add 1. (deducted refund).
-            else $days = daysBetween(time(), $advertisement->endAt) + 1;
+            // else it is set tomorrow or beyond. (deducted refund).
+            else $days = daysBetween(time(), $advertisement->endAt);
         }
         /// else, advertisement is not yet started. ( full refund )
         else {
