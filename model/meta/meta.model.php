@@ -24,6 +24,7 @@ class MetaModel extends Entity {
 
     /**
      * Returns the value of the meta.
+     * It only returns value without idx, code, etc.
      *
      * @param string $taxonomy
      * @param int $entity
@@ -33,8 +34,8 @@ class MetaModel extends Entity {
      *  - $code 문장열이면, 값 1개를 리턴. 만약, 레코드가 없으면 null 리턴.
      *
      * @return mixed
-     *  - null on string $code, if there is no record.
-     *  - empty array if there is no record.
+     *  - null on string $code, if there is no record. it does not return error if the code not exists.
+     *  - empty array if there is no record.  it does not return error if the code not exists.
      *  - single value of scala on string $code.
      *  - array of scalar or object on array $code.
      */
@@ -65,8 +66,8 @@ class MetaModel extends Entity {
      * @return int
      */
     function entity(string $taxonomy, string $code, mixed $data ): int {
-        $row = $this->search(select: 'entity', conds: [TAXONOMY => $taxonomy, CODE => $code, DATA => $data]);
-        return $row[ENTITY];
+        $rows = $this->search(select: 'entity', conds: [TAXONOMY => $taxonomy, CODE => $code, DATA => $data]);
+        return $rows[0][ENTITY];
     }
 
     /**
@@ -82,6 +83,8 @@ class MetaModel extends Entity {
     }
 
     /**
+     *
+     * Note, It serialize the data before update.
      * @param array $in
      * @return $this
      * @todo check input. for meta create, only taxonomy, entity, code, data are allowed as input.
@@ -118,6 +121,7 @@ class MetaModel extends Entity {
     /**
      * Updates a meta
      *
+     * Note, It serialize the data before update.
      * Note, that Entity::update() only updates when idx is set.
      *      This method allows to update without setting idx. But taxonomy, entity and code are required.
      *      In this case, you cannot change none of taxonomy, entity, code.
