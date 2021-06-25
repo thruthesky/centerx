@@ -30,7 +30,9 @@ class PointHistoryRoute {
                 $history['toUser'] = user($history['toUserIdx'])->shortProfile();
             }
             if ( $history[ENTITY] ) {
-                $history[TITLE] = post( $history[ENTITY] )->title;
+                $pc = post( $history[ENTITY] );
+                if ( $pc->parentIdx ) $history[TITLE] = $pc->content;
+                else $history[TITLE] = post( $history[ENTITY] )->title;
             }
             $rets[] = $history;
         }
