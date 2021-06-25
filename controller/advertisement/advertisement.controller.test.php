@@ -37,6 +37,7 @@ $at->loadActiveBannersByCountryCode();
  * 
  * do tests
  *  - check input.
+ *  - check maximum allowed days.
  *  - check point deduction.
  *  - check cancel.
  *  - check refund.
@@ -46,8 +47,6 @@ $at->loadActiveBannersByCountryCode();
  *   - banner type/place (code).
  *   - category(subcategory).
  *   - and countryCode.
- *
- * - MAX_END_DAYS
  */
 class AdvertisementTest
 {
@@ -138,19 +137,26 @@ class AdvertisementTest
     function maximumAdvertisementDays()
     {
         $this->loginSetPoint(1000000);
+        $max = MAXIMUM_ADVERTISING_DAYS;
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime('+100 days')]);
-        if (MAXIMUM_ADVERTISING_DAYS > 0) {
+        if ($max > 0) {
             isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
         } else {
             isTrue($re[IDX], "Expect: success, no advertising day limit.");
         }
 
-        $max = MAXIMUM_ADVERTISING_DAYS;
-
         // Equivalent to $max + 1 days since begin date is counted to the total ad serving days.
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$max days")]);
         if ($max > 0) {
             isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
+        } else {
+            isTrue($re[IDX], "Expect: success, no advertising day limit.");
+        }
+
+        $days = $max - 1;
+        $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$days days")]);
+        if ($max > 0) {
+            isTrue($re[IDX], "Expect: Success, adv days does not exceed maximum allowed days.");
         } else {
             isTrue($re[IDX], "Expect: success, no advertising day limit.");
         }
