@@ -20,20 +20,22 @@ class AdvertisementController
      *  - title : if code is 'line', it will be included .
      *
      * @attention if subcaetgory is empty, it is set to 'global'.
+     * It only returns banners that are active.
+     * - with countryCode
+     * - files
+     * - and time now is either equivalent or between begin and end Date.
      */
     public function loadBanners(array $in): array|string
     {
         if (!isset($in['cafeDomain']) || empty($in['cafeDomain'])) return e()->empty_domain;
 
         $cafe = cafe(domain: $in['cafeDomain']);
-        if ( $cafe->exists == false ) return e()->cafe_not_exists;
+        if ($cafe->exists == false) {
+            if (!$cafe->isMainCafe()) return e()->cafe_not_exists;
+        }
+        
         $where = "countryCode=? AND code != '' AND beginAt < ? AND endAt >= ? AND files != ''";
         $params = [$cafe->countryCode, time(), today()];
-
-        //        debug_log('tomorrow; ', tomorrow());
-
-//        d($where);
-//        d($params);
 
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true);
         $res = [];
@@ -50,7 +52,6 @@ class AdvertisementController
             if ($post->code == LINE_BANNER) $data['title'] = $post->title;
 
             $res[] = $data;
-
         }
         return $res;
     }
@@ -235,10 +236,10 @@ class AdvertisementController
         /// If advertisement started (including today), then, it needs +1 day.
         /// For instance, advertisement starts today and ends tomorrow. The left days must be 1.
         /// past days including today will be deducted.
-        if ( $advertisement->started() ) {
+        if ($advertisement->started()) {
             $action = 'advertisement.stop';
             // if advertisement is expired, meaning it's end date is either past or today. (no refund).
-            if ( $advertisement->expired() ) $days = 0;
+            if ($advertisement->expired()) $days = 0;
             // else it is set tomorrow or beyond, we add 1. (deducted refund).
             else $days = daysBetween(time(), $advertisement->endAt) + 1;
         }
@@ -293,10 +294,10 @@ class AdvertisementController
 
         $advertisement = advertisement($in[IDX]);
         if ($advertisement->isMine() == false) return  e()->not_your_post;
-        
-        $status = advertisement()->getStatus($advertisement);
-        if ( $status == 'active' || $status == 'waiting' ) return e()->advertisement_is_active;
 
-        return $advertisement->markDelete()->response();
+        $status = advertisement()->getStatus($advertisement);
+        if ($status == 'active' || $status == 'waiting') return e()->advertisement_is_active;
+
+        return post($advertisement->idx)->markDelete()->response();
     }
 }

@@ -33,28 +33,20 @@ $at->startStopChangeDatesAndCountry();
 
 $at->loadActiveBannersByCountryCode();
 
-
-/**
- * doesn't work now since when editting without IDX will result to creating instead of update.
- */
-// $at->emptyIdx();
-// $at->fetchWithCategoryCountryAndCode();
-
 /**
  * 
- * @todo do tests
- * @todo test - check input /
- * @todo test - check point deduction /
- * @todo test - check cancel /
- * @todo test - check refund /
- * @todo test - change dates after create banner and check days left.
- * @todo test - compare the point history. /
- * @todo test - get banners on a specific /
- *    - banner type/place (code) /
- *    - category(subcategory) /
- *    - and countryCode. /
- *
- * @todo test - MAX_END_DAYS
+ * do tests
+ *  - check input.
+ *  - check maximum allowed days.
+ *  - check point deduction.
+ *  - check cancel.
+ *  - check refund.
+ *  - change dates after create banner and check days left.
+ *  - compare the point history.
+ *  - get banners on a specific.
+ *   - banner type/place (code).
+ *   - category(subcategory).
+ *   - and countryCode.
  */
 class AdvertisementTest
 {
@@ -116,18 +108,6 @@ class AdvertisementTest
     }
 
 
-    /**
-     * @deprecated
-     * 
-     * doesn't work now since when editting without IDX will result to creating instead of update.
-     */
-    function emptyIdx()
-    {
-        registerAndLogin();
-        $options = [SESSION_ID => login()->sessionId];
-        $re = request("advertisement.start", $options);
-        isTrue($re == e()->idx_is_empty, "Expect: Error, empty advertisement IDX.");
-    }
 
     function emptyCode()
     {
@@ -157,19 +137,26 @@ class AdvertisementTest
     function maximumAdvertisementDays()
     {
         $this->loginSetPoint(1000000);
+        $max = MAXIMUM_ADVERTISING_DAYS;
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime('+100 days')]);
-        if (MAXIMUM_ADVERTISING_DAYS > 0) {
+        if ($max > 0) {
             isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
         } else {
             isTrue($re[IDX], "Expect: success, no advertising day limit.");
         }
 
-        $max = MAXIMUM_ADVERTISING_DAYS;
-
         // Equivalent to $max + 1 days since begin date is counted to the total ad serving days.
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$max days")]);
         if ($max > 0) {
             isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
+        } else {
+            isTrue($re[IDX], "Expect: success, no advertising day limit.");
+        }
+
+        $days = $max - 1;
+        $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$days days")]);
+        if ($max > 0) {
+            isTrue($re[IDX], "Expect: Success, adv days does not exceed maximum allowed days.");
         } else {
             isTrue($re[IDX], "Expect: success, no advertising day limit.");
         }
@@ -667,10 +654,10 @@ class AdvertisementTest
         isTrue(count($re) == 3, 'Expect: active banners == 3');
 
         $advOpts[COUNTRY_CODE] = '';
-        post($adv1[IDX])->update([COUNTRY_CODE => '']);
-        post($adv2[IDX])->update([COUNTRY_CODE => '']);
-        post($adv3[IDX])->update([COUNTRY_CODE => '']);
-        post($adv4[IDX])->update([COUNTRY_CODE => '']);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv1[IDX]]);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv2[IDX]]);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv3[IDX]]);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv4[IDX]]);
 
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
         isTrue(count($re) == 0, 'Expect: active banners == 0. cafe country code => ' . $cafe->countryCode);
