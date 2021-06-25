@@ -4,32 +4,32 @@ setLogout();
 
 $at = new AdvertisementTest();
 
-$at->lackOfPoint();
-$at->emptyCode();
-$at->beginDateEmpty();
-$at->endDateEmpty();
-$at->maximumAdvertisementDays();
-$at->domainEmpty();
+// $at->lackOfPoint();
+// $at->emptyCode();
+// $at->beginDateEmpty();
+// $at->endDateEmpty();
+// $at->maximumAdvertisementDays();
+// $at->domainEmpty();
 
-$at->statusCheck();
+// $at->statusCheck();
 
-$at->startDeduction();
+// $at->startDeduction();
 
-$at->startWithPHCountryDeduction();
+// $at->startWithPHCountryDeduction();
 
-$at->stopNoRefund();
-$at->stopExpiredNoRefund();
+// $at->stopNoRefund();
+// $at->stopExpiredNoRefund();
 
-$at->stopWithDeductedRefund();
-$at->stopWithPHCountryAndDeductedRefund();
+// $at->stopWithDeductedRefund();
+// $at->stopWithPHCountryAndDeductedRefund();
 
-$at->stopFullRefund();
-$at->stopWithUSCountryFullRefund();
+// $at->stopFullRefund();
+// $at->stopWithUSCountryFullRefund();
 
-$at->errorDeleteActiveAdvertisement();
-$at->deleteAdvertisement();
+// $at->errorDeleteActiveAdvertisement();
+// $at->deleteAdvertisement();
 
-$at->startStopChangeDatesAndCountry();
+// $at->startStopChangeDatesAndCountry();
 
 $at->loadActiveBannersByCountryCode();
 
@@ -667,10 +667,10 @@ class AdvertisementTest
         isTrue(count($re) == 3, 'Expect: active banners == 3');
 
         $advOpts[COUNTRY_CODE] = '';
-        post($adv1[IDX])->update([COUNTRY_CODE => '']);
-        post($adv2[IDX])->update([COUNTRY_CODE => '']);
-        post($adv3[IDX])->update([COUNTRY_CODE => '']);
-        post($adv4[IDX])->update([COUNTRY_CODE => '']);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv1[IDX]]);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv2[IDX]]);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv3[IDX]]);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv4[IDX]]);
 
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
         isTrue(count($re) == 0, 'Expect: active banners == 0. cafe country code => ' . $cafe->countryCode);

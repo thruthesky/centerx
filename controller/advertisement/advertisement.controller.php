@@ -20,6 +20,10 @@ class AdvertisementController
      *  - title : if code is 'line', it will be included .
      *
      * @attention if subcaetgory is empty, it is set to 'global'.
+     * It only returns banners that are active.
+     * - with countryCode
+     * - files
+     * - and time now is either equivalent or between begin and end Date.
      */
     public function loadBanners(array $in): array|string
     {
@@ -29,11 +33,6 @@ class AdvertisementController
         if ( $cafe->exists == false ) return e()->cafe_not_exists;
         $where = "countryCode=? AND code != '' AND beginAt < ? AND endAt >= ? AND files != ''";
         $params = [$cafe->countryCode, time(), today()];
-
-        //        debug_log('tomorrow; ', tomorrow());
-
-//        d($where);
-//        d($params);
 
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true);
         $res = [];
