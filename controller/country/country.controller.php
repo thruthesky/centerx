@@ -6,6 +6,7 @@ class CountryController {
      * Returns 2 letter code and country name.
      * @param $in
      * @return array
+     * - ['KR' => '대한민국', ...]
      */
     public function all($in) {
         $rets = [];
@@ -24,6 +25,7 @@ class CountryController {
      * @note the return value is in Korean.
      *
      * @param $in
+     * @return array|string
      */
     public function currencies($in): array | string {
         $rets = [];
@@ -45,5 +47,14 @@ class CountryController {
         ksort($rets);
 //        d($rets);
         return $rets;
+    }
+
+    /**
+     * $in['id'] 에 idx, alpha2(countryCode), alpha3, currencyCode 의 값 중 하나가 들어오면 된다.
+     * @param $in
+     * @return array|string
+     */
+    public function get($in) {
+        return country($in['id'])->response();
     }
 }
