@@ -18,7 +18,7 @@ if ( $category->exists == false ) return;
                 <span class="m-1 text-uppercase font-weight-bold"><?= $category->id ?></span>
                 <?php if ($category->subcategories) { ?>
                     <a class="m-1 btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>">All</a>
-                    <?php foreach ($category->subcategories as $cat) { ?>
+                    <?php foreach ($category->subcategoriesArray as $cat) { ?>
                         <a class="m-1 btn btn-sm btn-info" href="/?p=forum.post.list&categoryId=<?= in(CATEGORY_ID) ?>&subcategory=<?= $cat ?>"><?= $cat ?></a>
                     <?php } ?>
                 <?php } ?>
