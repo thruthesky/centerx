@@ -26,6 +26,7 @@ if ( $func = getRoute($route) ) {
 
     if (!method_exists($instance, $methodName)) error(e()->controller_method_not_found);
 
+    if ( in('test') ) enableTesting();
     $response = $instance->$methodName(in());
 }
 

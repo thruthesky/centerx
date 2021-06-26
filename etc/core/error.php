@@ -206,6 +206,9 @@ class E {
     public string $main_cafe_has_no_cafe_category_record = 'error_main_cafe_has_no_cafe_category_record';
 
 
+    public string $cafe_main_domain = 'error_cafe_main_domain';
+
+
     // advertisement
     public string $advertisement_is_active = 'error_advertisement_is_active';
     public string $advertisement_point_deduction_failed = 'error_advertisement_point_deduction_failed';
@@ -213,6 +216,13 @@ class E {
     public string $begin_date_empty = 'error_begin_date_empty';
     public string $end_date_empty = 'error_end_date_empty';
     public string $maximum_advertising_days = 'error_max_advertising_days';
+
+    public string $empty_top_banner_point = 'error_empty_top_banner_point';
+    public string $empty_sidebar_banner_point = 'error_empty_sidebar_banner_point';
+    public string $empty_square_banner_point = 'error_empty_square_banner_point';
+    public string $empty_line_banner_point = 'error_empty_line_banner_point';
+
+
 
 
     public bool $isError = false;

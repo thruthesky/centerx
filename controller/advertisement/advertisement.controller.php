@@ -11,25 +11,77 @@ class AdvertisementController
      *
      * @param array $in - See `parsePostSearchHttpParams()` for detail input.
      * @return array|string
+     * - idx
+     * - url
+     * - clickUrl
+     * - bannerUrl
+     * - subcategory
+     * - code
+     *  - title : if code is 'line', it will be included .
      *
-     *
-     * url, clickUrl, bannerUrl, category
+     * @attention if subcaetgory is empty, it is set to 'global'.
+     * It only returns banners that are active.
+     * - with countryCode
+     * - files
+     * - and time now is either equivalent or between begin and end Date.
      */
     public function loadBanners(array $in): array|string
     {
-        $cafe = cafe($in['cafeDomain']);
-        $where = "countryCode=? AND beginAt<? AND endAt>?";
-        $params = [ $cafe->countryCode, time(), time() ];
+        if (!isset($in['cafeDomain']) || empty($in['cafeDomain'])) return e()->empty_domain;
 
-        $posts = advertisement()->search(where: $where, params: $params, object: true);
+        $cafe = cafe(domain: $in['cafeDomain']);
+        if ($cafe->exists == false) {
+            if (!$cafe->isMainCafe()) return e()->cafe_not_exists;
+        }
+        
+        $where = "countryCode=? AND code != '' AND beginAt < ? AND endAt >= ? AND files != ''";
+        $params = [$cafe->countryCode, time(), today()];
+
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true);
         $res = [];
         foreach ($posts as $post) {
-            $res[] = [
-                'url' => $post->url,
+            $data = [
+                'idx' => $post->idx,
+                'url' => $post->relativeUrl,
                 'clickUrl' => $post->clickUrl,
                 'bannerUrl' => $post->fileByCode('banner')->url,
-                'category' => $post->subcategory,
+                'subcategory' => $post->subcategory ? $post->subcategory : 'global',
+                'code' => $post->code,
             ];
+
+            if ($post->code == LINE_BANNER) $data['title'] = $post->title;
+
+            $res[] = $data;
+        }
+        return $res;
+    }
+
+    /**
+     * 글 검색 후 리턴
+     *
+     * 참고, 입력 값은 `parsePostSearchHttpParams()` 를 참고한다.
+     *
+     * @param array $in - See `parsePostSearchHttpParams()` for detail input.
+     * @return array|string
+     * 
+     * 
+     * 
+     */
+    public function search(array $in): array|string
+    {
+        if ($in) {
+            $re = parsePostSearchHttpParams($in);
+            if (isError($re)) return $re;
+            list($where, $params) = $re;
+            $in['where'] = $where;
+            $in['params'] = $params;
+        }
+
+        $posts = post()->search(object: true, in: $in);
+        $res = [];
+        foreach ($posts as $post) {
+            $post->updateMemoryData('status', advertisement()->getStatus($post));
+            $res[] = $post->response(comments: 0);
         }
         return $res;
     }
@@ -63,7 +115,6 @@ class AdvertisementController
             if ($post->isMine() == false) return  e()->not_your_post;
 
             $post->update($in);
-            $post->updateMemoryData('status', advertisement()->getStatus($post));
 
             return $post->response();
         }
@@ -112,7 +163,7 @@ class AdvertisementController
 
 
         $in = $post->updateBeginEndDate($in);
-        
+
         // add 1 to include beginning date.
         $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
         if (ADVERTISEMENT_SETTINGS['maximum_advertising_days']) {
@@ -172,41 +223,40 @@ class AdvertisementController
      * This method handles refund.
      * 
      * It the advertisement begin date is future, it will cancel the advertisement with full refund.
-     * If the begin date is today or past days, it will deduct the points equivalent to served days of the advertisement.
+     * If the begin date is today or past days, it will refund points equivalent to remaining days.
+     * If the end date is past day or today, it will not refund points.
      */
     public function stop($in)
     {
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
-        $post = post($in[IDX]);
-        if ($post->isMine() == false) return  e()->not_your_post;
+        $advertisement = advertisement($in[IDX]);
+        if ($advertisement->isMine() == false) return  e()->not_your_post;
 
-        // get number of days to refund.
-        $days = 0;
-        $action = 'advertisement.stop';
-        $pointToRefund = 0;
-
-        // if days between now and beginAt is bigger than 0, it means begin date is future.
-        // Full refund. 
-        if (daysBetween(0, $post->beginAt) > 0) {
-            $action = 'advertisement.cancel';
-            $days = daysBetween($post->beginAt, $post->endAt) + 1;
+        /// If advertisement started (including today), then, it needs +1 day.
+        /// For instance, advertisement starts today and ends tomorrow. The left days must be 1.
+        /// past days including today will be deducted.
+        if ($advertisement->started()) {
+            $action = 'advertisement.stop';
+            // if advertisement is expired, meaning it's end date is either past or today. (no refund).
+            if ($advertisement->expired()) $days = 0;
+            // else it is set tomorrow or beyond, we add 1. (deducted refund).
+            else $days = daysBetween(time(), $advertisement->endAt) + 1;
         }
-        // else, past days including today will be deducted.
+        /// else, advertisement is not yet started. ( full refund )
         else {
-            $days = daysBetween(0, $post->endAt);
-            if ($days < 1) $days = 0;
-            else $days++;
+            $action = 'advertisement.cancel';
+            $days = daysBetween($advertisement->beginAt, $advertisement->endAt) + 1;
         }
         // get settings
-        $in[COUNTRY_CODE] = $post->countryCode;
+        $in[COUNTRY_CODE] = $advertisement->countryCode;
         $settings = advertisement()->getAdvertisementSetting($in);
 
 
         // get points to refund.
-        $pointToRefund = $settings[$post->code] * $days;
+        $pointToRefund = $settings[$advertisement->code] * $days;
 
-        // set advertisementPoint to 0 when the advertisement has stopped.
+        // set advertisementPoint to empty ('') when the advertisement has stopped.
         $in['advertisementPoint'] = '';
 
         // Record for change point.
@@ -217,8 +267,8 @@ class AdvertisementController
             toUserIdx: login()->idx,
             toUserPoint: $pointToRefund,
             taxonomy: POSTS,
-            categoryIdx: $post->categoryIdx,
-            entity: $post->idx
+            categoryIdx: $advertisement->categoryIdx,
+            entity: $advertisement->idx
         );
 
         debug_log("refund apply point; {$activity->toUserPointApply} != {$pointToRefund}");
@@ -226,7 +276,7 @@ class AdvertisementController
             return e()->advertisement_point_refund_failed;
         }
 
-        $post = $post->update($in);
+        $post = $advertisement->update($in);
         $post->updateMemoryData('status', 'inactive');
         return $post->response();
     }
@@ -235,14 +285,55 @@ class AdvertisementController
      * Delete advertisement
      * 
      * Advertisements can be deleted if it is inactive, meaning the user's point is refunded.
+     * 
+     * If the advertisement's status is either 'active' or 'waiting', it will return error.
      */
     public function delete($in)
     {
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
-        $post = post($in[IDX]);
-        if ($post->isMine() == false) return  e()->not_your_post;
-        if ($post->advertisementPoint) return e()->advertisement_is_active;
-        return post($in[IDX])->markDelete()->response();
+        $advertisement = advertisement($in[IDX]);
+        if ($advertisement->isMine() == false) return  e()->not_your_post;
+
+        $status = advertisement()->getStatus($advertisement);
+        if ($status == 'active' || $status == 'waiting') return e()->advertisement_is_active;
+
+        return post($advertisement->idx)->markDelete()->response();
+    }
+
+
+    /**
+     * Update the point settings for each banner for the countryCode.
+     *
+     * If the record does not exist, it will create new record. Otherwise, it will update that record.
+     *
+     * @note, default banner settings for global, the countryCode is empty string.
+     * @param $in
+     * - example of request
+     * { countryCode: "yo", top: 100, sidebar: 200, square: 300, line: 400 }
+     * @return array|string
+     */
+    public function setBannerPoint($in) {
+//        if ( !isset($in[COUNTRY_CODE]) || empty($in[COUNTRY_CODE]) ) return e()->empty_country_code;
+        if ( !isset($in[TOP_BANNER]) || empty($in[TOP_BANNER]) ) return e()->empty_top_banner_point;
+        if ( !isset($in[SIDEBAR_BANNER]) || empty($in[SIDEBAR_BANNER]) ) return e()->empty_sidebar_banner_point;
+        if ( !isset($in[SQUARE_BANNER]) || empty($in[SQUARE_BANNER]) ) return e()->empty_square_banner_point;
+        if ( !isset($in[LINE_BANNER]) || empty($in[LINE_BANNER]) ) return e()->empty_line_banner_point;
+
+        $a = new AdvertisementPointSettingsModel();
+
+        if ( $a->countryExists($in[COUNTRY_CODE]) ) {
+            $in[IDX] = $a->getIdxFromDB([COUNTRY_CODE => $in[COUNTRY_CODE]]);
+        }
+
+        return $a->edit($in)->response();
+    }
+
+    public function getBannerPoints($in) {
+        return (new AdvertisementPointSettingsModel())->search(select: '*', order: COUNTRY_CODE, by: 'ASC');
+    }
+
+    public function deleteBannerPoint($in) {
+        return (new AdvertisementPointSettingsModel($in[IDX]))->delete()->response();
     }
 }

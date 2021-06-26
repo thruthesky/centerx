@@ -34,7 +34,6 @@
 - Git repo 를 `https://github.com/withcenter/matrix` 로 이동.
 
 
-
 ## 버전 2
 
 - 버전 2 에서 이름이 Centerx 에서 Matrix 로 변경이 되었다.
@@ -494,7 +493,7 @@ d(view()->page());
     예) 
     `error(err(e()->controller_file_not_found, $filePath));`
 
-# Config
+# 설정, Config
 
 ## 일반 설정
 
@@ -503,6 +502,8 @@ d(view()->page());
 ## 관리자 설정
 
 - 관리자만 설정 할 수 있는 것으로 taxonomy 가 `config` 이고, entity 는 1 이다.
+- `app.setConfig` 라우트는 오직 관리자만 이용 할 수 있는 라우트이다.
+  이 라우트로 저장하는 정보는 `app.settings` 를 할 때 정보가 같이 클라이언트로 다운로드 된다.
 
 
 # 클라이언트 동작 방식
@@ -589,7 +590,10 @@ isTrue((new AppController())->version(), "App version");
 
 ## Banner Place & Display
 
-The table below explains how banners are dipslayed.
+
+- Banner types are saved in `BANNER_TYPES` inside `config.php`.
+
+- The table below explains how banners are displayed.
 
 You can read it from left to right.
 
@@ -612,7 +616,8 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
 - when there is only 1 global banner, the global banner will be displayed on left, and default banner will be displayed on right.
 - when there are 2 global banners, they will be displayed on one left side, and the other right side.
 - when there are more than 2 global banners, the will be divided into two group and one group will be displayed on left, and the other group will be displayed on right.
-- If a category has no category banner, then, global banner will be displayed just the way it is displayed as globally
+- If a category has no category banner, then, global banner will be displayed just the way it is displayed as globally.
+  If there no global banner, then default banner will be displayed.
 - If a category has only one category banner, then the category banner will be display on left side and all the global
   banners will be displayed on right side.
 
@@ -656,7 +661,7 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
   
 ## 광고 기본, 설정 및 테이블 구조, Advertisement database table structure
 
-- Advertisement does not have its own table.
+- Advertisement banners does not have its own table.
   It uses `posts` table.
   (광고 테이블은 따로 없고, `posts` 테이블을 사용한다.)
 
@@ -670,7 +675,20 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
 - Advertisement type is recorded at `code`.
 - The banner image is saved as `files.code=banner`
 - And when the advertisement content is being shown, the banner should not be shown.
+
+## Advertisement settings table.
+
+- There is no table for Advertisement banners. But there is one for advertisement settings.
+
+- if 'countryCode' is empty, then that is the default settings.
+  Otherwise each record has its own settings for the countryCode.
   
+- `maximumAdvertisementDays` is the maximum adverting days from tdoay. it is saved in meta table.
+
+- `advertisementCategories` has the categories for user to post their banners on. It is saved in meta table.
+  It can have many categories separating by comma(,).
+  For instance, "qna,discussion,job".
+
 
 ## Banner display
 
@@ -751,10 +769,52 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 
 
+
 # 카페, Cafe
 
+- Cafe functionality is a unique function for `sonub.com` site. So, it may not be appropriate for the model and
+  controller to be under `controller` and `model` folder. Rather, they should be inside its view folder.
+  But to make it easy to work, it is under the system folder temporarily.
+
+- Cafe is like a group of small community in the site.
+- Cafe is actually a category. That means, a cafe is a forum. So cafe can have its category title, description,
+  subcategories, and more of what category has.
+
+- The cafe in sonub site is targeting a global travel information sharing service.
+  - Any one can create a cafe and they can share their interests or introduce their service.
+  
+
+- Cafe admin is the user who created the cafe.
+  - User can create a cafe by submitting the cafe create form.
+  - When user creates a cafe, the user can choose which country the cafe belongs to and sub domain of which root domain
+    he wants to use.
+    
+- Cafe main site, main-cafe.
+  - A cafe that are recorded in `CafeModel::$mainCafeDomains` are the main cafes.
+    - And if it not main cafe, then it will be a sub-cafe.
+  - Main cafe is not a category. Which means, it has no title, nor description, nor subscategories and nothing like
+    what a subcafe has.
+  - Main cafe has its settings inside `CafeModel::$mainCafeSettings`
+  
+
+- When user visits main-cafe,
+  - It displays menus inside `$mainCafeSettings`.
+  
+- When user visits sub-cafe,
+  - It displays subcategories of the sub-cafe, together with th main-cafe menus.
+  
+## Cafe PWA
+
+- All cafe (both main-cafe and sub-cafe) works as PWA.
+- All cafe (both main-cafe and sub-cafe) can be installed as A2HS.
+  - Main cafe will use main cafe settings to patch manifest.json
+  - Sub cafe will use its category settings to patch manifest.json
+  
 
 
+
+    
+## 카페 부연 설명
 
 * 게시판 1개를 카페로 해서, 최소한의 기능만으로 카페 또는 전세계 교민 카페를 만든다.
   * 카페 당 게시판 1개가 할당된다.
@@ -958,6 +1018,10 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
   For instance, "apple,banana,cherry"
   This subcategories may be seen on post list or post edit and each post can have one subcategory at `posts.subcategory`.
 
+  - `subcategoriesArray` - subcategories 로 부터 콤마로 구분된 카테고리를 분리하여 배열에 저장하고 클라이언트로 전달한다.
+    참고로, 가능한 원래 record field 이름은 유지하고, 가공한 정보를 새로운 이름으로 해서 클라이어늩로 전달한다.
+    단, `wc_posts.files` 의 경우는 예외이다.
+
 - postCreateLimit - users who has less points than this cannot create post
   For instance, this value is 1000 and user has 999. Then the user cannot create post.
 - commentCreateLimit - users who has less points than this cannot create comment
@@ -1084,7 +1148,83 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 
 
-# 관리자 페이지
+# 관리자 페이지, Admin Page
+
+- Starting Matrix(version 2), PHP does not render web pages directly to web browser. So, it needs a client-end to
+  display admin site.
+  The default website and its admin page is built-in Vue.js.
+
+- Most of the admin page and its functionalities comes from Vue.js components. The components are inside
+  `x-vue/components/admin` folder.
+  And by simply adding admin routes in the `routes/index.ts` in Vue.js app, the Vue.js app can use admin pages.
+  
+```ts
+import Vue from "vue";
+import VueRouter, { RouteConfig } from "vue-router";
+import Home from "../views/Home.vue";
+
+Vue.use(VueRouter);
+
+const routes: Array<RouteConfig> = [
+  {
+    path: "/",
+    name: "Home",
+    component: Home,
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: () => import("@/x-vue/components/admin/Admin.vue"),
+    children: [
+      {
+        path: "",
+        name: "AdminUserList",
+        component: () => import("@/x-vue/components/admin/AdminUserList.vue"),
+      },
+      {
+        path: "user",
+        name: "AdminUserList",
+        component: () => import("@/x-vue/components/admin/AdminUserList.vue"),
+      },
+      {
+        path: "category",
+        name: "AdminCategoryList",
+        component: () =>
+                import("@/x-vue/components/admin/AdminCategoryList.vue"),
+      },
+      {
+        path: "post",
+        name: "AdminPostList",
+        component: () => import("@/x-vue/components/admin/AdminPostList.vue"),
+      },
+      {
+        path: "file",
+        name: "AdminFileList",
+        component: () => import("@/x-vue/components/admin/AdminFileList.vue"),
+      },
+      {
+        path: "setting",
+        name: "AdminSetting",
+        component: () => import("@/x-vue/components/admin/AdminSetting.vue"),
+      },
+      {
+        path: "messaging",
+        name: "AdminPushNotification",
+        component: () =>
+                import("@/x-vue/components/admin/AdminPushNotification.vue"),
+      },
+    ],
+  },
+];
+
+const router = new VueRouter({
+  mode: "history",
+  base: process.env.BASE_URL,
+  routes,
+});
+
+export default router;
+```
 
 ## 관리자 설정
 
@@ -1310,6 +1450,165 @@ Error while trying to use the following icon from the Manifest: https://wwnymous
 ```text
 Error while trying to use the following icon from the Manifest: https://www.ontue.com/assets/img/anonymous.png (Resource size is not correct - typo in the Manifest?)
 ```
+
+
+
+# 날씨, OpenWeatherMap
+
+- `matrix` supports weather api from https://openweathermap.org/
+- define open weather map api key in config.php
+```php
+define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
+```
+
+- You can use `openweathermap.onecall` with `lat` and `lon`.
+
+
+- ~~@see widgets/weather/openweathermap for example.~~
+
+
+
+
+# 국가 정보, Country
+
+## 국가 정보 참고 문서
+
+
+- 참고: https://www.nationsonline.org/oneworld/country_code_list.htm
+- 참고: https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
+
+
+
+국가 정보를 wc_countries 테이블 에 저장 해 놓았으며, etc/sql/countries.sql 에 SQL 로 dump 해 놓았다.
+
+테이블에 들어가 있는 정보는 아래와 같다.
+
+- `koreanName` 한글 국가 이름. 예) 아프가니스탄, 대한민국
+
+- `englishName` 영문 국가 이름. 예) Japan, South Korea
+
+- `officialName` 해당 국가 언어의 표기 이름. 예) 日本, الاردن , 한국
+
+- `alpha2` 국가별 IOS 2자리 코드. Alpha-2 라고 표기하기도 함. 예) JP, KR
+
+- `alpah3` 국가별 IOS 3자리 코드. Alpha-3 라고 표기하기도 함. 예) JPN, KOR
+
+- `currencyCode` 통화 코드. 예) JPY, KRW
+
+- `currencyKoreanName` 한글 통화 이름(명칭). 예) 엔, 원, 유로, 달러, 페소
+
+- `currencySymbol` 통화 심볼. 예) ¥, €, ₩, HK$
+
+- `numericCode` 국가별 ISO 숫자 코드. 예) 008, 한국은 410.
+
+- `latitude`, `longitude` 국가별 중심의 GEO Location. 국가별 수도가 특정 도시가 아닌, 국가의 토지 면적에서 중심이 되는 부분의 위/경도 값이다.
+  이 값을 활용 예)
+  사용자의 국가 정보를 알고 있으면 그 국가의 중심부의 lat, lon 을 구해서, 해당 국가의 날씨 정보를 추출 할 수 있다. 비록 그 위치가 특정 도시가 아닌, 나라 면적의 중심이지만 적어도 그 국가의 날씨 정보를 알 수 있다.
+
+
+
+## 국가 정보 코딩 예제
+
+- `lib/country.class.php` 와 `lib/data.php` 를 참고한다.
+
+
+- To get all country list with country code in 2 letter and country name.
+  - By default, the route will return in English. To Korean version, add `&ln=ko` at the end.
+  
+```text
+https://main.philov.com/index.php?route=country.all
+https://main.philov.com/index.php?route=country.all&ln=ko
+```
+
+- you can get the whole country currency information like below.
+  - By default, the route will return in English. To Korean version, add `&ln=ko` at the end.
+
+```text
+https://main.philov.com/index.php?route=country.currencies
+https://main.philov.com/index.php?route=country.currencies&ln=ko
+```
+
+# 환율, Currency Conversion
+
+- centerx support currency api from https://free.currencyconverterapi.com/
+- define free version currency api in config.php
+
+```php
+define('CURRENCY_CONVERTER_API_KEY', 'bd6ed497a84496be7ee9');
+```
+
+- you can get the whole country currency information like below.
+
+```text
+https://main.philov.com/index.php?route=country.currencies
+```
+
+By default, the route will return in English. To Korean version, add `&ln=ko` at the end.
+
+## Get currency data
+
+To get currency data, you need to give a pair of currency code just like below.
+
+```text
+https://main.philov.com/index.php?route=currency-converter.get&currency1=USD&currency2=KRW
+```
+
+The query above gets `KRW` currency rate against `USD`. And the controller does more than that.
+
+One thing to note is that, there is query limit not only for free version but also for paid version.
+So, it is important to limit the query to currency server.
+And to limit the queries(or to maximize the queries), it queries 2 pairs to currency server.
+For instance, if the client request `USD` to `KRW`, the controller queries `USD` to `KRW` and `KRW` to `USD`.
+By doing this, it saves another query from `KRW` to `USD`.
+You can test it by querying `&currency1=USD&currency2=KRW`, then `&currency1=KRW&currency2=USD`. When client queried
+only 1 pair, the controller queries 2 pair and saves 2 caches of each query. So, the other pair is automatically cached.
+
+
+```json
+{
+  "response": {
+    "USD_KRW": 1131.894869,
+    "KRW_USD": 0.000883,
+    "cached": true
+  },
+  "request": {
+    "route": "currency-converter.get",
+    "currency1": "USD",
+    "currency2": "KRW"
+  }
+}
+```
+
+# 원하지 않는 접속 차단
+
+- etc/kill-wrong-routes.php 에서 한다.
+
+# 캐시
+
+- 캐시가 특정 시간보다 오래되었는지 또는 시간 경과했는지는 `cache('code')->olderThan(100)` 와 같이 하면 된다. 초단위이다.
+
+- 캐시를 사용하는 예(로직)는 다음과 같다.
+
+- 참고로, 캐시 데이터를 저장할 때, 배열 등이 있으면 searialize 를 해서 넣어야 한다.
+
+```php
+$currency = cache('PHP_KRW'); // 캐시 객체
+if ( $currency->olderThan(10) ) { // 10 초 보다 오래 되었으면,
+    // renew() 함수를 실행해서, 캐시 갱신 작업 중이라고 알린다.
+    // 내부적으로 createdAt 을 현재 stamp 로 변경하는데, 이렇게하면, 다른 프로세서가 중복으로 갱신 작업하지 않는다. 하지만 또한 다른 프로세서는 이전 캐시를 그대로 쓸 수 있다.
+    $currency->renew();
+    
+    
+    /// 여기서 원격에서 캐시를 가져온다.
+    /// 
+    
+    /// 그리고 아래와 같이 업데잍를 한다. 그러면 다시 한번 createdAt 을 현재 stamp 로 저장한다. 모든 프로세서가 새로운 캐시 값을 쓸 수 있다.
+    $currency->set(23.39 + time());
+}
+$phpKwr = $currency->data;
+echo "현재 환율: $phpKwr";
+```
+
 
 
 

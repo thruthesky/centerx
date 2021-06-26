@@ -12,9 +12,9 @@ class CafeController {
     public function settings($in): array {
         $cafe = cafe();
         return [
-            'mainDomains' => $cafe->mainDomains,
+            'mainCafeDomains' => $cafe->mainCafeDomains,
             'countryDomains' => $cafe->countryDomains,
-            'rootDomainSettings' => $cafe->rootDomainSettings,
+            'mainCafeSettings' => $cafe->mainCafeSettings,
             'mainMenus' => $cafe->mainMenus,
             'sitemap' => $cafe->sitemap,
         ];
@@ -67,5 +67,18 @@ class CafeController {
             }
         }
         return sendMessageToTopic($cafe->domain, $in);
+    }
+
+    public function initDefaultCafeMenu() {
+        if ( admin() == false ) return e()->you_are_not_admin;
+        $rets = [];
+        foreach( cafe()->mainMenus as $menu ) {
+            if ( category($menu)->exists ) {
+                $rets[$menu] = true;
+                continue;
+            }
+            $rets[$menu] = category()->create([ID=>$menu])->ok;
+        }
+        return $rets;
     }
 }

@@ -309,14 +309,20 @@ EOH);
 
 if ( !defined('PUSH_NOTIFICATION_ICON_URL') ) define('PUSH_NOTIFICATION_ICON_URL', HOME_URL . 'etc/img/messaging/messaging-icon.png');
 
-// Free currconv api key from https://free.currencyconverterapi.com/
-if ( !defined('CURRCONV_API_KEY') ) define('CURRCONV_API_KEY', 'bd6ed497a84496be7ee9');
+
 
 //
 if ( !defined('OPENWEATHERMAP_API_KEY' ) ) define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 
+// Free currconv api key from https://free.currencyconverterapi.com/
+if ( !defined('CURRENCY_CONVERTER_API_KEY') ) define('CURRENCY_CONVERTER_API_KEY', 'bd6ed497a84496be7ee9');
+if ( !defined('CURRENCY_CONVERTER_API_URL') ) define('CURRENCY_CONVERTER_API_URL', 'https://free.currconv.com/api/v7/convert');
+if ( !defined('CURRENCY_CONVERTER_CACHE_EXPIRE') ) define('CURRENCY_CONVERTER_CACHE_EXPIRE', 60 * 60); // 1 hour
+
+
 
 const MESSAGE_CATEGORY = 'message';
+
 
 
 
@@ -325,6 +331,8 @@ const MESSAGE_CATEGORY = 'message';
  * Banner Settings
  *
  * 'point' is the point for that banner per 1 day.
+ *
+ * @todo Move banner settings to admin page.
  */
 const TOP_BANNER = 'top';
 const SIDEBAR_BANNER = 'sidebar';

@@ -208,7 +208,7 @@ class Entity {
 
 
     /**
-     * 입력된 $entity 의 모든 properties 를 현재 객체의 properties  업데이트해서 리턴한다.에
+     * 입력된 $entity 의 모든 properties 를 현재 객체의 properties  업데이트해서 리턴한다. 즉, 입력된 entity 를 현재 entity 로 복사하는 것이다.
      * 즉, 현재 객체를 입력된 $entity 로 바꾸어서 리턴한다.
      * 다시 말하면, 객체 entity $A, $B 가 있는 경우, $A 의 이전 값들을 모두 버리고, $B 의 것을 복사해서 쓰기 위한 것이다.
      * read() 와 비슷한데, read 는 DB 로 부터 레코드를 읽어, 현재 객체에 지정하는데, 만약, 다른 객체의 레코드를 read() 해야 한다면, copyWith() 은 DB 접속을 한 번 줄일 수 있게 해 준다.
@@ -420,7 +420,8 @@ class Entity {
 
         $idx = db()->insert( $this->getTable(), $record );
 
-        if ( !$idx ) return $this->error(e()->insert_failed);
+        /// error if return from insert() is 0.
+        if ( $idx == 0 ) return $this->error(e()->insert_failed);
 
         meta()->creates($this->taxonomy, $idx, $this->getMetaFields($in));
 
@@ -504,7 +505,7 @@ class Entity {
      * Delete records.
      *
      * 참고, 이전에 에러가 발생했으면, 삭제하지 않고, 그냥 현재 객체를 리턴한다.
-     * 참고, 삭제 후, $this->data 는 빈 배열로 되지만, $this->idx 값은 유지한다.
+     * 참고, 삭제 후, 실제 DB table record 는 사라지지만, $this->data 값은 유지한다.
      * 참고, 에러가 있으면 에러가 설정된다.
      *
      * @attention When it is deleted, the entity record had removed immediately from the table but the data still exists
@@ -886,6 +887,7 @@ class Entity {
      *  the returned entity will load all the data into entity.
      *
      *
+     * @note, $conds 로 조건 값을 입력해도, statement 로 처리한다. 즉, 모든 쿼리를 Statement/Prepare 처리하므로 SQL Injection 으로 부터 안전하다.
      *
      * @return $this[] - empty array([]), If there is no record found.
      *  - empty array([]), If there is no record found.
@@ -924,8 +926,7 @@ class Entity {
      *      order: "noOfComments",
      *      limit: 5);
      * ```
-     * @todo SQL injection
-     * @todo $where 에 따옴표 처리.
+     *
      *
      *
      */

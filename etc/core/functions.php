@@ -90,7 +90,8 @@ function isLocalhost(): bool
     if ( isset($_SERVER['SERVER_ADDR']) ) {
         if ( str_starts_with($_SERVER['SERVER_ADDR'], '127.') ) return true;
         if ( str_starts_with($_SERVER['SERVER_ADDR'], '192.') ) return true;
-        if ( str_starts_with($_SERVER['SERVER_ADDR'], '172.') ) return true;
+        if ( str_starts_with($_SERVER['SERVER_ADDR'], "172.22.")) return true;
+        if ( str_starts_with($_SERVER['SERVER_ADDR'], "172.18.")) return true; // charles docker
     }
     if ( in_array(get_domain_name(), LOCAL_HOSTS) ) return true;
 
@@ -1694,7 +1695,7 @@ function postMessagingUrl(int $idx) {
 function parsePostSearchHttpParams(array $in): array|string {
 
     $params = [];
-    $where = "parentIdx=0";
+    $where = "parentIdx=0 AND deletedAt=''";
 
 
     // 카테고리 idx 또는 카테고리 id 또는 0
@@ -1883,6 +1884,22 @@ function isBetween($stamp, $firstStamp, $secondStamp) {
     return $curr->betweenIncluded($first, $second);
 }
 
+
+/**
+ * Stamp of 0 second of today. That is the beginning of today.
+ * @return int
+ */
+function today(): int {
+    return \Carbon\Carbon::today()->getTimestamp();
+}
+/**
+ * Stamp of 0 second of tomorrow. That is the beginning of tomorrow.
+ * @return int
+ */
+function tomorrow(): int {
+    return \Carbon\Carbon::tomorrow()->getTimestamp();
+}
+
 /**
  * Returns true if the $stamp is between the first and second.
  * @param $stamp
@@ -1897,6 +1914,21 @@ function isBetweenDay($stamp, $firstStamp, $secondStamp) {
     if ($curr->diffInDays($first) == 0) return true;
     if ($curr->diffInDays($second) == 0) return true;
     return $curr->betweenIncluded($first, $second);
+}
+
+/**
+ * Returns true if the input stamp is today or future. ( not past )
+ */
+function isTodayOrFuture(int $stamp): bool {
+    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+    return  $carbon->isToday() || $carbon->isFuture();
+}
+/**
+ * Returns true if the input stamp is today or past. ( not future )
+ */
+function isTodayOrPast(int $stamp): bool {
+    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+    return  $carbon->isToday() || $carbon->isPast();
 }
 
 /**

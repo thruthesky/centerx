@@ -50,12 +50,31 @@ class AdvertisementModel extends PostModel
     public function getStatus(PostModel $post): string
     {
         $now = time();
+
         if (isset($post->advertisementPoint) && $post->advertisementPoint) {
             if (daysBetween($now, $post->beginAt) > 0) return 'waiting';
             else if (isBetweenDay($now, $post->beginAt, $post->endAt)) return 'active';
             else return 'inactive';
         }
         return 'inactive';
+    }
+
+    /**
+     * Returns true if the advertisement has started.
+     * Checks 'beginAt' if is equivalent to today or past days.
+     * @return bool
+     */
+    public function started(): bool {
+        return isTodayOrPast( $this->beginAt );
+    }
+
+    /**
+     * Returns true if the advertisement is expired, meaning the end date is either past or today.
+     * Checks 'endAt' if is equivalent to today or past days.
+     * @return bool
+     */
+    public function expired(): bool {
+        return isTodayOrPast( $this->endAt );
     }
 
 }

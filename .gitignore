@@ -1,3 +1,6 @@
+.cache/
+.ssh/
+
 .ash_history
 .idea
 .phpdoc

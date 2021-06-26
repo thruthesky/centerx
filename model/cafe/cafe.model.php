@@ -25,7 +25,7 @@ class CafeModel extends CategoryModel
      * 하지만, 테스트를 위해서, 개발자 컴퓨터에서 /etc/hosts 에 main.sonub.com 을 등록하고 main.sonub.com 과 같이 접속을 하면, 메인 사이트로 인식을 한다.
      */
 
-    public $mainDomains = [
+    public $mainCafeDomains = [
         'philov.com', 'www.philov.com', 'main.philov.com',
         'sonub.com', 'www.sonub.com', 'main.sonub.com',
     ];
@@ -66,7 +66,7 @@ class CafeModel extends CategoryModel
      * sonub 에서 지원하는 모든 루트 도메인(국가 전용 도메인 포함)은 여기에 기록되어야 한다.
      * 만약, countryCode 값이 null 이면, 현재 사용자가 있는 곳의 국가가 자동으로 설정된다.
      */
-    public $rootDomainSettings = [
+    public $mainCafeSettings = [
         'sonub.com' => [
             'name' => '필러브',
             'countryCode' => '',
@@ -135,6 +135,13 @@ class CafeModel extends CategoryModel
     }
 
 
+    /**
+     * @param array $in
+     * - rootDomain as 'abc.com'
+     * - domain as 'user'. So, the final domain would look 'user.abc.com'.
+     * - countryCode as 'PH'.
+     * @return $this
+     */
     public function create($in):self {
         if( notLoggedIn() ) return $this->error(e()->not_logged_in);
 
@@ -152,7 +159,7 @@ class CafeModel extends CategoryModel
 
         if( strlen($domain) > 32 ) return $this->error(e()->domain_too_long);
 
-        if (in_array($domain, $this->mainDomains)) return $this->error(e()->cafe_exists);
+        if (in_array($domain, $this->mainCafeDomains)) return $this->error(e()->cafe_main_domain);
 
         if ( category($domain)->exists ) return $this->error(e()->cafe_exists);
 
@@ -161,7 +168,7 @@ class CafeModel extends CategoryModel
             USER_IDX => login()->idx,
             ID => $domain,
             DOMAIN => $in['rootDomain'],
-            'countryCode' => in('countryCode')
+            'countryCode' => $in['countryCode'],
         ];
         return parent::create($data);
     }
@@ -187,10 +194,10 @@ class CafeModel extends CategoryModel
      * 현재 카페의 루트 도메인 세이팅을 리턴한다.
      * @return array|null
      */
-    private function rootDomainSettings(): array|null {
+    private function mainCafeSettings(): array|null {
         $rootDomain = get_root_domain();
-        if ( isset($this->rootDomainSettings[$rootDomain]) ) {
-            return $this->rootDomainSettings[$rootDomain];
+        if ( isset($this->mainCafeSettings[$rootDomain]) ) {
+            return $this->mainCafeSettings[$rootDomain];
         } else {
             return null;
         }
@@ -200,7 +207,7 @@ class CafeModel extends CategoryModel
      * 루트 카페(도메인)의 이름을 리턴한다.
      */
     public function rootCafeName() {
-        $setting = $this->rootDomainSettings();
+        $setting = $this->mainCafeSettings();
         if ( $setting ) {
             return $setting['name'];
         } else {
@@ -230,7 +237,7 @@ class CafeModel extends CategoryModel
     private function countryCode(): string {
         if ( $this->isMainCafe() ) { // 메인 카페
             if ( $this->isCountryDomain() ) { // 국가 카페
-                return $this->rootDomainSettings()['countryCode'];
+                return $this->mainCafeSettings()['countryCode'];
             } else { // 전 세계 카페. 예) sonub.com
                 $country = get_current_country(clientIp());
                 if ( $country->hasError ) return 'KR';
@@ -298,7 +305,7 @@ class CafeModel extends CategoryModel
      * @return bool
      */
     public function isMainCafe(string $domain = null): bool {
-        return in_array($domain ?? get_domain(), $this->mainDomains);
+        return in_array($domain ?? get_domain(), $this->mainCafeDomains);
     }
 
     /**
@@ -317,7 +324,7 @@ class CafeModel extends CategoryModel
      */
     public function name(): string {
         if ( $this->isMainCafe() ) {
-            return $this->rootDomainSettings()['name'];
+            return $this->mainCafeSettings()['name'];
         }
         if ( $this->title ) return $this->title;
         else return explode('.', $this->id)[0];
@@ -348,10 +355,6 @@ class CafeModel extends CategoryModel
     public function countTokens(): int {
         return token()->count(conds: [TOPIC => cafe()->domain]);
     }
-
-//    public function sendMessage($in): array|string {
-//
-//    }
 
 
 }

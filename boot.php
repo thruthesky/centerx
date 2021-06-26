@@ -62,11 +62,13 @@ require_once ROOT_DIR . 'model/in-app-purchase/in-app-purchase.model.php';
 
 
 require_once ROOT_DIR . 'model/advertisement/advertisement.model.php';
+require_once ROOT_DIR . 'model/advertisement/advertisement_point_settings.model.php';
 
 
 // cafe
 require_once ROOT_DIR . 'model/cafe/cafe.defines.php';
 require_once ROOT_DIR . 'model/cafe/cafe.model.php';
+
 
 
 require_once ROOT_DIR . 'etc/core/hook.php';
