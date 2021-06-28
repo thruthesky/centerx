@@ -77,6 +77,37 @@ class AdvertisementModel extends PostModel
         return isTodayOrPast( $this->endAt );
     }
 
+
+    public function maximumAdvertisementDays(): int {
+        return intVal(adminSettings()->get('maximumAdvertisementDays') ?? 0);
+    }
+
+    public function advertisementCategories(): array {
+        $arr = explode(',', adminSettings()->get('advertisementCategories') ?? '');
+        $rets = [];
+        foreach($arr as $c) {
+            $c = trim($c);
+            if ( empty($c) ) continue;
+            $rets[] = $c;
+        }
+        return $rets;
+    }
+
+    public function advertisementPoints(): array {
+        $rows = (new AdvertisementPointSettingsModel())->search(order: COUNTRY_CODE, by: 'ASC', object: true);
+        $rets = [];
+        foreach( $rows as $entity ) {
+            $cc = empty($entity->countryCode) ? 'default' : $entity->countryCode;
+            $rets[$cc] = [
+                TOP_BANNER => $entity->top,
+                SIDEBAR_BANNER => $entity->sidebar,
+                SQUARE_BANNER => $entity->square,
+                LINE_BANNER => $entity->line,
+            ];
+        }
+        return $rets;
+    }
+
 }
 
 

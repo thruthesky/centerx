@@ -1530,14 +1530,16 @@ https://main.philov.com/index.php?route=country.currencies&ln=ko
 
 # 환율, Currency Conversion
 
-- centerx support currency api from https://free.currencyconverterapi.com/
-- define free version currency api in config.php
+- Matrix supports currency api from https://free.currencyconverterapi.com/
+
+
+- You can define free version currency api in config.php. It can be easily switched to paid version.
 
 ```php
 define('CURRENCY_CONVERTER_API_KEY', 'bd6ed497a84496be7ee9');
 ```
 
-- you can get the whole country currency information like below.
+- You may want to get the whole country currency information. If you do, access the route like below.
 
 ```text
 https://main.philov.com/index.php?route=country.currencies

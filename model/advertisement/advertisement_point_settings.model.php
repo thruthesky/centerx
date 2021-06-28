@@ -4,7 +4,11 @@
  */
 /**
  * Class AdvertisementModel
- * @property-read string $clickUrl
+ * @property-read string $countryCode
+ * @property-read string $top
+ * @property-read string $sidebar
+ * @property-read string $square
+ * @property-read string $line
  */
 class AdvertisementPointSettingsModel extends Entity
 {

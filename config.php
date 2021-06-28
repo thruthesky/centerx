@@ -32,7 +32,7 @@ const DOMAIN_THEMES = [
     'sonubtheme' => 'sonub',
     'itsuda' => 'itsuda',
     '127.0.0.1' => 'default',
-    'localhost' => 'default',
+    'localhost' => 'admin',
     '169.254.194.6' => 'itsuda', // JaeHo Song's Emulator Access Point to Host OS.
     '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.
     '192.168.100.17' => 'itsuda', // Charles Ip address
@@ -339,43 +339,44 @@ const SIDEBAR_BANNER = 'sidebar';
 const SQUARE_BANNER = 'square';
 const LINE_BANNER = 'line';
 const BANNER_TYPES = [ TOP_BANNER, SIDEBAR_BANNER, SQUARE_BANNER, LINE_BANNER ];
+
 /**
  * When MAXIMUM_ADVERTISING_DAYS is not 0 (or bigger than 0), then the last days of advertisement can be set within
  *  `MAXIMUM_ADVERTISING_DAYS` from today.
  */
-const MAXIMUM_ADVERTISING_DAYS = 70;
-const ADVERTISEMENT_SETTINGS = [
-    'types' => BANNER_TYPES,
-    'maximum_advertising_days' => MAXIMUM_ADVERTISING_DAYS,
-    'point'=>[
-        'default' => [
-            TOP_BANNER => 3000,
-            SIDEBAR_BANNER => 2500,
-            SQUARE_BANNER => 2500,
-            LINE_BANNER => 1500,
-        ],
-        'PH' => [
-            TOP_BANNER => 6000,
-            SIDEBAR_BANNER => 5000,
-            SQUARE_BANNER => 5000,
-            LINE_BANNER => 3000,
-        ],
-        'US' => [
-            TOP_BANNER => 5000,
-            SIDEBAR_BANNER => 4000,
-            SQUARE_BANNER => 4000,
-            LINE_BANNER => 2500,
-        ]
-    ],
-    // Input which forum category that user can post banners.
-    'categories' => [
-        'qna',
-        'discussion',
-        'job',
-        'rent_house',
-        'rent_car',
-        'money_exchange',
-    ]
-];
-
+//const MAXIMUM_ADVERTISING_DAYS = 70;
+//const ADVERTISEMENT_SETTINGS = [
+//    'types' => BANNER_TYPES,
+//    'maximum_advertising_days' => MAXIMUM_ADVERTISING_DAYS,
+//    'point'=>[
+//        'default' => [
+//            TOP_BANNER => 3000,
+//            SIDEBAR_BANNER => 2500,
+//            SQUARE_BANNER => 2500,
+//            LINE_BANNER => 1500,
+//        ],
+//        'PH' => [
+//            TOP_BANNER => 6000,
+//            SIDEBAR_BANNER => 5000,
+//            SQUARE_BANNER => 5000,
+//            LINE_BANNER => 3000,
+//        ],
+//        'US' => [
+//            TOP_BANNER => 5000,
+//            SIDEBAR_BANNER => 4000,
+//            SQUARE_BANNER => 4000,
+//            LINE_BANNER => 2500,
+//        ]
+//    ],
+//    // Input which forum category that user can post banners.
+//    'categories' => [
+//        'qna',
+//        'discussion',
+//        'job',
+//        'rent_house',
+//        'rent_car',
+//        'money_exchange',
+//    ]
+//];
+//
 

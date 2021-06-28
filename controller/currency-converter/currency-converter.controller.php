@@ -10,9 +10,11 @@
  */
 class CurrencyConverterController
 {
-    // https://free.currconv.com/api/v7/convert?q=USD_PHP,PHP_USD&compact=ultra&apiKey=fc4e250606e6a20ddc5a
-
-    ///
+    /**
+     * @see README.md for details
+     * @param $in
+     * @return array|mixed
+     */
     public function get($in) {
         $c1 = $in['currency1'];
         $c2 = $in['currency2'];
