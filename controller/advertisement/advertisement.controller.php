@@ -313,27 +313,32 @@ class AdvertisementController
      * { countryCode: "yo", top: 100, sidebar: 200, square: 300, line: 400 }
      * @return array|string
      */
-    public function setBannerPoint($in) {
-//        if ( !isset($in[COUNTRY_CODE]) || empty($in[COUNTRY_CODE]) ) return e()->empty_country_code;
-        if ( !isset($in[TOP_BANNER]) || empty($in[TOP_BANNER]) ) return e()->empty_top_banner_point;
-        if ( !isset($in[SIDEBAR_BANNER]) || empty($in[SIDEBAR_BANNER]) ) return e()->empty_sidebar_banner_point;
-        if ( !isset($in[SQUARE_BANNER]) || empty($in[SQUARE_BANNER]) ) return e()->empty_square_banner_point;
-        if ( !isset($in[LINE_BANNER]) || empty($in[LINE_BANNER]) ) return e()->empty_line_banner_point;
+    public function setBannerPoint($in)
+    {
+        //        if ( !isset($in[COUNTRY_CODE]) || empty($in[COUNTRY_CODE]) ) return e()->empty_country_code;
+        if (!isset($in[TOP_BANNER]) || empty($in[TOP_BANNER])) return e()->empty_top_banner_point;
+        if (!isset($in[SIDEBAR_BANNER]) || empty($in[SIDEBAR_BANNER])) return e()->empty_sidebar_banner_point;
+        if (!isset($in[SQUARE_BANNER]) || empty($in[SQUARE_BANNER])) return e()->empty_square_banner_point;
+        if (!isset($in[LINE_BANNER]) || empty($in[LINE_BANNER])) return e()->empty_line_banner_point;
 
         $a = new AdvertisementPointSettingsModel();
 
-        if ( $a->countryExists($in[COUNTRY_CODE]) ) {
+        if (!isset($in[COUNTRY_CODE]) || empty($in[COUNTRY_CODE])) $in[COUNTRY_CODE] = '';
+
+        if ($a->countryExists($in[COUNTRY_CODE])) {
             $in[IDX] = $a->getIdxFromDB([COUNTRY_CODE => $in[COUNTRY_CODE]]);
         }
 
         return $a->edit($in)->response();
     }
 
-    public function getBannerPoints($in) {
+    public function getBannerPoints($in)
+    {
         return (new AdvertisementPointSettingsModel())->search(select: '*', order: COUNTRY_CODE, by: 'ASC');
     }
 
-    public function deleteBannerPoint($in) {
+    public function deleteBannerPoint($in)
+    {
         return (new AdvertisementPointSettingsModel($in[IDX]))->delete()->response();
     }
 }
