@@ -34,7 +34,6 @@
 - Git repo 를 `https://github.com/withcenter/matrix` 로 이동.
 
 
-
 ## 버전 2
 
 - 버전 2 에서 이름이 Centerx 에서 Matrix 로 변경이 되었다.
@@ -1470,21 +1469,29 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 
 
 
-# 국가 정보
+# 국가 정보, Country
+
+## 국가 정보 참고 문서
+
+
+- 참고: https://www.nationsonline.org/oneworld/country_code_list.htm
+- 참고: https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
+
+
 
 국가 정보를 wc_countries 테이블 에 저장 해 놓았으며, etc/sql/countries.sql 에 SQL 로 dump 해 놓았다.
 
 테이블에 들어가 있는 정보는 아래와 같다.
 
-- `CountryNameKR` 한글 국가 이름. 예) 아프가니스탄, 대한민국
+- `koreanName` 한글 국가 이름. 예) 아프가니스탄, 대한민국
 
-- `CountryNameEN` 영문 국가 이름. 예) Japan, South Korea
+- `englishName` 영문 국가 이름. 예) Japan, South Korea
 
-- `CountryNameOriginal` 해당 국가 언어의 표기 이름. 예) 日本, الاردن , 한국
+- `officialName` 해당 국가 언어의 표기 이름. 예) 日本, الاردن , 한국
 
-- `2digitCode` 국가별 2자리 코드. 예) JP, KR
+- `alpha2` 국가별 IOS 2자리 코드. Alpha-2 라고 표기하기도 함. 예) JP, KR
 
-- `3digitCode` 국가별 3자리 코드. 예) JPN, KOR
+- `alpah3` 국가별 IOS 3자리 코드. Alpha-3 라고 표기하기도 함. 예) JPN, KOR
 
 - `currencyCode` 통화 코드. 예) JPY, KRW
 
@@ -1492,7 +1499,7 @@ define('OPENWEATHERMAP_API_KEY', '7cb555e44cdaac586538369ac275a33b');
 
 - `currencySymbol` 통화 심볼. 예) ¥, €, ₩, HK$
 
-- `ISONumericCode` 국가별 ISO 코드
+- `numericCode` 국가별 ISO 숫자 코드. 예) 008, 한국은 410.
 
 - `latitude`, `longitude` 국가별 중심의 GEO Location. 국가별 수도가 특정 도시가 아닌, 국가의 토지 면적에서 중심이 되는 부분의 위/경도 값이다.
   이 값을 활용 예)

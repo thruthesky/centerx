@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: Apr 04, 2021 at 10:57 AM
--- Server version: 10.5.9-MariaDB-1:10.5.9+maria~focal
--- PHP Version: 8.0.3
+-- 생성 시간: 21-06-26 07:48
+-- 서버 버전: 10.5.10-MariaDB-1:10.5.10+maria~focal
+-- PHP 버전: 8.0.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -17,27 +17,24 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
--- Database: `centerx`
---
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wc_countries`
+-- 테이블 구조 `wc_countries`
 --
 
 CREATE TABLE `wc_countries` (
   `idx` int(10) UNSIGNED NOT NULL,
-  `CountryNameKR` varchar(64) NOT NULL,
-  `CountryNameEN` varchar(64) NOT NULL,
-  `CountryNameOriginal` varchar(64) NOT NULL,
-  `2digitCode` char(2) NOT NULL,
-  `3digitCode` char(3) NOT NULL,
+  `koreanName` varchar(64) NOT NULL,
+  `englishName` varchar(64) NOT NULL,
+  `officialName` varchar(64) NOT NULL,
+  `alpha2` char(2) NOT NULL,
+  `alpha3` char(3) NOT NULL,
   `currencyCode` char(3) NOT NULL,
   `currencyKoreanName` varchar(16) NOT NULL,
   `currencySymbol` varchar(16) NOT NULL,
-  `ISONumbericCode` smallint(6) UNSIGNED ZEROFILL NOT NULL,
+  `numericCode` smallint(6) UNSIGNED ZEROFILL NOT NULL,
   `latitude` varchar(16) NOT NULL DEFAULT '',
   `longitude` varchar(16) NOT NULL DEFAULT '',
   `createdAt` int(11) NOT NULL,
@@ -45,10 +42,10 @@ CREATE TABLE `wc_countries` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `wc_countries`
+-- 테이블의 덤프 데이터 `wc_countries`
 --
 
-INSERT INTO `wc_countries` (`idx`, `CountryNameKR`, `CountryNameEN`, `CountryNameOriginal`, `2digitCode`, `3digitCode`, `currencyCode`, `currencyKoreanName`, `currencySymbol`, `ISONumbericCode`, `latitude`, `longitude`, `createdAt`, `updatedAt`) VALUES
+INSERT INTO `wc_countries` (`idx`, `koreanName`, `englishName`, `officialName`, `alpha2`, `alpha3`, `currencyCode`, `currencyKoreanName`, `currencySymbol`, `numericCode`, `latitude`, `longitude`, `createdAt`, `updatedAt`) VALUES
 (1, '아프가니스탄', 'Afghanistan', 'افغانستان', 'AF', 'AFG', 'AFN', '', '', 000004, '33.93911', '67.709953', 1617533769, 1617533769),
 (2, '알바니아', 'Albania', 'Shqipëria', 'AL', 'ALB', 'ALL', '렉', 'L', 000008, '41.153332', '20.168331', 1617533769, 1617533769),
 (3, '남극', 'Antarctica', 'Antarctica', 'AQ', 'ATA', '', '', '', 000010, '-75.250973', '-0.071389', 1617533769, 1617533769),
@@ -296,24 +293,24 @@ INSERT INTO `wc_countries` (`idx`, `CountryNameKR`, `CountryNameEN`, `CountryNam
 (245, '잠비아', 'Zambia', 'Zambia', 'ZM', 'ZMB', 'ZMW', '', '', 000894, '-13.133897', '27.849332', 1617533770, 1617533770);
 
 --
--- Indexes for dumped tables
+-- 덤프된 테이블의 인덱스
 --
 
 --
--- Indexes for table `wc_countries`
+-- 테이블의 인덱스 `wc_countries`
 --
 ALTER TABLE `wc_countries`
   ADD PRIMARY KEY (`idx`),
-  ADD UNIQUE KEY `countryCode2` (`2digitCode`),
-  ADD UNIQUE KEY `countryCode3` (`3digitCode`),
-  ADD UNIQUE KEY `isoCode` (`ISONumbericCode`);
+  ADD UNIQUE KEY `alpha2` (`alpha2`),
+  ADD UNIQUE KEY `alpha3` (`alpha3`),
+  ADD UNIQUE KEY `numericCode` (`numericCode`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- 덤프된 테이블의 AUTO_INCREMENT
 --
 
 --
--- AUTO_INCREMENT for table `wc_countries`
+-- 테이블의 AUTO_INCREMENT `wc_countries`
 --
 ALTER TABLE `wc_countries`
   MODIFY `idx` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=246;
