@@ -89,6 +89,8 @@ class User extends Entity {
         $this->create($in);
 
         point()->register($this->profile());
+        coin()->register($this);
+
 
         return $this;
     }

@@ -123,6 +123,7 @@ class InAppPurchase extends Entity {
 
         point()->purchase( $pointToCredit );
 
+        coin()->inAppPurchase($pointToCredit);
 
 
         return $this;
