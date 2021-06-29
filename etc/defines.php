@@ -95,6 +95,8 @@ const NO_OF_VIEWS = 'noOfViews';
 const PRIVATE_TITLE = 'privateTitle';
 const PRIVATE_CONTENT = 'privateContent';
 
+const MAXIMUM_ADVERTISING_DAYS = 'maximumAdvertisementDays';
+const ADVERTISEMENT_CATEGORIES = 'advertisementCategories';
 
 define('DESCRIPTION', 'description');
 define('PATH', 'path');

@@ -167,14 +167,15 @@ class AdvertisementController
 
         // add 1 to include beginning date.
         $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
-        if (ADVERTISEMENT_SETTINGS['maximum_advertising_days']) {
-            if (ADVERTISEMENT_SETTINGS['maximum_advertising_days'] < $days) return e()->maximum_advertising_days;
+        $maximumAdvertisementDays = advertisement()->maximumAdvertisementDays();
+        if ($maximumAdvertisementDays) {
+            if ($maximumAdvertisementDays < $days) return e()->maximum_advertising_days;
         }
 
         // Save point per day. This will be saved in meta.
         $in['pointPerDay'] = 0;
 
-        $settings = advertisement()->getAdvertisementSetting($in);
+        $settings = advertisement()->getAdvertisementPointSetting($in);
 
         $in['pointPerDay'] = $settings[$in[CODE]];
 
@@ -251,7 +252,7 @@ class AdvertisementController
         }
         // get settings
         $in[COUNTRY_CODE] = $advertisement->countryCode;
-        $settings = advertisement()->getAdvertisementSetting($in);
+        $settings = advertisement()->getAdvertisementPointSetting($in);
 
 
         // get points to refund.
@@ -305,7 +306,8 @@ class AdvertisementController
     /**
      * Return advertisement settings like advertisement categories, points, etc.
      */
-    public function settings() {
+    public function settings()
+    {
         $adv = advertisement();
         return [
             'types' => BANNER_TYPES,
@@ -354,6 +356,4 @@ class AdvertisementController
     {
         return (new AdvertisementPointSettingsModel($in[IDX]))->delete()->response();
     }
-
-
 }

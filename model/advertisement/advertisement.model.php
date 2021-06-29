@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file advertisement.model.php
  */
@@ -14,36 +15,46 @@ class AdvertisementModel extends PostModel
         parent::__construct($idx);
     }
 
-    public function getAdvertisementSetting($in): array
+    public function getAdvertisementPointSetting($in): array
     {
-        if (isset($in[COUNTRY_CODE]) && isset(ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]])) {
-            $setting = ADVERTISEMENT_SETTINGS['point'][$in[COUNTRY_CODE]];
+        $pointSetting = $this->advertisementPoints();
+        if (empty($pointSetting)) return $pointSetting;
+
+        if (isset($in[COUNTRY_CODE]) && isset($pointSetting[$in[COUNTRY_CODE]])) {
+            $setting = $pointSetting[$in[COUNTRY_CODE]];
         } else {
-            $setting = ADVERTISEMENT_SETTINGS['point']['default'];
+            $setting = $pointSetting['default'];
         }
         return $setting;
     }
 
 
-    private function bannerPoint($bannerType, string $countryCode=''): int {
+    private function bannerPoint($bannerType, string $countryCode = ''): int
+    {
         if (!$bannerType) return 0;
 
-        if ( $countryCode ) {
-            return ADVERTISEMENT_SETTINGS['point'][$countryCode][$bannerType];
+        $pointSetting = $this->advertisementPoints();
+        if (!empty($pointSetting)) return 0;
+
+        if ($countryCode) {
+            return $pointSetting[$countryCode][$bannerType];
         } else {
-            return ADVERTISEMENT_SETTINGS['point']['default'][$bannerType];
+            return $pointSetting['default'][$bannerType];
         }
     }
 
-    public function topBannerPoint(string $countryCode=''): int {
+    public function topBannerPoint(string $countryCode = ''): int
+    {
         return $this->bannerPoint(TOP_BANNER, $countryCode);
     }
 
-    public function LineBannerPoint(string $countryCode=''): int {
+    public function LineBannerPoint(string $countryCode = ''): int
+    {
         return $this->bannerPoint(LINE_BANNER, $countryCode);
     }
 
-    public function SquareBannerPoint(string $countryCode=''): int {
+    public function SquareBannerPoint(string $countryCode = ''): int
+    {
         return $this->bannerPoint(SQUARE_BANNER, $countryCode);
     }
 
@@ -64,8 +75,9 @@ class AdvertisementModel extends PostModel
      * Checks 'beginAt' if is equivalent to today or past days.
      * @return bool
      */
-    public function started(): bool {
-        return isTodayOrPast( $this->beginAt );
+    public function started(): bool
+    {
+        return isTodayOrPast($this->beginAt);
     }
 
     /**
@@ -73,30 +85,34 @@ class AdvertisementModel extends PostModel
      * Checks 'endAt' if is equivalent to today or past days.
      * @return bool
      */
-    public function expired(): bool {
-        return isTodayOrPast( $this->endAt );
+    public function expired(): bool
+    {
+        return isTodayOrPast($this->endAt);
     }
 
 
-    public function maximumAdvertisementDays(): int {
+    public function maximumAdvertisementDays(): int
+    {
         return intVal(adminSettings()->get('maximumAdvertisementDays') ?? 0);
     }
 
-    public function advertisementCategories(): array {
+    public function advertisementCategories(): array
+    {
         $arr = explode(',', adminSettings()->get('advertisementCategories') ?? '');
         $rets = [];
-        foreach($arr as $c) {
+        foreach ($arr as $c) {
             $c = trim($c);
-            if ( empty($c) ) continue;
+            if (empty($c)) continue;
             $rets[] = $c;
         }
         return $rets;
     }
 
-    public function advertisementPoints(): array {
+    public function advertisementPoints(): array
+    {
         $rows = (new AdvertisementPointSettingsModel())->search(order: COUNTRY_CODE, by: 'ASC', object: true);
         $rets = [];
-        foreach( $rows as $entity ) {
+        foreach ($rows as $entity) {
             $cc = empty($entity->countryCode) ? 'default' : $entity->countryCode;
             $rets[$cc] = [
                 TOP_BANNER => $entity->top,
@@ -107,7 +123,6 @@ class AdvertisementModel extends PostModel
         }
         return $rets;
     }
-
 }
 
 
@@ -117,7 +132,7 @@ class AdvertisementModel extends PostModel
  * @param int $idx
  * @return AdvertisementModel
  */
-function advertisement(int $idx=0): AdvertisementModel
+function advertisement(int $idx = 0): AdvertisementModel
 {
     return new AdvertisementModel($idx);
 }

@@ -4,52 +4,40 @@ setLogout();
 enableTesting();
 $at = new AdvertisementTest();
 
-//$at->lackOfPoint();
-//$at->emptyCode();
-//$at->beginDateEmpty();
-//$at->endDateEmpty();
-//$at->maximumAdvertisementDays();
-//$at->domainEmpty();
-//
-//$at->statusCheck();
-//
-//$at->startDeduction();
-//
-//$at->startWithPHCountryDeduction();
-//
-//$at->stopNoRefund();
-//$at->stopExpiredNoRefund();
+// $at->lackOfPoint();
+// $at->emptyCode();
+// $at->beginDateEmpty();
+// $at->endDateEmpty();
+// $at->maximumAdvertisementDays();
+// $at->domainEmpty();
 
-$at->stopWithDeductedRefund();
+// $at->statusCheck();
 
-//$at->stopWithPHCountryAndDeductedRefund();
-//
-//$at->stopFullRefund();
-//$at->stopWithUSCountryFullRefund();
-//
-//$at->errorDeleteActiveAdvertisement();
-//$at->deleteAdvertisement();
-//
-//$at->startStopChangeDatesAndCountry();
-//
-//$at->loadActiveBannersByCountryCode();
+// $at->startDeduction();
+
+// $at->startWithPHCountryDeduction();
+
+// $at->stopNoRefund();
+// $at->stopExpiredNoRefund();
+
+// $at->stopWithDeductedRefund();
+
+// $at->stopWithPHCountryAndDeductedRefund();
+
+// $at->stopFullRefund();
+// $at->stopWithUSCountryFullRefund();
+
+// $at->errorDeleteActiveAdvertisement();
+// $at->deleteAdvertisement();
+
+// $at->startStopChangeDatesAndCountry();
+
+// $at->loadActiveBannersByCountryCode();
+
+$at->settings();
+// $at->bannerPoints();
 
 
-/**
- * 
- * do tests
- *  - check input.
- *  - check maximum allowed days.
- *  - check point deduction.
- *  - check cancel.
- *  - check refund.
- *  - change dates after create banner and check days left.
- *  - compare the point history.
- *  - get banners on a specific.
- *   - banner type/place (code).
- *   - category(subcategory).
- *   - and countryCode.
- */
 class AdvertisementTest
 {
 
@@ -615,10 +603,10 @@ class AdvertisementTest
         $countryCodeB = 'AV';
 
         $cafe = cafe()->create(['rootDomain' => $rootDomain, 'domain' => 'abc', 'countryCode' => $countryCodeA]);
-        
+
         // d($cafe->idx);
         // d($cafe->countryCode);
-        
+
         isTrue($cafe->ok, 'cafe for banner test has been created');
         $domain = 'abc.' . $rootDomain;
 
@@ -645,7 +633,7 @@ class AdvertisementTest
 
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
         isTrue(count($re) == 2, 'Expect: active banners == 2');
-        
+
         $cafe = cafe($cafe->idx)->update([COUNTRY_CODE => $countryCodeB]);
         isTrue($cafe->countryCode == $countryCodeB, "Expect: country code changed from $countryCodeA to $countryCodeB.");
 
@@ -653,7 +641,7 @@ class AdvertisementTest
 
         // d($re);
         isTrue(count($re) == 2, 'Expect: active banners == 2.');
-        
+
         post($adv3[IDX])->update($advOpts);
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
         isTrue(count($re) == 3, 'Expect: active banners == 3');
@@ -670,5 +658,66 @@ class AdvertisementTest
         $cafe = cafe($cafe->idx)->update([COUNTRY_CODE => $countryCodeB]);
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
         isTrue(count($re) == 0, 'Expect: active banners == 0. cafe country code => ' . $cafe->countryCode);
+    }
+
+
+    function settings()
+    {
+        $admin = setLoginAsAdmin();
+
+        $re = request('advertisement.settings');
+        isTrue($re['types'] == BANNER_TYPES, 'Expect: types should be defined.');
+
+        $maxDays = rand(1, 100);
+        $categoryA = 'apple' . time();
+        $categoryB = 'banana' . time();
+        $categoryC = 'cherry' . time();
+        $categoriesString = "$categoryA, $categoryB, $categoryC";
+        $categoriesArray = [$categoryA, $categoryB, $categoryC];
+
+        request('app.setConfig', [
+            SESSION_ID => $admin->sessionId,
+            CODE => MAXIMUM_ADVERTISING_DAYS, 'data' => $maxDays
+        ]);
+        request('app.setConfig', [
+            SESSION_ID => $admin->sessionId,
+            CODE => ADVERTISEMENT_CATEGORIES, 'data' => $categoriesString,
+        ]);
+
+        $re = request('advertisement.settings');
+
+        isTrue($re[MAXIMUM_ADVERTISING_DAYS] == $maxDays, "Expect: Max days is set to $maxDays.");
+        isTrue($re['categories'] == $categoriesArray, "Expect: Categories is set.");
+    }
+
+    function bannerPoints()
+    {
+        $top = rand(500, 1000);
+        $sidebar = rand(1000, 1500);
+        $square = rand(1000, 2000);
+        $line = rand(2000, 3000);
+
+        $re = request('advertisement.setBannerPoint');
+        isTrue($re == e()->empty_top_banner_point, 'Expect: Error no top banner point provided.');
+
+        $re = request('advertisement.setBannerPoint', [TOP_BANNER => 1]);
+        isTrue($re == e()->empty_sidebar_banner_point, 'Expect: Error no sidebar banner point provided.');
+
+        $re = request('advertisement.setBannerPoint', [TOP_BANNER => 1, SIDEBAR_BANNER => 1]);
+        isTrue($re == e()->empty_square_banner_point, 'Expect: Error no square banner point provided.');
+
+        $re = request('advertisement.setBannerPoint', [TOP_BANNER => 1, SIDEBAR_BANNER => 1, SQUARE_BANNER => 1]);
+        isTrue($re == e()->empty_line_banner_point, 'Expect: Error no line banner point provided.');
+
+        request('advertisement.setBannerPoint', [TOP_BANNER => $top, SIDEBAR_BANNER => $sidebar, SQUARE_BANNER => $square, LINE_BANNER => $line]);
+        $settings = request('advertisement.settings');
+
+        $defaultPointSetting = $settings['point']['default'];
+        isTrue(!empty($defaultPointSetting), 'Expect: Default setting is set.');
+
+        isTrue($defaultPointSetting[TOP_BANNER] == $top, "Expect: Top banner point is set to $top");
+        isTrue($defaultPointSetting[SIDEBAR_BANNER] == $sidebar, "Expect: Top banner point is set to $sidebar");
+        isTrue($defaultPointSetting[SQUARE_BANNER] == $square, "Expect: Top banner point is set to $square");
+        isTrue($defaultPointSetting[LINE_BANNER] == $line, "Expect: Top banner point is set to $line");
     }
 }
