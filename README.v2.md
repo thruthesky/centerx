@@ -274,6 +274,9 @@ define('DOMAIN_THEMES', [
 - 특히, `/docker/home/centerx/view/view-name/index.php` 는 Vue.js 의 `/public/index.php` 에서 넘어오고 이 파일은 단순히 실제 로직이
   있는 파일을 include 하는 역할만 한다.
 
+
+- config.php 의 설정에 따라, 클라이언트에서 `MATRIX_API_KEY` 설정을 해야하는 서버가 있으니 주의해야 한다.
+
 ## SEO
 
 - SPA 의 특징으로 인해 SEO 가 어렵다. SSR 을 SEO 가 Native 하지(직관적인지) 못하고 하기에는 개발 환경 설정 및 빌드가 번거롭게 느껴 질 수 있다.
