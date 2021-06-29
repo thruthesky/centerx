@@ -397,7 +397,6 @@ const BANNER_TYPES = [ TOP_BANNER, SIDEBAR_BANNER, SQUARE_BANNER, LINE_BANNER ];
 //
 
 
-
 /// @see readme.md
 if ( !defined('MATRIX_API_KEYS' ) ) define('MATRIX_API_KEYS', []);
 
