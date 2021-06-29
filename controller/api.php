@@ -1,8 +1,8 @@
 <?php
 
 if ( MATRIX_API_KEYS ) {
-    if ( ! in('apikey') ) error(e()->apikey_is_empty);
-    if ( in_array(in('apikey'), MATRIX_API_KEYS ) == false ) error(e()->apikey_is_wrong);
+    if ( ! in('apiKey') ) error(e()->apikey_is_empty);
+    if ( in_array(in('apiKey'), MATRIX_API_KEYS ) == false ) error(e()->apikey_is_wrong);
 }
 
 // login if session id is provided.
