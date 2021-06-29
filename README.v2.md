@@ -206,6 +206,14 @@ define('DOMAIN_THEMES', [
   - `docker/docker-compose.yml` - Docker Compose file.
 
 
+- 공개되지 말아야하는 정보는 `keys` 폴더에 저장하면 된다. 이 폴더는 .gitignore 에 등록되어져 있어, git repo 에 추가되지 않는다.
+  - 각 view-name 폴더에 keys 폴더를 두고 그 아래에 `db.config.php` 파일을 두어, DB 설정을 그곳에 할 수 있다.
+    만약, `view-name/keys/db.config.php` 가 존재하지 않으면 `etc/keys/db.config.php` 를 읽는다. 그리고 etc 폴더에도 db.config.php 가
+    없으면 루트 폴더의 config.php 에 있는 설정을 사용한다.
+  - 초기 설정을 하는 과정에서 `db.config.php` 외에 `private.config.php` 도 읽어 들인다.
+    먼저 `view/view-name/keys/private.config.php` 가 있으면 읽어 들이고 없으면 `etc/keys/private.config.php` 를 읽어 들인다.
+    etc 폴더 밑에도 `private.config.php` 가 없으면 그냥 루트 폴더의 `config.php` 의 설정을 사용한다.
+
 ## Live reload
 
 아래의 live reload 항목 참고
@@ -316,7 +324,66 @@ export default new Vuex.Store({
 ```
 
 
-## Vue.js Build
+## Vue.js Build, 배포
+
+
+### 루트 경로 이용하는 경우, 간단한 방법
+
+- 루트 경로를 이용하는 경우,
+  - 예를 들면, `http://local.flutterkorea.com/login` 와 같이 최 상위 경로 `/` 에 Vue.js 앱을 서비스하는 경우,
+    vue.js 에서 빌드 할 때, `dist` 폴더를 matrix 의 `view/view-name` 폴더로 지정해서, index.html 이 `view/view-name/index.html` 와
+    같이 저장되도록 한다.
+  - 그리고 nginx 에서 해당 폴더의 index.html 을 바로 불러들이면 된다. 즉, PHP 랑 전혀 상관이 없는 것이다.
+    다만, 랜딩 페이지가 루트 `/` 가 아닐 수 있으니, try files 로 모든 하위 경로로 접속하면, 최 상위 index.html 을 로드하도록 한다.
+
+```apacheconf
+server {
+    server_name  local.flutterkorea.com;
+    listen       80;
+    root /docker/home/centerx/view/flutterkorea;
+    index index.html;
+    location / {
+        try_files $uri $uri/ /index.html?$args;
+    }
+}
+```
+- 하지만, Restful API 를 실행하게 하려면, PHP 를 할 수 있도록 해야한다. 그래서 추가적으로 아래와 같이 해야 한다.
+
+```apacheconf
+server {
+    server_name  local.flutterkorea.com;
+    listen       80;
+    root /docker/home/centerx/view/flutterkorea;
+    index index.html;
+    location / {
+        try_files $uri $uri/ /index.html?$args;
+    }
+    location ~ \.php$ {
+        fastcgi_pass   php:9000;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+```
+
+- 이 때, `api.php` 에 아래와 같이 저장하고, `http://local.flutterkorea.com/api.php` 와 같이 접속을 하면 된다.
+```php
+<?php
+include '../../boot.php';
+include CONTROLLER_DIR . 'api.php';
+```
+
+### 루트 경로 이용하는 경우, view config.php 를 실행해야 하는 경우
+
+- `view/view-name/config.php` 는 루트 index.php 를 통해서 실행되어야 한다.
+
+- 이와 같은 경우, nginx.conf 설정에서 root 를 matrix 의 루트 폴더로 지정하고,
+  - vue.js 에서 빌드하면, `view/view-name` 에 결과물 저장되도록 dist 폴더를 조정하고,
+  - `view/view-name/index.php` 에서 `include 'index.html';`와 같이 하면 된다.
+  - 즉, vue.js 자체가 index.php 에 의해서 로드되므로, 원하는 것은 무엇이든 할 수 있는 것이다.
+
+
+
 
 ### index.php & view-name.config.php
 
@@ -443,6 +510,10 @@ include view()->folder . 'index.html';
   - 만약, Vue.js 2 로 빌드된 index.html 를 웹 브라우저에 보여주어야 한다면, `include 'index.html';` 와 같이 하면 된다.
   
 - 각 view 스크립트에서는 controller 를 사용해서 model 로 접속한다.
+
+- 각 view 폴더에 keys 폴더는 git repo 에 추가되지 않는 private folder 이다.
+  - 기본적으로 .gitginore 에 `keys/` 가 저장되어져 있는데, 글로벌 git ignore 에도 추가하도록 한다.
+
 
 
 # Page Link
@@ -1613,6 +1684,17 @@ echo "현재 환율: $phpKwr";
 
 
 
+# API KEYS
+
+- 흔히, Restful Api Service 에 사용하는 api key 와 동일한 개념으로 Restful api 로 접속 할 때, 아이디와 비밀번호를 지정하게 한다.
+  예를 들어, 테스트를 위해서, rest api endpoint 를 공개해서, 아무나 테스트용으로 접속해서 사용 할 수가 있는데,
+  테스트가 끝나거나, 더 이상 테스트 사용하기를 원치 않을 때,
+  또는 원치 않는 클라이언트로의 접속을 차단 할 때 등에 사용 될 수 있다.
+  
+- `MATRIX_API_KEYS` 에 지정하며 기본 값은 빈 배열(`[]`) 인데, 이와 같은 경우, 키 검사를 하지 않고 모두 허용한다.
+  각 배열의 요소에는 문자열이 들어가는데, "id::password" 와 같은 형식을 띈다. 예) `key_id_abcd::abcd_password`
+  
+- `MATRIX_API_KEYS` 는 git repo 나 그외의 장소에 공개되면 안되므로, `view/view-name/keys/private.config.php` 에 저장한다.
 
 # 문제점
 

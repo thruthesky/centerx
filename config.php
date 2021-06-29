@@ -13,6 +13,8 @@ const DEBUG_LOG_FILE_PATH = ROOT_DIR . 'var/logs/debug.log';
 
 const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
 
+
+
 /**
  * Domain & Theme
  *
@@ -83,6 +85,17 @@ if ( file_exists( theme()->folder . 'keys/db.config.php') ) {
 } else if ( file_exists(ROOT_DIR . 'etc/keys/db.config.php') ) {
     include ROOT_DIR . 'etc/keys/db.config.php';
 }
+
+/// @see readme
+if ( file_exists( view()->folder . 'keys/private.config.php') ) {
+    include view()->folder . 'keys/private.config.php';
+} else if ( file_exists(ROOT_DIR . 'etc/keys/private.config.php') ) {
+    include ROOT_DIR . 'etc/keys/private.config.php';
+}
+
+
+
+
 
 
 /**
@@ -327,6 +340,9 @@ const MESSAGE_CATEGORY = 'message';
 
 
 
+
+
+
 /**
  * Banner Settings
  *
@@ -379,4 +395,11 @@ const BANNER_TYPES = [ TOP_BANNER, SIDEBAR_BANNER, SQUARE_BANNER, LINE_BANNER ];
 //    ]
 //];
 //
+
+
+
+/// @see readme.md
+if ( !defined('MATRIX_API_KEYS' ) ) define('MATRIX_API_KEYS', []);
+
+
 
