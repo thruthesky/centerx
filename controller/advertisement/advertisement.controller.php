@@ -115,6 +115,7 @@ class AdvertisementController
             if ($post->isMine() == false) return  e()->not_your_post;
 
             $post->update($in);
+            $post->updateMemoryData('status', 'inactive');
 
             return $post->response();
         }
@@ -301,6 +302,18 @@ class AdvertisementController
         return post($advertisement->idx)->markDelete()->response();
     }
 
+    /**
+     * Return advertisement settings like advertisement categories, points, etc.
+     */
+    public function settings() {
+        $adv = advertisement();
+        return [
+            'types' => BANNER_TYPES,
+            'maximumAdvertisementDays' => $adv->maximumAdvertisementDays(),
+            'categories' => $adv->advertisementCategories(),
+            'point' => $adv->advertisementPoints(),
+        ];
+    }
 
     /**
      * Update the point settings for each banner for the countryCode.
@@ -341,4 +354,6 @@ class AdvertisementController
     {
         return (new AdvertisementPointSettingsModel($in[IDX]))->delete()->response();
     }
+
+
 }

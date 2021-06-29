@@ -77,9 +77,9 @@ class AppController
 
 
 
-    public function advertisementSettings($in): array {
-        return ADVERTISEMENT_SETTINGS;
-    }
+//    public function advertisementSettings($in): array {
+//        return ADVERTISEMENT_SETTINGS;
+//    }
 
     public function time($in): array {
         return ['time' => date('r')];
