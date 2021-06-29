@@ -125,12 +125,24 @@ class NotificationController {
      */
     public function topicSubscription(array $in): array|string
     {
-        if (login()->v($in[TOPIC]) == ON) {
+        if (login()->v($in[TOPIC]) == "Y") {
             return $this->unsubscribeTopic($in);
         } else {
             return $this->subscribeTopic($in);
         }
     }
+
+    /**
+     * Return bool if the user is subscribe to topic or not
+     * @param $in
+     * @return array | string
+     */
+    function isSubscribedToTopic($in): array | string
+    {
+        if (notLoggedIn()) return [ $in[TOPIC] => "N"];
+        return [ $in[TOPIC] => login()->v($in[TOPIC] ) ?? "N"];
+    }
+
 
 
 }

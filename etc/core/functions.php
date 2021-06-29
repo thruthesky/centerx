@@ -1109,7 +1109,6 @@ function onCommentCreateSendNotification(CommentModel|PostModel $cp)
 
     // prepare message data.
     $body               = $cp->content;
-    $click_url          = $cp->path;
     $data               = [
         'senderIdx' => login()->idx,
         'type' => 'post',
@@ -1122,7 +1121,7 @@ function onCommentCreateSendNotification(CommentModel|PostModel $cp)
     $req = [
         'title' => $title,
         'body' => $body,
-        'click_url' => $click_url,
+        'click_action' => $post->relativeUrl,
         'data' =>$data
     ];
     sendMessageToTopic(NOTIFY_COMMENT . $cat->id, $req);
@@ -1136,7 +1135,7 @@ function onCommentCreateSendNotification(CommentModel|PostModel $cp)
     $req = [
         'title' => $title,
         'body' => $body,
-        'click_url' => $click_url,
+        'click_action' => $post->relativeUrl,
         'data' =>$data
     ];
     if (!empty($tokens)) sendMessageToTokens($tokens, $req);
@@ -1813,15 +1812,6 @@ function saveSearchKeyword(string $searchKey): void {
 }
 
 
-/**
- * Return bool if the user is subscribe to topic or not
- * @param $topic
- * @return bool
- */
-function isSubscribedToTopic($topic): bool
-{
-    return login()->v($topic) === "on";
-}
 
 
 /**
