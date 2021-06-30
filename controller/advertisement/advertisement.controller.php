@@ -251,7 +251,7 @@ class AdvertisementController
         }
         // get settings
         $in[COUNTRY_CODE] = $advertisement->countryCode;
-        $settings = advertisement()->getAdvertisementPointSetting($in);
+        // $settings = advertisement()->getAdvertisementPointSetting($in);
 
 
         // get points to refund.
