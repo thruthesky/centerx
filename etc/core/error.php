@@ -1,6 +1,8 @@
 <?php
 
 class E {
+    public string $apikey_is_empty = 'error_apikey_is_empty';
+    public string $apikey_is_wrong = 'error_apikey_is_wrong';
     public string $register_failed = 'error_register_failed';
     public string $idx_not_set = 'error_idx_not_set';
     public string $user_not_found_by_that_idx = 'error_user_not_found_by_that_idx';

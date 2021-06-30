@@ -1,5 +1,10 @@
 <?php
 
+if ( MATRIX_API_KEYS ) {
+    if ( ! in('apiKey') ) error(e()->apikey_is_empty);
+    if ( in_array(in('apiKey'), MATRIX_API_KEYS ) == false ) error(e()->apikey_is_wrong);
+}
+
 // login if session id is provided.
 if ( in(SESSION_ID) ) {
     $profile = getProfileFromSessionId( in(SESSION_ID) );
