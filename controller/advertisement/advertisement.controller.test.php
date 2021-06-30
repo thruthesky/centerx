@@ -741,6 +741,7 @@ class AdvertisementTest
         $this->loginSetPoint($userPoint);
         $bp = advertisement()->topBannerPoint($countryCode);
         $adOpts = [CODE => TOP_BANNER, COUNTRY_CODE => $countryCode, 'beginDate' => time(), 'endDate' => strtotime('+2 day')];
+        
         $ad = $this->createAndStartAdvertisement($adOpts);
 
         $advPoint = $bp * 3;
@@ -752,6 +753,23 @@ class AdvertisementTest
 
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
         isTrue($activity->toUserPointApply == -$advPoint, "Expect: activity->toUserPointApply == -$advPoint.");
+        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
+        
+        request('advertisement.setBannerPoint', [
+            COUNTRY_CODE => $countryCode,
+            TOP_BANNER => $top,
+            SIDEBAR_BANNER => $sidebar,
+            SQUARE_BANNER => $square,
+            LINE_BANNER => $line
+        ]);
+
+        $refund = $bp * 2;
+        $userPoint += $refund;
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
+
+        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
+        $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.stop');
+        isTrue($activity->toUserPointApply == $refund, "Expect: activity->toUserPointApply == $refund.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 }

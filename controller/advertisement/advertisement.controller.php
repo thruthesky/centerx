@@ -242,7 +242,6 @@ class AdvertisementController
             $action = 'advertisement.stop';
             // if advertisement is expired, meaning it's end date is either past or today. (no refund).
             if ($advertisement->expired()) $days = 0;
-            // else it is set tomorrow or beyond. (deducted refund).
             else $days = daysBetween(time(), $advertisement->endAt);
         }
         /// else, advertisement is not yet started. ( full refund )
@@ -256,7 +255,8 @@ class AdvertisementController
 
 
         // get points to refund.
-        $pointToRefund = $settings[$advertisement->code] * $days;
+        // $pointToRefund = $settings[$advertisement->code] * $days;
+        $pointToRefund = $advertisement->pointPerDay * $days;
 
         // set advertisementPoint to empty ('') when the advertisement has stopped.
         $in['advertisementPoint'] = '';

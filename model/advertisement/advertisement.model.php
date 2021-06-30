@@ -6,6 +6,8 @@
 /**
  * Class AdvertisementModel
  * @property-read string $clickUrl
+ * @property-read string $pointPerDay
+ * @property-read string $advertisementPoint
  */
 class AdvertisementModel extends PostModel
 {
