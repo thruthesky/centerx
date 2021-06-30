@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file test.php
+ */
 
 $rootDir = str_replace("/tests", "", __DIR__);
 
