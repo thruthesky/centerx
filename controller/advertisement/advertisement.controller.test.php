@@ -34,8 +34,8 @@ $at = new AdvertisementTest();
 
 // $at->loadActiveBannersByCountryCode();
 
-$at->settings();
-// $at->bannerPoints();
+// $at->settings();
+$at->bannerPoints();
 
 
 class AdvertisementTest
@@ -719,5 +719,39 @@ class AdvertisementTest
         isTrue($defaultPointSetting[SIDEBAR_BANNER] == $sidebar, "Expect: Top banner point is set to $sidebar");
         isTrue($defaultPointSetting[SQUARE_BANNER] == $square, "Expect: Top banner point is set to $square");
         isTrue($defaultPointSetting[LINE_BANNER] == $line, "Expect: Top banner point is set to $line");
+
+        $countryCode = "PH";
+        $top = rand(500, 1000);
+        $sidebar = rand(1000, 1500);
+        $square = rand(1000, 2000);
+        $line = rand(2000, 3000);
+
+        request('advertisement.setBannerPoint', [
+            COUNTRY_CODE => $countryCode,
+            TOP_BANNER => $top,
+            SIDEBAR_BANNER => $sidebar,
+            SQUARE_BANNER => $square,
+            LINE_BANNER => $line
+        ]);
+
+        $defaultPointSetting = $settings['point'][$countryCode];
+        isTrue(!empty($defaultPointSetting), "Expect: point settings for $countryCode is set.");
+
+        $userPoint = 1000000;
+        $this->loginSetPoint($userPoint);
+        $bp = advertisement()->topBannerPoint($countryCode);
+        $adOpts = [CODE => TOP_BANNER, COUNTRY_CODE => $countryCode, 'beginDate' => time(), 'endDate' => strtotime('+2 day')];
+        $ad = $this->createAndStartAdvertisement($adOpts);
+
+        $advPoint = $bp * 3;
+        $userPoint -= $advPoint;
+
+        isTrue($ad['pointPerDay'] == $bp, "Expect: 'pointPerDay' == " . $bp);
+        isTrue($ad['advertisementPoint'] == $advPoint, "Expect: 'advertisementPoint' == " . $advPoint);
+        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
+
+        $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
+        isTrue($activity->toUserPointApply == -$advPoint, "Expect: activity->toUserPointApply == -$advPoint.");
+        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 }
