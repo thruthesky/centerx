@@ -22,6 +22,7 @@ define('DOMAIN_THEMES', [
     '192.168.100.6' => 'itsuda', // Ace's Emulator Access Point to Host OS.
     '192.168.100.17' => 'itsuda', // Charles Ip address
     '192.168.0.146' => 'itsuda', // Charles Ip address
+    '175.196.80.154' => 'itsuda',
 
     'philov' => 'sonub',
     'tellvi' => 'sonub',
@@ -74,16 +75,16 @@ if ( file_exists($_path) ) {
 
 define('APP_NAME', 'CenterX');
 
-if ( isLocalhost() || str_contains(get_domain(), 'itsuda.philgo.com') ) {
+if ( isLocalhost() || str_contains(get_domain(), 'itsuda.philgo.com') || str_contains(get_domain(), '175.196.80.154') ) {
     if ( !defined('DB_USER') ) define('DB_USER', 'itsuda');
     if ( !defined('DB_PASS') ) define('DB_PASS', 'Wc~Cx7');
     if ( !defined('DB_NAME') ) define('DB_NAME', 'itsuda');
     if ( !defined('DB_HOST') ) define('DB_HOST', 'mariadb');
 } else {
-if ( !defined('DB_USER') ) define('DB_USER', 'centerx');
-if ( !defined('DB_PASS') ) define('DB_PASS', 'Wc~188,*');
-if ( !defined('DB_NAME') ) define('DB_NAME', 'centerx');
-if ( !defined('DB_HOST') ) define('DB_HOST', 'mariadb');
+    if ( !defined('DB_USER') ) define('DB_USER', 'centerx');
+    if ( !defined('DB_PASS') ) define('DB_PASS', 'Wc~188,*');
+    if ( !defined('DB_NAME') ) define('DB_NAME', 'centerx');
+    if ( !defined('DB_HOST') ) define('DB_HOST', 'mariadb');
 }
 
 

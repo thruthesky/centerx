@@ -143,7 +143,8 @@ class Theme
                 break;
             }
         }
-        $this->folder = ROOT_DIR . 'themes/' . $this->folderName . '/';
+
+       $this->folder = ROOT_DIR . 'themes/' . $this->folderName . '/';
     }
 
     public function part(string $partName) {
