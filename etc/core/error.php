@@ -223,6 +223,7 @@ class E {
     public string $empty_sidebar_banner_point = 'error_empty_sidebar_banner_point';
     public string $empty_square_banner_point = 'error_empty_square_banner_point';
     public string $empty_line_banner_point = 'error_empty_line_banner_point';
+    public string $invalid_value = 'error_invalid_value';
 
 
 
