@@ -132,6 +132,20 @@ class UserRoute {
         return ['rankNo' => $rankNo];
     }
 
+
+    public function recommend($in) {
+
+        $recommend = entity('user_recommends');
+
+        if ( $recommend->count(conds: ['userIdx' => login()->idx ] ) >= 10 ) return e()->maximum_recommends;
+
+        $created = $recommend->create(['userIdx' => login()->idx, 'otherUserIdx' => $in['otherUserIdx']]);
+        if ( $created->hasError ) return $created->getError();
+
+        aToken()->recommend(user($in['otherUserIdx']));
+        return ['idx' => $created->idx];
+    }
+
 }
 
 

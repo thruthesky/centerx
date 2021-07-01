@@ -10,6 +10,19 @@ $errorCount = 0;
 
 
 
+$countUserCreate = 0;
+function createUser(): User {
+    global $countUserCreate;
+    $countUserCreate ++;
+   return user()->register(['email' => 'test-email' . $countUserCreate  . '-' . time() . '@gmail.com', 'password' => '12345a']);
+}
+
+function createUserAndLogin(): User {
+    $user = createUser();
+    setLogin($user->idx);
+    return $user;
+}
+
 
 /**
  * @param $t

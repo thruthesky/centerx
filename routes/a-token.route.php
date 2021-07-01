@@ -1,9 +1,9 @@
 <?php
 
-class CoinRoute
+class ATokenRoute
 {
 
-    public function exchangeCoin($in)
+    public function exchangeAToken($in)
 //    : array|string
     {
 //        print($in['pointToSave']);

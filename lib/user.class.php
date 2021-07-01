@@ -86,10 +86,13 @@ class User extends Entity {
 
         $in[PASSWORD] = encryptPassword($in[PASSWORD]);
 
+        $in[POINT] = 0;
+        $in['atoken'] = 0;
+        $in['gtoken'] = 0;
         $this->create($in);
 
         point()->register($this->profile());
-        coin()->register($this);
+        aToken()->register($this);
 
 
         return $this;
@@ -145,6 +148,10 @@ class User extends Entity {
         // 회원 정보 및 메타 정보 업데이트
         // 로그인을 할 때, 추가 정보를 저장한다. 이 때, 비밀번호는 저장되지 않게 한다.
         unset($in[PASSWORD]);
+
+        if ( isset($in[POINT]) ) return $this->error(e()->user_cannot_update_point);
+        if ( isset($in['atoken']) ) return $this->error(e()->user_cannot_update_point);
+        if ( isset($in['gtoken']) ) return $this->error(e()->user_cannot_update_point);
 
         // 회원 로그인 성공하면, 현재 객체를 로그인한 사용자 것으로 변경한다.
         $this->idx = $user->idx;
@@ -357,9 +364,10 @@ class User extends Entity {
             if ($this->emailExists($in[EMAIL]) &&  $this->findOne([EMAIL => $in[EMAIL]])->idx != $this->idx) return $this->error(e()->email_exists);
         }
 
-//        if ( isset($in[POINT] ) && admin() == false ) {
-//            return $this->error(e()->user_cannot_update_point);
-//        }
+        /// 관리자만 사용자 포인트 업데이트 가능.
+        if ( isset($in[POINT] ) && admin() == false ) {
+            return $this->error(e()->user_cannot_update_point);
+        }
         return parent::update($in);
     }
 

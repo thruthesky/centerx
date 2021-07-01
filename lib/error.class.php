@@ -152,6 +152,7 @@ class E {
 
 
 
+    public string $maximum_recommends = "error_maximum_recommends";
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)

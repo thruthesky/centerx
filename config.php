@@ -75,7 +75,7 @@ if ( file_exists($_path) ) {
 
 define('APP_NAME', 'CenterX');
 
-if ( isLocalhost() || str_contains(get_domain(), 'itsuda.philgo.com') || str_contains(get_domain(), '175.196.80.154') ) {
+if ( isCli() || isLocalhost() || str_contains(get_domain(), 'itsuda.philgo.com') || str_contains(get_domain(), '175.196.80.154') ) {
     if ( !defined('DB_USER') ) define('DB_USER', 'itsuda');
     if ( !defined('DB_PASS') ) define('DB_PASS', 'Wc~Cx7');
     if ( !defined('DB_NAME') ) define('DB_NAME', 'itsuda');
