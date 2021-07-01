@@ -113,6 +113,7 @@ class E {
 
 
     public string $point_must_be_0_or_lower_than_0 = 'error_point_must_be_0_or_lower_than_0';
+    public string $point_must_be_0_or_bigger_than_0 = 'error_point_must_be_0_or_bigger_than_0';
     public string $point_must_be_bigger_than_0 = 'error_point_must_be_bigger_than_0';
     public string $point_move_for_same_user = 'error_point_move_for_same_user';
 

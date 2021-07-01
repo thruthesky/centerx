@@ -44,6 +44,8 @@ class AppController
      *
      * 참고로, 관리자 설정은 앱 시작시에 자동으로 앱이 로드한다(또는 해야 한다). 즉, 관리자 설정에 저장하면, 앱에서 자동적으로 사용이 가능하다.
      *
+     * 주의, 이 라우트는 코드가 존재하면 덮어 써 버린다. 따라서, 이 라우트를 호출하여 키/값을 저장하기 전에 해당 키가 존재하는지 미리 확인을 해야 한다.
+     *
      * @param $in
      * @return array|string
      *  - string if there is any error.
@@ -52,6 +54,17 @@ class AppController
     public function setConfig($in) : array|string
     {
         if ( admin() == false ) return e()->you_are_not_admin;
+
+        if ( $in[CODE] == 'like' ) {
+            if ( $in['data'] < 0 ) {
+                return e()->point_must_be_0_or_bigger_than_0;
+            }
+        }
+        if ( $in[CODE] == 'dislike' ) {
+            if ( $in['data'] > 0 ) {
+                return e()->point_must_be_0_or_lower_than_0;
+            }
+        }
 
         $settings = adminSettings();
         $settings->set([ $in[CODE] => $in['data']]);
@@ -73,6 +86,23 @@ class AppController
      */
     public function getConfig($in): array|string {
         return ['data' => adminSettings()->get($in[CODE]) ?? ''];
+    }
+
+    /**
+     * Delete one of admin settings.
+     *
+     * Only admin can delete the setting.
+     *
+     * @param $in
+     * @return array|string
+     * - error_string on error.
+     * - ['code' => ...] on success.
+     */
+    public function deleteConfig($in): array|string {
+        if ( admin() == false ) return e()->you_are_not_admin;
+        $re = adminSettings()->delete($in[CODE]);
+        if ( $re ) return $re;
+        else return ['code' => $in[CODE]];
     }
 
 

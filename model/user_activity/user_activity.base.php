@@ -303,19 +303,19 @@ class UserActivityBase extends Entity {
      * @param $no
      */
     public function setLikePoint($no) {
-        config()->set(Actions::$like, $no);
+        adminSettings()->set(Actions::$like, $no);
     }
 
     public function getLikePoint() {
-        return config()->get(Actions::$like) ?? 0;
+        return adminSettings()->get(Actions::$like) ?? 0;
     }
 
     public function setDislikePoint($no) {
-        config()->set(Actions::$dislike, $no);
+        adminSettings()->set(Actions::$dislike, $no);
     }
 
     public function getDislikePoint() {
-        return config()->get(Actions::$dislike) ?? 0;
+        return adminSettings()->get(Actions::$dislike) ?? 0;
     }
 
     /**
@@ -323,34 +323,34 @@ class UserActivityBase extends Entity {
      * @param $no
      */
     public function setLikeDeductionPoint($no) {
-        config()->set(Actions::$likeDeduction, $no);
+        adminSettings()->set(Actions::$likeDeduction, $no);
     }
     public function getLikeDeductionPoint() {
-        return config()->get(Actions::$likeDeduction) ?? 0;
+        return adminSettings()->get(Actions::$likeDeduction) ?? 0;
     }
 
     public function setDislikeDeductionPoint($no) {
-        config()->set(Actions::$dislikeDeduction, $no);
+        adminSettings()->set(Actions::$dislikeDeduction, $no);
     }
 
     public function getDislikeDeductionPoint() {
-        return config()->get(Actions::$dislikeDeduction) ?? 0;
+        return adminSettings()->get(Actions::$dislikeDeduction) ?? 0;
     }
 
     public function setRegisterPoint($no) {
-        config()->set(Actions::$register, $no);
+        adminSettings()->set(Actions::$register, $no);
     }
 
     public function getRegisterPoint() {
-        return config()->get(Actions::$register) ?? 0;
+        return adminSettings()->get(Actions::$register) ?? 0;
     }
 
     public function setLoginPoint($no) {
-        config()->set(Actions::$login, $no);
+        adminSettings()->set(Actions::$login, $no);
     }
 
     public function getLoginPoint() {
-        return config()->get(Actions::$login) ?? 0;
+        return adminSettings()->get(Actions::$login) ?? 0;
     }
 
     /**
@@ -358,20 +358,20 @@ class UserActivityBase extends Entity {
      * @param $hour
      */
     public function setLikeHourLimit($hour) {
-        config()->set(ActivityLimits::$voteHourlyLimit, $hour);
+        adminSettings()->set(ActivityLimits::$voteHourlyLimit, $hour);
     }
 
     public function getLikeHourLimit() {
-        return config()->get(ActivityLimits::$voteHourlyLimit) ?? 0;
+        return adminSettings()->get(ActivityLimits::$voteHourlyLimit) ?? 0;
     }
 
 
     public function setLikeHourLimitCount($count) {
-        config()->set(ActivityLimits::$voteHourlyLimitCount, $count);
+        adminSettings()->set(ActivityLimits::$voteHourlyLimitCount, $count);
     }
 
     public function getLikeHourLimitCount() {
-        return config()->get(ActivityLimits::$voteHourlyLimitCount) ?? 0;
+        return adminSettings()->get(ActivityLimits::$voteHourlyLimitCount) ?? 0;
     }
 
     /**
@@ -379,11 +379,11 @@ class UserActivityBase extends Entity {
      * @param $count
      */
     public function setLikeDailyLimitCount($count) {
-        config()->set(ActivityLimits::$voteDailyLimitCount, $count);
+        adminSettings()->set(ActivityLimits::$voteDailyLimitCount, $count);
     }
 
     public function getLikeDailyLimitCount() {
-        return config()->get(ActivityLimits::$voteDailyLimitCount) ?? 0;
+        return adminSettings()->get(ActivityLimits::$voteDailyLimitCount) ?? 0;
     }
 
 
