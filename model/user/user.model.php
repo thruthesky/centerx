@@ -168,6 +168,8 @@ class UserModel extends Entity {
 
         $in[PASSWORD] = encryptPassword($in[PASSWORD]);
 
+        /// When user register, point become 0. User cannot change his point when register.
+        $in[POINT] = 0;
         $this->create($in);
 
         act()->register($this);
@@ -226,6 +228,9 @@ class UserModel extends Entity {
         // 회원 정보 및 메타 정보 업데이트
         // 로그인을 할 때, 추가 정보를 저장한다. 이 때, 비밀번호는 저장되지 않게 한다.
         unset($in[PASSWORD]);
+
+        // User cannot change his point.
+        if(isset($in[POINT])) return $this->error(e()->user_cannot_update_point);
 
         // 회원 로그인 성공하면, 현재 객체를 로그인한 사용자 것으로 변경한다.
         $this->idx = $user->idx;
@@ -329,6 +334,10 @@ class UserModel extends Entity {
 
 
     /**
+     * Update user point.
+     *
+     * @attention Don't let user to update his point. This method is only for internal use.
+     * @attention Don't export this method with controller.
      * @param $p
      * @return self
      */
@@ -395,9 +404,10 @@ class UserModel extends Entity {
             if ( empty($in[EMAIL]) ) return $this->error(e()->email_is_empty);
             if ($this->emailExists($in[EMAIL]) &&  $this->findOne([EMAIL => $in[EMAIL]])->idx != $this->idx) return $this->error(e()->email_exists);
         }
-//        if ( isset($in[POINT] ) && admin() == false ) {
-//            return $this->error(e()->user_cannot_update_point);
-//        }
+        // point cannot be changed by user.
+        if ( isset($in[POINT] ) && admin() == false ) {
+            return $this->error(e()->user_cannot_update_point);
+        }
         return parent::update($in);
     }
 
