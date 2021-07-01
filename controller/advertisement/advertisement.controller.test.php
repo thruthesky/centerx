@@ -4,37 +4,37 @@ setLogout();
 enableTesting();
 $at = new AdvertisementTest();
 
-// $at->lackOfPoint();
-// $at->emptyCode();
-// $at->beginDateEmpty();
-// $at->endDateEmpty();
-// $at->maximumAdvertisementDays();
-// $at->domainEmpty();
+$at->lackOfPoint();
+$at->emptyCode();
+$at->beginDateEmpty();
+$at->endDateEmpty();
+$at->maximumAdvertisementDays();
+$at->domainEmpty();
 
-// $at->statusCheck();
+$at->statusCheck();
 
-// $at->startDeduction();
+$at->startDeduction();
 
-// $at->startWithPHCountryDeduction();
+$at->startWithPHCountryDeduction();
 
-// $at->stopNoRefund();
-// $at->stopExpiredNoRefund();
+$at->stopNoRefund();
+$at->stopExpiredNoRefund();
 
-// $at->stopWithDeductedRefund();
+$at->stopWithDeductedRefund();
 
-// $at->stopWithPHCountryAndDeductedRefund();
+$at->stopWithPHCountryAndDeductedRefund();
 
-// $at->stopFullRefund();
-// $at->stopWithUSCountryFullRefund();
+$at->stopFullRefund();
+$at->stopWithUSCountryFullRefund();
 
-// $at->errorDeleteActiveAdvertisement();
-// $at->deleteAdvertisement();
+$at->errorDeleteActiveAdvertisement();
+$at->deleteAdvertisement();
 
-// $at->startStopChangeDatesAndCountry();
+$at->startStopChangeDatesAndCountry();
 
-// $at->loadActiveBannersByCountryCode();
+$at->loadActiveBannersByCountryCode();
 
-// $at->settings();
+$at->settings();
 $at->bannerPoints();
 
 
@@ -127,7 +127,7 @@ class AdvertisementTest
     function maximumAdvertisementDays()
     {
         $this->loginSetPoint(1000000);
-        $max = MAXIMUM_ADVERTISING_DAYS;
+        $max = advertisement()->maximumAdvertisementDays();
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime('+100 days')]);
         if ($max > 0) {
             isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
@@ -692,24 +692,43 @@ class AdvertisementTest
 
     function bannerPoints()
     {
+
+
+        $re = request('advertisement.setBannerPoint');
+        isTrue($re == e()->not_logged_in, 'Expect: Error user is not signed in.');
+
+        $user = registerAndLogin();
+        $re = request('advertisement.setBannerPoint', [SESSION_ID => $user->sessionId]);
+        isTrue($re == e()->you_are_not_admin, 'Expect: Error user is not admin.');
+
+        $user = setLoginAsAdmin();
         $top = rand(500, 1000);
         $sidebar = rand(1000, 1500);
         $square = rand(1000, 2000);
         $line = rand(2000, 3000);
 
-        $re = request('advertisement.setBannerPoint');
+        $request = [
+            SESSION_ID => $user->sessionId
+        ];
+
+
+        $re = request('advertisement.setBannerPoint', $request);
         isTrue($re == e()->empty_top_banner_point, 'Expect: Error no top banner point provided.');
 
-        $re = request('advertisement.setBannerPoint', [TOP_BANNER => 1]);
+        $request[TOP_BANNER] = $top;
+        $re = request('advertisement.setBannerPoint', $request);
         isTrue($re == e()->empty_sidebar_banner_point, 'Expect: Error no sidebar banner point provided.');
 
-        $re = request('advertisement.setBannerPoint', [TOP_BANNER => 1, SIDEBAR_BANNER => 1]);
+        $request[SIDEBAR_BANNER] = $sidebar;
+        $re = request('advertisement.setBannerPoint', $request);
         isTrue($re == e()->empty_square_banner_point, 'Expect: Error no square banner point provided.');
 
-        $re = request('advertisement.setBannerPoint', [TOP_BANNER => 1, SIDEBAR_BANNER => 1, SQUARE_BANNER => 1]);
+        $request[SQUARE_BANNER] = $square;
+        $re = request('advertisement.setBannerPoint', $request);
         isTrue($re == e()->empty_line_banner_point, 'Expect: Error no line banner point provided.');
 
-        request('advertisement.setBannerPoint', [TOP_BANNER => $top, SIDEBAR_BANNER => $sidebar, SQUARE_BANNER => $square, LINE_BANNER => $line]);
+        $request[LINE_BANNER] = $line;
+        request('advertisement.setBannerPoint', $request);
         $settings = request('advertisement.settings');
 
         $defaultPointSetting = $settings['point']['default'];
@@ -731,17 +750,25 @@ class AdvertisementTest
             TOP_BANNER => $top,
             SIDEBAR_BANNER => $sidebar,
             SQUARE_BANNER => $square,
-            LINE_BANNER => $line
+            LINE_BANNER => $line,
+            SESSION_ID => $user->sessionId
         ]);
 
+        $settings = request('advertisement.settings');
         $defaultPointSetting = $settings['point'][$countryCode];
         isTrue(!empty($defaultPointSetting), "Expect: point settings for $countryCode is set.");
 
         $userPoint = 1000000;
         $this->loginSetPoint($userPoint);
         $bp = advertisement()->topBannerPoint($countryCode);
-        $adOpts = [CODE => TOP_BANNER, COUNTRY_CODE => $countryCode, 'beginDate' => time(), 'endDate' => strtotime('+2 day')];
-        
+        $adOpts = [
+            CODE => TOP_BANNER,
+            COUNTRY_CODE => $countryCode,
+            'beginDate' => time(),
+            'endDate' => strtotime('+2 day'), 
+            SESSION_ID => $user->sessionId
+        ];
+
         $ad = $this->createAndStartAdvertisement($adOpts);
 
         $advPoint = $bp * 3;
@@ -754,13 +781,14 @@ class AdvertisementTest
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
         isTrue($activity->toUserPointApply == -$advPoint, "Expect: activity->toUserPointApply == -$advPoint.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
-        
-        request('advertisement.setBannerPoint', [
+
+        $bannerSetting = request('advertisement.setBannerPoint', [
             COUNTRY_CODE => $countryCode,
             TOP_BANNER => $top,
             SIDEBAR_BANNER => $sidebar,
             SQUARE_BANNER => $square,
-            LINE_BANNER => $line
+            LINE_BANNER => $line,
+            SESSION_ID => $user->sessionId
         ]);
 
         $refund = $bp * 2;
@@ -771,5 +799,29 @@ class AdvertisementTest
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.stop');
         isTrue($activity->toUserPointApply == $refund, "Expect: activity->toUserPointApply == $refund.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
+
+        $request = [
+            COUNTRY_CODE => $bannerSetting[COUNTRY_CODE]
+        ];
+
+        $re = request('advertisement.deleteBannerPoint', $request);
+        isTrue($re == e()->not_logged_in, "Expect error deleting, user is not logged in.");
+
+        $user = setLoginAny();
+        $request[SESSION_ID] = $user->sessionId;
+        $re = request('advertisement.deleteBannerPoint', $request);
+        isTrue($re == e()->you_are_not_admin, "Expect error deleting, user is not admin.");
+        
+        $admin = setLoginAsAdmin();
+        $request[SESSION_ID] = $admin->sessionId;
+        $re = request('advertisement.deleteBannerPoint', $request);
+        isTrue($re == e()->idx_is_empty, "Expect error deleting, idx is not provided.");
+
+        $request[IDX] = $bannerSetting[IDX];
+        $re = request('advertisement.deleteBannerPoint', $request);
+        isTrue($re[IDX] == $bannerSetting[IDX], "Expect success deleting banner point setting.");
+
+        $settings = request('advertisement.settings');
+        isTrue(!isset($bannerSetting['point'][$bannerSetting[COUNTRY_CODE]]), "Expect success, setting for " . $bannerSetting[COUNTRY_CODE] . " is deleted.");
     }
 }

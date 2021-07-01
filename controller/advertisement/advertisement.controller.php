@@ -340,18 +340,18 @@ class AdvertisementController
         if (!isset($in[SIDEBAR_BANNER]) || empty($in[SIDEBAR_BANNER])) return e()->empty_sidebar_banner_point;
         if (!isset($in[SQUARE_BANNER]) || empty($in[SQUARE_BANNER])) return e()->empty_square_banner_point;
         if (!isset($in[LINE_BANNER]) || empty($in[LINE_BANNER])) return e()->empty_line_banner_point;
-
+        
         $a = new AdvertisementPointSettingsModel();
-
+        
         if (!isset($in[COUNTRY_CODE]) || empty($in[COUNTRY_CODE])) $in[COUNTRY_CODE] = '';
-
+        
         if ($a->countryExists($in[COUNTRY_CODE])) {
             $in[IDX] = $a->getIdxFromDB([COUNTRY_CODE => $in[COUNTRY_CODE]]);
         }
-
+        
         return $a->edit($in)->response();
     }
-
+    
     public function getBannerPoints($in)
     {
         return (new AdvertisementPointSettingsModel())->search(select: '*', order: COUNTRY_CODE, by: 'ASC');
@@ -359,7 +359,9 @@ class AdvertisementController
 
     public function deleteBannerPoint($in)
     {
+        if (notLoggedIn()) return e()->not_logged_in;
         if (!admin()) return e()->you_are_not_admin;
+        if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
         return (new AdvertisementPointSettingsModel($in[IDX]))->delete()->response();
     }
 }

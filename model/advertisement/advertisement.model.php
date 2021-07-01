@@ -38,7 +38,7 @@ class AdvertisementModel extends PostModel
         $pointSetting = $this->advertisementPoints();
         if (empty($pointSetting)) return 0;
 
-        if ($countryCode) {
+        if ($countryCode && isset($pointSetting[$countryCode])) {
             return $pointSetting[$countryCode][$bannerType];
         } else {
             return $pointSetting['default'][$bannerType];
