@@ -104,6 +104,7 @@ class AdvertisementController
 
     public function edit($in)
     {
+        if (notLoggedIn()) return e()->not_logged_in;
         if (!isset($in[IDX]) || empty($in[IDX])) {
 
             $post = post()->create($in);
@@ -230,6 +231,7 @@ class AdvertisementController
      */
     public function stop($in)
     {
+        if (notLoggedIn()) return e()->not_logged_in;
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
         $advertisement = advertisement($in[IDX]);
@@ -292,6 +294,7 @@ class AdvertisementController
      */
     public function delete($in)
     {
+        if (notLoggedIn()) return e()->not_logged_in;
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
         $advertisement = advertisement($in[IDX]);
@@ -330,6 +333,8 @@ class AdvertisementController
      */
     public function setBannerPoint($in)
     {
+        if (notLoggedIn()) return e()->not_logged_in;
+        if (!admin()) return e()->you_are_not_admin;
         //        if ( !isset($in[COUNTRY_CODE]) || empty($in[COUNTRY_CODE]) ) return e()->empty_country_code;
         if (!isset($in[TOP_BANNER]) || empty($in[TOP_BANNER])) return e()->empty_top_banner_point;
         if (!isset($in[SIDEBAR_BANNER]) || empty($in[SIDEBAR_BANNER])) return e()->empty_sidebar_banner_point;
@@ -354,6 +359,7 @@ class AdvertisementController
 
     public function deleteBannerPoint($in)
     {
+        if (!admin()) return e()->you_are_not_admin;
         return (new AdvertisementPointSettingsModel($in[IDX]))->delete()->response();
     }
 }
