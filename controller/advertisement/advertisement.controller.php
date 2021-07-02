@@ -178,7 +178,9 @@ class AdvertisementController
 
         $settings = advertisement()->getAdvertisementPointSetting($in);
 
-        $in['pointPerDay'] = $settings[$in[CODE]];
+        if (isset($settings[$in[CODE]])) {
+            $in['pointPerDay'] = $settings[$in[CODE]];
+        }
 
         // Save total point for the advertisement periods.
         $in['advertisementPoint'] = $in['pointPerDay'] * $days;

@@ -64,7 +64,7 @@ class AdvertisementModel extends PostModel
     {
         $now = time();
 
-        if (isset($post->advertisementPoint) && $post->advertisementPoint) {
+        if (isset($post->advertisementPoint) && $post->advertisementPoint != '') {
             if (daysBetween($now, $post->beginAt) > 0) return 'waiting';
             else if (isBetweenDay($now, $post->beginAt, $post->endAt)) return 'active';
             else return 'inactive';

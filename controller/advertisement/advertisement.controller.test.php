@@ -36,7 +36,6 @@ $at->loadActiveBannersByCountryCode();
 
 $at->settings();
 $at->pointSettings();
-
 $at->pointSettingDelete();
 
 $at->refundAfterPointSettingChanged();
@@ -76,8 +75,13 @@ class AdvertisementTest
 
     function lackOfPoint()
     {
-        registerAndLogin();
 
+        if (!category()->exists([ID => 'advertisement'])) {
+            $admin = setLoginAsAdmin();
+            category()->create([ID => 'advertisement']);
+        }
+
+        registerAndLogin();
         // test post.
         $post = request("advertisement.edit", [
             CATEGORY_ID => 'advertisement',
@@ -94,6 +98,7 @@ class AdvertisementTest
             'endDate' => time(),
         ];
         $re = request("advertisement.start", $options);
+
         if ($bp) {
             isTrue($re == e()->lack_of_point, "Expect: Error, user lacks point to create advertisement.");
         } else {
@@ -668,7 +673,6 @@ class AdvertisementTest
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
         isTrue(count($re) == 0, 'Expect: active banners == 0. cafe country code => ' . $cafe->countryCode);
     }
-
 
     function settings()
     {
