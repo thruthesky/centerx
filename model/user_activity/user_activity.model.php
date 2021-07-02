@@ -62,7 +62,7 @@ class UserActivityModel extends UserActivityBase {
      */
     public function canRead(int $categoryIdx): self {
         if ( admin() ) return $this; // admin can read without limit.
-        $pointToRead = act()->getReadLimitPoint($categoryIdx);
+        $pointToRead = userActivity()->getReadLimitPoint($categoryIdx);
         if ( $pointToRead ) {
             if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
             if (  login()->getPoint() < $pointToRead ) {
@@ -76,6 +76,9 @@ class UserActivityModel extends UserActivityBase {
     /**
      * Check if the login user can create a post or a comment.
      *
+     * @참고, 여기서는 글/코멘트 작성을 통해 포인트 충전이 가능한지 아닌지를 검사하는 것이 아니라, 글/코멘트 쓰기가 가능한지 아닌지를 검사한다.
+     * 즉, 포인트가 증가하지 않아도, 글 쓰기가 가능하면, 참을 리턴한다.
+     *
      * @param CategoryModel $category
      * @param string $activity
      * @return $this
@@ -83,28 +86,34 @@ class UserActivityModel extends UserActivityBase {
      *  - No error, no error code will be set to the object.
      */
     private function canCreateForumRecord(CategoryModel $category, string $activity) : self {
-        // If limiting, return an error. error on limit.
+        // If banned(limited for creating), return an error. error on limit.
         if ( $this->isCategoryBanOnLimit($category->idx) ) {
-            $re = act()->checkCategoryCreateLimit($category->idx);
+            $re = userActivity()->checkCategoryCreateLimit($category->idx);
             if ( $re ) return $this->error($re);
         }
 
         // If the point is set to decrease in writing/comment writing, if the points are insufficient, an error
-        if ($activity == Actions::$createPost ) $pointToCreate = act()->getPostCreatePoint($category->idx);
-        else if($activity == Actions::$createComment ) $pointToCreate = act()->getCommentCreatePoint($category->idx);
+        if ($activity == Actions::$createPost ) $pointToCreate = userActivity()->getPostCreatePoint($category->idx);
+        else if($activity == Actions::$createComment ) $pointToCreate = userActivity()->getCommentCreatePoint($category->idx);
         else {
             return $this->error(e()->wrong_activity);
         }
 
+        /// 포인트가 음수 값이면, 글/코멘트 생성시 포인트를 감소하는 것.
         if ( $pointToCreate < 0 ) {
+            /// 감소하는(될) 포인트 보다, 보유하고 있는 포인트가 더 적으면 에러,
             if ( login()->getPoint() < abs( $pointToCreate ) ) {
                 return $this->error(e()->lack_of_point); //
             }
         }
 
+
+
+        // 회원이 보유한 포인트를 바탕으로 글/코멘트 쓰기 검사
+        // 예를 들어, 설정에서 1만으로 해 놓았으면, 사용자의 포인트가 1만 이상이어야지만, 글/코멘트 쓰기가 가능하다.
         // Set error if the user's point is less than the point of 'postCreateLimit' or 'commentCreateLimit'.
-        if ($activity == Actions::$createPost ) $pointToCreate = act()->getPostCreateLimitPoint($category->idx);
-        else if($activity == Actions::$createComment ) $pointToCreate = act()->getCommentCreateLimitPoint($category->idx);
+        if ($activity == Actions::$createPost ) $pointToCreate = userActivity()->getPostCreateLimitPoint($category->idx);
+        else if($activity == Actions::$createComment ) $pointToCreate = userActivity()->getCommentCreateLimitPoint($category->idx);
         else {
             return $this->error(e()->wrong_activity);
         }
@@ -160,8 +169,8 @@ class UserActivityModel extends UserActivityBase {
         // Check hourly limit. 추천/비추천 시간/수 제한
         if ( $re = $this->countOver(
             $actions, // check action for like and dislike. 추천/비추천을
-            act()->getLikeHourLimit() * 60 * 60, // for how many hours? 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
-            act()->getLikeHourLimitCount(), // for how many actions? count 회 수 이상 했으면,
+            userActivity()->getLikeHourLimit() * 60 * 60, // for how many hours? 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
+            userActivity()->getLikeHourLimitCount(), // for how many actions? count 회 수 이상 했으면,
             fromUserIdx: login()->idx, // for the login user
         ) ) {
             // Limitation reached.
@@ -175,7 +184,7 @@ class UserActivityModel extends UserActivityBase {
         if ( $re = $this->countOver(
             $actions, // 추천/비추천을
             24 * 60 * 60, // 하루에
-            act()->getLikeDailyLimitCount(), // count 회 수 이상 했으면,
+            userActivity()->getLikeDailyLimitCount(), // count 회 수 이상 했으면,
             login()->idx,
         ) ) {
             // Limitation reached.
@@ -219,15 +228,32 @@ class UserActivityModel extends UserActivityBase {
      * Record action and change point for post creation
      *
      * Limitation check must be done before calling this method.
+     *
      * @param PostModel $post
+     * @return UserActivityModel
      */
     public function createPost(PostModel $post):  self {
+
+
+        /// 글 포인트 증가 제한에 걸렸는지 확인,
+        /// 참고, ban 옵션에 걸렸으면, 글 쓰기 자체를 못하지만, ban 옵션이 걸리지 않았으면, 포인트 증가는 안되어도 글은 계속 쓸 수 있다.
+        /// 이 때, 로그를 남겨야 한다.
+        $re = userActivity()->checkCategoryCreateLimit($post->categoryIdx);
+        if ( $re ) {
+            /// 제한에 걸렸으면, 포인트는 0.
+            $point = 0;
+        } else {
+            /// 아니면, 포인트 증/감.
+            $point = $this->getPostCreatePoint($post->categoryIdx);
+        }
+
+
         return $this->recordAction(
             Actions::$createPost,
             fromUserIdx: 0,
             fromUserPoint: 0,
             toUserIdx: login()->idx,
-            toUserPoint: $this->getPostCreatePoint($post->categoryIdx),
+            toUserPoint: $point,
             taxonomy: $post->taxonomy,
             entity: $post->idx,
             categoryIdx: $post->categoryIdx
@@ -240,6 +266,7 @@ class UserActivityModel extends UserActivityBase {
      * @return UserActivityModel
      */
     public function deletePost(PostModel $post): self {
+
         return $this->recordAction(
             Actions::$deletePost,
             fromUserIdx: 0,
@@ -261,12 +288,27 @@ class UserActivityModel extends UserActivityBase {
      * @return UserActivityModel
      */
     public function createComment(CommentModel $comment):self {
+
+        /// 글 포인트 증가 제한에 걸렸는지 확인,
+        /// 참고, ban 옵션에 걸렸으면, 글 쓰기 자체를 못하지만, ban 옵션이 걸리지 않았으면, 포인트 증가는 안되어도 글은 계속 쓸 수 있다.
+        /// 이 때, 로그를 남겨야 한다.
+        $re = userActivity()->checkCategoryCreateLimit($comment->categoryIdx);
+        if ( $re ) {
+            /// 제한에 걸렸으면, 포인트는 0.
+            $point = 0;
+        } else {
+            /// 아니면, 포인트 증/감.
+            $point = $this->getCommentCreatePoint($comment->categoryIdx);
+        }
+
+
+
         return $this->recordAction(
             Actions::$createComment,
             fromUserIdx: 0,
             fromUserPoint: 0,
             toUserIdx: login()->idx,
-            toUserPoint: $this->getCommentCreatePoint($comment->categoryIdx),
+            toUserPoint: $point,
             taxonomy: $comment->taxonomy,
             entity: $comment->idx,
             categoryIdx: $comment->categoryIdx
@@ -298,7 +340,9 @@ class UserActivityModel extends UserActivityBase {
      * Return false on success. Or error code if the user reached on limit.
      *
      *
-     * 게시판 글/코멘트 쓰기 제한에 걸렸으면 에러 문자열을 리턴한다. 제한에 걸리지 않았으면 false 를 리턴한다.
+     * @참고, "게시판 글/코멘트 작성 포인트 증가" 제한에 걸렸으면 에러 문자열을 리턴한다. 제한에 걸리지 않았으면 false 를 리턴한다.
+     * @참고, "게시판 글/코멘트 작성 포인트 증가" 제한 옵션은 카테고리에 적용하는 것으로 "글/코멘트" 합산해서 회수를 계산한다.
+     *
      * @param int $categoryIdx
      * @return false|string
      */
@@ -372,8 +416,8 @@ class UserActivityModel extends UserActivityBase {
         if ( $action ) $conds['action'] = $action;
 
         $histories = $this->search(conds: $conds, limit: 1, object: true);
-        if ( count($histories) ) return act($histories[0]->idx);
-        return act();
+        if ( count($histories) ) return userActivity($histories[0]->idx);
+        return userActivity();
     }
 
 }

@@ -63,17 +63,19 @@ class CommentModel extends Forum {
 
         $in[USER_IDX] = login()->idx;
 
+        /// 코멘트에도 categoryIdx 값을 넣는다.
         $post = post($in[ROOT_IDX]);
         $categoryIdx = $post->categoryIdx;
-
         $category = category($categoryIdx);
-
         $in[CATEGORY_IDX] = $categoryIdx;
-        $in['Ymd'] = date('Ymd'); // 오늘 날짜
+
+
+        /// 오늘 날짜
+        $in['Ymd'] = date('Ymd');
 
 
         // Check if the user can create a comment.
-        $act  = act()->canCreateComment($category);
+        $act  = userActivity()->canCreateComment($category);
         if($act->hasError) {
             return $this->error($act->getError());
         }
@@ -89,7 +91,7 @@ class CommentModel extends Forum {
         $this->fixUploadedFiles($in);
 
 
-        act()->createComment($this);
+        userActivity()->createComment($this);
 
         // Apply the point to comment memory field.
         $this->patchPoint();
@@ -161,7 +163,7 @@ class CommentModel extends Forum {
 
         parent::update([TITLE => '', CONTENT => '']);
 
-        act()->deleteComment($this);
+        userActivity()->deleteComment($this);
 
         return $this;
     }

@@ -95,7 +95,7 @@ class PostModel extends Forum {
         if ( $this->notFound ) return $this;
 
 
-        $act = act()->canRead($this->categoryIdx);
+        $act = userActivity()->canRead($this->categoryIdx);
         if ( $act->hasError ) {
             return $this->error( $act->getError() );
         }
@@ -149,7 +149,9 @@ class PostModel extends Forum {
         $in[USER_IDX] = login()->idx;
 
         // Check if the user can create a post.
-        $act  = act()->canCreatePost($category);
+        $act  = userActivity()->canCreatePost($category);
+
+        debug_log("canCreatePost; act; ", $act);
 
         if($act->hasError) {
             return $this->error($act->getError());
@@ -182,7 +184,7 @@ class PostModel extends Forum {
         $this->fixUploadedFiles($in);
 
         // Record for post creation and change point.
-        act()->createPost($this);
+        userActivity()->createPost($this);
 
         // Apply the point to post memory field. 포인트를 현재 객체의 $this->data 에 업데이트
         $this->patchPoint();
@@ -296,7 +298,7 @@ class PostModel extends Forum {
         parent::update([TITLE => '', CONTENT => '', PRIVATE_TITLE => '', PRIVATE_CONTENT => '']);
 
         //
-        act()->deletePost($this);
+        userActivity()->deletePost($this);
 
         return $this;
     }

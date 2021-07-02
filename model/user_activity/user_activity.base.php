@@ -299,7 +299,6 @@ class UserActivityBase extends Entity {
 
 
     /**
-     * @deprecated remove 'point.defines.php'
      * @param $no
      */
     public function setLikePoint($no) {
@@ -319,7 +318,6 @@ class UserActivityBase extends Entity {
     }
 
     /**
-     * @deprecated delete point.definitions.php
      * @param $no
      */
     public function setLikeDeductionPoint($no) {
@@ -397,69 +395,69 @@ class UserActivityBase extends Entity {
         return category($categoryIdx)->getData($action);
     }
 
-    public function setPostCreatePoint($category, $point) {
-        category($category)->update([Actions::$createPost => $point]);
+    public function setPostCreatePoint($categoryIdx, $point) {
+        category($categoryIdx)->update([Actions::$createPost => $point]);
     }
 
-    public function getPostCreatePoint($category) {
-        return category($category)->getData(Actions::$createPost, 0);
+    public function getPostCreatePoint($categoryIdx) {
+        return category($categoryIdx)->getData(Actions::$createPost, 0);
     }
 
-    public function setCommentCreatePoint($category, $point) {
-        category($category)->update([Actions::$createComment => $point]);
+    public function setCommentCreatePoint($categoryIdx, $point) {
+        category($categoryIdx)->update([Actions::$createComment => $point]);
     }
 
-    public function getCommentCreatePoint(int|string $category) {
-        return category($category)->getData(Actions::$createComment, 0);
+    public function getCommentCreatePoint(int|string $categoryIdx) {
+        return category($categoryIdx)->getData(Actions::$createComment, 0);
     }
 
-    public function setPostDeletePoint($category, $point) {
-        category($category)->update([Actions::$deletePost => $point]);
+    public function setPostDeletePoint($categoryIdx, $point) {
+        category($categoryIdx)->update([Actions::$deletePost => $point]);
     }
 
-    public function getPostDeletePoint($category) {
-        return category($category)->getData(Actions::$deletePost, 0);
-    }
-
-
-    public function setCommentDeletePoint($category, $point) {
-        category($category)->update([Actions::$deleteComment => $point]);
-    }
-
-    public function getCommentDeletePoint($category) {
-        return category($category)->getData(Actions::$deleteComment, 0);
-    }
-
-    public function setCreateHourLimit($category, $hour) {
-        category($category)->update([ActivityLimits::$createHourLimit => $hour]);
+    public function getPostDeletePoint($categoryIdx) {
+        return category($categoryIdx)->getData(Actions::$deletePost, 0);
     }
 
 
-    public function getCreateHourLimit(int|string $category) {
-        return category($category)->getData(ActivityLimits::$createHourLimit, 0);
+    public function setCommentDeletePoint($categoryIdx, $point) {
+        category($categoryIdx)->update([Actions::$deleteComment => $point]);
     }
 
-    public function setCreateHourLimitCount($category, $count) {
-        return category($category)->update([ActivityLimits::$createHourLimitCount => $count]);
+    public function getCommentDeletePoint($categoryIdx) {
+        return category($categoryIdx)->getData(Actions::$deleteComment, 0);
     }
 
-    public function getCreateHourLimitCount(int|string $category) {
-        return category($category)->getData(ActivityLimits::$createHourLimitCount, 0);
+    public function setCreateHourLimit($categoryIdx, $hour) {
+        category($categoryIdx)->update([ActivityLimits::$createHourLimit => $hour]);
     }
 
-    public function setCreateDailyLimitCount($category, $count) {
-        category($category)->update([ActivityLimits::$createDailyLimitCount => $count]);
-    }
-    public function getCreateDailyLimitCount(int|string $category) {
-        return category($category)->getData(ActivityLimits::$createDailyLimitCount, 0);
+
+    public function getCreateHourLimit(int|string $categoryIdx) {
+        return category($categoryIdx)->getData(ActivityLimits::$createHourLimit, 0);
     }
 
-    public function enableBanCreateOnLimit(int|string $category) {
-        category($category)->update([ActivityLimits::$banCreateOnLimit => 'Y']);
+    public function setCreateHourLimitCount($categoryIdx, $count) {
+        return category($categoryIdx)->update([ActivityLimits::$createHourLimitCount => $count]);
     }
 
-    public function disableBanCreateOnLimit(int|string $category) {
-        category($category)->update([ActivityLimits::$banCreateOnLimit => 'N']);
+    public function getCreateHourLimitCount(int|string $categoryIdx) {
+        return category($categoryIdx)->getData(ActivityLimits::$createHourLimitCount, 0);
+    }
+
+    public function setCreateDailyLimitCount($categoryIdx, $count) {
+        category($categoryIdx)->update([ActivityLimits::$createDailyLimitCount => $count]);
+    }
+    public function getCreateDailyLimitCount(int|string $categoryIdx) {
+        return category($categoryIdx)->getData(ActivityLimits::$createDailyLimitCount, 0);
+    }
+
+    public function enableBanCreateOnLimit(int|string $categoryIdx) {
+        category($categoryIdx)->update([ActivityLimits::$banCreateOnLimit => 'Y']);
+    }
+
+    public function disableBanCreateOnLimit(int|string $categoryIdx) {
+        category($categoryIdx)->update([ActivityLimits::$banCreateOnLimit => 'N']);
     }
 
 
@@ -475,25 +473,25 @@ class UserActivityBase extends Entity {
         return category($categoryIdx)->getData(ActivityLimits::$banCreateOnLimit, '') == 'Y';
     }
 
-    public function setPostCreateLimitPoint(int|string $category, $point) {
-        category($category)->update([ActivityLimits::$postCreateLimit => $point]);
+    public function setPostCreateLimitPoint(int|string $categoryIdx, $point) {
+        category($categoryIdx)->update([ActivityLimits::$postCreateLimit => $point]);
     }
-    public function getPostCreateLimitPoint(int|string $category): int {
-        return category($category)->getData(ActivityLimits::$postCreateLimit, 0);
-    }
-
-    public function setCommentCreateLimitPoint(int|string $category, $point) {
-        category($category)->update([ActivityLimits::$commentCreateLimit => $point]);
-    }
-    public function getCommentCreateLimitPoint(int|string $category): int {
-        return category($category)->getData(ActivityLimits::$commentCreateLimit, 0);
+    public function getPostCreateLimitPoint(int|string $categoryIdx): int {
+        return category($categoryIdx)->getData(ActivityLimits::$postCreateLimit, 0);
     }
 
-    public function setReadLimitPoint(int|string $category, $point) {
-        category($category)->update([ActivityLimits::$readLimit => $point]);
+    public function setCommentCreateLimitPoint(int|string $categoryIdx, $point) {
+        category($categoryIdx)->update([ActivityLimits::$commentCreateLimit => $point]);
     }
-    public function getReadLimitPoint(int|string $category): int {
-        return category($category)->getData(ActivityLimits::$readLimit, 0);
+    public function getCommentCreateLimitPoint(int|string $categoryIdx): int {
+        return category($categoryIdx)->getData(ActivityLimits::$commentCreateLimit, 0);
+    }
+
+    public function setReadLimitPoint(int|string $categoryIdx, $point) {
+        category($categoryIdx)->update([ActivityLimits::$readLimit => $point]);
+    }
+    public function getReadLimitPoint(int|string $categoryIdx): int {
+        return category($categoryIdx)->getData(ActivityLimits::$readLimit, 0);
     }
 
 }
