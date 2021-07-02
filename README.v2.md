@@ -277,12 +277,30 @@ define('DOMAIN_THEMES', [
 
 - config.php 의 설정에 따라, 클라이언트에서 `MATRIX_API_KEY` 설정을 해야하는 서버가 있으니 주의해야 한다.
 
-## SEO
+## SEO, Vue.js 와 SEO
 
-- SPA 의 특징으로 인해 SEO 가 어렵다. SSR 을 SEO 가 Native 하지(직관적인지) 못하고 하기에는 개발 환경 설정 및 빌드가 번거롭게 느껴 질 수 있다.
-  이와 같은 경우, PHP 로 Native SEO 를 할 수 있다.
+- SPA 의 특징으로 인해 SEO 가 어렵다. Nuxt.js 등으로 SSR 을 해도 SEO 가 Native 하지(직관적인지) 못하고, 또한 모든 팀원(개발자)들이 Nuxt.js 를
+  잘 하는 것은 아니다. Nuxt.js 와 같은 것은 개발 환경 설정 및 빌드가 번거롭게 느껴 질 수 있다.
+  
+- Vue.js 로 SPA 를 해도, PHP 로 Native SEO 를 할 수 있다.
 
-- Vue.js 빌드를 하면 결과물을 dist 폴더에 저장하는데, 이를 Matrix 의 view 폴더로 지정한다. 즉, 빌드하면 바로 웹 폴더에 저장되는 것이다.
+- Vue.js 빌드를 하면 결과물을 dist 폴더에 저장하는데, 이를 Matrix 의 view 폴더로 지정한다. 예) `/docker/home/matrix/view/default`.
+  즉, 빌드하면 바로 `matrix` 의 웹 폴더에 저장되는 것이다.
+  
+- 중요한 것은 Vue.js 의 public/index.html 의 최 상단, 그리고 최 하단에 검색 엔진 로봇이 게시판과 사이트 맵을 긁어 갈 수 있도록 링크를 걸어주면 된다.
+  즉, index.html 에 vue.js 앱을 부팅하지만, 맨 위, 아래에 SEO 를 위한 링크를 걸어두고, 그 링크를 클릭하면, PHP 로 된, 글 모음을 계속 보여주면 된다.
+  그리고 그 링크를 클릭해서 접속하면, 웹 브라우저이면, Vue.js 앱을 부팅하고, 아니면, 계속해서 PHP 로 된 글을 보여준다.
+  예)
+```html
+<header>
+  <a href="...">자유게시판</a>
+  <a href="...">사이트맵</a>
+</header>
+<div id="app"></div>
+<footer>
+  <a href="...">기타 SEO 를 위한 링크.</a>
+</footer>
+```
 
 - 이 때, Vue.js 의 public 폴더에 index.php 를 둔다. index.php 는 vue.js 에서 인식하는 코드가 아니지만, 빌드를 할 때,
   Vue.js 가 빌드 폴더를 삭제해 버린다. 즉, index.php 는 index.html 과 함께 빌드 폴더에 존재해야하는데 매번 삭제되므로 아예 public 폴더에

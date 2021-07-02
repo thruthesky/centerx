@@ -134,7 +134,7 @@ class PostModel extends Forum {
     public function create( array $in ): self {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( login()->block == 'Y' ) return $this->error(e()->blocked);
-        if ( !isset($in[CATEGORY_ID]) ) return $this->error(e()->category_id_is_empty);
+        if ( !isset($in[CATEGORY_ID]) || empty($in[CATEGORY_ID]) ) return $this->error(e()->category_id_is_empty);
         $category = category($in[CATEGORY_ID]);
         if ( $category->notFound ) return $this->error(e()->category_not_exists); // The category really exists in database?
 

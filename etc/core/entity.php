@@ -1015,11 +1015,6 @@ class Entity {
     }
 
 
-
-
-
-
-
     /**
      * Returns login user's records in array.
      *
@@ -1027,15 +1022,17 @@ class Entity {
      * It does very much the same as search(), but returns the login user's record only.
      *
      *
+     *
      * @param int $page
-     * @param int $limit
      * @param string $order
      * @param string $by
+     * @param int $limit
+     * @param string $select
      * @return array
+     *  - empty array will be return if the user didn't logged in.
      */
     public function my(int $page=1, string $order='idx', string $by='DESC', int $limit=10, string $select = "idx" ): array {
-
-
+        if ( notLoggedIn() ) return [];
         return $this->search(
             select: $select,
             where: "userIdx=?", params: [ login()->idx ],
