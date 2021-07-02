@@ -336,13 +336,23 @@ class UserModel extends Entity {
     /**
      * Update user point.
      *
+     * @주의, 이 함수는 내부적으로만 사용되어야 한다. 컨트롤러에 포함하거나 사용자가 직접 자신을 포인트를 수정하게 해서는 안된다.
+     *  특히, user()->update() 호출로는 포인트 업데이트를 못하므로, 이 함수는 DB 에 직접 포인트를 업데이트한다.
+     *
+     * @attention User cannot update their point by `user()->update()` since it blocks updating user point. So, it
+     *  updates directly into db.
+     *
      * @attention Don't let user to update his point. This method is only for internal use.
      * @attention Don't export this method with controller.
      * @param $p
      * @return self
      */
     public function setPoint($p): self {
-        return $this->update([POINT => $p]);
+
+        db()->update($this->getTable(), [POINT => $p], [IDX => $this->idx]);
+        return $this;
+
+//        return $this->update([POINT => $p]);
     }
 
 
@@ -397,6 +407,10 @@ class UserModel extends Entity {
     }
 
 
+    /**
+     * @param array $in
+     * @return $this
+     */
     function update($in): self
     {
         // If email has passed, it can update(change) user's email.

@@ -6,6 +6,7 @@ if (category(POINT)->exists() == false) category()->create([ID => POINT]); // cr
 db()->query('truncate ' . act()->getTable()); // empty table
 db()->query('truncate ' . voteHistory()->getTable()); // emtpy table
 
+
 testUserPointSet();
 testPointSettings();
 testUserRegisterPoint();
