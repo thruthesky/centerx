@@ -140,7 +140,7 @@ include widget('post/two-photo-top-texts-middle-3-photos-bottom', [
 
 <div class="mb-2 mx-2 mx-lg-0 p-2 border-radius-md bg-light children-a-ellipsis">
     <?php
-    post()->search(where: "files != ?", params: ['0']);
+    post()->search(where: "fileIdxes != ?", params: ['0']);
     ?>
 </div>
 

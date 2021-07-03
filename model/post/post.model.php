@@ -196,10 +196,11 @@ class PostModel extends Forum {
         // update `noOfPosts`
         // update `noOfComments`
 
+        // @todo encapsulate the code below with a function.
         // NEW POST IS CREATED => Send notification to forum subscriber
         $title = $in[TITLE] ?? '';
         if (empty($title)) {
-            if (isset($in[FILES]) && !empty($in[FILES])) {
+            if (isset($in[FILE_IDXES]) && !empty($in[FILE_IDXES])) {
                 $title = "New photo was uploaded";
             }
         }

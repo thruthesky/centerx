@@ -32,6 +32,10 @@
   - `live-reload` 등 관련된 사항 재 정립
 - `widgets` 폴더 제거
 - Git repo 를 `https://github.com/withcenter/matrix` 로 이동.
+- 버전 3에서는 오직 백엔드용으로만 사용
+  - 모든 자바스크립트, CSS, 위젯 등과 관련된 파일을 삭제.
+  - 웹 브라우저 쿠키 관련 코드 삭제
+  - 기타 웹 브라우저에 랜더링을 하는 관련된 모든 코드를 제거.
 
 
 ## 버전 2
@@ -1144,9 +1148,10 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
   title, privateTitle, content, privateContent 만 빈 문자열로 저장한다.
   즉, 글의 작성자, 첨부 파일이나 코멘트 등은 그대로 살아있다.
 
-- 'files' 필드는 글에 등록된 파일 들의 idx 를 콤마로 분리해서 저장한다. 예) "123,456"
-  하지만, 글을 읽을 때에는 'files' 필드를 참조하지 않고, wc_files 의 entity 를 보고, 해당 글에 연결된 모든 파일을 가져온다.
-  다만, 글 검색을 할 때, 'files' 필드에 값이 있으면 첨부 파일/사진이 있는 것으로 간주하여, 사진이 있는 파일만 가져오게 할 수 있다.
+- 'fileIdxes' 필드는 글에 등록된 파일 들의 idx 를 콤마로 분리해서 저장한다. 예) "123,456"
+  주의 할 점은, 파일을 화면에 보여 줄 때(글/코멘트를)를 읽을 때에는 'fileIdxes' 필드를 참조하지 않고, wc_files 의 entity 를 보고, 해당 글에 연결된 모든 파일을 가져온다.
+  다만, 글 검색을 할 때, 'fileIdxes' 필드에 값이 있으면 첨부 파일/사진이 있는 것으로 간주하여, 사진이 있는 파일만 가져오게 할 수 있다.
+  DB table record 에는 존재하지 않지만, 글/코멘트를 읽을 때, `files` 라는 속성에 업로드된 파일이 포함된다.pos
 
 - `listOrder` - 코멘트의 목록 순서는 parentIdx 를 바탕으로하는 재귀 함수를 통해서 정렬을 한다.
   그래서 코멘트 정렬에서 listOrder 가 사용되지는 않지만, 공지 사항 목록 우선 순위나 배너 표시 우선 순위 등 여러가지 상황에서 활용을 할 수 있다.
@@ -1184,7 +1189,7 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
   - `subcategoriesArray` - subcategories 로 부터 콤마로 구분된 카테고리를 분리하여 배열에 저장하고 클라이언트로 전달한다.
     참고로, 가능한 원래 record field 이름은 유지하고, 가공한 정보를 새로운 이름으로 해서 클라이어늩로 전달한다.
-    단, `wc_posts.files` 의 경우는 예외이다.
+
 
 
 - 글/코멘트를 쓸 때, 특정 포인트 이상이 있어야 글 또는 코멘트를 쓰게 할 수 있다. 아래의 설정이 포인트 기준으로 글/코멘트 작성 설정을 한다.

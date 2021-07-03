@@ -369,8 +369,12 @@ function checkPassword( $plain_text_password, $encrypted_password ) {
 
 
 /**
+ * @deprecated
+ *
  * Set login cookies
  * 입력된 $profile 정보로 해당 사용자를 로그인 시킨다.
+ *
+ * @참고, Matrix 버전에서는 백엔드 용으로만 사용되므로, PHP 에서 쿠키를 저장 할 이유가 없다. 따라서 쿠키 관련 함수는 앞으로 사라 질 것이다.
  *
  * When user login, the session_id must be saved in cookie. And it is shared with Javascript.
  * @param array|int $profile
@@ -391,6 +395,7 @@ function setLoginCookies(array|int $profile): void {
 }
 
 /**
+ * @deprecated
  * Set login cookies
  *
  * When user login, the session_id must be saved in cookie. And it is shared with Javascript.
@@ -402,14 +407,28 @@ function unsetLoginCookies() {
     removeAppCookie(PHOTO_URL);
 }
 
+/**
+ * @deprecated
+ * @param $name
+ * @param $value
+ */
 function setAppCookie($name, $value) {
     setcookie ( $name , $value, time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
 }
 
+/**
+ * @deprecated
+ * @param $name
+ */
 function removeAppCookie($name) {
     setcookie($name, "", time()-3600, '/', COOKIE_DOMAIN);
 }
 
+/**
+ * @deprecated
+ * @param $name
+ * @return mixed|null
+ */
 function getAppCookie($name) {
 //    $name = md5($name);
     if ( !isset($_COOKIE[$name]) ) return null;
@@ -1100,6 +1119,9 @@ function onCommentCreateSendNotification(CommentModel|PostModel $cp)
      * set the title and body, etc.
      */
     $title = login()->name . " Comment to " . $post->title;
+    /**
+     * @todo Where does `$in` come from?
+     */
     if (empty($title)) {
         if (isset($in[FILES]) && !empty($in[FILES])) {
             $title .= " uploaded photos post#" . $post->idx;
@@ -1694,7 +1716,11 @@ function postMessagingUrl(int $idx) {
 function parsePostSearchHttpParams(array $in): array|string {
 
     $params = [];
-    $where = "parentIdx=0 AND deletedAt=''";
+
+    // 기본 검색 조건
+    //
+    // 부모 글만 검색. 삭제된 글도 포함.
+    $where = "parentIdx=0";
 
 
     // 카테고리 idx 또는 카테고리 id 또는 0
@@ -1723,9 +1749,9 @@ function parsePostSearchHttpParams(array $in): array|string {
     // files
     if (isset($in['files'])) {
         if ($in['files']) {
-            $where .= " AND files<>''";
+            $where .= " AND fileIdxes != ''";
         } else {
-            $where .= " AND files=''";
+            $where .= " AND fileIdxes = ''";
         }
     }
 

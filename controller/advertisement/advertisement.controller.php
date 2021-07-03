@@ -34,7 +34,7 @@ class AdvertisementController
             if (!$cafe->isMainCafe()) return e()->cafe_not_exists;
         }
 
-        $where = "countryCode=? AND code != '' AND beginAt < ? AND endAt >= ? AND files != ''";
+        $where = "countryCode=? AND code != '' AND beginAt < ? AND endAt >= ? AND fileIdxes != ''";
         $params = [$cafe->countryCode, time(), today()];
 
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true);

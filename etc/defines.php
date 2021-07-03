@@ -29,6 +29,8 @@ define('POSTS', 'posts');
 define('COMMENTS', 'comments');
 
 define('FILES', 'files');
+define('FILE_IDXES', 'fileIdxes');
+
 
 define('PUSH_NOTIFICATION_TOKENS', 'push_notification_tokens');
 define('POINT_HISTORIES', 'point_histories');

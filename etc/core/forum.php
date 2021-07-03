@@ -19,6 +19,7 @@
  * @property-read int otherUserIdx
  * @property-read int appliedPoint;
  * @property-read string files
+ * @property-read string fileIdxes
  */
 class Forum extends Entity {
 
@@ -204,8 +205,8 @@ class Forum extends Entity {
     public function fixUploadedFiles($in) {
 
         /// 업로드된 첨부 파일의 taxonomy 와 entity 를 지정한다.
-        if ( isset($in[FILES]) && $in[FILES] ) {
-            $files = separateByComma($in[FILES]);
+        if ( isset($in[FILE_IDXES]) && $in[FILE_IDXES] ) {
+            $files = separateByComma($in[FILE_IDXES]);
             foreach( $files as $file ) {
                 files($file)->update([TAXONOMY => POSTS, ENTITY => $this->idx]);
             }
