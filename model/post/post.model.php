@@ -466,8 +466,8 @@ class PostModel extends Forum {
             $where .= " AND countryCode=?";
             $params[] = $countryCode;
         }
-        if ( $photo === true ) $where .= " AND files <> '' ";
-        else if ( $photo === false ) $where .= " AND files = '' ";
+        if ( $photo === true ) $where .= " AND fileIdxes <> '' ";
+        else if ( $photo === false ) $where .= " AND fileIdxes = '' ";
 
         return $this->search(
             where: $where,
