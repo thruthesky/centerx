@@ -37,16 +37,23 @@ class UserActivityBase extends Entity {
      * ) ) return ERROR_HOURLY_LIMIT; // 에러 리턴
      */
     function countOver(array $actions, int $stamp, int $count, int $fromUserIdx=0, int $categoryIdx=0): bool {
-        if ( $count ) {
-//            d("countOver: $categoryIdx");
-            $total = $this->countActions( actions: $actions, stamp: $stamp, fromUserIdx: $fromUserIdx, categoryIdx: $categoryIdx );
-//            d("if ( total: $total >= count: $count ) {");
-            if ( $total == 0 ) return false;
-            else if ( $total >= $count ) {
-                return true;
-            }
+//        debug_log("countOver( count: $count )");
+        /// @attention if the setting of count limit is 0, then, it return true.
+        /// This means, if admin didn't set the setting, the default value is 0. And the there no point
+        /// increase/decrease by default. The admin must set(change) count limit for the point to be increased or decreased.
+        if ( $count == 0 ) return true;
+
+//        debug_log("countOver: $categoryIdx");
+        $total = $this->countActions( actions: $actions, stamp: $stamp, fromUserIdx: $fromUserIdx, categoryIdx: $categoryIdx );
+//        debug_log("if ( total: $total >= count: $count ) {");
+
+        ///
+        if ( $total > $count ) {
+            return true;
+        } else {
+            return false;
         }
-        return false;
+
     }
 
 

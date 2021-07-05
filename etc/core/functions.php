@@ -1946,6 +1946,11 @@ function isTodayOrPast(int $stamp): bool {
 /**
  * 이미지를 썸네일로 제작한다.
  *
+ * @note 이 함수는 썸네일 이미지를 파일에 저장하고, 그 경로를 리턴한다.
+ *  - 즉, 실시간으로 썸네일을 생성할 수가 없다.
+ *  - 실시간으로 썸네일을 생성하기 위해서는 이미지 경로가 아니라 이미지 자체를 리턴해야 한다.
+ *  - 실시간으로 썸네일 생성하고, 이미지를 리턴하는 코드는 /etc/thumbnail.php 에 있다.
+ *
  * "PHP 썸네일 - Zoom Crop" 요약 문서 - https://docs.google.com/document/d/1RWYRWiATRdgT02cqG5TbVtJCOTSKtlAzXxeOM2-NkXA/edit#heading=h.2ryanntdiu14
  * 위 문서를 보면, 어떻게 zoom crop 을 하는지 알 수 있다.
  *

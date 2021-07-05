@@ -71,7 +71,8 @@ const SUPPORTED_DOMAIN_SUFFIX = ['.com', '.co.kr', '.kr'];
  *
  * 참고, 테마 설정 파일에서 isLocalhost() 를 사용 할 수 있으므로, 테마 설정이 로드되기 전에 정의되어야 한다.
  */
-const LOCAL_HOSTS = ['localhost', '127.0.0.1', 'local.itsuda50.com', 'main.philov.com', 'apple.philov.com',
+const LOCAL_HOSTS = [
+    'localhost', '127.0.0.1', 'local.itsuda50.com', 'main.philov.com', 'apple.philov.com',
     'banana.philov.com', 'cherry.philov.com', 'main.sonub.com', 'dating.com'
 ];
 
@@ -166,7 +167,7 @@ const UPLOAD_DIR = ROOT_DIR . 'files/uploads/';
  * 현재 웹브라우저 접속 URL 이 아닌 다른 주소로 지정 할 수 있다.
  * 특히, CLI 로 작업을 하거나 테스트를 하는 경우, 현재 브라우저 접속 URL 값을 찾을 수 없으며,
  * 임시 도메인 주소인 기본 값인 DEFAULT_HOME_URL 상수가 사용한다. 물론변경 가능하다.
- * 주의, URL 이 슬래시(/)로 끝나야 한다.
+ * 주의, API 서버의 URL 이 http 로 시작하고, 슬래시(/)로 끝나야 한다. 예) https://www.abc.com/
  *
  */
 if ( isCli() ) {
@@ -176,6 +177,7 @@ if ( isCli() ) {
 }
 
 /// 이미지 다운로드 경로
+/// 주의, API 서버의 URL 이 http 로 시작하고, 슬래시(/)로 끝난다. 예) https://www.abc.com/
 if ( ! defined('UPLOAD_SERVER_URL') ) {
     define('UPLOAD_SERVER_URL', HOME_URL);
 }

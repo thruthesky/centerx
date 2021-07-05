@@ -130,10 +130,5 @@ if ( file_exists($_path) ) {
 }
 
 
-// Live reload is deprecated on v2.
-// @see README.md how to control live reload.
-// live_reload();
-
-
 // Leave a record, for stating that a new script run time begins.
 leave_starting_debug_log();
