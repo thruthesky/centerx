@@ -40,6 +40,7 @@ $at->pointSettingDelete();
 
 $at->refundAfterPointSettingChanged();
 
+
 class AdvertisementTest
 {
 

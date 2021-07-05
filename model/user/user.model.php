@@ -141,13 +141,14 @@ class UserModel extends Entity {
 
 
         // short date for the post create time
-        $this->updateMemoryData('createdAtShortDate', short_date_time($this->createdAt));
-        $this->updateMemoryData('updatedAtShortDate', short_date_time($this->createdAt));
+        if ( $this->createdAt ) $this->updateMemoryData('createdAtShortDate', short_date_time($this->createdAt));
+        if ( $this->updatedAt ) $this->updateMemoryData('updatedAtShortDate', short_date_time($this->updatedAt));
 
         $data[ADMIN] = admin($this->email) ? 'Y' : 'N';
 
         return $this;
     }
+
 
 
     /**

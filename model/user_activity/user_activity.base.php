@@ -47,14 +47,16 @@ class UserActivityBase extends Entity {
         $total = $this->countActions( actions: $actions, stamp: $stamp, fromUserIdx: $fromUserIdx, categoryIdx: $categoryIdx );
         debug_log("if ( total: $total > count: $count ) {");
 
-        ///
-        if ( $total > $count ) {
+        /// 한 번만 추천하도록 count limit 이 1 로 설정되어져 있으면, 맨 처음 동작 할 때에는 레코드가 없으니 $total 은 0 이 된다.
+        /// 즉, $total 은 $count 보다 1 작아야 한다.
+        if ( $total >= $count ) {
             return true;
         } else {
             return false;
         }
 
     }
+
 
 
 
@@ -359,35 +361,33 @@ class UserActivityBase extends Entity {
     }
 
     /**
-     * @deprecated rename to setVoteHourLimit
      * @param $hour
      */
-    public function setLikeHourLimit($hour) {
+    public function setVoteHourLimit($hour) {
         adminSettings()->set(ActivityLimits::$voteHourlyLimit, $hour);
     }
 
-    public function getLikeHourLimit() {
+    public function getVoteHourLimit() {
         return adminSettings()->get(ActivityLimits::$voteHourlyLimit) ?? 0;
     }
 
 
-    public function setLikeHourLimitCount($count) {
+    public function setVoteHourLimitCount($count) {
         adminSettings()->set(ActivityLimits::$voteHourlyLimitCount, $count);
     }
 
-    public function getLikeHourLimitCount() {
+    public function getVoteHourLimitCount() {
         return adminSettings()->get(ActivityLimits::$voteHourlyLimitCount) ?? 0;
     }
 
     /**
-     * @deprecated name it to setVoteDailyCount
      * @param $count
      */
-    public function setLikeDailyLimitCount($count) {
+    public function setVoteDailyCount($count) {
         adminSettings()->set(ActivityLimits::$voteDailyLimitCount, $count);
     }
 
-    public function getLikeDailyLimitCount() {
+    public function getVoteDailyLimitCount() {
         return adminSettings()->get(ActivityLimits::$voteDailyLimitCount) ?? 0;
     }
 
