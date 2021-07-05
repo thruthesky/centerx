@@ -6,10 +6,10 @@ class PointController {
      * 해당 글 또는 코멘트를 생성할 때 획득한 포인트를 리턴한다.
      */
     public function postCreate($in) {
-        if ( post($in[IDX])->parentIdx ) $reason = POINT_COMMENT_CREATE;
-        else $reason = POINT_POST_CREATE;
+        if ( post($in[IDX])->parentIdx ) $action = POINT_COMMENT_CREATE;
+        else $action = POINT_POST_CREATE;
 
-        return ['point' => pointHistory()->last(POSTS, $in[IDX], $reason)->toUserPointApply];
+        return ['point' => userActivity()->last(POSTS, $in[IDX], $action)->toUserPointApply];
     }
 
     

@@ -218,6 +218,7 @@ class UserActivityModel extends UserActivityBase {
             fromUserPoint: $fromUserPoint,
             toUserIdx: $forum->userIdx,
             toUserPoint: $toUserPoint,
+            taxonomy: $forum->taxonomy
         );
 
 

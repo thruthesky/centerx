@@ -139,6 +139,11 @@ class UserModel extends Entity {
         $this->updateMemoryData('age', $this->age());
         $this->updateMemoryData('verified', $this->verifier);
 
+
+        // short date for the post create time
+        $this->updateMemoryData('createdAtShortDate', short_date_time($this->createdAt));
+        $this->updateMemoryData('updatedAtShortDate', short_date_time($this->createdAt));
+
         $data[ADMIN] = admin($this->email) ? 'Y' : 'N';
 
         return $this;

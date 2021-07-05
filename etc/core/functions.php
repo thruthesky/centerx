@@ -1115,27 +1115,10 @@ function onCommentCreateSendNotification(CommentModel|PostModel $cp)
     $tokens = getTokensFromUserIDs($usersIdx, NEW_COMMENT_ON_MY_POST_OR_COMMENT);
 
 
-    /**
-     * prepare message data.
-     * set the title, body, etc
-     */
-    $title = login()->name . " Comment to ";
-    /**
-     * it indicate that the post has photo if the post title is empty and has photo
-     */
-    if ($post->title) {
-        $title .= $post->title;
-    }
-    else if (!$post->title) {
-        if (!empty($post->fileIdxes)) {
-            $title .= " uploaded photos post# " . $post->idx;
-        }
-    } else {
-        $title .= "post# " . $post->idx;
-    }
+
 
     $req = [
-        'title' => $title,
+        'title' => getCommentPushNotificationTitle($post),
         'body' => $cp->content,
         'click_action' => $post->relativeUrl,
         'data' => [
@@ -1155,6 +1138,25 @@ function onCommentCreateSendNotification(CommentModel|PostModel $cp)
      * send notification to comment ancestors who enable reaction notification
      */
     if (!empty($tokens)) sendMessageToTokens($tokens, $req);
+}
+
+/**
+ * prepare title data from PostModel
+ */
+function getCommentPushNotificationTitle(PostModel $post): string {
+    $title = login()->name . " Comment to ";
+    /**
+     * It indicate that the post has photo if the post title is empty and has photo
+     */
+    if ($post->title) {
+        return $title . $post->title;
+    }
+    else if (!$post->title) {
+        if (!empty($post->fileIdxes)) {
+            return $title . " uploaded photos post# " . $post->idx;
+        }
+    }
+    return $title . "post# " . $post->idx;
 }
 
 

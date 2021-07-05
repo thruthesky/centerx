@@ -111,16 +111,16 @@ class UserController
      * Note that, it returns point histories of both that the login user made action or received point.
      * 사용자가 로그인과 같이 직접 발생시킨 포인트와, 추천과 같이 받은 포인트, 포인트 결제 등 해당 사용자와 연관된 모든 포인트를 리턴한다.
      *
-     * 참고, pointHistory.route.php 를 참고한다.
      *
      * @param $in
-     * @return mixed
-     * @throws Exception
+     * @return array|string
      */
-    public function point($in)
+    public function point($in): array | string
     {
+        if (notLoggedIn()) return e()->not_logged_in;
         $myIdx = login()->idx;
-        return entity(POINT_HISTORIES)->search(where: "fromUserIdx=$myIdx OR toUserIdx=$myIdx", limit: 200, select: '*');
+        $q = "(fromUserIdx=? AND fromUserPointApply<>0) OR (toUserIdx=? AND toUserPointApply<>0)";
+        return userActivity()->search( select: '*', where: $q, params: [$myIdx,$myIdx,], limit: 200);
     }
 
     /**
