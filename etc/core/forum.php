@@ -45,7 +45,7 @@ class Forum extends Entity {
         if ( $this->parentIdx ) $action =  Actions::$createComment;
         else $action = Actions::$createPost;
 
-        $point = act()->last(POSTS, $this->idx, $action)?->toUserPointApply ?? 0;
+        $point = userActivity()->last(POSTS, $this->idx, $action)?->toUserPointApply ?? 0;
         $this->updateMemory('appliedPoint', $point);
     }
     /**
@@ -83,7 +83,7 @@ class Forum extends Entity {
                 $vote->update([CHOICE => $Yn]);
             }
         } else {
-//            act()->can(Activity::$vote, postIdx: $this->idx);
+//            userActivity()->can(Activity::$vote, postIdx: $this->idx);
             // Do actions for first vote. 처음 추천
             // Change point for first vote only. 처음 추천하는 경우에만 포인트 지정.
             // Leave vote history. 추천 기록 남김. 포인트 증/감 유무와 상관 없음.

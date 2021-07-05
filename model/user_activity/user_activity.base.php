@@ -206,8 +206,6 @@ class UserActivityBase extends Entity {
      * @note You may need to record twice by calling `recordAction()` two times for a specific actions like voting.
      *
      *
-     * - 적용된 포인트를 음/양의 값으로 리턴한다. 이 리턴되는 값을 from_user_point_apply 또는 to_user_point_apply 에 넣으면 된다.
-     * - 입력된 $point 가 올바르지 않거나, 증가되지 않으면 0을 리턴한다.
      */
     public function recordAction(
         string $action,

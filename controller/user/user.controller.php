@@ -167,7 +167,7 @@ class UserController
      */
     public function heart($in): string
     {
-        return act()->count(conds: ['action' => POINT_LIKE, 'toUserIdx' => login()->idx]);
+        return userActivity()->count(conds: ['action' => POINT_LIKE, 'toUserIdx' => login()->idx]);
     }
 
 

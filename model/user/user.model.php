@@ -177,8 +177,11 @@ class UserModel extends Entity {
         $in[POINT] = 0;
         $this->create($in);
 
-        act()->register($this);
 
+        /// 회원 가입 보너스 포인트 충전.
+        userActivity()->register($this);
+        /// 회원 가입 보너스 포인트를 메모리 데이터에 업데이트 함.
+        $this->updateMemoryData('point', $this->getPoint());
         return $this;
     }
 
@@ -241,10 +244,14 @@ class UserModel extends Entity {
         $this->idx = $user->idx;
         $this->update($in);
 
-//        d($this);
-        act()->login($this);
-//        point()->login($this->profile());
+
+        /// 회원 로그인 기록. 보너스 포인트가 있으면, 회원 로그인 보너스 포인트 적용.
+        userActivity()->login($this);
+
+        /// 회원 로그인 보너스 포인트를 메모리 데이터에 업데이트 함.
+        $this->updateMemoryData('point', $this->getPoint());
         return $this;
+
     }
 
 

@@ -1597,11 +1597,11 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 - add a method like 'canXxxx()' in `user_acitivity.taxonomy.php` if it needs to check the permission before the activity
   - And add it to somewhere before the activity.
-  - For instance `act()->canCreatePost()`
+  - For instance `userActivity()->canCreatePost()`
 
 - add a method of recording activity in `user_acitivity.taxonomy.php`.
   - And add it after the activity.
-  - For instance, `act()->register()`
+  - For instance, `userActivity()->register()`
   - If it needs to deduct point, deduct the point in this method.
 
 - For instance, 'UserActivityTaxonomy::canRegister()' checks if the user can register, and 'UserActivityTaxonomy::register()' method records.

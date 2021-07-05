@@ -10,7 +10,7 @@ if (modeSubmit()) {
     if ($conds) $q_where = implode(" AND ", $conds);
 }
 
-$histories = act()->search(where: $q_where, limit: 100, object: true);
+$histories = userActivity()->search(where: $q_where, limit: 100, object: true);
 
 ?>
 
