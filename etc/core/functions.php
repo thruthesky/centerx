@@ -1116,50 +1116,44 @@ function onCommentCreateSendNotification(CommentModel|PostModel $cp)
 
 
     /**
-     * set the title and body, etc.
+     * prepare message data.
+     * set the title, body, etc
      */
-    $title = login()->name . " Comment to " . $post->title;
+    $title = login()->name . " Comment to ";
     /**
-     * @todo Where does `$in` come from?
+     * it indicate that the post has photo if the post title is empty and has photo
      */
-    if (empty($title)) {
-        if (isset($in[FILES]) && !empty($in[FILES])) {
-            $title .= " uploaded photos post#" . $post->idx;
+    if ($post->title) {
+        $title .= $post->title;
+    }
+    else if (!$post->title) {
+        if (!empty($post->fileIdxes)) {
+            $title .= " uploaded photos post# " . $post->idx;
         }
+    } else {
+        $title .= "post# " . $post->idx;
     }
 
-
-    // prepare message data.
-    $body               = $cp->content;
-    $data               = [
-        'senderIdx' => login()->idx,
-        'type' => 'post',
-        'idx'=> $post->idx,
+    $req = [
+        'title' => $title,
+        'body' => $cp->content,
+        'click_action' => $post->relativeUrl,
+        'data' => [
+            'senderIdx' => login()->idx,
+            'type' => 'post',
+            'idx'=> $post->idx,
+        ]
     ];
 
     /**
      * send notification to users who subscribe to comment topic
      */
-    $req = [
-        'title' => $title,
-        'body' => $body,
-        'click_action' => $post->relativeUrl,
-        'data' =>$data
-    ];
     sendMessageToTopic(NOTIFY_COMMENT . $cat->id, $req);
-
-//    debug_log('tokens: ', $tokens);
 
 
     /**
      * send notification to comment ancestors who enable reaction notification
      */
-    $req = [
-        'title' => $title,
-        'body' => $body,
-        'click_action' => $post->relativeUrl,
-        'data' =>$data
-    ];
     if (!empty($tokens)) sendMessageToTokens($tokens, $req);
 }
 

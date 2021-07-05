@@ -196,17 +196,8 @@ class PostModel extends Forum {
         // update `noOfPosts`
         // update `noOfComments`
 
-        // @todo encapsulate the code below with a function.
-        // NEW POST IS CREATED => Send notification to forum subscriber
-        $title = $in[TITLE] ?? '';
-        if (empty($title)) {
-            if (isset($in[FILE_IDXES]) && !empty($in[FILE_IDXES])) {
-                $title = "New photo was uploaded";
-            }
-        }
-
         $req = [
-            TITLE => $title,
+            TITLE => postNotificationTitle($this),
             BODY => $in[CONTENT] ?? '',
             CLICK_ACTION => $this->url ?? '',
             DATA => [
@@ -718,6 +709,18 @@ function post(int|string $idx=0): PostModel
  */
 function postByCode(string $code): PostModel {
     return post()->findOne(['code' => $code]);
+}
+
+
+
+function postNotificationTitle(PostModel $post): string {
+    // NEW POST IS CREATED => Send notification to forum subscriber
+    if (!empty($post->title)) return $post->title;
+
+    if (!empty($post->fileIdxes)) {
+        return  "New photo was uploaded";
+    }
+    return "New post was posted on" . $post->categoryId();
 }
 
 
