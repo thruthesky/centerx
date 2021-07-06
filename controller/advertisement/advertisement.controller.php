@@ -116,7 +116,7 @@ class AdvertisementController
             if ($post->isMine() == false) return  e()->not_your_post;
 
             $post->update($in);
-            $post->updateMemoryData('status', 'inactive');
+            $post->updateMemoryData('status', advertisement()->getStatus($post));
 
             return $post->response();
         }
