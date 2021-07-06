@@ -2,6 +2,8 @@
 /**
  * @file advertisement.model.php
  */
+const ADVERTISEMENT_POINT = 'advertisementPoint';
+const POINT_PER_DAY = 'pointPerDay';
 /**
  * Class AdvertisementModel
  * @property-read string $clickUrl
@@ -60,17 +62,17 @@ class AdvertisementModel extends PostModel
     }
 
     /**
-     * 배너( 글 )를 입력 받아, 메타에 저장된 status 를 보고, stop 이나 cancel 이 아니면,
-     *      - 광고 시작이 안되었으면, waiting,
-     *      - 광고 시작과 끝 시간 사이에, active
-     *      - 광고 종료되었으면, inactive,
-     * @param PostModel $post
+     * 글 상태. README.md 참고
+     *
+     * @param AdvertisementModel $post
      * @return string
      */
     public function getStatus(AdvertisementModel $banner): string
     {
 
         if ( $this->stopped($banner) || $this->cancelled($banner)) return 'inactive';
+        if ( $banner->advertisementPoint == '0' ) return 'inactive';
+
 
         $now = time();
         if (daysBetween($now, $banner->beginAt) > 0) return 'waiting';
@@ -79,9 +81,11 @@ class AdvertisementModel extends PostModel
 
     }
 
+    // 광고가 중단 되었는가?
     public function stopped(AdvertisementModel $banner) {
         return isset($banner->status) && $banner->status == 'stop';
     }
+    // 광고가 취소되었는가?
     public function cancelled(AdvertisementModel $banner) {
         return $banner->status && $banner->status == 'cancel';
     }
@@ -99,13 +103,16 @@ class AdvertisementModel extends PostModel
 
     /**
      * 광고가 이미 끝났으면, 참을 리턴한다.
+     *
+     * @note, stamp 로 저장되면, 오늘이지만, stamp 가 과거일 수 있다. 그래서 과거중에서 오늘은 뺀다.
+     *
      * Returns true if the advertisement is expired, meaning the end date is either past or today.
      * Checks 'endAt' if is equivalent to today or past days.
      * @return bool
      */
     public function expired(): bool
     {
-        return isPast($this->endAt);
+        return isPast($this->endAt) && isToday($this->endAt);
 //        return isTodayOrPast($this->endAt);
     }
 
@@ -166,11 +173,13 @@ class AdvertisementModel extends PostModel
         if (notLoggedIn()) return $this->error(e()->not_logged_in);
         if (!isset($in[IDX]) || empty($in[IDX])) {
             $in[CATEGORY_ID] = ADVERTISEMENT_CATEGORY;
-            return advertisement()->create($in);//->updateMemoryData('status', 'inactive');
+            $in[ADVERTISEMENT_POINT] = '0';
+            $in[POINT_PER_DAY] = '0';
+            return advertisement()->create($in);
         } else {
             $post = advertisement($in[IDX]);
             if ($post->isMine() == false) return $this->error(e()->not_your_post);
-            return $post->update($in);//->updateMemoryData('status', 'inactive');
+            return $post->update($in);
         }
     }
 
@@ -223,19 +232,19 @@ class AdvertisementModel extends PostModel
         }
 
         // Save point per day. This will be saved in meta.
-        $in['pointPerDay'] = 0;
+        $in[POINT_PER_DAY] = 0;
 
         $settings = advertisement()->getAdvertisementPointSetting($in);
 
         if (isset($settings[$in[CODE]])) {
-            $in['pointPerDay'] = $settings[$in[CODE]];
+            $in[POINT_PER_DAY] = $settings[$in[CODE]];
         }
 
         // Save total point for the advertisement periods.
-        $in['advertisementPoint'] = $in['pointPerDay'] * $days;
+        $in[ADVERTISEMENT_POINT] = $in[POINT_PER_DAY] * $days;
 
         // check if the user has enough point
-        if (login()->getPoint() < $in['advertisementPoint']) {
+        if (login()->getPoint() < $in[ADVERTISEMENT_POINT]) {
             return $this->error(e()->lack_of_point);
         }
 
@@ -245,14 +254,14 @@ class AdvertisementModel extends PostModel
             fromUserIdx: 0,
             fromUserPoint: 0,
             toUserIdx: login()->idx,
-            toUserPoint: -$in['advertisementPoint'],
+            toUserPoint: -$in[ADVERTISEMENT_POINT],
             taxonomy: POSTS,
             entity: $banner->idx,
             categoryIdx: $banner->categoryIdx,
         );
 
-        debug_log("apply point; {$activity->toUserPointApply} != {$in['advertisementPoint']}");
-        if ($activity->toUserPointApply != -$in['advertisementPoint']) {
+        debug_log("apply point; {$activity->toUserPointApply} != {$in[ADVERTISEMENT_POINT]}");
+        if ($activity->toUserPointApply != -$in[ADVERTISEMENT_POINT]) {
             // @attention !! If this error happens, it is a critical problem.
             // The admin must investigate the database and restore user's point.
             // Then, it needs to rollback the SQL query and needs to have race condition test to prevent the same incident.
@@ -277,6 +286,11 @@ class AdvertisementModel extends PostModel
 
         $advertisement = advertisement($in[IDX]);
         if ($advertisement->isMine() == false) return $this->error(e()->not_your_post);
+
+        // 중단된 광고, 취소된 광고, 끝난 광고는 중단하지 못한다. readme.md 참고
+        if ( $this->stopped($this) ) return $this->error(e()->banner_stopped);
+        if ( $this->cancelled($this) ) return $this->error(e()->banner_cancelled);
+        if ( $this->expired()) return $this->error(e()->banner_expired);
 
         /// If advertisement started (including today), then, it needs +1 day.
         /// For instance, advertisement starts today and ends tomorrow. The left days must be 1.
@@ -305,8 +319,8 @@ class AdvertisementModel extends PostModel
 
         $in[BEGIN_AT] = 0;
         $in[END_AT] = 0;
-        $in['advertisementPoint'] = '0';
-        $in['pointPerDay'] = '0';
+        $in[ADVERTISEMENT_POINT] = '0';
+        $in[POINT_PER_DAY] = '0';
 
         // Record for change point.
         $activity = userActivity()->changePoint(

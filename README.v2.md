@@ -1113,14 +1113,26 @@ isTrue((new AppController())->version(), "App version");
 
 - 광고 게시판 아이디는 반드시 `ADVERTISEMENT_CATEOGRY` 에 있는 것을 사용한다.
 - 광고 배너는 하나의 글이다.
+  
+- 광고 배너(글) 생성 시,
+  - pointPerDay 와 advertisementPoint 는 0 으로 초기화 되어 meta 에 저장된다. 즉, 항상 사용 가능한 상태이다.
 - 광고 배너(글)를 생성하고, `advertisement.start` 라우트로 시작을 해 주어야 한다. 이 대,
   - pointPerDay 는 해당 광고의 하루 포인트
   - advertisementPoint 에는 총 기간의 포인트가 meta 에 저장된다.
   
 - 광고가 진행(시작)되기 전에 취소되면, post 의 meta 중 status 에 cancel 을 저장하고, 100% 환불된다.
 - 광고가 시작되어, 중간에 중단되면, post 의 meta 중 status 에 stop 이 저장되고, 오늘을 빼고 나머지 일 수 만큼 환불 된다.
+- 중단된 광고, 취소된 광고, 끝난 광고는 `advertisement.route` 호출을 통해서 광고 중단을 할 수 없다.
+  단, 오늘 끝나는 광고는 중단 할 수 있다.
 
-
+- 광고 상태는 active, inactive, waiting 과 같이 3 가지 단계가 이다.
+  - 배너( 글 )를 입력 받아, 메타에 저장된 status 를 보고,
+    - stop 이나 cancel 이면 inactive
+  - advertisementPoint 에 값이 0 이면, 광고 설정이 안된 것으로, inactive
+  - status 가 stop, cancel 이 아니고, advertisementPoint 가 있는 상태에서,
+    - 광고 시작이 안되었으면, waiting
+    - 광고 시작과 끝 시간 사이에 있으면, active
+    - 광고 종료되었으면, inactive,
 
 ## Banner Place & Display
 
