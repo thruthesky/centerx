@@ -293,12 +293,12 @@ class UserActivityBase extends Entity {
         // 저장되려는 포인트가 0 보다 작으면,
         if ( $savingPoint < 0 ) {
             // 0 을 저장하고,
-            $user->setPoint(0);
+            $user->_setPoint(0);
             // 실제 차감된 포인트를 리턴
             return -$userPoint;
         } else {
             // 저장되려는 포인트가 양수이면, 저장하고,
-            $user->setPoint($savingPoint);
+            $user->_setPoint($savingPoint);
             // 전체 증가 포인트를 리턴
             return $point;
         }

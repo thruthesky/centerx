@@ -11,7 +11,7 @@ isTrue($re == e()->not_logged_in, print_r($re, true));
 
 
 $user = setLoginAny();
-$user->setPoint(0);
+$user->_setPoint(0);
 
 
 $re = $route->order([]);
@@ -27,7 +27,7 @@ $re = $route->order(['info' => $info]);
 isTrue($re == e()->lack_of_point, "re: " . print_r($re, true));
 
 // 포인트 충분
-$user->setPoint(5000);
+$user->_setPoint(5000);
 $orderRecord = $route->order(['info' => $info]);
 
 isTrue($user->getPoint() == 2000, 'point should be 2000');

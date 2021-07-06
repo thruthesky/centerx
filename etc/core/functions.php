@@ -1932,15 +1932,29 @@ function isBetweenDay($stamp, $firstStamp, $secondStamp) {
  * Returns true if the input stamp is today or future. ( not past )
  */
 function isTodayOrFuture(int $stamp): bool {
-    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
-    return  $carbon->isToday() || $carbon->isFuture();
+    return isToday($stamp) || isFuture($stamp);
+//    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+//    return  $carbon->isToday() || $carbon->isFuture();
 }
 /**
  * Returns true if the input stamp is today or past. ( not future )
  */
 function isTodayOrPast(int $stamp): bool {
+    return isToday($stamp) || isPast($stamp);
+//    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+//    return  $carbon->isToday() || $carbon->isPast();
+}
+function isToday($stamp) {
     $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
-    return  $carbon->isToday() || $carbon->isPast();
+    return $carbon->isToday();
+}
+function isPast($stamp) {
+    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+    return $carbon->isPast();
+}
+function isFuture($stamp) {
+    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+    return $carbon->isFuture();
 }
 
 /**

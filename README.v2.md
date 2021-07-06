@@ -223,6 +223,11 @@ define('DOMAIN_THEMES', [
 아래의 live reload 항목 참고
 
 
+# 코딩 가이드라인, 스타일 가이드
+
+- 권한 체크를 하지 않아서, controller 또는 클라이언트에게 곧 바로 노출되면 위함한 함수는 언더바(_)로 시작한다.
+  예를 들면, 사용자 포인트를 변경 할 수 있는 user()->_setPoint() 함수와 같은 것이다.
+  이런 함수는 프로그램 내부적으로만 사용해야 한다.
 
 # 클라이언트
 
@@ -1046,8 +1051,6 @@ isTrue((new AppController())->version(), "App version");
   그리고, nginx 설정에 www_docker_nginx 를 도메인으로 추가해 주고,
   config.php 의 도메인 설정에도 추가를 해 주어야 한다.
   
-
-
 # 광고, Advertisement
 
 - 최대한 간단하게 작성
@@ -1058,6 +1061,13 @@ isTrue((new AppController())->version(), "App version");
     예를 들어, 최상단 배너가, 글로벌인 경우, 1만 포인트, 구인 구직에만 노출되는 경우, 5천 포인트로 하지 않는다.
     똑 같이 1만 포인트로 한다.
     다만, 글로벌의 경우 여러개 광고가 번갈아가면서 보인다.
+
+## 광고 기능 추가해야 할 것
+
+- 사업자 등록증을 올리도록 할 것.
+  사업자 등록증에 있는 대표자가 본인 인증 하도록 해야 할 것.
+  경고. 사업자등록증이 없거나 사업자등록증과 관계 없는 사업, 불법 광고, 성매매 유사 업종을 광고하는 경우 해당 광고는 즉시 차다며, 당국에 고발조치를 합니다.
+  
 
 ## Terms & Conditions
 
@@ -1088,12 +1098,27 @@ isTrue((new AppController())->version(), "App version");
     And, when user wants to cancel/refund the banner, the system can compute how much to return to the user.
 
 - If the advertisement has not started yet, then 100% of the point will be refunded without penalty.
-  - User can set the begin date of the advertisement and the user want to cancel the advertisement before the begin date,
+  - User can set the begin_date of the advertisement and the user want to cancel the advertisement before the begin_date,
   then 100% will be refunded.
+    
+- 관리자는 각 배너 포인트를 0 으로 설정 할 수 있다.
+  즉, 사용자는 배너를 무료로 진행 할 수 있는 것이다. 이 때에는 최대 광고 설정 기간을 길게하지 않도록 해야 한다.
 
 - Each banner must be a png or jpg file. that means, GIF animation is not allowed.
 
 - If one banner place has multiple banners to show, then it will rotate the banner by 7 seconds.
+
+
+## 광고 기능 코딩 기법 및 로직 설명
+
+- 광고 게시판 아이디는 반드시 `ADVERTISEMENT_CATEOGRY` 에 있는 것을 사용한다.
+- 광고 배너는 하나의 글이다.
+- 광고 배너(글)를 생성하고, `advertisement.start` 라우트로 시작을 해 주어야 한다. 이 대,
+  - pointPerDay 는 해당 광고의 하루 포인트
+  - advertisementPoint 에는 총 기간의 포인트가 meta 에 저장된다.
+  
+- 광고가 진행(시작)되기 전에 취소되면, post 의 meta 중 status 에 cancel 을 저장하고, 100% 환불된다.
+- 광고가 시작되어, 중간에 중단되면, post 의 meta 중 status 에 stop 이 저장되고, 오늘을 빼고 나머지 일 수 만큼 환불 된다.
 
 
 
@@ -1174,7 +1199,7 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
   It uses `posts` table.
   (광고 테이블은 따로 없고, `posts` 테이블을 사용한다.)
 
-- The advertisement category is stated on `ADVERTISE_CATEGORY`. (게시판 아이디는 `ADVERTISE_CATEGORY` 에 기록되어져 있다.)
+- The advertisement category is stated on `ADVERTISEMENT_CATEGORY`. (게시판 아이디는 `ADVERTISEMENT_CATEGORY` 에 기록되어져 있다.)
 
 - The advertisement begin date and end date.
   - Begin date is recorded at `beginAt`
@@ -1235,16 +1260,6 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
   The maximum width of top banner will be 285px but it may be shown narrower when the screen size becomes smaller.
   
 
-## Banner management
-
-- Admin may set the point of a banner in `config.php` to 0.
-  Then users can advertise without any point.
-  
-~~If a banner point in `config.php` is set to 0, then the banner can be deleted without stopping the banner when it is active.
-  That is because, when the banner stopped, the system sets 0 to `advertisementPoint` on database,
-    and the system considers if it is 0, the banner is inactive.
-    So, it is not a good idea to set the point of a banner to 0.~~~
-  
 
 
 ## 버전 1.x 에서 위젯으로 출력하는 방법

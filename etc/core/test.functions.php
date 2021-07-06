@@ -17,12 +17,16 @@ function setLoginAny(): UserModel {
 
 // Login as admin.
 // Note that this will change admin configuration. So, admin need to reset the admin email on admin page.
-function setLoginAsAdmin(): UserModel {
-    $user = createTestUser();
-    config()->set(ADMIN, $user->email);
-    setLogin($user->response());
-    return $user;
+// @attention this function is available only on unit testing.
+if ( defined('UNIT_TEST') || in('test') ) {
+    function setLoginAsAdmin(): UserModel {
+        $user = createTestUser();
+        config()->set(ADMIN, $user->email);
+        setLogin($user->response());
+        return $user;
+    }
 }
+
 
 function setLogin1stUser(): UserModel {
     return setLoginAny();
@@ -93,13 +97,22 @@ function registerUser(): UserModel {
 
 /**
  * Registers with random email and logs into the PHP runtime(system).
+ *
+ * 만약, 포인트가 주어지면, 그 포인트를 설정한다.
+ * 만약, 포인트가 주어지지 않으면, 회원 가입 보너스 포인트 등이 설정될 수 있다.
+ *  - 만약, 회원 가입 보너스 포인트를 원치 않으면, 테스트 전에 회원 가입 포인트를 0 으로 설정하면 된다.
+ *
+ * @param int $point
  * @return UserModel
  */
-function registerAndLogin(): UserModel {
+function registerAndLogin($point = 0): UserModel {
     $user = registerUser();
     setLogin($user->idx);
+    if ( $point ) $user->_setPoint($point);
     return $user;
 }
+
+
 
 
 

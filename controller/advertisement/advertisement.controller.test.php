@@ -1,70 +1,87 @@
 <?php
 
+// Create 'advertisement' category if it does not exists.
+if (!category()->exists([ID => ADVERTISEMENT_CATEGORY])) {
+    $admin = setLoginAsAdmin();
+    category()->create([ID => ADVERTISEMENT_CATEGORY]);
+}
+// 회원 가입 포인트를 0 으로 설정.
+userActivity()->setRegisterPoint(0);
 setLogout();
 enableTesting();
 $at = new AdvertisementTest();
 
-$at->lackOfPoint();
-$at->emptyCode();
-$at->beginDateEmpty();
-$at->endDateEmpty();
-$at->maximumAdvertisementDays();
-$at->domainEmpty();
+//$at->createBanner();
+//$at->_0_point_advertisement();
+//$at->lackOfPoint();
+//$at->emptyCode();
+//$at->beginDateEmpty();
+//$at->endDateEmpty();
+//$at->maximumAdvertisementDays();
+//$at->domainEmpty();
+//
+//$at->statusCheck();
+//
+//$at->startDeduction();
 
-$at->statusCheck();
-
-$at->startDeduction();
-
-$at->startWithPHCountryDeduction();
+//$at->startWithPHCountryDeduction();
 
 $at->stopNoRefund();
-$at->stopExpiredNoRefund();
-
-$at->stopWithDeductedRefund();
-
-$at->stopWithPHCountryAndDeductedRefund();
-
-$at->stopFullRefund();
-$at->stopWithUSCountryFullRefund();
-
-$at->errorDeleteActiveAdvertisement();
-$at->deleteAdvertisement();
-
-$at->startStopChangeDatesAndCountry();
-
-$at->loadActiveBannersByCountryCode();
-
-$at->settings();
-$at->pointSettings();
-$at->pointSettingDelete();
-
-$at->refundAfterPointSettingChanged();
+//$at->stopExpiredNoRefund();
+//
+//$at->stopWithDeductedRefund();
+//
+//$at->stopWithPHCountryAndDeductedRefund();
+//
+//$at->stopFullRefund();
+//$at->stopWithUSCountryFullRefund();
+//
+//$at->errorDeleteActiveAdvertisement();
+//$at->deleteAdvertisement();
+//
+//$at->startStopChangeDatesAndCountry();
+//
+//$at->loadActiveBannersByCountryCode();
+//
+//$at->settings();
+//$at->pointSettings();
+//$at->pointSettingDelete();
+//
+//$at->refundAfterPointSettingChanged();
 
 
 class AdvertisementTest
 {
 
-    private function loginSetPoint($point): UserModel
-    {
-        $user = setLoginAsAdmin();
-        $user->setPoint($point);
-        return $user;
-    }
+//    private function loginSetPoint($point): UserModel
+//    {
+//        $user = setLoginAsAdmin();
+//        $user->_setPoint($point);
+//        return $user;
+//    }
 
+    /**
+     * 배너 하나 생성. 그 배너는 글/제목 등만 있고, 배너 포인트나 기간 등의 옵션은 설정되지 않은 상태이다.
+     * @return mixed|null
+     */
     private function createAdvertisement()
     {
         registerAndLogin();
         return request("advertisement.edit", [
-            CATEGORY_ID => 'advertisement',
             SESSION_ID => login()->sessionId
         ]);
     }
 
+    /**
+     * 배너를 하나 생성하고, 입력된 옵션에 따라 배너를 시작한다. 즉, 광고 기간을 설정하고 실제 광고를 시작하는 것이다.
+     *
+     * @param $options
+     * @return mixed|null
+     */
     private function createAndStartAdvertisement($options)
     {
 
         $post = request("advertisement.edit", [
-            CATEGORY_ID => 'advertisement',
             SESSION_ID => login()->sessionId
         ]);
 
@@ -73,62 +90,125 @@ class AdvertisementTest
         return request("advertisement.start", $options);
     }
 
+    /**
+     * 관리자 권한 설정 없이, DB 를 수정해서 곧 바로, 포인트 수정을 한다.
+     * @param string $countryCode
+     * @param int $top
+     * @param int $sidebar
+     * @param int $square
+     * @param int $line
+     */
+    private function resetBannerPoints($countryCode='', $top=0, $sidebar=0, $square=0, $line=0) {
 
-    function lackOfPoint()
-    {
+        (new AdvertisementPointSettingsModel())->_setPoints([
+            COUNTRY_CODE => $countryCode,
+            TOP_BANNER => $top,
+            SIDEBAR_BANNER => $sidebar,
+            SQUARE_BANNER => $square,
+            LINE_BANNER => $line
+        ]);
+    }
 
-        if (!category()->exists([ID => 'advertisement'])) {
-            $admin = setLoginAsAdmin();
-            category()->create([ID => 'advertisement']);
-        }
+    private function setMaximumAdvertisementDays($days = 10) {
+        adminSettings()->set('maximumAdvertisementDays', $days);
+    }
 
+    // 배너 생성 테스트
+    // 참고, readme.md
+    public function createBanner() {
+        /// 로그인하지 않아 에러,
+        setLogout();
+        $re = advertisement()->edit([]);
+        isTrue($re->getError() == e()->not_logged_in, 'not logged in');
+
+        /// 로그인 후, 기본 베너 생성.
         registerAndLogin();
-        // test post.
+        $re = advertisement()->edit([]);
+        isTrue($re->idx > 0, "배너 생성 성공");
+    }
+
+    public function _0_point_advertisement()
+    {
+        // 사용자 생성 후, 기본 포인트는 0으로 설정 됨.
+        $user = registerAndLogin();
+
+        // 임시 배너 생성
         $post = request("advertisement.edit", [
-            CATEGORY_ID => 'advertisement',
             SESSION_ID => login()->sessionId
         ]);
+        
+        isTrue($post['userIdx'] == login()->idx, "동일한 사용자 확인.");
 
-        $bp = advertisement()->topBannerPoint();
 
+        // 모든 배너 포인트 0 점 처리
+        $this->resetBannerPoints();
+
+        // 배너 시작 옵션. 오늘 하루.
         $options = [
-            SESSION_ID => login()->sessionId,
             IDX => $post[IDX],
             CODE => TOP_BANNER,
             'beginDate' => time(),
             'endDate' => time(),
         ];
-        $re = request("advertisement.start", $options);
 
-        if ($bp) {
-            isTrue($re == e()->lack_of_point, "Expect: Error, user lacks point to create advertisement.");
-        } else {
-            isTrue($re[IDX], "Advertisement started with 0 point");
-        }
+        // 포인트가 0 이어도 가능.
+        $re =  advertisement()->start($options);
+
+        isTrue($re->beginAt > 0, "광고 시작 됨");
+
+//        $re = request("advertisement.start", $options);
+//        d($re);
+
+
+    }
+
+    public function lackOfPoint() {
+        // 사용자 생성 후, 기본 포인트는 0으로 설정 됨.
+        registerAndLogin();
+
+        // 임시 배너 생성
+        $post = request("advertisement.edit", [
+            SESSION_ID => login()->sessionId
+        ]);
+
+        // top banner 를 1 점으로 변경
+        $this->resetBannerPoints(top: 1);
+
+        // top banner 를 시작. 오늘 하루.
+        $options = [
+            IDX => $post[IDX],
+            CODE => TOP_BANNER,
+            'beginDate' => time(),
+            'endDate' => time(),
+        ];
+
+        // 포인트가 0 이므로 에러
+        $re =  advertisement()->start($options);
+        isTrue($re->getError() == e()->lack_of_point, "Expect: 'error_lack_of_point', User point is 0. but the banner take 1 point per day.");
     }
 
 
 
     function emptyCode()
     {
-        $post = $this->createAdvertisement();
-        $options = [SESSION_ID => login()->sessionId, IDX => $post[IDX]];
+        $banner = $this->createAdvertisement();
+        $options = [SESSION_ID => login()->sessionId, IDX => $banner[IDX]];
         $re = request("advertisement.start", $options);
         isTrue($re == e()->code_is_empty, "Expect: Error. Code must be empty.");
     }
 
     function beginDateEmpty()
     {
-        $post = $this->createAdvertisement();
-        $options =  [SESSION_ID => login()->sessionId, IDX => $post[IDX], CODE => TOP_BANNER];
+        $banner = $this->createAdvertisement();
+        $options =  [SESSION_ID => login()->sessionId, IDX => $banner[IDX], CODE => TOP_BANNER];
         $re = request("advertisement.start", $options);
         isTrue($re == e()->begin_date_empty, "Expect: Error, empty advertisement begin date.");
     }
 
     function endDateEmpty()
     {
-        $post = $this->createAdvertisement();
-        $options =  [SESSION_ID => login()->sessionId, IDX => $post[IDX], CODE => TOP_BANNER, 'beginDate' => time()];
+        $banner = $this->createAdvertisement();
+        $options =  [SESSION_ID => login()->sessionId, IDX => $banner[IDX], CODE => TOP_BANNER, 'beginDate' => time()];
         $re = request("advertisement.start", $options);
         isTrue($re == e()->end_date_empty, "Expect: Error, empty advertisement end date.");
     }
@@ -136,35 +216,32 @@ class AdvertisementTest
 
     function maximumAdvertisementDays()
     {
-        $user = $this->loginSetPoint(1000000);
+        // 사용자에게 백만 포인트.
+        registerAndLogin(1000000);
+
+        // 광고 기간을 3일로 했는데, 5일 광고하려 하면, 에러.
+        $this->setMaximumAdvertisementDays(3);
         $max = advertisement()->maximumAdvertisementDays();
         $re = $this->createAndStartAdvertisement([
             CODE => TOP_BANNER,
             'beginDate' => time(),
-            'endDate' => strtotime('+100 days'),
-            SESSION_ID => $user->sessionId
+            'endDate' => strtotime('+5 days'),
+            SESSION_ID => login()->sessionId
         ]);
-        if ($max > 0) {
-            isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
-        } else {
-            isTrue($re[IDX], "Expect: success, no advertising day limit.");
-        }
+        isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
 
+
+        // 에러 예상. 광고 기간이 3일인데, 3일 하고 하루 더 광고 진행 테스트.
         // Equivalent to $max + 1 days since begin date is counted to the total ad serving days.
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$max days")]);
-        if ($max > 0) {
-            isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
-        } else {
-            isTrue($re[IDX], "Expect: success, no advertising day limit.");
-        }
+        isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
 
+
+        // 성공 예상. 광고 기간이 3일인데, 3일 보다 하루 적게 하고 광고 진행 테스트.
         $days = $max - 1;
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$days days")]);
-        if ($max > 0) {
-            isTrue($re[IDX], "Expect: Success, adv days does not exceed maximum allowed days.");
-        } else {
-            isTrue($re[IDX], "Expect: success, no advertising day limit.");
-        }
+        isTrue($re[IDX], "Expect: Success, adv days does not exceed maximum allowed days.");
+
     }
 
     function domainEmpty()
@@ -182,7 +259,10 @@ class AdvertisementTest
      */
     function statusCheck()
     {
-        $this->loginSetPoint(1000000);
+        registerAndLogin(1000000);
+        // 광고 가능 기간 100 일로 설정.
+        $this->setMaximumAdvertisementDays(100);
+
         // Advertisement begin date same as now, considered as active.
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime('+1 days')]);
         isTrue($re['status'] == 'active', "Expect: Status == 'active'");
@@ -193,7 +273,6 @@ class AdvertisementTest
 
         // considered as inactive.
         $re = request("advertisement.stop", [
-            CATEGORY_ID => 'advertisement',
             SESSION_ID => login()->sessionId,
             IDX => $re[IDX]
         ]);
@@ -207,20 +286,20 @@ class AdvertisementTest
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('-5 days'), 'endDate' => strtotime('-2 days')]);
         isTrue($re['status'] == 'inactive', "Expect: Status == 'inactive'");
 
+        // 광고 생성을 했지만, `advertisement.start` 라우트로 시작을 하지 않아, inactive 한 상태.
         // Advertisement created with begin and end date same as now but not started yet
         // considered as inactive.
         $re = request("advertisement.edit", [
-            CATEGORY_ID => 'advertisement',
             SESSION_ID => login()->sessionId,
             'beginDate' => time(),
             'endDate' => time()
         ]);
         isTrue($re['status'] == 'inactive', "Expect: Status == 'inactive'");
 
+        // 마찬가지
         // Advertisement created with begin and end date set to future dates but not started yet
         // considered as inactive.
         $re = request("advertisement.edit", [
-            CATEGORY_ID => 'advertisement',
             SESSION_ID => login()->sessionId,
             'beginDate' => strtotime('+3 days'),
             'endDate' => strtotime('+10 days')
@@ -234,32 +313,44 @@ class AdvertisementTest
      */
     function startDeduction()
     {
-        $userPoint = 1000000;
-        $bp = advertisement()->topBannerPoint();
-        $this->loginSetPoint($userPoint);
+        $startingPoint = 1000000;
+        registerAndLogin($startingPoint);
+        $this->resetBannerPoints(top: 30);
+
+        /// top banner point
+        $topBannerPoint = advertisement()->topBannerPoint();
+
+        /// 오늘 하루 광고.
+        /// 배너를 시작하면, pointPerDay 와 advertisementPoint 가 기록된다.
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => time()]);
 
-        isTrue($ad['pointPerDay'] == $bp, "Expect: 'pointPerDay' == " . $bp);
-        isTrue($ad['advertisementPoint'] == $bp, "Expect: 'advertisementPoint' == " . $bp);
+        /// 포인트 확인.
+        isTrue($ad['pointPerDay'] == $topBannerPoint, "Expect: 'pointPerDay' == " . $topBannerPoint);
+        isTrue($ad['advertisementPoint'] == $topBannerPoint, "Expect: 'advertisementPoint' == " . $topBannerPoint);
 
-        $userPoint -= $bp;
-        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
+        /// 포인트 차감 확인.
+        $expectedPoint = $startingPoint - $topBannerPoint;
+        isTrue(login()->getPoint() == $expectedPoint, "Expect: db user point(".login()->getPoint().") == expected point($expectedPoint).");
 
+        /// 광고 시작, 포인트 기록 확인.
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
-        isTrue($activity->toUserPointApply == -$bp, "Expect: activity->toUserPointApply == -$bp.");
+        isTrue($activity->toUserPointApply == -$topBannerPoint, "Expect: activity->toUserPointApply == -$topBannerPoint.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
 
 
+        /// 내일 부터 3 일간 광고 진행.
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => strtotime('+1 days'), 'endDate' => strtotime('+3 days')]);
 
-        $advPoint = $bp * 3;
-        $userPoint -= $advPoint;
+        /// 소모된 광고 포인트 3일치, 확인.
+        $advPoint = $topBannerPoint * 3;
+        $expectedPoint -= $advPoint;
+        isTrue(login()->getPoint() == $expectedPoint,  "Expect: db user point(".login()->getPoint().") == expected point($expectedPoint).");
 
-        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
-
-        isTrue($ad['pointPerDay'] == $bp, "Expect: 'pointPerDay' == " . $bp);
+        /// 포인트 확인.
+        isTrue($ad['pointPerDay'] == $topBannerPoint, "Expect: 'pointPerDay' == " . $topBannerPoint);
         isTrue($ad['advertisementPoint'] == $advPoint, "Expect: 'advertisementPoint' == " . $advPoint);
 
+        /// 포인트 기록 확인.
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
         isTrue($activity->toUserPointApply == -$advPoint, "Expect: activity->toUserPointApply == -$advPoint.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
@@ -270,24 +361,31 @@ class AdvertisementTest
      */
     function startWithPHCountryDeduction()
     {
-        $userPoint = 1000000;
-        $this->loginSetPoint($userPoint);
+        // 시작 포인트
+        $startingPoint = 1000000;
+        registerAndLogin($startingPoint);
+
+        // 필리핀 top banner point 는 70.
+        $this->resetBannerPoints('PH', top: 70);
+
         $adOpts = [CODE => TOP_BANNER, COUNTRY_CODE => 'PH', 'beginDate' => time(), 'endDate' => strtotime('+2 day')];
         $ad = $this->createAndStartAdvertisement($adOpts);
 
+        // 70.
+        $topBannerPoint = advertisement()->topBannerPoint('PH');
+
+        // 210.
+        $advPoint = $topBannerPoint * 3;
 
 
-        $bp = advertisement()->topBannerPoint('PH');
-        $advPoint = $bp * 3;
-        $userPoint -= $advPoint;
+        $expectedPoint = $startingPoint - $advPoint;
 
-        isTrue(login()->getPoint() == $userPoint, "Expect: user's points => 9000.");
+        isTrue(login()->getPoint() == $expectedPoint, "Expect: user points => " . login()->getPoint() . " == $expectedPoint ");
 
-        isTrue($ad['pointPerDay'] == $bp, "Expect: 'pointPerDay' == $bp.");
+        isTrue($ad['pointPerDay'] == $topBannerPoint, "Expect: 'pointPerDay' == $topBannerPoint.");
         isTrue($ad['advertisementPoint'] == $advPoint, "Expect: 'advertisementPoint' == $advPoint.");
 
-        isTrue(login()->getPoint() == $userPoint, "Expect: user points == " . ($userPoint));
-
+        // 기록 확인
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
         isTrue($activity->toUserPointApply == -$advPoint, "Expect: activity->toUserPointApply == -$advPoint.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
@@ -302,22 +400,26 @@ class AdvertisementTest
      */
     function stopNoRefund()
     {
-        $userPoint = 1000000;
-        $this->loginSetPoint($userPoint);
+        $startingPoint = 1000000;
+        registerAndLogin($startingPoint);
+        // 하루 광고.
         $ad = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => time()]);
 
-        $bp = advertisement()->topBannerPoint();
-        $advPoint = $bp;
-        $userPoint -= $advPoint;
+        $topBannerPoint = advertisement()->topBannerPoint();
+        $expectedPoint = $startingPoint - $topBannerPoint;
 
-        isTrue(login()->getPoint() == $userPoint, "Expect: user's points => $userPoint.");
+        isTrue(login()->getPoint() == $expectedPoint, "Expect: user's points => $expectedPoint.");
 
+        // 광고 중단.
         $ad = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
 
-        isTrue($ad['advertisementPoint'] == '', "Expect: 'advertisementPoint' => ''.");
+        // 포인트가 삭제되어야 함.
+        isTrue($ad['advertisementPoint'] == '0', "Expect: 'advertisementPoint' => '0'.");
 
-        isTrue(login()->getPoint() == $userPoint, "Expect: user's points => $userPoint.");
+        // 환불된 포인트 없음.
+        isTrue(login()->getPoint() == $expectedPoint, "Expect: user's points => $expectedPoint.");
 
+        // 포인트 기록 확인.
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.stop');
         isTrue($activity->toUserPointApply == 0, "Expect: activity->toUserPointApply == 0.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
