@@ -1125,7 +1125,9 @@ isTrue((new AppController())->version(), "App version");
 - 중단된 광고, 취소된 광고, 끝난 광고는 `advertisement.route` 호출을 통해서 광고 중단을 할 수 없다.
   단, 오늘 끝나는 광고는 중단 할 수 있다.
 
-- 광고 상태는 active, inactive, waiting 과 같이 3 가지 단계가 이다.
+- 광고 상태는 active, inactive, waiting 과 같이 3 가지 클라이언트에게 전달된다.
+  단, 실제로는 stop 과 cancel 두 가지가 더 있는데, stop 과 cancel 은 db record 에 저장되는 것으로 클라이언트에게 전달 될 때에는 inactive 로 전달된다.
+  active, inactive, waiting 은 db record 에 저장되는 값이 아니라, 클라이언트로 response 할 때, 프로그램적으로 만들어지는 값이다.
   - 배너( 글 )를 입력 받아, 메타에 저장된 status 를 보고,
     - stop 이나 cancel 이면 inactive
   - advertisementPoint 에 값이 0 이면, 광고 설정이 안된 것으로, inactive

@@ -70,7 +70,7 @@ class AdvertisementModel extends PostModel
     public function getStatus(AdvertisementModel $banner): string
     {
 
-        if ( $this->stopped($banner) || $this->cancelled($banner)) return 'inactive';
+        if ( $this->stopped($banner) || $this->cancelled($banner) ) return 'inactive';
         if ( $banner->advertisementPoint == '0' ) return 'inactive';
 
 
@@ -130,7 +130,7 @@ class AdvertisementModel extends PostModel
         return intVal(adminSettings()->get('maximumAdvertisementDays') ?? 0);
     }
 
-    public function advertisementCategories(): array
+    public function advertisementCategoryArray(): array
     {
         $arr = explode(',', adminSettings()->get('advertisementCategories') ?? '');
         $rets = [];
@@ -172,9 +172,11 @@ class AdvertisementModel extends PostModel
     public function edit($in): self {
         if (notLoggedIn()) return $this->error(e()->not_logged_in);
         if (!isset($in[IDX]) || empty($in[IDX])) {
+            // create the banner
             $in[CATEGORY_ID] = ADVERTISEMENT_CATEGORY;
             $in[ADVERTISEMENT_POINT] = '0';
             $in[POINT_PER_DAY] = '0';
+            $in['status'] = '';
             return advertisement()->create($in);
         } else {
             $post = advertisement($in[IDX]);
@@ -243,6 +245,8 @@ class AdvertisementModel extends PostModel
         // Save total point for the advertisement periods.
         $in[ADVERTISEMENT_POINT] = $in[POINT_PER_DAY] * $days;
 
+
+
         // check if the user has enough point
         if (login()->getPoint() < $in[ADVERTISEMENT_POINT]) {
             return $this->error(e()->lack_of_point);
@@ -270,9 +274,10 @@ class AdvertisementModel extends PostModel
 
         // Save total deducted point from user which the total point for the advertisement.
 
-        $banner = $banner->update($in);
-//        $banner->updateMemoryData('status', advertisement()->getStatus($banner));
-        return $banner;
+        // When the advertisement starts( or restarts after stop or cancel ), set the status to empty('') string.
+        $in['status'] = '';
+
+        return $banner->update($in);
     }
 
     /**
@@ -330,8 +335,8 @@ class AdvertisementModel extends PostModel
             toUserIdx: login()->idx,
             toUserPoint: $pointToRefund,
             taxonomy: POSTS,
+            entity: $advertisement->idx,
             categoryIdx: $advertisement->categoryIdx,
-            entity: $advertisement->idx
         );
 
         debug_log("refund apply point; {$activity->toUserPointApply} != {$pointToRefund}");
@@ -341,9 +346,6 @@ class AdvertisementModel extends PostModel
 
         return $advertisement->update($in);
 
-//        $post = $advertisement->update($in);
-//        $post->updateMemoryData('status', 'inactive');
-//        return $post->response();
     }
 }
 

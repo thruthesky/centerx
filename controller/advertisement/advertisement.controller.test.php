@@ -11,44 +11,45 @@ setLogout();
 enableTesting();
 $at = new AdvertisementTest();
 
-//$at->createBanner();
-//$at->_0_point_advertisement();
-//$at->lackOfPoint();
-//$at->emptyCode();
-//$at->beginDateEmpty();
-//$at->endDateEmpty();
-//$at->maximumAdvertisementDays();
-//$at->domainEmpty();
-//
-//$at->statusCheck();
-//
-//$at->startDeduction();
-//
-//$at->startWithPHCountryDeduction();
-//
-//$at->stopNoRefund();
-//$at->stopExpiredNoRefund();
-//$at->stopOnPastBanner();
+$at->createBanner();
+$at->_0_point_advertisement();
+$at->lackOfPoint();
+$at->emptyCode();
+$at->beginDateEmpty();
+$at->endDateEmpty();
+$at->maximumAdvertisementDays();
+$at->domainEmpty();
+
+$at->statusCheck();
+
+$at->startDeduction();
+
+$at->startWithPHCountryDeduction();
+
+$at->stopNoRefund();
+$at->stopExpiredNoRefund();
+$at->stopOnPastBanner();
 
 $at->stopWithDeductedRefund();
 
-//$at->stopWithPHCountryAndDeductedRefund();
-//
-//$at->stopFullRefund();
-//$at->stopWithUSCountryFullRefund();
-//
-//$at->errorDeleteActiveAdvertisement();
-//$at->deleteAdvertisement();
-//
-//$at->startStopChangeDatesAndCountry();
-//
-//$at->loadActiveBannersByCountryCode();
-//
-//$at->settings();
-//$at->pointSettings();
-//$at->pointSettingDelete();
-//
-//$at->refundAfterPointSettingChanged();
+$at->stopWithPHCountryAndDeductedRefund();
+
+$at->stopFullRefund();
+
+$at->stopWithUSCountryFullRefund();
+
+$at->errorDeleteActiveAdvertisement();
+$at->deleteAdvertisement();
+
+$at->startStopChangeDatesAndCountry();
+
+$at->loadActiveBannersByCountryCode();
+
+$at->settings();
+$at->pointSettings();
+$at->pointSettingDelete();
+
+$at->refundAfterPointSettingChanged();
 
 
 class AdvertisementTest
@@ -504,8 +505,10 @@ class AdvertisementTest
      */
     function stopWithPHCountryAndDeductedRefund()
     {
-        $userPoint = 1300000;
-        $this->loginSetPoint($userPoint);
+        $startingPoint = 1300000;
+        registerAndLogin($startingPoint);
+        $this->resetBannerPoints('PH', top: 1234);
+
         $ad = $this->createAndStartAdvertisement([
             CODE => TOP_BANNER,
             COUNTRY_CODE => 'PH',
@@ -515,19 +518,17 @@ class AdvertisementTest
 
         $bannerPoint = advertisement()->topBannerPoint('PH');
         $advPoint = $bannerPoint * 6;
-        $refund = $bannerPoint * 3;
+        $refundPoint = $bannerPoint * 3;
 
-        $userPoint -= $advPoint;
-
-        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
+        $expectPoint = $startingPoint - $advPoint;
 
         $ad = request("advertisement.stop", [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
 
-        $userPoint += $refund;
-        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
+        $expectPoint += $refundPoint;
+        isTrue(login()->getPoint() == $expectPoint, "Expect: user points == $expectPoint.");
 
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.stop');
-        isTrue($activity->toUserPointApply == $refund, "Expect: activity->toUserPointApply == $refund.");
+        isTrue($activity->toUserPointApply == $refundPoint, "Expect: activity->toUserPointApply == $refundPoint.");
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 
@@ -541,28 +542,28 @@ class AdvertisementTest
     function stopFullRefund()
     {
 
-        $userPoint = 900000;
-        $this->loginSetPoint($userPoint);
+        $startingPoint = 900000;
+        registerAndLogin($startingPoint);
+        $this->resetBannerPoints(line: 3450);
+
         $ad = $this->createAndStartAdvertisement([
             CODE => LINE_BANNER,
-            'beginDate' => strtotime('+3 days'),
-            'endDate' => strtotime('+1 week 4 days')
+            'beginDate' => strtotime('+3 days'), // 4 days including today.
+            'endDate' => strtotime('+1 week 4 days') // 12 days including today. so, it's 9 days.
         ]);
 
         $bannerPoint = advertisement()->LineBannerPoint();
+
         $advPoint = $bannerPoint * 9;
 
-        $userPoint -= $advPoint;
-        isTrue(login()->getPoint() == $userPoint, "Expect: user's points => $userPoint.");
+        $expectedPoint = $startingPoint - $advPoint;
 
+        // If it is stop, then 9 days will be refunded.
         $ad = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
 
-        $userPoint += $advPoint;
-        isTrue(login()->getPoint() == $userPoint, "Expect: user's points => $userPoint.");
+        $expectedPoint += $advPoint;
+        isTrue(login()->getPoint() == $expectedPoint, "Expect: user's points => $expectedPoint.");
 
-        $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.cancel');
-        isTrue($activity->toUserPointApply == $advPoint, "Expect: activity->toUserPointApply == $advPoint.");
-        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 
     /**
@@ -575,29 +576,20 @@ class AdvertisementTest
     function stopWithUSCountryFullRefund()
     {
 
-        $userPoint = 1500000;
-        $this->loginSetPoint($userPoint);
+        $startingPoint = 1500000;
+        registerAndLogin($startingPoint);
+        $this->resetBannerPoints('US', line: 3500);
         $ad = $this->createAndStartAdvertisement([
             CODE => LINE_BANNER,
             COUNTRY_CODE => 'US',
-            'beginDate' => strtotime('+3 days'),
-            'endDate' => strtotime('+1 week 4 days')
+            'beginDate' => strtotime('+3 days'), //
+            'endDate' => strtotime('+1 week 4 days') // 9 days.
         ]);
 
-        $bannerPoint = advertisement()->LineBannerPoint('US');
-        $advPoint = $bannerPoint * 9;
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
 
-        $userPoint -= $advPoint;
-        isTrue(login()->getPoint() == $userPoint, "Expect: user's points => $userPoint.");
+        isTrue(login()->getPoint() == $startingPoint, "Expect: user's points => $startingPoint.");
 
-        $ad = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
-
-        $userPoint += $advPoint;
-        isTrue(login()->getPoint() == $userPoint, "Expect: user's points => $userPoint.");
-
-        $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.cancel');
-        isTrue($activity->toUserPointApply == $advPoint, "Expect: activity->toUserPointApply == $advPoint.");
-        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 
     /**
@@ -605,7 +597,8 @@ class AdvertisementTest
      */
     function errorDeleteActiveAdvertisement()
     {
-        $this->loginSetPoint(1500000);
+        registerAndLogin(1500000);
+
         $ad = $this->createAndStartAdvertisement([CODE => LINE_BANNER, 'beginDate' => time(), 'endDate' => time()]);
         $re = request('advertisement.delete', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
         isTrue($re == e()->advertisement_is_active, "Expect: Error. Cannot delete active advertisement.");
@@ -620,7 +613,7 @@ class AdvertisementTest
      */
     function deleteAdvertisement()
     {
-        $this->loginSetPoint(1500000);
+        registerAndLogin(1500000);
         $ad = $this->createAndStartAdvertisement([CODE => LINE_BANNER, 'beginDate' => time(), 'endDate' => time()]);
 
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
@@ -647,90 +640,74 @@ class AdvertisementTest
      */
     function startStopChangeDatesAndCountry()
     {
-        $userPoint = 800000;
-        $this->loginSetPoint($userPoint);
+        $startingPoint = 800000;
+        registerAndLogin($startingPoint);
+        $this->resetBannerPoints(square: 2020, line: 1580,);
+        $this->resetBannerPoints('US', square: 2020, line: 1580,);
 
         // first create
         $ad = $this->createAndStartAdvertisement([
             CODE => LINE_BANNER,
-            'beginDate' => strtotime('+3 days'),
-            'endDate' => strtotime('+8 days')
+            'beginDate' => strtotime('+3 days'), //
+            'endDate' => strtotime('+8 days') //
         ]);
 
         $bannerPoint = advertisement()->LineBannerPoint();
-        $advPoint = $bannerPoint * 6;
-        $userPoint -= $advPoint;
-
-        isTrue($ad['pointPerDay'] == $bannerPoint, "Expect: 'pointPerDay' == $bannerPoint.");
-        isTrue($ad['advertisementPoint'] == $advPoint, "Expect: 'advertisementPoint' == $advPoint.");
-
-        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
-
-        $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
-        isTrue($activity->toUserPointApply == -$advPoint, "Expect: activity->toUserPointApply == -$advPoint.");
-        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
+        isTrue(login()->getPoint() == $startingPoint - $bannerPoint * 6, "Expect: user points == " . $startingPoint - $bannerPoint * 6 );
 
         // cancel
         $ad = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
-        $userPoint += $advPoint;
+        isTrue($ad['status'] == 'inactive', 'banner cancelled');
 
-        isTrue($ad['advertisementPoint'] == '', "Expect: 'advertisementPoint' == 0.");
-        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
 
-        $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.cancel');
-        isTrue($activity->toUserPointApply == $advPoint, "Expect: activity->toUserPointApply == $advPoint.");
-        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
+
+        isTrue(login()->getPoint() == $startingPoint, "Expect: user points == $startingPoint.");
 
         // edit same ad with new country and dates
         $newAd = $this->createAndStartAdvertisement([
             CODE => SQUARE_BANNER,
             COUNTRY_CODE => 'US',
             'beginDate' => time(),
-            'endDate' => strtotime('+2 days')
+            'endDate' => strtotime('+2 days') // advertisement days: 3 days. 2 days will be refunded.
         ]);
 
         $bannerPoint = advertisement()->SquareBannerPoint('US');
+        isTrue($bannerPoint == 2020, 'For us square banner');
         $advPoint = $bannerPoint * 3;
-        $refund = $bannerPoint * 2;
-        $userPoint -= $advPoint;
 
         isTrue($newAd['pointPerDay'] == $bannerPoint, "Expect: 'pointPerDay' == $bannerPoint.");
         isTrue($newAd['advertisementPoint'] == $advPoint, "Expect: 'advertisementPoint' == $advPoint.");
 
-        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
+        isTrue(login()->getPoint() == $startingPoint - $advPoint, "Expect: user points == " . $startingPoint - $advPoint);
 
-        $activity = userActivity()->last(taxonomy: POSTS, entity: $newAd[IDX], action: 'advertisement.start');
-        isTrue($activity->toUserPointApply == -$advPoint, "Expect: activity->toUserPointApply == -$advPoint.");
-        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
 
-        // cancel again
+        // cancel again. user will get 2 days of refund.
         $newAd = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $newAd[IDX]]);
+        isTrue($newAd['status'] == 'inactive', 'newAd must be inactive');
 
-        $userPoint += $refund;
-        isTrue($newAd['advertisementPoint'] == '', "Expect: 'advertisementPoint' == 0.");
-        isTrue(login()->getPoint() == $userPoint, "Expect: user points == $userPoint.");
+        isTrue($newAd['advertisementPoint'] == '0', "Expect: 'advertisementPoint' == 0.");
+        isTrue(login()->getPoint() == $startingPoint - $bannerPoint, "Expect: user points == ". ($startingPoint - $bannerPoint) .".");
 
-        $activity = userActivity()->last(taxonomy: POSTS, entity: $newAd[IDX], action: 'advertisement.stop');
-        isTrue($activity->toUserPointApply == $refund, "Expect: activity->toUserPointApply == $refund.");
-        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 
     function loadActiveBannersByCountryCode()
     {
-        $userPoint = 800000;
-        $this->loginSetPoint($userPoint);
 
-        $rootDomain = 'a' . time() . '.com';
-        $countryCodeA = 'AX';
-        $countryCodeB = 'AZ';
+        $startingPoint = 800000;
+        registerAndLogin($startingPoint);
 
-        $cafe = cafe()->create(['rootDomain' => $rootDomain, 'domain' => 'abc', 'countryCode' => $countryCodeA]);
+        $rootDomain = 'ard' . time() . '.com';
+        $subDomain = 'abc';
+        $countryCodeA = 'AA';
+        $countryCodeB = 'ZZ';
 
-        // d($cafe->idx);
-        // d($cafe->countryCode);
+        $this->resetBannerPoints($countryCodeA, 1000, 2000, 3000, 4000);
+        $this->resetBannerPoints($countryCodeB, 6000, 7000, 8000, 9000);
+
+        $cafe = cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomain, 'countryCode' => $countryCodeA]);
 
         isTrue($cafe->ok, 'cafe for banner test has been created');
-        $domain = 'abc.' . $rootDomain;
+        $domain = $subDomain . '.' . $rootDomain;
 
         $advOpts = [
             CODE => LINE_BANNER,
@@ -739,22 +716,36 @@ class AdvertisementTest
             'fileIdxes' => '1',
         ];
 
+        // create 4 banner with the cafe countryCode.
         $advOpts[COUNTRY_CODE] = $countryCodeA;
         $adv1 = $this->createAndStartAdvertisement($advOpts);
         $adv2 = $this->createAndStartAdvertisement($advOpts);
         $adv3 = $this->createAndStartAdvertisement($advOpts);
         $adv4 = $this->createAndStartAdvertisement($advOpts);
 
+        //
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
         isTrue(count($re) == 4, 'Expect: active banners == 4 but got ' . count($re));
 
+
+
+
+
+
+        // changing the country code of $adv1 and $adv2.
+        //
         $advOpts[COUNTRY_CODE] = $countryCodeB;
         post($adv1[IDX])->update($advOpts);
         post($adv2[IDX])->update($advOpts);
 
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
         isTrue(count($re) == 2, 'Expect: active banners == 2 but got ' . count($re));
+        isTrue($re[0]['idx'] == $adv3['idx'], 'Got adv3 idx');
+        isTrue($re[1]['idx'] == $adv4['idx'], 'Got adv4 idx');
 
+
+
+        // Change the country of the cafe.
         $cafe = cafe($cafe->idx)->update([COUNTRY_CODE => $countryCodeB]);
         isTrue($cafe->countryCode == $countryCodeB, "Expect: country code changed from $countryCodeA to $countryCodeB.");
 
@@ -762,12 +753,13 @@ class AdvertisementTest
 
         // d($re);
         isTrue(count($re) == 2, 'Expect: active banners == 2 but got ' . count($re));
+        isTrue($re[0]['idx'] == $adv1['idx'], 'Got adv1 idx');
+        isTrue($re[1]['idx'] == $adv2['idx'], 'Got adv2 idx');
 
         post($adv3[IDX])->update($advOpts);
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
         isTrue(count($re) == 3, 'Expect: active banners == 3 but got ' . count($re));
 
-        $advOpts[COUNTRY_CODE] = '';
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv1[IDX]]);
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv2[IDX]]);
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv3[IDX]]);
@@ -776,7 +768,7 @@ class AdvertisementTest
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
         isTrue(count($re) == 0, 'Expect: active banners == 0. cafe country code => ' . $cafe->countryCode);
 
-        $cafe = cafe($cafe->idx)->update([COUNTRY_CODE => $countryCodeB]);
+        $cafe = cafe($cafe->idx)->update([COUNTRY_CODE => $countryCodeA]);
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
         isTrue(count($re) == 0, 'Expect: active banners == 0. cafe country code => ' . $cafe->countryCode);
     }
@@ -793,7 +785,7 @@ class AdvertisementTest
         $categoryB = 'banana' . time();
         $categoryC = 'cherry' . time();
         $categoriesString = "$categoryA, $categoryB, $categoryC";
-        $categoriesArray = [$categoryA, $categoryB, $categoryC];
+        $categoryArray = [$categoryA, $categoryB, $categoryC];
 
         request('app.setConfig', [
             SESSION_ID => $admin->sessionId,
@@ -807,13 +799,13 @@ class AdvertisementTest
         $re = request('advertisement.settings');
 
         isTrue($re[MAXIMUM_ADVERTISING_DAYS] == $maxDays, "Expect: Max days is set to $maxDays.");
-        isTrue($re['categories'] == $categoriesArray, "Expect: Categories is set.");
+        isTrue($re['categoryArray'] == $categoryArray, "Expect: Categories is set.");
     }
 
     function pointSettings()
     {
 
-
+        setLogout();
         $re = request('advertisement.setBannerPoint');
         isTrue($re == e()->not_logged_in, 'Expect: Error user is not signed in.');
 
@@ -909,57 +901,54 @@ class AdvertisementTest
         request('advertisement.setBannerPoint', [
             COUNTRY_CODE => $countryCode,
             TOP_BANNER => 1000,
-            SIDEBAR_BANNER => 1000,
-            SQUARE_BANNER => 1000,
-            LINE_BANNER => 1000,
+            SIDEBAR_BANNER => 2000,
+            SQUARE_BANNER => 3000,
+            LINE_BANNER => 4000,
             SESSION_ID => $admin->sessionId
         ]);
 
         $settings = request('advertisement.settings');
-        $defaultPointSetting = $settings['point'][$countryCode];
-        isTrue(!empty($defaultPointSetting), "Expect: point settings for $countryCode is set.");
+        $countryPointSetting = $settings['point'][$countryCode];
+        isTrue(!empty($countryPointSetting), "Expect: point settings for $countryCode is set.");
 
-        $userPoint = 1000000;
-        $user = $this->loginSetPoint($userPoint);
+        $startingPoint = 1000000;
+        registerAndLogin($startingPoint);
         $bannerPoint = advertisement()->topBannerPoint($countryCode);
         $adOpts = [
             CODE => TOP_BANNER,
             COUNTRY_CODE => $countryCode,
             'beginDate' => time(),
             'endDate' => strtotime('+2 day'),
-            SESSION_ID => $user->sessionId
+            SESSION_ID => login()->sessionId
         ];
 
         $ad = $this->createAndStartAdvertisement($adOpts);
 
         $advPoint = $bannerPoint * 3;
-        $userPoint -= $advPoint;
+        $expectedPoint = $startingPoint - $advPoint;
 
         isTrue($ad['pointPerDay'] == $bannerPoint, "Expect: 'pointPerDay' == " . $bannerPoint);
         isTrue($ad['advertisementPoint'] == $advPoint, "Expect: 'advertisementPoint' == " . $advPoint);
-        isTrue($user->getPoint() == $userPoint, "Expect: user points == $userPoint.");
-
-        $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
-        isTrue($activity->toUserPointApply == -$advPoint, "Expect: activity->toUserPointApply == -$advPoint.");
-        isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
+        isTrue(login()->getPoint() == $expectedPoint, "Expect: user points == $expectedPoint.");
 
         /// update point setting for same country code.
         request('advertisement.setBannerPoint', [
             COUNTRY_CODE => $countryCode,
             TOP_BANNER => 3000,
-            SIDEBAR_BANNER => 3000,
-            SQUARE_BANNER => 3000,
-            LINE_BANNER => 3000,
+            SIDEBAR_BANNER => 3500,
+            SQUARE_BANNER => 4500,
+            LINE_BANNER => 5500,
             SESSION_ID => $admin->sessionId
         ]);
 
-        $refund = $bannerPoint * 2;
-        $userPoint += $refund;
+        $refundPoint = $bannerPoint * 2;
+        $expectedPoint += $refundPoint;
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
 
-        isTrue($user->getPoint() == $userPoint, "Expect: user points == $userPoint. But user has " . $user->getPoint());
+        isTrue(login()->getPoint() == $expectedPoint, "Expect: user points == $expectedPoint. But user has " . login()->getPoint());
+
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.stop');
-        isTrue($activity->toUserPointApply == $refund, "Expect: activity->toUserPointApply == $refund. But applied " . $activity->toUserPointApply);
-        isTrue($activity->toUserPointAfter == $user->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
+        isTrue($activity->toUserPointApply == $refundPoint, "Expect: activity->toUserPointApply == $refundPoint. But applied " . $activity->toUserPointApply);
+        isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 }

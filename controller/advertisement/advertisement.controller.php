@@ -9,7 +9,11 @@ class AdvertisementController
     /**
      * Returns active banners of the country of the cafe.
      *
+     * @note, when client-end looks for banners for a cafe, the system should return the banners of root cafe's country banners.
+     *  But right now, it returns the banners of the cafe country. Not the root cafe's country.
+     *
      * @param array $in - See `parsePostSearchHttpParams()` for detail input.
+     *
      * @return array|string
      * - idx
      * - url
@@ -36,6 +40,7 @@ class AdvertisementController
 
         $now = time();
         $today = today();
+        // Search banners that has a photo and active.
         $where = "countryCode=? AND code != '' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
         $params = [$cafe->countryCode];
 
@@ -105,8 +110,13 @@ class AdvertisementController
     }
 
 
-
-    public function edit($in)
+    /**
+     * @param $in
+     * @return array|string
+     * @throws \Kreait\Firebase\Exception\FirebaseException
+     * @throws \Kreait\Firebase\Exception\MessagingException
+     */
+    public function edit($in): array | string
     {
         return advertisement()->edit($in)->response();
     }
@@ -153,7 +163,7 @@ class AdvertisementController
      * If the begin date is today or past days, it will refund points equivalent to remaining days.
      * If the end date is past day or today, it will not refund points.
      */
-    public function stop($in)
+    public function stop($in): array | string
     {
         return banner()->stop($in)->response();
 
@@ -189,7 +199,7 @@ class AdvertisementController
         return [
             'types' => BANNER_TYPES,
             'maximumAdvertisementDays' => $adv->maximumAdvertisementDays(),
-            'categories' => $adv->advertisementCategories(),
+            'categoryArray' => $adv->advertisementCategoryArray(),
             'point' => $adv->advertisementPoints(),
         ];
     }
