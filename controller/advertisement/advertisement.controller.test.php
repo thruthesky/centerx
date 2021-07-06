@@ -614,8 +614,8 @@ class AdvertisementTest
         $this->loginSetPoint($userPoint);
 
         $rootDomain = 'a' . time() . '.com';
-        $countryCodeA = 'AS';
-        $countryCodeB = 'AV';
+        $countryCodeA = 'AX';
+        $countryCodeB = 'AZ';
 
         $cafe = cafe()->create(['rootDomain' => $rootDomain, 'domain' => 'abc', 'countryCode' => $countryCodeA]);
 
@@ -629,7 +629,7 @@ class AdvertisementTest
             CODE => LINE_BANNER,
             'beginDate' => time(),
             'endDate' => time(),
-            'files' => '1',
+            'fileIdxes' => '1',
         ];
 
         $advOpts[COUNTRY_CODE] = $countryCodeA;
@@ -639,15 +639,14 @@ class AdvertisementTest
         $adv4 = $this->createAndStartAdvertisement($advOpts);
 
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
-        // d($re);
-        isTrue(count($re) == 4, 'Expect: active banners == 4');
+        isTrue(count($re) == 4, 'Expect: active banners == 4 but got ' . count($re));
 
         $advOpts[COUNTRY_CODE] = $countryCodeB;
         post($adv1[IDX])->update($advOpts);
         post($adv2[IDX])->update($advOpts);
 
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
-        isTrue(count($re) == 2, 'Expect: active banners == 2');
+        isTrue(count($re) == 2, 'Expect: active banners == 2 but got ' . count($re));
 
         $cafe = cafe($cafe->idx)->update([COUNTRY_CODE => $countryCodeB]);
         isTrue($cafe->countryCode == $countryCodeB, "Expect: country code changed from $countryCodeA to $countryCodeB.");
@@ -655,11 +654,11 @@ class AdvertisementTest
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
 
         // d($re);
-        isTrue(count($re) == 2, 'Expect: active banners == 2.');
+        isTrue(count($re) == 2, 'Expect: active banners == 2 but got ' . count($re));
 
         post($adv3[IDX])->update($advOpts);
         $re = request("advertisement.loadBanners", ['cafeDomain' => $domain]);
-        isTrue(count($re) == 3, 'Expect: active banners == 3');
+        isTrue(count($re) == 3, 'Expect: active banners == 3 but got ' . count($re));
 
         $advOpts[COUNTRY_CODE] = '';
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv1[IDX]]);
