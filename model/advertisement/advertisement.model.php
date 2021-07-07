@@ -64,7 +64,7 @@ class AdvertisementModel extends PostModel
     /**
      * 글 상태. README.md 참고
      *
-     * @param AdvertisementModel $post
+     * @param AdvertisementModel $banner
      * @return string
      */
     public function getStatus(AdvertisementModel $banner): string
