@@ -81,6 +81,7 @@ class AdvertisementController
             $re = parsePostSearchHttpParams($in);
             if (isError($re)) return $re;
             list($where, $params) = $re;
+            $where = $where . " AND deletedAt=0";
             $in['where'] = $where;
             $in['params'] = $params;
         }
@@ -88,8 +89,9 @@ class AdvertisementController
         $posts = post()->search(object: true, in: $in);
         $res = [];
         foreach ($posts as $post) {
-            $post->updateMemoryData('status', advertisement()->getStatus($post));
-            $res[] = $post->response(comments: 0);
+            $adv = advertisement($post->idx);
+            $adv->updateMemoryData('status', advertisement()->getStatus($adv));
+            $res[] = $adv->response(comments: 0);
         }
         return $res;
     }
@@ -104,9 +106,9 @@ class AdvertisementController
     {
         if (!isset($in[IDX])) return e()->idx_is_empty;
 
-        $post = post($in[IDX]);
-        $post->updateMemoryData('status', advertisement()->getStatus($post));
-        return $post->response();
+        $adv = advertisement($in[IDX]);
+        $adv->updateMemoryData('status', advertisement()->getStatus($adv));
+        return $adv->response();
     }
 
 
