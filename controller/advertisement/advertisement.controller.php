@@ -77,21 +77,21 @@ class AdvertisementController
      */
     public function search(array $in): array|string
     {
-        if ($in) {
-            $re = parsePostSearchHttpParams($in);
-            if (isError($re)) return $re;
-            list($where, $params) = $re;
-            $where = $where . " AND deletedAt=0";
-            $in['where'] = $where;
-            $in['params'] = $params;
-        }
 
-        $posts = post()->search(object: true, in: $in);
+        $re = parsePostSearchHttpParams($in);
+        if (isError($re)) return $re;
+
+
+        list($where, $params) = $re;
+        $where = $where . " AND deletedAt=0";
+        $in['where'] = $where;
+        $in['params'] = $params;
+
+
+        $banners = advertisement()->search(object: true, in: $in);
         $res = [];
-        foreach ($posts as $post) {
-            $adv = advertisement($post->idx);
-            $adv->updateMemoryData('status', advertisement()->getStatus($adv));
-            $res[] = $adv->response(comments: 0);
+        foreach ( $banners as $banner ) {
+            $res[] = $banner->response();
         }
         return $res;
     }
@@ -106,9 +106,11 @@ class AdvertisementController
     {
         if (!isset($in[IDX])) return e()->idx_is_empty;
 
-        $adv = advertisement($in[IDX]);
-        $adv->updateMemoryData('status', advertisement()->getStatus($adv));
-        return $adv->response();
+        return advertisement($in[IDX])->response();
+
+//        $adv = advertisement($in[IDX]);
+//        $adv->updateMemoryData('status', advertisement()->getStatus($adv));
+//        return $adv->response();
     }
 
 

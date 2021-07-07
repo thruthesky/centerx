@@ -64,11 +64,14 @@ class AdvertisementModel extends PostModel
     /**
      * 글 상태. README.md 참고
      *
-     * @param AdvertisementModel $banner
+     * If input $banner is null, then use current banner object.
+     *
+     * @param AdvertisementModel|null $banner
      * @return string
      */
-    public function getStatus(AdvertisementModel $banner): string
+    public function getStatus(AdvertisementModel $banner = null): string
     {
+        if ( $banner == null ) $banner = $this;
 
         if ( $this->stopped($banner) || $this->cancelled($banner) ) return 'inactive';
         if ( $banner->advertisementPoint == '0' ) return 'inactive';

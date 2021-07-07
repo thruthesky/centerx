@@ -311,12 +311,16 @@ class PostModel extends Forum {
      * @return array|string
      * - 에러가 있으면 에러 문자열.
      * - 아니면, 클라이언트에 전달할 글 내용
+     *
+     * @todo $fields is not being used. Or it's not working. Make it work.
+     * @todo    - If $fields is set like "idx, title, user, files", then it will return only idx, title, user and file. It does not return other fields.
      */
     public function response(string $fields = null, int $comments = -1): array|string {
         if ( $this->hasError ) return $this->getError();
         $post = $this->getData();
         $post['categoryId'] = $this->categoryId();
         if ( $comments == 0 ) {
+
             $post['comments'] = [];
             $post['noOfComments'] = count($post['comments']);
         }
@@ -339,6 +343,8 @@ class PostModel extends Forum {
         } else {
             $post['user'] = [];
         }
+
+        /// @TODO - let $fields work here.
 
         return $post;
     }
@@ -363,7 +369,7 @@ class PostModel extends Forum {
      * @param int $limit
      * @param bool $object
      * @param array $in
-     * @return self[]
+     * @return $this[]
      */
     public function search(
         string $select='idx',

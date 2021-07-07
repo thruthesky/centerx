@@ -1704,10 +1704,13 @@ function postMessagingUrl(int $idx) {
  *  If it is falsy value like empty string, false, 0, then it searches posts that has no attached files.
  *
  * @return array|string
+ * - It returns 'where' and 'params' only.
  *
  *
  * @attention both of categoryIdx and categoryId are set, then categoryIdx will be used.
  *  if none of them are set, then it will search all the posts.
+ *
+ * @todo Make a new function that fix the input '$in' as call-by-reference. If there is no error, it returns false, or if there is error, it return error_string,
  */
 function parsePostSearchHttpParams(array $in): array|string {
 
