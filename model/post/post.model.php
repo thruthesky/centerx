@@ -303,11 +303,10 @@ class PostModel extends Forum {
      * @param int $comments - comments 에
      *  - 0 가 입력되면, 코멘트 정보를 리턴하지 않는다.
      *  - 음수, -1 이 입력되면, 모든 코멘트를 리턴한다. 기본 값은 -1 로서, 모든 코멘트를 리턴한다.
-     *  - @todo 양수가 입력되면 그 갯수 만큼 맨 마지막 글들 중에서 리턴한다.
-     *
-     * @attention $comments 가 0 이면, 실제로 해당 글에 코멘트가 있어도, noOfComments 도 0 이 된다.
-     *  따라서, noOfComments 의 값을 얻기 위해서는 반드시, $comments 가 0 이 아니어야 한다. $comment 가 1 이어도,
-     *  전체 코멘트 수를 가져온다.
+     *  - 양수가 입력되면 그 갯수 만큼 맨 마지막 글들 중에서 리턴한다.
+     *  - $comments 가 0 이면, 실제로 해당 글에 코멘트가 있어도, noOfComments 도 0 이 된다.
+     *    따라서, noOfComments 의 값을 얻기 위해서는 반드시, $comments 가 0 이 아니어야 한다. $comment 가 1 이어도,
+     *    전체 코멘트 수를 가져온다.
      *
      * @return array|string
      * - 에러가 있으면 에러 문자열.

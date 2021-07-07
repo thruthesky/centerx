@@ -359,12 +359,9 @@ class UserModel extends Entity {
      * @param $p
      * @return self
      */
-    public function setPoint($p): self {
-
+    public function _setPoint($p): self {
         db()->update($this->getTable(), [POINT => $p], [IDX => $this->idx]);
         return $this;
-
-//        return $this->update([POINT => $p]);
     }
 
 
@@ -397,7 +394,7 @@ class UserModel extends Entity {
      * Entity 클래스의 findOne() 설명을 참고한다.
      *
      * @example
-     *      user()->by($email)->setPoint(0);
+     *      user()->by($email)->_setPoint(0);
      *
      * @param int|string $uid user idx or email
      * @return self

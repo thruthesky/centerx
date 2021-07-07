@@ -4,7 +4,7 @@
     <?php if (admin()) { ?>
         <div>
             <a href="/?admin.index"><?= ln('admin') ?></a>
-            <a href="<?=postListUrl(ADVERTISE_CATEGORY)?>"><?= ln('advertisement') ?></a>
+            <a href="<?=postListUrl(ADVERTISEMENT_CATEGORY)?>"><?= ln(ADVERTISEMENT_CATEGORY) ?></a>
             <?php if (isTranslationMode()) { ?>
                 <span onclick="adminTranslate('N');">[<?= ln('stop translate') ?>]</span>
                 <script>

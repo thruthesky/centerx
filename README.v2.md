@@ -223,6 +223,11 @@ define('DOMAIN_THEMES', [
 아래의 live reload 항목 참고
 
 
+# 코딩 가이드라인, 스타일 가이드
+
+- 권한 체크를 하지 않아서, controller 또는 클라이언트에게 곧 바로 노출되면 위함한 함수는 언더바(_)로 시작한다.
+  예를 들면, 사용자 포인트를 변경 할 수 있는 user()->_setPoint() 함수와 같은 것이다.
+  이런 함수는 프로그램 내부적으로만 사용해야 한다.
 
 # 클라이언트
 
@@ -1046,8 +1051,6 @@ isTrue((new AppController())->version(), "App version");
   그리고, nginx 설정에 www_docker_nginx 를 도메인으로 추가해 주고,
   config.php 의 도메인 설정에도 추가를 해 주어야 한다.
   
-
-
 # 광고, Advertisement
 
 - 최대한 간단하게 작성
@@ -1058,6 +1061,13 @@ isTrue((new AppController())->version(), "App version");
     예를 들어, 최상단 배너가, 글로벌인 경우, 1만 포인트, 구인 구직에만 노출되는 경우, 5천 포인트로 하지 않는다.
     똑 같이 1만 포인트로 한다.
     다만, 글로벌의 경우 여러개 광고가 번갈아가면서 보인다.
+
+## 광고 기능 추가해야 할 것
+
+- 사업자 등록증을 올리도록 할 것.
+  사업자 등록증에 있는 대표자가 본인 인증 하도록 해야 할 것.
+  경고. 사업자등록증이 없거나 사업자등록증과 관계 없는 사업, 불법 광고, 성매매 유사 업종을 광고하는 경우 해당 광고는 즉시 차다며, 당국에 고발조치를 합니다.
+  
 
 ## Terms & Conditions
 
@@ -1088,14 +1098,43 @@ isTrue((new AppController())->version(), "App version");
     And, when user wants to cancel/refund the banner, the system can compute how much to return to the user.
 
 - If the advertisement has not started yet, then 100% of the point will be refunded without penalty.
-  - User can set the begin date of the advertisement and the user want to cancel the advertisement before the begin date,
+  - User can set the begin_date of the advertisement and the user want to cancel the advertisement before the begin_date,
   then 100% will be refunded.
+    
+- 관리자는 각 배너 포인트를 0 으로 설정 할 수 있다.
+  즉, 사용자는 배너를 무료로 진행 할 수 있는 것이다. 이 때에는 최대 광고 설정 기간을 길게하지 않도록 해야 한다.
 
 - Each banner must be a png or jpg file. that means, GIF animation is not allowed.
 
 - If one banner place has multiple banners to show, then it will rotate the banner by 7 seconds.
 
 
+## 광고 기능 코딩 기법 및 로직 설명
+
+- 광고 게시판 아이디는 반드시 `ADVERTISEMENT_CATEOGRY` 에 있는 것을 사용한다.
+- 광고 배너는 하나의 글이다.
+  
+- 광고 배너(글) 생성 시,
+  - pointPerDay 와 advertisementPoint 는 0 으로 초기화 되어 meta 에 저장된다. 즉, 항상 사용 가능한 상태이다.
+- 광고 배너(글)를 생성하고, `advertisement.start` 라우트로 시작을 해 주어야 한다. 이 대,
+  - pointPerDay 는 해당 광고의 하루 포인트
+  - advertisementPoint 에는 총 기간의 포인트가 meta 에 저장된다.
+  
+- 광고가 진행(시작)되기 전에 취소되면, post 의 meta 중 status 에 cancel 을 저장하고, 100% 환불된다.
+- 광고가 시작되어, 중간에 중단되면, post 의 meta 중 status 에 stop 이 저장되고, 오늘을 빼고 나머지 일 수 만큼 환불 된다.
+- 중단된 광고, 취소된 광고, 끝난 광고는 `advertisement.route` 호출을 통해서 광고 중단을 할 수 없다.
+  단, 오늘 끝나는 광고는 중단 할 수 있다.
+
+- 광고 상태는 active, inactive, waiting 과 같이 3 가지 클라이언트에게 전달된다.
+  단, 실제로는 stop 과 cancel 두 가지가 더 있는데, stop 과 cancel 은 db record 에 저장되는 것으로 클라이언트에게 전달 될 때에는 inactive 로 전달된다.
+  active, inactive, waiting 은 db record 에 저장되는 값이 아니라, 클라이언트로 response 할 때, 프로그램적으로 만들어지는 값이다.
+  - 배너( 글 )를 입력 받아, 메타에 저장된 status 를 보고,
+    - stop 이나 cancel 이면 inactive
+  - advertisementPoint 에 값이 0 이면, 광고 설정이 안된 것으로, inactive
+  - status 가 stop, cancel 이 아니고, advertisementPoint 가 있는 상태에서,
+    - 광고 시작이 안되었으면, waiting
+    - 광고 시작과 끝 시간 사이에 있으면, active
+    - 광고 종료되었으면, inactive,
 
 ## Banner Place & Display
 
@@ -1174,7 +1213,7 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
   It uses `posts` table.
   (광고 테이블은 따로 없고, `posts` 테이블을 사용한다.)
 
-- The advertisement category is stated on `ADVERTISE_CATEGORY`. (게시판 아이디는 `ADVERTISE_CATEGORY` 에 기록되어져 있다.)
+- The advertisement category is stated on `ADVERTISEMENT_CATEGORY`. (게시판 아이디는 `ADVERTISEMENT_CATEGORY` 에 기록되어져 있다.)
 
 - The advertisement begin date and end date.
   - Begin date is recorded at `beginAt`
@@ -1235,16 +1274,6 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
   The maximum width of top banner will be 285px but it may be shown narrower when the screen size becomes smaller.
   
 
-## Banner management
-
-- Admin may set the point of a banner in `config.php` to 0.
-  Then users can advertise without any point.
-  
-~~If a banner point in `config.php` is set to 0, then the banner can be deleted without stopping the banner when it is active.
-  That is because, when the banner stopped, the system sets 0 to `advertisementPoint` on database,
-    and the system considers if it is 0, the banner is inactive.
-    So, it is not a good idea to set the point of a banner to 0.~~~
-  
 
 
 ## 버전 1.x 에서 위젯으로 출력하는 방법
@@ -1675,6 +1704,12 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
   - 이 둘다, 동일한 zoomThumbnail 함수를 사용하고, 둘 다 기본 사이즈 200x200 을 사용한다.
     - 사이즈가 같다면, 둘 중에 하나에서 생성한 이미지는 다른 것에 재 사용된다.
 
+- 썸네일을 잘 하는 방법 또는 이미지를 잘 관리하는 방법
+  - 가능하면 이미지 정 중앙에 객체(중요 이미지 부분, 대상이 되는 부분)를 넣으면 좋다. 그러면 썸네일을 할 때 잘 보인다.
+  - 예를 들어, 가로 1, 세로 2 와 같은 비율로 너비는 작고 높이가 긴 세로 이미지를 썸네일로 표시하는 경우, 이미지를 올릴 때,
+    - 객체(대상 또는 주요 부분)가 정 중앙에서 세로로 좀 길게 배열을 해야한다. 그래야 썸네일 했을 때 자연스럽다.
+    - 그리고 그러한 사진만 올리는 카테고리를 따로 정해 놓고, 세로로 긴 사진은 그 카테고리에 따로 올리는 것이 좋다.
+      예를 들면, 뉴스 게시판의 "세로 이미지" 라는 카테고리를 만들어 그 카테고리에 세로 이미지만 넣으면 좋다.
 
 # 관리자 페이지, Admin Page
 

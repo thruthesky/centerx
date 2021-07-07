@@ -19,7 +19,7 @@ $pw = '12345a';
 
 // 사용자 포인트 지정 테스트
 setLogin(5);
-user(A)->setPoint(500);
+user(A)->_setPoint(500);
 isTrue(user(A)->getPoint() == 500, 'point = 500');
 
 // 사용자 가입 포인트
@@ -32,7 +32,7 @@ isTrue( user($profile[IDX])->getPoint() == point()->getRegister(), "user's point
 
 // 로그인 포인트 테스트
 clearTestPoint();
-user()->by($email)->setPoint(0);
+user()->by($email)->_setPoint(0);
 point()->setLogin(333);
 
 $profile = user()->login([EMAIL => $email, PASSWORD => $pw]);
@@ -58,12 +58,12 @@ isTrue(login()->getPoint() == 0, 'B point shuld be 0, but ' . login()->getPoint(
 
 
 // 주의: 이미 같은 글에 두번 추천. 포인트 변화 없음
-user(B)->setPoint(30);
+user(B)->_setPoint(30);
 $post = post($post1[IDX])->vote('Y');
 isTrue(login()->getPoint() == 30, 'B point should be 30. but: ' . login()->getPoint());
 
 // 다른 글에 추천. 포인트를 30 으로 지정. 추천 하면 -20 감소되므로, 10이 됨.
-user(B)->setPoint(30);
+user(B)->_setPoint(30);
 $post = post($post2[IDX])->vote('Y');
 isTrue(login()->getPoint() == 10, 'B point should be 10. but: ' . login()->getPoint());
 
@@ -167,7 +167,7 @@ function testPostCommentCreateHourlyLimit(): void {
 function testCommentCreateDelete(): void {
     global $post1;
     clearTestPoint();
-    setLogin(A)->setPoint(1000);
+    setLogin(A)->_setPoint(1000);
 
     point()->setCommentCreate(POINT, 200);
     point()->setCommentDelete(POINT, -300);
@@ -225,7 +225,7 @@ function testLikeDailyLimit(): void {
     point()->setDislikeDeduction(-50);
 
     // 포인트 일/수 제한. 하루 2번.
-    setLogin(B)->setPoint(1000);
+    setLogin(B)->_setPoint(1000);
     point()->setLikeDailyLimitCount(2);
 
     post($post1[IDX])->vote('Y');
@@ -249,7 +249,7 @@ function testLikeHourlyLimit(): void {
 
 
     // 포인트 시간/수 제한 없음.
-    user(B)->setPoint(10000);
+    user(B)->_setPoint(10000);
 //    return;
 //    d(my(IDX));
     $posts = post()->search(where: "userIdx != " . login()->idx);
@@ -276,7 +276,7 @@ function testLikeHourlyLimit(): void {
     point()->setLikeHourLimitCount(11);
 
     // 충분함.
-    user(B)->setPoint(10000);
+    user(B)->_setPoint(10000);
 
     for($i=0; $i<10; $i++) {
         $post = post($posts[$i][IDX])->vote('N');
@@ -298,7 +298,7 @@ function testLikeHourlyLimit(): void {
     point()->setLikeHourLimitCount(9);
 
     // 마지막 1번은 안됨. 그래서 1천 포인트가 남아야 함.
-    user(B)->setPoint(10000);
+    user(B)->_setPoint(10000);
     for($i=0; $i<9; $i++) {
         $post = post($posts[$i][IDX])->vote('N');
     }
@@ -349,10 +349,10 @@ function clearTestPoint() {
 
 
 
-    user(A)->setPoint(0);
-    user(B)->setPoint(0);
-    user(C)->setPoint(0);
-    user(D)->setPoint(0);
+    user(A)->_setPoint(0);
+    user(B)->_setPoint(0);
+    user(C)->_setPoint(0);
+    user(D)->_setPoint(0);
 
 
 

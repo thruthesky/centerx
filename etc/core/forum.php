@@ -233,6 +233,7 @@ class Forum extends Entity {
 
 
     /**
+     * 입력된 시작날짜와 끝날짜를 timestamp 로 변환해서 리턴한다.
      * If `beginAt` and `endAt` are string, then Convert it into timestamp.
      * If `beginAt` and `endAt` are empty and `beginDate` and `endDate` are not,
      *  then convert `beginDate` and `endDate` into timestamp and save it in `beginAt`, `endAt`.

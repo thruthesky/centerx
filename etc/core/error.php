@@ -226,6 +226,9 @@ class E {
     public string $empty_line_banner_point = 'error_empty_line_banner_point';
     public string $invalid_value = 'error_invalid_value';
 
+    public string $banner_cancelled = 'error_banner_cancelled';
+    public string $banner_expired = 'error_banner_expired';
+    public string $banner_stopped = 'error_banner_stopped';
 
 
 

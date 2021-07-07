@@ -346,12 +346,13 @@ const MESSAGE_CATEGORY = 'message';
 
 
 /**
- * Banner Settings
+ * Advertisement and Banner Settings
  *
  * 'point' is the point for that banner per 1 day.
  *
  * @todo Move banner settings to admin page.
  */
+const ADVERTISEMENT_CATEGORY = 'advertisement';
 const TOP_BANNER = 'top';
 const SIDEBAR_BANNER = 'sidebar';
 const SQUARE_BANNER = 'square';

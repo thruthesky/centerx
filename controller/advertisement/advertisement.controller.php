@@ -9,7 +9,11 @@ class AdvertisementController
     /**
      * Returns active banners of the country of the cafe.
      *
+     * @note, when client-end looks for banners for a cafe, the system should return the banners of root cafe's country banners.
+     *  But right now, it returns the banners of the cafe country. Not the root cafe's country.
+     *
      * @param array $in - See `parsePostSearchHttpParams()` for detail input.
+     *
      * @return array|string
      * - idx
      * - url
@@ -34,10 +38,14 @@ class AdvertisementController
             if (!$cafe->isMainCafe()) return e()->cafe_not_exists;
         }
 
-        $where = "countryCode=? AND code != '' AND beginAt < ? AND endAt >= ? AND fileIdxes != ''";
-        $params = [$cafe->countryCode, time(), today()];
+        $now = time();
+        $today = today();
+        // Search banners that has a photo and active.
+        $where = "countryCode=? AND code != '' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $params = [$cafe->countryCode];
 
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true);
+
         $res = [];
         foreach ($posts as $post) {
             $data = [
@@ -102,24 +110,15 @@ class AdvertisementController
     }
 
 
-    public function edit($in)
+    /**
+     * @param $in
+     * @return array|string
+     * @throws \Kreait\Firebase\Exception\FirebaseException
+     * @throws \Kreait\Firebase\Exception\MessagingException
+     */
+    public function edit($in): array | string
     {
-        if (notLoggedIn()) return e()->not_logged_in;
-        if (!isset($in[IDX]) || empty($in[IDX])) {
-
-            $post = post()->create($in);
-            $post->updateMemoryData('status', 'inactive');
-            return $post->response();
-        } else {
-
-            $post = post($in[IDX]);
-            if ($post->isMine() == false) return  e()->not_your_post;
-
-            $post->update($in);
-            $post->updateMemoryData('status', advertisement()->getStatus($post));
-
-            return $post->response();
-        }
+        return advertisement()->edit($in)->response();
     }
 
     /**
@@ -145,76 +144,9 @@ class AdvertisementController
      *    - category(subcategory) /
      *    - and countryCode. /
      */
-    public function start($in)
+    public function start($in): array|string
     {
-        if (notLoggedIn()) return e()->not_logged_in;
-
-        // check if post idx is present.
-        if (!isset($in[IDX]) && empty($in[IDX])) return e()->idx_is_empty;
-
-        // check if post is mine
-        $post = post($in[IDX]);
-        if ($post->isMine() == false) return  e()->not_your_post;
-
-        // check code input
-        if (!isset($in[CODE]) || empty($in[CODE])) return e()->code_is_empty;
-
-        // check dates input
-        if (!isset($in['beginDate']) || empty($in['beginDate'])) return e()->begin_date_empty;
-        if (!isset($in['endDate']) || empty($in['endDate'])) return e()->end_date_empty;
-
-
-        $in = $post->updateBeginEndDate($in);
-
-        // add 1 to include beginning date.
-        $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
-        $maximumAdvertisementDays = advertisement()->maximumAdvertisementDays();
-        if ($maximumAdvertisementDays) {
-            if ($maximumAdvertisementDays < $days) return e()->maximum_advertising_days;
-        }
-
-        // Save point per day. This will be saved in meta.
-        $in['pointPerDay'] = 0;
-
-        $settings = advertisement()->getAdvertisementPointSetting($in);
-
-        if (isset($settings[$in[CODE]])) {
-            $in['pointPerDay'] = $settings[$in[CODE]];
-        }
-
-        // Save total point for the advertisement periods.
-        $in['advertisementPoint'] = $in['pointPerDay'] * $days;
-
-        // check if the user has enough point
-        if (login()->getPoint() < $in['advertisementPoint']) {
-            return e()->lack_of_point;
-        }
-
-        // Record for post creation and change point.
-        $activity = userActivity()->changePoint(
-            action: 'advertisement.start',
-            fromUserIdx: 0,
-            fromUserPoint: 0,
-            toUserIdx: login()->idx,
-            toUserPoint: -$in['advertisementPoint'],
-            taxonomy: POSTS,
-            categoryIdx: $post->categoryIdx,
-            entity: $post->idx,
-        );
-
-        debug_log("apply point; {$activity->toUserPointApply} != {$in['advertisementPoint']}");
-        if ($activity->toUserPointApply != -$in['advertisementPoint']) {
-            // @attention !! If this error happens, it is a critical problem.
-            // The admin must investigate the database and restore user's point.
-            // Then, it needs to rollback the SQL query and needs to have race condition test to prevent the same incident.
-            return e()->advertisement_point_deduction_failed;
-        }
-
-        // Save total deducted point from user which the total point for the advertisement.
-
-        $post = $post->update($in);
-        $post->updateMemoryData('status', advertisement()->getStatus($post));
-        return $post->response();
+        return banner()->start($in)->response();
     }
 
     /**
@@ -231,60 +163,10 @@ class AdvertisementController
      * If the begin date is today or past days, it will refund points equivalent to remaining days.
      * If the end date is past day or today, it will not refund points.
      */
-    public function stop($in)
+    public function stop($in): array | string
     {
-        if (notLoggedIn()) return e()->not_logged_in;
-        if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
+        return banner()->stop($in)->response();
 
-        $advertisement = advertisement($in[IDX]);
-        if ($advertisement->isMine() == false) return  e()->not_your_post;
-
-        /// If advertisement started (including today), then, it needs +1 day.
-        /// For instance, advertisement starts today and ends tomorrow. The left days must be 1.
-        /// past days including today will be deducted.
-        if ($advertisement->started()) {
-            $action = 'advertisement.stop';
-            // if advertisement is expired, meaning it's end date is either past or today. (no refund).
-            if ($advertisement->expired()) $days = 0;
-            else $days = daysBetween(time(), $advertisement->endAt);
-        }
-        /// else, advertisement is not yet started. ( full refund )
-        else {
-            $action = 'advertisement.cancel';
-            $days = daysBetween($advertisement->beginAt, $advertisement->endAt) + 1;
-        }
-        // get settings
-        $in[COUNTRY_CODE] = $advertisement->countryCode;
-        // $settings = advertisement()->getAdvertisementPointSetting($in);
-
-
-        // get points to refund.
-        // $pointToRefund = $settings[$advertisement->code] * $days;
-        $pointToRefund = $advertisement->pointPerDay * $days;
-
-        // set advertisementPoint to empty ('') when the advertisement has stopped.
-        $in['advertisementPoint'] = '';
-
-        // Record for change point.
-        $activity = userActivity()->changePoint(
-            action: $action,
-            fromUserIdx: 0,
-            fromUserPoint: 0,
-            toUserIdx: login()->idx,
-            toUserPoint: $pointToRefund,
-            taxonomy: POSTS,
-            categoryIdx: $advertisement->categoryIdx,
-            entity: $advertisement->idx
-        );
-
-        debug_log("refund apply point; {$activity->toUserPointApply} != {$pointToRefund}");
-        if ($activity->toUserPointApply != $pointToRefund) {
-            return e()->advertisement_point_refund_failed;
-        }
-
-        $post = $advertisement->update($in);
-        $post->updateMemoryData('status', 'inactive');
-        return $post->response();
     }
 
     /**
@@ -317,7 +199,7 @@ class AdvertisementController
         return [
             'types' => BANNER_TYPES,
             'maximumAdvertisementDays' => $adv->maximumAdvertisementDays(),
-            'categories' => $adv->advertisementCategories(),
+            'categoryArray' => $adv->advertisementCategoryArray(),
             'point' => $adv->advertisementPoints(),
         ];
     }
@@ -335,24 +217,8 @@ class AdvertisementController
      */
     public function setBannerPoint($in)
     {
-        if (notLoggedIn()) return e()->not_logged_in;
-        if (!admin()) return e()->you_are_not_admin;
-        if (!isset($in[TOP_BANNER]) || empty($in[TOP_BANNER])) return e()->empty_top_banner_point;
-        if (!isset($in[SIDEBAR_BANNER]) || empty($in[SIDEBAR_BANNER])) return e()->empty_sidebar_banner_point;
-        if (!isset($in[SQUARE_BANNER]) || empty($in[SQUARE_BANNER])) return e()->empty_square_banner_point;
-        if (!isset($in[LINE_BANNER]) || empty($in[LINE_BANNER])) return e()->empty_line_banner_point;
 
-        if ($in[TOP_BANNER] < 0 || $in[SIDEBAR_BANNER]  < 0 || $in[SQUARE_BANNER]  < 0 || $in[LINE_BANNER] < 0) return e()->invalid_value;
-
-        $a = new AdvertisementPointSettingsModel();
-
-        if (!isset($in[COUNTRY_CODE]) || empty($in[COUNTRY_CODE])) $in[COUNTRY_CODE] = '';
-
-        if ($a->countryExists($in[COUNTRY_CODE])) {
-            $in[IDX] = $a->getIdxFromDB([COUNTRY_CODE => $in[COUNTRY_CODE]]);
-        }
-
-        return $a->edit($in)->response();
+        return (new AdvertisementPointSettingsModel())->edit($in)->response();
     }
 
     public function getBannerPoints($in)
