@@ -37,16 +37,18 @@ class UserController
     }
 
     /**
-     * 파이어베이스 auth 로 로그인을 하는 경우,
+     * 파이어베이스 auth 로 로그인을 하는 경우, 회원 가입 또는 로그인
      *
-     * 주로 구글, 페이스북, 애플 로그인을 한다.
+     * 참고, 파이어베이스 로그인은 주로 구글, 페이스북, 애플 로그인을 한다.
+     * 참고, 메일 주소가 없을 수 있다. 이 경우, firebaseUid 를 이용해서 회원 메일 주소를 만든다.
      *
      * @param $in
      * @return array|string
      */
     public function firebaseLogin($in) {
         $data = [
-            EMAIL => $in[EMAIL],
+            EMAIL => $in[FIREBASE_UID] . "@" . $in[PROVIDER] . ".com",
+            'orgEmail' => $in[EMAIL],
             PASSWORD => LOGIN_PASSWORD_SALT,
             NICKNAME => $in[NICKNAME] ?? '',
             PHOTO_URL => $in[PHOTO_URL] ?? '',
