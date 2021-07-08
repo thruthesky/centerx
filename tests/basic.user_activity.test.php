@@ -59,6 +59,22 @@ testPointReadLimitByPointPossession();
 
 
 
+// Set limit. 7 times in 6 hours. and 5 times in a day.
+function setVotePointsForTest($hour_count = 7, $hour_limit = 6, $daily_count = 5) {
+
+    userActivity()->setVoteHourLimit($hour_limit);
+    userActivity()->setVoteHourLimitCount($hour_count);
+    userActivity()->setVoteDailyCount($daily_count);
+
+}
+
+
+function setCreatePointsForTest($categoryIdx, $hour_limit_count = 7, $hour_limit = 6, $daily_count = 5) {
+
+    userActivity()->setCreateDailyLimitCount($categoryIdx, $daily_count);
+    userActivity()->setCreateHourLimit($categoryIdx, $hour_limit);
+    userActivity()->setCreateHourLimitCount($categoryIdx, $hour_limit_count);
+}
 
 
 function resetPoints()
@@ -71,9 +87,9 @@ function resetPoints()
     userActivity()->setLikeDeductionPoint(0);
     userActivity()->setDislikeDeductionPoint(0);
 
-    userActivity()->setLikeDailyLimitCount(0);
-    userActivity()->setLikeHourLimit(0);
-    userActivity()->setLikeHourLimitCount(0);
+    userActivity()->setVoteDailyCount(0);
+    userActivity()->setVoteHourLimit(0);
+    userActivity()->setVoteHourLimitCount(0);
 
     // POINT is the test forum.
     if (category(POINT)->exists() == false) category()->create([ID => POINT]);
@@ -97,7 +113,7 @@ function resetPoints()
 
 function testUserPointSet() {
     resetPoints();
-    $user = registerUser()->setPoint(500);
+    $user = registerUser()->_setPoint(500);
     isTrue($user->getPoint() == 500, 'A point must be 500. but: ' . $user->getPoint());
 }
 
@@ -176,19 +192,33 @@ function testLikePoint() {
 
 function testDislikePoint() {
     resetPoints();
+
+    /// expect: test failure due to no point settings.
     $A = registerAndLogin(); // login A
     userActivity()->setDislikePoint(111); // set dislike point.
     $post1 = createPost(); // create a post.
     registerAndLogin(); // login to another user.
     $post1->dislike(); // dislike A's post.
-    // So, A gets 111.
-    isTrue($A->getPoint() == 111, "User post was disliked. post must be 111, but" . $A->getPoint());
+    isTrue($post1->appliedPoint == 0, 'limit is not set.'); // limit is not set, so by default it will failure.
+
+
+    setVotePointsForTest();         // Set test limit
+
+    $C = registerAndLogin();        // Login C
+    $post2 = createPost();          // C creates a post.
+    registerAndLogin();             // Login to another user.
+    $re = $post2->dislike(); // dislike A's post again !
+
+    // So, C gets 111.
+    isTrue($C->getPoint() == 111, "User post was disliked. post must be 111, but" . $C->getPoint());
 }
 
 function testDislikePointForMinusPoint() {
     resetPoints();
+
+    setVotePointsForTest();         // Set test limit
     $A = registerAndLogin();
-    $A->setPoint(100);
+    $A->_setPoint(100);
     userActivity()->setDislikePoint(-33);
     $post = createPost();
 
@@ -203,6 +233,7 @@ function testDislikePointForMinusPoint() {
 function testVotePoints_likeAndLikeDeduction() {
 
     resetPoints();
+    setVotePointsForTest();
     userActivity()->setLikePoint(10);
     userActivity()->setLikeDeductionPoint(-5);
 
@@ -237,6 +268,7 @@ function testVotePoints_dislikeAndDislikeDeduction() {
 
 
     resetPoints();
+    setVotePointsForTest();
 
     // prepare
     userActivity()->setDislikePoint(-20);
@@ -247,8 +279,8 @@ function testVotePoints_dislikeAndDislikeDeduction() {
     $B = registerAndLogin();
     $bPost = createPost();
 
-    $A->setPoint(130);
-    $B->setPoint(130);
+    $A->_setPoint(130);
+    $B->_setPoint(130);
 
     // test
     loginAs($A);
@@ -277,6 +309,7 @@ function testVotePoints_dislikeAndDislikeDeduction() {
 function testVoteAgainOnSamePost() {
 
     resetPoints();
+    setVotePointsForTest();
     userActivity()->setLikePoint(20);
     userActivity()->setLikeDeductionPoint(-5);
 
@@ -296,6 +329,7 @@ function testVoteAgainOnSamePost() {
 
 function testVoteLikeOnComment() {
     resetPoints();
+    setVotePointsForTest();
     userActivity()->setLikePoint(20);
     userActivity()->setLikeDeductionPoint(-5);
     $A = registerAndLogin(); // login A
@@ -309,14 +343,15 @@ function testVoteLikeOnComment() {
 
 function testVoteDislikeOnComment() {
     resetPoints();
+    setVotePointsForTest();
     userActivity()->setDislikePoint(-20);
     userActivity()->setDislikeDeductionPoint(-30);
     $A = registerAndLogin(); // login A
-    $A->setPoint(100);
+    $A->_setPoint(100);
     $comment = createComment(); // create a comment by A
 
     $B = registerAndLogin(); // login B
-    $B->setPoint(100);
+    $B->_setPoint(100);
 
     $comment->dislike();
 
@@ -328,6 +363,7 @@ function testVoteDislikeOnComment() {
 
 function testVoteAgainOnSameComment() {
     resetPoints();
+    setVotePointsForTest();
     userActivity()->setLikePoint(20);
     $A = registerAndLogin(); // login A
     $comment = createComment(); // create a comment by A
@@ -343,15 +379,16 @@ function testVoteAgainOnSameComment() {
 function testVoteUntilPointBecomeZero() {
 
     resetPoints();
+    setVotePointsForTest();
     userActivity()->setDislikePoint(-80);
     userActivity()->setDislikeDeductionPoint(-90);
     $A = registerAndLogin(); // login A
-    $A->setPoint(100);
+    $A->_setPoint(100);
     $post = createComment();
     $comment = createComment(); // create a comment by A
 
     $B = registerAndLogin(); // login B
-    $B->setPoint(100);
+    $B->_setPoint(100);
 
     $post->dislike();
     $comment->dislike();
@@ -369,7 +406,7 @@ function testVoteWithoutHourlyLimit() {
     userActivity()->setLikeDeductionPoint(-100);
 
     $A = registerAndLogin();
-    $A->setPoint(600);
+    $A->_setPoint(600);
 
     // test without limit
     for($i = 0; $i < 5; $i++) {
@@ -385,51 +422,54 @@ function testVoteWithoutHourlyLimit() {
 function testVoteHourlyLimit() {
 
     resetPoints();
+
     userActivity()->setLikePoint(100);
     userActivity()->setLikeDeductionPoint(-100);
 
 
     // See? There is no limit.
     $A = registerAndLogin();
-    $A->setPoint(1000);
+    $A->_setPoint(1000);
     $B = registerAndLogin();
-    $B->setPoint(1000);
+    $B->_setPoint(1000);
 
 
     // Set limit. 4 times in 2 hours.
-    userActivity()->setLikeHourLimit(2);
-    userActivity()->setLikeHourLimitCount(4);
+
+    setVotePointsForTest(4, 2, 10);
 
 
-    // test without limit
-    for($i = 0; $i < 5; $i++) {
+
+    // vote 7 times. But 4 times point change only.
+    for($i = 0; $i < 7; $i++) {
         loginAs($A);
         $p = createPost();
         loginAs($B);
         $p->like();
     }
 
-    isTrue($A->getPoint() == 1400, "A point to be 1500 but: " . $A->getPoint());
-    isTrue($B->getPoint() == 600, "B point to be 600");
+    isTrue($A->getPoint() == 1400, "A point to be 1400 but: " . $A->getPoint());
+    isTrue($B->getPoint() == 600, "B point to be 600. But bot: " . $B->getPoint());
 
 }
 function testVoteDailyLimit() {
 
     resetPoints();
+    setVotePointsForTest();
     userActivity()->setLikePoint(200);
     userActivity()->setLikeDeductionPoint(-100);
 
 
-    $A = registerAndLogin()->setPoint(1000);
+    $A = registerAndLogin()->_setPoint(1000);
     $post1 = createPost();
     $post2 = createPost();
     $post3 = createPost();
 
-    $B = registerAndLogin()->setPoint(1000);
+    $B = registerAndLogin()->_setPoint(1000);
 
 
     // Limit: 2 times a day.
-    userActivity()->setLikeDailyLimitCount(2);
+    userActivity()->setVoteDailyCount(2);
 
     $post1->like();
     $post2->like();
@@ -446,6 +486,7 @@ function testVoteLimitByChangingDate() {
 
 function testPointPostCreate() {
     resetPoints();
+    setCreatePointsForTest(POINT);
 
     // check point settings
     userActivity()->setPostCreatePoint(POINT, 1000);
@@ -467,6 +508,7 @@ function testPointPostCreate() {
 function testPatchPoint() {
 
     resetPoints();
+    setCreatePointsForTest(POINT);
 
     // check point settings
     userActivity()->setPostCreatePoint(POINT, 321);
@@ -490,6 +532,7 @@ function testPatchPoint() {
 function testPointPostDelete() {
 
     resetPoints();
+    setCreatePointsForTest(POINT);
     // check point settings
     userActivity()->setPostDeletePoint(POINT, -444);
 
@@ -503,7 +546,7 @@ function testPointPostDelete() {
     $post2 = createPost();
     isTrue($post2->ok, "Post2 create must be okay. But: " . $post2->getError());
 
-    $A->setPoint(500);
+    $A->_setPoint(500);
 
 
     // 게시글 삭제
@@ -517,10 +560,11 @@ function testPointPostDelete() {
 
 function testPointPostCreateAndDeleteByChangingCategories() {
     resetPoints();
+    setCreatePointsForTest(POINT);
 
     // login as A
     $A = registerAndLogin();
-    $A->setPoint(500);
+    $A->_setPoint(500);
 
     // check point settings
     userActivity()->setPostCreatePoint(POINT, 100);
@@ -547,12 +591,13 @@ function testPointPostCreateDailyLimit() {
 
     resetPoints();
 
-    $category = createCategory('c-daily-test-f-p' . time());
+    $categoryId = 'c-daily-test-f-p' . time();
+    $category = createCategory($categoryId);
 
 
 
     // 1 day, 2 posts.
-    userActivity()->setCreateDailyLimitCount($category->idx, 2);
+    setCreatePointsForTest($categoryId, 5, 5, 2);
     userActivity()->setPostCreatePoint($category->idx, 60);
 
 
@@ -591,6 +636,8 @@ function testPointPostCreateHourlyLimit() {
     userActivity()->setPostCreatePoint($category->idx, 100);
 
     // 2 hour, 3 posts.
+
+    setCreatePointsForTest($category->idx, 3, 2, 10);
     userActivity()->setCreateHourLimit($category->idx, 2);
     userActivity()->setCreateHourLimitCount($category->idx, 3);
 
@@ -621,7 +668,7 @@ function testCategoryLimitByDateChange() {
     userActivity()->enableBanCreateOnLimit(POINT);
 
     // Limit 1 time a day.
-    userActivity()->setCreateDailyLimitCount(POINT, 1);
+    setCreatePointsForTest(POINT, 5, 5, 1);
 
     $A = registerAndLogin();
     $post1 = createPost();
@@ -655,6 +702,7 @@ function testCategoryLimitByDateChange() {
 
 function testPointCommentCreate() {
     resetPoints();
+    setCreatePointsForTest(POINT);
     userActivity()->setCommentCreatePoint(POINT, 50);
 
     $A = registerAndLogin();
@@ -673,6 +721,8 @@ function testPointCommentCreate() {
 function testCommentPatchPoint() {
 
     resetPoints();
+
+    setCreatePointsForTest(POINT);
 
     // check point settings
     userActivity()->setCommentCreatePoint(POINT, 111);
@@ -711,7 +761,7 @@ function testPointCommentDelete() {
     isTrue($comment3->ok, "comment under comment 1");
 
 
-    $A->setPoint(250);
+    $A->_setPoint(250);
     // 게시글 삭제
     $re = $comment1->markDelete();
     isTrue(login()->getPoint() == 150, 'A point must be 400. but ' . login()->getPoint());
@@ -732,6 +782,9 @@ function testPointCommentCreateDailyLimit() {
 
     resetPoints();
     $cat = createCategory('pccdl-' . time());
+
+    setCreatePointsForTest($cat->idx);
+
     // 2 in a day
     userActivity()->setCreateDailyLimitCount($cat->idx, 4);
     userActivity()->setPostCreatePoint($cat->idx, 300);
@@ -776,6 +829,8 @@ function testPointCommentCreateHourlyLimit() {
 
     $category = createCategory('tpcchl--' . time());
 
+    setCreatePointsForTest($category->idx);
+
     // 2 hour, 3 posts.
     userActivity()->setCreateHourLimit($category->idx, 2);
     userActivity()->setCreateHourLimitCount($category->idx, 3);
@@ -816,7 +871,7 @@ function testPointPostCreateLimitByPointPossession() {
     $p = createPost();
     isTrue($p->hasError && $p->getError() == e()->lack_of_point_possession_limit, "User 'u' is Lack of point for post create");
 
-    $A->setPoint(100);
+    $A->_setPoint(100);
     $p2 = createPost();
     isTrue($p2->ok, "User u created a post");
 
@@ -830,11 +885,11 @@ function testPointCommentCreateLimitByPointPossession() {
     $c = createComment();
     isTrue($c->hasError && $c->getError() == e()->lack_of_point_possession_limit, "User 'u2' is Lack of point for comment create");
 
-    $u2->setPoint(100);
+    $u2->_setPoint(100);
     $c2 = createComment();
     isTrue($c2->ok, "u2 created a comment");
 
-    $u2->setPoint(99);
+    $u2->_setPoint(99);
     $c3 = createComment();
     isTrue($c3->getError() == e()->lack_of_point_possession_limit, "u2 lack of point possession to create a comment");
 
@@ -851,7 +906,7 @@ function testPointReadLimitByPointPossession() {
 
     userActivity()->setReadLimitPoint(POINT, 50);
 
-    $u3->setPoint(49);
+    $u3->_setPoint(49);
 
     $read = post()->read($p3->idx);
     isTrue($read->hasError && $read->getError() == e()->lack_of_point_possession_limit, "u3 cannot read point due to lack of point possession");

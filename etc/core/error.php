@@ -228,6 +228,10 @@ class E {
 
     public string $more_than_90days_date_difference = 'error_more_than_90days_date_difference';
 
+    public string $banner_cancelled = 'error_banner_cancelled';
+    public string $banner_expired = 'error_banner_expired';
+    public string $banner_stopped = 'error_banner_stopped';
+
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)

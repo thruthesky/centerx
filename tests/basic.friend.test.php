@@ -10,6 +10,7 @@ $friendRoute = new FriendController();
 setLoginAny();
 
 
+
 // 실패. 존재하지 않는 회원 번호.
 // Expect failure. non-existent user idx.
 $res = $friendRoute->add(['sessionId' => login()->sessionId, 'otherIdx' => 123456789]);

@@ -223,6 +223,11 @@ define('DOMAIN_THEMES', [
 아래의 live reload 항목 참고
 
 
+# 코딩 가이드라인, 스타일 가이드
+
+- 권한 체크를 하지 않아서, controller 또는 클라이언트에게 곧 바로 노출되면 위함한 함수는 언더바(_)로 시작한다.
+  예를 들면, 사용자 포인트를 변경 할 수 있는 user()->_setPoint() 함수와 같은 것이다.
+  이런 함수는 프로그램 내부적으로만 사용해야 한다.
 
 # 클라이언트
 
@@ -442,6 +447,52 @@ include CONTROLLER_DIR . 'api.php';
 - 참고, 본 문서의 카페 설정 참고.
   
 
+# Live reload
+
+
+
+# Live Reload
+
+
+- live reload works on Node.js version 10.23.0 and above.
+
+
+- To use live reload, set `LIVE_RELOAD` to true and adjust the following settings.
+
+## Live reload with http (without SSL)
+
+- To use live reload on localhost without SSL.
+  - set `http://localhost` to `LIVE_RELOAD_HOST`
+  - set `12345` to `LIVE_RELOAD_PORT`.
+  - add the working local domain to `LOCAL_HOSTS`.
+  - run `node live-reload.js`.
+
+
+## Live reload with https (with SSL)
+
+- To use live reload with SSL,
+  - place `tmp/ssl/live-reload/private.key` and `tmp/ssl/live-reload/cert-ca-bundle.crt` for SSL certificates.
+  - set the host(domain) with scheme to `LIVE_RELOAD_HOST`.
+    ex) `https://sonub.com`
+    Not that, the certificates(and private key) must be for the domain.
+  - set '12345' to `LIVE_RELOAD_PORT`
+  - add the working local domain to `LOCAL_HOSTS`.
+  - run `node live-reload.js https`
+
+## Stop live reload for a run-time.
+
+- If you want to stop live reload only for a script (or a page), define `STOP_LIVE_RELOAD` like below.
+
+```html
+<?php
+header("Content-Type: application/javascript");
+header("Cache-Control: max-age=604800, public");
+const STOP_LIVE_RELOAD = true;
+require_once '../../../boot.php';
+?>
+alert('Hi');
+```
+
 
 # 독립 스크립트
 
@@ -473,12 +524,303 @@ include view()->folder . 'index.html';
       그러면 이미지 경로가 `https://sonub.com` 이 아닌 `https://file.sonub.com` 이 된다.
     위 두 방법 중에서, 간단하게 root folder 를 변경하는 것을 추천한다.
 
-# Restful API
+# Restful API, Protocol
 
 ## Api 경로
 
-- 본 문서의 `# 독립 스크립트` 를 참조한다.
-    
+- 기본적인 Api 경로는 최상위 폴더의 `index.php` 이다.
+- 하지만, 아래와 같이 다른 폴더로 변경을 할 수 있다.
+  - 아래의 예제는 `/views/my-view/api.php` 로서,
+    - 원하는 위치에 PHP 파일을 두고,
+    - `matrix` 를 부트 한 다음,
+    - `api.php` 를 통해서 api 호출을 하면 된다.
+```php
+<?php
+include '../../boot.php';
+include ROOT_DIR . 'controller/api.php';
+```
+
+## Api 참고
+
+- API Protocol examples are written in `/etc/rest-client/rest-client.http`
+
+- `route` is the route of the api call.
+  Ex) `/?route=app.version`
+
+- To get app version, access like below
+  Ex) `/?route=app.version`
+
+
+### Api live reload
+
+- 테스트 할 때, api 자체로 live reload 해야 할 필요가 있다.
+
+- To live reload the route on web browser,
+  Run the `live-reload.js` Just add `/?route=....&reload=true`.
+  And remove it from rest api client call.
+  
+
+
+## Response
+
+- 에러가 있는 경우, response 의 값은 'error_' 로 시작하는 값이다.
+  예) `{ request: {email: ..., password: ...}, response: "error_email_exists"}`
+- 또는 PHP 나 기타 에러가 있는 경우, 문자열의 값이 리턴 될 수 있다. 리턴 값의 data 에 에러 문자열이 들어갈 수 있다.
+  예) `<xmp>Data too long for column 'gender' at row 1</xmp><xmp>INSERT...`
+- 성공을 하면, 반드시 리턴되는 연관 배열의 'response' 에 값이 'error_' 가 아닌 값이 들어가 있다.
+  예) `{ request: {email: ..., password: ...}, response: { idx: ... }`
+
+- `login()` 함수는 매번 호출 될 때마다 새로운 객체를 생성하므로, 필요하다면 `$login = login()` 와 같이 객체를 저장해서 재 사용해야한다.
+  그래서 아래와 같이 하면, 업데이트된 값이 제대로 전달되지 않는다.
+
+```php
+login()->updateData('rank', 2); // 이 객체와
+return login()->response(); // 이 객체는 서로 달라서, rank 값이 클라이언트로 전달되지 않는다.
+```
+
+- 단, 아래와 같이 할 수는 있다.
+
+``php
+return login()->updateData('rank', 2)->response();
+``
+
+## Adding Custom Api Route
+
+- There are two ways of handling route.
+- First, you can create a route class under `routes` folder and add method.
+  For instance, if `/?route=app.version` is accessed, create `routes/app.route.php` and define `AppRoute` class, then add `version` method in it.
+
+- Second, simple define a function of anywhere.
+  For instance, if `/?route=app.version` is accessed, add a function to `addRoute()` function like below.
+```php
+addRoute('app.version', function($in) {
+    return ['version' => 'app version 12345 !!!'];
+});
+```  
+
+- For defining routes to a specific theme, create `[theme-name].route.php` and define routes there, and include it in `[theme-name].config.php`.
+
+- For core routes, it is defined in `routes` folder.
+
+- If there are two route handlers for the same route, that comes from route class in `routes` folder and the other comes from `addRoute()`,
+  Then, the function that is added to `addRoute()` will be used. This means, you can overwrite the routes in `routes` folder.
+
+- See `themes/itsuda/itsuda.route.php` for more examples.
+
+## App Api
+
+- To get app version,
+
+```
+https://local.itsuda50.com/index.php?route=app.version
+```
+
+- To get app settings,
+
+```
+https://local.itsuda50.com/index.php?route=app.settings
+```
+
+
+
+## User Api
+
+- To login, access like below
+  Ex) `/?route=user.login&email=...&password=...`
+
+- To register,
+
+```text
+https://local.itsuda50.com/?route=user.register&reload=true&email=user3@test.com&password=12345a
+```
+
+- To login
+```text
+https://local.itsuda50.com/?route=user.login&reload=true&email=user3@test.com&password=12345a
+```
+
+
+- To ge user profile
+```text
+https://local.itsuda50.com/?route=user.profile&reload=true&sessionId=3-50bb905fb31f8035f2cef8a2f273af74
+```
+
+
+
+## Category Api
+
+- To create category, pass `id, title, description` into `category.create` route.
+
+```text
+https://local.itsuda50.com/?route=category.create&reload=true&id=appl3e&title=Apple%20category&description=I%20like%20Apple&noOfPosts=5
+```
+
+- To get category, you can pass `category.idx` or `category.id` as `idx` or `id` param.
+```text
+https://local.itsuda50.com/?route=category.get&reload=true&idx=1
+https://local.itsuda50.com/?route=category.get&reload=true&idx=apple
+https://local.itsuda50.com/?route=category.get&reload=true&id=apple
+```
+
+- To update category, pass idx on `idx` or id on `id` to `category.update`
+
+```text
+https://local.itsuda50.com/?route=category.update&reload=true&idx=1&title=t&description=d
+https://local.itsuda50.com/?route=category.update&reload=true&id=apple&title=t&description=d
+```
+
+- To delete a category, pass idx on `idx` to `category.delete`. For deletion, only `idx` is accepted.
+```text
+https://local.itsuda50.com/?route=category.delete&reload=true&idx=1
+```
+
+## Post Api
+
+- To create a post,
+  - Required fields are: `sessionId`, `category`.
+  - `title`, `content`, and other properties are optoinal.
+  - Since `Entity` class supports adding any meta data, you can add any data in `&key=value` format.
+
+```text
+https://local.itsuda50.com/?route=post.create&sessionId=5592-52f7119495484c1d56cf8629e9664001&categoryId=banana&title=yo&content=there&a=apple&b=banana&c=cherry
+```
+
+- To update a post, add `sessionId` with `idx` and other `key/value` pair fields to update.
+````text
+https://local.itsuda50.com/?route=post.update&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&category=apple&title=updated-by-no.%204&content=content&a=apple&b=banana&idx=19
+````
+
+
+- To get a post, just give `posts.idx`. `sessionId` may not be needed.
+```text
+https://local.itsuda50.com/?route=post.get&reload=true&idx=19
+```
+
+- To delete a post,
+```text
+https://local.itsuda50.com/?route=post.delete&sessionId=5-9b41c88bcd239de7ca6467d1975a44ca&idx=18
+```
+
+
+- To list posts of a category.
+  - Most of the search options goes in value string of `where` param. You can put any SQL conditions on `where`.
+```text
+https://local.itsuda50.com/?route=post.search&reload=true&where=(categoryId=<apple> or categoryId=<banana>) and title like '%t%'&page=1&limit=3&order=idx&by=ASC
+```
+
+
+## Comment Api
+
+
+- To create a comment,
+  - Required fields are: `sessionId`, `rootIdx`, `parentIdx`.
+    - `rootIdx` is the post.idx and `parentIdx` is the parent idx. parent idx can be a post.idx or comment.idx.
+  - `content`, and other properties are optoinal.
+  - Since `Entity` class supports adding any meta data, you can add any data in `&key=value` format.
+
+```text
+https://local.itsuda50.com/?route=comment.create&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&content=A&rootIdx=159&parentIdx=159
+```
+
+- To update a comment, add `sessionId` with `idx` and other `key/value` pair fields to update.
+````text
+https://local.itsuda50.com/?route=comment.update&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&content=B-A-Updated&idx=162
+````
+
+
+- To get a comment, just give `posts.idx`. `sessionId` may not be needed.
+```text
+https://local.itsuda50.com/?route=comment.get&idx=163
+```
+
+- To delete a comment,
+```text
+https://local.itsuda50.com/?route=comment.delete&reload=true&sessionId=4-d8023872c25451948d1a709230a238ee&idx=162
+```
+
+
+
+## Files and File Api
+
+- To create a file, there are two steps.
+  - First, upload file
+  - Second, add the file idx(es) to the taxonomy entity `files` field.
+
+  - To upload file, call `file.upload` route with sessionId and `userfile` with file data.
+
+  - Add files to post, comment, any other taxonomies.
+```text
+/?files=123,456,other=vars-to-save-to-the-taxonomies.
+```
+
+- To delete a file,
+```text
+/?route=file.delete&sessionId=...&idx=123
+```
+
+
+- You can upload a file/image and save the idx (of uploaded file) in a different meta field of the taxonomy.
+  - You have to delete the taxonomy meta field after delte the file.
+
+
+- 파일을 업로드 할 때, 기존의 파일을 삭제해야하는 경우가 있다.
+  예를 들어, 하나의 글에 하나의 사진만 올릴 수 있도록 하는 경우, 사용자가 사진을 변경하면 기존의 사진은 자동으로 삭제가 되어야한다.
+  이 때, file upload 를 할 때, 두 가지 방법으로 할 수 있다.
+  하나는 아래와 같이 taxonomy 와 entity 로 값을 삭제할 수 있으며,
+  {
+  deletePreviousUpload: Y
+  taxonomy:
+  entity:
+  }
+
+  또는 아래와 같이 하나는 code 만으로 기존 파일을 삭제 할 수 있다.
+  이 때, code 만으로 기존 파일을 삭제하는 경우는 해당 파일이 로그인을 한 사용자의 파일이어야 한다.
+
+  {
+  deletePreviousUpload: Y
+  code:
+  }
+
+  본 항목의 사용자 사진 참고
+  Flutter Firelamp api.controller.dart 의 takeUploadFile() 과 uploadFile() 함수를 참고.
+
+
+- To get a file
+  Use `file.get` route
+  Ex) https://main.philov.com/?route=file.get&taxonomy=posts&code=web&entity=14944
+
+- To get all files of a post
+  Use `file.byPostIdx` route
+
+- To get a file of code of a post
+  Use `file.byPostCode` route.
+
+## Point Api
+
+- 글(또는 코멘트)을 쓸 때, 얼마의 포인트를 획득했는지, 포인트 값을 알고 싶다면, 아래와 같이 호출한다.
+  - `idx` 는 글 또는 코멘트 번호이다.
+  - @todo 로그인한 사용자 자신의 레코드이어야 값을 가져올 수 있도록 수정해야 한다.
+
+```
+https://local.itsuda50.com/?route=point.postCreate&idx=15130
+```
+
+
+## Translation api
+
+### 언어 코드 하나에 대한 번역된 글 가져오기
+
+- `translation.get` 라우트에 `code` 값만 주면, 백엔드에서 사용자의 언어를 자동으로 찾아서 해당 코드의 번역 글을 리턴한다.
+  리턴 속성
+  ln: 사용자 언어 예) en, ko
+  code: 요청한 코드
+  text: 결과 문자열
+
+- 특정 코드의 언어 번역 코드를 가져오려면, Javascript 로 아래와 같이 하면 된다.
+```javascript
+request('translation.get', {'code': 'list'}, console.log, alert);
+```
+
 
 
 # 클라이언트 캐싱
@@ -709,8 +1051,6 @@ isTrue((new AppController())->version(), "App version");
   그리고, nginx 설정에 www_docker_nginx 를 도메인으로 추가해 주고,
   config.php 의 도메인 설정에도 추가를 해 주어야 한다.
   
-
-
 # 광고, Advertisement
 
 - 최대한 간단하게 작성
@@ -721,6 +1061,13 @@ isTrue((new AppController())->version(), "App version");
     예를 들어, 최상단 배너가, 글로벌인 경우, 1만 포인트, 구인 구직에만 노출되는 경우, 5천 포인트로 하지 않는다.
     똑 같이 1만 포인트로 한다.
     다만, 글로벌의 경우 여러개 광고가 번갈아가면서 보인다.
+
+## 광고 기능 추가해야 할 것
+
+- 사업자 등록증을 올리도록 할 것.
+  사업자 등록증에 있는 대표자가 본인 인증 하도록 해야 할 것.
+  경고. 사업자등록증이 없거나 사업자등록증과 관계 없는 사업, 불법 광고, 성매매 유사 업종을 광고하는 경우 해당 광고는 즉시 차다며, 당국에 고발조치를 합니다.
+  
 
 ## Terms & Conditions
 
@@ -734,7 +1081,9 @@ isTrue((new AppController())->version(), "App version");
 - Banners that has longer end dates will appear first.
 
 - Point payment
-  Banner price is different on each place. It is set by admin page.
+  Banner price is different on each banner place of each country. It is set by admin page.
+  
+- User cannot choose country when they upload(edit) banner.
 
 - Cancellation.
   Advertisement can be cancelled before it begins.
@@ -745,16 +1094,47 @@ isTrue((new AppController())->version(), "App version");
 
   - To refund the point, the system must know how much point was set(paid) for 1 day.
     The charge (of point) may be changed often by admin.
-    So, When user create the banner, the total point and periods(days) must be recorded.
+    So, When user create the banner, the total point and periods(daymas) must be recorded.
     And, when user wants to cancel/refund the banner, the system can compute how much to return to the user.
 
 - If the advertisement has not started yet, then 100% of the point will be refunded without penalty.
-  - User can set the begin date of the advertisement and the user want to cancel the advertisement before the begin date,
+  - User can set the begin_date of the advertisement and the user want to cancel the advertisement before the begin_date,
   then 100% will be refunded.
+    
+- 관리자는 각 배너 포인트를 0 으로 설정 할 수 있다.
+  즉, 사용자는 배너를 무료로 진행 할 수 있는 것이다. 이 때에는 최대 광고 설정 기간을 길게하지 않도록 해야 한다.
 
 - Each banner must be a png or jpg file. that means, GIF animation is not allowed.
 
 - If one banner place has multiple banners to show, then it will rotate the banner by 7 seconds.
+
+
+## 광고 기능 코딩 기법 및 로직 설명
+
+- 광고 게시판 아이디는 반드시 `ADVERTISEMENT_CATEOGRY` 에 있는 것을 사용한다.
+- 광고 배너는 하나의 글이다.
+  
+- 광고 배너(글) 생성 시,
+  - pointPerDay 와 advertisementPoint 는 0 으로 초기화 되어 meta 에 저장된다. 즉, 항상 사용 가능한 상태이다.
+- 광고 배너(글)를 생성하고, `advertisement.start` 라우트로 시작을 해 주어야 한다. 이 대,
+  - pointPerDay 는 해당 광고의 하루 포인트
+  - advertisementPoint 에는 총 기간의 포인트가 meta 에 저장된다.
+  
+- 광고가 진행(시작)되기 전에 취소되면, post 의 meta 중 status 에 cancel 을 저장하고, 100% 환불된다.
+- 광고가 시작되어, 중간에 중단되면, post 의 meta 중 status 에 stop 이 저장되고, 오늘을 빼고 나머지 일 수 만큼 환불 된다.
+- 중단된 광고, 취소된 광고, 끝난 광고는 `advertisement.route` 호출을 통해서 광고 중단을 할 수 없다.
+  단, 오늘 끝나는 광고는 중단 할 수 있다.
+
+- 광고 상태는 active, inactive, waiting 과 같이 3 가지 클라이언트에게 전달된다.
+  단, 실제로는 stop 과 cancel 두 가지가 더 있는데, stop 과 cancel 은 db record 에 저장되는 것으로 클라이언트에게 전달 될 때에는 inactive 로 전달된다.
+  active, inactive, waiting 은 db record 에 저장되는 값이 아니라, 클라이언트로 response 할 때, 프로그램적으로 만들어지는 값이다.
+  - 배너( 글 )를 입력 받아, 메타에 저장된 status 를 보고,
+    - stop 이나 cancel 이면 inactive
+  - advertisementPoint 에 값이 0 이면, 광고 설정이 안된 것으로, inactive
+  - status 가 stop, cancel 이 아니고, advertisementPoint 가 있는 상태에서,
+    - 광고 시작이 안되었으면, waiting
+    - 광고 시작과 끝 시간 사이에 있으면, active
+    - 광고 종료되었으면, inactive,
 
 ## Banner Place & Display
 
@@ -833,7 +1213,7 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
   It uses `posts` table.
   (광고 테이블은 따로 없고, `posts` 테이블을 사용한다.)
 
-- The advertisement category is stated on `ADVERTISE_CATEGORY`. (게시판 아이디는 `ADVERTISE_CATEGORY` 에 기록되어져 있다.)
+- The advertisement category is stated on `ADVERTISEMENT_CATEGORY`. (게시판 아이디는 `ADVERTISEMENT_CATEGORY` 에 기록되어져 있다.)
 
 - The advertisement begin date and end date.
   - Begin date is recorded at `beginAt`
@@ -894,16 +1274,6 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
   The maximum width of top banner will be 285px but it may be shown narrower when the screen size becomes smaller.
   
 
-## Banner management
-
-- Admin may set the point of a banner in `config.php` to 0.
-  Then users can advertise without any point.
-  
-~~If a banner point in `config.php` is set to 0, then the banner can be deleted without stopping the banner when it is active.
-  That is because, when the banner stopped, the system sets 0 to `advertisementPoint` on database,
-    and the system considers if it is 0, the banner is inactive.
-    So, it is not a good idea to set the point of a banner to 0.~~~
-  
 
 
 ## 버전 1.x 에서 위젯으로 출력하는 방법
@@ -970,7 +1340,14 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
   
 - When user visits sub-cafe,
   - It displays subcategories of the sub-cafe, together with th main-cafe menus.
-  
+
+## 카페 설정
+
+- 카페에서 사용되는 게시판, 기본 설정 등을 손쉽게 관리하기 위해서 `?route=cafe.check` 로 접속하면 된다.
+  접속 예, `https://main.philov.com/index.php?route=cafe.check&reload=true`
+  - 이 경로는 Json 을 리턴하는 것이 아니라, 카페 설정 정보를 보여준다.
+  - 그리고 메인 메뉴에 사용되는 게시판의 경우, 존재하지 않으면 자동 생성한다.
+
 ## Cafe PWA
 
 - All cafe (both main-cafe and sub-cafe) works as PWA.
@@ -1069,7 +1446,7 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 ### 사용자 사진, 프로필 사진
 
 - 사용자가 프로필 사진을 올릴 때,
-  `file.userIdx` 에 회원 번호, `file.code` 에 `photoUrl` 이라고 입력하면, 해당 사진은 그 사용자의 프로필 사진이 된다.
+  `file.userIdx` 에 회원 번호, `file.code` 에 `photoUrl` 이라고 입력하면, 해당 사진은 그 사용자의 프로필 사진로 저장된다.
   이 때, `file.taxonomy` 와 `file.entity` 의 값은 무시된다. 즉 아무 값이나 들어가도 상관 없다.
   
   주의: 1.0.x 에서는 `file.code` 가 아닌 `file.taxonomy` 에 `photoUrl` 이라고 저장했다.
@@ -1249,11 +1626,11 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 - add a method like 'canXxxx()' in `user_acitivity.taxonomy.php` if it needs to check the permission before the activity
   - And add it to somewhere before the activity.
-  - For instance `act()->canCreatePost()`
+  - For instance `userActivity()->canCreatePost()`
 
 - add a method of recording activity in `user_acitivity.taxonomy.php`.
   - And add it after the activity.
-  - For instance, `act()->register()`
+  - For instance, `userActivity()->register()`
   - If it needs to deduct point, deduct the point in this method.
 
 - For instance, 'UserActivityTaxonomy::canRegister()' checks if the user can register, and 'UserActivityTaxonomy::register()' method records.
@@ -1319,6 +1696,20 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 
 
+# 썸네일, Thumbnail
+
+- 쎔네일을 사용하는 방법은 두 가지 방법이 있다.
+  - 하나는 thumbnailUrl() 을 호출하여, 쎔네일 이미지 URL 을 가져오는 것이고
+  - 또 다른 하나는 `https://.../etc/thumbnail.php` 와 같이 endpoint 를 이미지 태그 등에 넣어 바로 화면에 출력하는 것이다.
+  - 이 둘다, 동일한 zoomThumbnail 함수를 사용하고, 둘 다 기본 사이즈 200x200 을 사용한다.
+    - 사이즈가 같다면, 둘 중에 하나에서 생성한 이미지는 다른 것에 재 사용된다.
+
+- 썸네일을 잘 하는 방법 또는 이미지를 잘 관리하는 방법
+  - 가능하면 이미지 정 중앙에 객체(중요 이미지 부분, 대상이 되는 부분)를 넣으면 좋다. 그러면 썸네일을 할 때 잘 보인다.
+  - 예를 들어, 가로 1, 세로 2 와 같은 비율로 너비는 작고 높이가 긴 세로 이미지를 썸네일로 표시하는 경우, 이미지를 올릴 때,
+    - 객체(대상 또는 주요 부분)가 정 중앙에서 세로로 좀 길게 배열을 해야한다. 그래야 썸네일 했을 때 자연스럽다.
+    - 그리고 그러한 사진만 올리는 카테고리를 따로 정해 놓고, 세로로 긴 사진은 그 카테고리에 따로 올리는 것이 좋다.
+      예를 들면, 뉴스 게시판의 "세로 이미지" 라는 카테고리를 만들어 그 카테고리에 세로 이미지만 넣으면 좋다.
 
 # 관리자 페이지, Admin Page
 
@@ -1802,6 +2193,8 @@ echo "현재 환율: $phpKwr";
 
 - @TODO 글 쓰기를 할 때, 포인트가 감소하는 하는 설정을 한 경우, 지정한 회수 만큼만 감소하고 그 이후 글을 쓰면 더 이상 감소하지 않는가? 물론 ban 하면 더 이상 쓰기는 안되어야 한다.
 
+- 관리자가 limit 설정을 하지 않으면, 자동으로 포인트 증/감을 하지 않는다. 즉, daily limit count 또는 hourly limit count 를 0 보다 큰 수로
+  설정해야지만, 그 회 수 만큼만 포인트가 증/감한다.
 
 - 포인트를 적용하는 곳(회원 가입, 로그인, 글 쓰기/삭제, 코멘트 쓰기/삭제, 추천, 비추천 등)에서는 포인트의 변화가 없어도(포인트 증감이 없어도) 기록을 남긴다.
 

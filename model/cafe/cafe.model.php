@@ -87,14 +87,39 @@ class CafeModel extends CategoryModel
         'qna',
         'discussion',
         'buyandsell',
+        'travel',
         'reminder',
         'job',
         'rent_house',
         'rent_car',
-        'im',
+        'im_visa',
         'real_estate',
         'money_exchange',
-        'sitemap',
+        // 보딩하우스. 하숙집.
+        'boarding_house',
+        // 홈스테이. 아이디를 맡아서 돌보면서, 학교를 보내는 곳.
+        'homestay',
+        // 호텔. 또는 민박. 또는 게스트 하우스.
+        'hotel',
+        'gathering',
+        'weather',
+        'greetings',
+        'business',
+        'house_helper',
+        // 사람 찾기, 행방불명
+        'missing',
+
+        // 주의 사항,
+        'caution',
+
+        'restaurant',
+        'food_delivery',
+        'school',
+        'company_book',
+        'golf',
+        'knowhow',
+        'message',
+        'news',
     ];
 
 

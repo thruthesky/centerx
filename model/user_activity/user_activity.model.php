@@ -169,42 +169,50 @@ class UserActivityModel extends UserActivityBase {
         $actions = [ Actions::$like, Actions::$dislike ];
 
 
-        $limit = false;
-        // Check hourly limit. 추천/비추천 시간/수 제한
-        if ( $re = $this->countOver(
-            $actions, // check action for like and dislike. 추천/비추천을
-            userActivity()->getLikeHourLimit() * 60 * 60, // for how many hours? 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
-            userActivity()->getLikeHourLimitCount(), // for how many actions? count 회 수 이상 했으면,
-            fromUserIdx: login()->idx, // for the login user
-        ) ) {
-            // Limitation reached.
-            // 제한에 걸렸다.
-            // 추천/비추천에서는 에러를 리턴 할 필요 없이 그냥 계속 한다.
-            $limit = true;
-        }
-
-
-        // 추천/비추천 일/수 제한
-        if ( $re = $this->countOver(
-            $actions, // 추천/비추천을
-            24 * 60 * 60, // 하루에
-            userActivity()->getLikeDailyLimitCount(), // count 회 수 이상 했으면,
-            login()->idx,
-        ) ) {
-            // Limitation reached.
-            // 제한에 걸렸다.
-            // 무시하고 계속
-            $limit = true;
-        }
 
         $action = $Yn== 'Y' ? Actions::$like : Actions::$dislike;
 
+        // Is my post(or comment)?
         if ( $forum->isMine() ) {
-            // If it's my post, then don't change point.
+
+            // then don't change point. Just leave user activity log.
             $fromUserPoint = 0;
             $toUserPoint = 0;
         }
         else {
+
+
+            $limit = false;
+            // Check hourly limit. 추천/비추천 시간/수 제한
+            if ( $re = $this->countOver(
+                $actions, // check action for like and dislike. 추천/비추천을
+                userActivity()->getVoteHourLimit() * 60 * 60, // for how many hours? 특정 시간에, 시간 단위 이므로 * 60 * 60 을 하여 초로 변경.
+                userActivity()->getVoteHourLimitCount(), // for how many actions? count 회 수 이상 했으면,
+                fromUserIdx: login()->idx, // for the login user
+            ) ) {
+                // Limitation reached.
+                // 제한에 걸렸다.
+                // 추천/비추천에서는 에러를 리턴 할 필요 없이 그냥 계속 한다.
+                $limit = true;
+            }
+
+
+
+            // Check daily limit. 추천/비추천 일/수 제한
+            if ( $limit == false && $re = $this->countOver(
+                $actions, // 추천/비추천을
+                24 * 60 * 60, // 하루에
+                userActivity()->getVoteDailyLimitCount(), // count 회 수 이상 했으면,
+                login()->idx,
+            ) ) {
+                // Limitation reached.
+                // 제한에 걸렸다.
+                // 무시하고 계속
+                $limit = true;
+            }
+
+
+
             // If the limit is not yet reached. 제한에 안 걸렸으면, 포인트 증/감.
             if ( $limit == false ) {
                 $fromUserPoint = $Yn == 'Y' ? $this->getLikeDeductionPoint() : $this->getDislikeDeductionPoint();

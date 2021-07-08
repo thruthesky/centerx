@@ -45,7 +45,7 @@ class Forum extends Entity {
         if ( $this->parentIdx ) $action =  Actions::$createComment;
         else $action = Actions::$createPost;
 
-        $point = act()->last(POSTS, $this->idx, $action)?->toUserPointApply ?? 0;
+        $point = userActivity()->last(POSTS, $this->idx, $action)?->toUserPointApply ?? 0;
         $this->updateMemory('appliedPoint', $point);
     }
     /**
@@ -69,9 +69,11 @@ class Forum extends Entity {
         if ( !$Yn ) return $this->error(e()->empty_vote_choice);// ERROR_EMPTY_CHOICE;
         if ( $Yn != 'Y'  && $Yn != 'N' ) return $this->error(e()->empty_wrong_choice);// ERROR_WRONG_INPUT;
 
+        // Get vote history to check if the user did the vote for the post/comment.
         $vote = voteHistory()->by(login()->idx, POSTS, $this->idx);
         // Already voted? 추천을 이미 했는가?
         if ( $vote->exists() ) {
+            // Yes, vote was made before.
             if ( $vote->choice == $Yn ) {
                 // 동일한 추천을 이미 했음. 포인트 변화 없이, 추천을 없애준다.
                 $vote->update([CHOICE => '']);
@@ -81,7 +83,7 @@ class Forum extends Entity {
                 $vote->update([CHOICE => $Yn]);
             }
         } else {
-//            act()->can(Activity::$vote, postIdx: $this->idx);
+//            userActivity()->can(Activity::$vote, postIdx: $this->idx);
             // Do actions for first vote. 처음 추천
             // Change point for first vote only. 처음 추천하는 경우에만 포인트 지정.
             // Leave vote history. 추천 기록 남김. 포인트 증/감 유무와 상관 없음.
@@ -95,9 +97,10 @@ class Forum extends Entity {
 //            point()->vote($this, $Yn);
 
 //            d($this);
-            act()->vote($this, $Yn);
+            userActivity()->vote($this, $Yn);
         }
 
+        // Update number of votes for the post/comment.
         // 해당 글 또는 코멘트의 총 vote 수를 업데이트 한다.
         $Y = voteHistory()->count(conds: [TAXONOMY => POSTS, ENTITY => $this->idx, CHOICE => 'Y']);
         $N = voteHistory()->count(conds: [TAXONOMY => POSTS, ENTITY => $this->idx, CHOICE => 'N']);
@@ -230,6 +233,7 @@ class Forum extends Entity {
 
 
     /**
+     * 입력된 시작날짜와 끝날짜를 timestamp 로 변환해서 리턴한다.
      * If `beginAt` and `endAt` are string, then Convert it into timestamp.
      * If `beginAt` and `endAt` are empty and `beginDate` and `endDate` are not,
      *  then convert `beginDate` and `endDate` into timestamp and save it in `beginAt`, `endAt`.

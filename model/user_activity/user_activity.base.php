@@ -37,17 +37,26 @@ class UserActivityBase extends Entity {
      * ) ) return ERROR_HOURLY_LIMIT; // 에러 리턴
      */
     function countOver(array $actions, int $stamp, int $count, int $fromUserIdx=0, int $categoryIdx=0): bool {
-        if ( $count ) {
-//            d("countOver: $categoryIdx");
-            $total = $this->countActions( actions: $actions, stamp: $stamp, fromUserIdx: $fromUserIdx, categoryIdx: $categoryIdx );
-//            d("if ( total: $total >= count: $count ) {");
-            if ( $total == 0 ) return false;
-            else if ( $total >= $count ) {
-                return true;
-            }
+        debug_log("countOver( count: $count )");
+        /// @attention if the setting of count limit is 0, then, it return true.
+        /// This means, if admin didn't set the setting, the default value is 0. And the there no point
+        /// increase/decrease by default. The admin must set(change) count limit for the point to be increased or decreased.
+        if ( $count == 0 ) return true;
+
+        debug_log("countOver: $categoryIdx");
+        $total = $this->countActions( actions: $actions, stamp: $stamp, fromUserIdx: $fromUserIdx, categoryIdx: $categoryIdx );
+        debug_log("if ( total: $total > count: $count ) {");
+
+        /// 한 번만 추천하도록 count limit 이 1 로 설정되어져 있으면, 맨 처음 동작 할 때에는 레코드가 없으니 $total 은 0 이 된다.
+        /// 즉, $total 은 $count 보다 1 작아야 한다.
+        if ( $total >= $count ) {
+            return true;
+        } else {
+            return false;
         }
-        return false;
+
     }
+
 
 
 
@@ -197,8 +206,6 @@ class UserActivityBase extends Entity {
      * @note You may need to record twice by calling `recordAction()` two times for a specific actions like voting.
      *
      *
-     * - 적용된 포인트를 음/양의 값으로 리턴한다. 이 리턴되는 값을 from_user_point_apply 또는 to_user_point_apply 에 넣으면 된다.
-     * - 입력된 $point 가 올바르지 않거나, 증가되지 않으면 0을 리턴한다.
      */
     public function recordAction(
         string $action,
@@ -286,12 +293,12 @@ class UserActivityBase extends Entity {
         // 저장되려는 포인트가 0 보다 작으면,
         if ( $savingPoint < 0 ) {
             // 0 을 저장하고,
-            $user->setPoint(0);
+            $user->_setPoint(0);
             // 실제 차감된 포인트를 리턴
             return -$userPoint;
         } else {
             // 저장되려는 포인트가 양수이면, 저장하고,
-            $user->setPoint($savingPoint);
+            $user->_setPoint($savingPoint);
             // 전체 증가 포인트를 리턴
             return $point;
         }
@@ -352,35 +359,33 @@ class UserActivityBase extends Entity {
     }
 
     /**
-     * @deprecated rename to setVoteHourLimit
      * @param $hour
      */
-    public function setLikeHourLimit($hour) {
+    public function setVoteHourLimit($hour) {
         adminSettings()->set(ActivityLimits::$voteHourlyLimit, $hour);
     }
 
-    public function getLikeHourLimit() {
+    public function getVoteHourLimit() {
         return adminSettings()->get(ActivityLimits::$voteHourlyLimit) ?? 0;
     }
 
 
-    public function setLikeHourLimitCount($count) {
+    public function setVoteHourLimitCount($count) {
         adminSettings()->set(ActivityLimits::$voteHourlyLimitCount, $count);
     }
 
-    public function getLikeHourLimitCount() {
+    public function getVoteHourLimitCount() {
         return adminSettings()->get(ActivityLimits::$voteHourlyLimitCount) ?? 0;
     }
 
     /**
-     * @deprecated name it to setVoteDailyCount
      * @param $count
      */
-    public function setLikeDailyLimitCount($count) {
+    public function setVoteDailyCount($count) {
         adminSettings()->set(ActivityLimits::$voteDailyLimitCount, $count);
     }
 
-    public function getLikeDailyLimitCount() {
+    public function getVoteDailyLimitCount() {
         return adminSettings()->get(ActivityLimits::$voteDailyLimitCount) ?? 0;
     }
 

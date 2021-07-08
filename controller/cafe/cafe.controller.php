@@ -81,4 +81,8 @@ class CafeController {
         }
         return $rets;
     }
+
+    public function check() {
+        include ROOT_DIR . 'controller/cafe/check.php';
+    }
 }

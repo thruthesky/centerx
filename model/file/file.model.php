@@ -8,6 +8,7 @@
  *
  * @property-read string path - file path
  * @property-read string url
+ * @property-read string thumbnailUrl
  */
 class FileModel extends Entity {
 
@@ -142,6 +143,12 @@ class FileModel extends Entity {
     }
 
     /**
+     * 파일 데이터 읽기
+     *
+     * 기본 thumbnailUrl 을 추가해 준다. 이 때, /etc/thumbnail.php 를 이용한다.
+     *
+     * @note 주의, 이 함수에서 thumbnailUrl() 을 실행하면, 재귀 호출이 발생하여, 서버가 다운된다.
+     *
      * @param int $idx
      * @return Entity
      */
@@ -150,6 +157,8 @@ class FileModel extends Entity {
         parent::read($idx);
         $url = UPLOAD_SERVER_URL . 'files/uploads/' . $this->v(PATH);// $data[PATH];
         $this->updateMemoryData('url', $url);
+        $this->updateMemoryData('thumbnailUrl', UPLOAD_SERVER_URL . "etc/thumbnail.php?idx=$idx");
+//        $this->updateMemoryData('thumbnailUrl', thumbnailUrl($this->idx));
         $this->updateMemoryData('path', UPLOAD_DIR . $this->path);
         return $this;
     }

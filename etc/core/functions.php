@@ -1704,10 +1704,13 @@ function postMessagingUrl(int $idx) {
  *  If it is falsy value like empty string, false, 0, then it searches posts that has no attached files.
  *
  * @return array|string
+ * - It returns 'where' and 'params' only.
  *
  *
  * @attention both of categoryIdx and categoryId are set, then categoryIdx will be used.
  *  if none of them are set, then it will search all the posts.
+ *
+ * @todo Make a new function that fix the input '$in' as call-by-reference. If there is no error, it returns false, or if there is error, it return error_string,
  */
 function parsePostSearchHttpParams(array $in): array|string {
 
@@ -1932,19 +1935,38 @@ function isBetweenDay($stamp, $firstStamp, $secondStamp) {
  * Returns true if the input stamp is today or future. ( not past )
  */
 function isTodayOrFuture(int $stamp): bool {
-    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
-    return  $carbon->isToday() || $carbon->isFuture();
+    return isToday($stamp) || isFuture($stamp);
+//    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+//    return  $carbon->isToday() || $carbon->isFuture();
 }
 /**
  * Returns true if the input stamp is today or past. ( not future )
  */
 function isTodayOrPast(int $stamp): bool {
+    return isToday($stamp) || isPast($stamp);
+//    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+//    return  $carbon->isToday() || $carbon->isPast();
+}
+function isToday($stamp) {
     $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
-    return  $carbon->isToday() || $carbon->isPast();
+    return $carbon->isToday();
+}
+function isPast($stamp) {
+    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+    return $carbon->isPast();
+}
+function isFuture($stamp) {
+    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
+    return $carbon->isFuture();
 }
 
 /**
  * 이미지를 썸네일로 제작한다.
+ *
+ * @note 이 함수는 썸네일 이미지를 파일에 저장하고, 그 경로를 리턴한다.
+ *  - 즉, 실시간으로 썸네일을 생성할 수가 없다.
+ *  - 실시간으로 썸네일을 생성하기 위해서는 이미지 경로가 아니라 이미지 자체를 리턴해야 한다.
+ *  - 실시간으로 썸네일 생성하고, 이미지를 리턴하는 코드는 /etc/thumbnail.php 에 있다.
  *
  * "PHP 썸네일 - Zoom Crop" 요약 문서 - https://docs.google.com/document/d/1RWYRWiATRdgT02cqG5TbVtJCOTSKtlAzXxeOM2-NkXA/edit#heading=h.2ryanntdiu14
  * 위 문서를 보면, 어떻게 zoom crop 을 하는지 알 수 있다.
