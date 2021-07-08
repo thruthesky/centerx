@@ -390,7 +390,7 @@ class PostModel extends Forum {
             params: $in['params'] ?? $params,
             order: $in['order'] ?? $order,
             by: $in['by'] ?? $by,
-            page: $in['page'] ?? $page,
+            page: isset($in['page']) && $in['page'] > 0 ? $in['page'] : $page,
             limit: $in['limit'] ?? $limit,
             object: $object
         );

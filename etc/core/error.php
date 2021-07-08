@@ -226,7 +226,7 @@ class E {
     public string $empty_line_banner_point = 'error_empty_line_banner_point';
     public string $invalid_value = 'error_invalid_value';
 
-
+    public string $more_than_90days_date_difference = 'error_more_than_90days_date_difference';
 
 
     public bool $isError = false;

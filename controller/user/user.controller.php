@@ -119,8 +119,25 @@ class UserController
     {
         if (notLoggedIn()) return e()->not_logged_in;
         $myIdx = login()->idx;
-        $q = "(fromUserIdx=? AND fromUserPointApply<>0) OR (toUserIdx=? AND toUserPointApply<>0)";
-        return userActivity()->search( select: '*', where: $q, params: [$myIdx,$myIdx,], limit: 200);
+
+        /**
+         * convert beginAt and endAt date string to stamp
+         */
+        $in = post()->updateBeginEndDate($in);
+
+        /**
+         * return error if date difference is more than 90days
+         */
+        if (daysBetween($in[BEGIN_AT], $in[END_AT]) > 90) return e()->more_than_90days_date_difference;
+
+        $endAt = $in[END_AT] + (60 * 60 * 24) - 1;
+        $sql = [];
+        $sql[] = "((fromUserIdx=? AND fromUserPointApply<>0) OR (toUserIdx=? AND toUserPointApply<>0))";
+        $sql[] = "(createdAt >=? AND createdAt <=?)";
+        $q = implode(' AND ', $sql);
+
+        $limit = $in['limit'] ?? 1000;
+        return userActivity()->search( select: '*', where: $q, params: [$myIdx,$myIdx,$in[BEGIN_AT],$endAt], limit: $limit);
     }
 
     /**

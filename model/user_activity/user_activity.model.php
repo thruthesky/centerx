@@ -137,7 +137,9 @@ class UserActivityModel extends UserActivityBase {
             fromUserIdx: 0,
             fromUserPoint: 0,
             toUserIdx: $user->idx,
-            toUserPoint: $this->getRegisterPoint()
+            toUserPoint: $this->getRegisterPoint(),
+            taxonomy: $user->taxonomy,
+            entity: $user->idx
         );
     }
 
@@ -151,7 +153,9 @@ class UserActivityModel extends UserActivityBase {
             fromUserIdx: 0,
             fromUserPoint: 0,
             toUserIdx: $user->idx,
-            toUserPoint: $this->getLoginPoint()
+            toUserPoint: $this->getLoginPoint(),
+            taxonomy: $user->taxonomy,
+            entity: $user->idx
         );
     }
 
@@ -218,7 +222,9 @@ class UserActivityModel extends UserActivityBase {
             fromUserPoint: $fromUserPoint,
             toUserIdx: $forum->userIdx,
             toUserPoint: $toUserPoint,
-            taxonomy: $forum->taxonomy
+            taxonomy: $forum->taxonomy,
+            entity: $forum->idx,
+            categoryIdx: $forum->categoryIdx
         );
 
 
