@@ -46,7 +46,7 @@ class CafeController {
         $arr = cafe()->mine();
         $rets = [];
         foreach( $arr as $c ) {
-            $rets[] = $c->response('idx, id, domain');
+            $rets[] = $c->response('idx, id, title, domain');
         }
         return $rets;
     }

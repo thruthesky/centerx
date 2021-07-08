@@ -1308,7 +1308,7 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 
 
-# 카페, Cafe
+# 카페, Cafe, 소너브
 
 - Cafe functionality is a unique function for `sonub.com` site. So, it may not be appropriate for the model and
   controller to be under `controller` and `model` folder. Rather, they should be inside its view folder.
@@ -1341,6 +1341,7 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 - When user visits sub-cafe,
   - It displays subcategories of the sub-cafe, together with th main-cafe menus.
 
+
 ## 카페 설정
 
 - 카페에서 사용되는 게시판, 기본 설정 등을 손쉽게 관리하기 위해서 `?route=cafe.check` 로 접속하면 된다.
@@ -1356,6 +1357,11 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
   - Sub cafe will use its category settings to patch manifest.json
   
 
+## 카페 로그인
+
+- 소셜 로그인 만으로 한다.
+  - 카카오, 구글, 페이북 3가지로만 로그인을 할 수 있도록 한다.
+    - 네이버는 뺀다. 그 이유는 도메인 설정에서 한 개발자 앱(프로젝트)에 2개의 도메인만 허용된다. 많은 도메인을 사용하게 될 소너브 카페와는 맞지 않다.
 
 
     
@@ -1694,6 +1700,18 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 그래서, 여러 도메인을 사용하는 경우, 네이버 API KEY 가 도메인 별로 다를 수 있다. 따라서 config.php 에서 도메인 별로 옵션 처리가 되어야 할 수 있다.
 
+
+## 파이어베이스 로그인
+
+웹으로 파이어베이스 로그인을 하는 경우 주로 구글, 페이스북, 애플 아이디로 로그인을 한다.
+- 파이어베이스에 로그인을 하면, 메일이나 기타 정보를 백엔드 `user.firebaseLogin` 라우터로 넘기고,
+- 백엔드에서 회원 정보 및 세션 아이디를 클라이언트에 넘겨주고, 웹 브라우저에 보관하는 것으로 로그인이 된다.
+  즉, 로그인은 백엔드의 세션 아이디가 클라이언트에 보관되어져야 한다.
+- 주의해야 할 것은, 다른 소셜 로그인과는 달리 파이어베이스의 경우 활용도가 높아
+  - 파이어베이스에 로그인을 하면, 백엔드에도 같이 로그인되어야 하고, 
+    벡엔드에서 로그아웃을 하면 파이어베이스에도 같이 로그아웃되어야 한다.
+    즉, 로그인이 서로 유지가 되어야 한다.
+    
 
 
 # 썸네일, Thumbnail

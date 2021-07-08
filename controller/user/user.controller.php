@@ -33,9 +33,28 @@ class UserController
             DOMAIN => $in[DOMAIN],
             PROVIDER => PROVIDER_KAKAO,
         ];
-
         return user()->loginOrRegister($data)->response();
+    }
 
+    /**
+     * 파이어베이스 auth 로 로그인을 하는 경우,
+     *
+     * 주로 구글, 페이스북, 애플 로그인을 한다.
+     *
+     * @param $in
+     * @return array|string
+     */
+    public function firebaseLogin($in) {
+        $data = [
+            EMAIL => $in[EMAIL],
+            PASSWORD => LOGIN_PASSWORD_SALT,
+            NICKNAME => $in[NICKNAME] ?? '',
+            PHOTO_URL => $in[PHOTO_URL] ?? '',
+            DOMAIN => $in[DOMAIN],
+            PROVIDER => $in[PROVIDER],
+            FIREBASE_UID => $in[FIREBASE_UID],
+        ];
+        return user()->loginOrRegister($data)->response();
     }
 
     // Returns log-in user's profile.

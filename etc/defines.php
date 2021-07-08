@@ -196,9 +196,13 @@ define('PENDING','pending');
 define('API_CALL', in(ROUTE) != null);
 
 
+const PROVIDER_NAVER = 'naver';
+const PROVIDER_KAKAO = 'kakao';
+const PROVIDER_GOOGLE = 'google';
+const PROVIDER_FACEBOOK = 'facebook';
+const PROVIDER_APPLE = 'apple';
+const FIREBASE_UID = 'firebaseUid';
 
-define('PROVIDER_NAVER', 'naver');
-define('PROVIDER_KAKAO', 'kakao');
 
 define('PROVIDERS', [PROVIDER_NAVER, PROVIDER_KAKAO]);
 

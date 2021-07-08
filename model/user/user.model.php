@@ -81,6 +81,10 @@ class UserModel extends Entity {
 //        }
 //    }
 
+    /**
+     * 닉네임 또는 이름 또는 이메일 주소의 앞자리를 리턴한다.
+     * @return string
+     */
     public function nicknameOrName() {
         if ( $this->nickname ) return $this->nickname;
         else if ( $this->name ) return $this->name;
@@ -89,8 +93,10 @@ class UserModel extends Entity {
             if ( str_contains($email, '@') ) {
                 $arr = explode('@', $email, 2);
                 $account_name = $arr[0];
-                if ( strlen($account_name) < 3 ) return 'xxx';
-                return substr($account_name, 0, strlen($account_name)-3) . 'xxx';
+                if ( strlen($account_name) > 10 ) return substr($account_name, 0, strlen($account_name)-7) . 'xxxx';
+                else if ( strlen($account_name) > 7 ) return substr($account_name, 0, strlen($account_name)-5) . 'xxx';
+                else if ( strlen($account_name) > 4 ) return substr($account_name, 0, strlen($account_name)-3) . 'xxx';
+                else return 'xxx';
             } else {
                 return '(No nameOrNickname or Email)';
             }

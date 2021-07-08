@@ -15,7 +15,7 @@ class FileController {
 
 
     /**
-     * taxonomy, entity, code 를 입력 받아서, 해당 사진을 리턴한다.
+     * taxonomy, entity, code, userIdx 를 입력 받아서, 해당 사진을 리턴한다.
      * @param $in
      * @return array|string
      *
@@ -27,6 +27,7 @@ class FileController {
         if ( isset($in[TAXONOMY]) ) $conds[TAXONOMY] = $in[TAXONOMY];
         if ( isset($in[ENTITY]) ) $conds[ENTITY] = $in[ENTITY];
         if ( isset($in[CODE]) ) $conds[CODE] = $in[CODE];
+        if ( isset($in[USER_IDX]) ) $conds[USER_IDX] = $in[USER_IDX];
         return files()->findOne($conds)->response();
     }
 
