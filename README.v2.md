@@ -1310,6 +1310,10 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 # 카페, Cafe, 소너브
 
+- 메일 회원 가입하지 않고, 소셜 로그인 하며, 회원 별 본인 인증을 하므로, 메일 주소를 회원 정보에 표시 하지 않는다.
+- 전화번호, 이름, 생년월일(나이), 성별은 수정 불가하다. 본인 인증을 하면 자동으로 적용된다. 단, 닉네임은 수정 가능.
+- 회원 정보에서 이름을 표시 할 때에는 "송x호" 와 같이 중간 글자를 안보이게 처리한다.
+
 - Cafe functionality is a unique function for `sonub.com` site. So, it may not be appropriate for the model and
   controller to be under `controller` and `model` folder. Rather, they should be inside its view folder.
   But to make it easy to work, it is under the system folder temporarily.
