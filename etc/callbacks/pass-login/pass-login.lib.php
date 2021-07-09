@@ -106,6 +106,7 @@ function pass_login_callback($in): array|string
     }
     curl_close($ch);
 
+    // 휴대폰 PASS 로그인으로 부터 받은 회원 정보
     $user = $re['user'];
     $ret = [];
 
@@ -113,8 +114,8 @@ function pass_login_callback($in): array|string
     /**
      * 주의: 자동로그인을 할 때, ci 및 기타 값에 이상한 값이 들어온다.
      */
-
     if (isset($user['autoLoginYn']) && $user['autoLoginYn'] == 'Y') {
+        // 자동 로그인의 경우,
         $ret['autoLoginYn'] = $user['autoLoginYn'];
     } else {
         /**
@@ -146,7 +147,7 @@ function pass_login_callback($in): array|string
         }
     }
 
-    /// plid 는 자동로그인이든 아니든 항상 들어오며, 암호화되어 들어오지 않는다. 복호화 할 필요 없다.
+    // plid 는 자동로그인이든 아니든 항상 들어오며, 암호화되어 들어오지 않는다. 복호화 할 필요 없다.
     if (isset($user['plid']) && $user['plid']) {
         $ret['plid'] = $user['plid'];
     }
@@ -158,28 +159,32 @@ function pass_login_callback($in): array|string
 
 //        d($ret);
 
+    // 휴대폰 PASS 로그인으로 부터 받은 회원 정보를 배열에 담아 리턴한다. 회원 가입이나 로그인 용도로 사용 할 수 있다.
     return $ret;
 }
 
 
 
 /**
+ * 패스 로그인을 한 다음, 회원 로그인 또는 회원 가입
  *
- * @param array $user
+ * @param array $user - 위 pass_login_callback 함수에서 받은 회원 정보로 회원 로그인 또는 회원 가입을 한다.
  * @return array
  */
-function pass_login_or_register(array $user): array
+function pass_login_or_register(array $user): UserModel
 {
     if (isset($user['ci']) && $user['ci']) {
         /// 처음 로그인 또는 자동 로그인이 아닌 경우,
         $user['email'] = PASS_LOGIN_MOBILE_PREFIX . "$user[phoneNo]@passlogin.com";
         $user['password'] = md5(LOGIN_PASSWORD_SALT . PASS_LOGIN_CLIENT_ID . $user['phoneNo']);
         $user['provider'] = 'passlogin';
-        $profile = user()->loginOrRegister($user)->profile();
+        $profile = user()->loginOrRegister($user);
     } else {
         /// plid 가 들어 온 경우, meta 에서 ci 를 끄집어 낸다.
-        $userIdx = getMetaEntity(USERS, 'plid', $user['plid']); //  user()->getMetaEntity('plid', $user['plid']);
-        $profile = user($userIdx)->profile();
+        $userIdx = meta()->entity(USERS, 'plid',$user['plid']);
+
+//        $userIdx = getMetaEntity(USERS, 'plid', $user['plid']); //  user()->getMetaEntity('plid', $user['plid']);
+        $profile = user($userIdx);
     }
     return $profile;
 }

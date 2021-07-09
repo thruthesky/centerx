@@ -1348,6 +1348,8 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 ## 카페 설정
 
+### cafe.check 라우트로 기본 설정
+
 - 카페에서 사용되는 게시판, 기본 설정 등을 손쉽게 관리하기 위해서 `?route=cafe.check` 로 접속하면 된다.
   접속 예, `https://main.philov.com/index.php?route=cafe.check&reload=true`
   - 이 경로는 Json 을 리턴하는 것이 아니라, 카페 설정 정보를 보여준다.
@@ -1450,7 +1452,8 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 - `birthdate` 에는 YYYYMMDD 의 8자리 숫자 값이 들어간다. 만약, 앱으로 부터 년도 4자리 값만 입력을 받는다면, 19730000 와 같이 월/일의 값은 0으로 입력하면 된다.
 - `provider` 는 로그인 기능을 제공하는 업체 코드이다. naver, kakao, google, facebook, 등이 들어가면 된다.
-- `verification` 은 사용자 인증을 제공하는 업체 코드이다. `passlogin`, `danal` 등과 같이 들어가면 된다.
+- `verifier` 은 사용자 인증을 제공하는 업체 코드이다. `passlogin`, `danal` 등과 같이 들어가면 된다.
+  이 필드의 값이 빈 문자열이면, 회원이 본인 인증을 하지 않은 것이다.
 
 
 ### 사용자 사진, 프로필 사진
@@ -1722,6 +1725,10 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
     즉, 로그인이 서로 유지가 되어야 한다.
     
 
+
+## 휴대폰 번호 PASS 로그인
+
+- 
 
 # 썸네일, Thumbnail
 

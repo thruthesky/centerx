@@ -263,7 +263,7 @@ if ( !defined('LOGIN_PASSWORD_SALT') ) define('LOGIN_PASSWORD_SALT', 'Change thi
 if ( !defined('PASS_LOGIN_MOBILE_PREFIX') ) define('PASS_LOGIN_MOBILE_PREFIX', 'm');
 if ( !defined('PASS_LOGIN_CLIENT_ID') ) define('PASS_LOGIN_CLIENT_ID', 'b90hirE4UYwVf2GkHIiK');
 if ( !defined('PASS_LOGIN_CLIENT_SECRET_KEY') ) define('PASS_LOGIN_CLIENT_SECRET_KEY', '366c0f3775bfa48f2239226506659f5981afd3eb2b08189f9f9d22cdc4ca63c9');
-if ( !defined('PASS_LOGIN_CALLBACK_URL') ) define('PASS_LOGIN_CALLBACK_URL', "https://local.itsuda50.com/etc/callbacks/pass-login.callback.php");
+if ( !defined('PASS_LOGIN_CALLBACK_URL') ) define('PASS_LOGIN_CALLBACK_URL', "https://sonub.com/etc/callback/pass-login/pass-login.callback.php");
 
 // 날짜 설정
 //

@@ -60,10 +60,15 @@ class MetaModel extends Entity {
 
     /**
      * Returns the entity of the record based on the params.
+     *
      * @param string $taxonomy
      * @param string $code
      * @param mixed $data
      * @return int
+     *
+     * @example
+     *  $userIdx = meta()->entity(USERS, 'plid',$user['plid']);
+     *
      */
     function entity(string $taxonomy, string $code, mixed $data ): int {
         $rows = $this->search(select: 'entity', conds: [TAXONOMY => $taxonomy, CODE => $code, DATA => $data]);

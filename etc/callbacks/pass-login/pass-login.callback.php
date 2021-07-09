@@ -4,7 +4,7 @@
  * @desc
  */
 
-require_once('../../boot.php');
+require_once('../../../boot.php');
 ?>
 <!doctype html>
 <html lang="en">
