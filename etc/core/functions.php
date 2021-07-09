@@ -1826,6 +1826,63 @@ function parseUserSearchHttpParams(array $in): array {
     return [ $where, $params ];
 }
 
+
+/**
+ *
+ * @param array $in
+ *  - searchKey
+ *
+ *
+ * @return array
+ *
+ */
+function parseFileSearchHttpParams(array $in): array {
+
+    $params = [];
+    $conds = [];
+
+    if ( isset($in['idx']) && $in['idx'] ) {
+        $conds[] = "(idx=?)";
+        $params[] = $in['idx'];
+    }
+
+    if ( isset($in['taxonomy']) && $in['taxonomy'] ) {
+        $conds[] = "(taxonomy=?)";
+        $params[] = $in['taxonomy'];
+    }
+    if ( isset($in['entity']) && $in['entity'] ) {
+        $conds[] = "(entity=?)";
+        $params[] = $in['entity'];
+    }
+    if ( isset($in['userIdx']) && $in['userIdx'] ) {
+        $conds[] = "(userIdx=?)";
+        $params[] = $in['userIdx'];
+    }
+    if ( isset($in['code']) && $in['code'] ) {
+        $conds[] = "(code=?)";
+        $params[] = $in['code'];
+    }
+
+    if ( isset($in['name']) && $in['name'] ) {
+        $conds[] = "(name LIKE ?)";
+        $params[] = '%' . $in['name'] . '%';
+    }
+
+
+    if ( $conds ) {
+        $where = implode(' AND ', $conds);
+    } else {
+        $where = '1';
+    }
+
+
+    return [ $where, $params ];
+
+}
+
+
+
+
 /**
  * Saves the search keyword for listing(searching) posts.
  * @param string $searchKey

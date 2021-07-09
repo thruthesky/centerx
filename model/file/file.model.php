@@ -160,6 +160,10 @@ class FileModel extends Entity {
         $this->updateMemoryData('thumbnailUrl', UPLOAD_SERVER_URL . "etc/thumbnail.php?idx=$idx");
 //        $this->updateMemoryData('thumbnailUrl', thumbnailUrl($this->idx));
         $this->updateMemoryData('path', UPLOAD_DIR . $this->path);
+
+
+        // short date for the file create time
+        $this->updateMemoryData('shortDate', short_date_time($this->createdAt));
         return $this;
     }
 
@@ -170,6 +174,19 @@ class FileModel extends Entity {
         if ( $this->hasError ) return $this->getError();
         $data = $this->getData();
 
+        if ( isset($data[USER_IDX]) ) {
+            $data['user'] = user($data[USER_IDX])->shortProfile(firebaseUid: true);
+        } else {
+            $data['user'] = [];
+        }
+
+        if($data[TAXONOMY] == POSTS) {
+            $data['post'] = [
+                'idx' => post($data[ENTITY])->idx,
+                'title' => post($data[ENTITY])->title,
+                'content' =>    post($data[ENTITY])->content
+            ];
+        }
         return $data;
     }
 

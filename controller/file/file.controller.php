@@ -87,6 +87,40 @@ class FileController {
         if ( !isset($in['idx']) ) return e()->idx_is_empty;
         return files($in)->permissionCheck()->delete()->response();
     }
+
+    public function search($in)
+    {
+
+        list ($where, $params ) = parseFileSearchHttpParams($in);
+
+        $files = files()->search(
+            select: $in['select'] ?? 'idx',
+            where: $where,
+            params: $params,
+            order: $in['order'] ?? IDX,
+            by: $in['by'] ?? 'DESC',
+            page: $in['page'] ?? 1,
+            limit: $in['limit'] ?? 10,
+            object: true
+        );
+        $res = [];
+        foreach($files as $file) {
+                $res[] =  $file->response();
+        }
+        return $res;
+    }
+
+    public  function count($in) : array | string {
+        list ($where, $params ) = parseFileSearchHttpParams($in);
+        $count = files()->count(
+            where: $where,
+            params: $params,
+            conds: $in['conds'] ?? [],
+            conj: $in['conj'] ?? "AND",
+        );
+
+        return [ 'count' => $count];
+    }
 }
 
 
