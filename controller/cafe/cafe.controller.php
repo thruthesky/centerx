@@ -31,6 +31,7 @@ class CafeController {
     }
 
     public function get($in): array|string {
+	    if ( ! isset( $in[ DOMAIN ] ) ) return e()->empty_domain;
         if ( cafe()->isMainCafe($in[DOMAIN]) ) {
             return e()->main_cafe_has_no_cafe_category_record;
         }
