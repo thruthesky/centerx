@@ -50,36 +50,22 @@ class UserModel extends Entity {
      * @param $name
      * @return mixed
      */
-//    public function __get($name): mixed {
-//        if ( $name == 'verified' ) {
-//            return $this->verifier;
-//        } else if ( $name == 'nicknameOrName' ) {
-//            if ( $this->nickname ) return $this->nickname;
-//            else if ( $this->name ) return $this->name;
-//            else {
-//                $email = $this->email;
-//                if ( str_contains($email, '@') ) {
-//                    $arr = explode('@', $email, 2);
-//                    $account_name = $arr[0];
-//                    if ( strlen($account_name) < 3 ) return 'xxx';
-//                    return substr($account_name, 0, strlen($account_name)-3) . 'xxx';
-//                } else {
-//                    return '(No nameOrNickname or Email)';
-//                }
-//            }
-//        } else if ( $name == 'age' ) {
-//            if ( strlen($this->birthdate) == 6) $birthYear = substr($this->birthdate, 0, 2);
-//            else if ( strlen($this->birthdate) == 8) $birthYear = substr($this->birthdate, 2, 2);
-//            else return '?';
-//
-//            if ( $birthYear < 30 ) $birthYear = "20$birthYear";
-//            else $birthYear = "19$birthYear";
-//            return (date('Y') - $birthYear) + 1;
-//        }
-//        else {
-//            return parent::__get($name);
-//        }
-//    }
+    public function __get($name): mixed {
+        if ( $name == 'verified' ) {
+            return $this->verifier;
+        } else if ( $name == 'age' ) {
+            if ( strlen($this->birthdate) == 6) $birthYear = substr($this->birthdate, 0, 2);
+            else if ( strlen($this->birthdate) == 8) $birthYear = substr($this->birthdate, 2, 2);
+            else return '?';
+
+            if ( $birthYear < 30 ) $birthYear = "20$birthYear";
+            else $birthYear = "19$birthYear";
+            return (date('Y') - $birthYear) + 1;
+        }
+        else {
+            return parent::__get($name);
+        }
+    }
 
     /**
      * 닉네임 또는 이름 또는 이메일 주소의 앞자리를 리턴한다.

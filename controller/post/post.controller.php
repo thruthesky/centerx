@@ -103,6 +103,18 @@ class PostController {
      */
     public function search(array $in): array|string
     {
+
+        // 카테고리 확인
+        $catIdx = $in[CATEGORY_IDX] ?? $in[CATEGORY_ID] ?? 0;
+        if ( $catIdx ) {
+            $cat = category($catIdx);
+            // 본인 인증한 회원 전용 읽기
+            if ( $cat->verifiedUserView == 'Y' && login()->verified == false ) {
+                // 본인 인증을 안했으면 에러 리턴.
+                return e()->not_verified;
+            }
+        }
+
         if ( $in ) {
             $re = parsePostSearchHttpParams($in);
             if ( isError($re) ) return $re;

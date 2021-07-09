@@ -138,6 +138,10 @@ class PostModel extends Forum {
         $category = category($in[CATEGORY_ID]);
         if ( $category->notFound ) return $this->error(e()->category_not_exists); // The category really exists in database?
 
+        // 인증한 사용자만 글 쓰기 옵션
+        if ( $category->verifiedUserCreatePost == 'Y' && login()->verified == false ) {
+            return $this->error(e()->not_verified );
+        }
 
         // 기본 값 지정.
         $in['listOrder'] ??= 0;
@@ -319,8 +323,8 @@ class PostModel extends Forum {
         if ( $this->hasError ) return $this->getError();
         $post = $this->getData();
         $post['categoryId'] = $this->categoryId();
-        if ( $comments == 0 ) {
 
+        if ( $comments == 0 ) {
             $post['comments'] = [];
             $post['noOfComments'] = count($post['comments']);
         }
@@ -343,6 +347,8 @@ class PostModel extends Forum {
         } else {
             $post['user'] = [];
         }
+
+
 
         /// @TODO - let $fields work here.
 

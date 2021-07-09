@@ -59,7 +59,9 @@ class CommentModel extends Forum {
         if ( login()->block == 'Y' ) return $this->error(e()->blocked);
         if ( !isset($in[ROOT_IDX]) ) return $this->error(e()->root_idx_is_empty);
 
+
         if ( !isset($in[PARENT_IDX]) ) $in[PARENT_IDX] = $in[ROOT_IDX]; // if parent idx is not set, set it same as root idx
+
 
         $in[USER_IDX] = login()->idx;
 
@@ -68,6 +70,12 @@ class CommentModel extends Forum {
         $categoryIdx = $post->categoryIdx;
         $category = category($categoryIdx);
         $in[CATEGORY_IDX] = $categoryIdx;
+
+
+        // ! 인증한 사용자만 코멘트 쓰기 옵션.
+        if ( $category->verifiedUserCreateComment == 'Y' && login()->verified == false ) {
+            return $this->error(e()->not_verified );
+        }
 
 
         /// 오늘 날짜
