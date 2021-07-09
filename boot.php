@@ -129,6 +129,7 @@ if ( file_exists($_path) ) {
     debug_log("View funcitons php script not exists. View(theme) functions path: $_path");
 }
 
+cookieLogin();
 
 // Leave a record, for stating that a new script run time begins.
 leave_starting_debug_log();

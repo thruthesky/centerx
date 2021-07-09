@@ -332,6 +332,18 @@ function setUserAsLogin(int|array $profile): UserModel {
     return user($profile[IDX] ?? 0);
 }
 
+/**
+ * API(라우트) 호출이 아닌 경우, 쿠키의 값을 확인해서 로그인을 한다.
+ */
+function cookieLogin() {
+
+    if ( API_CALL ) return;
+
+    // Login into PHP runtime.
+    setUserAsLogin(getProfileFromCookieSessionId());
+
+}
+
 
 function setLogout() {
     global $__login_user_profile;
@@ -425,7 +437,9 @@ function removeAppCookie($name) {
 }
 
 /**
- * @deprecated
+ * 앱에서 사용하는 쿠키를 가져온다.
+ *
+ * 이 쿠키 정보는 자바스크립트 클라이언트 엔드와 호환되어야 한다. 즉, Vue.js 나 Angular 에서 로그인을 하면, PHP 에서도 자동 로그인이 되도록 한다.
  * @param $name
  * @return mixed|null
  */
