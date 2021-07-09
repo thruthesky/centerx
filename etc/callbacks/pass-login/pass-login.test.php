@@ -11,5 +11,4 @@ $url = "https://id.passlogin.com/oauth2/authorize?response_type=code&client_id="
 <h1>패스 로그인 테스트</h1>
 <a href="<?=$url?>" target="_blank">로그인 클릭 <?=$url?></a>
 <hr>
-<?d(login())?>
-<?d($_COOKIES)?>
+<?php d(login())?>

@@ -18,7 +18,6 @@ if ( isError($profile) ) {
 }
 */
 
-d(login());
 
 /**
  * 여기까지 오면 로그인 성공. DB 에 verified 에 기록을 남기고, 홈으로 이동.
@@ -26,3 +25,4 @@ d(login());
 //user($profile[IDX])->update([in('state') => $profile[SESSION_ID]]);
 
 
+login()->update(['verifier' => 'passlogin']);
