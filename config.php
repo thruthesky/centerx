@@ -24,13 +24,13 @@ const DOMAIN_THEMES = [
     // $_SERVER['HTTP_HOST'] return empty string when the test runs on 'docker php container'.
     // So, when test runs, you can choose which view(theme) do you wan to use by specifying the view into '_' key.
     '_' => 'default',
-    'www_docker_nginx' => 'x',
+    'www_docker_nginx' => 'sonub',
     'flutterkorea' => 'default',
-    'x.philov' => 'x',
-    'cherry.philov' => 'x',
-    'banana.philov' => 'x',
-    'philov' => 'x',
-    'sonub' => 'x',
+    'x.philov' => 'sonub',
+    'cherry.philov' => 'sonub',
+    'banana.philov' => 'sonub',
+    'philov' => 'sonub',
+    'sonub' => 'sonub',
     'sonubtheme' => 'sonub',
     'itsuda' => 'itsuda',
     '127.0.0.1' => 'default',
@@ -40,7 +40,7 @@ const DOMAIN_THEMES = [
     '192.168.100.17' => 'itsuda', // Charles Ip address
     '192.168.0.146' => 'itsuda', // Charles Ip address
 
-    'tellvi' => 'x',
+    'tellvi' => 'sonub',
     'goldenage50' => 'itsuda',
     'dating' => 'dating',
 ];
@@ -361,47 +361,6 @@ const SIDEBAR_BANNER = 'sidebar';
 const SQUARE_BANNER = 'square';
 const LINE_BANNER = 'line';
 const BANNER_TYPES = [ TOP_BANNER, SIDEBAR_BANNER, SQUARE_BANNER, LINE_BANNER ];
-
-/**
- * When MAXIMUM_ADVERTISING_DAYS is not 0 (or bigger than 0), then the last days of advertisement can be set within
- *  `MAXIMUM_ADVERTISING_DAYS` from today.
- */
-//const MAXIMUM_ADVERTISING_DAYS = 70;
-//const ADVERTISEMENT_SETTINGS = [
-//    'types' => BANNER_TYPES,
-//    'maximum_advertising_days' => MAXIMUM_ADVERTISING_DAYS,
-//    'point'=>[
-//        'default' => [
-//            TOP_BANNER => 3000,
-//            SIDEBAR_BANNER => 2500,
-//            SQUARE_BANNER => 2500,
-//            LINE_BANNER => 1500,
-//        ],
-//        'PH' => [
-//            TOP_BANNER => 6000,
-//            SIDEBAR_BANNER => 5000,
-//            SQUARE_BANNER => 5000,
-//            LINE_BANNER => 3000,
-//        ],
-//        'US' => [
-//            TOP_BANNER => 5000,
-//            SIDEBAR_BANNER => 4000,
-//            SQUARE_BANNER => 4000,
-//            LINE_BANNER => 2500,
-//        ]
-//    ],
-//    // Input which forum category that user can post banners.
-//    'categories' => [
-//        'qna',
-//        'discussion',
-//        'job',
-//        'rent_house',
-//        'rent_car',
-//        'money_exchange',
-//    ]
-//];
-//
-
 
 /// @see readme.md
 if ( !defined('MATRIX_API_KEYS' ) ) define('MATRIX_API_KEYS', []);
