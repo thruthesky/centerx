@@ -1,7 +1,7 @@
 <?php
 if ( modeSubmit() ) {
-    config()->set('deliveryFeeFreeLimit', in('deliveryFeeFreeLimit'));
-    config()->set('deliveryFeePrice', in('deliveryFeePrice'));
+    metaConfig()->set('deliveryFeeFreeLimit', in('deliveryFeeFreeLimit'));
+    metaConfig()->set('deliveryFeePrice', in('deliveryFeePrice'));
 }
 ?>
 <style>
@@ -33,8 +33,8 @@ if ( modeSubmit() ) {
 <script>
     mixins.push({
         data: {
-                deliveryFeeFreeLimit: <?=config('deliveryFeeFreeLimit', DEFAULT_DELIVERY_FEE_FREE_LIMIT)?>,
-                deliveryFeePrice: <?=config('deliveryFeePrice', DEFAULT_DELIVERY_FEE_PRICE)?>,
+                deliveryFeeFreeLimit: <?=metaConfig('deliveryFeeFreeLimit', DEFAULT_DELIVERY_FEE_FREE_LIMIT)?>,
+                deliveryFeePrice: <?=metaConfig('deliveryFeePrice', DEFAULT_DELIVERY_FEE_PRICE)?>,
         },
         created: function () {
             console.log('setting created');

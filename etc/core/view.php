@@ -81,22 +81,10 @@ class View
             $filename = implode('/', $arr);
         }
 
-        $file_path = VIEW_DIR . $this->folderName . '/' .
+        return VIEW_DIR . $this->folderName . '/' .
             ( $prefixThemeName ? $this->folderName . '.' : '') .
             $filename . '.' . $extension;
 
-        return $file_path;
-
-        // @todo delete below. This code is not used in v2
-        if ( file_exists($file_path) ) return $file_path;
-
-        $default_file_path = VIEW_DIR . "default/" .
-            ( $prefixThemeName ? $this->folderName . '.' : '') .
-            $filename . '.' . $extension;
-
-        if ( file_exists($default_file_path) ) return $default_file_path;
-
-        return $file_path;
     }
 
     /**
@@ -174,16 +162,20 @@ class View
     }
 
     /**
-     * 도메인을 파싱한다.
+     * 도메인을 파싱해서 어떤 view(theme)를 사용 할 것인지 결정한다.
+     *
+     * 처음 View 클래스 객체가 생성 될 때, 호출된다.
+     *
+     * 참고, folderName 이 버전 2.x 에서는 기본이 `default` 로 지정되었는데, 3.x 에서는 DOMAIN_THEMES['_'] 의 것으로 대체된다.
      */
     private function parseDomainTheme(): void
     {
         $_host = get_host_name();
-        debug_log("view::parseDOmainTheme():: $_host");
+        debug_log("--- view::parseDomainTheme() -> selected view(theme) : $_host");
         if ( empty($_host) ) {
             $this->folderName = DOMAIN_THEMES['_'];
         } else {
-            $this->folderName = 'default';
+            $this->folderName = DOMAIN_THEMES['_'];
             foreach (DOMAIN_THEMES as $_domain => $_theme) {
                 if (stripos($_host, $_domain) !== false) {
                     $this->folderName = $_theme;

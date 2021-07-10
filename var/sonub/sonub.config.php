@@ -1,5 +1,14 @@
 <?php
 
+config()->blockUserFields = [
+    EMAIL,
+    NAME,
+    PHONE_NO,
+    BIRTH_DATE,
+    GENDER
+];
+
+debug_log("blockUserFields", config()->blockUserFields);
 
 define("FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH", ROOT_DIR . "var/sonub/keys/sonub-firebase-admin-sdk.json");
 define("FIREBASE_DATABASE_URI", "https://sonub-version-2020.firebaseio.com/");

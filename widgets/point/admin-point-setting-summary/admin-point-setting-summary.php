@@ -14,16 +14,16 @@ $login = user()->count(where: "updatedAt<=? AND updatedAt>=?", params: [$now, $a
         <div class="text-right fw-700">
             <div><?= $registered ?></div>
             <div><?= $login ?></div>
-            <div><?= config(Actions::$like, 0) ?>/<?= config(Actions::$likeDeduction, 0) ?></div>
-            <div><?= config(Actions::$dislike, 0) ?>/<?= config(Actions::$dislikeDeduction, 0) ?></div>
+            <div><?= metaConfig(Actions::$like, 0) ?>/<?= metaConfig(Actions::$likeDeduction, 0) ?></div>
+            <div><?= metaConfig(Actions::$dislike, 0) ?>/<?= metaConfig(Actions::$dislikeDeduction, 0) ?></div>
             <!--            <div>-->
-            <?//=config(POINT_LIKE_HOUR_LIMIT, 0)?>
+            <?//=metaConfig(POINT_LIKE_HOUR_LIMIT, 0)?>
             <!--</div>-->
             <!--            <div>-->
-            <?//=config(POINT_LIKE_HOUR_LIMIT_COUNT, 0)?>
+            <?//=metaConfig(POINT_LIKE_HOUR_LIMIT_COUNT, 0)?>
             <!--</div>-->
             <!--            <div>-->
-            <?//=config(POINT_LIKE_DAILY_LIMIT_COUNT, 0)?>
+            <?//=metaConfig(POINT_LIKE_DAILY_LIMIT_COUNT, 0)?>
             <!--</div>-->
         </div>
         <div class="px-3">

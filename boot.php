@@ -1,10 +1,23 @@
 <?php
-
-//
+/**
+ * @file boot.php
+ */
 const ROOT_DIR = __DIR__ . '/';
 const VIEW_FOLDER_NAME = 'view';
 const VIEW_DIR = ROOT_DIR . VIEW_FOLDER_NAME . '/';
 const CONTROLLER_DIR = ROOT_DIR . 'controller/';
+
+/**
+ * Debug Configurations
+ * 디버그 옵션 및 기록할 로그 파일 경로.
+ *
+ * 이 설정을 여기에 두어, boot.php 의 가장 빠른 위치에서 로그를 남길 수 있도록 한다.
+ *
+ * If DEBUG_LOG is set to false, no debug log will recorded.
+ */
+const DEBUG_LOG = true;
+const DEBUG_LOG_FILE_PATH = ROOT_DIR . 'var/logs/debug.log';
+//
 
 
 // Restful Api
@@ -22,7 +35,7 @@ require_once ROOT_DIR . 'etc/core/language.php';
 require_once ROOT_DIR . 'etc/defines.php';
 require_once ROOT_DIR . 'etc/translations.php';
 
-require_once ROOT_DIR . 'etc/core/config/config.php';
+require_once ROOT_DIR . 'etc/config.php';
 
 // @todo remove theme
 require_once ROOT_DIR . 'etc/core/view.php';
@@ -31,7 +44,7 @@ require_once ROOT_DIR . 'etc/core/view.php';
 require_once ROOT_DIR . 'etc/core/mysqli.php';
 
 require_once ROOT_DIR . 'etc/core/entity.php';
-require_once ROOT_DIR . 'model/config/config.model.php';
+require_once ROOT_DIR . 'model/meta-config/meta-config.model.php';
 require_once ROOT_DIR . 'model/country/country.model.php';
 require_once ROOT_DIR . 'model/user/user.model.php';
 require_once ROOT_DIR . 'model/meta/meta.model.php';
@@ -77,7 +90,8 @@ require_once ROOT_DIR . 'etc/core/hook.php';
 
 
 
-
+// Leave a record, for stating that a new script run time begins.
+leave_starting_debug_log();
 
 
 // config.php 에는 theme config 도 실행되므로, 사실 모든 종류의 코드가 다 필요하다. 단, DB 에 직접 접속 할 수 없고, 정히 필요하다면, hook 이나 route 를 통해서 할 수 있다.
@@ -86,7 +100,8 @@ require_once ROOT_DIR . 'etc/core/hook.php';
 // Load global config.php that loads config.php in each theme.
 require_once ROOT_DIR . 'config.php';
 
-debug_log("_______ view(theme) folderName: " . view()->folderName );
+
+
 
 // set error handler
 if ( canHandleError() ) {
@@ -132,6 +147,3 @@ if ( file_exists($_path) ) {
 }
 
 cookieLogin();
-
-// Leave a record, for stating that a new script run time begins.
-leave_starting_debug_log();

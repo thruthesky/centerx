@@ -10,8 +10,8 @@ class ShoppingMallController
 {
     public function options() {
         return [
-            'deliveryFeeFreeLimit' => config('deliveryFeeFreeLimit', DEFAULT_DELIVERY_FEE_FREE_LIMIT),
-            'deliveryFeePrice' => config('deliveryFeePrice', DEFAULT_DELIVERY_FEE_PRICE),
+            'deliveryFeeFreeLimit' => metaConfig('deliveryFeeFreeLimit', DEFAULT_DELIVERY_FEE_FREE_LIMIT),
+            'deliveryFeePrice' => metaConfig('deliveryFeePrice', DEFAULT_DELIVERY_FEE_PRICE),
         ];
     }
 

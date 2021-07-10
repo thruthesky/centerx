@@ -21,7 +21,7 @@ function setLoginAny(): UserModel {
 if ( defined('UNIT_TEST') || in('test') ) {
     function setLoginAsAdmin(): UserModel {
         $user = createTestUser();
-        config()->set(ADMIN, $user->email);
+        metaConfig()->set(ADMIN, $user->email);
         setLogin($user->response());
         return $user;
     }

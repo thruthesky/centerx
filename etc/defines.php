@@ -3,50 +3,56 @@
  * @file defines.php
  */
 
+/**
+ * 이 파일에는 변경이 되지 않는 상수를 저장한다.
+ * 설정이 필요한 상수 또는 define 은 config 에 저장하도록 한다.
+ */
 
-
+/**
+ * 에러 구분 문자열
+ */
+const ERROR_SEPARATOR = '---';
 
 /**
  * A taxonomy must be a table name.
  */
-define('CONFIG', 'config');
-define('METAS', 'metas');
-define('TAXONOMY', 'taxonomy');
-define('ENTITY', 'entity');
-define('CATEGORIES', 'categories');
-define('CACHE', 'cache');
-define('COUNTRIES', 'countries');
-define('FRIENDS', 'friends');
-define('USERS', 'users');
-define('IN_APP_PURCHASE', 'in_app_purchase');
-define('USER_ACTIVITIES', 'user_activities');
+const CONFIG = 'config';
+const METAS = 'metas';
+const TAXONOMY = 'taxonomy';
+const ENTITY = 'entity';
+const CATEGORIES = 'categories';
+const CACHE = 'cache';
+const COUNTRIES = 'countries';
+const FRIENDS = 'friends';
+const USERS = 'users';
+const IN_APP_PURCHASE = 'in_app_purchase';
+const USER_ACTIVITIES = 'user_activities';
 
 /**
  * The `comments` is the same taxonomy as `posts`.
  */
-define('POSTS', 'posts');
+const POSTS = 'posts';
 
-define('COMMENTS', 'comments');
+const COMMENTS = 'comments';
 
-define('FILES', 'files');
-define('FILE_IDXES', 'fileIdxes');
+const FILES = 'files';
+const FILE_IDXES = 'fileIdxes';
 
 
-define('PUSH_NOTIFICATION_TOKENS', 'push_notification_tokens');
-define('POINT_HISTORIES', 'point_histories');
+const PUSH_NOTIFICATION_TOKENS = 'push_notification_tokens';
+const POINT_HISTORIES = 'point_histories';
 
-define('POST_VOTE_HISTORIES', 'post_vote_histories');
-define('SHOPPING_MALL_ORDERS', 'shopping_mall_orders');
+const POST_VOTE_HISTORIES = 'post_vote_histories';
+const SHOPPING_MALL_ORDERS = 'shopping_mall_orders';
 
-define('TRANSLATIONS', 'translations');
+const TRANSLATIONS = 'translations';
 
 const COUNTRY_CODE = 'countryCode';
 
 
+const ROUTE = 'route';
 
-define('ROUTE', 'route');
-
-define('ADMIN', 'admin');
+const ADMIN = 'admin';
 
 const IDX = 'idx';
 const ID = 'id';

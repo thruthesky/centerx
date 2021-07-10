@@ -235,6 +235,8 @@ class E {
 
     public string $not_verified = 'error_not_verified';
 
+    public string $block_user_field = "error_block_user_field";
+
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)

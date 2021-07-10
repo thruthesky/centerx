@@ -156,33 +156,50 @@ mysqli::__construct(): (HY000/1045): Access denied for user 'sonub'@'172.18.0.2'
 
 
 
-## Host setting
+## 호스트(도메인)와 view 의 연결, Host setting
 
-- To work with real domain(for example, `itsuda50.com`), add a fake domain like `local.itsuda50.com` on `hosts` file.
-  - So, when you access `www.itsuda50.com` it goes to real domain. And `local.itsuda50.com` goes local host.
+- When you develop, you may need to test with real domain.
+  - To do so, you may add a fake domain like `local.sonub.com` in `/etc/hosts` file.
+  - Then, when you access `local.sonub.com` it goes to your local development computer.
 
+ex) /etc/hosts
 ```text
-127.0.0.1       local.itsuda50.com
+127.0.0.1       local.sonub.com
 ```
 
 - Then, get SSL. You may get it from `certbot`.
 
 - Then, set the domain and SSL in `docker/etc/nginx.conf`
 
-- Then, set the domain and theme in `config.php`.
+- Then, set the domain and with the view folder in `config.php`.
+
+ex) config.php
 ```php
 define('DOMAIN_THEMES', [
-    'itsuda' => 'itsuda50.com',
-    '127.0.0.1' => 'itsuda50.com',
-    'localhost' => 'itsuda50.com',
-    '169.254.115.59' => 'itsuda50.com', // JaeHo Song's Emulator Access Point to Host OS.
+    '_' => 'default',
+    '127.0.0.1' => 'default',
+    'localhost' => 'sonub',
+    'local.sonub' => 'sonub',
+    '169.254.115.59' => 'sonub', // JaeHo Song's Emulator Access Point to Host OS.
+    'www_docker_nginx' => 'sonub', // Docker container name
 ]);
 ```
 
-- Then, try to access `local.itsuda50.com` and it should open local development site.
+- The key of `DOMAIN_THEMES` is the part of domain. And the value is the view folder name.
 
-- Then, open Emulator and access `http://http://169.254.115.59/` and it should open the site.
-  - You should find proper IP address to use from Emulator. If you are using Mac, `ifconfig | grep inet` command may help.
+- See the `_`. It means the same of `_` in Nginx configuration. It matches all domains.
+  Running tests or running PHP script from terminal, it may not have a host. So, it matches on `_`.
+
+- See the `www_docker_nginx`. It is a container name which may by used from directly PHP to nginx connection.
+
+- Simulator will work naturally with `/etc/hosts`.
+  - But, emulators and real phone are not working with `/etc/hosts`.
+  - Then, you can use IP address to connect to local development computer.
+
+- To check if Emulator or Phones can connect to the local development computer,
+  - Open Emulator or Phones, and access with IP address like `http://169.254.115.59/`
+  - If it works, then you can use it. Or you should find right IP address for your local computer.
+    - If you are using Mac, `ifconfig | grep inet` command may help.
 
 - Now you are ready.
 
@@ -846,21 +863,34 @@ request('translation.get', {'code': 'list'}, console.log, alert);
 - Controller must check `where` http var to not accept value. The `where` clause must have question mark only without right side value.
   
 
-# Boot
+# Boot, 부팅
 
 
-## PHP 스크립트 호출 순서
+## 부팅 순서, PHP 스크립트 호출 순서
 
-- `index.php`
-  시작 스크립트
+- `index.php` 또는 어떤 위치의 PHP 스크립트라도 상관없다.
+  시작 스크립트로서 `boot.php` 를 include 하면 된다.
     
   - `boot.php`\
     부팅 스크립트. 어느 위치의 스크립트이든 이 스크립트를 include 하면, Matrix 를 부팅하여 사용 할 수 있다.
+    
+    - `etc/config.php`
+      시스템 설정 클래스. `Config` 클래스가 정의되며 `config()` 함수로 사용 가능하다.
+      여기에 기본 값이 들어간다.
 
     - `config.php`\
-      글로벌 설정. 이 스크립트를 통해서 여러가지 설정을 할 수 있다.
-      - 접속 도메인을 바탕으로 추가 설정을 각 `view/view-name/config.php` 에서 할 수 있다.
-        - 추가 설정은 Restful API 를 호출 할 때에도 사용 할 수 있다.
+      글로벌 설정. 이 스크립트를 통해서 여러가지 설정을 할 수 있다.]
+      특히, `config()` 함수를 통해서 `Config` 클래스에 기본 설정된 값을 변경 할 수 있다.\
+      버전 2.x 초기에 `config.php` 에 주로 설정을 보관하는 데, 이 설정이 대부분 `etc/config.php` 로 이동한다.
+      
+      - `db.config.php`
+        
+      - `private.config.php`
+        
+      - `view/view-name/config.php`\
+        접속 도메인을 바탕으로 추가 설정을 각 `view/view-name/config.php` 에서 할 수 있다.\
+        여기에 설정하는 추가 설정은 Restful API 를 호출 할 때에도 적용되는데 해당 theme 으로 접속 하도록 domain 지정을 해야 한다.
+        
     
     - `view/view-name/view-name.functions.php`\
       접속 도메인 별 view 폴더에 `view-name.functions.php` 스크립트를 두고, 추가 코드를 작성 할 수 있다.
@@ -935,8 +965,8 @@ d(view()->page());
 - controller 가 리턴하는 겂이 없으면 `error_response_is_empty` 에러 발생.
 - controller 가 배열이나 에러 문자열 외의 값을 리턴하면 `error_malformed_response` 에러 발생.
 
-- 에러 문자열 코드 뒤에 `::` 를 표시하고 그 뒤에 추가적인 에러 설명 메시지가 들어 갈 수 있다.
-  예) `error_user_not_found::thruthesky@gggg.com`
+- 에러 문자열 코드 뒤에 `---` 를 표시하고 그 뒤에 추가적인 에러 설명 메시지가 들어 갈 수 있다.
+  예) `error_user_not_found---thruthesky@gggg.com`
   
 - 에러 관련 함수 중,
   - `error()` 는 에러 결과를 JSON 으로 출력한다.
@@ -948,11 +978,71 @@ d(view()->page());
     예) 
     `error(err(e()->controller_file_not_found, $filePath));`
 
-# 설정, Config
+# 설정, Config, Meta Config
 
-## 일반 설정
+- 설정에는 여러가지가 있다.
+  - PHP 부팅 스크립트 소스 코드에서 하는 config 는 system configuration 이라고 하며,
+  - 앱의 관리를 위해서 meta 테이블에 정하는 config 는 meta configuration 이라고 한다.
+    - meta configuration 에는 일반 사용자가 수정/관리 할 수 있는 meta 값들과
+    - 관리자만 수정/관리 할 수 있는 admin meta 가 있다.
+  
+## MetaConfig 클래스
 
-- taxonomy 는 `config` 이고, entity 가 0인 것은 모두 일반 설정이다.
+- 주의 할 점은 meta 에 taxonomy 가 `config` 이면, 설정이라는 뜻인데 실제 `config` 테이블은 존재하지 않는 가장의 taxonomy 이다.
+  따라서, `config` 가 taxonomy 이지만, entity 로는 사용할 수 없다. 그래서 `entity()->create()` 와 같이 할 수 없다.
+ 
+- 다만, MetaConfig 클래스를 통해서 meta 를 적절히 관리하고 있다. 
+
+## System configuration
+
+- `/etc/config.php` 에 기본 설정이 모두 저장된다. 또한 필요하면 추가적인 설정을 이곳에 새로운 변수로 추가하면 된다.
+- 이 클래스는 직접 객체를 생성해서는 안되고, 반드시 `config()` 라는 함수로 참조해야 한다. 그래야 싱글톤으로 사용 할 수 있다.
+
+
+## 일반 사용자 설정 또는 앱의 일반적인 설정
+
+- meta 클래스에 들어가는 값을 말하며,
+- 이 때 taxonomy 는 `config` 이고, entity 가 0 인 것은 모두 일반 설정이다.
+- 만약, taxonomy 가 `config` 가 아니라면, entity 가 0 이든 아니든 상관 없이, 특정 글, 카테고리, 사용자, 파일 등에
+  존속되는 메타 값 일 수 있다.
+
+- `metaConfig()` 함수를 통해서 손쉽게 CRUD 할 수 있다.
+  
+## 관리자 설정
+
+- 관리자 설정하는 값이 meta 테이블에 저장될 수 있는데, 이 때에는 taxonomy 가 `config` 이고 `entity` 는 반드시 1 의 값을 가진다.
+  - taxonomy=`config` 와 entity=`1` 의 값을 가진 meta 는 오직 관리자만 생성, 수정, 삭제를 할 수 있다.
+
+- `adminSettings()` 함수를 통해서 손쉽게 CRUD 할 수 있다.
+
+
+
+## How to set admin to manage the site.
+
+- Root admin, who has the full power, can be set to ADMIN_EMAIL constant in `config.php`.
+  After setting the email in config.php, you may regsiter(or login) with the email.
+
+
+```php
+adminSettings()->set('admin', 'thruthesky@gmail.com');
+d(adminSettings()->get('admin'));
+```
+
+## Admin Settings
+
+### Custom Settings
+
+Admin can set custom settings that apply to the web/app, but it needs extra work to do.
+For instance, `Site name` setting is a setting that is supported by the system.
+But when admin adds custom settings, that is not supported.
+You may add `loginOnWeb` option to tell the web to show login option to user, but the system does not support it. So,
+the developer must work on it.
+
+Another setting that may often be used is app download setting. Admin may put `androidLatestVersion` in custom setting
+with the latest android version, but the developer must code on the android app.
+
+
+
 
 ## 관리자 설정
 
@@ -2388,13 +2478,19 @@ card_flip2 는 쉬운(하) 게임이다
 
 # 보안
 
-## BLOCK_USER_FIELDS
+## blockUserFields
 
-- 사용자 또는 해커가 Api call 을 통해서 회원 정보를 변경 할 수 없도록 `config.php` 에 `BLOCK_USER_FIELDS` 를 설정 할 수 있다.
-- `entity()->update()` 로 업데이트할 때, 여기에 설정된 필드가 있으면 에러가 발생한다.
+- 사용자 또는 해커가 Api call 을 통해서 회원 정보를 변경 할 수 없도록 `etc/config.php` 에 `blockUserFields` 를 설정 할 수 있다.
+  배열로 여러개의 필드를 지정할 수 있으며, 여기에 기록된 필드는 사용자가 controller 를 통해서 업데이트 할 수 없다.
+  단, entity()->update() 를 통해서, 내부적으로 업데이트 할 수 있다.
+  하지만, user()->update() 를 통해서는 할 수 없다.
+  즉, 사용자는 Api call 을 통해서 사용자 정보를 업데이트 할 때, `user()->update()` 를 통해서 업데이트 하는데 여기서 막는 것이다.
+  
+- `user()->update()` 로 업데이트할 때, 여기에 설정된 필드가 있으면 에러가 발생한다.
   - 따라서, "클라이언트엔드"로 부터 값 자체를 입력 받지 않아야 한다.
   - 또한, Unit test 를 할 때에는 이 값을 빼야 한다.
   - 가능한, 이 값은 각 `view/view-name/view-name.config.php` 에서 설정을 하도록 한다.
+  
 - 참고로 포인트의 경우 보안 문제로 `entity()->update()` 를 사용하지 않고 `setPoint()` 함수를 통해서 업데이트한다.
 
 

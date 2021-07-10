@@ -3,15 +3,15 @@
 if (modeSubmit()) {
     if (in(POINT_LIKE) < 0) jsBack('앗! 추천 받는 사람의 포인트는 0 이상이어야 합니다.');
     if (in(POINT_DISLIKE) > 0) jsBack('앗! 비추천 받는 사람의 포인트는 0 이하이어야 합니다.');
-    config()->set(POINT_REGISTER, in(POINT_REGISTER));
-    config()->set(POINT_LOGIN, in(POINT_LOGIN));
-    config()->set(POINT_LIKE, in(POINT_LIKE));
-    config()->set(POINT_DISLIKE, in(POINT_DISLIKE));
-    config()->set(POINT_LIKE_DEDUCTION, in(POINT_LIKE_DEDUCTION));
-    config()->set(POINT_DISLIKE_DEDUCTION, in(POINT_DISLIKE_DEDUCTION));
-    config()->set(POINT_LIKE_HOUR_LIMIT, in(POINT_LIKE_HOUR_LIMIT));
-    config()->set(POINT_LIKE_HOUR_LIMIT_COUNT, in(POINT_LIKE_HOUR_LIMIT_COUNT));
-    config()->set(POINT_LIKE_DAILY_LIMIT_COUNT, in(POINT_LIKE_DAILY_LIMIT_COUNT));
+    metaConfig()->set(POINT_REGISTER, in(POINT_REGISTER));
+    metaConfig()->set(POINT_LOGIN, in(POINT_LOGIN));
+    metaConfig()->set(POINT_LIKE, in(POINT_LIKE));
+    metaConfig()->set(POINT_DISLIKE, in(POINT_DISLIKE));
+    metaConfig()->set(POINT_LIKE_DEDUCTION, in(POINT_LIKE_DEDUCTION));
+    metaConfig()->set(POINT_DISLIKE_DEDUCTION, in(POINT_DISLIKE_DEDUCTION));
+    metaConfig()->set(POINT_LIKE_HOUR_LIMIT, in(POINT_LIKE_HOUR_LIMIT));
+    metaConfig()->set(POINT_LIKE_HOUR_LIMIT_COUNT, in(POINT_LIKE_HOUR_LIMIT_COUNT));
+    metaConfig()->set(POINT_LIKE_DAILY_LIMIT_COUNT, in(POINT_LIKE_DAILY_LIMIT_COUNT));
 }
 
 
@@ -41,11 +41,11 @@ if (modeSubmit()) {
         <div class="box border-radius-md">
             <div class="mb-3">
                 <label class="form-label"><?= ln(['en' => 'Registration point', 'ko' => '회원 가입 포인트']) ?></label>
-                <input type="number" class="form-control" name="POINT_REGISTER" placeholder="0" value="<?= config(POINT_REGISTER, 0) ?>">
+                <input type="number" class="form-control" name="POINT_REGISTER" placeholder="0" value="<?= metaConfig(POINT_REGISTER, 0) ?>">
             </div>
             <div class="mb-3">
                 <label class="form-label"><?= ln(['en' => 'Login point', 'ko' => '로그인 포인트']) ?></label>
-                <input type="number" class="form-control" name="POINT_LOGIN" placeholder="0" value="<?= config(POINT_LOGIN, 0) ?>">
+                <input type="number" class="form-control" name="POINT_LOGIN" placeholder="0" value="<?= metaConfig(POINT_LOGIN, 0) ?>">
             </div>
         </div>
 
@@ -72,40 +72,40 @@ if (modeSubmit()) {
             <div class="row">
                 <div class="col">
                     <label class="form-label"><?= ln(['en' => 'Point for like receiver', 'ko' => '추천 받는 사람 포인트']) ?></label>
-                    <input type="number" class="form-control" name="POINT_LIKE" placeholder="0" value="<?= config(POINT_LIKE, 0) ?>">
+                    <input type="number" class="form-control" name="POINT_LIKE" placeholder="0" value="<?= metaConfig(POINT_LIKE, 0) ?>">
                 </div>
                 <div class="col">
                     <label class="form-label"><?= ln(['en' => 'Point for dislike receiver', 'ko' => '비추천 받는 사람 포인트']) ?></label>
-                    <input type="number" class="form-control" name="POINT_DISLIKE" placeholder="0" value="<?= config(POINT_DISLIKE, 0) ?>">
+                    <input type="number" class="form-control" name="POINT_DISLIKE" placeholder="0" value="<?= metaConfig(POINT_DISLIKE, 0) ?>">
                 </div>
             </div>
 
             <div class="row mt-3">
                 <div class="col">
                     <label class="form-label"><?= ln(['en' => 'Point for like recommender', 'ko' => '추천하는 사람 포인트']) ?></label>
-                    <input type="number" class="form-control" name="POINT_LIKE_DEDUCTION" placeholder="0" value="<?= config(POINT_LIKE_DEDUCTION, 0) ?>">
+                    <input type="number" class="form-control" name="POINT_LIKE_DEDUCTION" placeholder="0" value="<?= metaConfig(POINT_LIKE_DEDUCTION, 0) ?>">
                 </div>
                 <div class="col">
                     <label class="form-label"><?= ln(['en' => 'Point for dislike recommender', 'ko' => '비추천 하는 사람 포인트']) ?></label>
-                    <input type="number" class="form-control" name="POINT_DISLIKE_DEDUCTION" placeholder="0" value="<?= config(POINT_DISLIKE_DEDUCTION, 0) ?>">
+                    <input type="number" class="form-control" name="POINT_DISLIKE_DEDUCTION" placeholder="0" value="<?= metaConfig(POINT_DISLIKE_DEDUCTION, 0) ?>">
                 </div>
             </div>
 
             <div class="row mt-3">
                 <div class="col">
                     <label class="form-label"><?= ln(['en' => 'Point change limit by hour', 'ko' => '추천/비추천 포인트 증/감 시간 제한. 단위) 시간']) ?></label>
-                    <input type="number" class="form-control" name="POINT_LIKE_HOUR_LIMIT" placeholder="0" value="<?= config(POINT_LIKE_HOUR_LIMIT, 0) ?>">
+                    <input type="number" class="form-control" name="POINT_LIKE_HOUR_LIMIT" placeholder="0" value="<?= metaConfig(POINT_LIKE_HOUR_LIMIT, 0) ?>">
                 </div>
                 <div class="col">
                     <label class="form-label"><?= ln(['en' => 'Point change limit by count for the hour', 'ko' => '추천/비추천 포인트 증/감 회수 제한']) ?></label>
-                    <input type="number" class="form-control" name="POINT_LIKE_HOUR_LIMIT_COUNT" placeholder="0" value="<?= config(POINT_LIKE_HOUR_LIMIT_COUNT, 0) ?>">
+                    <input type="number" class="form-control" name="POINT_LIKE_HOUR_LIMIT_COUNT" placeholder="0" value="<?= metaConfig(POINT_LIKE_HOUR_LIMIT_COUNT, 0) ?>">
                 </div>
             </div>
 
             <div class="row mt-3">
                 <div class="col">
                     <label class="form-label"><?= ln(['en' => 'Point change limit by day', 'ko' => '일/수 제한']) ?></label>
-                    <input type="number" class="form-control" name="POINT_LIKE_DAILY_LIMIT_COUNT" placeholder="0" value="<?= config(POINT_LIKE_DAILY_LIMIT_COUNT, 0) ?>">
+                    <input type="number" class="form-control" name="POINT_LIKE_DAILY_LIMIT_COUNT" placeholder="0" value="<?= metaConfig(POINT_LIKE_DAILY_LIMIT_COUNT, 0) ?>">
                 </div>
             </div>
 

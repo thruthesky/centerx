@@ -86,6 +86,7 @@ $_paths = [
     '/model/**/*.test.php',
     '/controller/**/*.test.php',
     '/controller/*.test.php',
+    '/etc/*.test.php',
     '/etc/**/*.test.php',
     '/etc/core/**/*.test.php',
     '/tests/*.test.php'

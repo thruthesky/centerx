@@ -2,14 +2,7 @@
 /**
  * @file config.php
  */
-/**
- * Debug Configurations
- * 디버그 옵션 및 기록할 로그 파일 경로
- *
- * If DEBUG_LOG is set to false, no debug log will recorded.
- */
-const DEBUG_LOG = true;
-const DEBUG_LOG_FILE_PATH = ROOT_DIR . 'var/logs/debug.log';
+
 
 const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
 
@@ -23,6 +16,7 @@ const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
 const DOMAIN_THEMES = [
     // $_SERVER['HTTP_HOST'] return empty string when the test runs on 'docker php container'.
     // So, when test runs, you can choose which view(theme) do you wan to use by specifying the view into '_' key.
+    //
     '_' => 'default',
     'www_docker_nginx' => 'sonub',
     'flutterkorea' => 'default',
@@ -45,6 +39,9 @@ const DOMAIN_THEMES = [
     'dating' => 'dating',
 ];
 
+
+
+debug_log("--- view-name : " . view()->folderName );
 
 
 /**
@@ -81,23 +78,29 @@ const LOCAL_HOSTS = [
 // Load database connection information.
 // `keys` folder is not added to github. so it is safe to put database information in this file.
 // DB 접속 정보가 keys 폴더에 존재하는지 확인. 아니면 config.php 의 접속 정보를 사용.
-if ( file_exists( theme()->folder . 'keys/db.config.php') ) {
-    include theme()->folder . 'keys/db.config.php';
+$_db_config_path = "";
+if ( file_exists( view()->folder . 'keys/db.config.php') ) {
+    $_db_config_path = view()->folder . 'keys/db.config.php';
 } else if ( file_exists(ROOT_DIR . 'etc/keys/db.config.php') ) {
-    include ROOT_DIR . 'etc/keys/db.config.php';
+    $_db_config_path = ROOT_DIR . 'etc/keys/db.config.php';
 }
+debug_log("--- loading db.config from : " . $_db_config_path );
+if ( $_db_config_path ) {
+    include $_db_config_path;
+}
+
 
 /// @see readme
+$_private_config_path = "";
 if ( file_exists( view()->folder . 'keys/private.config.php') ) {
-    include view()->folder . 'keys/private.config.php';
+    $_private_config_path = view()->folder . 'keys/private.config.php';
 } else if ( file_exists(ROOT_DIR . 'etc/keys/private.config.php') ) {
-    include ROOT_DIR . 'etc/keys/private.config.php';
+    $_private_config_path = ROOT_DIR . 'etc/keys/private.config.php';
 }
-
-
-
-
-
+debug_log("--- loading private.config from : " . $_private_config_path );
+if ( $_private_config_path ) {
+    include $_private_config_path;
+}
 
 /**
  * Load theme configuration
@@ -105,11 +108,11 @@ if ( file_exists( view()->folder . 'keys/private.config.php') ) {
  *
  * 참고로, 각 설정 파일에서 아래에서 정의되는 상수들을 미리 정의해서, 본 설정 파일에서 정의되는 값을 덮어 쓸 수 있다.
  */
-$_path = theme()->file( filename: 'config', prefixThemeName: true );
+$_config_path = view()->file( filename: 'config', prefixThemeName: true );
 
-debug_log("Theme Config Path: $_path");
-if ( file_exists($_path) ) {
-    require_once $_path;
+debug_log("--- loading view config from : $_config_path");
+if ( file_exists($_config_path) ) {
+    require_once $_config_path;
 }
 
 
@@ -364,11 +367,3 @@ const BANNER_TYPES = [ TOP_BANNER, SIDEBAR_BANNER, SQUARE_BANNER, LINE_BANNER ];
 
 /// @see readme.md
 if ( !defined('MATRIX_API_KEYS' ) ) define('MATRIX_API_KEYS', []);
-
-
-/**
- * 여기에 기록된 값은 사용자가 controller 를 통해서 업데이트 할 수 없다.
- * 즉, 프로그램적으로 내부에서 업데이트 할 수 있지만, Api call 을 통해서 직접적으로는 업데이트 할 수 없다.
- * 이를 통해서 보안을 향상 할 수 있다.
- */
-if ( !defined('BLOCK_USER_FIELDS') ) define('BLOCK_USER_FIELDS', []);

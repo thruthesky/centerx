@@ -564,26 +564,6 @@ category2=subscateogry-2-1,subcategory-2-2, ...
   `code` 에는 최대 32 글자의 문자열이 저장되는데, 숫자로 저장해도 상관 없다.
 
 
-## Config taxonomy class
-
-- Config taxonomy class is a fake taxonomy class. There is no such taxonomy table as `config`.
-  So, it does not do any `CRUD` on the taxonomy. Instead, it deals only with meta data.
-  The primary goal of `Cofnig` class is to save config data.
-- By default, all config has `idx` as 0.
-- Settings in admin page is also saved as config, but the `idx` is 1.
-- To save(or update) multiple config meta, you can use `updateMetas()` method.
-
-```php
-config()->updateMetas(0, in());
-config()->updateMetas(ADMIN_SETTINGS, in()); // ADMIN_SETTINGS is defined as 1.
-```
-
-- To get mutilple meta value,
-
-```php
-d( config(3)->getMetas() );
-```
-
 
 # 새로운 사이트 만들기
 
@@ -624,33 +604,6 @@ server {
 
 
 
-
-
-# Admin
-
-## How to set admin to manage the site.
-
-- Root admin, who has the full power, can be set to ADMIN_EMAIL constant in `config.php`.
-  After setting the email in config.php, you may regsiter(or login) with the email.
-
-
-```php
-config()->set('admin', 'thruthesky@gmail.com');
-d(config()->get('admin'));
-```
-
-## Admin Settings
-
-### Custom Settings
-
-Admin can set custom settings that apply to the web/app, but it needs extra work to do.
-For instance, `Site name` setting is a setting that is supported by the system.
-But when admin adds custom settings, that is not supported.
-You may add `loginOnWeb` option to tell the web to show login option to user, but the system does not support it. So,
-the developer must work on it.
-
-Another setting that may often be used is app download setting. Admin may put `androidLatestVersion` in custom setting
-with the latest android version, but the developer must code on the android app.
 
 
 

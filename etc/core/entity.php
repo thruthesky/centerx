@@ -62,24 +62,66 @@ class Entity {
 
     /**
      * Alias of setError(). 짧게 쓰기 위해서, error() 로 쓴다.
+     *
      * @param string $code
+     * @param string $extra
      * @return $this
      */
-    public function error(string $code): self {
-        return $this->setError($code);
+    public function error(string $code, string $extra = ''): self {
+        return $this->setError($code, $extra);
     }
 
     /**
      * 에러 문자열을 설정한다. 즉, 에러가 있음을 표시하는 것으로, 현재 객체에 에러를 포함하게 되는 것이다.
+     *
+     * 참고, 추가 에러를 $extra 에 넣어 전달 할 수 있는데, 이 때, 구분자는 ERROR_SEPARATOR 이다.
      * @param string $code
+     * @param string $extra
      * @return $this
      */
-    public function setError(string $code): self {
+    public function setError(string $code, string $extra = ''): self {
+        if ( $extra ) $code .= ERROR_SEPARATOR . $extra;
         $this->error = $code;
         return $this;
     }
+
+    /**
+     * 에러 코드(문자열)을 리턴한다.
+     *
+     * 주의, 에러 문자열에는 추가 정보가 있을 수 있는데, 그 추가 정보는 빼고 순수 에러 코드만 리턴하낟.
+     *
+     * @return string
+     */
     public function getError(): string {
-        return $this->error;
+        $error = $this->error;
+        if ( str_contains($error, ERROR_SEPARATOR) ) {
+            $arr = explode(ERROR_SEPARATOR, $error);
+            return $arr[0];
+        } else {
+            return $error;
+        }
+    }
+
+
+    /**
+     * 에러 추가 문자열을 리턴한다.
+     *
+     * 주의, 에러 문자열에는 에러 코드와 추가 정보가 있을 수 있는데,
+     * - 에러가 없으면 빈 문자열,
+     * - 추가 문자열이 없으면 빈 문자열,
+     * - 또는 추가 문자열만 리턴한다.
+     *
+     * @return string
+     */
+    public function getErrorInfo(): string {
+        $error = $this->error;
+        if ( ! $error ) return '';
+        if ( str_contains($error, ERROR_SEPARATOR) ) {
+            $arr = explode(ERROR_SEPARATOR, $error);
+            return $arr[1];
+        } else {
+           return '';
+        }
     }
 
     /**

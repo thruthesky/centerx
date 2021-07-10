@@ -414,6 +414,7 @@ class UserModel extends Entity {
      */
     function update($in): self
     {
+
         // If email has passed, it can update(change) user's email.
         if ( isset($in[EMAIL]) ) {
             if ( empty($in[EMAIL]) ) return $this->error(e()->email_is_empty);
@@ -422,6 +423,14 @@ class UserModel extends Entity {
         // point cannot be changed by user.
         if ( isset($in[POINT] ) && admin() == false ) {
             return $this->error(e()->user_cannot_update_point);
+        }
+
+        // @see README.md
+        if ( config()->blockUserFields ) {
+            if ( $res = array_intersect_key(array_flip(config()->blockUserFields), $in) ) {
+                $keys = implode(', ', array_keys($res));
+                return $this->error(e()->block_user_field, $keys);
+            }
         }
         return parent::update($in);
     }
