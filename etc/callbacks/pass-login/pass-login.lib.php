@@ -7,6 +7,8 @@ function pass_login_aes_dec($str)
 }
 
 /**
+ * 휴대폰번호 PASS 로그인을 한 후, 그 정보를 배열로 리턴한다.
+ *
  * @param $in
  * @return array|string
  *
@@ -34,7 +36,7 @@ Array(
  */
 function pass_login_callback($in): array|string
 {
-    // @todo PASS 휴대폰번호 로그인을 하면, Callback URL 이 호출된다. 그리고 그 정보를 기록한다.
+    debug_log("pass_login_callback", json_encode($in));
     // Callback url 이 처음 호출 되면,
     //   Array ( [code] => lzRdPT, [state] => apple_banana_cherry )
     // 와 같은 값이 넘어 온다.
@@ -157,8 +159,7 @@ function pass_login_callback($in): array|string
     }
 
 
-//        d($ret);
-
+    debug_log("pass: ", json_encode($ret));
     // 휴대폰 PASS 로그인으로 부터 받은 회원 정보를 배열에 담아 리턴한다. 회원 가입이나 로그인 용도로 사용 할 수 있다.
     return $ret;
 }
@@ -168,6 +169,9 @@ function pass_login_callback($in): array|string
 /**
  * 패스 로그인을 한 다음, 회원 로그인 또는 회원 가입
  *
+ * 참고, 원칙적으로는 이메일/비밀번호 또는 소셜로그인을 미리 하고 난 후, 패스그인으로 본인 인증을 한번만 한다.
+ *      하지만, 매번 패스로그인을 하는 경우는 이 함수를 매번 호출 할 수 있다.
+ *
  * @param array $user - 위 pass_login_callback 함수에서 받은 회원 정보로 회원 로그인 또는 회원 가입을 한다.
  * @return array
  */
@@ -175,9 +179,9 @@ function pass_login_or_register(array $user): UserModel
 {
     if (isset($user['ci']) && $user['ci']) {
         /// 처음 로그인 또는 자동 로그인이 아닌 경우,
-        $user['email'] = PASS_LOGIN_MOBILE_PREFIX . "$user[phoneNo]@passlogin.com";
-        $user['password'] = md5(LOGIN_PASSWORD_SALT . PASS_LOGIN_CLIENT_ID . $user['phoneNo']);
-        $user['provider'] = 'passlogin';
+        $user[EMAIL] = PASS_LOGIN_MOBILE_PREFIX . "$user[phoneNo]@passlogin.com";
+        $user[PASSWORD] = md5(LOGIN_PASSWORD_SALT . PASS_LOGIN_CLIENT_ID . $user['phoneNo']);
+        $user[PROVIDER] = VERIFIER_PASSLOGIN;
         $profile = user()->loginOrRegister($user);
     } else {
         /// plid 가 들어 온 경우, meta 에서 ci 를 끄집어 낸다.

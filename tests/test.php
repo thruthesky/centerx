@@ -82,13 +82,21 @@ function request(string $route, array $data = []) {
 
 echo "\n\n=====================================> Begin Test at: " . date('r') . "\n\n";
 
-$test_path_0 = $rootDir . '/model/**/*.test.php';
-$test_path_1 = $rootDir . '/controller/**/*.test.php';
-$test_path_2 = $rootDir . '/controller/*.test.php';
-$test_path_3 = $rootDir . '/tests/*.test.php';
-echo "\n>\n>\n> Searching path: $test_path_0, $test_path_1, $test_path_2, $test_path_3\n>\n>\n";
+$_paths = [
+    '/model/**/*.test.php',
+    '/controller/**/*.test.php',
+    '/controller/*.test.php',
+    '/etc/**/*.test.php',
+    '/etc/core/**/*.test.php',
+    '/tests/*.test.php'
+    ];
+echo "\n>\n>\n> Searching path: ". implode(', ', $_paths) ."\n>\n>\n";
 
-$test_files = array_merge(glob($test_path_0), glob($test_path_1), glob($test_path_2), glob($test_path_3));
+$test_files = [];
+
+foreach( $_paths as $_path ) {
+    $test_files = array_merge($test_files, glob($rootDir . $_path));
+}
 
 foreach($test_files as $path) {
     if ( isset($argv[1]) ) {

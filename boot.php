@@ -22,6 +22,8 @@ require_once ROOT_DIR . 'etc/core/language.php';
 require_once ROOT_DIR . 'etc/defines.php';
 require_once ROOT_DIR . 'etc/translations.php';
 
+require_once ROOT_DIR . 'etc/core/config/config.php';
+
 // @todo remove theme
 require_once ROOT_DIR . 'etc/core/view.php';
 

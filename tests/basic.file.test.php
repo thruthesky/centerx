@@ -63,5 +63,9 @@ function testPostCreateWithImage() {
     $post = createPost('qna',
         title: '겨울잠을 자고 일어난 개구리',
         files: $file->idx);
-    isTrue($post->idx > 0, '게시글 작성');
+    if ( $post->hasError && $post->getError() == e()->not_verified ) {
+        echo "\n@warning user verification failed. Test again with right permission.\n";
+    } else {
+        isTrue($post->idx > 0, '사진과 함께 게시글 작성');
+    }
 }

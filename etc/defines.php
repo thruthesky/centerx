@@ -72,6 +72,8 @@ const SIZE = 'size';
 const TYPE = 'type';
 
 const PHONE_NO = 'phoneNo';
+const GENDER = 'gender';
+const BIRTH_DATE = 'birthdate';
 const CODE = 'code';
 const CURRENT_CODE_NAME = 'currentCodeName';
 const DATA = 'data';
@@ -206,9 +208,10 @@ const FIREBASE_UID = 'firebaseUid';
 
 define('PROVIDERS', [PROVIDER_NAVER, PROVIDER_KAKAO]);
 
-define('VERIFIER_PASSLOGIN', 'passlogin');
-define('VERIFIER_DANAL', 'danal');
-define('VERIFIERS', [VERIFIER_DANAL, VERIFIER_PASSLOGIN]);
+const VERIFIER = 'verifier';
+const VERIFIER_PASSLOGIN = 'passlogin';
+const VERIFIER_DANAL = 'danal';
+const VERIFIERS = [VERIFIER_DANAL, VERIFIER_PASSLOGIN];
 
 
 

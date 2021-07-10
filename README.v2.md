@@ -25,7 +25,7 @@
 
 # 버전 별 변경 사항 및 향후 전략
 
-## 버전 3
+## 버전 3 - TODO 목록
 
 - `centerx` 라는 명칭을 완전히 제거.
 - PHP 에서 화면에 직접 렌더링하는 부분은 `view/admin` 빼고는 모두 제거.
@@ -36,7 +36,12 @@
   - 모든 자바스크립트, CSS, 위젯 등과 관련된 파일을 삭제.
   - 웹 브라우저 쿠키 관련 코드 삭제
   - 기타 웹 브라우저에 랜더링을 하는 관련된 모든 코드를 제거.
-
+- 설정을 config.php 와 view/view-name/view-name.config.php 로 하는데, 번거롭다.
+  - 설정 클래스인 config 클래스를 둔다. 이것은 config model 과는 다른 것이다.
+  - 기존에는 설정을 const 또는 define 으로 관리를 해서, config.php 에서만 설정하고
+    프로그램 실행 중간에서 설정 또는 변경 할 수 없었다.
+    특히, unit test 를 할 때 문제가 되고 있으며, 또 관리도 어렵다.
+    그래서 etc/core/config.php 에 설정 파일을 둔다. 이것은 버전 2 에서 이미 시작된 것이다.
 
 ## 버전 2
 
@@ -1735,6 +1740,11 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
   도메인으로 돌아갈 때, 추가되는 URI 는 `/passlogin/success` 이다. 즉, state 가 `abc.sonub.com` 이라면,
   `https://abc.sonub.com/passlogin/success` 으로 전달된다.
 
+### 휴대폰번호 PASS 로그인 - 테스트 하는 방법
+
+- `/etc/callbacks/pass-login/pass-login.callback.php?test=1` 로 접속하면 테스트를 할 수 있다.
+  - 이 때, 화면 디자인이나 로그인 또는 회원 가입에 따른 DB 업데이트 등을 할 수 있다.
+
 # 썸네일, Thumbnail
 
 - 쎔네일을 사용하는 방법은 두 가지 방법이 있다.
@@ -2376,7 +2386,16 @@ card_flip2 는 쉬운(하) 게임이다
 
 
 
+# 보안
 
+## BLOCK_USER_FIELDS
+
+- 사용자 또는 해커가 Api call 을 통해서 회원 정보를 변경 할 수 없도록 `config.php` 에 `BLOCK_USER_FIELDS` 를 설정 할 수 있다.
+- `entity()->update()` 로 업데이트할 때, 여기에 설정된 필드가 있으면 에러가 발생한다.
+  - 따라서, "클라이언트엔드"로 부터 값 자체를 입력 받지 않아야 한다.
+  - 또한, Unit test 를 할 때에는 이 값을 빼야 한다.
+  - 가능한, 이 값은 각 `view/view-name/view-name.config.php` 에서 설정을 하도록 한다.
+- 참고로 포인트의 경우 보안 문제로 `entity()->update()` 를 사용하지 않고 `setPoint()` 함수를 통해서 업데이트한다.
 
 
 

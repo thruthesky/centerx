@@ -1,22 +1,22 @@
 <?php
 /**
- * @file config.model.php
+ * @file metaConfig.model.php
  */
 /**
- * Class ConfigModel
+ * Class MetaConfig
  *
- * There is no `config` model. Read the readme.
+ * There is no `metaConfig` model. Read the readme.
  *
- * `ConfigModel` 이 `MetaModel` 을 extends 하지 않는 이유는,
+ * `MetaConfig` 이 `MetaModel` 을 extends 하지 않는 이유는,
  *      - 사실, extends 하는게 가장 좋지만,
  *      - 생성자나 메소드에서 conflict 이 발생하기 때문이다. 편하게 쓰기 위해서 MetaModel 을 extends 하지 않는다.
  */
-class ConfigModel {
+class MetaConfig {
 
 
     /**
      *
-     * Config constructor.
+     * metaConfig constructor.
      * @param string $taxonomy
      * @param int $entity
      */
@@ -26,7 +26,7 @@ class ConfigModel {
 
     /**
      * 설정을 읽어 그 값(레코드)을 리턴한다.
-     * 설정은 metas 테이블에 저장되며, taxonomy=config 이며, entity 는 0 이면, 일반 설정, 1 이면 관리자 설저이다.
+     * 설정은 metas 테이블에 저장되며, taxonomy=metaConfig 이며, entity 는 0 이면, 일반 설정, 1 이면 관리자 설저이다.
      *
      * @param string|null $code - 코드 값이 주어지면 1개의 값만, 아니면, 현재 taxonomy 와 entity 의 전체 값을 리턴한다.
      * @return mixed - 값이 없으면 null 이 리턴된다.
@@ -37,7 +37,7 @@ class ConfigModel {
     }
 
     /**
-     * 설정을 저장(또는 업데이트)한다. 설정은 metas 테이블에 저장되며, taxonomy=config, entity=0 이 된다.
+     * 설정을 저장(또는 업데이트)한다. 설정은 metas 테이블에 저장되며, taxonomy=metaConfig, entity=0 이 된다.
      * @param array|string $code - 문자열이면 1개의 값, 배열이면 여러개의 값을 저장한다.
      *  if $code is an array, then it updates multiple settings.
      * @param mixed $value
@@ -75,38 +75,38 @@ class ConfigModel {
 
 
 /**
- * Returns Config instance or value of a code.
+ * Returns metaConfig instance or value of a code.
  *
- * The taxonomy of Config class does not exists. @see readme.md for detals.
+ * The taxonomy of metaConfig class does not exists. @see readme.md for detals.
  *
  * @param string $code
- *  - if $code is set, it returns the value of the config meta.
+ *  - if $code is set, it returns the value of the metaConfig meta.
  * @param mixed|null $default_value
- * @return ConfigModel|int|string|array|null
+ * @return MetaConfig|int|string|array|null
  *
  * @example
- *  config(POINT_REGISTER, 0)
- *  config()->get(POINT_REGISTER);
- *  d( config(3)->getMetas() );
+ *  metaConfig(POINT_REGISTER, 0)
+ *  metaConfig()->get(POINT_REGISTER);
+ *  d( metaConfig(3)->getMetas() );
  */
-function config(string $code='', mixed $default_value=null): ConfigModel|int|string|array|null
+function metaConfig(string $code='', mixed $default_value=null): MetaConfig|int|string|array|null
 {
     if ( $code ) {
-        $data = config()->get($code);
+        $data = metaConfig()->get($code);
         if ( $data === null ) return $default_value;
         else return $data;
     }
-    return new ConfigModel('config');
+    return new MetaConfig('config');
 }
 
 
 /**
- * Taxonomy 는 config 로 하되, entity 는 1 로 주어서, 일반 설정이 아닌, 관리자 설정으로 표시한다.
+ * Taxonomy 는 metaConfig 로 하되, entity 는 1 로 주어서, 일반 설정이 아닌, 관리자 설정으로 표시한다.
  * 즉, entity 가 1 이면, 관리자 설정인 것이다.
- * @return ConfigModel
+ * @return MetaConfig
  */
-function adminSettings(): ConfigModel {
-    return new ConfigModel('config', ADMIN_SETTINGS);
+function adminSettings(): MetaConfig {
+    return new MetaConfig('config', ADMIN_SETTINGS);
 }
 
 

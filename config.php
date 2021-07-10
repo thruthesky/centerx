@@ -366,4 +366,9 @@ const BANNER_TYPES = [ TOP_BANNER, SIDEBAR_BANNER, SQUARE_BANNER, LINE_BANNER ];
 if ( !defined('MATRIX_API_KEYS' ) ) define('MATRIX_API_KEYS', []);
 
 
-
+/**
+ * 여기에 기록된 값은 사용자가 controller 를 통해서 업데이트 할 수 없다.
+ * 즉, 프로그램적으로 내부에서 업데이트 할 수 있지만, Api call 을 통해서 직접적으로는 업데이트 할 수 없다.
+ * 이를 통해서 보안을 향상 할 수 있다.
+ */
+if ( !defined('BLOCK_USER_FIELDS') ) define('BLOCK_USER_FIELDS', []);

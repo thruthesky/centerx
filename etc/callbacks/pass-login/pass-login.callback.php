@@ -3,7 +3,7 @@
  * @file pass-login-callback.php
  * @desc
  */
-
+/// README.md 의 테스트 하는 방법 참고
 require_once('../../../boot.php');
 ?>
 <!doctype html>
@@ -19,6 +19,9 @@ require_once('../../../boot.php');
         .fs-lg { font-size: 1.25rem; }
 	.mt-5 { margin-top: 2rem; }
 	.pt-5 { padding-top: 2rem; }
+    .text-center {
+        text-align: center;
+    }
 
     </style>
 </head>
@@ -28,16 +31,19 @@ require_once('../../../boot.php');
 require_once('pass-login.lib.php');
 require_once('pass-login.verify.php');
 ?>
-<div class="mt-5 pt-5 d-flex justify-content-center w-100">
+<div class="mt-5 pt-5">
     <div class="mt-5 text-center">
-        <div class="mt-3">로그인 성공</div>
+        <h1 class="mt-3">로그인 성공</h1>
         <div class="mt-5" style="font-size: 1rem;">
-           브라우저를 닫아주세요.
+           브라우저를 닫고 홈페이지로 접속해 주세요.
         </div>
     </div>
 </div>
 <script>
-location.href= "https://<?=in('state')?>/passlogin/success";
+    <?php
+        $domain = in('state', $_SERVER['HTTP_HOST']);
+        ?>
+//location.href= "https://<?//=$domain?>///passlogin/success";
 </script>
 
 
