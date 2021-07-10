@@ -37,7 +37,7 @@ require_once('pass-login.verify.php');
     </div>
 </div>
 <script>
-location.href= "https://<?=in('state')?>";
+location.href= "https://<?=in('state')?>/passlogin/success";
 </script>
 
 
