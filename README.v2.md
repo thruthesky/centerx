@@ -1728,7 +1728,12 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 ## 휴대폰 번호 PASS 로그인
 
-- 
+- 자세한 설명은 [휴대폰 번호 PASS 로그인 요약 문서](https://docs.google.com/document/d/1f7udtIGo0a4lliM8WGNiXh01lqRhkz76bWbszty6tSk/edit#heading=h.wks3lo2tvsr8)를 참고한다.
+- 휴대폰 번호 PASS 로그인, 개발자 페이지에서 콜백 URL 이 `/etc/callbacks/pass-login/pass-login.callback.php` 로 설정되어져 있으며,
+  실제로 잘 동작한다.
+  PASS 로그인을 하면, 콜백 URL 에서 verifier 에 `passlogin` 이라고 입력하고, state 로 전달된 도메인으로 이동한다.
+  도메인으로 돌아갈 때, 추가되는 URI 는 `/passlogin/success` 이다. 즉, state 가 `abc.sonub.com` 이라면,
+  `https://abc.sonub.com/passlogin/success` 으로 전달된다.
 
 # 썸네일, Thumbnail
 
