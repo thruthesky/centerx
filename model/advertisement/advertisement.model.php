@@ -195,7 +195,7 @@ class AdvertisementModel extends PostModel
      * @return array|string
      */
     public function response(string $fields = null, int $comments = 0): array|string {
-        if ( $this->hasError ) return $this->getError();
+        if ( $this->hasError ) return $this->getError(true);
         $banner = parent::response($fields, $comments);
         $banner['status'] = advertisement()->getStatus($this);
         return $banner;

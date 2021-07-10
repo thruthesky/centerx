@@ -185,7 +185,7 @@ class CommentModel extends Forum {
      * - 아니면, 배열
      */
     public function response(string $fields = null): array|string {
-        if ( $this->hasError ) return $this->getError();
+        if ( $this->hasError ) return $this->getError(true);
 
         $comment = $this->getData();
 

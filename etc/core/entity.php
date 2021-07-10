@@ -88,12 +88,17 @@ class Entity {
     /**
      * 에러 코드(문자열)을 리턴한다.
      *
-     * 주의, 에러 문자열에는 추가 정보가 있을 수 있는데, 그 추가 정보는 빼고 순수 에러 코드만 리턴하낟.
+     * 주의, 에러 문자열에는 추가 정보가 있을 수 있는데, 그 추가 정보는 빼고 순수 에러 코드만 리턴한다.
+     * 특히, 클라이언트로 에러 문자열을 보낼 때, 추가 정보를 포함해서 보내야하는데,
+     * 각종 response() 함수에서 입력 파라메타 $all 에 true 를 주면 된다.
      *
+     * @param bool $all - 이 값이 true 이면, 에러 코드 문자열과 추가 정보 모두를 리턴한다.
      * @return string
      */
-    public function getError(): string {
+    public function getError(bool $all = false): string {
         $error = $this->error;
+        if ( $all ) return $error;
+
         if ( str_contains($error, ERROR_SEPARATOR) ) {
             $arr = explode(ERROR_SEPARATOR, $error);
             return $arr[0];
@@ -185,7 +190,7 @@ class Entity {
      */
     public function response(string $fields=null): array|string {
 
-        if ( $this->hasError ) return $this->getError();
+        if ( $this->hasError ) return $this->getError(true);
         if ( $this->exists == false ) return [];
         if ( $fields ) {
             $arr = explode(',', $fields);

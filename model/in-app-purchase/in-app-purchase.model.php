@@ -75,7 +75,7 @@ class InAppPurchaseModel extends Entity {
      * @return array|string
      */
     public function response(string $fields = null): array|string {
-        if ( $this->hasError ) return $this->getError();
+        if ( $this->hasError ) return $this->getError(true);
         else return $this->getData();
     }
 

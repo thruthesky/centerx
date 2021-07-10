@@ -320,7 +320,7 @@ class PostModel extends Forum {
      * @todo    - If $fields is set like "idx, title, user, files", then it will return only idx, title, user and file. It does not return other fields.
      */
     public function response(string $fields = null, int $comments = -1): array|string {
-        if ( $this->hasError ) return $this->getError();
+        if ( $this->hasError ) return $this->getError(true);
         $post = $this->getData();
         $post['categoryId'] = $this->categoryId();
 

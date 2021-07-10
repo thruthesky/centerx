@@ -1,12 +1,14 @@
 <?php
 
-config()->blockUserFields = [
-    EMAIL,
-    NAME,
-    PHONE_NO,
-    BIRTH_DATE,
-    GENDER
-];
+if ( in('route') == 'user.login' || in('route') == 'user.update' ) {
+    config()->blockUserFields = [
+        EMAIL,
+        NAME,
+        PHONE_NO,
+        BIRTH_DATE,
+        GENDER
+    ];
+}
 
 debug_log("blockUserFields", config()->blockUserFields);
 

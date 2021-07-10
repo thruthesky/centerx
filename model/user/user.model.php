@@ -284,7 +284,7 @@ class UserModel extends Entity {
      *   - 컨트롤러로 로그인된 사용자의 response() 만 호출할 때, read() 가 호출되지 않는다.
      */
     public function response(string $fields = null): array|string {
-        if ( $this->hasError ) return $this->getError();
+        if ( $this->hasError ) return $this->getError(true);
         $data = $this->getData();
         unset($data[PASSWORD]);
         $data[ADMIN] = admin($this->email) ? 'Y' : 'N';

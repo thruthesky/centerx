@@ -16,6 +16,9 @@ require_once('../../../boot.php');
 
     <title>패스 로그인</title>
     <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, "Apple SD Gothic Neo", sans-serif;
+        }
         .fs-lg { font-size: 1.25rem; }
 	.mt-5 { margin-top: 2rem; }
 	.pt-5 { padding-top: 2rem; }
@@ -39,11 +42,12 @@ require_once('pass-login.verify.php');
         </div>
     </div>
 </div>
+
 <script>
     <?php
         $domain = in('state', $_SERVER['HTTP_HOST']);
         ?>
-//location.href= "https://<?//=$domain?>///passlogin/success";
+location.href= "https://<?=$domain?>/passlogin/success";
 </script>
 
 

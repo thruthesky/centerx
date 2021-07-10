@@ -14,10 +14,6 @@ else {
     $res = pass_login_callback($_REQUEST);
 }
 
-d($res);
-
-d(login());
-
 if ( isError($res) ) {
     pass_login_message($res);
     exit;

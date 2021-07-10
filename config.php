@@ -84,9 +84,12 @@ if ( file_exists( view()->folder . 'keys/db.config.php') ) {
 } else if ( file_exists(ROOT_DIR . 'etc/keys/db.config.php') ) {
     $_db_config_path = ROOT_DIR . 'etc/keys/db.config.php';
 }
-debug_log("--- loading db.config from : " . $_db_config_path );
+
 if ( $_db_config_path ) {
+    debug_log("--- loading db.config.php from : " . $_db_config_path );
     include $_db_config_path;
+} else {
+    debug_log("--- loading db.config.php : [ Not exists ]" );
 }
 
 
@@ -110,9 +113,12 @@ if ( $_private_config_path ) {
  */
 $_config_path = view()->file( filename: 'config', prefixThemeName: true );
 
-debug_log("--- loading view config from : $_config_path");
+
 if ( file_exists($_config_path) ) {
+    debug_log("--- loading view config.php from: view/".view()->folderName."/config.php");
     require_once $_config_path;
+} else {
+    debug_log("--- loading view config.php : [ Not exists ]");
 }
 
 

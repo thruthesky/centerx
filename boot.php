@@ -143,7 +143,7 @@ if ( file_exists($_path) ) {
     debug_log("Loading view(theme) functions path: $_path");
     require_once $_path;
 } else {
-    debug_log("View funcitons php script not exists. View(theme) functions path: $_path");
+    debug_log("--- loading funcitons.php : [ not exists ] You can create one with $_path");
 }
 
 cookieLogin();

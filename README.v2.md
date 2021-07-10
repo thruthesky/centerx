@@ -1832,8 +1832,14 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 ### 휴대폰번호 PASS 로그인 - 테스트 하는 방법
 
-- `/etc/callbacks/pass-login/pass-login.callback.php?test=1` 로 접속하면 테스트를 할 수 있다.
+- `https://main.philov.com/etc/callbacks/pass-login/pass-login.callback.php?test=1` 와 같이 접속하면 테스트를 할 수 있다.
   - 이 때, 화면 디자인이나 로그인 또는 회원 가입에 따른 DB 업데이트 등을 할 수 있다.
+
+- 테스트 순서
+  - 1. 먼저 홈페이지에 로그인을 한다.
+  - 2. `/etc/callbacks/pass-login/pass-login.callback.php?test=1` 으로 접속하면, 본인 인증 한 후, 사용자 정보를 DB 에 업데이트한다.
+  - 3. 홈페이지에서 인증된 사용자로 뜨는지 확인하고,
+  - 4. 인증 사용자 전용 게시판에 글 쓰기가 가능한지 본다.
 
 # 썸네일, Thumbnail
 
@@ -2494,6 +2500,22 @@ card_flip2 는 쉬운(하) 게임이다
 - 참고로 포인트의 경우 보안 문제로 `entity()->update()` 를 사용하지 않고 `setPoint()` 함수를 통해서 업데이트한다.
 
 
+- 예제) 상황에 따라 블럭 필드를 설정 할 수 있는데, 클라이언트엔드에서 수정을 못하게 하려면 아래의 두 라우트를 막으면 된다.
+  예를 들어, 소셜 로그인을 하면, `user.loginOrRegister` 로 접속을 하므로 업데이트를 할 수 있다.
+  본인 인증을 하는 경우, API 호출이 아니어서, 업데이트 할 수 있다.
+  즉, 회원 정보 수정에서만 아래의 필드는 업데이트 안되는 것이다.
+  
+```php
+if ( in('route') == 'user.login' || in('route') == 'user.update' ) {
+    config()->blockUserFields = [
+        EMAIL,
+        NAME,
+        PHONE_NO,
+        BIRTH_DATE,
+        GENDER
+    ];
+}
+```
 
 
 # 문제점
