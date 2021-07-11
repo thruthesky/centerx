@@ -223,10 +223,16 @@ class UserModel extends Entity {
         if ( !$users ) return $this->error(e()->user_not_found_by_that_email);
         $user = $users[0];
 
-        if ( ! checkPassword($in[PASSWORD], $user->password) ) return $this->error(e()->wrong_password);
+        // 로그인 검사
+        if ( ! checkPassword($in[PASSWORD], $user->password) ) {
+            return $this->error(e()->wrong_password);
+        }
+
+        // 여기에 오면, 로그인 성공
 
         // 회원 정보 및 메타 정보 업데이트
         // 로그인을 할 때, 추가 정보를 저장한다. 이 때, 비밀번호는 저장되지 않게 한다.
+        unset($in[EMAIL]);
         unset($in[PASSWORD]);
 
         // User cannot change his point.
