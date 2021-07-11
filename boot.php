@@ -2,6 +2,9 @@
 /**
  * @file boot.php
  */
+
+
+
 const ROOT_DIR = __DIR__ . '/';
 const VIEW_FOLDER_NAME = 'view';
 const VIEW_DIR = ROOT_DIR . VIEW_FOLDER_NAME . '/';
@@ -89,7 +92,6 @@ require_once ROOT_DIR . 'model/cafe/cafe.model.php';
 require_once ROOT_DIR . 'etc/core/hook.php';
 
 
-
 // Leave a record, for stating that a new script run time begins.
 leave_starting_debug_log();
 
@@ -143,7 +145,7 @@ if ( file_exists($_path) ) {
     debug_log("Loading view(theme) functions path: $_path");
     require_once $_path;
 } else {
-    debug_log("--- loading funcitons.php : [ not exists ] You can create one with $_path");
+    debug_log("--- loading funcitons.php : [ Not exists ] You can create one with $_path");
 }
 
 cookieLogin();

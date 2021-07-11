@@ -59,6 +59,63 @@ class UserController
         return user()->loginOrRegister($data)->response();
     }
 
+    /**
+     * $in['code'] 의 값을 받아, 패스로그인 서버에 접속해서 사용자 정보를 가져 온 다음, 디코딩해서 클라이언트로 전달한다.
+     * 주의, 이 함수는 오직 "패스로그인 사용자 정보"만, 리턴한다. 따로 회원가입, 로그인 도는 업데이트나 기타 작업을 하지 않는다.
+     * @param $in
+     * @return array|string
+     */
+    public function passloginCallback($in): array|string {
+        include ROOT_DIR . 'etc/callbacks/pass-login/pass-login.lib.php';
+        return pass_login_callback($in);
+    }
+
+    /**
+     * $in['code'] 의 값을 받아, 패스로그인 서버에 접속해서 사용자 정보를 가져 온 다음, 디코딩해서,
+     *  회원 가입 또는 로그인, 또는 업데이트를 한다.
+     * 주의, `passloginCallback()` 함수와는 다르게,
+     *  - $in['code'] 를 받아서,
+     *  - 현재 로그인을 한 상태이면, "패스로그인 사용자 정보"를 회원 정보에 업데이트하고,
+     *  - 현재 로그인을 하지 않은 상태이면, 회원 가입 또는 로그인을 한다.
+     *
+     * @param $in
+     * @return array|string
+     *  - 에러 문자열
+     *  - 또는 사용자 response
+     */
+    public function passlogin($in): array|string {
+        include ROOT_DIR . 'etc/callbacks/pass-login/pass-login.lib.php';
+        $res = pass_login_callback($in);
+
+        debug_log('passlogin; res; ', $res);
+        if ( isError($res) ) {
+            return $res;
+        }
+
+        if ( loggedIn() ) {
+            // 회원 로그인을 한 상태이면, PASS LOGIN 으로 부터 넘어온 정보를 회원 정보로 업데이트한다.
+            $res[VERIFIER] = VERIFIER_PASSLOGIN;
+            login()->update($res);
+            return login()->response();
+        } else {
+            if (isset($res['ci']) && $res['ci']) {
+                // 처음 로그인 또는 자동 로그인이 아닌 경우,
+                $res[EMAIL] = PASS_LOGIN_MOBILE_PREFIX . "$res[phoneNo]@passlogin.com"; // 임시 메일
+                $res[PASSWORD] = md5(LOGIN_PASSWORD_SALT . PASS_LOGIN_CLIENT_ID . $res['phoneNo']); // 임시 비번
+                $res[PROVIDER] = VERIFIER_PASSLOGIN;
+                $res[VERIFIER] = VERIFIER_PASSLOGIN;
+                $user = user()->loginOrRegister($res);
+            } else {
+                // 여러 차례 로그인,
+                // plid 가 들어 오는데, meta 에서 ci 를 끄집어 내서, 사용자가 누구인지 확인한다.
+                $userIdx = meta()->entity(USERS, 'plid',$res['plid']);
+
+                $user = user($userIdx);
+            }
+            return $user->response();
+        }
+    }
+
     // Returns log-in user's profile.
     // Use this method to refresh the login user's profile, also.
     public function profile($in)

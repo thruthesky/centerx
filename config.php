@@ -100,9 +100,11 @@ if ( file_exists( view()->folder . 'keys/private.config.php') ) {
 } else if ( file_exists(ROOT_DIR . 'etc/keys/private.config.php') ) {
     $_private_config_path = ROOT_DIR . 'etc/keys/private.config.php';
 }
-debug_log("--- loading private.config from : " . $_private_config_path );
 if ( $_private_config_path ) {
+    debug_log("--- loading private.config from : " . $_private_config_path );
     include $_private_config_path;
+} else {
+    debug_log("--- loading private.config from : [ Not exists ]");
 }
 
 /**
@@ -115,7 +117,7 @@ $_config_path = view()->file( filename: 'config', prefixThemeName: true );
 
 
 if ( file_exists($_config_path) ) {
-    debug_log("--- loading view config.php from: view/".view()->folderName."/config.php");
+    debug_log("--- loading view config.php from: view/".view()->folderName."/".view()->folderName."config.php");
     require_once $_config_path;
 } else {
     debug_log("--- loading view config.php : [ Not exists ]");

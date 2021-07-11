@@ -159,7 +159,7 @@ function pass_login_callback($in): array|string
     }
 
 
-    debug_log("pass: ", json_encode($ret));
+//    debug_log("pass: ", json_encode($ret));
     // 휴대폰 PASS 로그인으로 부터 받은 회원 정보를 배열에 담아 리턴한다. 회원 가입이나 로그인 용도로 사용 할 수 있다.
     return $ret;
 }
@@ -182,6 +182,7 @@ function pass_login_or_register(array $user): UserModel
         $user[EMAIL] = PASS_LOGIN_MOBILE_PREFIX . "$user[phoneNo]@passlogin.com";
         $user[PASSWORD] = md5(LOGIN_PASSWORD_SALT . PASS_LOGIN_CLIENT_ID . $user['phoneNo']);
         $user[PROVIDER] = VERIFIER_PASSLOGIN;
+        $user[VERIFIER] = VERIFIER_PASSLOGIN;
         $profile = user()->loginOrRegister($user);
     } else {
         /// plid 가 들어 온 경우, meta 에서 ci 를 끄집어 낸다.

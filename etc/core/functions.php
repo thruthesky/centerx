@@ -381,33 +381,23 @@ function checkPassword( $plain_text_password, $encrypted_password ) {
 
 
 /**
- * @deprecated
  *
  * Set login cookies
- * 입력된 $profile 정보로 해당 사용자를 로그인 시킨다.
  *
- * @참고, Matrix 버전에서는 백엔드 용으로만 사용되므로, PHP 에서 쿠키를 저장 할 이유가 없다. 따라서 쿠키 관련 함수는 앞으로 사라 질 것이다.
+ * 입력된 사용자($user 객체)를 바탕으로 자바스크립트와 호환되도록 쿠키에 로그인 sessionId 를 저장한다.
+ *
+ * @참고, Matrix 버전에서는 백엔드 용으로만 사용되므로, PHP 에서 쿠키를 저장 할 이유가 없다.
+ *  다만, "휴대폰번호 PASS 로그인" 등과 같이 백엔드에서 로그인을 한 다음 웹(클라이언트)에 로그인을 공유해야 할 경우 등에서 사용된다.
  *
  * When user login, the session_id must be saved in cookie. And it is shared with Javascript.
- * @param array|int $profile
- *   - 숫자이면, 회원 번호로 인식해서 회원 정보를 가져온다.
+ *
+ * @param UserModel $user - 사용자.
  */
-function setLoginCookies(array|int $profile): void {
-    if ( is_numeric($profile) ) {
-        $profile = user($profile)->profile();
-    }
-
-    setAppCookie(SESSION_ID , $profile[SESSION_ID]);
-    if ( isset($profile[NICKNAME]) ) setAppCookie ( NICKNAME , $profile[NICKNAME] );
-    if ( isset($profile[PHOTO_URL]) ) setAppCookie ( PHOTO_URL , $profile[PHOTO_URL] );
-
-//    setcookie ( SESSION_ID , $profile[SESSION_ID], time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
-//    if ( isset($profile[NICKNAME]) ) setcookie ( NICKNAME , $profile[NICKNAME] , time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
-//    if ( isset($profile[PHOTO_URL]) ) setcookie ( PHOTO_URL , $profile[PHOTO_URL] , time() + 365 * 24 * 60 * 60 , '/' , COOKIE_DOMAIN);
+function setLoginCookies(UserModel $user): void {
+    setAppCookie(SESSION_ID , $user->sessionId);
 }
 
 /**
- * @deprecated
  * Set login cookies
  *
  * When user login, the session_id must be saved in cookie. And it is shared with Javascript.
@@ -420,7 +410,8 @@ function unsetLoginCookies() {
 }
 
 /**
- * @deprecated
+ * 앱(PWA, Client Web app)과 통신하기 위해서 쿠키를 저장한다.
+ *
  * @param $name
  * @param $value
  */
@@ -429,7 +420,6 @@ function setAppCookie($name, $value) {
 }
 
 /**
- * @deprecated
  * @param $name
  */
 function removeAppCookie($name) {
@@ -498,7 +488,7 @@ function getProfileFromSessionId(string $sessionId): array|bool|string
     if ( ! $sessionId ) return false;
     $arr = explode('-', $sessionId);
     $userIdx = $arr[0];
-    $user = user($userIdx);
+    $user = user(intval($userIdx));
     if ( $user->notFound ) return e()->user_not_found_by_that_session_id;
     $profile = $user->profile();
     if ( !$profile || !isset($profile[SESSION_ID]) ) return false;
