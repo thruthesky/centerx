@@ -169,19 +169,21 @@ class Point {
     public function addUserPoint($userIdx, $point): int
     {
         if ( !$point ) return 0;
-        $user = user($userIdx);
-        $userPoint = $user->getPoint();
 
+        $user = user($userIdx);
+
+        $userPoint = $user->getPoint();
+//d($userPoint);
         $savingPoint = $userPoint + $point;
 
-//        d("userIdx: $userIdx, point: $point, userPoint: $userPoint, savingPoint: $savingPoint");
+//        debug_log("userIdx: $userIdx, point: $point, userPoint: $userPoint, savingPoint: $savingPoint");
 
         // 저장되려는 포인트가 0 보다 작으면,
-        if ( $savingPoint < 0 ) {
+        if ( $savingPoint <= 0 ) {
             // 0 을 저장하고,
             $user->setPoint(0);
             // 실제 차감된 포인트를 리턴
-            return -$userPoint;
+            return $point;
         } else {
             // 저장되려는 포인트가 양수이면, 저장하고,
             $user->setPoint($savingPoint);
@@ -287,21 +289,19 @@ class Point {
     }
 
     /**
-     * When user purchase point, it adds the point to the user and logs.
+     * When user exchange point, it adds the point to the user and logs.
      * @param int $point
      * @return int
      */
-    public function exchange(int $point): int
-    {
+    public function exchange(int $point): int {
+
         $applied = $this->addUserPoint(login()->idx, $point);
         return $this->log(
-            reason: POINT_PURCHASE,
+            reason: TOKEN_EXCHANGE,
             toUserIdx: login()->idx,
             toUserPointApply: $applied,
         );
     }
-
-
 
     /**
      * 글 뿐만아니라, 코멘트나 기타 posts 테이블을 사용하는 모든 것이 된다.

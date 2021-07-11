@@ -40,6 +40,11 @@ class UserRoute {
         return login()->update($in)->response();
     }
 
+    public function accountDelete() {
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        return aToken() -> accountDelete();
+    }
+
     /**
      * Save user meta code with on/off.
      *
@@ -79,6 +84,11 @@ class UserRoute {
     public function point($in) {
         $myIdx = login()->idx;
         return entity(POINT_HISTORIES)->search(where: "fromUserIdx=$myIdx OR toUserIdx=$myIdx", limit: 200, select: '*');
+    }
+
+    public function token($in) {
+        $myIdx = login()->idx;
+        return entity('a_token_histories')->search(where: "userIdx=$myIdx ", limit: 200, select: '*');
     }
 
     /**

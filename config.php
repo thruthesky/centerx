@@ -23,6 +23,7 @@ define('DOMAIN_THEMES', [
     '192.168.100.17' => 'itsuda', // Charles Ip address
     '192.168.0.146' => 'itsuda', // Charles Ip address
     '175.196.80.154' => 'itsuda',
+    '192.168.0.10' => 'itsuda',
 
     'philov' => 'sonub',
     'tellvi' => 'sonub',
@@ -75,7 +76,9 @@ if ( file_exists($_path) ) {
 
 define('APP_NAME', 'CenterX');
 
-if ( isCli() || isLocalhost() || str_contains(get_domain(), 'itsuda.philgo.com') || str_contains(get_domain(), '175.196.80.154') ) {
+if ( isCli() || isLocalhost() || str_contains(get_domain(), 'itsuda.philgo.com')
+    || str_contains(get_domain(), '175.196.80.154')  || str_contains(get_domain(), 'local2')
+    || str_contains(get_domain(), '192.168.0.10')) {
     if ( !defined('DB_USER') ) define('DB_USER', 'itsuda');
     if ( !defined('DB_PASS') ) define('DB_PASS', 'Wc~Cx7');
     if ( !defined('DB_NAME') ) define('DB_NAME', 'itsuda');

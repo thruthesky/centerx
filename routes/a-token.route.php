@@ -2,13 +2,10 @@
 
 class ATokenRoute
 {
+    public function exchangeAToken($in): array|string {
 
-    public function exchangeAToken($in)
-//    : array|string
-    {
-//        print($in['pointToSave']);
-
-//        return  coin()->exchangeCoin($in);
+        if ( notLoggedIn() ) return e()->not_logged_in;
+        return ['changed' => aToken()->exchangeToken($in) ];
     }
 
 }

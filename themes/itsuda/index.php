@@ -32,6 +32,7 @@
 
 <?php $isAdminPage = str_contains(theme()->page(), '/admin/'); ?>
 <body <?php if (! $isAdminPage ) { echo 'style="padding-top: 80px;"'; } ?>>
+
 <section id="app">
 <?php if ( $isAdminPage ) { ?>
         <?php include theme()->page(); ?>

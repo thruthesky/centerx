@@ -2,6 +2,11 @@
 /**
  * @file user.class.php
  */
+
+use function ezsql\functions\{
+    eq
+};
+
 /**
  * Class User
  * @property-read string $email
@@ -88,7 +93,6 @@ class User extends Entity {
 
         $in[POINT] = 0;
         $in['atoken'] = 0;
-        $in['gtoken'] = 0;
         $this->create($in);
 
         point()->register($this->profile());
@@ -110,10 +114,6 @@ class User extends Entity {
     public function changePassword(string $newPassword): self {
         return parent::update([PASSWORD => encryptPassword($newPassword)]);
     }
-
-
-
-
 
     /**
      * 이 메일이 존재하면 true, 아니면 false 를 리턴한다.
@@ -232,7 +232,7 @@ class User extends Entity {
             'point' => $this->point,
             'photoIdx' => $this->photoIdx ?? 0,
             'photoUrl' =>  $this->photoIdx ? thumbnailUrl($this->photoIdx ?? 0, 100, 100) : ($this->photoUrl ?? ''),
-        ];
+            ];
         if ( $firebaseUid ) {
             $ret['firebaseUid'] = $this->firebaseUid;
         }
@@ -246,7 +246,10 @@ class User extends Entity {
      * @return User
      */
     public function setPoint($p): self {
-        return $this->update([POINT => $p]);
+        db()->update($this->getTable(), [POINT => $p], eq(IDX, $this->idx ));
+        return $this;
+
+//        return $this->update([POINT => $p]);
     }
 
 
@@ -272,10 +275,6 @@ class User extends Entity {
             return parent::getVar(POINT, [IDX => $this->idx]);
         }
     }
-
-
-
-
 
     /**
      * Returns User instance by idx or email.

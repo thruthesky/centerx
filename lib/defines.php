@@ -17,6 +17,7 @@ define('CATEGORIES', 'categories');
 define('CACHE', 'cache');
 define('COUNTRIES', 'countries');
 define('FRIENDS', 'friends');
+define('RECOMMENDATION', 'recommendation');
 define('USERS', 'users');
 define('IN_APP_PURCHASE', 'in_app_purchase');
 
@@ -37,7 +38,7 @@ define('SHOPPING_MALL_ORDERS', 'shopping_mall_orders');
 
 define('TRANSLATIONS', 'translations');
 
-
+define('TOKEN_EXCHANGE', 'token_exchange');
 
 define('ROUTE', 'route');
 
@@ -81,7 +82,7 @@ define('TOPIC', 'topic');
 define('DOMAIN', 'domain');
 define('POINT', 'point');
 define('CHOICE', 'choice');
-
+define('ATOKEN', 'atoken');
 
 define('ON', 'on');
 define('OFF', 'off');

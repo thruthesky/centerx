@@ -140,6 +140,7 @@ class E {
 
     /// Friend
     public string $cannot_add_oneself_as_friend = 'error_cannot_add_oneself_as_friend';
+    public string $cannot_add_oneself_as_recommendation = 'error_cannot_add_oneself_as_recommendation';
     public string $already_added_as_friend = 'error_already_added_as_friend';
     public string $not_added_as_friend = 'error_not_added_as_friend';
     public string $already_blocked = 'error_already_blocked';

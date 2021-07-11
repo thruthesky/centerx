@@ -36,6 +36,8 @@ define('POINT_REGISTER', 'POINT_REGISTER');
 define('POINT_LOGIN', 'POINT_LOGIN'); // 로그인만 해도 포인트
 define('POINT_TEST', 'POINT_TEST');
 
+define('TOKEN_REGISTER', 'TOKEN_REGISTER');
+
 
 /// 포인트 충전
 define('POINT_PURCHASE', 'POINT_PURCHASE');

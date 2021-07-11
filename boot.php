@@ -42,6 +42,8 @@ require_once ROOT_DIR . 'lib/data.php';
 require_once ROOT_DIR . 'lib/in-app-purchase.class.php';
 require_once ROOT_DIR . 'lib/a-token.class.php';
 require_once ROOT_DIR . 'lib/g-token.class.php';
+require_once ROOT_DIR . 'lib/recommendation.class.php';
+require_once ROOT_DIR . 'lib/token-history.class.php';
 require_once ROOT_DIR . 'lib/hook.class.php';
 
 
