@@ -14,7 +14,9 @@ class PostController {
     public function update($in) {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
         $post = post($in[IDX]);
-        if ( $post->isMine() == false ) return  e()->not_your_post;
+        if ( admin() == false ) {
+            if ( $post->isMine() == false ) return  e()->not_your_post;
+        }
         return $post->update($in)->response();
     }
     public function delete($in) {

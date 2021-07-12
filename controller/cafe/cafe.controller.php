@@ -70,18 +70,18 @@ class CafeController {
         return sendMessageToTopic($cafe->domain, $in);
     }
 
-    public function initDefaultCafeMenu() {
-        if ( admin() == false ) return e()->you_are_not_admin;
-        $rets = [];
-        foreach( cafe()->mainMenus as $menu ) {
-            if ( category($menu)->exists ) {
-                $rets[$menu] = true;
-                continue;
-            }
-            $rets[$menu] = category()->create([ID=>$menu])->ok;
-        }
-        return $rets;
-    }
+//    public function initDefaultCafeMenu() {
+//        if ( admin() == false ) return e()->you_are_not_admin;
+//        $rets = [];
+//        foreach( cafe()->mainMenus as $menu ) {
+//            if ( category($menu)->exists ) {
+//                $rets[$menu] = true;
+//                continue;
+//            }
+//            $rets[$menu] = category()->create([ID=>$menu])->ok;
+//        }
+//        return $rets;
+//    }
 
     public function check() {
         include ROOT_DIR . 'controller/cafe/check.php';
