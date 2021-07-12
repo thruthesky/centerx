@@ -1529,6 +1529,9 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 # 데이터베이스 및 테이블 구조
 
+- 데이터베이스의 connection 을 생성할 때, `db()->connection()->set_charset('utf8mb4')` 를 적용한다.
+  즉, DB 의 모든 문자셋은 반드시 'utf8mb4' 또는 'utf8mb4_general_ci' 라야 한다.
+  
 - 모든 테이블에는 idx, createdAt, updatedAt 이 존재한다.(존재 해야 한다.)
 - 레코드가 사용자의 소유를 나타낼 때에는 추가적으로 userIdx 가 존재해야 한다.
 
