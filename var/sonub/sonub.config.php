@@ -16,6 +16,18 @@ if ( in('route') == 'user.login' || in('route') == 'user.update' ) {
 // 닉네임 변경 불가.
 config()->isNicknameChangeable = false;
 
+
+// 이름을 "송x호"와 같이 표시.
+hook()->add(HOOK_USER_READ, function(UserModel $user) {
+    $len = mb_strlen($user->name);
+    if ( $len <= 2 ) {
+        $name = mb_substr($user->name, 0, 1) . "x";
+    } else {
+        $name = mb_substr($user->name, 0, 1) . "x" . mb_substr($user->name, 2, 1);
+    }
+    $user->updateMemoryData('name', $name);
+});
+
 define("FIREBASE_ADMIN_SDK_SERVICE_ACCOUNT_KEY_PATH", ROOT_DIR . "var/sonub/keys/sonub-firebase-admin-sdk.json");
 define("FIREBASE_DATABASE_URI", "https://sonub-version-2020.firebaseio.com/");
 

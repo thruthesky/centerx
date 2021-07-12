@@ -626,6 +626,7 @@ function error(string $code) {
 function success(mixed $data) {
     header('Content-Type: application/json');
 
+    hook()->run(HOOK_SUCCESS, $data);
     echo json_encode([
         'response' => $data,
         'request' => in(),

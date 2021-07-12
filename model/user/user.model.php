@@ -138,6 +138,8 @@ class UserModel extends Entity {
 
         $data[ADMIN] = admin($this->email) ? 'Y' : 'N';
 
+        hook()->run(HOOK_USER_READ, $this);
+
         return $this;
     }
 
@@ -330,7 +332,7 @@ class UserModel extends Entity {
             'gender' => $this->gender,
             'birthdate' => $this->birthdate,
             'age' => $this->age,
-            'verified' => $this->verified,
+            'verifier' => $this->verifier,
             'point' => $this->point,
             'photoIdx' => $this->photoIdx ?? 0,
             'photoUrl' =>  $this->photoIdx ? thumbnailUrl($this->photoIdx ?? 0, 100, 100) : ($this->photoUrl ?? ''),
