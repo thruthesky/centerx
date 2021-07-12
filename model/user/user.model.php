@@ -433,7 +433,7 @@ class UserModel extends Entity {
         }
 
         // If the login user is not admin, then he may not change his nickname or other information.
-        if ( admin() ==  false ) {
+        if ( admin() == false ) {
             // 닉네임 변경 불가능한가?
             if ( config()->isNicknameChangeable == false ) {
                 // 닉네임이 입력되었고
