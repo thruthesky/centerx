@@ -611,7 +611,12 @@ function getWidgetOptions() {
  * @param string $code
  */
 function error(string $code) {
-    success($code);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'response' => $code,
+        'request' => in(),
+    ]);
+    exit;
 }
 
 /**
@@ -620,6 +625,7 @@ function error(string $code) {
  */
 function success(mixed $data) {
     header('Content-Type: application/json');
+    
     echo json_encode([
         'response' => $data,
         'request' => in(),

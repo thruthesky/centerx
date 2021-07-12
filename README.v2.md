@@ -609,11 +609,15 @@ return login()->updateData('rank', 2)->response();
 ## Adding Custom Api Route
 
 - There are two ways of handling route.
-- First, you can create a route class under `routes` folder and add method.
+- Firstly, you can create a new route class under `routes` folder and add route method.
   For instance, if `/?route=app.version` is accessed, create `routes/app.route.php` and define `AppRoute` class, then add `version` method in it.
 
-- Second, simple define a function of anywhere.
-  For instance, if `/?route=app.version` is accessed, add a function to `addRoute()` function like below.
+- Secondly, you can override an existing route or creaet a new route using `addRoute()` function.
+  - You may want to define(or override) a route with the `addRoute()` in `view/view-name/view-name.config.php`
+      or in `view/view-name/view-name.function.php`.
+  - Simply define a function of anywhere before loading `api.php` which calls and runs the route.
+    For instance, if `/?route=app.version` is accessed, add a function to `addRoute()` function like below.
+    
 ```php
 addRoute('app.version', function($in) {
     return ['version' => 'app version 12345 !!!'];
@@ -995,7 +999,16 @@ d(view()->page());
 
 ## System configuration
 
-- `/etc/config.php` 에 기본 설정이 모두 저장된다. 또한 필요하면 추가적인 설정을 이곳에 새로운 변수로 추가하면 된다.
+- `/etc/config.php` 에 시스템에 필요한 기본 설정이 모두 저장된다.
+  필요하면 추가적인 설정을 이곳에 새로운 변수로 추가하면 되며,
+  프로그램적으로 중간에 변경 할 수 있다.
+
+- 모든 설정을 MetaConfig 클래스로 해도 되지만, 때로는 관리자 페이지에서 임의 설정을 하도록 옵션을 주는 것 보다,
+  시스템 내부적으로 고정을 해 놓고 싶은 것들이 있다. 그래서 관리자 페이지에서 실수로 옵션 설정을 변경하는 것을 막을 수 있다.
+  예를 들면, `로그인과 관련된 암호키` 나,  `$isNicknameChangeable` 와 같이 닉네임 변경하는 옵션은 것은 한번 설정하면
+  영원히 설정이 바뀌지 않아야 하는 것이 원칙이다.
+  이런 옵션을 system config 에 넣는다.
+
 - 이 클래스는 직접 객체를 생성해서는 안되고, 반드시 `config()` 라는 함수로 참조해야 한다. 그래야 싱글톤으로 사용 할 수 있다.
 
 
@@ -1531,6 +1544,7 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 - 데이터베이스의 connection 을 생성할 때, `db()->connection()->set_charset('utf8mb4')` 를 적용한다.
   즉, DB 의 모든 문자셋은 반드시 'utf8mb4' 또는 'utf8mb4_general_ci' 라야 한다.
+  이유: 서버 백엔드 라우트에서 클라이언트로 response 를 할 때, json_encode 에서 UTF8 에러가 발생했다. 이 때, charset 을 지정해서 해결했다.
   
 - 모든 테이블에는 idx, createdAt, updatedAt 이 존재한다.(존재 해야 한다.)
 - 레코드가 사용자의 소유를 나타낼 때에는 추가적으로 userIdx 가 존재해야 한다.
@@ -1759,7 +1773,7 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 
 
-# 회원가입, 로그인
+# 회원, 회원가입, 로그인
 
 - 아이디 대신, 메일 주소 형태의 문자열을 사용한다.
   이것은 실제 메일 주소 일 수도 있고 아닐 수도 있지만, 메일 주소 형식을 띄어야 한다.
@@ -1769,6 +1783,9 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
   
 - 참고, 카카오로그인과 네이버로그인 모두 서브 도메인은 자동으로 무한대로 사용가능하다.
 - 참고, 소셜 로그인을 하는 경우, DB 의 닉네임이 빈 값이 아니면, 닉네임을 덮어쓰지 않는다. 즉, 웹/앱에서 변경 하는 경우에도, 덮어쓰지를 않는다.
+
+- 시스템 설정에 isNicknameChangeable 의 값이 false 이면, 닉네임이 한번 설정되면, 변경을 할 수 없다.
+  이 설정은 각 view-name.config.php 에서 override 가능하다.
 
 ## 카카오 로그인
 

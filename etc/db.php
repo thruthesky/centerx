@@ -9,7 +9,13 @@
 
 
 $__db = new MySQLiDatabase(DB_HOST, DB_NAME, DB_USER, DB_PASS);
-$__db->connection->set_charset("utf8mb4");
+
+
+/**
+ * Set charset.
+ */
+db()->connection->set_charset("utf8mb4");
+
 
 /**
  * If `displayError` is set to `true`, then database error messages will be printed.

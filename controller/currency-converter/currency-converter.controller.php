@@ -27,7 +27,9 @@ class CurrencyConverterController
         if ( $currency->expired( CURRENCY_CONVERTER_CACHE_EXPIRE  ) ) {
             $currency->renew();
             $url = CURRENCY_CONVERTER_API_URL . "?q=$q&compact=ultra&apiKey=" . CURRENCY_CONVERTER_API_KEY;
-            $res = file_get_contents($url);
+
+            /// 무료 버전이라서, 가끔씩 "503 Service Unavailable" 에러가 발생한다.
+            $res = @file_get_contents($url);
             $currency->set($res);
 
             /// Cache another pair!! see README.md for details.

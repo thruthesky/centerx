@@ -1,16 +1,38 @@
 <?php
-
+/**
+ * @file config.php
+ */
+/**
+ * Class Config
+ */
 class Config {
 
-    public int $version = 1;
-
-
     /**
+     * @var array - 업데이트 불가능한 필드를 기록
      * @see README.md
      */
     public array $blockUserFields = [];
 
 
+    /**
+     * @var bool - 닉네임이 변경 가능한가?
+     * @see README.md
+     */
+    public bool $isNicknameChangeable = true;
+
+
+
+
+
+
+
+
+    // For test
+    public int $version = 1;
+
+
+
+    // For singleton
     private static ?Config $instance = null;
 
     /**

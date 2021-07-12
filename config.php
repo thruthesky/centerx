@@ -117,7 +117,7 @@ $_config_path = view()->file( filename: 'config', prefixThemeName: true );
 
 
 if ( file_exists($_config_path) ) {
-    debug_log("--- loading view config.php from: view/".view()->folderName."/".view()->folderName."config.php");
+    debug_log("--- loading view config.php from: view/".view()->folderName."/".view()->folderName.".config.php");
     require_once $_config_path;
 } else {
     debug_log("--- loading view config.php : [ Not exists ]");

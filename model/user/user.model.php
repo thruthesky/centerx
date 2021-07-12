@@ -426,9 +426,20 @@ class UserModel extends Entity {
             if ( empty($in[EMAIL]) ) return $this->error(e()->email_is_empty);
             if ($this->emailExists($in[EMAIL]) &&  $this->findOne([EMAIL => $in[EMAIL]])->idx != $this->idx) return $this->error(e()->email_exists);
         }
+
         // point cannot be changed by user.
         if ( isset($in[POINT] ) && admin() == false ) {
             return $this->error(e()->user_cannot_update_point);
+        }
+
+        // 닉네임 변경 불가능한가?
+        if ( config()->isNicknameChangeable == false ) {
+            // 닉네임이 입력되었고
+            // 나의 닉네임이 empty 가 아니고,
+            // 입력된 닉네임과 나의 닉네임이 다르면, 에러.
+            if ( isset($in[NICKNAME]) && login()->nickname && login()->nickname != $in[NICKNAME] ) {
+                return $this->error(e()->nickname_is_not_changeable);
+            }
         }
 
         // @see README.md

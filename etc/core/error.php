@@ -237,6 +237,7 @@ class E {
 
     public string $block_user_field = "error_block_user_field";
 
+    public string $nickname_is_not_changeable = 'error_nickname_is_not_changeable';
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)
