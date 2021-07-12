@@ -273,19 +273,20 @@ class PostModel extends Forum {
 
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
 
-        // otherUserIdx 가 설정되었으면,
-        if ( $this->otherUserIdx  ) {
-            // 오직 otherUserIdx 삭제 가능.
-            if ( $this->otherUserIdx != login()->idx ) return $this->error(e()->cannot_be_deleted_due_to_wrong_other_user_idx);
-        } else {
-            // 아니면, 내 글인 경우에만 삭제 가능.
-            if ( $this->isMine() == false ) {
-                return $this->error(e()->not_your_post);
+        // Admin can delete other user's post.
+        if ( admin() == false ) {
+            // otherUserIdx 가 설정되었으면,
+            if ( $this->otherUserIdx  ) {
+                // 오직 otherUserIdx 삭제 가능.
+                if ( $this->otherUserIdx != login()->idx ) return $this->error(e()->cannot_be_deleted_due_to_wrong_other_user_idx);
+            } else {
+                // 아니면, 내 글인 경우에만 삭제 가능.
+                if ( $this->isMine() == false ) {
+                    return $this->error(e()->not_your_post);
+                }
             }
         }
-
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
-
 
         parent::markDelete();
         if ( $this->hasError ) return $this;
@@ -293,7 +294,8 @@ class PostModel extends Forum {
         //
         parent::update([TITLE => '', CONTENT => '', PRIVATE_TITLE => '', PRIVATE_CONTENT => '']);
 
-        //
+
+        // leave a history, point change
         userActivity()->deletePost($this);
 
         return $this;

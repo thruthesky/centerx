@@ -277,6 +277,12 @@ class UserActivityModel extends UserActivityBase {
 
     /**
      * Record action and change point for post delete
+     *
+     * `fromUserIdx` is the one who deletes the post. It may be someone else like admin.
+     * `toUserIdx` is the post author.
+     *
+     * So, when admin deletes a post of a user A, then A will get point deduction (if the category setting has point deduction)
+     *
      * @param PostModel $post
      * @return UserActivityModel
      */
@@ -284,9 +290,11 @@ class UserActivityModel extends UserActivityBase {
 
         return $this->recordAction(
             Actions::$deletePost,
-            fromUserIdx: 0,
+            // if the user who is deleting is the post author, then fromUserIdx must be 0. or else, put the user idx who deletes.
+            fromUserIdx: login()->idx == $post->userIdx ? 0 : login()->idx,
+            // Whoever deletes, the point must be 0.
             fromUserPoint: 0,
-            toUserIdx: login()->idx,
+            toUserIdx: $post->userIdx,
             toUserPoint: $this->getPostdeletePoint($post->categoryIdx),
             taxonomy: $post->taxonomy,
             entity: $post->idx,

@@ -167,9 +167,12 @@ class UserActivityBase extends Entity {
      *    And if fromUserPoint is set, the fromUser will lose(or gain by the admin setting) his point,
      *      And the other user will get(or lose by the admin setting) his point.
      *
-     * @param int $fromUserPoint - the amount of the point to apply to(or to deduct from) $fromUserIdx
+     * @param int $fromUserPoint - the amount of the point to apply to(or to deduct from) $fromUserIdx.
+     *  - This is not the current point.
+     *
      * @param int $toUserIdx - the user that will receive point from $fromUserIdx.
      * @param int $toUserPoint - the amount of the point to apply to $toUserIdx.
+     *  - This is NOT the current point.
      * @param string $taxonomy
      * @param int $entity
      * @param int $categoryIdx
