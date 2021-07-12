@@ -432,23 +432,27 @@ class UserModel extends Entity {
             return $this->error(e()->user_cannot_update_point);
         }
 
-        // 닉네임 변경 불가능한가?
-        if ( config()->isNicknameChangeable == false ) {
-            // 닉네임이 입력되었고
-            // 나의 닉네임이 empty 가 아니고,
-            // 입력된 닉네임과 나의 닉네임이 다르면, 에러.
-            if ( isset($in[NICKNAME]) && login()->nickname && login()->nickname != $in[NICKNAME] ) {
-                return $this->error(e()->nickname_is_not_changeable);
+        // If the login user is not admin, then he may not change his nickname or other information.
+        if ( admin() ==  false ) {
+            // 닉네임 변경 불가능한가?
+            if ( config()->isNicknameChangeable == false ) {
+                // 닉네임이 입력되었고
+                // 나의 닉네임이 empty 가 아니고,
+                // 입력된 닉네임과 나의 닉네임이 다르면, 에러.
+                if ( isset($in[NICKNAME]) && login()->nickname && login()->nickname != $in[NICKNAME] ) {
+                    return $this->error(e()->nickname_is_not_changeable);
+                }
+            }
+
+            // @see README.md
+            if ( config()->blockUserFields ) {
+                if ( $res = array_intersect_key(array_flip(config()->blockUserFields), $in) ) {
+                    $keys = implode(', ', array_keys($res));
+                    return $this->error(e()->block_user_field, $keys);
+                }
             }
         }
 
-        // @see README.md
-        if ( config()->blockUserFields ) {
-            if ( $res = array_intersect_key(array_flip(config()->blockUserFields), $in) ) {
-                $keys = implode(', ', array_keys($res));
-                return $this->error(e()->block_user_field, $keys);
-            }
-        }
         return parent::update($in);
     }
 
