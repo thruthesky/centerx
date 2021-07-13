@@ -3,24 +3,20 @@
 /**
  * Class PointHistory
  *
- * @property-read int $fromUserIdx
- * @property-read int $toUserIdx
+ * @property-read int $userIdx
+ * @property-read int pointApply
+ * @property-read int pointAfterApply
+ * @property-read int toKenApply
+ * @property-read int toKenAfterApply
  * @property-read string $reason
- * @property-read string $taxonomy
- * @property-read int $entity
- * @property-read int categoryIdx
- * @property-read int fromUserPointApply
- * @property-read int fromUserPointAfter
- * @property-read int toUserPointApply
- * @property-read int toUserPointAfter
  * @property-read int createdAt
  * @property-read int updatedAt
  */
-class PointHistory extends Entity {
+class ATokenHistory extends Entity {
 
     public function __construct(int $idx)
     {
-        parent::__construct(POINT_HISTORIES, $idx);
+        parent::__construct(ATOKEN_HISTORIES, $idx);
     }
 
 
@@ -33,18 +29,17 @@ class PointHistory extends Entity {
      * $ph->update([CREATED_AT => $ph->createdAt - (60 * 60 * 24)]);
      * ```
      *
-     * @param $taxonomy
-     * @param $entity
+
      * @param string $reason
-     * @return PointHistory
+     * @return ATokenHistory
      */
-    public function last($taxonomy, $entity, $reason=''): PointHistory {
+    public function last($reason=''): ATokenHistory {
         $q = '';
         if ( $reason ) $q = "reason='$reason' AND ";
-        $where = $q . TAXONOMY . "='$taxonomy' AND entity=$entity";
+        $where = $q;
         $histories = $this->search(where: $where, limit: 1);
-        if ( count($histories) ) return PointHistory($histories[0]->idx);
-        return PointHistory();
+        if ( count($histories) ) return ATokenHistory($histories[0]->idx);
+        return ATokenHistory();
     }
 
 
@@ -59,7 +54,7 @@ class PointHistory extends Entity {
      * @param int $limit
      * @param array $conds
      * @param string $conj
-     * @return PointHistory[]
+     * @return ATokenHistory[]
      */
     public function search(
         string $select='idx',
@@ -98,14 +93,12 @@ class PointHistory extends Entity {
  * Returns PointHistory instance.
  *
  *
- * @param int $idx - The `point_histories.idx`.
- * @return PointHistory
+ * @param int $idx - The `a-token_histories.idx`.
+ * @return ATokenHistory
  */
-function pointHistory(int $idx=0): PointHistory
+function aTokenHistory(int $idx=0): ATokenHistory
 {
-    return new PointHistory($idx);
+    return new ATokenHistory($idx);
 }
-
-
 
 

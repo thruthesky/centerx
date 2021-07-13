@@ -126,7 +126,7 @@ class AToken
             'tokenApply' => $tokenApply,
             'tokenAfterApply' => $tokenAfterApply,
         ];
-        $record = tokenHistory()->create($history);
+        $record = aTokenHistory()->create($history);
         return $record->idx;
     }
 

@@ -40,14 +40,14 @@ if(modeSubmit()) {
 
             <div class="form-group col-6">
                 <label for="point">point</label>
-                <input type="text" class="form-control" placeholder="point" name="point" id="point"  value="<?=$profile->point?>">
+                <input type="text" class="form-control" placeholder="point" name="point" id="point"  value="<?=$profile->point?>" disabled>
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group col-6">
                 <label for="atoken">a-token</label>
-                <input type="text" class="form-control" placeholder="A-token" name="atoken" id="atoken"  value="<?=$profile->atoken?>">
+                <input type="text" class="form-control" placeholder="A-token" name="atoken" id="atoken"  value="<?=$profile->atoken?>" disabled>
             </div>
 
             <div class="form-group col-6">

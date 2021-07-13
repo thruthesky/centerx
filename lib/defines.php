@@ -32,6 +32,7 @@ define('FILES', 'files');
 
 define('PUSH_NOTIFICATION_TOKENS', 'push_notification_tokens');
 define('POINT_HISTORIES', 'point_histories');
+define('ATOKEN_HISTORIES', 'a_token_histories');
 
 define('POST_VOTE_HISTORIES', 'post_vote_histories');
 define('SHOPPING_MALL_ORDERS', 'shopping_mall_orders');
