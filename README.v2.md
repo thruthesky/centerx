@@ -251,6 +251,89 @@ define('DOMAIN_THEMES', [
   예를 들면, 사용자 포인트를 변경 할 수 있는 user()->_setPoint() 함수와 같은 것이다.
   이런 함수는 프로그램 내부적으로만 사용해야 한다.
 
+
+
+# 폴더구조 (Folder Structure)
+
+- `etc` - For etc files.
+  - `etc/boot` - has all boot related code and scripts.
+  - `etc/install` - for keeping information about installation.
+  - `etc/phpMyAdmin` - phpMyAdmin for managing database. Access `https://www...com/etc/phpMyAdmin/index.php`.
+  - `etc/sql` - has SQL schema for installation.
+
+- `routes` 폴더에는 각종 라우트가 저장된다.
+
+- `storage` is for all the uploaded files.
+
+- `themes` is theme folder for website.
+
+- `vendor` is for compose files.
+
+- `widgets` is for widgets.
+
+- `library` folder has the system library scripts.
+  -`library/taxonomy` folder has all kinds of taxonomy scripts like `user.taxonomy.php`, `post.taxonomy.php`,
+  `comment.taxonomy.php`, `meta.taxonomy.php`, and others.
+
+  - post and comment are using same table but their usages are different. So, the taxonomies are divided.
+
+  - `library/utility` folder has utility scripts for the system like `library/utility/mysqli.php` that provides database connectivity.
+
+  - `library/model/entity.php` is a model class for each taxonomy.
+  - `library/model/taxonomy.php` is the taxonomy class that extends entity class and is the parent of all taxonomy classes.
+
+
+
+# 부팅 순서
+
+- 부팅 순서를 새로 작성해야 함.
+
+- index.php
+  - boot.php
+    - etc/preflight.php
+    - etc/kill-wrong-routes.php
+    - vendor/autoload.php
+    - etc/core/functions.php
+    - etc/core/language.php
+    - etc/core/translations.php
+    - etc/core/config.php
+    - etc/core/view.php
+    - etc/core/mysqli.php
+    - etc/core/entity.php
+    - etc/core/hook.php
+    - config.php
+    - etc/db.php
+    - view/view-name/view-name.functions.php
+    - `cookieLogin()`
+  - controller/control.php
+    - api.php
+      -
+    - view.php
+      - 
+
+~~~
+- index.php
+  - boot.php
+    - prelight.php
+    - etc/kill-wrong-routes.php
+    - library/core/functions.php
+    - library/core/theme.php
+    - library/core/mysqli.php
+    - ... taxonomy files ...
+    - library/core/hook.php
+    - ROOT_DIR/config.php
+    - THEME_DIR/config.php
+    - etc/db.php for connection database
+    - THEME_DIR/functions.php
+    - live_reload()
+    - setUserAsLogin(getProfileFromCookieSessionId());
+  - routes/index.php for API call.
+    - exit
+  - theme/theme-name/index.php
+    - inject Javascript & styles at the bottom
+~~~
+
+
 # 클라이언트
 
 ## 클라이언트 작업시 참고 사항
@@ -1418,125 +1501,9 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 # 카페, Cafe, 소너브
 
-- 메일 회원 가입하지 않고, 소셜 로그인 하며, 회원 별 본인 인증을 하므로, 메일 주소를 회원 정보에 표시 하지 않는다.
-- 전화번호, 이름, 생년월일(나이), 성별은 수정 불가하다. 본인 인증을 하면 자동으로 적용된다. 단, 닉네임은 수정 가능.
-- 회원 정보에서 이름을 표시 할 때에는 "송x호" 와 같이 중간 글자를 안보이게 처리한다.
-
-- Cafe functionality is a unique function for `sonub.com` site. So, it may not be appropriate for the model and
-  controller to be under `controller` and `model` folder. Rather, they should be inside its view folder.
-  But to make it easy to work, it is under the system folder temporarily.
-
-- Cafe is like a group of small community in the site.
-- Cafe is actually a category. That means, a cafe is a forum. So cafe can have its category title, description,
-  subcategories, and more of what category has.
-
-- The cafe in sonub site is targeting a global travel information sharing service.
-  - Any one can create a cafe and they can share their interests or introduce their service.
+- 카페 관련한 개발 문서는 [소너브 2021 프로젝트 구글 문서](https://docs.google.com/document/d/183T26WZtfaa0SrQRF7Ut2h_pFn3qorZk1OrdH-1VWrU/edit#heading=h.5xi08ga2jhey)로 모은다.
+  - Matrix 뿐만아니라, Vue.js 개발 관련 내용도 구글 문서로 모은다.
   
-
-- Cafe admin is the user who created the cafe.
-  - User can create a cafe by submitting the cafe create form.
-  - When user creates a cafe, the user can choose which country the cafe belongs to and sub domain of which root domain
-    he wants to use.
-    
-- Cafe main site, main-cafe.
-  - A cafe that are recorded in `CafeModel::$mainCafeDomains` are the main cafes.
-    - And if it not main cafe, then it will be a sub-cafe.
-  - Main cafe is not a category. Which means, it has no title, nor description, nor subscategories and nothing like
-    what a subcafe has.
-  - Main cafe has its settings inside `CafeModel::$mainCafeSettings`
-  
-
-- When user visits main-cafe,
-  - It displays menus inside `$mainCafeSettings`.
-  
-- When user visits sub-cafe,
-  - It displays subcategories of the sub-cafe, together with th main-cafe menus.
-
-
-## 카페 설정
-
-### cafe.check 라우트로 기본 설정
-
-- 카페에서 사용되는 게시판, 기본 설정 등을 손쉽게 관리하기 위해서 `?route=cafe.check` 로 접속하면 된다.
-  접속 예, `https://main.philov.com/index.php?route=cafe.check&reload=true`
-  - 이 경로는 Json 을 리턴하는 것이 아니라, 카페 설정 정보를 보여준다.
-  - 그리고 메인 메뉴에 사용되는 게시판의 경우, 존재하지 않으면 자동 생성한다.
-
-## Cafe PWA
-
-- All cafe (both main-cafe and sub-cafe) works as PWA.
-- All cafe (both main-cafe and sub-cafe) can be installed as A2HS.
-  - Main cafe will use main cafe settings to patch manifest.json
-  - Sub cafe will use its category settings to patch manifest.json
-  
-
-## 카페 로그인
-
-- 소셜 로그인 만으로 한다.
-  - 카카오, 구글, 페이북 3가지로만 로그인을 할 수 있도록 한다.
-    - 네이버는 뺀다. 그 이유는 도메인 설정에서 한 개발자 앱(프로젝트)에 2개의 도메인만 허용된다. 많은 도메인을 사용하게 될 소너브 카페와는 맞지 않다.
-
-
-    
-## 카페 부연 설명
-
-* 게시판 1개를 카페로 해서, 최소한의 기능만으로 카페 또는 전세계 교민 카페를 만든다.
-  * 카페 당 게시판 1개가 할당된다.
-  * id 에는 카페 전체 도메인. 2차 도메인 전체.
-  * domain 에는 root domain 만 저장된다.
-  * 카페의 countryCode 에 해당 국가의 countryCode 가 저장된다.
-  * 그리고 모든 국가별로 자유게시판, 질문게시판을 공통 사용 가능하도록, 각 게시글에 countryCode 를 카페의 countryCode 로 같이 쓴다.
-  * 서브 카테고리를 최대 10개까지 사용가능하도록 하며, 컴퓨터 메인 메뉴에는 필고처럼 노란색 메뉴로 총 300 px 너비만큼만 보여준다. 메뉴명을 짧게하면 많이 보여 줄 수 있다.
-  * 카페를 삭제하는 경우,
-    - 글은 그대로 남는다.
-    - 동일한 도메인으로 카페를 재 생성 할 수 있다.
-    - 카페를 삭제하면, 카테고리에 도메인이 존재하지 않는데, 화면에 에러 알림창이나 redirect 를 하지 않고, 그 페이지에서, 존재하지 않는 카페라고 작은 메시지만 표시를 한다.
-* IE 와 SEO(검색 로봇)을 위해서, 초간단 디자인 웹을 보여주고, 모던 브라우저가 접속하면, 플러터로 부팅한다.
-* 플러터 앱에서 거의 모든 것을 다 한다.
-* 단,  PC 버전 보기 옵션을 두어서, 서브도메인으로 테마를 다르게 해서 PC 버전으로 볼 수 있도록 한다. 그래서 글 쓰기 등을 편하게 할 수 있도록 한다.
-* 본인인증을 하면, 커뮤니티 글 쓰기 가능. 카카오, 네이버로 접속하면, 장터 게시판에만 글 등록할 수 있도록만 한다.
-- 카페 도메인별 PWA 설정을 할 수 있도록 한다.
-
-
-## 카페 로고 제작법
-
-- 메인 카페와 서브 카페 모두 적용되는 것으로
-  - 너비 500px, 높이 72px 로 고정되어져 있다.
-  - 만약, 로고 디자인을 너비 300px 로 하고 싶다면,
-    - 전체 이미지 너비는 500px 로 하고, 실제 디자인 내용을 300px 로 하고, 이미지의 중간에 위치시키면 된다.
-      즉, 남는 여백은 그냥 빈 칸으로 두는 것이다.
-
-# 카페 클라이언트 로직
-
-## 카페 설정, 초기 메뉴 설정 등
-
-- 참고: 본 문서의 클라이언트 초기 설정 로직
-  
-#### Vue.js 에서 작업
-
-- 
-
-- index.php 파일은 아래와 같이 간단하게 하고,
-
-- index.html 에 name, logo, menu 가 들어간다.
-  - 여기에 menu 는 카페 메인 메뉴이고, 카페 별 메뉴는 서버에서 가져와서 보여 주어야 한다.
-
-### Sub cafe logic
-
-- Get cafe category from localStorage into memory, and;
-  - display cafe name on render view.
-  - display admin menu if the user is cafe admin
-  - display cafe menu
-- When app is mounted(loaded), get the cafe category record and
-  - save it on localStorage for the next use.
-  - update the memory.
-
-## 카페 프로토콜
-
-### 전체 설정 가져오기
-
-- `route=cafe.settings`
 
 
 
@@ -1784,8 +1751,19 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 - 참고, 카카오로그인과 네이버로그인 모두 서브 도메인은 자동으로 무한대로 사용가능하다.
 - 참고, 소셜 로그인을 하는 경우, DB 의 닉네임이 빈 값이 아니면, 닉네임을 덮어쓰지 않는다. 즉, 웹/앱에서 변경 하는 경우에도, 덮어쓰지를 않는다.
 
-- 시스템 설정에 isNicknameChangeable 의 값이 false 이면, 닉네임이 한번 설정되면, 변경을 할 수 없다.
+- 시스템 설정에 `$isNicknameChangeable` 의 값이 false 이면, 닉네임이 한번 설정되면, 변경을 할 수 없다.
   이 설정은 각 view-name.config.php 에서 override 가능하다.
+  배포 될 때의 기본 값은 true 이며, 이 값을 변경하고 싶다면, `view/view-name/view-name.config.php` 에서 변경하기를 권한다.
+  소너브에서는 false 로 지정을 했다.
+  
+
+- `$isNicknameChangeable`\
+  시스템 설정에서 중복 닉네임이 가능한지 설정.
+  이 값이 true 로 설정되면, 동일한 닉네임을 여러명이 사용 할 수 있다.
+  이 값이 false 로 설정되면, 다른 사용자가 사용하고 있는 동일한 닉네임을 사용하려면 에러가 난다.
+  배포 될 때의 기본 값은 true 이며, 이 값을 변경하고 싶다면, `view/view-name/view-name.config.php` 에서 변경하기를 권한다.
+  소너브에서는 false 로 지정을 했다.
+
 
 ## 카카오 로그인
 
@@ -2858,6 +2836,35 @@ EOS;
 });
 ```
 
+
+# 관리툴, CLI 코딩, 독립 스크립트, 실험, 예제
+
+## CLI 프로그래밍
+
+- 주의 할 점은 항상 현재 경로가 어딘지를 파악하고, `boot.php` 를 include 하는 것이다.
+  - 특히, 도커에서 php 를 실행하면, 현재 경로가 `/var/www/html` 과 같이 된다.
+
+```php
+<?php
+include '/docker/home/centerx/boot.php';
+echo `pwd`;
+d($argv[0]);
+d($argv[1]);
+d($argv[2]);
+```
+
+
+
+## 관리툴 x 명령.
+
+- 터미널에서 `x` 라고 명령을 하면, 관리 툴이 실행된다.
+  이렇게 하기 위해서는 alias 에 `x` 를 `docker exec www_docker_php php /docker/home/centerx/etc/x/x.php` 와 같이 연결해야 한다.
+
+- 게시글 생성 명령
+  - `x post create etc/res/forum/sample.php` 와 같이 하면 된다.
+    이 때, `sample.php` 는 글 카테고리, 제목, 내용, 사진, 첨부 파일 등을 PHP 로 가지고 있는 파일이다.
+    설정 파일 경로는 matrix 루트 경로 부터 상대 경로를 지정하면 된다.
+    PHP 내부에서는 ROOT_DIR 상수를 사용해서, 루트 경로를 지정하면 된다.
 
 
 # 문제점

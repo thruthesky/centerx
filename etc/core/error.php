@@ -239,6 +239,8 @@ class E {
 
     public string $nickname_is_not_changeable = 'error_nickname_is_not_changeable';
 
+    public string $nickname_exists = 'error_nickname_exists';
+
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)
     {

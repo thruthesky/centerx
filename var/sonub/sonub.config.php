@@ -15,6 +15,8 @@ if ( in('route') == 'user.login' || in('route') == 'user.update' ) {
 
 // 닉네임 변경 불가.
 config()->isNicknameChangeable = false;
+config()->isNicknameDuplicatable = false;
+
 
 
 // 이름을 "송x호"와 같이 표시.

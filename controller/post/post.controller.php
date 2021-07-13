@@ -128,7 +128,33 @@ class PostController {
         $posts = post()->search(object: true, in: $in);
         $res = [];
         foreach($posts as $post) {
-            $res[] = $post->response(comments: $in['comments'] ?? -1);
+            $got = $post->response(comments: $in['comments'] ?? -1);
+            if ( isset($in['minimal']) && $in['minimal'] ) {
+                $o = $got;
+                $n = [
+                    'Y' => $o['Y'],
+                    'N' => $o['N'],
+                    CATEGORY_ID => $o[CATEGORY_ID],
+                    CATEGORY_IDX => $o[CATEGORY_IDX],
+                    CONTENT => mb_substr($o[CONTENT], 0, 128),
+                    COUNTRY_CODE => $o[COUNTRY_CODE],
+                    CREATED_AT => $o[CREATED_AT],
+                    DELETED_AT => $o[DELETED_AT],
+                    FILE_IDXES => $o[FILE_IDXES],
+                    FILES => $o[FILES],
+                    IDX => $o[IDX],
+                    NO_OF_COMMENTS => $o[NO_OF_COMMENTS],
+                    NO_OF_VIEWS => $o[NO_OF_VIEWS],
+                    PATH => $o[PATH],
+                    RELATIVE_URL => $o[RELATIVE_URL],
+                    UPDATED_AT => $o[UPDATED_AT],
+                    'url' => $o['url'],
+                    USER => $o[USER],
+                    USER_IDX => $o[USER_IDX],
+                ];
+                $got = $n;
+            }
+            $res[] = $got;
         }
         return $res;
     }

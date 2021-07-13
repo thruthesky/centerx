@@ -835,7 +835,14 @@ class Entity {
     /**
      * 특정 레코드를 1개 찾아 현재 객체로 변환(변경)하여 리턴한다.
      *
-     * 주의: 현재 Taxonomy 의 Entity 객체로 변환해서 리턴한다. 만약, 파일이 없으면, entity_not_found 에러가 설정된 Entity 객체가 리턴된다.
+     * 주의, 객체를 찾아서 현재 (Taxonomy 의) Entity 객체로 적용(변환)해서 리턴한다.
+     * 만약, 찾는 레코드(또는 파일)가 없으면, entity_not_found 에러가 현재 객체에 설정되고 현재 객체( Entity )를 리턴된다.
+     * 주의, 에러가 있으면, 에러만 설정할 뿐, 현재 객체에 있는 정보는 그대로 유지된다. 따라서, 가능하면 새로운(빈) entity 객체를 생성해서 이 함수를 사용한다.
+     * 그래야 에러가 있으면, idx 값이 0 이 되고, `->exists` 가 false 를 리턴한다.
+     * ```
+     * user()->findOne(...)->exists // 이렇게 하는 것이 좋다.
+     * $user->findOne(...)->exists // 미리 생성된 entity 에 findOne() 하는 것은 좋지 않다. 레코드가 존재하지 않음에도 idx 값이 있을 수 있다.
+     * ```
      *
      * 예를 들어, `user()->by('thruthesky@gmail.com')` 와 같이 호출하면, by() 가 리턴하는 값은
      * thruthesky@gmail.com 사용자의 User 객체가되는 것이다.
@@ -864,7 +871,9 @@ class Entity {
 
         $arr = self::search(conds: $conds, conj: $conj, limit: 1); // 현재 객체의 search() 만 호출. 자식 클래스의 search() 는 호출하지 않음.
 
-        if ( ! $arr ) return $this->error(e()->entity_not_found);
+        if ( ! $arr ) {
+            return $this->error(e()->entity_not_found);
+        }
         $idx = $arr[0][IDX];
 
         return $this->read($idx);

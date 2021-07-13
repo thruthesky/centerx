@@ -40,7 +40,7 @@ require_once ROOT_DIR . 'etc/translations.php';
 
 require_once ROOT_DIR . 'etc/config.php';
 
-// @todo remove theme
+
 require_once ROOT_DIR . 'etc/core/view.php';
 
 

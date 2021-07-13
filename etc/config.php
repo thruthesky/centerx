@@ -21,7 +21,11 @@ class Config {
     public bool $isNicknameChangeable = true;
 
 
-
+    /**
+     * @var bool - 동일한 닉네임이 가능한다.
+     * @see README.md
+     */
+    public bool $isNicknameDuplicatable = true;
 
 
 

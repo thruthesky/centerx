@@ -169,26 +169,27 @@ class FileModel extends Entity {
 
     /**
      * @return array|string
+     * This method adds user information and post data which give a extra accessing to database and returns extra data to client-end.
      */
-    public function response(string $fields = null): array|string {
-        if ( $this->hasError ) return $this->getError();
-        $data = $this->getData();
-
-        if ( isset($data[USER_IDX]) ) {
-            $data['user'] = user($data[USER_IDX])->shortProfile(firebaseUid: true);
-        } else {
-            $data['user'] = [];
-        }
-
-        if($data[TAXONOMY] == POSTS) {
-            $data['post'] = [
-                'idx' => post($data[ENTITY])->idx,
-                'title' => post($data[ENTITY])->title,
-                'content' =>    post($data[ENTITY])->content
-            ];
-        }
-        return $data;
-    }
+//    public function response(string $fields = null): array|string {
+//        if ( $this->hasError ) return $this->getError();
+//        $data = $this->getData();
+//
+//        if ( isset($data[USER_IDX]) ) {
+//            $data['user'] = user($data[USER_IDX])->shortProfile(firebaseUid: true);
+//        } else {
+//            $data['user'] = [];
+//        }
+//
+//        if($data[TAXONOMY] == POSTS) {
+//            $data['post'] = [
+//                'idx' => post($data[ENTITY])->idx,
+//                'title' => post($data[ENTITY])->title,
+//                'content' =>    post($data[ENTITY])->content
+//            ];
+//        }
+//        return $data;
+//    }
 
     /**
      * '1,2,3' 과 같이 idx 들을 문자열로 입력 받아, 해당하는 File 객체를 배열에 담아 리턴한다.

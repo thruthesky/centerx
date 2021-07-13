@@ -368,61 +368,6 @@ cd etc/phpdoc
 
 
 
-# 폴더구조 (Folder Structure)
-
-- `etc` - For etc files.
-  - `etc/boot` - has all boot related code and scripts.
-  - `etc/install` - for keeping information about installation.
-  - `etc/phpMyAdmin` - phpMyAdmin for managing database. Access `https://www...com/etc/phpMyAdmin/index.php`.
-  - `etc/sql` - has SQL schema for installation.
-
-- `routes` 폴더에는 각종 라우트가 저장된다.
-
-- `storage` is for all the uploaded files.
-
-- `themes` is theme folder for website.
-
-- `vendor` is for compose files.
-
-- `widgets` is for widgets.
-
-- `library` folder has the system library scripts.
-  -`library/taxonomy` folder has all kinds of taxonomy scripts like `user.taxonomy.php`, `post.taxonomy.php`,
-  `comment.taxonomy.php`, `meta.taxonomy.php`, and others.
-
-  - post and comment are using same table but their usages are different. So, the taxonomies are divided.
-
-  - `library/utility` folder has utility scripts for the system like `library/utility/mysqli.php` that provides database connectivity.
-
-  - `library/model/entity.php` is a model class for each taxonomy.
-  - `library/model/taxonomy.php` is the taxonomy class that extends entity class and is the parent of all taxonomy classes.
-
-
-
-# Boot flow
-
-- index.php
-  - boot.php
-    - prelight.php
-    - etc/kill-wrong-routes.php
-    - library/core/functions.php
-    - library/core/theme.php
-    - library/core/mysqli.php
-    - ... taxonomy files ...
-    - library/core/hook.php
-    - ROOT_DIR/config.php
-    - THEME_DIR/config.php
-    - etc/db.php for connection database
-    - THEME_DIR/functions.php
-    - live_reload()
-    - setUserAsLogin(getProfileFromCookieSessionId());
-  - routes/index.php for API call.
-    - exit
-  - theme/theme-name/index.php
-    - inject Javascript & styles at the bottom
-
-
-
 
 # Configuration
 

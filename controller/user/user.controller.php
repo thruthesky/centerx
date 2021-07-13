@@ -146,6 +146,12 @@ class UserController
 
     }
 
+    /**
+     * 사용자 정보 수정
+     *
+     * @param $in
+     * @return array|string
+     */
     public function update($in): array| string
     {
         if (notLoggedIn()) return e()->not_logged_in;

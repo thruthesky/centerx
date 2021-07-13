@@ -38,6 +38,9 @@ const COMMENTS = 'comments';
 const FILES = 'files';
 const FILE_IDXES = 'fileIdxes';
 
+const NO_OF_COMMENTS = 'noOfComments';
+const RELATIVE_URL = 'relativeUrl';
+
 
 const PUSH_NOTIFICATION_TOKENS = 'push_notification_tokens';
 const POINT_HISTORIES = 'point_histories';

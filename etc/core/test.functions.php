@@ -127,8 +127,31 @@ function createPost(string $categoryId=null, string $title = null, string $conte
     return post()->create([CATEGORY_ID => $categoryId ?? POINT,
         TITLE => $title ?? TITLE,
         CONTENT => $content ?? CONTENT,
-        'files' => $files,
+        FILE_IDXES => $files,
         ]);
+}
+
+/**
+ * 글을 하나 작성하는데, 사진을 하나 첨부한다.
+ *
+ * 주의, 미리 로그인을 해야하며, 각종 권한이 적절하게 설정되어져 있어야 한다.
+ *
+ * @param string $categoryId
+ * @param string $title
+ * @param string $content
+ * @param string $path
+ * @return PostModel
+ */
+function createPostWithPhoto(string $categoryId, string $title = '', string $content= '', string $path = ''): PostModel {
+    $file = files()->upload([
+        TAXONOMY => POSTS,
+    ], [
+        NAME => basename($path),
+        TMP_NAME => $path,
+        SIZE => filesize($path),
+        TYPE => mimeType($path),
+    ]);
+    return createPost($categoryId, $title, $content, $file->idx);
 }
 
 function createComment(string $categoryId=null): CommentModel {

@@ -388,6 +388,60 @@ class UserModel extends Entity {
 
 
 
+
+    /**
+     * @param array $in
+     * @return $this
+     */
+    function update($in): self
+    {
+
+        // If email has passed, it can update(change) user's email.
+        if ( isset($in[EMAIL]) ) {
+            if ( empty($in[EMAIL]) ) return $this->error(e()->email_is_empty);
+            if ($this->emailExists($in[EMAIL]) &&  $this->findOne([EMAIL => $in[EMAIL]])->idx != $this->idx) return $this->error(e()->email_exists);
+        }
+
+        // point cannot be changed by user.
+        if ( isset($in[POINT] ) && admin() == false ) {
+            return $this->error(e()->user_cannot_update_point);
+        }
+
+        // If the login user is not admin, then he may not change his nickname or other information.
+        // 관리자의 경우, 닉네임 변경 할 수 있으며, 블럭된 필드도 업데이트 할 수 있다.
+        if ( admin() == false ) {
+            // 닉네임 변경 불가능한가?
+            if ( config()->isNicknameChangeable == false ) {
+                // 닉네임이 입력되었고
+                // 나의 닉네임이 empty 가 아니고,
+                // 입력된 닉네임과 나의 닉네임이 다르면, 에러.
+                if ( isset($in[NICKNAME]) && login()->nickname && login()->nickname != $in[NICKNAME] ) {
+                    return $this->error(e()->nickname_is_not_changeable);
+                }
+            }
+
+            // @see README.md
+            if ( config()->blockUserFields ) {
+                if ( $res = array_intersect_key(array_flip(config()->blockUserFields), $in) ) {
+                    $keys = implode(', ', array_keys($res));
+                    return $this->error(e()->block_user_field, $keys);
+                }
+            }
+        }
+
+//        debug_log('user()->findByNickname($in[NICKNAME])->exists', user()->findByNickname($in[NICKNAME])->exists);
+        // 닉네임이 중복 불가능으로 설정되면,
+        if ( isset($in[NICKNAME]) && config()->isNicknameDuplicatable == false ) {
+            // 닉네임을 변경 하려하는데, 동일한 닉네임이 존재하면 변경 할 수 없다. 관리자도 변경 불가.
+            if (  login()->nickname != $in[NICKNAME] && user()->findByNickname($in[NICKNAME])->exists ) {
+                return $this->error(e()->nickname_exists);
+            }
+        }
+
+        return parent::update($in);
+    }
+
+
     /**
      * Returns User instance by idx or email.
      *
@@ -417,45 +471,13 @@ class UserModel extends Entity {
 
 
     /**
-     * @param array $in
+     * 닉네임으로 사용자를 찾아 객체로 리턴한다.
+     *
+     * @param $nickname
      * @return $this
      */
-    function update($in): self
-    {
-
-        // If email has passed, it can update(change) user's email.
-        if ( isset($in[EMAIL]) ) {
-            if ( empty($in[EMAIL]) ) return $this->error(e()->email_is_empty);
-            if ($this->emailExists($in[EMAIL]) &&  $this->findOne([EMAIL => $in[EMAIL]])->idx != $this->idx) return $this->error(e()->email_exists);
-        }
-
-        // point cannot be changed by user.
-        if ( isset($in[POINT] ) && admin() == false ) {
-            return $this->error(e()->user_cannot_update_point);
-        }
-
-        // If the login user is not admin, then he may not change his nickname or other information.
-        if ( admin() == false ) {
-            // 닉네임 변경 불가능한가?
-            if ( config()->isNicknameChangeable == false ) {
-                // 닉네임이 입력되었고
-                // 나의 닉네임이 empty 가 아니고,
-                // 입력된 닉네임과 나의 닉네임이 다르면, 에러.
-                if ( isset($in[NICKNAME]) && login()->nickname && login()->nickname != $in[NICKNAME] ) {
-                    return $this->error(e()->nickname_is_not_changeable);
-                }
-            }
-
-            // @see README.md
-            if ( config()->blockUserFields ) {
-                if ( $res = array_intersect_key(array_flip(config()->blockUserFields), $in) ) {
-                    $keys = implode(', ', array_keys($res));
-                    return $this->error(e()->block_user_field, $keys);
-                }
-            }
-        }
-
-        return parent::update($in);
+    public function findByNickname($nickname): self {
+        return $this->findOne([NICKNAME => $nickname]);
     }
 
 }
