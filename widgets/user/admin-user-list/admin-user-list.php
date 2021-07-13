@@ -52,6 +52,8 @@ $total = user()->count(where:  $where);
             <th scope="col"  v-if="options.name">Name</th>
             <th scope="col"  v-if="options.nickname">nickname</th>
             <th scope="col"  v-if="options.point">point</th>
+            <th scope="col"  v-if="options.point">a-token</th>
+            <th scope="col"  v-if="options.point">g-token</th>
             <th scope="col"  v-if="options.phoneNo">Phone No.</th>
             <th scope="col"  v-if="options.gender">gender</th>
             <th scope="col"  v-if="options.birthdate">birthdate</th>
@@ -77,6 +79,8 @@ $total = user()->count(where:  $where);
                 <td v-if="options.name"><?=$user->name?></td>
                 <td v-if="options.nickname"><?=$user->nickname?></td>
                 <td v-if="options.point"><?=$user->point?></td>
+                <td v-if="options.point"><?=$user->atoken?></td>
+                <td v-if="options.point"><?=$user->gtoken?></td>
                 <td v-if="options.phoneNo"><?=$user->phoneNo?></td>
                 <td v-if="options.gender"><?=$user->gender?></td>
                 <td v-if="options.birthdate"><?=$user->birthdate?></td>

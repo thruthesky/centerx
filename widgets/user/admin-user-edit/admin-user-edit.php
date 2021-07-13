@@ -46,6 +46,18 @@ if(modeSubmit()) {
 
         <div class="form-row">
             <div class="form-group col-6">
+                <label for="atoken">a-token</label>
+                <input type="text" class="form-control" placeholder="A-token" name="atoken" id="atoken"  value="<?=$profile->atoken?>">
+            </div>
+
+            <div class="form-group col-6">
+                <label for="gtoken">g-token</label>
+                <input type="text" class="form-control" placeholder="G-token" name="gtoken" id="gtoken"  value="<?=$profile->gtoken?>">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-6">
                 <label for="email">email</label>
                 <input type="text" class="form-control" placeholder="email" name="email" id="email"  value="<?=$profile->email?>">
             </div>

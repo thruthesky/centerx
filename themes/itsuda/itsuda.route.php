@@ -124,7 +124,7 @@ addRoute('health.month', function($in) {
 
 addRoute('health.pointRank', function($in) {
     $entity = entity('itsuda');
-    $rows = $entity->search(select: 'userIdx, healthPoint', order: 'healthPoint', page: $in['page'] ?? 1, limit: $in['limit'], where: 'birthdate >= 19720000,');
+    $rows = $entity->search(select: 'userIdx, healthPoint', order: 'healthPoint', page: $in['page'] ?? 1, limit: $in['limit'], where:"birthdate != 0 AND birthdate <=19720000",);
     $rets = [];
     foreach( $rows as $row ) {
 
@@ -142,7 +142,7 @@ addRoute('health.myRank', function($in) {
     $my = entity('itsuda')->findOne([USER_IDX => login()->idx]);
     if ( $my->hasError ) $point = 0;
     else $point = $my->healthPoint;
-    $q = "SELECT COUNT(*) FROM wc_itsuda WHERE healthPoint > $point";
+    $q = "SELECT COUNT(*) FROM wc_itsuda WHERE birthdate != 0 AND birthdate <=19720000 AND healthPoint > $point";
     $rank = db()->get_var($q);
     return login()->updateData('rank', $rank + 1)->updateData('healthPoint', $point)->response();
 });

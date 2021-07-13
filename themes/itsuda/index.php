@@ -82,8 +82,7 @@
                         <?php if ( admin() ) { ?>
                             <a class="p-2" style="font-size: 1.1rem" href="/?admin.index"><?=login()->name ?? 'Admin'?>(<?=login()->idx?>)</a>
                         <?php } ?>
-                        <a class="p-2" style="font-size: 1.1rem" href="/?p=forum.post.list&categoryId=qna"><?=ln(['en' => 'QnA', 'ko' => '질문게시판'])?></a>
-                        <a class="p-2" style="font-size: 1.1rem" href="/?p=forum.post.list&categoryId=discussion"><?=ln(['en' => 'Discussion', 'ko' => '자유게시판'])?></a>
+
                     <?php } ?>
 
                 </div>
