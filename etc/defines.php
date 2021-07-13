@@ -79,6 +79,8 @@ const NAME = 'name';
 const TMP_NAME = 'tmp_name';
 const SIZE = 'size';
 const TYPE = 'type';
+const THUMBNAIL_URL = 'thumbnailUrl';
+const URL = 'url';
 
 const PHONE_NO = 'phoneNo';
 const GENDER = 'gender';

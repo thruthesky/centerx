@@ -2016,6 +2016,8 @@ https://main.philov.com/?route=app.time
 
 ## 게시글 목록 또는 검색. Post list parameters.
 
+- `minimize` 옵션을 통해서 최근 글 또는 각종 위젯에 사용 할 최적화된 필드만 가져 올 수 있다.
+
 - 게시판 목록에서 검색에 사용되는
 
 - `categoryId` 는 글 카테고리. 카테고리 번호를 숫자로 입력해도 된다.

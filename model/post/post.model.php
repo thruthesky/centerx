@@ -691,6 +691,61 @@ class PostModel extends Forum {
     public function countMine(): int {
         return $this->count(conds: [USER_IDX => login()->idx, PARENT_IDX => 0, DELETED_AT => 0]);
     }
+
+    /**
+     * 최근 글을 보여줄 목적으로, 글 response 에서 최소한의 데이터만 리턴한다.
+     *
+     * 따라서 각종 최신 글을 보여주는 위젯 뿐만 아니라, 글 목록으로도 충분히 사용 할 수 있지만,
+     *  - 첨부 파일 첫번째만 리턴, 내용을 일부만 리턴, 코멘트는 리턴하지 않으므로, 글 내용 보기용으로는 사용 할 수 없다.
+     *
+     * @param array $got
+     * @return array
+     */
+    public function minimizeResponse(array $got): array {
+        $o = $got;
+        if ( isset($o[FILES]) && count($o[FILES]) ) {
+            $file = $o[FILES][0];
+            $files = [
+                [
+                    ENTITY => $file[ENTITY],
+                    IDX => $file[IDX],
+                    NAME => $file[NAME],
+                    SIZE => $file[SIZE],
+                    THUMBNAIL_URL => $file[THUMBNAIL_URL],
+                    TYPE => $file[TYPE],
+                    URL => $file[URL],
+                    USER_IDX => $file[USER_IDX],
+                ],
+            ];
+
+
+        } else {
+            $files = [];
+        }
+        $n = [
+            'Y' => $o['Y'],
+            'N' => $o['N'],
+            CATEGORY_ID => $o[CATEGORY_ID],
+            CATEGORY_IDX => $o[CATEGORY_IDX],
+            CONTENT => mb_substr($o[CONTENT], 0, 128),
+            COUNTRY_CODE => $o[COUNTRY_CODE],
+            CREATED_AT => $o[CREATED_AT],
+            DELETED_AT => $o[DELETED_AT],
+            FILE_IDXES => $o[FILE_IDXES],
+            FILES => $files,
+            IDX => $o[IDX],
+            NO_OF_COMMENTS => $o[NO_OF_COMMENTS],
+            NO_OF_VIEWS => $o[NO_OF_VIEWS],
+            PATH => $o[PATH],
+            RELATIVE_URL => $o[RELATIVE_URL],
+            TITLE => $o[TITLE],
+            UPDATED_AT => $o[UPDATED_AT],
+            URL => $o[URL],
+            USER => $o[USER],
+            USER_IDX => $o[USER_IDX],
+        ];
+        return $n;
+    }
 }
 
 
