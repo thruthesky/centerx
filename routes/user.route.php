@@ -101,7 +101,7 @@ class UserRoute {
             order: 'point',
             page: $in['page'] ?? 1,
             limit: $in['limit'],
-            where:"birthdate != 0 AND birthdate <=19720000",
+            where:"birthdate <= 19720000",
         );
         debug_log('pointRank:', count($users));
         $rets = [];
@@ -140,7 +140,7 @@ class UserRoute {
      * @return bool|int|mixed|null
      */
     public function myPointRank() {
-        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE  point >= (SELECT point FROM wc_users WHERE birthdate != 0 AND birthdate <=19720000 AND idx=".login()->idx.")");
+        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE WHERE birthdate <= 19720000 AND point >= (SELECT point FROM wc_users idx=".login()->idx.")");
         if ( !$rankNo ) $rankNo = 0;
         return ['rankNo' => $rankNo];
     }
