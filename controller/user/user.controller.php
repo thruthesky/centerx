@@ -215,7 +215,16 @@ class UserController
         $q = implode(' AND ', $sql);
 
         $limit = $in['limit'] ?? 1000;
-        return userActivity()->search( select: '*', where: $q, params: [$myIdx,$myIdx,$in[BEGIN_AT],$endAt], limit: $limit);
+        $activities =  userActivity()->search( select: '*', where: $q, params: [$myIdx,$myIdx,$in[BEGIN_AT],$endAt], limit: $limit);
+
+        $rets = [];
+        foreach ($activities as $activity) {
+            if ($activity['taxonomy'] == POSTS) {
+                $activity['post'] = post($activity[ENTITY])->response();
+            }
+            $rets[] = $activity;
+        }
+        return $rets;
     }
 
     /**
