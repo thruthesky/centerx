@@ -124,7 +124,7 @@ addRoute('health.month', function($in) {
 
 addRoute('health.pointRank', function($in) {
     $entity = entity('itsuda');
-    $rows = $entity->search(select: 'userIdx, healthPoint', order: 'healthPoint', page: $in['page'] ?? 1, limit: $in['limit']);
+    $rows = $entity->search(select: 'userIdx, healthPoint', order: 'healthPoint', page: $in['page'] ?? 1, limit: $in['limit'], where: 'birthdate >= 19720000,');
     $rets = [];
     foreach( $rows as $row ) {
 
