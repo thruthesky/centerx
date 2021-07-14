@@ -33,7 +33,7 @@ class UserController
             DOMAIN => $in[DOMAIN],
             PROVIDER => PROVIDER_KAKAO,
         ];
-        return user()->loginOrRegister($data)->response();
+        return user()->loginOrRegister($data, loginUpdate: false)->response();
     }
 
     /**
@@ -56,7 +56,7 @@ class UserController
             PROVIDER => $in[PROVIDER],
             FIREBASE_UID => $in[FIREBASE_UID],
         ];
-        return user()->loginOrRegister($data)->response();
+        return user()->loginOrRegister($data, loginUpdate: false)->response();
     }
 
     /**
@@ -125,16 +125,26 @@ class UserController
     }
 
 
-
-
+    /**
+     * Returns user information.
+     *
+     * @param $in
+     *  - if $in['idx'] has passed, then check if the user of that idx exists.
+     *  - if $in['email'] has passed, then check if the user of that email exists.
+     *  - if $in['firebaseUid'] has passed, then check if the user of that firebaseUid exists.
+     *  - if $in['idxOrEmail'] has passed, then check if the user of that idx or email exists.
+     * @return array|string
+     */
     public function get($in)
     {
         if (isset($in['idx'])) {
-            $user =  user($in['idx']);
+            $user = user($in['idx']);
         } else if (isset($in['email'])) {
-            $user =  user($in['email']);
+            $user = user($in['email']);
         } else if (isset($in['firebaseUid'])) {
-            $user =  user()->findOne(['firebaseUid' => $in['firebaseUid']]);
+            $user = user()->findOne(['firebaseUid' => $in['firebaseUid']]);
+        } else if (isset($in['idxOrEmail'])) {
+            $user = user()->by($in['idxOrEmail']);
         } else {
             return e()->user_not_found;
         }

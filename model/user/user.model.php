@@ -211,22 +211,35 @@ class UserModel extends Entity {
      * 회원 로그인 성공하면, 현재 객체를 로그인한 사용자 것으로 변경한다.
      *
      * @param array $in
+     *  - 로그인 email, password 를 입력 받는다.
+     *  - 그 외, 추가적인 정보를 받아 회원 정보로 업데이트 할 수 있다.
+     * @param bool $update - 이 값이 true 이면, $in 으로 입력된 추가적인 정보를 회원 정보에 업데이트한다. 기본값 true
+     *  - 맨 처음 회원 가입을 할 때, 회원 정보를 추가하고, 그 다음 부터는 로그인을 통해서는 회원 정보 업데이트를 못하게 하려면, false 로 한다.
+     *  - 예를 들어,
+     *      - 닉네임 변경을 하지 못하도록 설정을 한 경우,
+     *      - 또는 소셜 로그인에서 로그인 할 때 마다, 소셜로그인에서 오는 회원 정보를 업데이트하면,
+     *          기존의 회원 정보에서 수정한 닉네임이나, 기타 값들이 계속 덮어 쓰여질 수 있다. 이를 방지하기 위해서 update = false 를 할 수 있다.
+     *      - 이 와 같은 경우, false 를 지정 할 수 있는데, 대표적인 예가 loginOrRegister() 에서 login() 함수를 호출 할 때,
+     *          이 값을 true/false 로 선택하게 할 수 있다.
      * @return self
      *
      * 예제)
      * d(user()->login(email: '...', password: '...');
      */
-    public function login(array $in): self {
+    public function login(array $in, $update = true): self {
 
         if ( isset($in[EMAIL]) == false || !$in[EMAIL] ) return $this->error(e()->email_is_empty);
         if ( isset($in[PASSWORD]) == false || !$in[PASSWORD] ) return $this->error(e()->empty_password);
 
-        $users = $this->search(select: 'idx, password', conds: [EMAIL => $in[EMAIL]], object: true);
-        if ( !$users ) return $this->error(e()->user_not_found_by_that_email);
-        $user = $users[0];
+
+//        $users = $this->search(select: 'idx, password', conds: [EMAIL => $in[EMAIL]], object: true);
+        $this->findOne([EMAIL => $in[EMAIL]]);
+        if ( $this->hasError ) return $this->error(e()->user_not_found_by_that_email);
+//        if ( !$users ) return $this->error(e()->user_not_found_by_that_email);
+//        $user = $users[0];
 
         // 로그인 검사
-        if ( ! checkPassword($in[PASSWORD], $user->password) ) {
+        if ( ! checkPassword($in[PASSWORD], $this->password) ) {
             return $this->error(e()->wrong_password);
         }
 
@@ -241,8 +254,12 @@ class UserModel extends Entity {
         if(isset($in[POINT])) return $this->error(e()->user_cannot_update_point);
 
         // 회원 로그인 성공하면, 현재 객체를 로그인한 사용자 것으로 변경한다.
-        $this->idx = $user->idx;
-        $this->update($in);
+//        $this->idx = $user->idx;
+
+        // 로그인 할 때에도 사용자 정보 업데이트를 할 수 있다.
+        if ( $update ) {
+            $this->update($in);
+        }
 
 
         /// 회원 로그인 기록. 보너스 포인트가 있으면, 회원 로그인 보너스 포인트 적용.
@@ -258,14 +275,20 @@ class UserModel extends Entity {
 
 
     /**
+     * 로그인 또는 회원 가입
      *
-     * @attention This does not login to PHP run time. It will only return login session and user information.
+     * 이 함수는 사용자 로그인 또는 회원 가입을 한 후, 그 사용자 객체를 리턴한다.
+     *
+     * 참고, 현재 실행 중인 PHP 런타임에 사용자 로그인을 적용하지 않고, 오직, 사용자 로그인 또는 회원 가입 후, 그 사용자 정보를 리턴한다.
+     *      즉, PHP 내부적으로 사용자 로그인을 하게 하고, 그 사용자 권한으로 어떤 작업을 하려고 할 때, 이 함수를 쓰면 안된다.
+     *
+     * 참고, $loginUpdate 에 true 를 주면, 회원 로그인 시에 추가적인 회원 정보를 전달하여 회원 정보에 업데이트 할 수 있다.
      *
      * @param array $in
      * @return self
      */
-    public function loginOrRegister(array $in): self {
-        $re = $this->login($in);
+    public function loginOrRegister(array $in, $loginUpdate = true): self {
+        $re = $this->login($in, $loginUpdate);
         if ( $re->getError() == e()->user_not_found_by_that_email ) {
             return $this->register($in);
         } else {
@@ -456,7 +479,7 @@ class UserModel extends Entity {
      *
      */
     public function by(int|string $uid): self {
-        if ( is_int($uid) ) return user($uid);
+        if ( is_numeric($uid) ) return user($uid);
         return $this->findOne([EMAIL => $uid]);
     }
 

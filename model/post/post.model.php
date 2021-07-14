@@ -101,10 +101,12 @@ class PostModel extends Forum {
         }
 
         // post view url
-        if ( $this->path ) {
-            $this->updateMemoryData('url', get_current_root_url() . $this->path);
-            $this->updateMemoryData('relativeUrl', '/' . $this->path);
-        }
+        // If there is no path, then it uses 'idx'.
+
+            $path = $this->path ?: $this->idx;
+            $this->updateMemoryData('url', get_current_root_url() . $path);
+            $this->updateMemoryData('relativeUrl', '/' . $path);
+
 
         // update point for the post create
         $this->patchPoint();

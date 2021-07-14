@@ -1,15 +1,15 @@
 <?php
 
 
-testUserRegister();
-testEmailExists();
-testUserRegisterResponse();
-testUserRegisterIsMine();
-testUserRegisterLoginWithMeta();
+//testUserRegister();
+//testEmailExists();
+//testUserRegisterResponse();
+//testUserRegisterIsMine();
+//testUserRegisterLoginWithMeta();
 
 testUserLoginOrRegister();
-testUserBy();
-testUserVerification();
+//testUserBy();
+//testUserVerification();
 
 
 function testUserRegister() {
@@ -65,11 +65,17 @@ function testUserRegisterLoginWithMeta() {
 function testUserLoginOrRegister() {
     $email = 'user-login-or-register' . time() . '@test.com';
     $pw = '12345a';
+
+
     isTrue( user()->emailExists($email) ==  false, 'loginOrRegister: email not exists');
+
+
+    // 새로 회원 가입. 색깔 그린.
     $registered = user()->loginOrRegister([EMAIL=>$email, PASSWORD=>$pw, 'color' => 'green']);
     isTrue( user()->emailExists($email) == true, 'loginOrRegister: email now exists');
     isTrue($registered->color == 'green', 'green');
 
+    // 로그인. 색깔 빨강으로 바꾸려 하지만, loginOrRegister() 함수로는 로그인을 할 때에는 변경 불가.
     $login = user()->loginOrRegister([EMAIL=>$email, PASSWORD=>$pw, 'color' => 'red']);
     isTrue($registered->idx == $login->idx, "loginOrRegister: success");
     isTrue($login->color == 'red', 'expect: red, but: ' . $login->color);
