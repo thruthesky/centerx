@@ -1292,6 +1292,32 @@ isTrue((new AppController())->version(), "App version");
   - User can set the begin_date of the advertisement and the user want to cancel the advertisement before the begin_date,
   then 100% will be refunded.
     
+
+- Admin can set different price for global banner by multiplying how many times on the banner in admin page.
+  - For instance, If top banner is 1,000 point and if
+    - admin sets 0.5 for global point multiplying, then, the price of global top banner will be 500 point.
+    - admin sets 3 for global point multiplying, then, the global top banner price will be 3,000 point.
+  - For another instance, if line banner is 500 point an if,
+    - admin sets 10 for multiplying, then global line banner will be 5,000 point a day.
+  - Another instance, if square banner is 1,000 a day by default and the square banner in PH is 800 per day.
+    - admin set 4 for multiplying, then the PH square global banner is 3,200 per day while other country square banner
+      is 4,000.
+
+
+- Banner categories.
+  - Admin can set which categories for users to post banners on.
+  - 'global' category will be added automatically to post the banner globally. 
+  - By default, only global category will be available if no categories are set.
+  - If categories are set, users can post banner on one of the categories or global.
+  - Importantly, when categories are set,
+    the "square & line" global banner will appear only on those categories.
+    - For instance, the "qna,discussion,job" are set as banner categories in admin page,
+      then (square, line) global banner will appear only on qna, discussion, or job category.
+      The global banners will not appear on other categories.
+      The reason is that "square,line" banners belong to a category and admin may not want some category to have banners.
+      For instance, admin does not want 'qan' category to have banners, then admin can state banner categories in admin page but exception of 'qna' category.
+    - "top" global banner will still be displayed on every page and subcategories regardless "banner categoriese" is set or not.
+
 - 관리자는 각 배너 포인트를 0 으로 설정 할 수 있다.
   즉, 사용자는 배너를 무료로 진행 할 수 있는 것이다. 이 때에는 최대 광고 설정 기간을 길게하지 않도록 해야 한다.
 
@@ -1347,6 +1373,8 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
 
 * Class\
   If the banner type has `global & category` class, global banner will take place when there is no category banner for that category.
+
+  
 
 ### Top banner rotation
 

@@ -205,6 +205,7 @@ class AdvertisementController
             'maximumAdvertisementDays' => $adv->maximumAdvertisementDays(),
             'categoryArray' => $adv->advertisementCategoryArray(),
             'point' => $adv->advertisementPoints(),
+            'globalBannerMultiplying' => $adv->globalBannerMultiplying(),
         ];
     }
 

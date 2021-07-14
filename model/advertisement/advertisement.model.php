@@ -133,6 +133,13 @@ class AdvertisementModel extends PostModel
         return intVal(adminSettings()->get('maximumAdvertisementDays') ?? 0);
     }
 
+
+    public function globalBannerMultiplying(): int
+    {
+        return intVal(adminSettings()->get('globalBannerMultiplying') ?? 0);
+    }
+
+
     public function advertisementCategoryArray(): array
     {
         $arr = explode(',', adminSettings()->get('advertisementCategories') ?? '');
