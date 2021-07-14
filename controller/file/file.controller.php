@@ -105,7 +105,7 @@ class FileController {
         );
         $res = [];
         foreach($files as $file) {
-                $res[] =  $file->response();
+            $res[] = $file->responseWithUserAndPost();
         }
         return $res;
     }

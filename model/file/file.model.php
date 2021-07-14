@@ -168,6 +168,34 @@ class FileModel extends Entity {
     }
 
     /**
+     * This method adds user and post(or comment) information to response to the client.
+     *
+     * @note to make the return data slim, it only returns 128 chars of content.
+     *
+     * @usage Use this method when you need to display files(photos) with user and post information like
+     *          display all uploaded photos in admin page.
+     */
+    public function responseWithUserAndPost() {
+        if ( $this->hasError ) return $this->getError();
+        $data = $this->getData();
+
+        if ( isset($data[USER_IDX]) ) {
+            $data['user'] = user($data[USER_IDX])->shortProfile(firebaseUid: true);
+        } else {
+            $data['user'] = [];
+        }
+
+        if($data[TAXONOMY] == POSTS) {
+            $data['post'] = [
+                'idx' => post($data[ENTITY])->idx,
+                'title' => post($data[ENTITY])->title,
+                'content' =>  mb_substr(post($data[ENTITY])->content, 0, 128),
+            ];
+        }
+        return $data;
+    }
+
+    /**
      * @return array|string
      * This method adds user information and post data which give a extra accessing to database and returns extra data to client-end.
      */
