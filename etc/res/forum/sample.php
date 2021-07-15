@@ -2,7 +2,7 @@
 enableTesting();
 $data = [
     [
-        'category' => 'qna',
+        'category' => 'travel',
         'title' => "반려동물도 캠핑 즐긴다…SPC 던킨, 원터치 펫하우스’ 굿즈 출시",
         'photo' => ROOT_DIR . 'etc/res/forum/img/dog.jpg',
         'content' => "
@@ -109,7 +109,7 @@ WP에 따르면 최근 미국 미네소타주 다코타 카운티에 있는 도�
 한편 번즈빌은 금붕어 떼를 제거하기 위해 관련 회사와 8만8000달러(1억1000만원)의 계약을 맺었다.",
     ],
     [
-        'category' => 'hotel',
+        'category' => 'travel',
         'photo' => ROOT_DIR . 'etc/res/forum/img/na.jpg',
         'title' => '55억 이태원 주택 낙찰 받은 박나래, 출연료만 年 22억"',
         'content' => '55억 원 대의 단독 주택을 경매로 낙찰받은 개그우먼 박나래의 수입이 공개됐다.
@@ -175,7 +175,7 @@ WP에 따르면 최근 미국 미네소타주 다코타 카운티에 있는 도�
     ]
         ],
     [
-        'category' => 'qna',
+        'category' => 'travel',
         'photo' => ROOT_DIR . 'etc/res/forum/img/travel-2.jpg',
         'title' => '필리핀 시아르가오, 전세계 여름 휴양지 톱10에 선정',
         'content' => '필리핀의 대표 서핑 명소인 ‘시아르가오 섬’이 패션 라이프스타일 매거진 보그 파리가 선정한 ‘전세계 여름 휴양지 톱 10’에 선정됐다고 12일 밝혔다.
