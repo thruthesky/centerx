@@ -112,6 +112,7 @@ const PRIVATE_CONTENT = 'privateContent';
 
 const MAXIMUM_ADVERTISING_DAYS = 'maximumAdvertisementDays';
 const ADVERTISEMENT_CATEGORIES = 'advertisementCategories';
+const ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING = 'globalBannerMultiplying';
 
 define('DESCRIPTION', 'description');
 define('PATH', 'path');

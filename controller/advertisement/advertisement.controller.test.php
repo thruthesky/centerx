@@ -51,16 +51,24 @@ $at->pointSettingDelete();
 
 $at->refundAfterPointSettingChanged();
 
+// $at->globalMultiplier();
+
 
 class AdvertisementTest
 {
 
-//    private function loginSetPoint($point): UserModel
-//    {
-//        $user = setLoginAsAdmin();
-//        $user->_setPoint($point);
-//        return $user;
-//    }
+    //    private function loginSetPoint($point): UserModel
+    //    {
+    //        $user = setLoginAsAdmin();
+    //        $user->_setPoint($point);
+    //        return $user;
+    //    }
+
+    function __construct()
+    {
+        d("resetGlobalMulplying");
+        $this->resetGlobalMulplying();
+    }
 
     /**
      * 배너 하나 생성. 그 배너는 글/제목 등만 있고, 배너 포인트나 기간 등의 옵션은 설정되지 않은 상태이다.
@@ -100,7 +108,8 @@ class AdvertisementTest
      * @param int $square
      * @param int $line
      */
-    private function resetBannerPoints($countryCode='', $top=0, $sidebar=0, $square=0, $line=0) {
+    private function resetBannerPoints($countryCode = '', $top = 0, $sidebar = 0, $square = 0, $line = 0)
+    {
 
         (new AdvertisementPointSettingsModel())->_setPoints([
             COUNTRY_CODE => $countryCode,
@@ -111,13 +120,20 @@ class AdvertisementTest
         ]);
     }
 
-    private function setMaximumAdvertisementDays($days = 10) {
-        adminSettings()->set('maximumAdvertisementDays', $days);
+    private function setMaximumAdvertisementDays($days = 10)
+    {
+        adminSettings()->set(MAXIMUM_ADVERTISING_DAYS, $days);
+    }
+
+    private function resetGlobalMulplying($globalMultiplying = 0)
+    {
+        adminSettings()->set(ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING, $globalMultiplying);
     }
 
     // 배너 생성 테스트
     // 참고, readme.md
-    public function createBanner() {
+    public function createBanner()
+    {
         /// 로그인하지 않아 에러,
         setLogout();
         $re = advertisement()->edit([]);
@@ -138,7 +154,7 @@ class AdvertisementTest
         $post = request("advertisement.edit", [
             SESSION_ID => login()->sessionId
         ]);
-        
+
         isTrue($post['userIdx'] == login()->idx, "동일한 사용자 확인.");
 
 
@@ -158,13 +174,14 @@ class AdvertisementTest
 
         isTrue($re->beginAt > 0, "광고 시작 됨");
 
-//        $re = request("advertisement.start", $options);
-//        d($re);
+        //        $re = request("advertisement.start", $options);
+        //        d($re);
 
 
     }
 
-    public function lackOfPoint() {
+    public function lackOfPoint()
+    {
         // 사용자 생성 후, 기본 포인트는 0으로 설정 됨.
         registerAndLogin();
 
@@ -243,7 +260,6 @@ class AdvertisementTest
         $days = $max - 1;
         $re = $this->createAndStartAdvertisement([CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$days days")]);
         isTrue($re[IDX], "Expect: Success, adv days does not exceed maximum allowed days.");
-
     }
 
     function domainEmpty()
@@ -334,7 +350,7 @@ class AdvertisementTest
 
         /// 포인트 차감 확인.
         $expectedPoint = $startingPoint - $topBannerPoint;
-        isTrue(login()->getPoint() == $expectedPoint, "Expect: db user point(".login()->getPoint().") == expected point($expectedPoint).");
+        isTrue(login()->getPoint() == $expectedPoint, "Expect: db user point(" . login()->getPoint() . ") == expected point($expectedPoint).");
 
         /// 광고 시작, 포인트 기록 확인.
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.start');
@@ -348,7 +364,7 @@ class AdvertisementTest
         /// 소모된 광고 포인트 3일치, 확인.
         $advPoint = $topBannerPoint * 3;
         $expectedPoint -= $advPoint;
-        isTrue(login()->getPoint() == $expectedPoint,  "Expect: db user point(".login()->getPoint().") == expected point($expectedPoint).");
+        isTrue(login()->getPoint() == $expectedPoint,  "Expect: db user point(" . login()->getPoint() . ") == expected point($expectedPoint).");
 
         /// 포인트 확인.
         isTrue($ad['pointPerDay'] == $topBannerPoint, "Expect: 'pointPerDay' == " . $topBannerPoint);
@@ -468,7 +484,8 @@ class AdvertisementTest
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 
-    public function stopOnPastBanner() {
+    public function stopOnPastBanner()
+    {
         echo "\n@todo Test on past banner\n";
     }
     /**
@@ -563,7 +580,6 @@ class AdvertisementTest
 
         $expectedPoint += $advPoint;
         isTrue(login()->getPoint() == $expectedPoint, "Expect: user's points => $expectedPoint.");
-
     }
 
     /**
@@ -589,7 +605,6 @@ class AdvertisementTest
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
 
         isTrue(login()->getPoint() == $startingPoint, "Expect: user's points => $startingPoint.");
-
     }
 
     /**
@@ -653,7 +668,7 @@ class AdvertisementTest
         ]);
 
         $bannerPoint = advertisement()->LineBannerPoint();
-        isTrue(login()->getPoint() == $startingPoint - $bannerPoint * 6, "Expect: user points == " . $startingPoint - $bannerPoint * 6 );
+        isTrue(login()->getPoint() == $startingPoint - $bannerPoint * 6, "Expect: user points == " . $startingPoint - $bannerPoint * 6);
 
         // cancel
         $ad = request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
@@ -686,8 +701,7 @@ class AdvertisementTest
         isTrue($newAd['status'] == 'inactive', 'newAd must be inactive');
 
         isTrue($newAd['advertisementPoint'] == '0', "Expect: 'advertisementPoint' == 0.");
-        isTrue(login()->getPoint() == $startingPoint - $bannerPoint, "Expect: user points == ". ($startingPoint - $bannerPoint) .".");
-
+        isTrue(login()->getPoint() == $startingPoint - $bannerPoint, "Expect: user points == " . ($startingPoint - $bannerPoint) . ".");
     }
 
     function loadActiveBannersByCountryCode()
@@ -786,6 +800,7 @@ class AdvertisementTest
         $categoryC = 'cherry' . time();
         $categoriesString = "$categoryA, $categoryB, $categoryC";
         $categoryArray = [$categoryA, $categoryB, $categoryC];
+        $globalMultiplying = rand(1, 10);
 
         request('app.setConfig', [
             SESSION_ID => $admin->sessionId,
@@ -795,11 +810,18 @@ class AdvertisementTest
             SESSION_ID => $admin->sessionId,
             CODE => ADVERTISEMENT_CATEGORIES, 'data' => $categoriesString,
         ]);
+        request('app.setConfig', [
+            SESSION_ID => $admin->sessionId,
+            CODE => ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING, 'data' => $globalMultiplying,
+        ]);
 
         $re = request('advertisement.settings');
 
         isTrue($re[MAXIMUM_ADVERTISING_DAYS] == $maxDays, "Expect: Max days is set to $maxDays.");
         isTrue($re['categoryArray'] == $categoryArray, "Expect: Categories is set.");
+        isTrue($re[ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING] == $globalMultiplying, "Expect: global banner multiplier is set.");
+
+        $this->resetGlobalMulplying();
     }
 
     function pointSettings()
@@ -950,5 +972,75 @@ class AdvertisementTest
         $activity = userActivity()->last(taxonomy: POSTS, entity: $ad[IDX], action: 'advertisement.stop');
         isTrue($activity->toUserPointApply == $refundPoint, "Expect: activity->toUserPointApply == $refundPoint. But applied " . $activity->toUserPointApply);
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
+    }
+
+    function globalMultiplier()
+    {
+        $admin = setLoginAsAdmin();
+        // set global multiplier
+        $globalMultiplying = rand(1, 5);
+        request('app.setConfig', [
+            SESSION_ID => $admin->sessionId,
+            CODE => ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING, 'data' => $globalMultiplying,
+        ]);
+
+        // set points for PH
+        $countryCode = "PH";
+        $this->resetBannerPoints($countryCode, 1000, 2000, 3000, 4000);
+
+        $startingPoint = 1000000;
+        registerAndLogin($startingPoint);
+
+        $noOfDays = 3;
+        $advOpts = [
+            COUNTRY_CODE => $countryCode,
+            CODE => TOP_BANNER,
+            'beginDate' => time(),
+            'endDate' => strtotime('+2 day'),
+            SESSION_ID => login()->sessionId
+        ];
+
+        // create adv1 - global top banner for PH for 3 days
+        $adv1 = $this->createAndStartAdvertisement($advOpts);
+
+        // create adv2 - qna top banner for PH for 3 days
+        $advOpts[SUB_CATEGORY] = 'qna';
+        $adv2 = $this->createAndStartAdvertisement($advOpts);
+
+        $bannerPoint = advertisement()->topBannerPoint($countryCode);
+
+        $globalBannerPoint = $bannerPoint * $globalMultiplying;
+        $globalAdvertisementPoint = $globalBannerPoint * $noOfDays;
+
+        $categoryBannerPoint = $bannerPoint;
+        $categoryAdvertisementPoint = $bannerPoint * $noOfDays;
+
+        // Global Advertisement
+        //
+        // expect it's POINT_PER_DAY == $globalMultiplying * TOP_BANNER
+        // expect it's ADVERTISEMENT_POINT == ($globalMultiplying * TOP_BANNER) * Number of days.
+        // expect user_activity toUserPointApply = ADVERTISEMENT_POINT
+        isTrue($adv1['pointPerDay'] == $globalBannerPoint, "Expect: 'pointPerDay' == " . $globalBannerPoint);
+        isTrue($adv1['advertisementPoint'] == $globalAdvertisementPoint, "Expect: 'advertisementPoint' == " . $globalAdvertisementPoint);
+
+        $activity = userActivity()->last(taxonomy: POSTS, entity: $adv1[IDX], action: 'advertisement.start');
+        isTrue($activity->toUserPointApply == -$globalAdvertisementPoint, "Expect: activity->toUserPointApply == $globalAdvertisementPoint. But applied " . $activity->toUserPointApply);
+        
+        // Category Advertisement
+        //
+        // expect it's POINT_PER_DAY == TOP_BANNER
+        // expect it's ADVERTISEMENT_POINT == TOP_BANNER * Number of days.
+        // expect user_activity toUserPointApply = ADVERTISEMENT_POINT
+        isTrue($adv2['pointPerDay'] == $categoryBannerPoint, "Expect: 'pointPerDay' == " . $categoryBannerPoint);
+        isTrue($adv2['advertisementPoint'] == $categoryAdvertisementPoint, "Expect: 'advertisementPoint' == " . $categoryAdvertisementPoint);
+
+        $activity = userActivity()->last(taxonomy: POSTS, entity: $adv2[IDX], action: 'advertisement.start');
+        isTrue($activity->toUserPointApply == -$categoryAdvertisementPoint, "Expect: activity->toUserPointApply == $categoryAdvertisementPoint. But applied " . $activity->toUserPointApply);
+
+        // Advertisements points comparison
+        //
+        // expect global banner point is not equal to category banner point
+        isTrue($adv1['pointPerDay'] != $adv2['pointPerDay'],  "Expect: Adv1 'pointPerDay' != Adv2 'pointPerDay'");
+        isTrue($adv1['advertisementPoint'] != $adv2['advertisementPoint'],  "Expect: Adv1 'advertisementPoint' != Adv2 'advertisementPoint'");
     }
 }
