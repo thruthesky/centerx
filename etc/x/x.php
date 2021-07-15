@@ -12,5 +12,7 @@ if ( $argv[1] == 'post' ) {
     if ( $argv[2] == 'create' ) {
         _post_create(_matrix_path($argv[3] ?? 'etc/res/forum/sample.php'));
     }
+} else if ( $argv[1] == 'test' ) {
+    include '/docker/home/centerx/tests/test.php';
 }
 

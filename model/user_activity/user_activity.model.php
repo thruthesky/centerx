@@ -240,6 +240,24 @@ class UserActivityModel extends UserActivityBase {
     }
 
     /**
+     * 누가 누구의 글을 신고했는지 표시한다.
+     * @param Forum $forum
+     * @return UserActivityBase|UserActivityModel
+     */
+    public function report(Forum $forum) {
+        return $this->recordAction(
+            Actions::$readPost,
+            fromUserIdx: login()->idx,
+            fromUserPoint: 0,
+            toUserIdx: $forum->userIdx,
+            toUserPoint: 0,
+            taxonomy: $forum->taxonomy,
+            entity: $forum->idx,
+            categoryIdx: $forum->categoryIdx
+        );
+    }
+
+    /**
      * Record action and change point for post creation
      *
      * Limitation check must be done before calling this method.

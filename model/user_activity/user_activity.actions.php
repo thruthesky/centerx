@@ -22,6 +22,7 @@ class Actions {
     /// actions for like deduction. This is for deducting point for voters when they vote.
     public static string $likeDeduction = 'likeDeduction';
     public static string $dislikeDeduction = 'dislikeDeduction';
+    public static string $report = 'report';
 
 }
 

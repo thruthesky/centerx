@@ -166,10 +166,16 @@ class PostController {
     }
 
 
+    /**
+     * 글/코멘트 모두 사용 가능한 신고 기능이다.
+     * @param $in
+     * @return array|string
+     */
     public function report($in): array|string {
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
-        $post = post($in[IDX]);
-        return $post->update(['report' => $post->report + 1])->response();
+        return post($in[IDX])->report()->response();
+//        $post = post($in[IDX]);
+//        return $post->update(['report' => $post->report + 1])->response();
     }
 
 

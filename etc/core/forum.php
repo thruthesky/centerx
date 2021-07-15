@@ -20,6 +20,7 @@
  * @property-read int appliedPoint;
  * @property-read string files
  * @property-read string fileIdxes
+ * @property-read int report;
  */
 class Forum extends Entity {
 
@@ -274,6 +275,17 @@ class Forum extends Entity {
 
     }
 
+
+    /**
+     * 글/코멘트 또는 어떤 형식의 posts entity 이든 신고를 한다.
+     *
+     * post()->update() 를 통해서 하면, 사용자 인증에 걸리므로, 별도의 함수를 만들었다.
+     * @return $this
+     */
+    public function report(): self {
+        userActivity()->report($this);
+        return parent::update(['report' => $this->report + 1]);
+    }
 
 }
 

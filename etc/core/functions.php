@@ -2156,3 +2156,64 @@ function postTable(): string {
 function metaTable(): string {
     return DB_PREFIX . METAS;
 }
+
+
+/**
+ * 각 레벨 별 포인트.
+ *
+ * @see readme.md
+ *
+ * @param int $point
+ * @return int
+ */
+function levelByPoint(int $point): int {
+    $i = 0;
+    do {
+        $i ++;
+        $target = pointByLevel($i);
+    } while( $point >= $target );
+    return $i;
+}
+
+/**
+ * 포인트 공식
+ *
+ * 각 레벨의 최대 포인트를 리턴한다.
+ * @param int $lv
+ * @return int
+ */
+function pointByLevel(int $lv): int {
+    return (100 + $lv) * $lv * $lv;
+}
+
+/**
+ * 특정 레벨에서 다음 레벨까지 올라 가려고 할 때, 얻어야 하는 포인트를 리턴한다.
+ *
+ * 현재 내 레벨에서 다음 레벨까지 도달하려면 얻어야하는 포인트를 나타내고, 백분율로 표시하고자 할 때 사용한다.
+ *
+ *
+ * @param int $lv
+ * @return int
+ */
+function pointBetween(int $lv): int {
+    return pointByLevel( $lv) - pointByLevel($lv - 1);
+}
+
+/**
+ * 특정 포인트를 입력하면,
+ *      1) 입력된 포인트의 레벨을 구하고, Lv-Low
+ *      2) 다음 레벨에 도달하기 까지의 포인트를 구하고, Point-High
+ *      3) 입력된 포인트의 레벨의 가장 낮은 점수를 구하고, Point-Low
+ *      4) 현재 레벨에서 다음 레벨 까지의 총 포인트 차이를 구하고, total
+ *      5) 내 포인트가 현재 레벨의 가장 낮은 점수에서 얼마를 벌었는지 구하고, myP
+ *      6) 백분율을 구한다. 총 포인트: PH-PL 에서 MY-P 가 몇 퍼센트인지 구한다.
+ * @param int $point
+ * @return int
+ */
+function percentageOf(int $point): int {
+    $lv = levelByPoint($point);
+    $myP = $point - pointByLevel($lv-1);
+    $total = pointBetween($lv);
+    $p = round($myP / $total * 100);
+    return $p;
+}

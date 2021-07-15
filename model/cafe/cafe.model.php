@@ -70,7 +70,7 @@ class CafeModel extends CategoryModel
         'sonub.com' => [
             'name' => '필러브',
             'countryCode' => '',
-            'logo' => '/img/cafe/root-domain-logo/no-logo.jpg',
+            'logo' => '/img/cafe/root-domain-logo/sonub-logo.jpg',
         ],
         'philov.com' => [
             'name' => '필러브',
