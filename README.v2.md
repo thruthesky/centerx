@@ -1529,8 +1529,10 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 # 카페, Cafe, 소너브
 
-- 카페 관련한 개발 문서는 [소너브 2021 프로젝트 구글 문서](https://docs.google.com/document/d/183T26WZtfaa0SrQRF7Ut2h_pFn3qorZk1OrdH-1VWrU/edit#heading=h.5xi08ga2jhey)로 모은다.
+- 카페 관련한 개발 문서는
+  [소너브 2021 프로젝트 구글 문서](https://docs.google.com/document/d/183T26WZtfaa0SrQRF7Ut2h_pFn3qorZk1OrdH-1VWrU/edit#heading=h.5xi08ga2jhey)로 모은다.
   - Matrix 뿐만아니라, Vue.js 개발 관련 내용도 구글 문서로 모은다.
+  
   
 
 
@@ -2918,6 +2920,8 @@ d($argv[2]);
     이 때, `sample.php` 는 글 카테고리, 제목, 내용, 사진, 첨부 파일 등을 PHP 로 가지고 있는 파일이다.
     설정 파일 경로는 matrix 루트 경로 부터 상대 경로를 지정하면 된다.
     PHP 내부에서는 ROOT_DIR 상수를 사용해서, 루트 경로를 지정하면 된다.
+    
+  - 참고로 테스트 글 정보를 보관하는 PHP 경로는 기본적으로 `etc/res/forum/sample.php` 이며, 생략 가능하다.
 
 
 # 문제점

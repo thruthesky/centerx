@@ -197,3 +197,43 @@ function createTestUser(): UserModel {
     return user()->loginOrRegister([EMAIL=>$email, PASSWORD=>$pw, 'color' => 'blue']);
 }
 
+
+
+function _matrix_path($path) {
+    return ROOT_DIR . $path;
+}
+
+function _sample_path() {
+    return $path = ROOT_DIR . 'etc/res/forum/sample.php';
+}
+
+/**
+ * 샘플 글/코멘트/사진 데이터로 부터 글을 생성한다.
+ * @param $path
+ * @throws Exception
+ */
+function _post_create( string $path = '' ) {
+    global $data;
+    if ( empty($path) ) {
+        $path = _sample_path();
+    }
+    include $path;
+
+    registerAndLogin();
+    foreach( $data as $post ) {
+        $category = category($post['category']);
+        if ( $category->exists == false ) {
+            category()->create([ID => $post['category']]);
+        }
+        $created = createPostWithPhoto($post['category'], $post['title'], $post['content'], $post['photo']);
+        if ( $created->hasError ) {
+            d("Error: Category: $post[category], " . $created->getError() );
+            exit;
+        }
+        if ( isset($post['comments']) ) {
+            foreach( $post['comments'] as $comment ) {
+                comment()->create([ ROOT_IDX => $created->idx, CONTENT => $comment[CONTENT] ]);
+            }
+        }
+    }
+}
