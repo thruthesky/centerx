@@ -2043,7 +2043,7 @@ function isFuture($stamp) {
  *
  * @return string - 썸네일 이미지 경로를 리턴한다.
  */
-function zoomThumbnail(string $source_path, int $width=150, int $height=150): string {
+function zoomThumbnail(string $source_path, int $width=150, int $height=150, int $quality=95): string {
 
     // 저장 할 경로 찾기.
     $destination_path = thumbnailPath($source_path, $width, $height);
@@ -2129,7 +2129,7 @@ function zoomThumbnail(string $source_path, int $width=150, int $height=150): st
 
 
     // 파일 저장
-    imagejpeg($desired_gdim, $destination_path);
+    imagejpeg($desired_gdim, $destination_path, $quality);
 
 
     return $destination_path;

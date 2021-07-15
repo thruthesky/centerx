@@ -1,7 +1,7 @@
 <?php
 include '../boot.php';
 $file = files(in(IDX));
-$path = zoomThumbnail($file->path, in('w', 200), in('h', 200));
+$path = zoomThumbnail($file->path, in('w', 200), in('h', 200), in('q', 95));
 
 header('Pragma: public');
 header('Cache-Control: max-age=86400');

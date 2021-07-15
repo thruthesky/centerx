@@ -1882,6 +1882,26 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
     - 그리고 그러한 사진만 올리는 카테고리를 따로 정해 놓고, 세로로 긴 사진은 그 카테고리에 따로 올리는 것이 좋다.
       예를 들면, 뉴스 게시판의 "세로 이미지" 라는 카테고리를 만들어 그 카테고리에 세로 이미지만 넣으면 좋다.
 
+
+- 예제) `etc/thumbnail.php` 를 통해서 이미지를 직접 추력. img 태그 등에서 사용 할 수 있다.
+
+```php
+$file = files()->getBy(); // 최근 파일 선택
+$th = thumbnailUrl($file->idx, 80, 80); // 썸네일 URL 을 가져온다.
+echo "<img src='$th'><br>"; // 썸네일 이미지 출력
+echo "<img src='{$file->url}'><br>"; // 원본 이미지 출력
+```
+
+예제) img 태그나 Flutter 등에서 바로 출력하기
+
+```html
+<img src="https://main.philov.com/etc/thumbnail.php?idx=293&w=140&h=140&q=90">
+```
+
+위에서 w 는 width, h 는 height, q 는 quality 이다.
+
+
+
 # 관리자 페이지, Admin Page
 
 - Starting Matrix(version 2), PHP does not render web pages directly to web browser. So, it needs a client-end to
@@ -2041,6 +2061,9 @@ https://main.philov.com/?route=app.time
 
 
 # 게시판, 글, 코멘트
+
+- 관리자의 경우, 다른 사용자의 글/코멘트를 수정 할 수 있다.
+
 
 ## 게시글 목록 또는 검색. Post list parameters.
 
