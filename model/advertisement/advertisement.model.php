@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file advertisement.model.php
  */
@@ -71,25 +72,26 @@ class AdvertisementModel extends PostModel
      */
     public function getStatus(AdvertisementModel $banner = null): string
     {
-        if ( $banner == null ) $banner = $this;
+        if ($banner == null) $banner = $this;
 
-        if ( $this->stopped($banner) || $this->cancelled($banner) ) return 'inactive';
-        if ( $banner->advertisementPoint == '0' ) return 'inactive';
+        if ($this->stopped($banner) || $this->cancelled($banner)) return 'inactive';
+        if ($banner->advertisementPoint == '0') return 'inactive';
 
 
         $now = time();
         if (daysBetween($now, $banner->beginAt) > 0) return 'waiting';
         else if (isBetweenDay($now, $banner->beginAt, $banner->endAt)) return 'active';
         else return 'inactive';
-
     }
 
     // 광고가 중단 되었는가?
-    public function stopped(AdvertisementModel $banner) {
+    public function stopped(AdvertisementModel $banner)
+    {
         return isset($banner->status) && $banner->status == 'stop';
     }
     // 광고가 취소되었는가?
-    public function cancelled(AdvertisementModel $banner) {
+    public function cancelled(AdvertisementModel $banner)
+    {
         return $banner->status && $banner->status == 'cancel';
     }
 
@@ -116,14 +118,15 @@ class AdvertisementModel extends PostModel
     public function expired(): bool
     {
         return isPast($this->endAt) && isToday($this->endAt);
-//        return isTodayOrPast($this->endAt);
+        //        return isTodayOrPast($this->endAt);
     }
 
     /**
      * 오늘이 광고 마지막 날이면 참을 리턴한다.
      * @return bool
      */
-    public function lastDay(): bool {
+    public function lastDay(): bool
+    {
         return isToday($this->endAt);
     }
 
@@ -179,7 +182,8 @@ class AdvertisementModel extends PostModel
      * @throws \Kreait\Firebase\Exception\FirebaseException
      * @throws \Kreait\Firebase\Exception\MessagingException
      */
-    public function edit($in): self {
+    public function edit($in): self
+    {
         if (notLoggedIn()) return $this->error(e()->not_logged_in);
         if (!isset($in[IDX]) || empty($in[IDX])) {
             // create the banner
@@ -201,8 +205,9 @@ class AdvertisementModel extends PostModel
      * @param int $comments
      * @return array|string
      */
-    public function response(string $fields = null, int $comments = 0): array|string {
-        if ( $this->hasError ) return $this->getError(true);
+    public function response(string $fields = null, int $comments = 0): array|string
+    {
+        if ($this->hasError) return $this->getError(true);
         $banner = parent::response($fields, $comments);
         $banner['status'] = advertisement()->getStatus($this);
         return $banner;
@@ -213,7 +218,8 @@ class AdvertisementModel extends PostModel
      * @param $in
      * @return $this
      */
-    public function start($in): self {
+    public function start($in): self
+    {
 
         if (notLoggedIn()) return $this->error(e()->not_logged_in);
 
@@ -238,7 +244,7 @@ class AdvertisementModel extends PostModel
         $days = daysBetween($in[BEGIN_AT], $in[END_AT]) + 1;
 
         // 최대 기간이 정해져 있으면, 그 기간 이내에로 광고 기간을 설정.
-        $maximumAdvertisementDays = advertisement()->maximumAdvertisementDays();
+        $maximumAdvertisementDays = $this->maximumAdvertisementDays();
         if ($maximumAdvertisementDays) {
             if ($days > $maximumAdvertisementDays) return $this->error(e()->maximum_advertising_days);
         }
@@ -246,10 +252,16 @@ class AdvertisementModel extends PostModel
         // Save point per day. This will be saved in meta.
         $in[POINT_PER_DAY] = 0;
 
-        $settings = advertisement()->getAdvertisementPointSetting($in);
+        $settings = $this->getAdvertisementPointSetting($in);
 
         if (isset($settings[$in[CODE]])) {
             $in[POINT_PER_DAY] = $settings[$in[CODE]];
+        }
+
+        // Global multiplier
+        $globalMultiplier = $this->globalBannerMultiplying();
+        if ((!isset($in[SUB_CATEGORY]) || empty($in[SUB_CATEGORY])) && $globalMultiplier > 0) {
+            $in[POINT_PER_DAY] = $in[POINT_PER_DAY] * $globalMultiplier;
         }
 
         // Save total point for the advertisement periods.
@@ -294,7 +306,8 @@ class AdvertisementModel extends PostModel
      * @param $in
      * @return $this
      */
-    public function stop($in): self {
+    public function stop($in): self
+    {
 
         if (notLoggedIn()) return $this->error(e()->not_logged_in);
         if (!isset($in[IDX]) || empty($in[IDX])) return $this->error(e()->idx_is_empty);
@@ -303,9 +316,9 @@ class AdvertisementModel extends PostModel
         if ($advertisement->isMine() == false) return $this->error(e()->not_your_post);
 
         // 중단된 광고, 취소된 광고, 끝난 광고는 중단하지 못한다. readme.md 참고
-        if ( $this->stopped($this) ) return $this->error(e()->banner_stopped);
-        if ( $this->cancelled($this) ) return $this->error(e()->banner_cancelled);
-        if ( $this->expired()) return $this->error(e()->banner_expired);
+        if ($this->stopped($this)) return $this->error(e()->banner_stopped);
+        if ($this->cancelled($this)) return $this->error(e()->banner_cancelled);
+        if ($this->expired()) return $this->error(e()->banner_expired);
 
         /// If advertisement started (including today), then, it needs +1 day.
         /// For instance, advertisement starts today and ends tomorrow. The left days must be 1.
@@ -355,7 +368,6 @@ class AdvertisementModel extends PostModel
         }
 
         return $advertisement->update($in);
-
     }
 }
 
@@ -371,6 +383,7 @@ function advertisement(int $idx = 0): AdvertisementModel
     return new AdvertisementModel($idx);
 }
 
-function banner(int $idx=0): AdvertisementModel {
+function banner(int $idx = 0): AdvertisementModel
+{
     return advertisement($idx);
 }
