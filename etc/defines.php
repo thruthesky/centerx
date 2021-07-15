@@ -94,6 +94,7 @@ const DELETED_AT = 'deletedAt';
 const READ_AT = 'readAt';
 const BEGIN_AT = 'beginAt';
 const END_AT = 'endAt';
+const SHORT_DATE = 'shortDate';
 
 const SESSION_ID = 'sessionId';
 const NICKNAME = 'nickname';

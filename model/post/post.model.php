@@ -239,6 +239,7 @@ class PostModel extends Forum {
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
         if ( $this->exists() == false ) return $this->error(e()->post_not_exists);
         if ( $this->otherUserIdx ) return $this->error(e()->cannot_be_updated_due_to_other_user_idx);
+        if ( admin() == false && $this->isMine() == false ) return $this->error(e()->not_your_comment);
 
         $in = $this->updateBeginEndDate($in);
 
@@ -705,6 +706,20 @@ class PostModel extends Forum {
      */
     public function minimizeResponse(array $got): array {
         $o = $got;
+
+        // 코멘트가 있으면, 맨 첫 1 개 코멘트만 전송.
+        if ( isset($o[COMMENTS]) && count($o[COMMENTS]) ) {
+            $comments = [
+                [
+                    USER => $o[COMMENTS][0][USER],
+                    CONTENT => mb_substr($o[COMMENTS][0][CONTENT], 0, 128),
+                ]
+            ];
+        } else {
+            $comments = [];
+        }
+
+        // 파일이 있으면 맨 첫 1개 파일만 전송.
         if ( isset($o[FILES]) && count($o[FILES]) ) {
             $file = $o[FILES][0];
             $files = [
@@ -719,8 +734,6 @@ class PostModel extends Forum {
                     USER_IDX => $file[USER_IDX],
                 ],
             ];
-
-
         } else {
             $files = [];
         }
@@ -729,6 +742,7 @@ class PostModel extends Forum {
             'N' => $o['N'],
             CATEGORY_ID => $o[CATEGORY_ID],
             CATEGORY_IDX => $o[CATEGORY_IDX],
+            COMMENTS => $comments,
             CONTENT => mb_substr($o[CONTENT], 0, 128),
             COUNTRY_CODE => $o[COUNTRY_CODE],
             CREATED_AT => $o[CREATED_AT],
@@ -745,6 +759,7 @@ class PostModel extends Forum {
             URL => $o[URL],
             USER => $o[USER],
             USER_IDX => $o[USER_IDX],
+            SHORT_DATE => $o[SHORT_DATE],
         ];
         return $n;
     }

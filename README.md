@@ -884,27 +884,6 @@ EOJ);
 
 
 
-# 이미지 썸네일
-
-- 이미지 썸네일을 위한 여러 라이브러리들이 많이 있지만, 아주 깔끔한 것이 없다. 믿었던 phpThumb 마저 알 수 없는 문제로 이미지 출력이 올바로 안된다.
-- 그래서 직접 만들어서 사용한다.
-
-
-예제) PHP 에서 생성해서 출력
-
-```php
-$file = files()->getBy(); // 최근 파일 선택
-$th = thumbnailUrl($file->idx, 80, 80); // 썸네일 URL 을 가져온다.
-echo "<img src='$th'><br>"; // 썸네일 이미지 출력
-echo "<img src='{$file->url}'><br>"; // 원본 이미지 출력
-```
-
-예제) img 태그나 Flutter 등에서 바로 출력하기
-
-```html
-<img src="https://main.philov.com/etc/thumbnail.php?idx=293&w=140&h=140">
-```
-
 # Meta
 
 You can search meta table directly by using `meta()`.

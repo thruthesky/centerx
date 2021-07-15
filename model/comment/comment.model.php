@@ -137,7 +137,9 @@ class CommentModel extends Forum {
         if ( notLoggedIn() ) return $this->error(e()->not_logged_in);
         if ( login()->block == 'Y' ) return $this->error(e()->blocked);
         if ( ! $this->idx ) return $this->error(e()->idx_is_empty);
-        if ( $this->isMine() == false ) return $this->error(e()->not_your_comment);
+
+
+        if ( admin() == false && $this->isMine() == false ) return $this->error(e()->not_your_comment);
 
         parent::update($in);
 
