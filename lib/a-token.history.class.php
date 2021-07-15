@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Class PointHistory
+ * Class ATokenHistory
  *
  * @property-read int $userIdx
  * @property-read int pointApply
  * @property-read int pointAfterApply
- * @property-read int toKenApply
- * @property-read int toKenAfterApply
+ * @property-read int tokenApply
+ * @property-read int tokenAfterApply
  * @property-read string $reason
  * @property-read int createdAt
  * @property-read int updatedAt

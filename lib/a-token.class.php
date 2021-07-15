@@ -48,16 +48,18 @@ class AToken
     public function exchangeToken($in): array {
         $point = $in['pointToExchange'];
         $exchangedToken = sprintf('%d', $point / 100);
-        //debug_log('point; ' . $point);
-        //debug_log('exchangedToken; ' . $exchangedToken);
-        //debug_log("user point; ",  login()->getPoint());
+        debug_log('point: ' . $point);
+        debug_log('exchangedToken: ' . $exchangedToken);
+        debug_log("user point: ",  login()->getPoint());
 
         $changedPoint = point()->addUserPoint(login()->idx, -$point);
-        //d($exchangedToken);
         $atoken = login()->atoken;
-        login()->update(['atoken' => $atoken + $exchangedToken]);
 
         debug_log('changedPoint;', $changedPoint);
+        debug_log("atoken: ",  $atoken);
+
+        login()->update(['atoken' => $atoken + $exchangedToken]);
+
         debug_log('changedToken;', login() -> atoken);
 
 //        tokenHistory()->create([
@@ -94,6 +96,23 @@ class AToken
            tokenAfterApply: user($in['otherIdx'])->atoken,
        );
     }
+
+    public function admin($in)
+    {
+
+       $re = user($in['otherIdx'])->update(['atoken' => user($in['otherIdx'])->atoken + $in['value']]);
+
+       debug_log('re', $re);
+
+        $this->log(
+            userIdx : $in['otherIdx'],
+            reason: $in['reason'],
+            tokenApply: $in['value'],
+            tokenAfterApply: user($in['otherIdx'])->atoken,
+        );
+    }
+
+
 
     /**
      * 토큰 기록

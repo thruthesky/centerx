@@ -816,7 +816,6 @@ class Entity {
 
         if ( $params ) { // prepare statement if $params is set.
             $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
-//            debug_log("search params q", $q);
             try {
                 if ( isDebugging() ) { d($q); d($params); }
                 /// @TODO remove the '@' sign after 'warning' bug fixed.
@@ -833,9 +832,8 @@ class Entity {
                 $where = sqlCondition($conds, $conj);
             }
             $q = " SELECT $select FROM $table WHERE $where ORDER BY $order $by LIMIT $from,$limit ";
-//            debug_log("search !params conds q", $q);
 
-//            if ( isDebugging() ) d($q);
+            if ( isDebugging() ) d($q);
             $rows = db()->get_results($q, ARRAY_A);
         }
 

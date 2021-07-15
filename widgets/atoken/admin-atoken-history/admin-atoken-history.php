@@ -2,16 +2,10 @@
 
 $q_where = '1';
 if ( modeCreate() ) {
-    $conds = [];
-    if (in('userIdx')) $conds[] = "userIdx='" . in('userIdx') . "'";
-    if (in('tokenApply')) $conds[] = "tokenApply='" . in('tokenApply') . "'";
-    if (in('reason')) $conds[] = "reason='" . in('reason') . "'";
-    if (in('begin')) $conds[] = "createdAt>='" . strtotime(in('begin')) . "'";
-    if (in('end')) $conds[] = "createdAt<'" . strtotime(in('end')) + 24 * 60 * 60 . "'";
-    if ( $conds ) $q_where = implode(" AND ", $conds);
-}
 
-if ( modeSubmit() ) {
+    $created = aToken()->admin(['otherIdx'=>in('otherIdx'), 'reason'=>in('reason'), 'value'=>in('value') ]);
+
+} else if ( modeSubmit() ) {
     $conds = [];
     if (in('userIdx')) $conds[] = "userIdx='" . in('userIdx') . "'";
     if (in('reason')) $conds[] = "reason='" . in('reason') . "'";
@@ -30,14 +24,15 @@ $histories = aTokenHistory()->search(where: $q_where, limit: 100);
     <?=hiddens(['p', 'w'], 'create')?>
     <div class="form-group">
         <label>User Idx</label>
-        <input type="text" class="form-control" name="createUserIdx" value="<?=in('userIdx')?>">
+        <input type="text" class="form-control" name="otherIdx" value="<?=in('otherIdx')?>">
+    </div>
+    <div class="form-group">
+        <label>A-Token reason</label>
+        <input type="text" class="form-control" name="reason" value="<?=in('reason')?>">
     </div>
     <div class="form-group">
         <label>A-Token value</label>
-        <input type="text" class="form-control" name="createTokenApply" value="<?=in('tokenApply')?>">
-    </div> <div class="form-group">
-        <label>A-Token reason</label>
-        <input type="text" class="form-control" name="createReason" value="<?=in('reason')?>">
+        <input type="text" class="form-control" name="value" value="<?=in('value')?>">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
@@ -86,7 +81,7 @@ $histories = aTokenHistory()->search(where: $q_where, limit: 100);
             <th scope="row"><?=$history->idx?></th>
             <td><?=$user->name?>(<?=$user->idx?>)</td>
             <td><?=$history->reason?></td>
-            <td><?=number_format($history->toKenApply)?></td>
+            <td><?=number_format($history->tokenApply)?></td>
             <td><?=date('Y/m/d H:i', $history->createdAt)?></td>
         </tr>
     <?php } ?>
