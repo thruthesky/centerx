@@ -36,6 +36,8 @@
  * @property-read string $ci - pass login
  * @property-read string photoUrl
  * @property-read int age - user's age
+ * @property-read int level - user level
+ * @property-read int levelPercentage - percentage for next level.
  */
 class UserModel extends Entity {
 
@@ -137,6 +139,10 @@ class UserModel extends Entity {
         if ( $this->updatedAt ) $this->updateMemoryData('updatedAtShortDate', short_date_time($this->updatedAt));
 
         $data[ADMIN] = admin($this->email) ? 'Y' : 'N';
+
+        $this->updateMemoryData('level', levelByPoint($this->point ?? 0));
+        $this->updateMemoryData('levelPercentage', percentageOf($this->point ?? 0));
+
 
         hook()->run(HOOK_USER_READ, $this);
 
@@ -359,6 +365,8 @@ class UserModel extends Entity {
             'point' => $this->point,
             'photoIdx' => $this->photoIdx ?? 0,
             'photoUrl' =>  $this->photoIdx ? thumbnailUrl($this->photoIdx ?? 0, 100, 100) : ($this->photoUrl ?? ''),
+'level' => $this->level,
+            'levelPercentage' => $this->levelPercentage,
         ];
         if ( $firebaseUid ) {
             $ret['firebaseUid'] = $this->firebaseUid;

@@ -2163,8 +2163,12 @@ function metaTable(): string {
  *
  * @see readme.md
  *
+ * 예를 들면, levelByPoint(928) 와 같이 하면, 4 를 리턴한데, 928 포인트는 4 레벨에 속한다는 뜻이다.
+ * 참고, 더 많은 예제는 functions.test.php 참고
+ *
  * @param int $point
  * @return int
+ *
  */
 function levelByPoint(int $point): int {
     $i = 0;
@@ -2179,8 +2183,24 @@ function levelByPoint(int $point): int {
  * 포인트 공식
  *
  * 각 레벨의 최대 포인트를 리턴한다.
+ *
+ * 주의, 레벨은 1 부터 시작하지만, 포인트는 0 부터 시작한다.
+ * 그래서, 이 함수의 공식은 입력된 레벨의 -1 을 해야, 해야 된다.
+ *
+ * 예를 들면, 4 레벨의 시작 포인트를 얻고 싶다면, pointByLevel(4-1) 와 같이 하면, 4 레벨의 시작 포인트인 927 을 리턴한다.
+ *
+ * 가능한 이 함수를 직접 사용하지 않도록 한다.
+ *
+ *
  * @param int $lv
  * @return int
+ *
+ * @example 레벨별 (시작)포인트 목록하기
+ *  for($i=1; $i<100; $i++) {
+ *      echo "Lv. $i: " . pointByLevel( $i - 1 ) . "\n";
+ *  }
+ *
+ * 참고, 더 많은 예제는 functions.test.php 참고
  */
 function pointByLevel(int $lv): int {
     return (100 + $lv) * $lv * $lv;
@@ -2191,15 +2211,20 @@ function pointByLevel(int $lv): int {
  *
  * 현재 내 레벨에서 다음 레벨까지 도달하려면 얻어야하는 포인트를 나타내고, 백분율로 표시하고자 할 때 사용한다.
  *
+ * 예를 들면, pointBetween(4) 로 입력하면 737 을 리턴하는데, 4 레벨에서 5레벨 까지 걸리는(획득해야하는) 포인트이다.
  *
  * @param int $lv
  * @return int
+ *
+ * 참고, 더 많은 예제는 functions.test.php 참고
  */
 function pointBetween(int $lv): int {
     return pointByLevel( $lv) - pointByLevel($lv - 1);
 }
 
 /**
+ * 포인트를 입력하면, 다음 레벨까지 몇 % 진행했는지를 정수로 리턴한다.
+ *
  * 특정 포인트를 입력하면,
  *      1) 입력된 포인트의 레벨을 구하고, Lv-Low
  *      2) 다음 레벨에 도달하기 까지의 포인트를 구하고, Point-High
@@ -2207,6 +2232,13 @@ function pointBetween(int $lv): int {
  *      4) 현재 레벨에서 다음 레벨 까지의 총 포인트 차이를 구하고, total
  *      5) 내 포인트가 현재 레벨의 가장 낮은 점수에서 얼마를 벌었는지 구하고, myP
  *      6) 백분율을 구한다. 총 포인트: PH-PL 에서 MY-P 가 몇 퍼센트인지 구한다.
+ *
+ * 사용 예)
+ *  나의 포인트가 1234567 이면, percentageOf(1234567) 와 같이 호출하면 29가 리턴된다.
+ *  즉, 현재 내 레벨에서 다음 레벨까지 29% 진행했고, 71% 남은 셈이다.
+ *
+ * 참고, 더 많은 예제는 functions.test.php 참고
+ *
  * @param int $point
  * @return int
  */

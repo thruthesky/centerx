@@ -1,10 +1,13 @@
 <?php
 
+
+//for($i=1; $i<=200; $i++) {
+//    echo "Lv. $i 의 시작 포인트: " . pointByLevel( $i - 1 ) . "\n";
+//}
+
 levelTest();
 pointBetweenTest();
 percentageOfTest();
-
-
 
 function levelTest() {
     isTrue(levelByPoint(0) == 1, '0 -> lv. 1');

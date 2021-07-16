@@ -106,7 +106,13 @@ class Forum extends Entity {
         $Y = voteHistory()->count(conds: [TAXONOMY => POSTS, ENTITY => $this->idx, CHOICE => 'Y']);
         $N = voteHistory()->count(conds: [TAXONOMY => POSTS, ENTITY => $this->idx, CHOICE => 'N']);
 
-        return $this->update(['Y' => $Y, 'N' => $N]);
+        /**
+         * 권한 문제
+         *
+         * $this->update() 에서는 자기 글 만 수정 가능.
+         * 그래서 부모의 entity() 객체를 통해서 (post/comment model update 를 통하지 않고) 업데이트한다.
+         */
+        return parent::update(['Y' => $Y, 'N' => $N]);
 
 //        $record = entity(POSTS, $this->idx)->update($data);
 //        return $record;
