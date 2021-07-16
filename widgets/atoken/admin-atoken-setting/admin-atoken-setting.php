@@ -9,7 +9,7 @@ if ( modeSubmit() ) {
 
 ?>
 
-<h1>포인트 설정</h1>
+<h1>토큰 설정</h1>
 
 <div class="hint">
     <ul>
