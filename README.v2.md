@@ -27,11 +27,14 @@
 
 ## 버전 3 - Matrix - TODO 목록
 
+- Git repo 를 `https://github.com/withcenter/matrix` 로 이동.
+  - 2021. 07. 16. 현재 withcenter/matrix 에서 작업 중. local repo 에 matrix 와 centerx 두 개를 연결하여 코드 공유 중.
+  - centerx 이슈를 모두 처리하거나 또는 어려운 이슈를 matrix 로 이동하여, centerx 이슈가 모두 종료되면, matrix 로 변경한다.
+  
 - `centerx` 라는 명칭을 완전히 제거.
 - PHP 에서 화면에 직접 렌더링하는 부분은 `view/admin` 빼고는 모두 제거.
   - `live-reload` 등 관련된 사항 재 정립
 - `widgets` 폴더 제거
-- Git repo 를 `https://github.com/withcenter/matrix` 로 이동.
 - 버전 3에서는 오직 백엔드용으로만 사용
   - 모든 자바스크립트, CSS, 위젯 등과 관련된 파일을 삭제.
   - 웹 브라우저 쿠키 관련 코드 삭제
