@@ -1272,10 +1272,10 @@ isTrue((new AppController())->version(), "App version");
   - 필고 처럼 복잡하게 하지 않는다. 특히 Sonub 는 국가까지 선택을 하므로, 더 복잡해 질 수 있다.
   - 게시판 별 금액을 따로 두지 않는다.
     - 차라리 게시판을 세분화 하고, 통합이 필요하면, 커뮤니티 전체, 비지니스 전체를 그룹화해서 보여주도록 한다.
-  - 특히, 위치별 금액을 따로 두지 않는다.
-    예를 들어, 최상단 배너가, 글로벌인 경우, 1만 포인트, 구인 구직에만 노출되는 경우, 5천 포인트로 하지 않는다.
-    똑 같이 1만 포인트로 한다.
-    다만, 글로벌의 경우 여러개 광고가 번갈아가면서 보인다.
+  - 특히, 광고(배너) 종류에서 같은 배너 종류의 카테고리 별 금액을 따로 두지 않는다.
+    
+    예를 들어, 사각배너가 1천 포인트이면, 모든 게시판에서 사각 배너 포인트가 동일하게 설정한다.
+  
 
 ## 광고 기능 추가해야 할 것
 
@@ -1397,7 +1397,6 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
 
 * Class\
   If the banner type has `global & category` class, global banner will take place when there is no category banner for that category.
-
   
 
 ### Top banner rotation
@@ -1420,6 +1419,12 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
 ## Banner management
 
 - one post can have one banner.
+
+- User cannot select country if the cafe has country code.
+  For instance, all sub cafe has a country code. So, the banner will follow the cafe's country code.
+  And root domains that has country code like `philov.com`, the banner will follow the root domain's country code.
+  But for the root domains that has no country code like `sonub.com`, user can choose the country to post banner.
+  
 
 - user can upload banner.
   - choose banner type(place)
