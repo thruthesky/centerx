@@ -258,7 +258,7 @@ class AdvertisementModel extends PostModel
             $in[POINT_PER_DAY] = $settings[$in[CODE]];
         }
 
-        // Global multiplier
+        // Apply global multiplier if advertisement is for global.
         $globalMultiplier = $this->globalBannerMultiplying();
         if ((!isset($in[SUB_CATEGORY]) || empty($in[SUB_CATEGORY])) && $globalMultiplier) {
             $in[POINT_PER_DAY] = $in[POINT_PER_DAY] * $globalMultiplier;
