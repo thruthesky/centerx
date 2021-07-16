@@ -10,13 +10,13 @@ class AToken
 
     public function register(User $user)
     {
-        $user->update(['atoken' => 300]);
+        $user->update(['atoken' => config()->get(TOKEN_REGISTER)]);
         $this->log(
             userIdx : $user-> profile()[IDX],
             reason: 'tokenRegister',
             pointAfterApply:  $user -> profile()[POINT],
-            tokenApply: 300,
-            tokenAfterApply : 300,
+            tokenApply: config()->get(TOKEN_REGISTER),
+            tokenAfterApply : config()->get(TOKEN_REGISTER),
         );
 
     }
@@ -34,7 +34,7 @@ class AToken
 
     public function inAppPurchase($point = 0)
     {
-        $saving = $point / 2 * 0.01;
+        $saving = $point * ( config()->get(TOKEN_REGISTER) / 100 ) * 0.01;
         $atoken = login()->atoken;
         login()->update(['atoken' => $atoken + $saving]);
         $this->log(
@@ -87,12 +87,12 @@ class AToken
      * @param User $user 추천 받는 사용자.
      */
     public function recommend($in) {
-        user($in['otherIdx'])->update(['atoken' => user($in['otherIdx'])->atoken + 10]);
+        user($in['otherIdx'])->update(['atoken' => user($in['otherIdx'])->atoken + config()->get(TOKEN_RECOMMENDATION)]);
 
        $this->log(
            userIdx : $in['otherIdx'],
            reason: 'userRecommend',
-           tokenApply: 10,
+           tokenApply: config()->get(TOKEN_RECOMMENDATION),
            tokenAfterApply: user($in['otherIdx'])->atoken,
        );
     }

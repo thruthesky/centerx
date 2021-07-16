@@ -14,6 +14,7 @@ if (admin() == false) jsBack('You are not admin');
                 <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-setting"><?= ln(['en' => 'Settings', 'ko' => '설정']) ?></a>
                 <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/upload-image&code=admin.app.about.setting"><?= ln(['en' => 'About', 'ko' => '어바웃 설정']) ?></a>
                 <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=point/admin-point-setting"><?= ln(['en' => 'Point Setting', 'ko' => '포인트 설정']) ?></a>
+                <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=atoken/admin-atoken-setting"><?= ln(['en' => 'Token Setting', 'ko' => '토큰 설정']) ?></a>
                 <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=setting/admin-translation"><?= ln(['en' => 'Translations', 'ko' => '언어화']) ?></a>
                 <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=point/admin-point-history"><?= ln(['en' => 'Point history', 'ko' => '포인트 기록']) ?></a>
                 <a class="btn fw-700 fs-sm" href="/?p=admin.index&w=atoken/admin-atoken-history"><?= ln(['en' => 'Token history', 'ko' => '토큰 기록']) ?></a>
