@@ -68,14 +68,16 @@ class CafeModel extends CategoryModel
      */
     public $mainCafeSettings = [
         'sonub.com' => [
-            'name' => '필러브',
+            'name' => '소너브',
             'countryCode' => '',
             'logo' => '/img/cafe/root-domain-logo/sonub-logo.jpg',
+            'searchBoxPlaceHolder' => '여행 소셜 네트워크 허브'
         ],
         'philov.com' => [
             'name' => '필러브',
             'countryCode' => 'PH',
             'logo' => '/img/cafe/root-domain-logo/philov-logo.jpg',
+            'searchBoxPlaceHolder' => '필리핀 여행 정보 커뮤니티'
         ]
     ];
 
@@ -120,8 +122,11 @@ class CafeModel extends CategoryModel
         'knowhow',
         'message',
         'news',
+        // 사진, 갤러리
+        'photo',
+        // 먹방
+        'eat',
     ];
-
 
     /**
      * @var string[][]
@@ -130,16 +135,45 @@ class CafeModel extends CategoryModel
         'community' => [
             'qna',
             'discussion',
-            'buyandsell',
             'reminder',
+            'knowhow',
+            'gathering',
+            'missing',
+            'caution',
+            'photo',
+            'eat',
         ],
         'business' => [
             'job' ,
+            'company_book',
+        ],
+        'real_estate' => [
+            'real_estate',
+            'boarding_house',
+            'hotel',
+        ],
+        'travel' => [
+            'travel',
+            'hotel',
+        ],
+        'lifestyle' => [
             'rent_house',
             'rent_car',
-            'im',
+            'im_visa',
             'real_estate',
             'money_exchange',
+            'boarding_house',
+            'homestay',
+            'weather',
+            'house_helper',
+            'restaurant',
+            'food_delivery',
+            'school',
+            'message',
+            'buyandsell',
+        ],
+        'news' => [
+            'news'
         ],
     ];
 

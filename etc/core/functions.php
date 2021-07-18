@@ -1703,13 +1703,22 @@ function postMessagingUrl(int $idx) {
  *
  * @param array $in
  *
- *  - categoryId - 글 아이디
- *  - categoryIdx - 글 번호
+ *  - categoryId - 카테고리 아이디
+ *  - categoryIdx - 카테고리 번호
+ *  - ids - 콤마로 분리된 여러개의 카테고리 번호, 또는 카테고리 아이디.
+ *      예) "apple, 2, cherry"
+ *      여러개의 카테고리에서 글을 가져 올 수 있도록 한다.
  *  - searchKey - 검색어
  *  - userIdx - 사용자 번호
  *  - otherUserIdx - 다른 사용자 번호
  *  - code - 글 코드
  *  - countryCode - the country code.
+ *  - within - 특정 시간 내의 글을 리턴한다. 단위 초.
+ *      예를 들어, 60 이면, 1분 이내의 글. 360 이면, 10분 이내의 글만 리턴한다.
+ *  - betweenFrom, betweenTo - 특정 시간 구간 사이의 글을 검색하여 리턴한다. 단위 초.
+ *      예를 들어, betweenFrom 이, "60 * 60 * 30" 이고, betweenTo 가, "60 * 60 * 50" 이면,
+ *      30시간 전 부터 50시간 전 사이의 글을 리턴한다.
+ *      과거의 시간을 계산하는 것으로 betweenFrom 이, 현재로 부터 가까운 시간, betweenTo 가 현재로 부터 먼 시간이된다.
  *
  *  - files - it is set to truthy value, then it searches for posts that has attached files.
  *  If it is falsy value like empty string, false, 0, then it searches posts that has no attached files.
@@ -1736,12 +1745,28 @@ function parsePostSearchHttpParams(array $in): array|string {
     // 카테고리 idx 또는 카테고리 id 또는 0
     $catIdx = $in[CATEGORY_IDX] ?? $in[CATEGORY_ID] ?? 0;
 
-    // 카테고리가 지정된 경우,
+    // 카테고리가 1 개 지정된 경우,
     if ($catIdx) {
         $category = category( $catIdx );
         // 카테고리가 존재하지 않으면, 에러
         if ( $category->exists() == false ) return e()->category_not_exists;
+
+        // 카테고리 아이디를 입력 받아, category.idx 숫자로 지정하기 때문에, params 으로 bind 하지 않아도 된다.
         $where .= " AND categoryIdx=" . $category->idx;
+    } else if ( isset($in[IDS]) ) {
+        // 카테고리가 여러개 입력 된 경우,
+        // @todo 이 부분 Unit test 해야 함.
+        $ids = explode(',', $in[IDS]);
+        $cats = [];
+        foreach( $ids as $id ) {
+            $id = trim($id);
+            $cat = category($id);
+            $cats[] = "categoryIdx=" . $cat->idx;
+        }
+
+        // 카테고리 아이디를 입력 받아, category.idx 숫자로 지정하기 때문에, params 으로 bind 하지 않아도 된다.
+        $where .= " AND ( " . implode(" OR ", $cats ) . " ) ";
+
     }
 
     // sub category
@@ -1789,12 +1814,24 @@ function parsePostSearchHttpParams(array $in): array|string {
         $params[] = '%' . $in['searchKey'] . '%';
     }
 
-// 사용자 글 번호. 특정 사용자가 쓴 글만 목록. 쪽지 기능에서는 보내는 사람.
+    if ( isset($in['within']) && is_numeric($in['within']) && $in['within'] ) {
+        $where .= " AND createdAt > " . (time() - $in['within']);
+    }
+
+    if (
+        isset($in['betweenFrom']) && isset($in['betweenTo']) &&
+        is_numeric($in['betweenFrom']) && is_numeric($in['betweenTo']) &&
+        $in['betweenFrom'] && $in['betweenTo']
+    ) {
+        $where .= " AND createdAt < " . (time() - $in['betweenFrom']) . " AND createdAt > "  . (time() - $in['betweenTo']);
+    }
+
+    // 사용자 글 번호. 특정 사용자가 쓴 글만 목록. 쪽지 기능에서는 보내는 사람.
     if ( isset($in[USER_IDX]) && is_numeric($in[USER_IDX]) ) {
         $where .= " AND userIdx=? ";
         $params[] = $in[USER_IDX];
     }
-// 다른 사용자 글 번호. 즉, 글이 특정 사용자에게 전달되는 것. 쪽지 기능에서는 받는 사람.
+    // 다른 사용자 글 번호. 즉, 글이 특정 사용자에게 전달되는 것. 쪽지 기능에서는 받는 사람.
     if ( isset($in[OTHER_USER_IDX]) && is_numeric($in[OTHER_USER_IDX]) ) {
         $where .= " AND otherUserIdx=? ";
         $params[] = $in[OTHER_USER_IDX];

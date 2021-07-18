@@ -34,16 +34,8 @@ class PostController {
     {
 
         if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
-        else return post($in[IDX])->response();
+        else return post($in[IDX])->increaseNoOfViews()->response();
 
-
-
-//        if ( isset($in['path']) ) {
-//            $arr = explode('/', $in['path']);
-//            return post()->getFromPath($arr[3])->response();
-//        }
-//        if ( ! isset($in[IDX]) ) return e()->idx_is_empty;
-//        return post($in[IDX])->response();
     }
 
     /**
@@ -78,7 +70,11 @@ class PostController {
     }
 
 
-
+    /**
+     * 여러개의 글을 리턴한다.
+     * @param $in
+     * @return array|string
+     */
     public function gets($in) {
         if ( ! isset($in[IDXES]) ) return e()->idx_is_empty;
         $idxes = explode(',', $in[IDXES]);
@@ -125,6 +121,7 @@ class PostController {
             $in['params'] = $params;
         }
 
+//        if ( isset($in[IDS]) ) debug_log('---->>> post.controller::search(); in; ', $in);
         $posts = post()->search(object: true, in: $in);
         $res = [];
         foreach($posts as $post) {

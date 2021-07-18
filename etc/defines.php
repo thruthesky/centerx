@@ -106,6 +106,9 @@ const CONTENT = 'content';
 
 const NO_OF_VIEWS = 'noOfViews';
 
+// see readme.
+const LAST_VIEW_CLIENT_IP = 'lastViewClientIp';
+
 
 
 const PRIVATE_TITLE = 'privateTitle';

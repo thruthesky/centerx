@@ -84,8 +84,9 @@ class CafeController {
 //    }
 
     public function check() {
-        d(login());
-        if ( admin() == false ) die("You are not admin!");
-        include ROOT_DIR . 'controller/cafe/check.php';
+        exit;
+//        d(login());
+//        if ( admin() == false ) die("You are not admin!");
+//        include ROOT_DIR . 'controller/cafe/check.php';
     }
 }

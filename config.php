@@ -4,7 +4,10 @@
  */
 
 
-const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
+
+
+//const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
+const TEMP_IP_ADDRESS = '175.196.80.131'; // Seoul, Korea IP
 
 
 

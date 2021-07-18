@@ -53,6 +53,7 @@
  * @property-read int $endAt;
  * @property-read CommentModel[] $comments;
  * @property-read string $shortDate - 짧은 날짜 표시
+ * @property-read string $lastViewClientIp
  */
 class PostModel extends Forum {
 
@@ -138,7 +139,7 @@ class PostModel extends Forum {
         if ( login()->block == 'Y' ) return $this->error(e()->blocked);
         if ( !isset($in[CATEGORY_ID]) || empty($in[CATEGORY_ID]) ) return $this->error(e()->category_id_is_empty);
         $category = category($in[CATEGORY_ID]);
-        if ( $category->notFound ) return $this->error(e()->category_not_exists); // The category really exists in database?
+        if ( $category->notFound ) return $this->error(e()->category_not_exists, $in[CATEGORY_ID]); // The category really exists in database?
 
         // 인증한 사용자만 글 쓰기 옵션
         if ( $category->verifiedUserCreatePost == 'Y' && login()->verified == false ) {
@@ -181,7 +182,12 @@ class PostModel extends Forum {
 
         $in = $this->updateBeginEndDate($in);
 
+        $in['ip'] = clientIp();
+        if ( isset($_SERVER ['HTTP_USER_AGENT']) ) {
+            $in['userAgent'] = $_SERVER ['HTTP_USER_AGENT'];
+        }
 
+        // 글 생성
         // Create a post
         parent::create($in);
         if ( $this->hasError ) return $this;
@@ -381,6 +387,12 @@ class PostModel extends Forum {
      * @param bool $object
      * @param array $in
      * @return $this[]
+     *
+     *
+     * 예제) 정렬 조건을 보다 복잡하게 하기
+     *      아래와 같이 by 에 빈 값을 입력하고, order 에 원하는 여러개의 정렬 조건 항목을 입력 할 수 있다.
+     *      order: "noOfComments DESC, createdAt DESC",
+     *      by: "",
      */
     public function search(
         string $select='idx',
@@ -678,13 +690,20 @@ class PostModel extends Forum {
      * 읽은 시간을 업데이트한다.
      *
      * 주의, parent::update() 를 호출하여 퍼미션을 검사하지 않고, 업데이트한다. 참고로 이 후, read() 가 호출되어 메모리 캐시 변수가 업데이트 된다.
+     * 참고, $this->update() 를 하면, 글 쓴지 제한에 걸리므로, parent::update() 를 사용.
      */
     public function readAt() {
         parent::update([READ_AT => time()]);
     }
 
+    /**
+     * 글 조회 수를 1 증가시킨다.
+     *
+     * 참고, $this->update() 를 하면, 글 쓴지 제한에 걸리므로, parent::update() 를 사용.
+     */
     public function increaseNoOfViews() {
-        parent::update([NO_OF_VIEWS => $this->noOfViews + 1]);
+        if ( $this->lastViewClientIp == clientIp() ) return $this;
+        return parent::update([NO_OF_VIEWS => $this->noOfViews + 1, LAST_VIEW_CLIENT_IP => clientIp()]);
     }
 
     /**
