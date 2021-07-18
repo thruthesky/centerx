@@ -241,6 +241,8 @@ class E {
 
     public string $nickname_exists = 'error_nickname_exists';
 
+    public string $not_localhost = 'error_not_localhost';
+
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)
     {

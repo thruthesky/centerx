@@ -123,9 +123,11 @@ function createCategory(string $id = null): CategoryModel {
 }
 
 
-function createPost(string $categoryId=null, string $title = null, string $content = null, string $files = ''): PostModel {
+function createPost(string $categoryId=null, string $title = null, string $content = null, string $files = '', string $subcategory = ''): PostModel {
     if (category($categoryId ?? POINT)->exists() == false) category()->create([ID => $categoryId ?? POINT]); // create POINT category if not exists.
-    return post()->create([CATEGORY_ID => $categoryId ?? POINT,
+    return post()->create([
+        CATEGORY_ID => $categoryId ?? POINT,
+        SUB_CATEGORY => $subcategory,
         TITLE => $title ?? TITLE,
         CONTENT => $content ?? CONTENT,
         FILE_IDXES => $files,
@@ -143,16 +145,27 @@ function createPost(string $categoryId=null, string $title = null, string $conte
  * @param string $path
  * @return PostModel
  */
-function createPostWithPhoto(string $categoryId, string $title = '', string $content= '', string $path = ''): PostModel {
-    $file = files()->upload([
-        TAXONOMY => POSTS,
-    ], [
-        NAME => basename($path),
-        TMP_NAME => $path,
-        SIZE => filesize($path),
-        TYPE => mimeType($path),
-    ]);
-    return createPost($categoryId, $title, $content, $file->idx);
+function createPostWithPhoto(string $categoryId, string $subcategory, string $title = '', string $content= '', string $path = ''): PostModel {
+    if ( $path ) {
+        $file = files()->upload([
+            TAXONOMY => POSTS,
+        ], [
+            NAME => basename($path),
+            TMP_NAME => $path,
+            SIZE => filesize($path),
+            TYPE => mimeType($path),
+        ]);
+        $files = $file->idx;
+    } else {
+        $files = '';
+    }
+    return createPost(
+        categoryId: $categoryId,
+        title: $title,
+        content: $content,
+        files: $files,
+        subcategory: $subcategory
+    );
 }
 
 function createComment(string $categoryId=null): CommentModel {
@@ -225,7 +238,13 @@ function _post_create( string $path = '' ) {
         if ( $category->exists == false ) {
             category()->create([ID => $post['category']]);
         }
-        $created = createPostWithPhoto($post['category'], $post['title'], $post['content'], $post['photo']);
+        $created = createPostWithPhoto(
+            $post['category'],
+            $post['subcategory'] ?? '',
+            $post['title'],
+            $post['content'],
+            $post['photo'] ?? ''
+        );
         if ( $created->hasError ) {
             d("Error: Category: $post[category], " . $created->getError() );
             exit;

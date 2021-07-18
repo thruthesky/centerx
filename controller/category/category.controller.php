@@ -28,7 +28,10 @@ class CategoryController {
 
     /**
      * 하나의 카테고리 정보를 리턴한다.
-     * @note 입력 값은 idx, id, categoryId 중 하나가 들어오면 된다.
+     *
+     * 참고, 입력 값은 idx, id, categoryId 중 하나가 들어오면 된다. 이 값은 카테고리 번호 또는 카테고리 ID 이면 된다.
+     * 참고, idx 에 category id 가 들어와도 된다.
+     *
      * @param $in
      * @return array|string
      */

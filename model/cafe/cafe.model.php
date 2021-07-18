@@ -150,6 +150,7 @@ class CafeModel extends CategoryModel
         'real_estate' => [
             'real_estate',
             'boarding_house',
+            'rent_house',
             'hotel',
         ],
         'travel' => [
@@ -157,7 +158,6 @@ class CafeModel extends CategoryModel
             'hotel',
         ],
         'lifestyle' => [
-            'rent_house',
             'rent_car',
             'im_visa',
             'real_estate',

@@ -1708,6 +1708,8 @@ function postMessagingUrl(int $idx) {
  *  - ids - 콤마로 분리된 여러개의 카테고리 번호, 또는 카테고리 아이디.
  *      예) "apple, 2, cherry"
  *      여러개의 카테고리에서 글을 가져 올 수 있도록 한다.
+ *  - subcategory - 서브 카테고리.
+ *      주의 할 점은, 서브카테고리가 빈 값은 검색하지 않는다. 즉, 서브카테고리가 없는 빈 서브카테고리만 따로 검색하지는 않는다. 그럴 이유가 없기 때문이다.
  *  - searchKey - 검색어
  *  - userIdx - 사용자 번호
  *  - otherUserIdx - 다른 사용자 번호
@@ -1770,7 +1772,7 @@ function parsePostSearchHttpParams(array $in): array|string {
     }
 
     // sub category
-    if (isset($in['subcategory'])) {
+    if (isset($in['subcategory']) && $in['subcategory']) {
         $where .= " AND subcategory=?";
         $params[] = $in['subcategory'];
     }
