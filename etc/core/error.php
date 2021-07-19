@@ -220,7 +220,7 @@ class E {
     public string $end_date_empty = 'error_end_date_empty';
     public string $maximum_advertising_days = 'error_max_advertising_days';
 
-    public string $wrong_banner_code = 'error_wrong_banner_code';
+    public string $wrong_banner_code_or_no_point_setting = 'error_wrong_banner_code_or_no_point_setting';
 
     public string $empty_top_banner_point = 'error_empty_top_banner_point';
     public string $empty_sidebar_banner_point = 'error_empty_sidebar_banner_point';

@@ -189,7 +189,7 @@ class AdvertisementModel extends PostModel
         if (!isset($in[IDX]) || empty($in[IDX])) {
             // create the banner
 
-            if ( !isset($in[COUNTRY_CODE]) || empty($in[COUNTRY_CODE]) ) return $this->error(e()->empty_country_code);
+            if (!isset($in[COUNTRY_CODE]) || empty($in[COUNTRY_CODE])) return $this->error(e()->empty_country_code);
             $in[CATEGORY_ID] = ADVERTISEMENT_CATEGORY;
             $in[ADVERTISEMENT_POINT] = '0';
             $in[POINT_PER_DAY] = '0';
@@ -234,7 +234,7 @@ class AdvertisementModel extends PostModel
         if ($banner->isMine() == false) return $this->error(e()->not_your_post);
 
         // check code input
-//        if (!isset($in[CODE]) || empty($in[CODE])) return $this->error(e()->code_is_empty);
+        // if (!isset($in[CODE]) || empty($in[CODE])) return $this->error(e()->code_is_empty);
 
         // check dates input
         if (!isset($in['beginDate']) || empty($in['beginDate'])) return $this->error(e()->begin_date_empty);
@@ -255,13 +255,19 @@ class AdvertisementModel extends PostModel
         // Save point per day. This will be saved in meta.
         $in[POINT_PER_DAY] = 0;
 
-        $settings = $this->getAdvertisementPointSetting($in);
+        $settings = $this->getAdvertisementPointSetting([COUNTRY_CODE => $banner->countryCode]);
 
-
-        if (isset($settings[ $banner->code ])) {
-            $in[POINT_PER_DAY] = $settings[ $banner->code ];
+        // $banner->code may not be set when editting advertisement.
+        // it can also be set when starting the advertisement.
+        // if user decided to set `code` when starting, it checks also for $in[CODE]
+        $code = $banner->code;
+        if (!$code && isset($in[CODE]) && !empty($in[CODE])) $code = $in[CODE];
+        if (isset($settings[$code])) {
+            $in[POINT_PER_DAY] = $settings[$code];
         } else {
-            return $this->error(e()->wrong_banner_code);
+            // If $settings[$banner->code] resolves to undefined,
+            // it is either the code is actually wrong or there is no point setting set.
+            return $this->error(e()->wrong_banner_code_or_no_point_setting);
         }
 
         // Apply global multiplier if advertisement is for global.
