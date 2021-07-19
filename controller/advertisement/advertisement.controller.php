@@ -31,11 +31,11 @@ class AdvertisementController
      */
     public function loadBanners(array $in): array|string
     {
-        if (!isset($in['cafeDomain']) || empty($in['cafeDomain'])) return e()->empty_domain;
+        if (!isset($in[CAFE_DOMAIN]) || empty($in[CAFE_DOMAIN])) return e()->empty_domain;
 
-        $cafe = cafe(domain: $in['cafeDomain']);
+        $cafe = cafe(domain: $in[CAFE_DOMAIN]);
         if ($cafe->exists == false) {
-            if (!$cafe->isMainCafe()) return e()->cafe_not_exists;
+            if ($cafe->isSubCafe($in[CAFE_DOMAIN])) return e()->cafe_not_exists;
         }
 
         $now = time();

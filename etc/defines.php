@@ -196,6 +196,7 @@ const META_CODE_EXCEPTIONS = [
     'sc', //
     'photoIdx', // 이 키는 meta 로 저장되면 안되고, user()->read() 에서 프로그램적으로 임의로 생성된다.
     'test',
+    FILES, FILE_IDXES,
 ];
 
 

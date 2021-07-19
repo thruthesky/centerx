@@ -110,7 +110,7 @@ class AdvertisementTest
     private function resetBannerPoints($countryCode = '', $top = 0, $sidebar = 0, $square = 0, $line = 0)
     {
 
-        (new AdvertisementPointSettingsModel())->resetPoints(
+        (new AdvertisementPointSettingsModel())->_resetPoints(
             $countryCode,
             $top,
             $sidebar,

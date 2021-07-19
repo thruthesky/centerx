@@ -185,8 +185,11 @@ class AdvertisementModel extends PostModel
     public function edit($in): self
     {
         if (notLoggedIn()) return $this->error(e()->not_logged_in);
+
         if (!isset($in[IDX]) || empty($in[IDX])) {
             // create the banner
+
+            if ( !isset($in[COUNTRY_CODE]) || empty($in[COUNTRY_CODE]) ) return $this->error(e()->empty_country_code);
             $in[CATEGORY_ID] = ADVERTISEMENT_CATEGORY;
             $in[ADVERTISEMENT_POINT] = '0';
             $in[POINT_PER_DAY] = '0';

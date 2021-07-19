@@ -379,7 +379,7 @@ class UserModel extends Entity {
     /**
      * Update user point.
      *
-     * @주의, 이 함수는 내부적으로만 사용되어야 한다. 컨트롤러에 포함하거나 사용자가 직접 자신을 포인트를 수정하게 해서는 안된다.
+     * @주의, 이 함수는 내부적으로만 사용되어야 한다. 컨트롤러에 포함하거나 사용자가 직접 자신을 포인트를 수정하게 해서는 안된다. 그래서 언더바(_)로 시작한다.
      *  특히, user()->update() 호출로는 포인트 업데이트를 못하므로, 이 함수는 DB 에 직접 포인트를 업데이트한다.
      *
      * @attention User cannot update their point by `user()->update()` since it blocks updating user point. So, it

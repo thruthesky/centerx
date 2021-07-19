@@ -18,6 +18,7 @@ class AdminController
         db()->query("TRUNCATE " . post()->getTable());
         db()->query("TRUNCATE " . files()->getTable());
         db()->query("TRUNCATE " . category()->getTable());
+        db()->query("TRUNCATE " . meta()->getTable());
         return ['success' => true];
     }
 

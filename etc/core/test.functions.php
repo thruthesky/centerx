@@ -281,7 +281,9 @@ function _banner_create() {
         if ( $adv->hasError ) return $adv->getError();
         $idxes[] = $adv->idx;
 
-        $re = banner()->start([IDX => $adv->idx]);
+        $re = banner()->start([
+            IDX => $adv->idx, BEGIN_DATE => $banner[BEGIN_DATE], END_DATE => $banner[END_DATE]
+        ]);
         if ( $re->hasError ) return $re->getError();
     }
     return ['idxes' => $idxes ];

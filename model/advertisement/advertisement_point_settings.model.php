@@ -39,7 +39,7 @@ class AdvertisementPointSettingsModel extends Entity
             return $this->error(e()->invalid_value);
         }
 
-        return $this->setPoints($in);
+        return $this->_setPoints($in);
 //
 //        $a = new AdvertisementPointSettingsModel();
 //
@@ -61,7 +61,7 @@ class AdvertisementPointSettingsModel extends Entity
      * @param $in
      * @return $this
      */
-    private function setPoints($in): self {
+    private function _setPoints($in): self {
 
         $a = new AdvertisementPointSettingsModel();
 
@@ -89,9 +89,9 @@ class AdvertisementPointSettingsModel extends Entity
      * @param int $square
      * @param int $line
      */
-    public function resetPoints(string $countryCode = '', int $top = 0, int $sidebar = 0, int $square = 0, int $line = 0)
+    public function _resetPoints(string $countryCode = '', int $top = 0, int $sidebar = 0, int $square = 0, int $line = 0)
     {
-        $this->setPoints([
+        $this->_setPoints([
             COUNTRY_CODE => $countryCode,
             TOP_BANNER => $top,
             SIDEBAR_BANNER => $sidebar,

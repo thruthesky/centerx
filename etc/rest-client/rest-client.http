@@ -129,3 +129,10 @@ https://local.itsuda50.com/?route=point.move&postIdx=3942&point=1&sessionId=1-17
 
 ### 별쏘기. Expect: success
 https://local.itsuda50.com/?route=point.move&postIdx=3942&point=10&sessionId=1-1709d6e3c4f10eac83953ce6ed2ffd43
+
+
+### Load advertisement. without domain. error
+https://main.philov.com/index.php?route=advertisement.loadBanners
+
+### Load advertisement. with domain.
+https://main.philov.com/index.php?route=advertisement.loadBanners&cafeDomain=abc.com

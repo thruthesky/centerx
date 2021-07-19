@@ -36,6 +36,8 @@
  * @property-read string deletePostPoint
  * @property-read string deleteCommentPoint
  *
+ * @property-read string countryCode
+ *
  *
  */
 class CategoryModel extends Entity {

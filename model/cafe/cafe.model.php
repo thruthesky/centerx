@@ -2,6 +2,11 @@
 /**
  * @file category.model.php
  */
+
+
+const CAFE_DOMAIN = 'cafeDomain';
+
+
 /**
  * Class CategoryModel
  * @property-read string $app_name
@@ -182,15 +187,6 @@ class CafeModel extends CategoryModel
     public function __construct(int $idx)
     {
         parent::__construct($idx);
-        if ( $this->isMainCafe() ) {
-            // 메인 사이트(카페)의 경우, wc_categories 에 해당하는 게시판 테이블 레코드가 없다. 그래서, 향후 에러가 나지 않도록, countryCode 를 기본 설정 해 준다.
-            // CafeModel 객체를 초기화 할 때, 각 카페의 경우, 국가 코드가 있지만, 메인 사이트는 없다.
-            // 예를 들어, philov.com 과 같은 경우, 필리핀 전용 도메인으로 countryCode 가 있지만,
-            // sonub.com 의 경우, 전 세계 글로벌 교민 사이트이므로, 특별히 countryCode 가 없다.
-            // 그래서 여기서 초기화를 해 준다.
-
-            $this->updateMemoryData('countryCode', $this->countryCode());
-        }
     }
 
 
@@ -293,8 +289,8 @@ class CafeModel extends CategoryModel
      * main cafe 가 아닌 경우, 해당 카페의 country 코드를 리턴한다.
      * @return string
      */
-    private function countryCode(): string {
-        if ( $this->isMainCafe() ) { // 메인 카페
+    private function countryCode(string $domain): string {
+        if ( $this->isMainCafe($domain) ) { // 메인 카페
             if ( $this->isCountryDomain() ) { // 국가 카페
                 return $this->mainCafeSettings()['countryCode'];
             } else { // 전 세계 카페. 예) sonub.com
@@ -359,19 +355,26 @@ class CafeModel extends CategoryModel
     /**
      * 현재 카페가 메인 카페(루트 사이트)이면 true 를 리턴한다.
      *
+     * 참고, 이 함수에서 도메인을 입력 받지 않고, 현재 접속한 사이트의 도메인 주소를 바탕으로, 카페 메인 사이트인지 아닌지를 판별하면,
+     * Restful Api 로만 사용할 때, Api server url 이 항상 main 으로 고정이 되어져 있다.
+     * 그래서 Restful Api 이 함수는 도메인을 입력  항상 참을 리턴하는 경우가 발생한다.
+     *
+     * 따라서, 항상 도메인을 입력 받도록 해야 한다.
+     *
+     *
      * 주의. 현재 카페 도메인이 category 에 생성되지 않은 경우, $this->id 는 falsy 의 값이다. 그래서 $this->id 로 비교하면 안되고,
      *      그냥 현재 접속 도메인을 가지고 비교를 한다.
      * @return bool
      */
-    public function isMainCafe(string $domain = null): bool {
-        return in_array($domain ?? get_domain(), $this->mainCafeDomains);
+    public function isMainCafe(string $domain): bool {
+        return in_array($domain, $this->mainCafeDomains);
     }
 
     /**
      * Main 카페가 아닌 서브 카페이면 true 를 리턴.
      */
-    public function isSubCafe(): bool {
-        return $this->isMainCafe() === false;
+    public function isSubCafe(string $domain): bool {
+        return $this->isMainCafe($domain) === false;
     }
 
     /**
@@ -381,8 +384,8 @@ class CafeModel extends CategoryModel
      * - 서브 사이트의 경우, category->title (게시판 제목) 또는 2차 도메인.
      * @return string
      */
-    public function name(): string {
-        if ( $this->isMainCafe() ) {
+    public function name(string $domain): string {
+        if ( $this->isMainCafe($domain) ) {
             return $this->mainCafeSettings()['name'];
         }
         if ( $this->title ) return $this->title;
@@ -458,10 +461,10 @@ function cafe(int $idx = 0, string $domain = ''): CafeModel
 
 
     $__cafe = new CafeModel(0);      // 처음, 카페 객체 생성 이 후, 이 코드는 두번 실행되지 않는다.
-    $domain = get_domain();     // 현재 도메인
+    $domain = get_domain();     // 현재 도메인. 주의: Restful Api 에서는 도메인이 항상 메인 카페로 고정됨.
 
     // If it is main cafe, return empty cafe(category) model.
-    if ( $__cafe->isMainCafe() ) return $__cafe; // 현재 도메인이 메인 도메인 중 하라나면, 빈 Cafe 객체를 리턴.
+    if ( $__cafe->isMainCafe($domain) ) return $__cafe; // 현재 도메인이 메인 도메인 중 하라나면, 빈 Cafe 객체를 리턴.
 
     // Or, return cafe category model.
     // 메인 도메인이 아니면, 해당 도메인의 카페를 찾아 리턴. 카페를 찾지 못하면 에러 설정 됨.

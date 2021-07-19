@@ -104,6 +104,8 @@ class MetaModel extends Entity {
     /**
      * Creates multiple metas.
      *
+     * Note, it does not update. If there is existing meta keys, it may produce an error.
+     *
      * @param string $taxonomy
      * @param int $idx
      * @param array $kvs
