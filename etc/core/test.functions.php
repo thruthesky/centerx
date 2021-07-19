@@ -256,3 +256,33 @@ function _post_create( string $path = '' ) {
         }
     }
 }
+
+function _banner_create() {
+    $category = category(ADVERTISEMENT_CATEGORY);
+    if ( $category->exists == false ) {
+        $category->create([ID => ADVERTISEMENT_CATEGORY]);
+    }
+    global $data;
+    include ROOT_DIR . 'etc/res/advertisement/sample.php';
+    $idxes = [];
+    foreach( $data as $banner) {
+        $bannerImage = files()->upload([
+            TAXONOMY => POSTS,
+            CODE => 'banner',
+        ], [
+            NAME => basename($banner['files']['banner']),
+            TMP_NAME => $banner['files']['banner'],
+            SIZE => filesize($banner['files']['banner']),
+            TYPE => mimeType($banner['files']['banner']),
+        ]);
+
+        $banner[FILE_IDXES] = $bannerImage->idx;
+        $adv = advertisement()->edit($banner);
+        if ( $adv->hasError ) return $adv->getError();
+        $idxes[] = $adv->idx;
+
+        $re = banner()->start([IDX => $adv->idx]);
+        if ( $re->hasError ) return $re->getError();
+    }
+    return ['idxes' => $idxes ];
+}

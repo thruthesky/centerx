@@ -94,6 +94,8 @@ const DELETED_AT = 'deletedAt';
 const READ_AT = 'readAt';
 const BEGIN_AT = 'beginAt';
 const END_AT = 'endAt';
+const BEGIN_DATE = 'beginDate';
+const END_DATE = 'endDate';
 const SHORT_DATE = 'shortDate';
 
 const SESSION_ID = 'sessionId';
@@ -148,11 +150,12 @@ define('NEW_COMMENT_ON_MY_POST_OR_COMMENT', 'newCommentUserOption');
 
 define('SUBSCRIPTION', 'subscription');
 
-define('BODY', 'body');
-define('CLICK_ACTION', 'click_action');
-define('IMAGE_URL', 'imageUrl');
-define('SOUND', 'sound');
-define('CHANNEL', 'channel');
+const BODY = 'body';
+const CLICK_ACTION = 'click_action';
+const CLICK_URL = 'clickUrl';
+const IMAGE_URL = 'imageUrl';
+const SOUND = 'sound';
+const CHANNEL = 'channel';
 
 
 const EMAILS = 'emails';

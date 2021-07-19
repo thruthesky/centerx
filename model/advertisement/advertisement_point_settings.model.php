@@ -39,7 +39,7 @@ class AdvertisementPointSettingsModel extends Entity
             return $this->error(e()->invalid_value);
         }
 
-        return $this->_setPoints($in);
+        return $this->setPoints($in);
 //
 //        $a = new AdvertisementPointSettingsModel();
 //
@@ -57,11 +57,11 @@ class AdvertisementPointSettingsModel extends Entity
 
     /**
      * 광고 배너 포인트를 수정한다.
-     * 주의: 이 함수는 관리자 권한 체크를 하지 않는다. 따라서 이 함수를 controller 에서 쓰이지 않도록 해야 한다. 그런 의미로 함수명 앞에 언더바(_)를 붙였다.
+     * 주의: 이 함수는 관리자 권한 체크를 하지 않는다. 따라서 이 함수를 controller 에서 직접 쓰이지 않도록 해야 한다. 그런 의미로 함수명 앞에 언더바(_)를 붙였다.
      * @param $in
      * @return $this
      */
-    public function _setPoints($in): self {
+    private function setPoints($in): self {
 
         $a = new AdvertisementPointSettingsModel();
 
@@ -76,6 +76,30 @@ class AdvertisementPointSettingsModel extends Entity
         if ( isset($in[IDX]) && $in[IDX] ) return (new AdvertisementPointSettingsModel($in[IDX]))->update($in);
         else return $this->create($in);
     }
+
+    /**
+     * Resets banner point.
+     * This is an alias of `setPoint()` and is set to public. So it can be used outside.
+     * But be sure that this will not be called by controllers for security reason.
+     *
+     * 관리자 권한 설정 없이, DB 를 수정해서 곧 바로, 포인트 수정을 한다.
+     * @param string $countryCode
+     * @param int $top
+     * @param int $sidebar
+     * @param int $square
+     * @param int $line
+     */
+    public function resetPoints(string $countryCode = '', int $top = 0, int $sidebar = 0, int $square = 0, int $line = 0)
+    {
+        $this->setPoints([
+            COUNTRY_CODE => $countryCode,
+            TOP_BANNER => $top,
+            SIDEBAR_BANNER => $sidebar,
+            SQUARE_BANNER => $square,
+            LINE_BANNER => $line
+        ]);
+    }
+
 
     public function countryExists(string $countryCode): bool
     {

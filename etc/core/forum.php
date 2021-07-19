@@ -21,6 +21,7 @@
  * @property-read string files
  * @property-read string fileIdxes
  * @property-read int report;
+ * @property-read string code;
  */
 class Forum extends Entity {
 

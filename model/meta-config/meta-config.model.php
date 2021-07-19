@@ -101,6 +101,10 @@ function metaConfig(string $code='', mixed $default_value=null): MetaConfig|int|
 /**
  * Taxonomy 는 metaConfig 로 하되, entity 는 1 로 주어서, 일반 설정이 아닌, 관리자 설정으로 표시한다.
  * 즉, entity 가 1 이면, 관리자 설정인 것이다.
+ *
+ * 주의, 관리자인지는 이 함수 호출 이전에 확인해서, 관리자가 아니면, 퍼미션 에러를 내야 한다.
+ * @todo 관리작 아니면, 리턴하는 객체에 에러를 설정한다.
+ *
  * @return MetaConfig
  */
 function adminSettings(): MetaConfig {

@@ -231,7 +231,7 @@ class AdvertisementModel extends PostModel
         if ($banner->isMine() == false) return $this->error(e()->not_your_post);
 
         // check code input
-        if (!isset($in[CODE]) || empty($in[CODE])) return $this->error(e()->code_is_empty);
+//        if (!isset($in[CODE]) || empty($in[CODE])) return $this->error(e()->code_is_empty);
 
         // check dates input
         if (!isset($in['beginDate']) || empty($in['beginDate'])) return $this->error(e()->begin_date_empty);
@@ -254,8 +254,11 @@ class AdvertisementModel extends PostModel
 
         $settings = $this->getAdvertisementPointSetting($in);
 
-        if (isset($settings[$in[CODE]])) {
-            $in[POINT_PER_DAY] = $settings[$in[CODE]];
+
+        if (isset($settings[ $banner->code ])) {
+            $in[POINT_PER_DAY] = $settings[ $banner->code ];
+        } else {
+            return $this->error(e()->wrong_banner_code);
         }
 
         // Apply global multiplier if advertisement is for global.

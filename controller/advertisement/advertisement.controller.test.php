@@ -66,7 +66,6 @@ class AdvertisementTest
 
     function __construct()
     {
-        d("resetGlobalMulplying");
         $this->resetGlobalMulplying();
     }
 
@@ -111,13 +110,13 @@ class AdvertisementTest
     private function resetBannerPoints($countryCode = '', $top = 0, $sidebar = 0, $square = 0, $line = 0)
     {
 
-        (new AdvertisementPointSettingsModel())->_setPoints([
-            COUNTRY_CODE => $countryCode,
-            TOP_BANNER => $top,
-            SIDEBAR_BANNER => $sidebar,
-            SQUARE_BANNER => $square,
-            LINE_BANNER => $line
-        ]);
+        (new AdvertisementPointSettingsModel())->resetPoints(
+            $countryCode,
+            $top,
+            $sidebar,
+            $square,
+            $line
+        );
     }
 
     private function setMaximumAdvertisementDays($days = 10)
