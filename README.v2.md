@@ -1304,6 +1304,25 @@ isTrue((new AppController())->version(), "App version");
   The banner that is displayed everywhere with or without category.
   When a category has a category banner, then the category banner will be display. or global banner will be displayed.
 
+- All country banner.
+  - User can select all country to post a banner on all the countries if the banner can be displayed
+  by the **default banner** rule.
+  - User can select all country only from the root domain that is not belong to a country like 'sonub.com'.
+  - All country code is `AC`.
+  - Since all country banner is displayed on all countries, it should be expensive than another other country's global banner point.
+  - All country global banner is also applying the global multiplying.
+    This means, when the all country top banner is 10,000 point per day for a category, and the global multiplying is 4, then,
+    All country global top banner is 40,000 per day.
+
+
+- Default banner
+  If a category has no banner for the given banner type, then it will choose an available banner with the follow rule.
+  - First, it will look for a global banner of the same banner type of the same cafe country.
+  - Second, it will look for a banner of the same banner type of same category of all country banner.
+  - Third, it will look for a global banner of same banner type of all country banner.
+  - Forth, it will display the hard coded banner from the PHP source code.
+
+
 - Banners that has longer end dates will appear first.
 
 - Point payment
@@ -1413,19 +1432,19 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
 ### Top banner rotation
 
 - total of 10 global banner can be uploaded.
-- when there is no global banner, default banners will be displayed.
-- when there is only 1 global banner, the global banner will be displayed on left, and default banner will be displayed on right.
+- when there is no top banner (for a category or or site), **default banner** will be displayed.
+- when there is only 1 global banner, the global banner will be displayed on left, and **default banner** will be displayed on right.
 - when there are 2 global banners, they will be displayed on one left side, and the other right side.
 - when there are more than 2 global banners, the will be divided into two group and one group will be displayed on left, and the other group will be displayed on right.
 - If a category has no category banner, then, global banner will be displayed just the way it is displayed as globally.
-  If there no global banner, then default banner will be displayed.
+  If there no available(global) banner, then **default banner** will be displayed.
 - If a category has only one category banner, then the category banner will be display on left side and all the global
   banners will be displayed on right side.
 
 ### Sidebar banner rotation
 
 - all banners will be rotated in one place.
-- when a category has no banner, global banner will be shown.
+- when a category has no sidebar banner, **default banner** will be displayed.
 
 ## Banner management
 

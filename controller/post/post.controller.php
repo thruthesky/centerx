@@ -121,6 +121,9 @@ class PostController {
             $in['params'] = $params;
         }
 
+        // 최소화인 경우, 코멘트를 맨 마지막에서 1개를 가져오게 한다.
+        if ( isset($in['minimize']) && $in['minimize'] ) $in['comments'] = 1;
+
 //        if ( isset($in[IDS]) ) debug_log('---->>> post.controller::search(); in; ', $in);
         $posts = post()->search(object: true, in: $in);
         $res = [];
