@@ -132,7 +132,7 @@ class UserController
      *  - if $in['idx'] has passed, then check if the user of that idx exists.
      *  - if $in['email'] has passed, then check if the user of that email exists.
      *  - if $in['firebaseUid'] has passed, then check if the user of that firebaseUid exists.
-     *  - if $in['idxOrEmail'] has passed, then check if the user of that idx or email exists.
+     *  - if $in['uid'] has passed, then check if the user of that idx or email exists. Then, it checks if firebaseUid exists.
      * @return array|string
      */
     public function get($in)
@@ -143,10 +143,13 @@ class UserController
             $user = user($in['email']);
         } else if (isset($in['firebaseUid'])) {
             $user = user()->findOne(['firebaseUid' => $in['firebaseUid']]);
-        } else if (isset($in['idxOrEmail'])) {
-            $user = user()->by($in['idxOrEmail']);
+        } else if (isset($in['uid'])) {
+            $user = user()->by($in['uid']);
+            if ($user->hasError) {
+                $user = user()->findOne(['firebaseUid' => $in['firebaseUid']]);
+            }
         } else {
-            return e()->user_not_found;
+            return e()->wrong_params;
         }
 
         if (isset($in['full']) && $in['full'] && admin()) {
@@ -291,7 +294,16 @@ class UserController
     }
 
 
-    public function search($in)
+    /**
+     * 사용자 검색
+     *
+     * @param $in
+     *  $in['searchKey'] 에 문자열을 넣으면,
+     *      name, nickname, email, phoneNo 중에서 부분적으로 일치하는 것이 있으면 검색 결과에 포함한다.
+     *      그리고 firebaseUid 와 일치하면, 검색결과에 포함한다.
+     * @return array
+     */
+    public function search(array $in): array
     {
 
         list ($where, $params ) = parseUserSearchHttpParams($in);
@@ -320,7 +332,13 @@ class UserController
         return $res;
     }
 
-    public  function count($in) : array | string {
+    /**
+     * 사용자 카운트
+     * 사용자 검색과 동일한 방식의 쿼리 가능.
+     * @param array $in
+     * @return array
+     */
+    public function count(array $in) : array {
         list ($where, $params ) = parseUserSearchHttpParams($in);
         $count = user()->count(
             where: $where,
@@ -331,6 +349,25 @@ class UserController
 
         return [ 'count' => $count];
     }
+
+
+    /**
+     * 회원 통계 리턴
+     *
+     * - 총 회원 수,
+     * - 남자 회원 수,
+     * - 여자 회원 수
+     * @return array
+     */
+    public function stats(): array {
+        return [
+            'total' => user()->count(),
+            'M' => user()->count(conds: [GENDER => 'M']),
+            'F' => user()->count(conds: [GENDER => 'F']),
+        ];
+    }
+
+
 }
 
 
