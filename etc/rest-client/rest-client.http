@@ -136,3 +136,6 @@ https://main.philov.com/index.php?route=advertisement.loadBanners
 
 ### Load advertisement. with domain.
 https://main.philov.com/index.php?route=advertisement.loadBanners&cafeDomain=abc.com
+
+### User stats
+https://main.philov.com/index.php?route=user.stats
