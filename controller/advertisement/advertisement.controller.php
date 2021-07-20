@@ -44,7 +44,7 @@ class AdvertisementController
         $where = "countryCode=? AND code != '' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
         $params = [$cafe->countryCode];
 
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true);
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 50);
 
         $res = [];
         foreach ($posts as $post) {
