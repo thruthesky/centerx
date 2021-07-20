@@ -172,4 +172,33 @@ $data = [
         CLICK_URL => 'https://s8.philgo.com',
         PRIVATE_CONTENT => 'adv memo',
     ],   
+    // All country
+    [
+        COUNTRY_CODE => 'AC',
+        SUB_CATEGORY => 'job',
+        CODE => LINE_BANNER,
+        BEGIN_DATE => time(),
+        END_DATE => strtotime('+3 days'),
+        'files' => [
+            'banner' => ROOT_DIR . 'etc/res/advertisement/img/l_2.jpg',
+            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
+        ],
+        'title' => "All Country Line 1",
+        'content' => "All Country Line 1",
+        PRIVATE_CONTENT => 'adv memo',
+    ],   
+    [
+        COUNTRY_CODE => 'AC',
+        SUB_CATEGORY => 'job',
+        CODE => SQUARE_BANNER,
+        BEGIN_DATE => time(),
+        END_DATE => strtotime('+3 days'),
+        'files' => [
+            'banner' => ROOT_DIR . 'etc/res/advertisement/img/sq_2.jpg',
+            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
+        ],
+        'title' => "All Country Square 1",
+        'content' => "All Country Square 1",
+        PRIVATE_CONTENT => 'adv memo',
+    ], 
 ];
