@@ -146,7 +146,7 @@ class UserController
         } else if (isset($in['uid'])) {
             $user = user()->by($in['uid']);
             if ($user->hasError) {
-                $user = user()->findOne(['firebaseUid' => $in['firebaseUid']]);
+                $user = user()->findOne(['firebaseUid' => $in['uid']]);
             }
         } else {
             return e()->wrong_params;
