@@ -565,9 +565,6 @@ server {
 - One might do `push token updating` with Ajax login or register.
   But, there might be cases that Ajax will not work such as `login with Kakaotalk, Naver, Apple, Google, or Pass mobile login`
 
-# 데이터베이스
-
-- 새로운 readme.md 파일 참고
 
 
 # Friendly URL
@@ -759,13 +756,6 @@ hook()->add('post-edit-title', function() {
 });
 include widget('post-edit/post-edit-default');
 ```
-
-# Debugging
-
-- debug log file is saved under `var/log/debug.log`.
-
-- You can enable debugging by calling `enableDebugging()` and disable debugging by calling `disableDebugging()`.
-
 
 
 # Post Crud

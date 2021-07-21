@@ -18,7 +18,8 @@ function setLoginAny(): UserModel {
 // Login as admin.
 // Note that this will change admin configuration. So, admin need to reset the admin email on admin page.
 // @attention this function is available only on unit testing.
-if ( defined('UNIT_TEST') || in('test') ) {
+//
+if ( isTesting() || in('test') ) {
     function setLoginAsAdmin(): UserModel {
         $user = createTestUser();
         metaConfig()->set(ADMIN, $user->email);
@@ -287,4 +288,24 @@ function _banner_create() {
         if ( $re->hasError ) return $re->getError();
     }
     return ['idxes' => $idxes ];
+}
+
+function _user_create() {
+    global $data;
+    include ROOT_DIR . 'etc/res/user/sample.php';
+    foreach( $data as $record) {
+        $photo = $record['photo'];
+        $user = user()->register($record);
+        if ( $user->hasError ) return $user->getError();
+        files()->upload([
+            USER_IDX => $user->idx,
+            CODE => PROFILE_PHOTO,
+        ], [
+            NAME => basename($photo),
+            TMP_NAME => $photo,
+            SIZE => filesize($photo),
+            TYPE => mimeType($photo),
+        ]);
+    }
+    return '';
 }

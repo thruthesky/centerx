@@ -66,6 +66,7 @@ class FileModel extends Entity {
         /**
          * taxonomy 와 entity 에 동일한 값이 있으면, 삭제. 기존 사진을 삭제한다. README 참고.
          * code 값이 있으면 사용자 번호가 entity 에 있는 code 를 찾아 파일(들)을 삭제한다.
+         * 주의, 이 때, userIdx 는 반드시, 현재 로그인한 사용자의 idx 와 동일해야한다. 즉, 다른 사람의 파일을 삭제 할 수 없다.
          */
         if ( isset($in['deletePreviousUpload']) && $in['deletePreviousUpload'] == 'Y' ) {
             if ( isset($in['code']) && $in['code'] ) {
@@ -94,7 +95,7 @@ class FileModel extends Entity {
         }
 
         $save = [
-            USER_IDX => login()->idx,
+            USER_IDX => $in[USER_IDX] ?? login()->idx, // 만약, 입력된 userIdx 가 있으면, 그것을 저장. 아니면, 로그인한 사용자의 idx 를 저장.
             PATH => basename($path), // path is the name of the file under `files` folder.
             NAME => $userfile[NAME],
             SIZE => $userfile[SIZE],

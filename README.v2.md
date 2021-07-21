@@ -34,11 +34,19 @@
 - `centerx` 라는 명칭을 완전히 제거.
 - PHP 에서 화면에 직접 렌더링하는 부분은 `view/admin` 빼고는 모두 제거.
   - `live-reload` 등 관련된 사항 재 정립
+  
+
 - `widgets` 폴더 제거
-- 버전 3에서는 오직 백엔드용으로만 사용
+  
+
+- 버전 3에서는 백엔드 용으로 우선 개발 및 사용.
+  - 단, 원한다면, view 에서 직접 사용 할 수 있도록 한다.
   - 모든 자바스크립트, CSS, 위젯 등과 관련된 파일을 삭제.
   - 웹 브라우저 쿠키 관련 코드 삭제
   - 기타 웹 브라우저에 랜더링을 하는 관련된 모든 코드를 제거.
+  - live-reload.js 를 etc/dev/live-reload.js 로 이동하고, live-reload 기능을 view 및 route 에서 쓸 수 있도록 할 것.
+  
+
 - 설정을 config.php 와 view/view-name/view-name.config.php 로 하는데, 번거롭다.
   - 설정 클래스인 config 클래스를 둔다. 이것은 config model 과는 다른 것이다.
   - 기존에는 설정을 const 또는 define 으로 관리를 해서, config.php 에서만 설정하고
@@ -66,6 +74,8 @@
         
       ]
     ]
+    
+- `enableDebugging()`, `disableDebugging()` 함수 삭제.
 
 ## 버전 2
 
@@ -288,6 +298,31 @@ define('DOMAIN_THEMES', [
     특별한 함수를 만들어서, 추천, 조회수 증가, 신고 등을 할 때, 사용자 권한 검사를 비켜서 해야 한다.
 
 
+## 데이터베이스 쿼리
+
+- DB 에 직접 쿼리를 하려면, `MySQLiDatabase` 클래스를 사용하면 된다. 이 클래스는 매 접속마다 객체로 생성되며, 오직 한번만 객체로 만들고
+  `db()` 함수를 통해서, 만들어진 객체를 재 사용한다.
+
+### Inner Join 쿼리
+
+- `Entity` 객체로는 Inner Join 을 할 수 없다. 이 때에는 `db()->rows()` 와 같은 함수를 바로 써야 한다.
+
+예) 다음 예제는 프로필 사진을 업로드한 회원 중에서 최근에 가입한 회원 5명의 정보를 클라이언트로 리턴한다.
+
+```php
+$q = "SELECT user.idx FROM wc_users user, wc_files file WHERE user.idx = file.userIdx AND file.code = 'profilePhoto' ORDER BY user.idx DESC LIMIT 5";
+$rows = db()->rows($q);
+$rets = [];
+foreach(idxes($rows) as $idx) {
+    $rets[] = user($idx)->response();
+}
+return $rets;
+```
+
+이 처럼 Inner Join 뿐만아니라, 원하는 모든 작업을 할 수 있다.
+
+
+
 ## 디버깅, Debugging
 
 - 디버깅은 개발에 있어 매우 중요한 부분이며, 디버깅을 잘 할 수 있는지에 따라, 개발을 잘 할 수 있는지 판가름이 난다.
@@ -305,7 +340,39 @@ https://main.philov.com/index.php?route=user.latestByProfilePhoto
   
 - `debug_log('..', '...')` 함수를 실행하면, `var/log/debug.log` 에 로그가 쌓인다.
   - `$ tail -f var/log/debug.log` 를 통해서 로그를 볼 수 있다.
+
+
+- 참고로, `enableDebugging()` 과 `disableDebugging()` 함수가 있는데, 이 함수는 활용도가 좀 떨어진다. 다음 버전에서 삭제 할 예정이다.
+
+
+- `enableTesting()` 과 `disableTesting()`, 그리고 `isTesting()` 함수가 있는데,
+  - enable 하면, Unit testing 을 한다는 뜻으로 푸시 알림 등과 관련된 코드를 실행하지 않는다.
+    - 푸시 알림을 할 때, 실행 속도가 느리므로, unit testing 을 할 때, 관련 코드를 실행하지 않도록 하는 것이다.
+  - disable 하면, Unit testing 을 하더라도, 푸시 알림 관련 코드를 실행 할 수 있다. 특히, 푸시 알림 관련 코드 자체를 Unit testing 할 때에는
+    diable 해야 한다.
+  - `isTesting()` 은 지금 현재 unit testing 중인지 확인하는 것이다.
   
+- HTTP 입력 변수로 `test` 파라메타가 지정되면, `enableTesting()` 을 한다. 이것은 Unit testing 중에 `HTTP Request` 를 할 때,
+  `HTTP Request` 에서 실행되는 코드를 unit test 하도록 한다.
+  예를 들면, test 코드에서, 글 생성을 하는 테스트를 할 대, `http request` 를 통해서 하는 경우, push 알림을 하면 시간이 걸리므로, push 알림을 하지 않도록 하기 위해서이다.
+
+
+
+
+
+
+
+
+## 코딩 팁, 예제, 샘플 코드
+
+
+- 샘플 코드를 보려면, test 파일을 보면, 큰 도움이 된다. `*.test.php` 파일들을 보면 되는데, `tests` 폴더 및 여러 폴더에 분산되어져 테스트 파일이 저장되어져 있다.
+- `UtilityController::createSamplePosts` 에 보면,
+  - 샘플 글 생성,
+  - 샘플 광고 생성,
+  - 샘플 사용자 생성
+  등의 코드가 있다.
+    특히, 샘플 사용자를 생성 할 때, 사용자의 사진을 지정해서 업로드 할 수 있다.
 
 
 
