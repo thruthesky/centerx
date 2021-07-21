@@ -899,24 +899,48 @@ function isPhpThumb() : bool {
 
 
 /**
- * Gets userIdx from two dimensional array and returns it in an array.
+ * Gets values of a field in array from two dimensional array and returns it.
+ * 2차원 배열에서 하나의 키(필드)의 값을 배열로 모아 리턴한다.
  *
  * Note that, it can collect not only `userIdx` but also any field by by specifying $field.
+ * 예를 들어, 사용자 정보를 추출하는 쿼리를 할 때, 한번에 모든 정보를 다 가져오면 DB 에 무리가 가니까, 아래와 같이 idx 만 먼저 가져 올 수 있다.
  *
- * @param $users
+ * Array (
+ *   [0] => Array
+ *     (
+ *       [idx] => 341404
+ *     )
+ *   [1] => Array
+ *     (
+ *       [idx] => 341403
+ *     )
+ * )
+ *
+ * 위에서, idx 만 모아서, [341404, 341403] 와 같이 리턴 할 수 있게 해 준다.
+ *
+ * @param array $rows
  * @param string $field
  * @return array
  *
  * @example
- *  ids([ ['idx'=>1, ...], [], ... ])
+ *  ids([ ['idx'=>1, ...], [], ... ]) 와 같이 호출
  */
-function ids(array $users, string $field=IDX): array
+function ids(array $rows, string $field=IDX): array
 {
     $ret = [];
-    foreach ($users as $u) {
+    foreach ($rows as $u) {
         $ret[] = $u[$field];
     }
     return $ret;
+}
+
+/**
+ * ids() 를 사용하기 쉽게 한다.
+ * @param array $users
+ * @return array
+ */
+function idxes(array $users): array {
+    return ids($users);
 }
 
 /**
@@ -1846,6 +1870,7 @@ function parsePostSearchHttpParams(array $in): array|string {
  *
  * @param array $in
  *  - searchKey
+ *
  *
  *
  * @return array

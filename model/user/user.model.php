@@ -124,7 +124,7 @@ class UserModel extends Entity {
         $data = $this->getData();
         $data[SESSION_ID] = getSessionId($this->getData());
         $this->setMemoryData($data);
-        $one = files()->findOne([CODE => 'photoUrl', USER_IDX => $this->idx]);
+        $one = files()->findOne([CODE => PROFILE_PHOTO, USER_IDX => $this->idx]);
         if ( $one->exists ) {
             $this->updateMemoryData('photoIdx', $one->idx);
             $this->updateMemoryData('photoUrl', $one->url);

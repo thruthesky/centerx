@@ -7,7 +7,11 @@
  */
 
 class MySQLiDatabase {
-    public mysqli $connection;
+    /**
+     * $connection should not be used for querying to database. This is the reason why it is private.
+     * @var mysqli - mysql connection
+     */
+    private mysqli $connection;
     public string $error = '';
     public bool $displayError = false;
     public bool $displaySql = false;
@@ -21,6 +25,14 @@ class MySQLiDatabase {
         } catch(Exception $e) {
             $this->handleError($e->getCode() . ': ' . $e->getMessage());
         }
+    }
+
+    public function set_charset(string $charset): void {
+        $this->connection->set_charset($charset);
+    }
+
+    public function client_version(): int {
+        return $this->connection->client_version;
     }
 
     private function handleError(string $msg, string $sql='') {
@@ -40,6 +52,10 @@ class MySQLiDatabase {
     /**
      * @deprecated Do not use this method. it is not safe. Use it only for test or debug.
      *
+     * @attention You may use `db()->connection->query()` directly which is also a dangerous choice for security.
+     *
+     * @note You may use `db()->rows()` to get query results.
+     *
      * Performs a query on the database
      *
      * @warning Security warning: SQL injection @see https://www.php.net/manual/en/mysqli.query.php
@@ -51,6 +67,8 @@ class MySQLiDatabase {
      *  Returns false on failure. For successful queries which produce a result set, such as SELECT, SHOW, DESCRIBE or
      *  EXPLAIN, mysqli_query() will return a mysqli_result object. For other successful queries, mysqli_query() will
      *  return true.
+     *
+     * @todo make this method is running only if the user has admin privilege.
      */
     public function query($sql): mixed {
         return $this->connection->query($sql);
@@ -221,10 +239,13 @@ class MySQLiDatabase {
     /**
      * Returns many records
      *
-     * @attention If the result set are more than 1,000 records, you may need to collect only id of the records and get the record of the id separately.
+     * @attention If the result set are more than 1,000 records,
+     *  you should get only idx of the records for performance reason, and get the record of the idx separately.
      * @attention It prevents a common mistake passing array as the second parameter *
      * ```
      * $rows = db()->rows($q, ['value', 1, 2, 3]); // This is error. It must be unpacked (or spread).
+     * $rows = db()->rows($q, 'value', 1, 2, 3 ); // This is the right way to use.
+     * $rows = db()->rows($q, ...['value', 1, 2, 3]); // Or spreading is okay.
      * ```
      *
      * @attention We don't use binary as values. If binary data in $values had delivered, then it must be a mistake.
