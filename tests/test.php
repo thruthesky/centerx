@@ -3,7 +3,7 @@
  * @file test.php
  */
 // Declare to be a unit test.
-const UNIT_TEST = true;
+
 $rootDir = str_replace("/tests", "", __DIR__);
 
 /// For testing, boot will happens once. Without calling controllers/control.php

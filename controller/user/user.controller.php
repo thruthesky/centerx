@@ -333,17 +333,28 @@ class UserController
     }
 
     /**
-     * 회원 사진을 업로드한 사용자 중 최근 사용자를 리턴한다.
+     * 회원 사진을 업로드한 사용자 중 최근에 가입한 사용자를 리턴한다
+     *
+     * 로직,
+     *  - db()->rows() 를 통해서 INNER JOIN 으로 사진을 업로드한 최근 사용자의 idx 를 추출
+     *  - 회원 정보를 리턴.
+     *
+     * 호출 예)
+     *  https://main.philov.com/index.php?route=user.latestByProfilePhoto
      */
     public function latestByProfilePhoto( $in ) {
         $userTable = user()->getTable();
         $fileTable = files()->getTable();
         $profilePhoto = PROFILE_PHOTO;
         $limit = $in['limit'] ?? 5;
-        $q = "SELECT user.idx FROM $userTable user, $fileTable file WHERE user.idx == file.userIdx AND file.code == '$profilePhoto' ORDER BY user.idx DESC LIMIT $limit";
+        $q = "SELECT user.idx FROM $userTable user, $fileTable file WHERE user.idx = file.userIdx AND file.code = '$profilePhoto' ORDER BY user.idx DESC LIMIT $limit";
 
-        db()->rows($q);
-
+        $rows = db()->rows($q);
+        $rets = [];
+        foreach(idxes($rows) as $idx) {
+            $rets[] = user($idx)->response();
+        }
+        return $rets;
     }
 
     /**
