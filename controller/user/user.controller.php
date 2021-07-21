@@ -140,7 +140,7 @@ class UserController
         if (isset($in['idx'])) {
             $user = user($in['idx']);
         } else if (isset($in['email'])) {
-            $user = user($in['email']);
+            $user = user()->findOne([EMAIL => $in['email']]);
         } else if (isset($in['firebaseUid'])) {
             $user = user()->findOne(['firebaseUid' => $in['firebaseUid']]);
         } else if (isset($in['idxOrEmail'])) {
