@@ -444,6 +444,7 @@ function getAppCookie($name) {
 /**
  * 사용자의 세션 ID 를 리턴한다.
  * 비밀번호를 세션 ID 생성에 포함하지 않는다. 즉, 비밀번호를 변경해도 로그인이 풀리지 않는다.
+ * @see README.md
  * @param $profile
  * @return false|string|null
  */
