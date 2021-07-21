@@ -467,7 +467,7 @@ class AdvertisementModel extends PostModel
 
         // endAt is the 0 second of last day.
         $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
-        $params = [ $banner_type, $banner_category];
+        $params = [ $banner_type, $banner_category ];
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
         if ( $posts ) return $posts;
 
@@ -477,16 +477,15 @@ class AdvertisementModel extends PostModel
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
         if ( $posts ) return $posts;
 
-
         // Get banner of same type of same category of all country.
         $where = "code = ? AND subcategory=? AND countryCode='$ac' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
-        $params = [ $banner_type, $banner_category];
+        $params = [ $banner_type, $banner_category ];
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
         if ( $posts ) return $posts;
 
         // Get global banner of same type of all country.
         $where = "code = ? AND subcategory='' AND countryCode='$ac' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
-        $params = [ $banner_type];
+        $params = [ $banner_type ];
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
         if ( $posts ) return $posts;
 

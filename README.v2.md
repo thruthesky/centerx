@@ -1424,6 +1424,8 @@ isTrue((new AppController())->version(), "App version");
   - Forth, it will display the hard coded banner from the PHP source code.
   
   - The logic in the source can go like below as exactly same rule of `default banner`.
+  
+
 ```
 /// Get banner of same type of same category of same country. If non exists, follow default banner rules.
 /// Get global banner of same type of same country. If non exists, then,
