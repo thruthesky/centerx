@@ -163,7 +163,8 @@ class FileModel extends Entity {
 
 
         // short date for the file create time
-        $this->updateMemoryData('shortDate', short_date_time($this->createdAt));
+        // $this->createdAt can be undefined if being run in a test.
+        $this->updateMemoryData('shortDate', short_date_time($this->createdAt ?? 0));
         return $this;
     }
 

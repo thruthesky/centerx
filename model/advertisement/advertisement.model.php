@@ -272,9 +272,11 @@ class AdvertisementModel extends PostModel
 
         // Apply global multiplier if advertisement is for global.
         $globalMultiplier = $this->globalBannerMultiplying();
-        if ($globalMultiplier) {
+        // only execute if $globalMultiplier is greater than 1.
+        // Since multiplying by 1 will return the same value.
+        if ($globalMultiplier > 1) {
             // If SUB_CATEOGRY is not provided or countryCode is "AC" (All Country)
-            if ( (!isset($in[SUB_CATEGORY]) || empty($in[SUB_CATEGORY])) || $banner->countryCode == "AC" ) {
+            if ((!isset($in[SUB_CATEGORY]) || empty($in[SUB_CATEGORY])) || $banner->countryCode == "AC") {
                 $in[POINT_PER_DAY] = $in[POINT_PER_DAY] * $globalMultiplier;
             }
         }
@@ -387,6 +389,77 @@ class AdvertisementModel extends PostModel
         }
 
         return $advertisement->update($in);
+    }
+
+    /**
+     * Returns active banners of the country of the cafe.
+     *
+     * @note, when client-end looks for banners for a cafe, the system should return the banners of root cafe's country banners.
+     *  But right now, it returns the banners of the cafe country. Not the root cafe's country.
+     *
+     * @param array $in - See `parsePostSearchHttpParams()` for detail input.
+     *
+     * @return array|string
+     * - idx
+     * - url
+     * - clickUrl
+     * - bannerUrl
+     * - subcategory
+     * - code
+     * - countryCode
+     *  - title : if code is 'line', it will be included .
+     *
+     * @attention if subcaetgory is empty, it is set to 'global'.
+     * It only returns banners that are active.
+     * - with countryCode
+     * - files
+     * - and time now is either equivalent or between begin and end Date.
+     */
+    public function loadBanners(array $in): array|string
+    {
+        if (!isset($in[CAFE_DOMAIN]) || empty($in[CAFE_DOMAIN])) return e()->empty_domain;
+
+        $cafe = cafe(domain: $in[CAFE_DOMAIN]);
+        if ($cafe->exists == false) {
+            if ($cafe->isSubCafe($in[CAFE_DOMAIN])) return e()->cafe_not_exists;
+        }
+
+        $now = time();
+        $today = today();
+        $limit = $in['limit'] ?? 50;
+
+        // Search banners that has a photo and active.
+        $where = "code != '' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $params = [$cafe->countryCode];
+
+        if (isset($in["AC"]) && $in["AC"]) {
+            $where = $where . "  AND (countryCode=? OR countryCode=?)";
+            $params[] = "AC";
+        } else {
+            $where = $where . " AND countryCode=?";
+        }
+
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+
+        $res = [];
+        foreach ($posts as $post) {
+
+            $data = [
+                'idx' => $post->idx,
+                'url' => $post->relativeUrl,
+                'clickUrl' => $post->clickUrl,
+                'bannerUrl' => $post->fileByCode('banner')->url,
+                'subcategory' => $post->subcategory ? $post->subcategory : 'global',
+                'code' => $post->code,
+                'countryCode' => $post->countryCode,
+            ];
+
+            if ($post->code == LINE_BANNER) $data['title'] = $post->title;
+
+            // $res[] = $data;
+            $res[] = $data;
+        }
+        return $res;
     }
 }
 

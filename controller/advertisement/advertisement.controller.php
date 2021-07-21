@@ -3,71 +3,21 @@
 class AdvertisementController
 {
 
-
-
-
     /**
-     * Returns active banners of the country of the cafe.
-     *
-     * @note, when client-end looks for banners for a cafe, the system should return the banners of root cafe's country banners.
-     *  But right now, it returns the banners of the cafe country. Not the root cafe's country.
-     *
-     * @param array $in - See `parsePostSearchHttpParams()` for detail input.
-     *
-     * @return array|string
-     * - idx
-     * - url
-     * - clickUrl
-     * - bannerUrl
-     * - subcategory
-     * - code
-     * - countryCode
-     *  - title : if code is 'line', it will be included .
-     *
-     * @attention if subcaetgory is empty, it is set to 'global'.
-     * It only returns banners that are active.
-     * - with countryCode
-     * - files
-     * - and time now is either equivalent or between begin and end Date.
+     * returns banners with the current cafe country code only, not including banners with 'all country' country code.
      */
-    public function loadBanners(array $in): array|string
+    public function loadCafeBanners($in): array|string
     {
-        if (!isset($in[CAFE_DOMAIN]) || empty($in[CAFE_DOMAIN])) return e()->empty_domain;
-
-        $cafe = cafe(domain: $in[CAFE_DOMAIN]);
-        if ($cafe->exists == false) {
-            if ($cafe->isSubCafe($in[CAFE_DOMAIN])) return e()->cafe_not_exists;
-        }
-
-        $now = time();
-        $today = today();
-        // Search banners that has a photo and active.
-        // $where = "countryCode=? AND code != '' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
-        // $params = [$cafe->countryCode];
-        $where = "code != '' AND beginAt < $now AND endAt >= $today AND fileIdxes != '' AND (countryCode=? OR countryCode=?)";
-        $params = [$cafe->countryCode, "AC"];
-
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 50);
-
-        $res = [];
-        foreach ($posts as $post) {
-
-            $data = [
-                'idx' => $post->idx,
-                'url' => $post->relativeUrl,
-                'clickUrl' => $post->clickUrl,
-                'bannerUrl' => $post->fileByCode('banner')->url,
-                'subcategory' => $post->subcategory ? $post->subcategory : 'global',
-                'code' => $post->code,
-                'countryCode' => $post->countryCode,
-            ];
-
-            if ($post->code == LINE_BANNER) $data['title'] = $post->title;
-
-            // $res[] = $data;
-            $res[] = $data;
-        }
-        return $res;
+        return advertisement()->loadBanners($in);
+    }
+    
+    /**
+     * returns banners with country code of current cafe and banners with 'all country' country code.
+     */
+    public function loadAllBanners($in): array|string
+    {
+        $in["AC"] = true;
+        return advertisement()->loadBanners($in);
     }
 
     /**
@@ -96,7 +46,7 @@ class AdvertisementController
 
         $banners = advertisement()->search(object: true, in: $in);
         $res = [];
-        foreach ( $banners as $banner ) {
+        foreach ($banners as $banner) {
             $res[] = $banner->response();
         }
         return $res;
@@ -114,9 +64,9 @@ class AdvertisementController
 
         return advertisement($in[IDX])->response();
 
-//        $adv = advertisement($in[IDX]);
-//        $adv->updateMemoryData('status', advertisement()->getStatus($adv));
-//        return $adv->response();
+        //        $adv = advertisement($in[IDX]);
+        //        $adv->updateMemoryData('status', advertisement()->getStatus($adv));
+        //        return $adv->response();
     }
 
 
@@ -176,7 +126,6 @@ class AdvertisementController
     public function stop($in): array | string
     {
         return banner()->stop($in)->response();
-
     }
 
     /**
