@@ -15,7 +15,7 @@ adminSettings()->set(ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING, 2);
 
 ///
 $data = [
-    /// Global top - 2
+    /// Global top PH - 2
     [
         COUNTRY_CODE => 'PH',
         SUB_CATEGORY => '',
@@ -46,7 +46,7 @@ $data = [
         CLICK_URL => 'https://daum.com',
         PRIVATE_CONTENT => 'adv memo',
     ],
-    /// Global square 
+    /// Global square PH - 1
     [
         COUNTRY_CODE => 'PH',
         SUB_CATEGORY => '',
@@ -62,7 +62,7 @@ $data = [
         CLICK_URL => 'https://daum.com',
         PRIVATE_CONTENT => 'adv memo',
     ],
-    // Global line - 2
+    // Global line PH - 2
     [
         COUNTRY_CODE => 'PH',
         SUB_CATEGORY => '',
@@ -93,7 +93,7 @@ $data = [
         CLICK_URL => 'https://daum.com',
         PRIVATE_CONTENT => 'adv memo',
     ],
-    /// QNA Square
+    /// QNA Square PH - 1
     [
         COUNTRY_CODE => 'PH',
         SUB_CATEGORY => 'qna',
@@ -109,7 +109,7 @@ $data = [
         CLICK_URL => 'https://s8.philgo.com',
         PRIVATE_CONTENT => 'adv memo',
     ],
-    /// Qna Line 
+    /// Qna Line PH - 1
     [
         COUNTRY_CODE => 'PH',
         SUB_CATEGORY => 'qna',
@@ -125,7 +125,7 @@ $data = [
         CLICK_URL => 'https://s8.philgo.com',
         PRIVATE_CONTENT => 'adv memo',
     ],
-    /// Discussion Square  
+    /// Discussion Square PH - 1
     [
         COUNTRY_CODE => 'PH',
         SUB_CATEGORY => 'discussion',
@@ -141,7 +141,7 @@ $data = [
         CLICK_URL => 'https://s8.philgo.com',
         PRIVATE_CONTENT => 'adv memo',
     ],
-    // Discussion line - 2
+    // Discussion line PH - 2
     [
         COUNTRY_CODE => 'PH',
         SUB_CATEGORY => 'discussion',
@@ -172,7 +172,7 @@ $data = [
         CLICK_URL => 'https://s8.philgo.com',
         PRIVATE_CONTENT => 'adv memo',
     ],   
-    // All country
+    // All country job - 2
     [
         COUNTRY_CODE => 'AC',
         SUB_CATEGORY => 'job',
