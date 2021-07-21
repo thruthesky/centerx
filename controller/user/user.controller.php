@@ -333,6 +333,20 @@ class UserController
     }
 
     /**
+     * 회원 사진을 업로드한 사용자 중 최근 사용자를 리턴한다.
+     */
+    public function latestByProfilePhoto( $in ) {
+        $userTable = user()->getTable();
+        $fileTable = files()->getTable();
+        $profilePhoto = PROFILE_PHOTO;
+        $limit = $in['limit'] ?? 5;
+        $q = "SELECT user.idx FROM $userTable user, $fileTable file WHERE user.idx == file.userIdx AND file.code == '$profilePhoto' ORDER BY user.idx DESC LIMIT $limit";
+
+        db()->rows($q);
+
+    }
+
+    /**
      * 사용자 카운트
      * 사용자 검색과 동일한 방식의 쿼리 가능.
      * @param array $in
