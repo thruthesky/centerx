@@ -1396,7 +1396,7 @@ isTrue((new AppController())->version(), "App version");
   경고. 사업자등록증이 없거나 사업자등록증과 관계 없는 사업, 불법 광고, 성매매 유사 업종을 광고하는 경우 해당 광고는 즉시 차다며, 당국에 고발조치를 합니다.
   
 
-## Terms & Conditions
+## Terms & Conditions, And Logic
 
 - Category banner.
   The banner that is displayed only under a specific category.
@@ -1417,12 +1417,20 @@ isTrue((new AppController())->version(), "App version");
 
 
 - Default banner
-  If a category has no banner for the given banner type, then it will choose an available banner with the follow rule.
+  If there is no banner for the given banner type, then it will choose an available banner with the following rules.
   - First, it will look for a global banner of the same banner type of the same cafe country.
   - Second, it will look for a banner of the same banner type of same category of all country banner.
   - Third, it will look for a global banner of same banner type of all country banner.
   - Forth, it will display the hard coded banner from the PHP source code.
-
+  
+  - The logic in the source can go like below as exactly same rule of `default banner`.
+```
+/// Get banner of same type of same category of same country. If non exists, follow default banner rules.
+/// Get global banner of same type of same country. If non exists, then,
+/// Get banner of same type of same category of all country. If non exists, then,
+/// Get global banner of same type of all country. If non exists, then,
+/// Get hard coded banner on the source code(or admin settings).
+```
 
 - Banners that has longer end dates will appear first.
 
@@ -1473,13 +1481,29 @@ isTrue((new AppController())->version(), "App version");
       For instance, admin does not want 'qan' category to have banners, then admin can state banner categories in admin page but exception of 'qna' category.
     - "top" global banner will still be displayed on every page and subcategories regardless "banner categoriese" is set or not.
 
-- 관리자는 각 배너 포인트를 0 으로 설정 할 수 있다.
+- Admin can set 0 to banner point. That means, user can upload banner without paying points.
+  관리자는 각 배너 포인트를 0 으로 설정 할 수 있다.
   즉, 사용자는 배너를 무료로 진행 할 수 있는 것이다. 이 때에는 최대 광고 설정 기간을 길게하지 않도록 해야 한다.
 
 - Each banner must be a png or jpg file. that means, GIF animation is not allowed.
 
 - If one banner place has multiple banners to show, then it will rotate the banner by 7 seconds.
 
+- Client app should get banners of each type separately only when it needs.
+  For instance, app should load top banner and 'side-bar' banner on every page
+  since client-app needs to dispaly 'top' & 'side-bar' banner even if the page has no category like, 'main page', 'profile page'.
+  On the other hand, `square` & `line` banners will be displayed only if the page has a category like only forum list(post list) page.
+  So, client-app will request for banners for each category to backend.
+  Client-app must cache in memory (not in local storage), so, with the same category, it will request only one time to backend.
+  - When app boots, it should request 'current country, global cateogry, top banner'
+    and on each category, it should request 'current country, category, top banner',
+    and memory cache it not to request with same 'counry, category, banner type.'
+  
+
+- When advertisement banner is being display(when the user clicked the banner),
+  the post author's information should not be shown, nor the post title, dates, etc.
+  And the banner image must not being shown.
+  So, there must a special design(view page) for advertisement.
 
 ## 광고 기능 코딩 기법 및 로직 설명
 
@@ -1616,18 +1640,6 @@ Line Banner |Category page|Category page|Category only|5 global banners. 30 cate
   It can have many categories separating by comma(,).
   For instance, "qna,discussion,job".
 
-
-## Banner display
-
-- Get all the banners on app booting.
-  - Get minimum data from backend.
-  - Most of case, active banners will be less than 1,000.
-    If there is less than 1,000 banners, then it is a good way to collect all the banners with minimum json data like
-    banner place, image url and click url only.
-    
-- When advertisement banner is being display(when the user clicked the banner), the post author's information should not
-  be shown, nor the post title, dates, etc. And the banner image must not being shown.
-  So, there must a special design(view page) for advertisement.
 
 
 ## Banner image size

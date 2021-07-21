@@ -30,8 +30,11 @@ $cat = request('category.delete', [IDX=>$cat[IDX], SESSION_ID=>$admin->sessionId
 $getCat = request('category.get', [IDX=>$cat[IDX]]);
 isTrue( $getCat == e()->entity_not_found, "Expect: " . e()->entity_not_found);
 
-$getsCat = request('category.gets', ['ids' =>$id]);
-isTrue( count($getsCat) == 0, 'not found after delete ids string');
+$getsCat = request('category.gets', ['ids' => $id ]);
+
+isTrue( count($getsCat) == 1, 'not found after delete ids string');
+isTrue( $getsCat[$id] == e()->entity_not_found, 'category. not found');
 
 $getsCat = request('category.gets', ['ids' =>[$id]]);
-isTrue( count($getsCat) == 0, 'not found after delete ids array');
+isTrue( count($getsCat) == 1, 'not found after delete ids string');
+isTrue( $getsCat[$id] == e()->entity_not_found, 'category. not found');

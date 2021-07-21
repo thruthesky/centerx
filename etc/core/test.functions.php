@@ -19,7 +19,7 @@ function setLoginAny(): UserModel {
 // Note that this will change admin configuration. So, admin need to reset the admin email on admin page.
 // @attention this function is available only on unit testing.
 //
-if ( isTesting() || in('test') ) {
+if ( isLocalhost() || isCli() || isTesting() || in('test') ) {
     function setLoginAsAdmin(): UserModel {
         $user = createTestUser();
         metaConfig()->set(ADMIN, $user->email);

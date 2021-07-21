@@ -17,7 +17,7 @@ function postCRUD() {
         'categoryId' => 'xyzBanana',
         SESSION_ID => $user->sessionId
     ]);
-    isTrue($re == e()->category_not_exists, "Expected::e()->category_not_exists:: " . e()->category_not_exists);
+    isTrue(isError($re, e()->category_not_exists), "Expected::e()->category_not_exists:: " . e()->category_not_exists);
 
 
     $admin = setLoginAsAdmin();

@@ -248,7 +248,14 @@ class Forum extends Entity {
      *  then, unset `beginDate` and `endDate`.
      *
      *
+     * @note, The vue.js client end is submitting data as `$in[beginDate] => 2021-07-21` and `$in[endDate] => 2021-07-22`
+     *  For advertisement, and it uses `dateToTime()` to convert the time to timestamp.
+     *  Then, it will save the timestamp of 0 seconds of the date into each `beginAt` and `endAt`.
+     *
      * @param $in
+     *
+     *
+
      *
      * @example
      * ```

@@ -5,6 +5,15 @@
  */
 const ADVERTISEMENT_POINT = 'advertisementPoint';
 const POINT_PER_DAY = 'pointPerDay';
+const BANNER_TYPE = CODE;
+const BANNER_CATEGORY = SUB_CATEGORY;
+const ALL_COUNTRY_CODE = 'AC';
+const GLOBAL_BANNER_CATEGORY = '';
+
+
+
+
+
 /**
  * Class AdvertisementModel
  * @property-read string $clickUrl
@@ -414,33 +423,82 @@ class AdvertisementModel extends PostModel
      * - with countryCode
      * - files
      * - and time now is either equivalent or between begin and end Date.
+     *
+     * @todo test this method.
      */
     public function loadBanners(array $in): array|string
     {
+        // error check.
         if (!isset($in[CAFE_DOMAIN]) || empty($in[CAFE_DOMAIN])) return e()->empty_domain;
 
+        // Cafe domain is given, but the cafe does not exists.
         $cafe = cafe(domain: $in[CAFE_DOMAIN]);
         if ($cafe->exists == false) {
             if ($cafe->isSubCafe($in[CAFE_DOMAIN])) return e()->cafe_not_exists;
         }
 
+        if ( !isset($in[BANNER_TYPE]) || empty($in[BANNER_TYPE]) ) return e()->empty_banner_type;
+
+
+        return $this->loadBannersOf( $in[BANNER_TYPE], $in[BANNER_CATEGORY] ?? GLOBAL_BANNER_CATEGORY, $cafe->countryCode );
+    }
+
+    /**
+     * Search for active banners following the `default banner rules` in Readme.
+     *
+     *
+     * @from here.
+     * Get banner of same type of same category of same country. If non exists, follow default banner rules.
+     * Get global banner of same type of same country. If non exists, then,
+     * Get banner of same type of same category of all country. If non exists, then,
+     * Get global banner of same type of all country. If non exists, then,
+     * Get hard coded banner on the source code(or admin settings).
+     *
+     * @param string $banner_type
+     */
+    private function loadBannersOf( string $banner_type, string $banner_category, string $countryCode ) {
+
         $now = time();
-        $today = today();
-        $limit = $in['limit'] ?? 50;
+        $today = today(); // 0 second of today.
+        $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.
+        $ac = ALL_COUNTRY_CODE;
 
-        // Search banners that has a photo and active.
-        $where = "code != '' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
-        $params = [$cafe->countryCode];
+        // Get banner of same type of same category of same country.
 
-        if (isset($in["AC"]) && $in["AC"]) {
-            $where = $where . "  AND (countryCode=? OR countryCode=?)";
-            $params[] = "AC";
-        } else {
-            $where = $where . " AND countryCode=?";
-        }
-
+        // endAt is the 0 second of last day.
+        $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $params = [ $banner_type, $banner_category];
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+        if ( $posts ) return $posts;
 
+        // Get global banner of same type of same country.
+        $where = "code = ? AND subcategory='' AND countryCode='$countryCode' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $params = [ $banner_type ];
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+        if ( $posts ) return $posts;
+
+
+        // Get banner of same type of same category of all country.
+        $where = "code = ? AND subcategory=? AND countryCode='$ac' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $params = [ $banner_type, $banner_category];
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+        if ( $posts ) return $posts;
+
+        // Get global banner of same type of all country.
+        $where = "code = ? AND subcategory='' AND countryCode='$ac' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $params = [ $banner_type];
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+        if ( $posts ) return $posts;
+
+        // Get hard coded banner on source code.
+        /// @todo - put some hard coded banner on source code and let it be replaced by admin page.
+
+
+        // return $posts;
+
+    }
+
+    public function responses(array $posts) {
         $res = [];
         foreach ($posts as $post) {
 
@@ -449,14 +507,13 @@ class AdvertisementModel extends PostModel
                 'url' => $post->relativeUrl,
                 'clickUrl' => $post->clickUrl,
                 'bannerUrl' => $post->fileByCode('banner')->url,
-                'subcategory' => $post->subcategory ? $post->subcategory : 'global',
+                'subcategory' => $post->subcategory, // if it's empty, it's global.
                 'code' => $post->code,
-                'countryCode' => $post->countryCode,
+                'countryCode' => $post->countryCode, // it may be all country.
             ];
 
             if ($post->code == LINE_BANNER) $data['title'] = $post->title;
 
-            // $res[] = $data;
             $res[] = $data;
         }
         return $res;

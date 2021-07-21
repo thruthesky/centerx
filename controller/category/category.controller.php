@@ -44,14 +44,19 @@ class CategoryController {
      * 여러 Category id 들을 입력 받아서, 각 카테고리 정보를 연관 배열로 리턴한다.
      *
      * 이 때, 키는 카테고리 아이디, 값은 카테고리 레코드이다.
-     * 만약, 카테고리 레코드를 찾지 못하면, 해당 카테고리 아이디의 값에 에러 문자열이 저장된다.
+     * 만약, 카테고리 레코드를 찾지 못하면, 해당 카테고리 아이디의 값에 에러 문자열이 저장된다. 에러 문자열은 error_entity_not_found 일 가능성이 크다.
      *
      * @note 카테고리 idx 또는 카테고리 id 문자열을 콤마로 분리해서 입력하면 된다.
      *  예) "apple, 2, cherry"
      *
      *
      * @param $in
+     *  - $in['ids'] 는 문자열 또는 배열
+     *      콤마로 분리된 여러개의 카테고리를 가지는 문자열 또는 카테고리 id 를 가지는 배열 일 수 있다.
      * @return array|string
+     *
+     * 에러가 있는 리턴 예)
+     * Array ( [category-crud1626866930] => error_entity_not_found )
      */
     public function gets($in): array|string
     {

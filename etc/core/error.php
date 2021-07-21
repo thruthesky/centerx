@@ -245,6 +245,9 @@ class E {
 
     public string $not_localhost = 'error_not_localhost';
 
+    public string $empty_banner_type = 'error_empty_banner_type';
+
+
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)
     {
@@ -273,9 +276,49 @@ function add_error_string(string $err_code, string $err_message): string {
     return $err_code . '::' . $err_message;
 }
 
-function isError($obj) {
-    return e($obj)->isError;
+/**
+ * Return true if
+ *  1. the input $obj is an error code and $error_code is empty.
+ *  2. the input $obj is an error code and it has same type of error code of the input $error_code.
+ *      - for instance, an error code may have an extra information like `error_category_not_exists---xyzBanana`.
+ *      - When the object is given with `error_category_not_exists---xyzBanana`, and the $error_code is `error_category_not_exists`.
+ *      - Then they are same type of error. it returns true.
+ *
+ * @param $obj
+ * @param $code
+ * @return bool
+ *
+ * @example return true if the input is an error string.
+ * ```
+ * if ( isError($obj) ) { ... error ... }
+ * ```
+ * @example return true if the input object is an error and is the same type of $error_code.
+ *  - The code below shows how to check error code. both of them has different error code, so it returns false.
+ * ```
+ * if ( isError('error_user_not_found', 'error_idx_is_empty') ) { }
+ * else { ... }
+ * ```
+ *
+ * @example return true if the input $obj and $error_code has same type.
+ * ```
+ * isTrue(isError('error_category_not_exists---xyzBanana', e()->category_not_exists), "Expected::e()->category_not_exists:: " . e()->category_not_exists);
+ * ```
+ */
+function isError(mixed $obj, string $error_code = ''): bool {
+
+
+    $_isError = e($obj)->isError;
+    if ( $_isError ) {
+        if ( $error_code == '' ) return $_isError;
+        $arr = explode( ERROR_SEPARATOR, $obj );
+        return $arr[0] == $error_code;
+    } else {
+        return false;
+    }
+
+
 }
+
 function isSuccess($obj) {
     return isError($obj) === false;
 }
