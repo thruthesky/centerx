@@ -27,7 +27,8 @@ class Recommendation extends Entity
     }
 
     public function getNickname():array|String{
-        if(login()->recommendation == null) return '';
+
+        if(login()->recommendation == null || recommendation == '') return e()->recommendation_is_empty;
         $recommendation = [];
         $recommendation = user(login()->recommendation) -> profile();
         debug_log('getNickname:',$recommendation);

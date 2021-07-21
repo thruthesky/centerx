@@ -45,6 +45,7 @@ class E {
     public string $category_exists = 'error_category_exists';
     public string $category_not_exists = 'error_category_not_exists';
 
+    public string $recommendation_is_empty = 'recommendation_is_empty';
 
     public string $response_is_empty = 'error_response_is_empty';
     public string $entity_not_exists = 'error_entity_not_exists';
