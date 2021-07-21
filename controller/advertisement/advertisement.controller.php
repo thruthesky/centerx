@@ -21,6 +21,7 @@ class AdvertisementController
      * - bannerUrl
      * - subcategory
      * - code
+     * - countryCode
      *  - title : if code is 'line', it will be included .
      *
      * @attention if subcaetgory is empty, it is set to 'global'.
@@ -41,13 +42,16 @@ class AdvertisementController
         $now = time();
         $today = today();
         // Search banners that has a photo and active.
-        $where = "countryCode=? AND code != '' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
-        $params = [$cafe->countryCode];
+        // $where = "countryCode=? AND code != '' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        // $params = [$cafe->countryCode];
+        $where = "code != '' AND beginAt < $now AND endAt >= $today AND fileIdxes != '' AND (countryCode=? OR countryCode=?)";
+        $params = [$cafe->countryCode, "AC"];
 
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true);
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 50);
 
         $res = [];
         foreach ($posts as $post) {
+
             $data = [
                 'idx' => $post->idx,
                 'url' => $post->relativeUrl,
@@ -55,10 +59,12 @@ class AdvertisementController
                 'bannerUrl' => $post->fileByCode('banner')->url,
                 'subcategory' => $post->subcategory ? $post->subcategory : 'global',
                 'code' => $post->code,
+                'countryCode' => $post->countryCode,
             ];
 
             if ($post->code == LINE_BANNER) $data['title'] = $post->title;
 
+            // $res[] = $data;
             $res[] = $data;
         }
         return $res;

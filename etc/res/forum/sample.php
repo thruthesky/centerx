@@ -1619,6 +1619,41 @@ WP에 따르면 최근 미국 미네소타주 다코타 카운티에 있는 도�
         'content' => "",
         'comments' => []
     ],
+    [
+        'category' => 'greetings',
+        'photo' => ROOT_DIR . 'etc/res/forum/img/buy4.jpg',
+        'title' => "드디어 가입을 하네요. 모두 반가워요.",
+        'content' => "",
+        'comments' => []
+    ],
+    [
+        'category' => 'greetings',
+        'photo' => ROOT_DIR . 'etc/res/forum/img/buy4.jpg',
+        'title' => "회원 가입 인사는 국적이 필요가 없죠.",
+        'content' => "",
+        'comments' => []
+    ],
+    [
+        'category' => 'greetings',
+        'photo' => ROOT_DIR . 'etc/res/forum/img/buy4.jpg',
+        'title' => "그런데, 너무 썰렁하겠죠?.",
+        'content' => "",
+        'comments' => []
+    ],
+    [
+        'category' => 'greetings',
+        'photo' => ROOT_DIR . 'etc/res/forum/img/buy4.jpg',
+        'title' => "반갑습니다. 미국 몬트리오에요.",
+        'content' => "",
+        'comments' => []
+    ],
+    [
+        'category' => 'greetings',
+        'photo' => ROOT_DIR . 'etc/res/forum/img/buy4.jpg',
+        'title' => "저는 창원에서 왔어요. 지금은 베트남이구요.",
+        'content' => "",
+        'comments' => []
+    ],
 //
 //    [
 //        'category' => 'qna',
