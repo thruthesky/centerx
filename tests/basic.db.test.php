@@ -22,7 +22,7 @@ function connectionTest() {
 
     $conn = new MySQLiDatabase(DB_HOST, DB_NAME, DB_USER, DB_PASS);
     isTrue( $conn->error == '', "connection ok");
-    isTrue( $conn->connection->client_version > 0, "client_version: {$conn->connection->client_version}");
+    isTrue( $conn->client_version() > 0, "client_version: " . $conn->client_version());
 }
 
 function insertTest() {

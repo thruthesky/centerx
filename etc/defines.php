@@ -101,6 +101,7 @@ const SHORT_DATE = 'shortDate';
 const SESSION_ID = 'sessionId';
 const NICKNAME = 'nickname';
 const PHOTO_URL = 'photoUrl';
+const PROFILE_PHOTO = 'profilePhoto';
 const PROFILE_PHOTO_URL = PHOTO_URL;
 
 const TITLE = 'title';

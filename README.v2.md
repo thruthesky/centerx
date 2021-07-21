@@ -288,6 +288,27 @@ define('DOMAIN_THEMES', [
     특별한 함수를 만들어서, 추천, 조회수 증가, 신고 등을 할 때, 사용자 권한 검사를 비켜서 해야 한다.
 
 
+## 디버깅, Debugging
+
+- 디버깅은 개발에 있어 매우 중요한 부분이며, 디버깅을 잘 할 수 있는지에 따라, 개발을 잘 할 수 있는지 판가름이 난다.
+
+### 디버깅 테크닉
+
+- 웹브라우저로 라우트에 직접 접속하여 결과 확인하기
+예) 아래의 주소를 복사해서 크롬에 직접 접속한다.
+```http request
+https://main.philov.com/index.php?route=user.latestByProfilePhoto
+```
+
+- PhpStorm 에서 http request 를 직접 할 수 있다. 기본적으로 루트 폴더에 http-request.http 파일에 생성을 하는데,
+  - `etc/rest-client/rest-client.http` 파일에 PhpStorm 에서 http request 할 수 있는 쿼리를 모아 놓았다.
+  
+- `debug_log('..', '...')` 함수를 실행하면, `var/log/debug.log` 에 로그가 쌓인다.
+  - `$ tail -f var/log/debug.log` 를 통해서 로그를 볼 수 있다.
+  
+
+
+
 # 폴더구조 (Folder Structure)
 
 - `etc` - For etc files.
@@ -1627,24 +1648,24 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 ### 사용자 사진, 프로필 사진
 
 - 사용자가 프로필 사진을 올릴 때,
-  `file.userIdx` 에 회원 번호, `file.code` 에 `photoUrl` 이라고 입력하면, 해당 사진은 그 사용자의 프로필 사진로 저장된다.
+  `file.userIdx` 에 회원 번호, `file.code` 에 `profilePhoto` 이라고 입력하면, 해당 사진은 그 사용자의 프로필 사진로 저장된다.
   이 때, `file.taxonomy` 와 `file.entity` 의 값은 무시된다. 즉 아무 값이나 들어가도 상관 없다.
   
-  주의: 1.0.x 에서는 `file.code` 가 아닌 `file.taxonomy` 에 `photoUrl` 이라고 저장했다.
-  회원 사진을 사진을 업로드 할 때나 변경 할 때, `file.code` 값이 `photoUrl` 인 것을 사용하면 된다.
+
+  회원 사진을 사진을 업로드 할 때나 변경 할 때, `file.code` 값이 `profilePhoto` 인 것을 사용하면 된다.
 
   회원 정보를 클라이언트로 전달 할 때, `photoIdx` 에 그 `file.idx` 가 전달된다.
-  사용자 프로필 사진을 삭제할 때, `file.code = 'photoUrl' AND file.userIdx='사용자번호'` 조건에 맞는 사진을 삭제 할 수 있다.
+  사용자 프로필 사진을 삭제할 때, `file.code = 'profilePhoto' AND file.userIdx='사용자번호'` 조건에 맞는 사진을 삭제 할 수 있다.
   물론 `file.idx=photoIdx` 인 것을 삭제해도 된다.
 
-- `users.photoUrl` 은 사용자 테이블에 저장된다.
-  참고, 버전 1.x 에서는 meta 에 저장되었다.
-  주의, 사용자가 프로필 사진을 업로드하면 그 사진이 업로드 되고, 프로필 사진 정보가 `files` 테이블에 기록된다.
-  이 때, `users.photoUrl` 의 값은 무시된다.
+- 참고로, 사용자가 프로필 사진을 업로드하면 그 사진은 서버에 저장되고, wc_files 테이블에 레코드가 생성된다.
+  이 때, `wc_users` 테이블의 `photoUrl` 필드 값은 무시된다.
   즉, 프로필 사진을 업로드했으면, `users.photoUrl` 은 무시되어야 하는 것이다.
-  그러면 이 `users.photoUrl` 은 어떨때 사용될까?
-  예를 들어 카카오톡 로그인을 하는 경우, 카카오톡 프로필 사진을 `users.photoUrl` 에 저장하는 것이다.
+  이 `users.photoUrl` 소셜 로그인(예: 카카오톡 로그인)을 하는 경우, 카카오톡 프로필 사진을 `wc_users.photoUrl` 에 저장하는 것이다.
   참고로, 카톡 프로필 사진을 https 로 가져올 수 있다.
+  카카오톡 뿐만아니라, 구글 등 여러 소셜 로그인을 할 때, 그 기본 사진을 `wc_users.photoUrl` 에 저장하고,
+  그 후 해당 사용자가 프로필 사진을 업로드하면, wc_files 에 저장하고, 더 이상 `wc_users.photoUrl` 은 사용하지 않는 것이다.
+  
   
 
 
@@ -1732,7 +1753,7 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
 
 
 - taxonomy, entity 는 예를 들어, posts taxonomy 의 어떤 글 번호에 연결이 되었는지 또는 users taxonomy 의 어떤 사용자와 연결이 되었는지 나타낸다.
-- code 는 파일의 코드 값으로 예를 들어, taxonomy=users AND entity=사용자번호 AND code=profilePhoto 와 같이 업로드된 파일의 특성을 나타낼 때 사용 할 수 있다.
+- code 는 파일의 코드 값으로 예를 들어, taxonomy=users AND entity=사용자번호 AND code=... 와 같이 업로드된 파일의 특성을 나타낼 때 사용 할 수 있다.
 
 - 파일이 꼭 게시판에 등록 될 필요는 없다.
   - taxonomy, entity 만 잘 활용해서 하면 된다.

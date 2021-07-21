@@ -14,7 +14,7 @@ $__db = new MySQLiDatabase(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 /**
  * Set charset.
  */
-db()->connection->set_charset("utf8mb4");
+db()->set_charset("utf8mb4");
 
 
 /**
