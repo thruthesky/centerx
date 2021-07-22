@@ -53,7 +53,7 @@ $at->deleteAdvertisement();
 
 //
 $at->globalCategoryBannerPoint();
-$at->AllCountryBannerPoint();
+$at->allCountryBannerPoint();
 
 //
 $at->loadCafeCountryBanners();
@@ -1102,7 +1102,7 @@ class AdvertisementTest
     }
 
 
-    function AllCountryBannerPoint()
+    function allCountryBannerPoint()
     {
 
         $cafeCountryCode = "PH";
