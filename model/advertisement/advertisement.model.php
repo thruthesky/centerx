@@ -497,7 +497,7 @@ class AdvertisementModel extends PostModel
             $posts = array_merge($posts, $this->hardCodedBanners($banner_type));
             return $posts;
         }
-        return $this->hardCodedBanners($banner_type);
+        return e()->wrong_banner_type;
     }
 
     private function categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode) {

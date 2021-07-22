@@ -246,6 +246,7 @@ class E {
     public string $not_localhost = 'error_not_localhost';
 
     public string $empty_banner_type = 'error_empty_banner_type';
+    public string $wrong_banner_type = 'error_wrong_banner_type';
 
 
     public bool $isError = false;

@@ -297,6 +297,9 @@ class AdvertisementTest
         $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com', CODE => '']);
         isTrue($re == e()->empty_banner_type, "Expect: error, no domain when fetching active banners.");
 
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com', CODE => 'wrong']);
+        isTrue($re == e()->wrong_banner_type, "Expect: error, wrong banner type is given.");
+
         $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com', CODE => TOP_BANNER]);
         isTrue(isError($re) == false, "Expect: success.");
     }
