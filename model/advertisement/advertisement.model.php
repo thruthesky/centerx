@@ -463,7 +463,6 @@ class AdvertisementModel extends PostModel
      * @param string $banner_type
      */
     private function loadBannersOf( string $banner_type, string $banner_category, string $countryCode ) {
-
         if ( $banner_type == SIDEBAR_BANNER || $banner_type == LINE_BANNER ) {
             $posts = $this->categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode);
             if ( $posts ) return $posts;
@@ -498,14 +497,7 @@ class AdvertisementModel extends PostModel
             $posts = array_merge($posts, $this->hardCodedBanners($banner_type));
             return $posts;
         }
-
-
-        // Get hard coded banner on source code.
-        /// @todo - put some hard coded banner on source code and let it be replaced by admin page.
-        return [];
-
-        // return $posts;
-
+        return $this->hardCodedBanners($banner_type);
     }
 
     private function categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode) {
@@ -519,9 +511,6 @@ class AdvertisementModel extends PostModel
         $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
         $params = [ $banner_type, $banner_category ];
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
-//        if ( $banner_type == TOP_BANNER && count($posts) >= 2 ) return $posts;
-//        else if ( $banner_type == SQUARE_BANNER && count($posts) >= 3 ) return $posts;
-//        else
         return $posts;
     }
 
