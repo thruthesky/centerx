@@ -447,47 +447,58 @@ class AdvertisementModel extends PostModel
      * Search for active banners following the `default banner rules` in Readme.
      *
      *
-     * @from here.
+     * @logic
      * Get banner of same type of same category of same country. If non exists, follow default banner rules.
      * Get global banner of same type of same country. If non exists, then,
      * Get banner of same type of same category of all country. If non exists, then,
      * Get global banner of same type of all country. If non exists, then,
      * Get hard coded banner on the source code(or admin settings).
      *
+     * Top banner must return at least 2 banners.
+     * Sidebar banner must return at least 1 banner.
+     * Square banner must return minimum of 4 banners. (this may be changed depending on the design)
+     * Line banner must return at least 1 banner.
+     *
+     *
      * @param string $banner_type
      */
     private function loadBannersOf( string $banner_type, string $banner_category, string $countryCode ) {
 
-        $now = time();
-        $today = today(); // 0 second of today.
-        $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.
-        $ac = ALL_COUNTRY_CODE;
+        if ( $banner_type == SIDEBAR_BANNER || $banner_type == LINE_BANNER ) {
+            $posts = $this->categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode);
+            if ( $posts ) return $posts;
+            $posts = $this->globalBannersOfSameCountry($banner_type, $countryCode);
+            if ( $posts ) return $posts;
+            $posts = $this->categoryBannersOfAllCountry($banner_type, $banner_category);
+            if ( $posts ) return $posts;
+            $posts = $this->globalBannersOfAllCountry($banner_type);
+            if ( $posts ) return $posts;
+            $posts = $this->hardCodedBanners($banner_type);
+            return $posts;
+        } else if ( $banner_type == TOP_BANNER ) {
+            $posts = $this->categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode);
+            if ( count($posts) >= 2 ) return $posts;
+            $posts = array_merge($posts, $this->globalBannersOfSameCountry($banner_type, $countryCode));
+            if ( count($posts) >= 2 ) return $posts;
+            $posts = array_merge($posts, $this->categoryBannersOfAllCountry($banner_type, $banner_category));
+            if ( count($posts) >= 2 ) return $posts;
+            $posts = array_merge($posts, $this->globalBannersOfAllCountry($banner_type));
+            if ( count($posts) >= 2 ) return $posts;
+            $posts = array_merge($posts, $this->hardCodedBanners($banner_type));
+            return $posts;
+        } else if ( $banner_type == SQUARE_BANNER ) {
+            $posts = $this->categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode);
+            if ( count($posts) >= 4 ) return $posts;
+            $posts = array_merge($posts, $this->globalBannersOfSameCountry($banner_type, $countryCode));
+            if ( count($posts) >= 4 ) return $posts;
+            $posts = array_merge($posts, $this->categoryBannersOfAllCountry($banner_type, $banner_category));
+            if ( count($posts) >= 4 ) return $posts;
+            $posts = array_merge($posts, $this->globalBannersOfAllCountry($banner_type));
+            if ( count($posts) >= 4 ) return $posts;
+            $posts = array_merge($posts, $this->hardCodedBanners($banner_type));
+            return $posts;
+        }
 
-        // Get banner of same type of same category of same country.
-
-        // endAt is the 0 second of last day.
-        $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
-        $params = [ $banner_type, $banner_category ];
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
-        if ( $posts ) return $posts;
-
-        // Get global banner of same type of same country.
-        $where = "code = ? AND subcategory='' AND countryCode='$countryCode' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
-        $params = [ $banner_type ];
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
-        if ( $posts ) return $posts;
-
-        // Get banner of same type of same category of all country.
-        $where = "code = ? AND subcategory=? AND countryCode='$ac' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
-        $params = [ $banner_type, $banner_category ];
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
-        if ( $posts ) return $posts;
-
-        // Get global banner of same type of all country.
-        $where = "code = ? AND subcategory='' AND countryCode='$ac' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
-        $params = [ $banner_type ];
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
-        if ( $posts ) return $posts;
 
         // Get hard coded banner on source code.
         /// @todo - put some hard coded banner on source code and let it be replaced by admin page.
@@ -495,6 +506,72 @@ class AdvertisementModel extends PostModel
 
         // return $posts;
 
+    }
+
+    private function categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode) {
+
+        $now = time();
+        $today = today(); // 0 second of today.
+        $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.
+        // Get banner of same type of same category of same country.
+
+        // endAt is the 0 second of last day.
+        $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $params = [ $banner_type, $banner_category ];
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+//        if ( $banner_type == TOP_BANNER && count($posts) >= 2 ) return $posts;
+//        else if ( $banner_type == SQUARE_BANNER && count($posts) >= 3 ) return $posts;
+//        else
+        return $posts;
+    }
+
+    private function globalBannersOfSameCountry($banner_type, $countryCode) {
+
+        $now = time();
+        $today = today(); // 0 second of today.
+        $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.
+
+
+        // Get global banner of same type of same country.
+        $where = "code = ? AND subcategory='' AND countryCode='$countryCode' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $params = [ $banner_type ];
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+         return $posts;
+    }
+
+    private function categoryBannersOfAllCountry($banner_type, $banner_category) {
+        $now = time();
+        $today = today(); // 0 second of today.
+        $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.
+        $ac = ALL_COUNTRY_CODE;
+
+        // Get banner of same type of same category of all country.
+        $where = "code = ? AND subcategory=? AND countryCode='$ac' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $params = [ $banner_type, $banner_category ];
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+        return $posts;
+    }
+
+    private function globalBannersOfAllCountry($banner_type) {
+        $now = time();
+        $today = today(); // 0 second of today.
+        $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.
+        $ac = ALL_COUNTRY_CODE;
+
+        // Get global banner of same type of all country.
+        $where = "code = ? AND subcategory='' AND countryCode='$ac' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $params = [ $banner_type ];
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+        return $posts;
+    }
+
+    /**
+     * @param $banner_type
+     * @return array
+     * @todo put hardcoded banners.
+     */
+    private function hardCodedBanners($banner_type) {
+        return [];
     }
 
     public function responses(array $posts) {
