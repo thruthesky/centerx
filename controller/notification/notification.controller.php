@@ -140,6 +140,9 @@ class NotificationController {
     function isSubscribedToTopic($in): array | string
     {
         if (notLoggedIn()) return [ $in[TOPIC] => "N"];
+        if (login()->v($in[TOPIC] ) == null && $in['subscribedByDefault'] == true) {
+            pushNotification()->subscribeTopic($in);
+        }
         return [ $in[TOPIC] => login()->v($in[TOPIC] ) ?? "N"];
     }
 
