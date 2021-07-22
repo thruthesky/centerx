@@ -3,14 +3,6 @@
 class AdvertisementController
 {
 
-//    /**
-//     * returns banners with the current cafe country code only, not including banners with 'all country' country code.
-//     */
-//    public function loadCafeBanners($in): array|string
-//    {
-//        return advertisement()->loadBanners($in);
-//    }
-//
     /**
      * returns banners with country code of current cafe and banners with 'all country' country code.
      */

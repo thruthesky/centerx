@@ -440,7 +440,7 @@ class AdvertisementModel extends PostModel
         if ( !isset($in[BANNER_TYPE]) || empty($in[BANNER_TYPE]) ) return e()->empty_banner_type;
 
 
-        return $this->loadBannersOf( $in[BANNER_TYPE], $in[BANNER_CATEGORY] ?? GLOBAL_BANNER_CATEGORY, $cafe->countryCode );
+        return $this->loadBannersOf( $in[BANNER_TYPE], $in[BANNER_CATEGORY] ?? GLOBAL_BANNER_CATEGORY, $cafe->countryCode ?? ALL_COUNTRY_CODE );
     }
 
     /**
@@ -491,7 +491,7 @@ class AdvertisementModel extends PostModel
 
         // Get hard coded banner on source code.
         /// @todo - put some hard coded banner on source code and let it be replaced by admin page.
-
+        return [];
 
         // return $posts;
 
