@@ -121,7 +121,7 @@ class AdvertisementTest
         );
     }
 
-    private function setMaximumAdvertisementDays($days = 10)
+    private function resetMaximumAdvertisementDays($days = 10)
     {
         adminSettings()->set(MAXIMUM_ADVERTISING_DAYS, $days);
     }
@@ -129,6 +129,11 @@ class AdvertisementTest
     private function resetGlobalMulplying($globalMultiplying = 0)
     {
         adminSettings()->set(ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING, $globalMultiplying);
+    }
+
+    private function resetAdvertisementCategories($categories = '')
+    {
+        adminSettings()->set(ADVERTISEMENT_CATEGORIES, $categories);
     }
 
     // 배너 생성 테스트
@@ -247,7 +252,7 @@ class AdvertisementTest
         registerAndLogin(1000000);
 
         // 광고 기간을 3일로 했는데, 5일 광고하려 하면, 에러.
-        $this->setMaximumAdvertisementDays(3);
+        $this->resetMaximumAdvertisementDays(3);
         $max = advertisement()->maximumAdvertisementDays();
         $re = $this->createAndStartAdvertisement([
             COUNTRY_CODE => "SS",
@@ -273,8 +278,7 @@ class AdvertisementTest
             COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$days days")
         ]);
         isTrue($re[IDX], "Expect: Success, adv days does not exceed maximum allowed days.");
-
-        $this->setMaximumAdvertisementDays(0);
+        $this->resetMaximumAdvertisementDays(0);
     }
 
     function domainEmpty()
@@ -290,7 +294,7 @@ class AdvertisementTest
     {
         registerAndLogin(1000000);
         // 광고 가능 기간 100 일로 설정.
-        $this->setMaximumAdvertisementDays(100);
+        $this->resetMaximumAdvertisementDays(100);
 
         // Advertisement begin date same as now, considered as active.
         $re = $this->createAndStartAdvertisement([
@@ -761,6 +765,8 @@ class AdvertisementTest
         isTrue($re['categoryArray'] == $categoryArray, "Expect: Categories is set.");
         isTrue($re[ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING] == $globalMultiplying, "Expect: global banner multiplier is set.");
 
+        $this->resetMaximumAdvertisementDays(0);
+        $this->resetAdvertisementCategories();
         $this->resetGlobalMulplying();
     }
 
@@ -812,6 +818,8 @@ class AdvertisementTest
         isTrue($defaultPointSetting[SIDEBAR_BANNER] == $sidebar, "Expect: Top banner point is set to $sidebar");
         isTrue($defaultPointSetting[SQUARE_BANNER] == $square, "Expect: Top banner point is set to $square");
         isTrue($defaultPointSetting[LINE_BANNER] == $line, "Expect: Top banner point is set to $line");
+
+        $this->resetBannerPoints();
     }
 
     function pointSettingDelete()
@@ -860,14 +868,7 @@ class AdvertisementTest
         $admin = setLoginAsAdmin();
         $countryCode = "PH";
 
-        request('advertisement.setBannerPoint', [
-            COUNTRY_CODE => $countryCode,
-            TOP_BANNER => 1000,
-            SIDEBAR_BANNER => 2000,
-            SQUARE_BANNER => 3000,
-            LINE_BANNER => 4000,
-            SESSION_ID => $admin->sessionId
-        ]);
+        $this->resetBannerPoints($countryCode, 1000, 2000, 3000, 4000);
 
         $settings = request('advertisement.settings');
         $countryPointSetting = $settings['point'][$countryCode];
@@ -894,14 +895,7 @@ class AdvertisementTest
         isTrue(login()->getPoint() == $expectedPoint, "Expect: user points == $expectedPoint.");
 
         /// update point setting for same country code.
-        request('advertisement.setBannerPoint', [
-            COUNTRY_CODE => $countryCode,
-            TOP_BANNER => 3000,
-            SIDEBAR_BANNER => 3500,
-            SQUARE_BANNER => 4500,
-            LINE_BANNER => 5500,
-            SESSION_ID => $admin->sessionId
-        ]);
+        $this->resetBannerPoints($countryCode, 3000, 3500, 4500, 5500);
 
         $refundPoint = $bannerPoint * 2;
         $expectedPoint += $refundPoint;
@@ -1041,7 +1035,8 @@ class AdvertisementTest
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv2[IDX]]);
     }
 
-    function loadBanners() {
+    function loadBanners()
+    {
         setLogout();
 
         registerAndLogin();
