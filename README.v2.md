@@ -1507,6 +1507,12 @@ isTrue((new AppController())->version(), "App version");
   And the banner image must not being shown.
   So, there must a special design(view page) for advertisement.
 
+- When client request banners to server, the server must return with the minimum number of banners like below.
+     * Top banner must return at least 2 banners.
+     * Sidebar banner must return at least 1 banner.
+     * Square banner must return minimum of 4 banners. (this may be changed depending on the design)
+     * Line banner must return at least 1 banner.
+
 ## 광고 기능 코딩 기법 및 로직 설명
 
 - 광고 게시판 아이디는 반드시 `ADVERTISEMENT_CATEOGRY` 에 있는 것을 사용한다.
@@ -1547,10 +1553,10 @@ For instance, "Top banner is displayed on Top. And displayed always on Desktop. 
 
 Banner Type|Place on Desktop|Place on Mobile|Class|Limit
 ------|-----|-------|------|-----
-Top Banner|Top|Top|Global & Category|10 global banners. 2 category banners.
-Sidebar Banner|Sidebar|Main|Global & Category|4 global banners. 2 category banners.
-Square Banner|Category page|Category page|Category only|5 global banners. 30 category banners.
-Line Banner |Category page|Category page|Category only|5 global banners. 30 category banners.
+Top Banner|Top|Top|Global & Category|10 global banners. 2 banners per each category.
+Sidebar Banner|Sidebar|Main|Global & Category|4 global banners. 2 banners per each category.
+Square Banner|Category page|Category page|Category only|5 global banners. 30 banners per each category.
+Line Banner |Category page|Category page|Category only|5 global banners. 30 banners per each category.
 
 * Class\
   If the banner type has `global & category` class, global banner will take place when there is no category banner for that category.

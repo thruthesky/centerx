@@ -14,60 +14,53 @@ setLogout();
 enableTesting();
 $at = new AdvertisementTest();
 
-$at->createBanner();
-$at->_0_point_advertisement();
+
+//
 $at->lackOfPoint();
 $at->beginDateEmpty();
 $at->endDateEmpty();
 $at->wrongCode();
-$at->maximumAdvertisementDays();
-$at->domainEmpty();
+$at->loadBanners();
 
+//
 $at->statusCheck();
+$at->createBanner();
+$at->zero_point_advertisement();
 
+//
 $at->startDeduction();
-
-$at->startWithPHCountryDeduction();
-
-$at->stopNoRefund();
-$at->stopOnPastOrExpiredBannerNoRefund();
-// $at->stopOnPastBanner();
-
+$at->startWithCountryDeduction();
 $at->stopWithDeductedRefund();
-
-$at->stopWithPHCountryAndDeductedRefund();
-
+$at->stopWithCountryAndDeductedRefund();
 $at->stopFullRefund();
+$at->stopWithCountryFullRefund();
+$at->stopNoRefund();
+$at->stopOnPastOrExpiredBanner();
 
-$at->stopWithUSCountryFullRefund();
-
-$at->errorDeleteActiveAdvertisement();
-$at->deleteAdvertisement();
-
-$at->startStopChangeDatesAndCountry();
-
-$at->loadActiveBannersByCountryCode();
-
+//
 $at->settings();
 $at->pointSettings();
 $at->pointSettingDelete();
+$at->maximumAdvertisementDays();
+$at->stopAfterPointSettingChanged();
 
-$at->refundAfterPointSettingChanged();
+//
+$at->startStopChangeDatesAndCountry();
 
-$at->globalMultiplier();
+//
+$at->errorDeleteActiveAdvertisement();
+$at->deleteAdvertisement();
 
-$at->AllCountryBanners();
-$at->AllCountryBannerPoint();
+//
+$at->globalCategoryBannerPoint();
+$at->allCountryBannerPoint();
+
+//
+$at->loadCafeCountryBanners();
+$at->loadAllCountryBanners();
 
 class AdvertisementTest
 {
-
-    //    private function loginSetPoint($point): UserModel
-    //    {
-    //        $user = setLoginAsAdmin();
-    //        $user->_setPoint($point);
-    //        return $user;
-    //    }
 
     function __construct()
     {
@@ -127,7 +120,7 @@ class AdvertisementTest
         );
     }
 
-    private function setMaximumAdvertisementDays($days = 10)
+    private function resetMaximumAdvertisementDays($days = 10)
     {
         adminSettings()->set(MAXIMUM_ADVERTISING_DAYS, $days);
     }
@@ -135,6 +128,11 @@ class AdvertisementTest
     private function resetGlobalMulplying($globalMultiplying = 0)
     {
         adminSettings()->set(ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING, $globalMultiplying);
+    }
+
+    private function resetAdvertisementCategories($categories = '')
+    {
+        adminSettings()->set(ADVERTISEMENT_CATEGORIES, $categories);
     }
 
     // 배너 생성 테스트
@@ -155,7 +153,7 @@ class AdvertisementTest
         isTrue($re->idx > 0, "배너 생성 성공");
     }
 
-    public function _0_point_advertisement()
+    public function zero_point_advertisement()
     {
         // 사용자 생성 후, 기본 포인트는 0으로 설정 됨.
         $user = registerAndLogin();
@@ -183,11 +181,6 @@ class AdvertisementTest
         // 포인트가 0 이어도 가능.
         $re =  advertisement()->start($options);
         isTrue($re->beginAt > 0, "광고 시작 됨");
-
-        //        $re = request("advertisement.start", $options);
-        //        d($re);
-
-
     }
 
     private function bannerIsPresent(mixed $banner, array $banners): bool
@@ -258,7 +251,7 @@ class AdvertisementTest
         registerAndLogin(1000000);
 
         // 광고 기간을 3일로 했는데, 5일 광고하려 하면, 에러.
-        $this->setMaximumAdvertisementDays(3);
+        $this->resetMaximumAdvertisementDays(3);
         $max = advertisement()->maximumAdvertisementDays();
         $re = $this->createAndStartAdvertisement([
             COUNTRY_CODE => "SS",
@@ -284,26 +277,38 @@ class AdvertisementTest
             COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$days days")
         ]);
         isTrue($re[IDX], "Expect: Success, adv days does not exceed maximum allowed days.");
+        $this->resetMaximumAdvertisementDays(0);
     }
 
-    function domainEmpty()
+    function loadBanners()
     {
-        $re = request("advertisement.loadCafeBanners");
+        $re = request("advertisement.loadBanners");
         isTrue($re == e()->empty_domain, "Expect: error, no domain when fetching active banners.");
 
-        $re = request("advertisement.loadCafeBanners", ['cafeDomain' => '']);
+        $re = request("advertisement.loadBanners", ['cafeDomain' => '']);
         isTrue($re == e()->empty_domain, "Expect: error, no domain when fetching active banners.");
+
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'abc' . time() . '.def.com']);
+        isTrue($re == e()->cafe_not_exists, "Expect: error, cafe does not exists.");
+
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com']);
+        isTrue($re == e()->empty_banner_type, "Expect: error, no domain when fetching active banners.");
+
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com', CODE => '']);
+        isTrue($re == e()->empty_banner_type, "Expect: error, no domain when fetching active banners.");
+
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com', CODE => 'wrong']);
+        isTrue($re == e()->wrong_banner_type, "Expect: error, wrong banner type is given.");
+
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com', CODE => TOP_BANNER]);
+        isTrue(isError($re) == false, "Expect: success.");
     }
 
-
-    /**
-     * TODO
-     */
     function statusCheck()
     {
         registerAndLogin(1000000);
         // 광고 가능 기간 100 일로 설정.
-        $this->setMaximumAdvertisementDays(100);
+        $this->resetMaximumAdvertisementDays(100);
 
         // Advertisement begin date same as now, considered as active.
         $re = $this->createAndStartAdvertisement([
@@ -417,7 +422,7 @@ class AdvertisementTest
     /**
      * 3 days * Top banner point (PH)
      */
-    function startWithPHCountryDeduction()
+    function startWithCountryDeduction()
     {
         // 시작 포인트
         $startingPoint = 1000000;
@@ -491,7 +496,7 @@ class AdvertisementTest
      * 
      * No refund (expired advertisement)
      */
-    function stopOnPastOrExpiredBannerNoRefund()
+    function stopOnPastOrExpiredBanner()
     {
 
         $startingPoint = 1000000;
@@ -523,19 +528,6 @@ class AdvertisementTest
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 
-    // public function stopOnPastBanner()
-    // {
-    // echo "\n@todo Test on past banner\n";
-
-    // create banner with past begin and end date.
-    // check deducted points
-    // check banner points
-    // check user activity points
-
-    // stop past banner
-    // there should be no refund
-    // 
-    // }
     /**
      * begin date - 2 days ago
      * end date - 3 days from now
@@ -553,8 +545,6 @@ class AdvertisementTest
 
         $ad = request("advertisement.stop", [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
 
-
-
         $expectedPoint = $startingPoint - $advPoint + $refundPoint;
         isTrue(login()->getPoint() == $expectedPoint, "Banner point: $bannerPoint, Expect: user points to be $expectedPoint but the user point is " . login()->getPoint());
 
@@ -568,7 +558,7 @@ class AdvertisementTest
      * end date - 3 days from now
      * 6 days * 2000 (Top banner - PH)
      */
-    function stopWithPHCountryAndDeductedRefund()
+    function stopWithCountryAndDeductedRefund()
     {
         $startingPoint = 1300000;
         registerAndLogin($startingPoint);
@@ -638,7 +628,7 @@ class AdvertisementTest
      * 
      * Cancel (full refund)
      */
-    function stopWithUSCountryFullRefund()
+    function stopWithCountryFullRefund()
     {
 
         $startingPoint = 1500000;
@@ -754,83 +744,6 @@ class AdvertisementTest
         isTrue(login()->getPoint() == $startingPoint - $bannerPoint, "Expect: user points == " . ($startingPoint - $bannerPoint) . ".");
     }
 
-    function loadActiveBannersByCountryCode()
-    {
-
-        $startingPoint = 800000;
-        registerAndLogin($startingPoint);
-
-        $rootDomain = 'ard' . time() . '.com';
-        $subDomain = 'abc';
-        $countryCodeA = 'XX';
-        $countryCodeB = 'YY';
-
-        $this->resetBannerPoints($countryCodeA, 1000, 2000, 3000, 4000);
-        $this->resetBannerPoints($countryCodeB, 6000, 7000, 8000, 9000);
-
-        $cafe = cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomain, 'countryCode' => $countryCodeA]);
-
-        isTrue($cafe->ok, 'cafe for banner test has been created');
-        $domain = $subDomain . '.' . $rootDomain;
-
-        $advOpts = [
-            CODE => LINE_BANNER,
-            'beginDate' => time(),
-            'endDate' => time(),
-            'fileIdxes' => '1',
-        ];
-
-        // create 4 banner with the cafe countryCode.
-        $advOpts[COUNTRY_CODE] = $countryCodeA;
-        $adv1 = $this->createAndStartAdvertisement($advOpts);
-        $adv2 = $this->createAndStartAdvertisement($advOpts);
-        $adv3 = $this->createAndStartAdvertisement($advOpts);
-        $adv4 = $this->createAndStartAdvertisement($advOpts);
-
-        //
-        $re = request("advertisement.loadCafeBanners", ['cafeDomain' => $domain]);
-        isTrue(count($re) == 4, 'Expect: active banners == 4 but got ' . count($re));
-
-
-        // changing the country code of $adv1 and $adv2.
-        //
-        $advOpts[COUNTRY_CODE] = $countryCodeB;
-        post($adv1[IDX])->update($advOpts);
-        post($adv2[IDX])->update($advOpts);
-
-        $re = request("advertisement.loadCafeBanners", ['cafeDomain' => $domain]);
-        isTrue(count($re) == 2, 'Expect: active banners == 2 but got ' . count($re));
-        isTrue($re[0]['idx'] == $adv3['idx'], 'Got adv3 idx');
-        isTrue($re[1]['idx'] == $adv4['idx'], 'Got adv4 idx');
-
-
-        // Change the country of the cafe.
-        $cafe = cafe($cafe->idx)->update([COUNTRY_CODE => $countryCodeB]);
-        isTrue($cafe->countryCode == $countryCodeB, "Expect: country code changed from $countryCodeA to $countryCodeB.");
-
-        $re = request("advertisement.loadCafeBanners", ['cafeDomain' => $domain]);
-
-        // d($re);
-        isTrue(count($re) == 2, 'Expect: active banners == 2 but got ' . count($re));
-        isTrue($re[0]['idx'] == $adv1['idx'], 'Got adv1 idx');
-        isTrue($re[1]['idx'] == $adv2['idx'], 'Got adv2 idx');
-
-        post($adv3[IDX])->update($advOpts);
-        $re = request("advertisement.loadCafeBanners", ['cafeDomain' => $domain]);
-        isTrue(count($re) == 3, 'Expect: active banners == 3 but got ' . count($re));
-
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv1[IDX]]);
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv2[IDX]]);
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv3[IDX]]);
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv4[IDX]]);
-
-        $re = request("advertisement.loadCafeBanners", ['cafeDomain' => $domain]);
-        isTrue(count($re) == 0, 'Expect: active banners == 0. cafe country code => ' . $cafe->countryCode);
-
-        $cafe = cafe($cafe->idx)->update([COUNTRY_CODE => $countryCodeA]);
-        $re = request("advertisement.loadCafeBanners", ['cafeDomain' => $domain]);
-        isTrue(count($re) == 0, 'Expect: active banners == 0. cafe country code => ' . $cafe->countryCode);
-    }
 
     function settings()
     {
@@ -866,6 +779,8 @@ class AdvertisementTest
         isTrue($re['categoryArray'] == $categoryArray, "Expect: Categories is set.");
         isTrue($re[ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING] == $globalMultiplying, "Expect: global banner multiplier is set.");
 
+        $this->resetMaximumAdvertisementDays(0);
+        $this->resetAdvertisementCategories();
         $this->resetGlobalMulplying();
     }
 
@@ -917,6 +832,8 @@ class AdvertisementTest
         isTrue($defaultPointSetting[SIDEBAR_BANNER] == $sidebar, "Expect: Top banner point is set to $sidebar");
         isTrue($defaultPointSetting[SQUARE_BANNER] == $square, "Expect: Top banner point is set to $square");
         isTrue($defaultPointSetting[LINE_BANNER] == $line, "Expect: Top banner point is set to $line");
+
+        $this->resetBannerPoints();
     }
 
     function pointSettingDelete()
@@ -959,20 +876,13 @@ class AdvertisementTest
         isTrue(!isset($settings['point'][$bannerSetting[COUNTRY_CODE]]), "Expect success, setting for " . $bannerSetting[COUNTRY_CODE] . " is deleted.");
     }
 
-    function refundAfterPointSettingChanged()
+    function stopAfterPointSettingChanged()
     {
 
         $admin = setLoginAsAdmin();
         $countryCode = "PH";
 
-        request('advertisement.setBannerPoint', [
-            COUNTRY_CODE => $countryCode,
-            TOP_BANNER => 1000,
-            SIDEBAR_BANNER => 2000,
-            SQUARE_BANNER => 3000,
-            LINE_BANNER => 4000,
-            SESSION_ID => $admin->sessionId
-        ]);
+        $this->resetBannerPoints($countryCode, 1000, 2000, 3000, 4000);
 
         $settings = request('advertisement.settings');
         $countryPointSetting = $settings['point'][$countryCode];
@@ -999,14 +909,7 @@ class AdvertisementTest
         isTrue(login()->getPoint() == $expectedPoint, "Expect: user points == $expectedPoint.");
 
         /// update point setting for same country code.
-        request('advertisement.setBannerPoint', [
-            COUNTRY_CODE => $countryCode,
-            TOP_BANNER => 3000,
-            SIDEBAR_BANNER => 3500,
-            SQUARE_BANNER => 4500,
-            LINE_BANNER => 5500,
-            SESSION_ID => $admin->sessionId
-        ]);
+        $this->resetBannerPoints($countryCode, 3000, 3500, 4500, 5500);
 
         $refundPoint = $bannerPoint * 2;
         $expectedPoint += $refundPoint;
@@ -1019,14 +922,8 @@ class AdvertisementTest
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points.");
     }
 
-    function globalMultiplier()
+    function globalCategoryBannerPoint()
     {
-        // $admin = setLoginAsAdmin();
-        // // set global multiplier
-        // request('app.setConfig', [
-        //     SESSION_ID => $admin->sessionId,
-        //     CODE => ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING, 'data' => $globalMultiplying,
-        // ]);
         $globalMultiplying = rand(2, 5);
         $this->resetGlobalMulplying($globalMultiplying);
 
@@ -1090,13 +987,73 @@ class AdvertisementTest
         isTrue($adv1['advertisementPoint'] != $adv2['advertisementPoint'],  "Expect: Adv1 'advertisementPoint' (" . $adv1['advertisementPoint'] . ") != Adv2 'advertisementPoint' (" . $adv2['advertisementPoint'] . ")");
     }
 
-    function AllCountryBanners()
+
+    function loadCafeCountryBanners()
+    {
+
+        $startingPoint = 800000;
+        registerAndLogin($startingPoint);
+
+        $rootDomain = 'ard' . time() . '.com';
+        $subDomain = 'abc';
+        $countryCodeA = 'XX';
+        $countryCodeB = 'YY';
+
+        $this->resetBannerPoints($countryCodeA, 1000, 2000, 3000, 4000);
+        $this->resetBannerPoints($countryCodeB, 6000, 7000, 8000, 9000);
+
+        $cafe = cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomain, 'countryCode' => $countryCodeA]);
+        isTrue($cafe->ok, 'cafe for banner test has been created');
+
+        $domain = $subDomain . '.' . $rootDomain;
+
+        $advOpts = [
+            CODE => LINE_BANNER,
+            'beginDate' => time(),
+            'endDate' => time(),
+            'fileIdxes' => '1',
+        ];
+
+        $fetchOptions = ['cafeDomain' => $domain, CODE => LINE_BANNER];
+
+        // Create 2 banner with the different countryCode.
+        $advOpts[COUNTRY_CODE] = $countryCodeA;
+        $adv1 = $this->createAndStartAdvertisement($advOpts);
+        $advOpts[COUNTRY_CODE] = $countryCodeB;
+        $adv2 = $this->createAndStartAdvertisement($advOpts);
+
+        // Expect adv1 is present on banners since it has the same countryCode as the cafe.
+        // and adv2 is not present since it has different countryCode.
+        $re = request("advertisement.loadBanners", $fetchOptions);
+        isTrue($this->bannerIsPresent($adv1, $re), 'Expect: ADV 1 is present');
+        isTrue($this->bannerIsPresent($adv2, $re) == false, 'Expect: ADV 2 is not present');
+
+        // Changing the country code of adv2 from countryCodeB to countryCodeA.
+        $advOpts[COUNTRY_CODE] = $countryCodeA;
+        post($adv2[IDX])->update($advOpts);
+
+        // Expect that adv2 now is present in cafe with countryCode of countryCodeA.
+        $re = request("advertisement.loadBanners", $fetchOptions);
+        isTrue($this->bannerIsPresent($adv2, $re), 'Expect: ADV 2 is present');
+
+        // Change the country of the cafe from countryCodeA to countryCodeB.
+        $cafe = cafe($cafe->idx)->update([COUNTRY_CODE => $countryCodeB]);
+        isTrue($cafe->countryCode == $countryCodeB, "Expect: country code changed from $countryCodeA to $countryCodeB.");
+
+        // Expect that adv1 and adv2 is not present since cafe countryCode is changed from countryCodeA to countryCodeB.
+        $re = request("advertisement.loadBanners", $fetchOptions);
+        isTrue($this->bannerIsPresent($adv1, $re) == false, 'Expect: ADV 1 is not present');
+        isTrue($this->bannerIsPresent($adv2, $re) == false, 'Expect: ADV 2 is not present');
+
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv1[IDX]]);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv2[IDX]]);
+    }
+
+    function loadAllCountryBanners()
     {
 
         $this->resetBannerPoints();
-
-        $startingPoint = 1000000;
-        registerAndLogin($startingPoint);
+        registerAndLogin(1000000);
 
         $rootDomain = 'mnm' . time() . '.com';
 
@@ -1111,10 +1068,8 @@ class AdvertisementTest
         $allCountryCode = "AC";
 
         // create cafes with different country codes.
-        $cafeA = cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomainA, 'countryCode' => $countryCodeA]);
-        isTrue($cafeA->ok, 'cafe for banner test has been created');
-        $cafeB = cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomainB, 'countryCode' => $countryCodeB]);
-        isTrue($cafeB->ok, 'cafe for banner test has been created');
+        cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomainA, 'countryCode' => $countryCodeA]); // cafeA
+        cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomainB, 'countryCode' => $countryCodeB]); // cafeB
 
         // create 'all country' banner
         $banner = $this->createAndStartAdvertisement([
@@ -1125,28 +1080,32 @@ class AdvertisementTest
             'fileIdxes' => '1',
         ]);
 
+        $fetchOptions = ['cafeDomain' => $domainA, CODE => LINE_BANNER];
+
         // Both cafe should have the banner as it is set to $allCountryCode
-        $re = request("advertisement.loadAllBanners", ['cafeDomain' => $domainA]);
-        isTrue($this->bannerIsPresent(banner: $banner, banners: $re), "Expect: Banner is present in active banners.");
-        $re = request("advertisement.loadAllBanners", ['cafeDomain' => $domainB]);
-        isTrue($this->bannerIsPresent(banner: $banner, banners: $re), "Expect: Banner is present in active banners.");
+        $re = request("advertisement.loadBanners", $fetchOptions);
+        isTrue($this->bannerIsPresent($banner, $re), "Expect: Banner is present in active banners.");
+        $re = request("advertisement.loadBanners", $fetchOptions);
+        isTrue($this->bannerIsPresent($banner, $re), "Expect: Banner is present in active banners.");
 
         // Change banner to display on $countryCodeA ($cafeA)
         $banner[COUNTRY_CODE] = $countryCodeA;
         post($banner[IDX])->update($banner);
 
         // $cafeA should have the banner since it is changed to display only on $countryCodeA
-        // and $cafeB should not have the banner.
-        $re = request("advertisement.loadAllBanners", ['cafeDomain' => $domainA]);
-        isTrue($this->bannerIsPresent(banner: $banner, banners: $re), "Expect: Banner is present in active banners.");
-        $re = request("advertisement.loadAllBanners", ['cafeDomain' => $domainB]);
-        isTrue(!$this->bannerIsPresent(banner: $banner, banners: $re), "Expect: Banner is not present in active banners.");
+        $re = request("advertisement.loadBanners", $fetchOptions);
+        isTrue($this->bannerIsPresent($banner, $re), "Expect: Banner is present in active banners.");
+
+        // $cafeB should not have the banner.
+        $fetchOptions['cafeDomain'] = $domainB;
+        $re = request("advertisement.loadBanners", $fetchOptions);
+        isTrue($this->bannerIsPresent($banner, $re) == false, "Expect: Banner is not present in active banners.");
 
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner[IDX]]);
     }
 
 
-    function AllCountryBannerPoint()
+    function allCountryBannerPoint()
     {
 
         $cafeCountryCode = "PH";
@@ -1160,8 +1119,7 @@ class AdvertisementTest
         $globalMultiplying = rand(2, 5);
         $this->resetGlobalMulplying($globalMultiplying);
 
-        $startingPoint = 1000000;
-        registerAndLogin($startingPoint);
+        registerAndLogin(1000000);
 
         // 2 days
         $advOpts = [
@@ -1185,11 +1143,11 @@ class AdvertisementTest
 
         // All Country Banner points must be greater than Cafe Country Banner
         isTrue(
-            $allCountryBanner['pointPerDay'] >= $cafeCountryBanner['pointPerDay'],
+            $allCountryBanner['pointPerDay'] > $cafeCountryBanner['pointPerDay'],
             "Expect: All Country Banner 'pointPerDay' (" . $allCountryBanner['pointPerDay'] . ") is greater than Cafe Country Banner 'pointPerDay' (" . $cafeCountryBanner['pointPerDay'] . ")"
         );
         isTrue(
-            $allCountryBanner['advertisementPoint'] >= $cafeCountryBanner['advertisementPoint'],
+            $allCountryBanner['advertisementPoint'] > $cafeCountryBanner['advertisementPoint'],
             "Expect: All Country Banner 'advertisementPoint' (" . $allCountryBanner['advertisementPoint'] . ") is greater than Cafe Country Banner 'advertisementPoint' (" . $cafeCountryBanner['advertisementPoint'] . ")"
         );
 
