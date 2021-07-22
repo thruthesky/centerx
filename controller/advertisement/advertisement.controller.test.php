@@ -282,22 +282,22 @@ class AdvertisementTest
 
     function loadBanners()
     {
-        $re = advertisement()->loadBanners([]);
-        isTrue($re == e()->empty_domain, 'empty domain.');
-
-        $re = request("advertisement.loadAllBanners");
+        $re = request("advertisement.loadBanners");
         isTrue($re == e()->empty_domain, "Expect: error, no domain when fetching active banners.");
 
-        $re = request("advertisement.loadAllBanners", ['cafeDomain' => '']);
+        $re = request("advertisement.loadBanners", ['cafeDomain' => '']);
         isTrue($re == e()->empty_domain, "Expect: error, no domain when fetching active banners.");
 
-        $re = request("advertisement.loadAllBanners", ['cafeDomain' => 'main.sonub.com']);
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'abc' . time() . '.def.com']);
+        isTrue($re == e()->cafe_not_exists, "Expect: error, cafe does not exists.");
+
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com']);
         isTrue($re == e()->empty_banner_type, "Expect: error, no domain when fetching active banners.");
 
-        $re = request("advertisement.loadAllBanners", ['cafeDomain' => 'main.sonub.com', CODE => '']);
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com', CODE => '']);
         isTrue($re == e()->empty_banner_type, "Expect: error, no domain when fetching active banners.");
 
-        $re = request("advertisement.loadAllBanners", ['cafeDomain' => 'main.sonub.com', CODE => TOP_BANNER]);
+        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com', CODE => TOP_BANNER]);
         isTrue(isError($re) == false, "Expect: success.");
     }
 
@@ -1021,7 +1021,7 @@ class AdvertisementTest
 
         // Expect adv1 is present on banners since it has the same countryCode as the cafe.
         // and adv2 is not present since it has different countryCode.
-        $re = request("advertisement.loadAllBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", $fetchOptions);
         isTrue($this->bannerIsPresent($adv1, $re), 'Expect: ADV 1 is present');
         isTrue($this->bannerIsPresent($adv2, $re) == false, 'Expect: ADV 2 is not present');
 
@@ -1030,7 +1030,7 @@ class AdvertisementTest
         post($adv2[IDX])->update($advOpts);
 
         // Expect that adv2 now is present in cafe with countryCode of countryCodeA.
-        $re = request("advertisement.loadAllBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", $fetchOptions);
         isTrue($this->bannerIsPresent($adv2, $re), 'Expect: ADV 2 is present');
 
         // Change the country of the cafe from countryCodeA to countryCodeB.
@@ -1038,7 +1038,7 @@ class AdvertisementTest
         isTrue($cafe->countryCode == $countryCodeB, "Expect: country code changed from $countryCodeA to $countryCodeB.");
 
         // Expect that adv1 and adv2 is not present since cafe countryCode is changed from countryCodeA to countryCodeB.
-        $re = request("advertisement.loadAllBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", $fetchOptions);
         isTrue($this->bannerIsPresent($adv1, $re) == false, 'Expect: ADV 1 is not present');
         isTrue($this->bannerIsPresent($adv2, $re) == false, 'Expect: ADV 2 is not present');
 
@@ -1080,9 +1080,9 @@ class AdvertisementTest
         $fetchOptions = ['cafeDomain' => $domainA, CODE => LINE_BANNER];
 
         // Both cafe should have the banner as it is set to $allCountryCode
-        $re = request("advertisement.loadAllBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", $fetchOptions);
         isTrue($this->bannerIsPresent($banner, $re), "Expect: Banner is present in active banners.");
-        $re = request("advertisement.loadAllBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", $fetchOptions);
         isTrue($this->bannerIsPresent($banner, $re), "Expect: Banner is present in active banners.");
 
         // Change banner to display on $countryCodeA ($cafeA)
@@ -1090,12 +1090,12 @@ class AdvertisementTest
         post($banner[IDX])->update($banner);
 
         // $cafeA should have the banner since it is changed to display only on $countryCodeA
-        $re = request("advertisement.loadAllBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", $fetchOptions);
         isTrue($this->bannerIsPresent($banner, $re), "Expect: Banner is present in active banners.");
 
         // $cafeB should not have the banner.
         $fetchOptions['cafeDomain'] = $domainB;
-        $re = request("advertisement.loadAllBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", $fetchOptions);
         isTrue($this->bannerIsPresent($banner, $re) == false, "Expect: Banner is not present in active banners.");
 
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner[IDX]]);

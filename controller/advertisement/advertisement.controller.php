@@ -6,7 +6,7 @@ class AdvertisementController
     /**
      * returns banners with country code of current cafe and banners with 'all country' country code.
      */
-    public function loadAllBanners($in): array|string
+    public function loadBanners($in): array|string
     {
         $banners = advertisement()->loadBanners($in);
         if ( isError($banners) ) return $banners;
