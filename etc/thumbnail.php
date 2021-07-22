@@ -20,6 +20,7 @@ switch( $file_extension ) {
     case "jpg": $ctype="image/jpeg"; break;
     case "svg": $ctype="image/svg+xml"; break;
     default:
+        $ctype="image/jpeg"; // default to jpeg
 }
 
 header('Content-type: ' . $ctype);
