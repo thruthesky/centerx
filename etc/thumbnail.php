@@ -20,6 +20,7 @@ switch( $file_extension ) {
     case "jpg": $ctype="image/jpeg"; break;
     case "svg": $ctype="image/svg+xml"; break;
     default:
+        $ctype="image/jpeg"; // default to jpeg. 때로는 썸네일이 존재하는데, file extension 이 올바르지 않은 경우가 있다.
 }
 
 header('Content-type: ' . $ctype);

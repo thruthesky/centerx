@@ -73,7 +73,6 @@ require_once ROOT_DIR . 'model/shopping-mall-order/shopping-mall-order.model.php
 require_once ROOT_DIR . 'model/cache/cache.model.php';
 require_once ROOT_DIR . 'model/translation/translation.model.php';
 require_once ROOT_DIR . 'etc/core/firebase.php';
-require_once ROOT_DIR . 'etc/core/test.functions.php';
 require_once ROOT_DIR . 'etc/core/data.php';
 require_once ROOT_DIR . 'model/in-app-purchase/in-app-purchase.model.php';
 
@@ -103,6 +102,8 @@ leave_starting_debug_log();
 require_once ROOT_DIR . 'config.php';
 
 
+// test function is depending on the configuration. like LOCAL_HOSTS.
+require_once ROOT_DIR . 'etc/core/test.functions.php';
 
 
 // set error handler
