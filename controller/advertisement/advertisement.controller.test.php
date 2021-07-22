@@ -20,7 +20,7 @@ $at->lackOfPoint();
 $at->beginDateEmpty();
 $at->endDateEmpty();
 $at->wrongCode();
-$at->domainEmpty();
+$at->loadBanners();
 
 //
 $at->statusCheck();
@@ -56,7 +56,6 @@ $at->globalCategoryBannerPoint();
 $at->AllCountryBannerPoint();
 
 //
-$at->loadBanners();
 $at->loadCafeCountryBanners();
 $at->loadAllCountryBanners();
 
@@ -281,13 +280,25 @@ class AdvertisementTest
         $this->resetMaximumAdvertisementDays(0);
     }
 
-    function domainEmpty()
+    function loadBanners()
     {
+        $re = advertisement()->loadBanners([]);
+        isTrue($re == e()->empty_domain, 'empty domain.');
+
         $re = request("advertisement.loadAllBanners");
         isTrue($re == e()->empty_domain, "Expect: error, no domain when fetching active banners.");
 
         $re = request("advertisement.loadAllBanners", ['cafeDomain' => '']);
         isTrue($re == e()->empty_domain, "Expect: error, no domain when fetching active banners.");
+
+        $re = request("advertisement.loadAllBanners", ['cafeDomain' => 'main.sonub.com']);
+        isTrue($re == e()->empty_banner_type, "Expect: error, no domain when fetching active banners.");
+
+        $re = request("advertisement.loadAllBanners", ['cafeDomain' => 'main.sonub.com', CODE => '']);
+        isTrue($re == e()->empty_banner_type, "Expect: error, no domain when fetching active banners.");
+
+        $re = request("advertisement.loadAllBanners", ['cafeDomain' => 'main.sonub.com', CODE => TOP_BANNER]);
+        isTrue(isError($re) == false, "Expect: success.");
     }
 
     function statusCheck()
@@ -1033,21 +1044,6 @@ class AdvertisementTest
 
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv1[IDX]]);
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv2[IDX]]);
-    }
-
-    function loadBanners()
-    {
-        setLogout();
-
-        registerAndLogin();
-        $re = advertisement()->loadBanners([]);
-        isTrue($re == e()->empty_domain, 'empty domain.');
-
-        $re = advertisement()->loadBanners([CAFE_DOMAIN => 'main.sonub.com']);
-        isTrue($re == e()->empty_banner_type, "empty banner type.");
-
-        $re = advertisement()->loadBanners([CAFE_DOMAIN => 'main.sonub.com', CODE => LINE_BANNER]);
-        isTrue(isError($re) == false, "Succes.");
     }
 
     function loadAllCountryBanners()
