@@ -1500,18 +1500,29 @@ isTrue((new AppController())->version(), "App version");
   - When app boots, it should request 'current country, global cateogry, top banner'
     and on each category, it should request 'current country, category, top banner',
     and memory cache it not to request with same 'counry, category, banner type.'
-  
 
 - When advertisement banner is being display(when the user clicked the banner),
   the post author's information should not be shown, nor the post title, dates, etc.
   And the banner image must not being shown.
   So, there must a special design(view page) for advertisement.
 
-- When client request banners to server, the server must return with the minimum number of banners like below.
-  * Top banner must return at least 2 banners. which means, **if there is no banner at all, hard coded banner will be returned.**
-  * Sidebar banner must return at least 1 banner. either country banner or call country banner. But no hard coded banner.
-  * Square banner must return minimum of 4 banners. (this may be changed depending on the design). either country banner or call country banner. But no hard coded banner.
-  * Line banner must return at least 1 banner. either country banner or call country banner. But no hard coded banner.
+- When client request banners (to display on the site or app) to server, the server must return with the minimum number
+  of banners like below.
+  * Top banner must return at least 2 banners. which means, if there is no banner at all, hard coded banner will be returned.
+  * Square banner is trying to return minimum of 4 banners.
+  *  - It will collect minimum of 4 banners following the default banner rule.
+  *  - But there is no hard coded banner for square banner.
+  * Sidebar and Line banner may return 0 banner.
+  *  - If there is no available default banner, it return 0 banner.
+  *  - It does not collect minimum number of banners. If there is a banner following the default banner rule, it returns.
+  *  - There is no hard coded banner for this banner type.
+
+- Limiting maximum number of banners
+  * When a client "start" a banner, the backend server may produce an error of "exceeding the number of banner limit" if there is no more slot for the banner type.
+  * The client should display error message if there is no slot on screen when the user choose banner type, category, country on banner edit form.
+
+- Admin must set the maximum number of banners on each category on admin page. Or user cannot start banners.
+
 
 ## 광고 기능 코딩 기법 및 로직 설명
 

@@ -126,7 +126,7 @@ class AdvertisementModel extends PostModel
      */
     public function expired(): bool
     {
-        return isPast($this->endAt) && isToday($this->endAt);
+        return isPast($this->endAt) && isToday($this->endAt) == false;
         //        return isTodayOrPast($this->endAt);
     }
 
@@ -145,12 +145,21 @@ class AdvertisementModel extends PostModel
         return intVal(adminSettings()->get('maximumAdvertisementDays') ?? 0);
     }
 
-    public function maxNoOf($banner_type, $category)
-    {
+
+    /**
+     * @param $banner_type
+     * @param $category
+     * @return string
+     */
+    public function maxNoKey($banner_type, $category): string {
         if ($category) $cat = "Category";
         else $cat = "Global";
         $banner_type = ucfirst($banner_type);
-        return adminSettings()->get("maxNoOn{$cat}{$banner_type}Banner") ?? 0;
+        return "maxNoOn{$cat}{$banner_type}Banner";
+    }
+    public function maxNoOn($banner_type, $category)
+    {
+        return adminSettings()->get( $this->maxNoKey($banner_type, $category) ) ?? 0;
     }
 
 
@@ -292,12 +301,12 @@ class AdvertisementModel extends PostModel
         $category = '';
         if (isset($in[SUB_CATEGORY]) && !empty($in[SUB_CATEGORY])) $category = $in[SUB_CATEGORY];
 
-        // BANNER LIMIT 
-        // @todo do test.
+        // BANNER LIMIT
         // If max number of banner limit is bigger than 0 and banner count is bigger than or equal max banner limit.
-        $no = $this->maxNoOf($in[BANNER_TYPE], $category);
-        $bannerCount = $this->bannerCountOf($in[BANNER_TYPE], $category, $banner->countryCode, false);
-        if ($no > 0 && $no <= $bannerCount) return $this->error(e()->max_no_banner_limit_exeeded);
+        // All country is also following this rule.
+        $maxNo = $this->maxNoOn($in[BANNER_TYPE], $category);
+        $bannerCount = $this->countOf($in[BANNER_TYPE], $category, $banner->countryCode);
+        if ($maxNo <= $bannerCount) return $this->error(e()->max_no_banner_limit_exeeded);
 
         // GLOBAL MULTIPLYING
         // Apply global multiplier if advertisement is for global.
@@ -357,38 +366,39 @@ class AdvertisementModel extends PostModel
         if (notLoggedIn()) return $this->error(e()->not_logged_in);
         if (!isset($in[IDX]) || empty($in[IDX])) return $this->error(e()->idx_is_empty);
 
-        $advertisement = advertisement($in[IDX]);
-        if ($advertisement->isMine() == false) return $this->error(e()->not_your_post);
+        $banner = banner($in[IDX]);
+
+        if ($banner->isMine() == false) return $banner->error(e()->not_your_post);
 
         // 중단된 광고, 취소된 광고, 끝난 광고는 중단하지 못한다. readme.md 참고
-        if ($this->stopped($this)) return $this->error(e()->banner_stopped);
-        if ($this->cancelled($this)) return $this->error(e()->banner_cancelled);
-        if ($this->expired()) return $this->error(e()->banner_expired);
+        if ($banner->stopped($banner)) return $banner->error(e()->banner_stopped);
+        if ($banner->cancelled($banner)) return $banner->error(e()->banner_cancelled);
+        if ($banner->expired()) return $banner->error(e()->banner_expired);
 
         /// If advertisement started (including today), then, it needs +1 day.
         /// For instance, advertisement starts today and ends tomorrow. The left days must be 1.
         /// past days including today will be deducted.
-        if ($advertisement->started()) {
+        if ($banner->started()) {
             $action = 'advertisement.stop';
             //
             $in['status'] = 'stop';
             // if advertisement is expired or the last day is today, then no refund.
-            if ($advertisement->expired() || $advertisement->lastDay()) $days = 0;
-            else $days = daysBetween(time(), $advertisement->endAt);
+            if ($banner->expired() || $banner->lastDay()) $days = 0;
+            else $days = daysBetween(time(), $banner->endAt);
         }
         /// else, advertisement is not yet started. ( full refund )
         else {
             $action = 'advertisement.cancel';
             //
             $in['status'] = 'cancel';
-            $days = daysBetween($advertisement->beginAt, $advertisement->endAt) + 1;
+            $days = daysBetween($banner->beginAt, $banner->endAt) + 1;
         }
         // 국가 코드
-        $in[COUNTRY_CODE] = $advertisement->countryCode;
+        $in[COUNTRY_CODE] = $banner->countryCode;
 
 
         // 남은 일 수 별로 환불 될 포인트 금액 계산.
-        $pointToRefund = $advertisement->pointPerDay * $days;
+        $pointToRefund = $banner->pointPerDay * $days;
 
         $in[BEGIN_AT] = 0;
         $in[END_AT] = 0;
@@ -403,16 +413,16 @@ class AdvertisementModel extends PostModel
             toUserIdx: login()->idx,
             toUserPoint: $pointToRefund,
             taxonomy: POSTS,
-            entity: $advertisement->idx,
-            categoryIdx: $advertisement->categoryIdx,
+            entity: $banner->idx,
+            categoryIdx: $banner->categoryIdx,
         );
 
         debug_log("refund apply point; {$activity->toUserPointApply} != {$pointToRefund}");
         if ($activity->toUserPointApply != $pointToRefund) {
-            return $this->error(e()->advertisement_point_refund_failed);
+            return $banner->error(e()->advertisement_point_refund_failed);
         }
 
-        return $advertisement->update($in);
+        return $banner->update($in);
     }
 
     /**
@@ -471,10 +481,13 @@ class AdvertisementModel extends PostModel
      * Get hard coded banner on the source code(or admin settings).
      *
      * Top banner must return at least 2 banners. which means, if there is no banner at all, hard coded banner will be returned.
-     * Sidebar banner must return at least 1 banner. either country banner or call country banner. But no hard coded banner.
-     * Square banner must return minimum of 4 banners. (this may be changed depending on the design). either country banner or call country banner. But no hard coded banner.
-     * Line banner must return at least 1 banner. either country banner or call country banner. But no hard coded banner.
-     *
+     * Square banner is trying to return minimum of 4 banners.
+     *  - It will collect minimum of 4 banners following the default banner rule.
+     *  - But there is no hard coded banner for square banner.
+     * Sidebar and Line banner may return 0 banner.
+     *  - If there is no available default banner, it return 0 banner.
+     *  - It does not collect minimum number of banners. If there is a banner following the default banner rule, it returns.
+     *  - There is no hard coded banner for this banner type.
      *
      * @param string $banner_type
      */
@@ -500,7 +513,7 @@ class AdvertisementModel extends PostModel
             if (count($posts) >= 2) return $posts;
             $posts = array_merge($posts, $this->globalBannersOfAllCountry($banner_type));
             if (count($posts) >= 2) return $posts;
-            $posts = array_merge($posts, $this->hardCodedTopBanners($banner_type, count($posts)));
+            $posts = array_merge($posts, $this->hardCodedTopBanners(count($posts)));
             return $posts;
         } else if ($banner_type == SQUARE_BANNER) {
             $posts = $this->categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode);
@@ -516,13 +529,21 @@ class AdvertisementModel extends PostModel
     }
 
     /**
-     * returns count of active banners according to type, category and countryCode.
+     * Returns condition for querying active banners.
+     * @return string
      */
-    private function bannerCountOf(string $banner_type, string $banner_category = '', string $countryCode = ALL_COUNTRY_CODE)
-    {
+    private function activeBannerCondition() {
         $now = time();
         $today = today(); // 0 second of today.
-        $where = "code = ? AND countryCode='$countryCode' AND beginAt <= $now AND endAt >= $today AND fileIdxes != ''";
+        return "beginAt <= $now AND endAt >= $today AND fileIdxes != ''";
+    }
+
+    /**
+     * returns count of active banners according to type, category and countryCode.
+     */
+    private function countOf(string $banner_type, string $banner_category = '', string $countryCode = ALL_COUNTRY_CODE): int
+    {
+        $where = "code = ? AND countryCode='$countryCode' AND " . $this->activeBannerCondition();
         $params = [$banner_type];
 
         if ($banner_category) {
@@ -530,68 +551,51 @@ class AdvertisementModel extends PostModel
             $params[] = $banner_category;
         }
 
-        $banners = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 100);
-        return count($banners);
+        return advertisement()->count(where: $where, params: $params);
     }
 
     private function categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode)
     {
         if (!$banner_category) return [];
 
-        $now = time();
-        $today = today(); // 0 second of today.
-        $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.
-        // Get banner of same type of same category of same country.
-
         // endAt is the 0 second of last day.
-        $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND beginAt <= $now AND endAt >= $today AND fileIdxes != ''";
+        $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND " . $this->activeBannerCondition();
         $params = [$banner_type, $banner_category];
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
         return $posts;
     }
 
     private function globalBannersOfSameCountry($banner_type, $countryCode)
     {
-        $now = time();
-        $today = today(); // 0 second of today.
-        $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.
-
-
         // Get global banner of same type of same country.
-        $where = "code = ? AND subcategory='' AND countryCode='$countryCode' AND beginAt <= $now AND endAt >= $today AND fileIdxes != ''";
+        $where = "code = ? AND subcategory='' AND countryCode='$countryCode' AND " . $this->activeBannerCondition();
         $params = [$banner_type];
 
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
         return $posts;
     }
 
     private function categoryBannersOfAllCountry($banner_type, $banner_category)
     {
         if (!$banner_category) return [];
-
-        $now = time();
-        $today = today(); // 0 second of today.
-        $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.
         $ac = ALL_COUNTRY_CODE;
 
         // Get banner of same type of same category of all country.
-        $where = "code = ? AND subcategory=? AND countryCode='$ac' AND beginAt <= $now AND endAt >= $today AND fileIdxes != ''";
+        $where = "code = ? AND subcategory=? AND countryCode='$ac' AND " . $this->activeBannerCondition();
         $params = [$banner_type, $banner_category];
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
         return $posts;
     }
 
     private function globalBannersOfAllCountry($banner_type)
     {
-        $now = time();
-        $today = today(); // 0 second of today.
-        $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.
+
         $ac = ALL_COUNTRY_CODE;
 
         // Get global banner of same type of all country.
-        $where = "code = ? AND subcategory='' AND countryCode='$ac' AND beginAt <= $now AND endAt >= $today AND fileIdxes != ''";
+        $where = "code = ? AND subcategory='' AND countryCode='$ac' AND " . $this->activeBannerCondition();
         $params = [$banner_type];
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
+        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
         return $posts;
     }
 
@@ -621,7 +625,11 @@ class AdvertisementModel extends PostModel
         return $banners;
     }
 
-    public function responses(array $posts)
+    /**
+     * @param array $posts
+     * @return array
+     */
+    public function responses(array $posts): array
     {
         $res = [];
         foreach ($posts as $post) {
@@ -656,6 +664,12 @@ function advertisement(int $idx = 0): AdvertisementModel
     return new AdvertisementModel($idx);
 }
 
+/**
+ * Alias of advertisement()
+ *
+ * @param int $idx
+ * @return AdvertisementModel
+ */
 function banner(int $idx = 0): AdvertisementModel
 {
     return advertisement($idx);

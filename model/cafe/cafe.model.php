@@ -192,8 +192,9 @@ class CafeModel extends CategoryModel
 
     /**
      * @param array $in
-     * - rootDomain as 'abc.com'
-     * - domain as 'user'. So, the final domain would look 'user.abc.com'.
+     * - rootDomain is the TLD. 'abc.com'
+     * - domain is only the first part of the FQDN. for instance, if the FQDN is "user.abc.com", then domain is "user"
+     *      only. And it will put domain and root domain together, so, the final domain to be saved in table would look 'user.abc.com'.
      * - countryCode as 'PH'.
      * @return $this
      */

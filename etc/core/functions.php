@@ -2080,15 +2080,15 @@ function isTodayOrPast(int $stamp): bool {
 //    $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
 //    return  $carbon->isToday() || $carbon->isPast();
 }
-function isToday($stamp) {
+function isToday($stamp): bool {
     $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
     return $carbon->isToday();
 }
-function isPast($stamp) {
+function isPast($stamp): bool {
     $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
     return $carbon->isPast();
 }
-function isFuture($stamp) {
+function isFuture($stamp): bool {
     $carbon = \Carbon\Carbon::createFromTimestamp($stamp);
     return $carbon->isFuture();
 }
