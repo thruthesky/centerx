@@ -16,51 +16,52 @@ $at = new AdvertisementTest();
 
 
 //
-// $at->lackOfPoint();
-// $at->beginDateEmpty();
-// $at->endDateEmpty();
-// $at->wrongCode();
-// $at->loadBanners();
+$at->lackOfPoint();
+$at->beginDateEmpty();
+$at->endDateEmpty();
+$at->wrongCode();
+$at->loadBanners();
 
-// //
-// $at->statusCheck();
-// $at->createBanner();
-// $at->zero_point_advertisement();
+//
+$at->statusCheck();
+$at->createBanner();
+$at->zero_point_advertisement();
 
-// //
-// $at->startDeduction();
-// $at->startWithCountryDeduction();
-// $at->stopWithDeductedRefund();
-// $at->stopWithCountryAndDeductedRefund();
-// $at->stopFullRefund();
-// $at->stopWithCountryFullRefund();
-// $at->stopNoRefund();
-// $at->stopOnPastOrExpiredBanner();
+//
+$at->startDeduction();
+$at->startWithCountryDeduction();
+$at->stopWithDeductedRefund();
+$at->stopWithCountryAndDeductedRefund();
+$at->stopFullRefund();
+$at->stopWithCountryFullRefund();
+$at->stopNoRefund();
+$at->stopOnPastOrExpiredBanner();
 
-// //
-// $at->settings();
-// $at->pointSettings();
-// $at->pointSettingDelete();
-// $at->maximumAdvertisementDays();
-// $at->stopAfterPointSettingChanged();
+//
+$at->settings();
+$at->pointSettings();
+$at->pointSettingDelete();
+$at->maximumAdvertisementDays();
+$at->stopAfterPointSettingChanged();
 
-// //
-// $at->startStopChangeDatesAndCountry();
+//
+$at->startStopChangeDatesAndCountry();
 
-// //
-// $at->errorDeleteActiveAdvertisement();
-// $at->deleteAdvertisement();
+//
+$at->errorDeleteActiveAdvertisement();
+$at->deleteAdvertisement();
 
-// //
-// $at->globalCategoryBannerPoint();
-// $at->allCountryBannerPoint();
+//
+$at->globalCategoryBannerPoint();
+$at->allCountryBannerPoint();
 
-// //
-// $at->loadCafeCountryBanners();
-// $at->loadAllCountryBanners();
+//
+$at->loadCafeCountryBanners();
+$at->loadAllCountryBanners();
 
 //
 $at->topBannerLoad();
+$at->squareBannerLoad();
 
 class AdvertisementTest
 {
@@ -1160,5 +1161,104 @@ class AdvertisementTest
         $activity = userActivity()->last(taxonomy: POSTS, entity: $allCountryBanner[IDX], action: 'advertisement.start');
         isTrue($activity->toUserPointApply == -$allCountryAdvPoint, "Expect: activity->toUserPointApply == -$allCountryAdvPoint. Deducted " . $activity->toUserPointApply);
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points. got " . $activity->toUserPointAfter);
+    }
+
+    function topBannerLoad()
+    {
+        $this->resetBannerPoints('', 1000, 2000, 3000, 4000);
+        registerAndLogin(1000000);
+
+        // create test cafe
+        $countryCode = 'T1';
+        $subCategory = 'apple' . time();
+        $rootDomain = 'wxy.com';
+        $subDomain = 'abc' . time();
+        $domain = $subDomain . "." . $rootDomain;
+        cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomain, 'countryCode' => $countryCode]);
+
+        // create test advertisements
+        $advOpts = [
+            COUNTRY_CODE => 'AC',
+            CODE => TOP_BANNER,
+            'beginDate' => time(),
+            'endDate' => strtotime('+1 day'),
+            'fileIdxes' => '1'
+        ];
+
+        // create one for global all country
+        $banner1 = $this->createAndStartAdvertisement($advOpts);
+        
+        // create one for test cafe country.
+        $advOpts[COUNTRY_CODE] = $countryCode;
+        $advOpts[SUB_CATEGORY] = $subCategory;
+        $banner2 = $this->createAndStartAdvertisement($advOpts);
+
+        // fetch active banners with TOP_BANNER type and 'apple' subcategory in $domain.
+        $fetchOptions = [CAFE_DOMAIN => $domain, CODE => TOP_BANNER, SUB_CATEGORY => $subCategory];
+        $banners = request("advertisement.loadBanners", $fetchOptions);
+
+        // expect tall banner is present.
+        isTrue(count($banners) > 1, 'banners should be more than or equal to 2');
+        isTrue($this->bannerIsPresent($banner1, $banners), 'banner 1 is present');
+        isTrue($this->bannerIsPresent($banner2, $banners), 'banner 2 is present');
+
+
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner1[IDX]]);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner2[IDX]]);
+    }
+
+    function squareBannerLoad()
+    {
+        $this->resetBannerPoints('', square: 1000);
+        registerAndLogin(1000000);
+
+        // create test cafe
+        $countryCode = 'T2';
+        $subCategory = 'banana' . time();
+        $rootDomain = 'wxy.com';
+        $subDomain = 'abc' . time();
+        $domain = $subDomain . "." . $rootDomain;
+        cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomain, 'countryCode' => $countryCode]);
+
+        // create test advertisements
+        $advOpts = [
+            COUNTRY_CODE => 'AC',
+            CODE => SQUARE_BANNER,
+            'beginDate' => time(),
+            'endDate' => strtotime('+1 day'),
+            'fileIdxes' => '1'
+        ];
+
+        // create one for global all country
+        $banner1 = $this->createAndStartAdvertisement($advOpts);
+        // create one for category all country
+        $advOpts[SUB_CATEGORY] = $subCategory;
+        $banner2 = $this->createAndStartAdvertisement($advOpts);
+
+        // create one for global cafe country.
+        $advOpts[COUNTRY_CODE] = $countryCode;
+        $advOpts[SUB_CATEGORY] = '';
+        $banner3 = $this->createAndStartAdvertisement($advOpts);
+        
+        // create one for category cafe country.
+        $advOpts[SUB_CATEGORY] = $subCategory;
+        $banner4 = $this->createAndStartAdvertisement($advOpts);
+
+        // fetch active banners with TOP_BANNER type and 'apple' subcategory in $domain.
+        $fetchOptions = [CAFE_DOMAIN => $domain, CODE => SQUARE_BANNER, SUB_CATEGORY => $subCategory];
+        $banners = request("advertisement.loadBanners", $fetchOptions);
+
+        // expect all banners are present.
+        isTrue(count($banners) > 3, 'banners should be more than or equal to 4');
+        isTrue($this->bannerIsPresent($banner1, $banners), 'banner 1 is present');
+        isTrue($this->bannerIsPresent($banner2, $banners), 'banner 2 is present');
+        isTrue($this->bannerIsPresent($banner3, $banners), 'banner 3 is present');
+        isTrue($this->bannerIsPresent($banner4, $banners), 'banner 4 is present');
+
+
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner1[IDX]]);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner2[IDX]]);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner3[IDX]]);
+        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner4[IDX]]);
     }
 }
