@@ -226,7 +226,7 @@ class User extends Entity {
         $ret = [
             'idx' => $this->idx,
             'name' => $this->name ? $this->name : '',
-            'nickname' => $this->nickname,
+            'nickname' => $this->nickname ? $this->nickname : '',
             'gender' => $this->gender,
             'birthdate' => $this->birthdate,
             'point' => $this->point,
