@@ -501,6 +501,7 @@ class AdvertisementModel extends PostModel
     }
 
     private function categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode) {
+        if (!$banner_category) return [];
 
         $now = time();
         $today = today(); // 0 second of today.
@@ -529,6 +530,8 @@ class AdvertisementModel extends PostModel
     }
 
     private function categoryBannersOfAllCountry($banner_type, $banner_category) {
+        if (!$banner_category) return [];
+
         $now = time();
         $today = today(); // 0 second of today.
         $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.

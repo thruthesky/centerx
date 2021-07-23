@@ -57,10 +57,6 @@ class AdvertisementController
         if (!isset($in[IDX])) return e()->idx_is_empty;
 
         return advertisement($in[IDX])->response();
-
-        //        $adv = advertisement($in[IDX]);
-        //        $adv->updateMemoryData('status', advertisement()->getStatus($adv));
-        //        return $adv->response();
     }
 
 
@@ -86,17 +82,6 @@ class AdvertisementController
      * @throws \Kreait\Firebase\Exception\FirebaseException
      * @throws \Kreait\Firebase\Exception\MessagingException
      *
-     * @todo do tests
-     * @todo test - check input /
-     * @todo test - check point deduction /
-     * @todo test - check cancel /
-     * @todo test - check refund /
-     * @todo test - change dates after create banner and check days left.
-     * @todo test - compare the point history. /
-     * @todo test - get banners on a specific /
-     *    - banner type/place (code) /
-     *    - category(subcategory) /
-     *    - and countryCode. /
      */
     public function start($in): array|string
     {
