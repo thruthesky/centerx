@@ -57,6 +57,8 @@ $at = new AdvertisementTest();
 
 $at->maximumNoOfLimitTest();
 $at->globalCategoryBannerPoint();
+$at->defaultTopBannerTest();
+
 //$at->allCountryBannerPoint();
 //
 ////
@@ -1365,5 +1367,30 @@ class AdvertisementTest
 
         $adv3 = $this->createAndStartAdvertisement($advOpts);
         isTrue($adv3 == e()->max_no_banner_limit_exeeded, "advertisement cannot be activated because limit has been reached. GLOBAL - " . $banner_type);
+    }
+
+    /**
+     * Two default top banner test.
+     */
+    function defaultTopBannerTest() {
+
+        $banners = banner()->hardCodedTopBanners(0);
+        isTrue(count($banners) == 2, 'hard coded top banner must have 2 default banners');
+        $banners = banner()->hardCodedTopBanners(1);
+        isTrue(count($banners) == 1, '1 hard coded top banner.');
+
+
+        $this->clearAdvertisementData();
+        $banners = banner()->loadBanners([CAFE_DOMAIN => cafe()->mainCafeDomains[0], BANNER_TYPE => TOP_BANNER, SUB_CATEGORY => 'abc']);
+        isTrue(count($banners) == 2, 'there must be at least two banners');
+        $banners = banner()->loadBanners([CAFE_DOMAIN => cafe()->mainCafeDomains[0], BANNER_TYPE => TOP_BANNER, SUB_CATEGORY => '']);
+        isTrue(count($banners) == 2, 'there must be at least two banners regardless category.');
+
+
+        $firstHardCodedBanner = banner()->hardCodedTopBanners(1);
+
+        isTrue( $banners[0]->idx == $firstHardCodedBanner[0]->idx, 'idx must be 0' );
+        isTrue( $banners[0]->clickUrl == $firstHardCodedBanner[0]->clickUrl, 'click url match' );
+
     }
 }

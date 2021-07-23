@@ -433,7 +433,7 @@ class AdvertisementModel extends PostModel
      *
      * @param array $in - See `parsePostSearchHttpParams()` for detail input.
      *
-     * @return array|string
+     * @return self[]|string
      * - idx
      * - url
      * - clickUrl
@@ -565,7 +565,12 @@ class AdvertisementModel extends PostModel
         return $posts;
     }
 
-    private function globalBannersOfSameCountry($banner_type, $countryCode)
+    /**
+     * @param $banner_type
+     * @param $countryCode
+     * @return array
+     */
+    private function globalBannersOfSameCountry($banner_type, $countryCode): array
     {
         // Get global banner of same type of same country.
         $where = "code = ? AND subcategory='' AND countryCode='$countryCode' AND " . $this->activeBannerCondition();
@@ -600,11 +605,11 @@ class AdvertisementModel extends PostModel
     }
 
     /**
-     * @param $banner_type
-     * @return array
+     * @param int $count
+     * @return self[]
      * @todo put hardcoded banners.
      */
-    private function hardCodedTopBanners($count)
+    public function hardCodedTopBanners(int $count): array
     {
 
         $p = post();
