@@ -15,54 +15,60 @@ enableTesting();
 $at = new AdvertisementTest();
 
 //
-////
-//$at->lackOfPoint();
-//$at->beginDateEmpty();
-//$at->endDateEmpty();
-//$at->wrongCode();
-//$at->loadBanners();
 //
-////
-//$at->statusCheck();
-//$at->createBanner();
-//$at->zero_point_advertisement();
-//
-////
-//$at->startDeduction();
-//$at->startWithCountryDeduction();
-//$at->stopWithDeductedRefund();
-//$at->stopWithCountryAndDeductedRefund();
-//$at->stopFullRefund();
-//$at->stopWithCountryFullRefund();
-//$at->stopNoRefund();
-//$at->stopOnPastOrExpiredBanner();
-//
-////
-//$at->settings();
-//$at->pointSettings();
-//$at->pointSettingDelete();
-//$at->maximumAdvertisementDays();
-//$at->stopAfterPointSettingChanged();
-//
-////
-//$at->startStopChangeDatesAndCountry();
-//
-////
-//$at->errorDeleteActiveAdvertisement();
-//$at->deleteAdvertisement();
-
+$at->lackOfPoint();
+$at->beginDateEmpty();
+$at->endDateEmpty();
+$at->wrongCode();
+$at->loadBanners();
 
 //
-//$at->globalCategoryBannerPoint();
-//$at->allCountryBannerPoint();
+$at->statusCheck();
+$at->createBanner();
+$at->zero_point_advertisement();
+
 //
-////
-//$at->loadCafeCountryBanners();
+$at->startDeduction();
+$at->startWithCountryDeduction();
+$at->stopWithDeductedRefund();
+$at->stopWithCountryAndDeductedRefund();
+$at->stopFullRefund();
+$at->stopWithCountryFullRefund();
+$at->stopNoRefund();
+$at->stopOnPastOrExpiredBanner();
+
+//
+$at->settings();
+$at->pointSettings();
+$at->pointSettingDelete();
+$at->maximumAdvertisementDays();
+$at->stopAfterPointSettingChanged();
+
+//
+$at->startStopChangeDatesAndCountry();
+
+//
+$at->errorDeleteActiveAdvertisement();
+$at->deleteAdvertisement();
+
+
+
+$at->globalCategoryBannerPoint();
+$at->allCountryBannerPoint();
+
+//
+$at->loadCafeCountryBanners();
 $at->loadAllCountryBanners();
 
+
+$at->topBannerLoad();
+$at->squareBannerLoad();
+
 //
-//$at->topBannerLoad();
-//$at->squareBannerLoad();
+$at->bannerLimit(TOP_BANNER);
+$at->bannerLimit(SIDEBAR_BANNER);
+$at->bannerLimit(SQUARE_BANNER);
+$at->bannerLimit(LINE_BANNER);
 
 class AdvertisementTest
 {
@@ -72,9 +78,10 @@ class AdvertisementTest
         $this->resetGlobalMulplying();
     }
 
-    private function clearAdvertisementData() {
+    private function clearAdvertisementData()
+    {
         $cat = category(ADVERTISEMENT_CATEGORY);
-        db()->delete( post()->getTable(), [CATEGORY_IDX => $cat->idx] );
+        db()->delete(post()->getTable(), [CATEGORY_IDX => $cat->idx]);
     }
     /**
      * 배너 하나 생성. 그 배너는 글/제목 등만 있고, 배너 포인트나 기간 등의 옵션은 설정되지 않은 상태이다.
@@ -142,6 +149,14 @@ class AdvertisementTest
     private function resetAdvertisementCategories($categories = '')
     {
         adminSettings()->set(ADVERTISEMENT_CATEGORIES, $categories);
+    }
+
+    private function resetBannerLimit(string $banner_type, int $value, $category = true)
+    {
+        if ($category) $category = 'Category';
+        else $category = "Global";
+        $banner_type = ucfirst($banner_type);
+        adminSettings()->set("maxNoOn{$category}{$banner_type}Banner", $value);
     }
 
     // 배너 생성 테스트
@@ -1061,7 +1076,6 @@ class AdvertisementTest
 
     function loadAllCountryBanners()
     {
-
         $this->clearAdvertisementData();
         $this->resetBannerPoints();
         registerAndLogin(1000000);
@@ -1095,33 +1109,22 @@ class AdvertisementTest
 
         $fetchOptions = ['cafeDomain' => $domainA, CODE => LINE_BANNER];
 
-        $banners = advertisement()->loadBanners([ CAFE_DOMAIN => $domainA, BANNER_TYPE => LINE_BANNER ]);
+        $banners = advertisement()->loadBanners([CAFE_DOMAIN => $domainA, BANNER_TYPE => LINE_BANNER]);
         isTrue(count($banners) == 1, 'There should be only one adv');
 
         // Both cafe should have the banner as it is set to $allCountryCode
         $re = request("advertisement.loadBanners", $fetchOptions);
 
-
-
         isTrue($this->bannerIsPresent($banner, $re), "cafeDomain $domainA must have all country banner.");
 
-//
         $fetchOptions = ['cafeDomain' => $domainB, CODE => LINE_BANNER];
         $re = request("advertisement.loadBanners", $fetchOptions);
         isTrue($this->bannerIsPresent($banner, $re), "cafeDomain B ($domainB) must have also the same all country banner");
 
-
-
-//
-        // $cafeA should have the banner since it is changed to display only on $countryCodeA
-        $updatedBanner = banner($banner[IDX])->update([ COUNTRY_CODE => $countryCodeA ]);
-//        d($updatedBanner);
-//        $banners = advertisement()->loadBanners([ CAFE_DOMAIN => $domainA, BANNER_TYPE => LINE_BANNER ]);
-//        isTrue($this->bannerIsPresent($banner, $banners), "cafeDomain A must have the same the banner.");
-
+        banner($banner[IDX])->update([COUNTRY_CODE => $countryCodeA]);
         $re = request("advertisement.loadBanners", [CAFE_DOMAIN => $domainA, CODE => LINE_BANNER]);
         isTrue($this->bannerIsPresent($banner, $re), "cafeDomain A must have the same the banner.");
-//
+
         // $cafeB should not have the banner.
         $re = request("advertisement.loadBanners", [CAFE_DOMAIN => $domainB, CODE => LINE_BANNER]);
         isTrue($this->bannerIsPresent($banner, $re) == false, "Expect: Banner is not present in active banners.");
@@ -1130,13 +1133,12 @@ class AdvertisementTest
 
         $re = request("advertisement.loadBanners", [CAFE_DOMAIN => $domainA, CODE => LINE_BANNER]);
         isTrue($this->bannerIsPresent($banner, $re) == false, "cafeDomain A must have no banner since it is stopped.");
-
     }
 
 
     function allCountryBannerPoint()
     {
-
+        $this->clearAdvertisementData();
         $cafeCountryCode = "PH";
         $allCountryCode = "AC";
 
@@ -1190,6 +1192,7 @@ class AdvertisementTest
 
     function topBannerLoad()
     {
+        $this->clearAdvertisementData();
         $this->resetBannerPoints('', 1000, 2000, 3000, 4000);
         registerAndLogin(1000000);
 
@@ -1212,7 +1215,7 @@ class AdvertisementTest
 
         // create one for global all country
         $banner1 = $this->createAndStartAdvertisement($advOpts);
-        
+
         // create one for test cafe country.
         $advOpts[COUNTRY_CODE] = $countryCode;
         $advOpts[SUB_CATEGORY] = $subCategory;
@@ -1222,18 +1225,15 @@ class AdvertisementTest
         $fetchOptions = [CAFE_DOMAIN => $domain, CODE => TOP_BANNER, SUB_CATEGORY => $subCategory];
         $banners = request("advertisement.loadBanners", $fetchOptions);
 
-        // expect tall banner is present.
-        isTrue(count($banners) > 1, 'banners should be more than or equal to 2');
+        // expect all banner is present.
+        isTrue(count($banners) >= 2, 'banners should be more than or equal to 2');
         isTrue($this->bannerIsPresent($banner1, $banners), 'banner 1 is present');
         isTrue($this->bannerIsPresent($banner2, $banners), 'banner 2 is present');
-
-
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner1[IDX]]);
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner2[IDX]]);
     }
 
     function squareBannerLoad()
     {
+        $this->clearAdvertisementData();
         $this->resetBannerPoints('', square: 1000);
         registerAndLogin(1000000);
 
@@ -1264,7 +1264,7 @@ class AdvertisementTest
         $advOpts[COUNTRY_CODE] = $countryCode;
         $advOpts[SUB_CATEGORY] = '';
         $banner3 = $this->createAndStartAdvertisement($advOpts);
-        
+
         // create one for category cafe country.
         $advOpts[SUB_CATEGORY] = $subCategory;
         $banner4 = $this->createAndStartAdvertisement($advOpts);
@@ -1274,16 +1274,44 @@ class AdvertisementTest
         $banners = request("advertisement.loadBanners", $fetchOptions);
 
         // expect all banners are present.
-        isTrue(count($banners) > 3, 'banners should be more than or equal to 4');
+        isTrue(count($banners) >= 4, 'banners should be more than or equal to 4');
         isTrue($this->bannerIsPresent($banner1, $banners), 'banner 1 is present');
         isTrue($this->bannerIsPresent($banner2, $banners), 'banner 2 is present');
         isTrue($this->bannerIsPresent($banner3, $banners), 'banner 3 is present');
         isTrue($this->bannerIsPresent($banner4, $banners), 'banner 4 is present');
+    }
 
+    function bannerLimit(string $banner_type)
+    {
 
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner1[IDX]]);
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner2[IDX]]);
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner3[IDX]]);
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner4[IDX]]);
+        $this->clearAdvertisementData();
+        $this->resetBannerPoints(top: 1000);
+        registerAndLogin(1000000);
+
+        $advOpts = [
+            COUNTRY_CODE => 'T1',
+            CODE => $banner_type,
+            'beginDate' => time(),
+            'endDate' => strtotime('+1 day'),
+            'fileIdxes' => '1'
+        ];
+
+        $this->resetBannerLimit($banner_type, 2, false); // Global
+        $this->resetBannerLimit($banner_type, 2); // Category
+
+        $adv1 = $this->createAndStartAdvertisement($advOpts);
+        isTrue($adv1[IDX] != 0, "advertisement is created and activated. GLOBAL - " . $banner_type);
+        $adv2 = $this->createAndStartAdvertisement($advOpts);
+        isTrue($adv2[IDX] != 0, "advertisement is created and activated. GLOBAL - " . $banner_type);
+        $adv3 = $this->createAndStartAdvertisement($advOpts);
+        isTrue($adv3 == e()->max_no_banner_limit_exeeded, "advertisement cannot be activated because limit has been reached. GLOBAL - " . $banner_type);
+
+        $advOpts[SUB_CATEGORY] = 'abc' . time();
+        $adv1 = $this->createAndStartAdvertisement($advOpts);
+        isTrue($adv1[IDX] != 0, "advertisement is created and activated. GLOBAL - " . $banner_type);
+        $adv2 = $this->createAndStartAdvertisement($advOpts);
+        isTrue($adv2[IDX] != 0, "advertisement is created and activated. GLOBAL - " . $banner_type);
+        $adv3 = $this->createAndStartAdvertisement($advOpts);
+        isTrue($adv3 == e()->max_no_banner_limit_exeeded, "advertisement cannot be activated because limit has been reached. GLOBAL - " . $banner_type);
     }
 }
