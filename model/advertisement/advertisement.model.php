@@ -294,7 +294,7 @@ class AdvertisementModel extends PostModel
 
         // BANNER LIMIT 
         // @todo do test.
-        // If max number of banner limit is bigger than 0 and banner count is bigger than max banner limit
+        // If max number of banner limit is bigger than 0 and banner count is bigger than or equal max banner limit.
         $no = $this->maxNoOf($in[BANNER_TYPE], $category);
         $bannerCount = $this->bannerCountOf($in[BANNER_TYPE], $category, $banner->countryCode, false);
         if ($no > 0 && $no <= $bannerCount) return $this->error(e()->max_no_banner_limit_exeeded);
@@ -477,7 +477,6 @@ class AdvertisementModel extends PostModel
      *
      *
      * @param string $banner_type
-     * @param bool $hardCodedBanners - if set to true, it will return hard coded banners when there is no banners at all.
      */
     private function loadBannersOf(string $banner_type, string $banner_category, string $countryCode)
     {
@@ -517,7 +516,7 @@ class AdvertisementModel extends PostModel
     }
 
     /**
-     * returns count of active banners according to type, category, countryCode.
+     * returns count of active banners according to type, category and countryCode.
      */
     private function bannerCountOf(string $banner_type, string $banner_category = '', string $countryCode = ALL_COUNTRY_CODE)
     {
@@ -601,7 +600,7 @@ class AdvertisementModel extends PostModel
      * @return array
      * @todo put hardcoded banners.
      */
-    private function hardCodedTopBanners($banner_type, $count)
+    private function hardCodedTopBanners($count)
     {
 
         $p = post();

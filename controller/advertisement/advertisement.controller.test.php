@@ -76,6 +76,10 @@ class AdvertisementTest
     function __construct()
     {
         $this->resetGlobalMulplying();
+        $this->resetBannerLimit(TOP_BANNER);
+        $this->resetBannerLimit(SIDEBAR_BANNER);
+        $this->resetBannerLimit(SQUARE_BANNER);
+        $this->resetBannerLimit(LINE_BANNER);
     }
 
     private function clearAdvertisementData()
@@ -151,7 +155,7 @@ class AdvertisementTest
         adminSettings()->set(ADVERTISEMENT_CATEGORIES, $categories);
     }
 
-    private function resetBannerLimit(string $banner_type, int $value, $category = true)
+    private function resetBannerLimit(string $banner_type, $value = 0, $category = true)
     {
         if ($category) $category = 'Category';
         else $category = "Global";
@@ -621,7 +625,6 @@ class AdvertisementTest
      */
     function stopFullRefund()
     {
-
         $startingPoint = 900000;
         registerAndLogin($startingPoint);
         $this->resetBannerPoints(line: 3450);
@@ -719,6 +722,7 @@ class AdvertisementTest
      */
     function startStopChangeDatesAndCountry()
     {
+        $this->clearAdvertisementData();
         $startingPoint = 800000;
         registerAndLogin($startingPoint);
         $this->resetBannerPoints(square: 2020, line: 1580,);
@@ -863,7 +867,6 @@ class AdvertisementTest
 
     function pointSettingDelete()
     {
-
         $admin = setLoginAsAdmin();
         $countryCode = "US";
 
@@ -903,8 +906,8 @@ class AdvertisementTest
 
     function stopAfterPointSettingChanged()
     {
-
-        $admin = setLoginAsAdmin();
+        $this->clearAdvertisementData();
+        setLoginAsAdmin();
         $countryCode = "PH";
 
         $this->resetBannerPoints($countryCode, 1000, 2000, 3000, 4000);
@@ -949,6 +952,7 @@ class AdvertisementTest
 
     function globalCategoryBannerPoint()
     {
+        $this->clearAdvertisementData();
         $globalMultiplying = rand(2, 5);
         $this->resetGlobalMulplying($globalMultiplying);
 
@@ -1016,6 +1020,7 @@ class AdvertisementTest
     function loadCafeCountryBanners()
     {
 
+        $this->clearAdvertisementData();
         $startingPoint = 800000;
         registerAndLogin($startingPoint);
 
@@ -1069,9 +1074,6 @@ class AdvertisementTest
         $re = request("advertisement.loadBanners", $fetchOptions);
         isTrue($this->bannerIsPresent($adv1, $re) == false, 'Expect: ADV 1 is not present');
         isTrue($this->bannerIsPresent($adv2, $re) == false, 'Expect: ADV 2 is not present');
-
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv1[IDX]]);
-        request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $adv2[IDX]]);
     }
 
     function loadAllCountryBanners()
