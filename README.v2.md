@@ -1549,14 +1549,17 @@ isTrue((new AppController())->version(), "App version");
 
 You can read it from left to right.
 
-For instance, "Top banner is displayed on Top. And displayed always on Desktop. And displayed on always on Mobile.".
+For instance, "Top banner is displayed on Top. And displayed always on Desktop. And displayed on main page on Mobile.".
 
 Banner Type|Place on Desktop|Place on Mobile|Class|Limit
 ------|-----|-------|------|-----
-Top Banner|Top|Top|Global & Category|10 global banners. 2 banners per each category.
+Top Banner|Top|Main|Global & Category|10 global banners. 2 banners per each category.
 Sidebar Banner|Sidebar|Main|Global & Category|4 global banners. 2 banners per each category.
 Square Banner|Category page|Category page|Category only|5 global banners. 12 banners per each category.
 Line Banner |Category page|Category page|Category only|5 global banners. 5 banners per each category.
+
+* Note, that admin can change the number of banners in the table above in admin page setting. So, just consider the
+  numbers in table are for examples.
 
 * Class\
   If the banner type has `global & category` class, global banner will take place when there is no category banner for that category.
@@ -1564,11 +1567,12 @@ Line Banner |Category page|Category page|Category only|5 global banners. 5 banne
 
 ### Top banner rotation
 
-- total of 10 global banner can be uploaded.
+- If the no of global top banner is set to 10, then only 10 global banner can be uploaded.
 - when there is no top banner (for a category or or site), **default banner** will be displayed.
-- when there is only 1 global banner, the global banner will be displayed on left, and **default banner** will be displayed on right.
+- when there is only 1 global banner (for a category or a site), then, that global banner will be displayed on left, and
+  **default banner** will be displayed on right.
 - when there are 2 global banners, they will be displayed on one left side, and the other right side.
-- when there are more than 2 global banners, the will be divided into two group and one group will be displayed on left, and the other group will be displayed on right.
+- when there are more than 2 global banners, they will be divided into two group and one group will be displayed on left, and the other group will be displayed on right.
 - If a category has no category banner, then, global banner will be displayed just the way it is displayed as globally.
   If there no available(global) banner, then **default banner** will be displayed.
 - If a category has only one category banner, then the category banner will be display on left side and all the global

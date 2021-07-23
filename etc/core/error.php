@@ -227,6 +227,8 @@ class E {
     public string $empty_square_banner_point = 'error_empty_square_banner_point';
     public string $empty_line_banner_point = 'error_empty_line_banner_point';
     public string $invalid_value = 'error_invalid_value';
+    public string $max_no_banner_limit_exeeded = 'error_max_no_banner_limit_exeeded';
+
 
     public string $more_than_90days_date_difference = 'error_more_than_90days_date_difference';
 

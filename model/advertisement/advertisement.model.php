@@ -145,6 +145,15 @@ class AdvertisementModel extends PostModel
         return intVal(adminSettings()->get('maximumAdvertisementDays') ?? 0);
     }
 
+    public function maxNoOf($banner_type, $category) {
+        if ( $category ) $cat = "Category";
+        else $cat = "Global";
+        $banner_type = ucfirst($banner_type);
+        return adminSettings()->get("maxNoOn{$cat}{$banner_type}Banner") ?? 0;
+    }
+
+
+
 
     public function globalBannerMultiplying(): int
     {
@@ -297,6 +306,10 @@ class AdvertisementModel extends PostModel
         // Save total point for the advertisement periods.
         $in[ADVERTISEMENT_POINT] = $in[POINT_PER_DAY] * $days;
 
+        // @todo do test.
+        $no = $this->maxNoOf($in[BANNER_TYPE], $in[SUB_CATEGORY]);
+        $banners = $this->loadBannersOf($in[BANNER_TYPE], $in[SUB_CATEGORY], $banner->countryCode );
+        if ( $no > count($banners) ) return $this->error(e()->max_no_banner_limit_exeeded);
 
 
         // check if the user has enough point
@@ -304,7 +317,9 @@ class AdvertisementModel extends PostModel
             return $this->error(e()->lack_of_point);
         }
 
-        // @todo check if the number of banner exceeds from admin settgins.
+        // @todo check if the number of banner exceeds from admin settings.
+
+
 
         // Record for post creation and change point.
         $activity = userActivity()->changePoint(
@@ -571,31 +586,22 @@ class AdvertisementModel extends PostModel
      * @todo put hardcoded banners.
      */
     private function hardCodedTopBanners($banner_type, $count) {
-        $banners = [
-            [
-                IDX => 0,
-                URL => '',
-                CLICK_URL => 'https://katalkenglish.com',
-                BANNER_URL => 'https://sonub.com/img/banner/katalkenglish.com.jpg',
-                SUB_CATEGORY => '',
-                CODE => TOP_BANNER,
-                COUNTRY_CODE => ALL_COUNTRY_CODE,
-                TITLE => '',
-            ],
-        ];
+
+        $p = post();
+        $p->updateMemoryData(CLICK_URL, 'https://katalkenglish.com');
+        $p->updateMemoryData(BANNER_URL, 'https://sonub.com/img/banner/katalkenglish.com.jpg');
+        $p->updateMemoryData(CODE, TOP_BANNER);
+
+        $banners = [ $p ];
         if ( $count == 1 ) {
             return $banners;
         }
-        $banners[] = [
-                IDX => 0,
-                URL => '',
-                CLICK_URL => 'https://withcenter.com',
-                BANNER_URL => 'https://sonub.com/img/banner/withcenter.com.jpg',
-                SUB_CATEGORY => '',
-                CODE => TOP_BANNER,
-                COUNTRY_CODE => ALL_COUNTRY_CODE,
-                TITLE => '',
-            ];
+        $p = post();
+        $p->updateMemoryData(CLICK_URL, 'https://withcenter.com');
+        $p->updateMemoryData(BANNER_URL, 'https://sonub.com/img/banner/withcenter.com.jpg');
+        $p->updateMemoryData(CODE, TOP_BANNER);
+
+        $banners[] = $p;
         return $banners;
     }
 
