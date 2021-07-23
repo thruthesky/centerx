@@ -304,6 +304,8 @@ class AdvertisementModel extends PostModel
             return $this->error(e()->lack_of_point);
         }
 
+        // @todo check if the number of banner exceeds from admin settgins.
+
         // Record for post creation and change point.
         $activity = userActivity()->changePoint(
             action: 'advertisement.start',
@@ -439,6 +441,7 @@ class AdvertisementModel extends PostModel
 
         if ( !isset($in[BANNER_TYPE]) || empty($in[BANNER_TYPE]) ) return e()->empty_banner_type;
 
+//        d('cafe countryCode: ' . $cafe->countryCode);
 
         return $this->loadBannersOf( $in[BANNER_TYPE], $in[BANNER_CATEGORY] ?? GLOBAL_BANNER_CATEGORY, $cafe->countryCode ?? ALL_COUNTRY_CODE );
     }
@@ -454,16 +457,18 @@ class AdvertisementModel extends PostModel
      * Get global banner of same type of all country. If non exists, then,
      * Get hard coded banner on the source code(or admin settings).
      *
-     * Top banner must return at least 2 banners.
-     * Sidebar banner must return at least 1 banner.
-     * Square banner must return minimum of 4 banners. (this may be changed depending on the design)
-     * Line banner must return at least 1 banner.
+     * Top banner must return at least 2 banners. which means, if there is no banner at all, hard coded banner will be returned.
+     * Sidebar banner must return at least 1 banner. either country banner or call country banner. But no hard coded banner.
+     * Square banner must return minimum of 4 banners. (this may be changed depending on the design). either country banner or call country banner. But no hard coded banner.
+     * Line banner must return at least 1 banner. either country banner or call country banner. But no hard coded banner.
      *
      *
      * @param string $banner_type
      */
     private function loadBannersOf( string $banner_type, string $banner_category, string $countryCode ) {
+
         if ( $banner_type == SIDEBAR_BANNER || $banner_type == LINE_BANNER ) {
+
             $posts = $this->categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode);
             if ( $posts ) return $posts;
             $posts = $this->globalBannersOfSameCountry($banner_type, $countryCode);
@@ -471,8 +476,6 @@ class AdvertisementModel extends PostModel
             $posts = $this->categoryBannersOfAllCountry($banner_type, $banner_category);
             if ( $posts ) return $posts;
             $posts = $this->globalBannersOfAllCountry($banner_type);
-            if ( $posts ) return $posts;
-            $posts = $this->hardCodedBanners($banner_type);
             return $posts;
         } else if ( $banner_type == TOP_BANNER ) {
             $posts = $this->categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode);
@@ -483,7 +486,7 @@ class AdvertisementModel extends PostModel
             if ( count($posts) >= 2 ) return $posts;
             $posts = array_merge($posts, $this->globalBannersOfAllCountry($banner_type));
             if ( count($posts) >= 2 ) return $posts;
-            $posts = array_merge($posts, $this->hardCodedBanners($banner_type));
+            $posts = array_merge($posts, $this->hardCodedTopBanners($banner_type, count($posts)));
             return $posts;
         } else if ( $banner_type == SQUARE_BANNER ) {
             $posts = $this->categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode);
@@ -493,8 +496,6 @@ class AdvertisementModel extends PostModel
             $posts = array_merge($posts, $this->categoryBannersOfAllCountry($banner_type, $banner_category));
             if ( count($posts) >= 4 ) return $posts;
             $posts = array_merge($posts, $this->globalBannersOfAllCountry($banner_type));
-            if ( count($posts) >= 4 ) return $posts;
-            $posts = array_merge($posts, $this->hardCodedBanners($banner_type));
             return $posts;
         }
         return e()->wrong_banner_type;
@@ -509,7 +510,7 @@ class AdvertisementModel extends PostModel
         // Get banner of same type of same category of same country.
 
         // endAt is the 0 second of last day.
-        $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND beginAt <= $now AND endAt >= $today AND fileIdxes != ''";
         $params = [ $banner_type, $banner_category ];
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
         return $posts;
@@ -517,14 +518,21 @@ class AdvertisementModel extends PostModel
 
     private function globalBannersOfSameCountry($banner_type, $countryCode) {
 
+//        d("private function globalBannersOfSameCountry($banner_type, $countryCode) {");
+
         $now = time();
         $today = today(); // 0 second of today.
         $limit = $in['limit'] ?? 500; // Just in case, it limits 500 records. But it should follow the rules of README.
 
 
         // Get global banner of same type of same country.
-        $where = "code = ? AND subcategory='' AND countryCode='$countryCode' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $where = "code = ? AND subcategory='' AND countryCode='$countryCode' AND beginAt <= $now AND endAt >= $today AND fileIdxes != ''";
         $params = [ $banner_type ];
+
+
+//            d($where);
+//            d($params);
+
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
          return $posts;
     }
@@ -538,7 +546,7 @@ class AdvertisementModel extends PostModel
         $ac = ALL_COUNTRY_CODE;
 
         // Get banner of same type of same category of all country.
-        $where = "code = ? AND subcategory=? AND countryCode='$ac' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $where = "code = ? AND subcategory=? AND countryCode='$ac' AND beginAt <= $now AND endAt >= $today AND fileIdxes != ''";
         $params = [ $banner_type, $banner_category ];
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
         return $posts;
@@ -551,7 +559,7 @@ class AdvertisementModel extends PostModel
         $ac = ALL_COUNTRY_CODE;
 
         // Get global banner of same type of all country.
-        $where = "code = ? AND subcategory='' AND countryCode='$ac' AND beginAt < $now AND endAt >= $today AND fileIdxes != ''";
+        $where = "code = ? AND subcategory='' AND countryCode='$ac' AND beginAt <= $now AND endAt >= $today AND fileIdxes != ''";
         $params = [ $banner_type ];
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: $limit);
         return $posts;
@@ -562,8 +570,33 @@ class AdvertisementModel extends PostModel
      * @return array
      * @todo put hardcoded banners.
      */
-    private function hardCodedBanners($banner_type) {
-        return [];
+    private function hardCodedTopBanners($banner_type, $count) {
+        $banners = [
+            [
+                IDX => 0,
+                URL => '',
+                CLICK_URL => 'https://katalkenglish.com',
+                BANNER_URL => 'https://sonub.com/img/banner/katalkenglish.com.jpg',
+                SUB_CATEGORY => '',
+                CODE => TOP_BANNER,
+                COUNTRY_CODE => ALL_COUNTRY_CODE,
+                TITLE => '',
+            ],
+        ];
+        if ( $count == 1 ) {
+            return $banners;
+        }
+        $banners[] = [
+                IDX => 0,
+                URL => '',
+                CLICK_URL => 'https://withcenter.com',
+                BANNER_URL => 'https://sonub.com/img/banner/withcenter.com.jpg',
+                SUB_CATEGORY => '',
+                CODE => TOP_BANNER,
+                COUNTRY_CODE => ALL_COUNTRY_CODE,
+                TITLE => '',
+            ];
+        return $banners;
     }
 
     public function responses(array $posts) {

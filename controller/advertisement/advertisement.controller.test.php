@@ -14,54 +14,55 @@ setLogout();
 enableTesting();
 $at = new AdvertisementTest();
 
+//
+////
+//$at->lackOfPoint();
+//$at->beginDateEmpty();
+//$at->endDateEmpty();
+//$at->wrongCode();
+//$at->loadBanners();
+//
+////
+//$at->statusCheck();
+//$at->createBanner();
+//$at->zero_point_advertisement();
+//
+////
+//$at->startDeduction();
+//$at->startWithCountryDeduction();
+//$at->stopWithDeductedRefund();
+//$at->stopWithCountryAndDeductedRefund();
+//$at->stopFullRefund();
+//$at->stopWithCountryFullRefund();
+//$at->stopNoRefund();
+//$at->stopOnPastOrExpiredBanner();
+//
+////
+//$at->settings();
+//$at->pointSettings();
+//$at->pointSettingDelete();
+//$at->maximumAdvertisementDays();
+//$at->stopAfterPointSettingChanged();
+//
+////
+//$at->startStopChangeDatesAndCountry();
+//
+////
+//$at->errorDeleteActiveAdvertisement();
+//$at->deleteAdvertisement();
+
 
 //
-$at->lackOfPoint();
-$at->beginDateEmpty();
-$at->endDateEmpty();
-$at->wrongCode();
-$at->loadBanners();
-
+//$at->globalCategoryBannerPoint();
+//$at->allCountryBannerPoint();
 //
-$at->statusCheck();
-$at->createBanner();
-$at->zero_point_advertisement();
-
-//
-$at->startDeduction();
-$at->startWithCountryDeduction();
-$at->stopWithDeductedRefund();
-$at->stopWithCountryAndDeductedRefund();
-$at->stopFullRefund();
-$at->stopWithCountryFullRefund();
-$at->stopNoRefund();
-$at->stopOnPastOrExpiredBanner();
-
-//
-$at->settings();
-$at->pointSettings();
-$at->pointSettingDelete();
-$at->maximumAdvertisementDays();
-$at->stopAfterPointSettingChanged();
-
-//
-$at->startStopChangeDatesAndCountry();
-
-//
-$at->errorDeleteActiveAdvertisement();
-$at->deleteAdvertisement();
-
-//
-$at->globalCategoryBannerPoint();
-$at->allCountryBannerPoint();
-
-//
-$at->loadCafeCountryBanners();
+////
+//$at->loadCafeCountryBanners();
 $at->loadAllCountryBanners();
 
 //
-$at->topBannerLoad();
-$at->squareBannerLoad();
+//$at->topBannerLoad();
+//$at->squareBannerLoad();
 
 class AdvertisementTest
 {
@@ -71,6 +72,10 @@ class AdvertisementTest
         $this->resetGlobalMulplying();
     }
 
+    private function clearAdvertisementData() {
+        $cat = category(ADVERTISEMENT_CATEGORY);
+        db()->delete( post()->getTable(), [CATEGORY_IDX => $cat->idx] );
+    }
     /**
      * 배너 하나 생성. 그 배너는 글/제목 등만 있고, 배너 포인트나 기간 등의 옵션은 설정되지 않은 상태이다.
      * @return mixed|null
@@ -187,7 +192,8 @@ class AdvertisementTest
         isTrue($re->beginAt > 0, "광고 시작 됨");
     }
 
-    private function bannerIsPresent(mixed $banner, array $banners): bool
+
+    private function bannerIsPresent(mixed $banner, mixed $banners): bool
     {
         if (!$banner || !$banners || empty($banners)) return false;
 
@@ -1056,6 +1062,7 @@ class AdvertisementTest
     function loadAllCountryBanners()
     {
 
+        $this->clearAdvertisementData();
         $this->resetBannerPoints();
         registerAndLogin(1000000);
 
@@ -1069,7 +1076,8 @@ class AdvertisementTest
 
         $countryCodeA = 'AA';
         $countryCodeB = 'ZZ';
-        $allCountryCode = "AC";
+        $allCountryCode = ALL_COUNTRY_CODE;
+
 
         // create cafes with different country codes.
         cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomainA, 'countryCode' => $countryCodeA]); // cafeA
@@ -1084,28 +1092,45 @@ class AdvertisementTest
             'fileIdxes' => '1',
         ]);
 
+
         $fetchOptions = ['cafeDomain' => $domainA, CODE => LINE_BANNER];
+
+        $banners = advertisement()->loadBanners([ CAFE_DOMAIN => $domainA, BANNER_TYPE => LINE_BANNER ]);
+        isTrue(count($banners) == 1, 'There should be only one adv');
 
         // Both cafe should have the banner as it is set to $allCountryCode
         $re = request("advertisement.loadBanners", $fetchOptions);
-        isTrue($this->bannerIsPresent($banner, $re), "Expect: Banner is present in active banners.");
+
+
+
+        isTrue($this->bannerIsPresent($banner, $re), "cafeDomain $domainA must have all country banner.");
+
+//
+        $fetchOptions = ['cafeDomain' => $domainB, CODE => LINE_BANNER];
         $re = request("advertisement.loadBanners", $fetchOptions);
-        isTrue($this->bannerIsPresent($banner, $re), "Expect: Banner is present in active banners.");
+        isTrue($this->bannerIsPresent($banner, $re), "cafeDomain B ($domainB) must have also the same all country banner");
 
-        // Change banner to display on $countryCodeA ($cafeA)
-        $banner[COUNTRY_CODE] = $countryCodeA;
-        post($banner[IDX])->update($banner);
 
+
+//
         // $cafeA should have the banner since it is changed to display only on $countryCodeA
-        $re = request("advertisement.loadBanners", $fetchOptions);
-        isTrue($this->bannerIsPresent($banner, $re), "Expect: Banner is present in active banners.");
+        $updatedBanner = banner($banner[IDX])->update([ COUNTRY_CODE => $countryCodeA ]);
+//        d($updatedBanner);
+//        $banners = advertisement()->loadBanners([ CAFE_DOMAIN => $domainA, BANNER_TYPE => LINE_BANNER ]);
+//        isTrue($this->bannerIsPresent($banner, $banners), "cafeDomain A must have the same the banner.");
 
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => $domainA, CODE => LINE_BANNER]);
+        isTrue($this->bannerIsPresent($banner, $re), "cafeDomain A must have the same the banner.");
+//
         // $cafeB should not have the banner.
-        $fetchOptions['cafeDomain'] = $domainB;
-        $re = request("advertisement.loadBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => $domainB, CODE => LINE_BANNER]);
         isTrue($this->bannerIsPresent($banner, $re) == false, "Expect: Banner is not present in active banners.");
 
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $banner[IDX]]);
+
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => $domainA, CODE => LINE_BANNER]);
+        isTrue($this->bannerIsPresent($banner, $re) == false, "cafeDomain A must have no banner since it is stopped.");
+
     }
 
 

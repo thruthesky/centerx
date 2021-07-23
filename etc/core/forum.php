@@ -242,10 +242,13 @@ class Forum extends Entity {
 
     /**
      * 입력된 시작날짜와 끝날짜를 timestamp 로 변환해서 리턴한다.
+     *
      * If `beginAt` and `endAt` are string, then Convert it into timestamp.
      * If `beginAt` and `endAt` are empty and `beginDate` and `endDate` are not,
      *  then convert `beginDate` and `endDate` into timestamp and save it in `beginAt`, `endAt`.
      *  then, unset `beginDate` and `endDate`.
+     * If all of them - `beginAt`, `beginDate`, `endAt`, `endDate` - are empty, then it will not update the time on database record.
+     *  - It will remain the same value.
      *
      *
      * @note, The vue.js client end is submitting data as `$in[beginDate] => 2021-07-21` and `$in[endDate] => 2021-07-22`
@@ -272,7 +275,7 @@ class Forum extends Entity {
             $in[BEGIN_AT] = dateToTime($in['beginDate']);
             unset($in['beginDate']);
         } else {
-            $in[BEGIN_AT] = 0;
+//            $in[BEGIN_AT] = 0;
         }
 
         if ( isset($in[END_AT]) && $in[END_AT] ) {
@@ -281,7 +284,7 @@ class Forum extends Entity {
             $in[END_AT] = dateToTime($in['endDate']);
             unset($in['endDate']);
         } else {
-            $in[END_AT] = 0;
+//            $in[END_AT] = 0;
         }
 
 

@@ -155,6 +155,7 @@ const BODY = 'body';
 const CLICK_ACTION = 'click_action';
 const CLICK_URL = 'clickUrl';
 const IMAGE_URL = 'imageUrl';
+const BANNER_URL = 'bannerUrl';
 const SOUND = 'sound';
 const CHANNEL = 'channel';
 

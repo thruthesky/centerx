@@ -74,6 +74,18 @@ class MySQLiDatabase {
         return $this->connection->query($sql);
     }
 
+    /**
+     * @deprecated Warning - Do not use this method. It it protected by running only cli or localhost.
+     * @param $table
+     * @return mixed
+     */
+    public function truncate($table): mixed {
+        if ( isCli() || isLocalhost() ) {
+            return $this->query("TRUNCATE $table");
+        } else {
+            return false;
+        }
+    }
 
     /**
      * @param string $table
