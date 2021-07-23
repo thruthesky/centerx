@@ -159,6 +159,16 @@ class UserRoute {
         return ['idx' => $created->idx];
     }
 
+    public function list() {
+        $rows = db()->get_results("SELECT idx FROM " . entity(USERS)->getTable(), ARRAY_A);
+        $rets = [];
+        foreach( $rows as $row ) {
+            $idx = $row[IDX];
+            $rets[] = user($idx)->shortProfile(firebaseUid: true);
+        }
+        return $rets;
+    }
+
 }
 
 

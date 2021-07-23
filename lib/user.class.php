@@ -369,7 +369,6 @@ class User extends Entity {
         }
         return parent::update($in);
     }
-
 }
 
 /**
