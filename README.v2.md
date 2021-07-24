@@ -77,6 +77,8 @@
     
 - `enableDebugging()`, `disableDebugging()` 함수 삭제.
 
+- PSR 규칙을 따른다.
+
 ## 버전 2
 
 - 버전 2 에서 이름이 Centerx 에서 Matrix 로 변경이 되었다.
