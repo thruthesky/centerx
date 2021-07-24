@@ -17,6 +17,7 @@ const GLOBAL_BANNER_CATEGORY = '';
 /**
  * Class AdvertisementModel
  * @property-read string $clickUrl
+ * @property-read string $bannerUrl
  * @property-read string $pointPerDay
  * @property-read string $advertisementPoint
  */
@@ -631,7 +632,7 @@ class AdvertisementModel extends PostModel
     }
 
     /**
-     * @param array $posts
+     * @param AdvertisementModel[] $posts
      * @return array
      */
     public function responses(array $posts): array
@@ -643,7 +644,8 @@ class AdvertisementModel extends PostModel
                 'idx' => $post->idx,
                 'url' => $post->relativeUrl,
                 'clickUrl' => $post->clickUrl,
-                'bannerUrl' => $post->fileByCode('banner')->url,
+                // default top banner 의 경우, bannerUrl 이 넘어온다.
+                'bannerUrl' => $post->bannerUrl ??  $post->fileByCode('banner')->url,
                 'subcategory' => $post->subcategory, // if it's empty, it's global.
                 'code' => $post->code,
                 'countryCode' => $post->countryCode, // it may be all country.

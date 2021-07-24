@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "ccf1a72a4f35ee273344",
-    "url": "/css/app.42aa1346.css"
+    "revision": "ccfae68ed66fdd6e6c87",
+    "url": "/css/app.c5fec359.css"
   },
   {
-    "revision": "ccf1a72a4f35ee273344",
-    "url": "/css/app.42aa1346.css.map"
+    "revision": "ccfae68ed66fdd6e6c87",
+    "url": "/css/app.c5fec359.css.map"
   },
   {
     "revision": "77ba6b47d221e3178a0b",
@@ -96,11 +96,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/css/chunk-566c488e.3236f4b3.css.map"
   },
   {
-    "revision": "ea72ee89df8260bb9f63",
+    "revision": "999b106bf55702820c95",
     "url": "/css/chunk-6008255e.74b75cc7.css"
   },
   {
-    "revision": "ea72ee89df8260bb9f63",
+    "revision": "999b106bf55702820c95",
     "url": "/css/chunk-6008255e.74b75cc7.css.map"
   },
   {
@@ -120,11 +120,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/css/chunk-753a05f2.ec6c4457.css.map"
   },
   {
-    "revision": "24237118e91e0df79439",
+    "revision": "00f083d851ea7e226726",
     "url": "/css/chunk-9b424cde.5a9e6c12.css"
   },
   {
-    "revision": "24237118e91e0df79439",
+    "revision": "00f083d851ea7e226726",
     "url": "/css/chunk-9b424cde.5a9e6c12.css.map"
   },
   {
@@ -166,6 +166,14 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "3bb4b03f0d34c1bb31de53ab67661d67",
     "url": "/firebase-messaging-sw.js"
+  },
+  {
+    "revision": "45eab527d8dd6050a040e9e595b7c0b3",
+    "url": "/img/banner/katalkenglish.com.jpg"
+  },
+  {
+    "revision": "d7c20db8ab36d620a255148ecd989a57",
+    "url": "/img/banner/top-banner.psd"
   },
   {
     "revision": "cae98c5774a2175c5103fd632b57d9e7",
@@ -252,16 +260,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/passlogin/passlogin-button.png"
   },
   {
-    "revision": "9d16690650e1b6229fe1761378042eab",
+    "revision": "ad5b02ef531129b6ec915d58260c9957",
     "url": "/index.html"
   },
   {
-    "revision": "ccf1a72a4f35ee273344",
-    "url": "/js/app.5c7ced4a.js"
+    "revision": "ccfae68ed66fdd6e6c87",
+    "url": "/js/app.8a6c7dfa.js"
   },
   {
-    "revision": "ccf1a72a4f35ee273344",
-    "url": "/js/app.5c7ced4a.js.map"
+    "revision": "ccfae68ed66fdd6e6c87",
+    "url": "/js/app.8a6c7dfa.js.map"
   },
   {
     "revision": "77ba6b47d221e3178a0b",
@@ -528,12 +536,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/js/chunk-566c488e.dd40a069.js.map"
   },
   {
-    "revision": "ea72ee89df8260bb9f63",
-    "url": "/js/chunk-6008255e.153a1bcd.js"
+    "revision": "999b106bf55702820c95",
+    "url": "/js/chunk-6008255e.e71a7412.js"
   },
   {
-    "revision": "ea72ee89df8260bb9f63",
-    "url": "/js/chunk-6008255e.153a1bcd.js.map"
+    "revision": "999b106bf55702820c95",
+    "url": "/js/chunk-6008255e.e71a7412.js.map"
   },
   {
     "revision": "3d2e58c9f5ee836e27c0",
@@ -576,12 +584,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/js/chunk-8cf6ee34.e6904076.js.map"
   },
   {
-    "revision": "24237118e91e0df79439",
-    "url": "/js/chunk-9b424cde.d64c2f7e.js"
+    "revision": "00f083d851ea7e226726",
+    "url": "/js/chunk-9b424cde.e0e90e09.js"
   },
   {
-    "revision": "24237118e91e0df79439",
-    "url": "/js/chunk-9b424cde.d64c2f7e.js.map"
+    "revision": "00f083d851ea7e226726",
+    "url": "/js/chunk-9b424cde.e0e90e09.js.map"
   },
   {
     "revision": "720701f387ebf1ab192d",
@@ -628,7 +636,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/robots.txt"
   },
   {
-    "revision": "73fa3bde545642f73aedc9b4e1ca3589",
+    "revision": "515383717633d0da4833caab8e9cc188",
     "url": "/tmp/left-banner.jpg"
   },
   {
@@ -636,7 +644,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/tmp/philgo-logo.jpg"
   },
   {
-    "revision": "39393735608245e0f2463af28f38fa0b",
+    "revision": "ac416308f2ed0af7a379a00997250a66",
     "url": "/tmp/right-banner.jpg"
+  },
+  {
+    "revision": "4aa8ceb701cfa57c877486d65907287f",
+    "url": "/tmp/tmp-banner.psd"
   }
 ]);

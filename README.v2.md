@@ -1523,6 +1523,8 @@ isTrue((new AppController())->version(), "App version");
 
 - Admin must set the maximum number of banners on each category on admin page. Or user cannot start banners.
 
+- Client end app will display default top banner hard coded inside the client app while loading the banner or,
+  just in case, there is an error loading top banners from server.
 
 ## 광고 기능 코딩 기법 및 로직 설명
 
