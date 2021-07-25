@@ -2057,6 +2057,7 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
     
 
 
+
 ## 휴대폰 번호 PASS 로그인
 
 - 자세한 설명은 [휴대폰 번호 PASS 로그인 요약 문서](https://docs.google.com/document/d/1f7udtIGo0a4lliM8WGNiXh01lqRhkz76bWbszty6tSk/edit#heading=h.wks3lo2tvsr8)를 참고한다.
@@ -2076,6 +2077,12 @@ hook()->add(HOOK_POST_LIST_ROW, function($rowNo, PostTaxonomy $post) {
   - 2. `/etc/callbacks/pass-login/pass-login.callback.php?test=1` 으로 접속하면, 본인 인증 한 후, 사용자 정보를 DB 에 업데이트한다.
   - 3. 홈페이지에서 인증된 사용자로 뜨는지 확인하고,
   - 4. 인증 사용자 전용 게시판에 글 쓰기가 가능한지 본다.
+  
+## 본인 인증시, 보너스 포인트 충전
+
+- 로그인을 할 때, 패스로그인 또는 다날로그인으로 바로 할 수 있다. 하지만 이 같은 경우는 보너스 포인트 충전이 안된다.
+- 반드시, 본인 인증이 아닌 경우로 로그인(회원 가입 후 로그인 또는 소셜 로그인 등)을 먼저 한 다음, 본인 인증을 해야 보너스 포인트 충전이 된다.
+  - 예를 들면, 이메일/비밀번호로 로그인 후 또는 소셜 로그인 후, "패스 로그인"을 하면 본인 인증 보너스가 충전된다.
 
 # 썸네일, Thumbnail
 
@@ -2275,7 +2282,7 @@ https://main.philov.com/?route=app.time
 - 관리자의 경우, 다른 사용자의 글/코멘트를 수정 할 수 있다.
 
 
-## 게시글 목록 또는 검색. Post list parameters.
+## 게시글 목록. Post list parameters.
 
 - `minimize` 옵션을 통해서 최근 글 또는 각종 위젯에 사용 할 최적화된 필드만 가져 올 수 있다.
 
@@ -2337,6 +2344,27 @@ https://main.philov.com/?route=app.time
   `category.idx` must be used, instead of `category.id`.
   - Client app should load the forum configuration at startup and cache for the next boot. So, they can use `category.idx`.
 
+
+## 게시글 검색
+
+- 검색에는 `LIKE %..%` 로 검색하는 글/내용 일부 검색과 `FULLTEXT SEARCH` 가 있다.
+
+- `FULLTEXT SEARCH` 를 하기 위해서는 검색 옵션을 서버로 전송 할 때, `fulltextSearch=Y`를 서버로 전달하면 된다.
+  - Matrix 에서는 모든 검색을 BOOLEAN MODE 로 한다.
+    이 때, BOOLEAN MODE 에서 사용 가능한 키워드는 `+`, `-`, `*`, `"` 이며, 생략을 하면 아래와 자동으로 지정된다.
+    
+- 검색어에, 쌍따옴표가 없다면, 기본적으로 모든 단어의 끝에는 `*` 가 붙도록 코딩을 해 놓다. 그리고 단어 앞에 +, -가 없으면, 기본적으로 + 가 붙는다.
+
+- 예를들어 쌍따옴표를 넣어서 `"김치를"` 와 같이 검색하면, 오직, `김치를` 이라는 완전한 단어가 들어가야 검색이 된다.
+   - 주의: `"김치"`로 검색하는 경우, `김치를`은 검색되지 않는다. 왜냐하면 검색어 `"김치"`는 완전한 단어로 김치만 있어야 한다.
+    예를 들어, `김치,고등어` 와 같이 콤마로 분리되면 완전한 단어로 인식이 된다.
+     하지만, `김치를` 또는 `열무김치` 와 같은 단어는 검색이 되지 않는다.
+     
+- 예제) `김치` 로 검색하면 서버에서 `+김치*` 로 변환된다. 그래서 `열무김치`는 검색되지 않는다. 물론 `열무 김치는 맛있어요`와 같이 띄어 쓰면 된다.
+
+- 예, `김치 두부` 로 검색하면 서버에서는 `+김치* +두부*` 로 변환된다.
+- 예, `김치 -두부` 로 검색하면 서버에서는 `+김치* -두부*` 로 변환된다.
+- 예, `한예` 로 검색하면 서버에서는 `+한예*` 이 되어, `한예슬` 등이 검색된다.
 
 
 # 테스트, Unit Testing

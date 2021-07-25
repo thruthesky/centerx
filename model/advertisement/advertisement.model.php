@@ -20,6 +20,7 @@ const GLOBAL_BANNER_CATEGORY = '';
  * @property-read string $bannerUrl
  * @property-read string $pointPerDay
  * @property-read string $advertisementPoint
+ * @property-read string $type 배너 타입. 배너 타입은 code 에 저장되는데, 이름을 알기 쉽게하기 위해서, 재 지정. 실제로는 code 값을 리턴.
  */
 class AdvertisementModel extends PostModel
 {
@@ -28,6 +29,18 @@ class AdvertisementModel extends PostModel
     {
         parent::__construct($idx);
     }
+
+
+    /**
+     * getter
+     * @param $name
+     * @return mixed
+     */
+    public function __get($name): mixed {
+        if ( $name == 'type' ) return $this->code;
+        return parent::__get($name);
+    }
+
 
     public function getAdvertisementPointSetting($in): array
     {
@@ -305,8 +318,8 @@ class AdvertisementModel extends PostModel
         // BANNER LIMIT
         // If max number of banner limit is bigger than 0 and banner count is bigger than or equal max banner limit.
         // All country is also following this rule.
-        $maxNo = $this->maxNoOn($in[BANNER_TYPE], $category);
-        $bannerCount = $this->countOf($in[BANNER_TYPE], $category, $banner->countryCode);
+        $maxNo = $this->maxNoOn($banner->type, $category);
+        $bannerCount = $this->countOf($banner->type, $category, $banner->countryCode);
         if ($maxNo <= $bannerCount) return $this->error(e()->max_no_banner_limit_exeeded);
 
         // GLOBAL MULTIPLYING
@@ -458,6 +471,7 @@ class AdvertisementModel extends PostModel
         if (!isset($in[CAFE_DOMAIN]) || empty($in[CAFE_DOMAIN])) return e()->empty_domain;
 
         // If the given cafe(or its domain) cafe does not exists, then return all country banner.
+        // @see README.md for details.
         $cafe = cafe(domain: $in[CAFE_DOMAIN]);
 
         if (!isset($in[BANNER_TYPE]) || empty($in[BANNER_TYPE])) return e()->empty_banner_type;

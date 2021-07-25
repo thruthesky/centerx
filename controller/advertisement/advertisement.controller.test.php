@@ -1398,6 +1398,6 @@ class AdvertisementTest
     function topBannerLoadWithNonExistingCafe() {
         $this->clearAdvertisementData();
         $banners = banner()->loadBanners([CAFE_DOMAIN => 'non-existing.domain.com', BANNER_TYPE => TOP_BANNER]);
-        d($banners);
+        isTrue(count($banners) >= 2, "Two top banners for non-existing domains.");
     }
 }

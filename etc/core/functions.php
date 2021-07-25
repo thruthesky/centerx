@@ -1835,10 +1835,43 @@ function parsePostSearchHttpParams(array $in): array|string {
 
     // 검색어가 입력되면, 제목과 내용에서 검색한다.
     // @TODO private 게시판의 경우, 옵션에 따라, userIdx, otherUserIdx 가 내 값이면, privateTitle 과 privateContent 를 찾을 수 있도록 해야 한다.
-    if ( isset($in['searchKey']) ) {
-        $where .= " AND (title LIKE ? OR content LIKE ?) ";
-        $params[] = '%' . $in['searchKey'] . '%';
-        $params[] = '%' . $in['searchKey'] . '%';
+    if ( isset($in[SEARCH_KEY]) ) {
+        if ( isset($in[FULLTEXT_SEARCH]) && $in[FULLTEXT_SEARCH] == 'Y' ) {
+            $booleanMode = "IN BOOLEAN MODE";
+            // 여러개 연속된, 공백을 하나로
+            $key = preg_replace('/\s+/', ' ', $in[SEARCH_KEY]);
+
+            // 검색어에 쌍따옴표가 없다면,
+            // 단어 끝에 * 를 붙이고,
+            // 검색어 앞에 +,- 가 없으면 기본적으로 + 를 붙이낟.
+            if ( str_contains($key, '"') == false ) {
+                $keysArr = explode(" ", $key);
+                $keys = [];
+                foreach( $keysArr as $e ) {
+                    if ( $e[0] != '+' && $e[0] != '-' ) {
+                        $e = "+$e";
+                    }
+                    $keys[] = "$e*";
+                }
+                $key = implode(' ', $keys);
+            }
+            $where .= " AND MATCH(title, content) AGAINST(? $booleanMode)";
+            $params[] = $key;
+
+//            if (
+//                str_contains($in[SEARCH_KEY], '+')
+//                || str_contains($in[SEARCH_KEY], '-')
+//                || str_contains($in[SEARCH_KEY], '*')
+//                || str_contains($in[SEARCH_KEY], '"') ) {
+//                $booleanMode = "IN BOOLEAN MODE";
+//            }
+//            $where .= " AND MATCH(title, content) AGAINST(? $booleanMode)";
+//            $params[] = $in[SEARCH_KEY];
+        } else {
+            $where .= " AND (title LIKE ? OR content LIKE ?) ";
+            $params[] = '%' . $in[SEARCH_KEY] . '%';
+            $params[] = '%' . $in[SEARCH_KEY] . '%';
+        }
     }
 
     if ( isset($in['within']) && is_numeric($in['within']) && $in['within'] ) {
@@ -1864,6 +1897,8 @@ function parsePostSearchHttpParams(array $in): array|string {
         $params[] = $in[OTHER_USER_IDX];
     }
 
+    debug_log("--- where; ", $where);
+    debug_log("--- params; ", $params);
     return [ $where, $params ];
 }
 

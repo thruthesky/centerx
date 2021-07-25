@@ -360,6 +360,9 @@ class UserActivityBase extends Entity {
     public function getLoginPoint() {
         return adminSettings()->get(Actions::$login) ?? 0;
     }
+    public function getVerificationPoint() {
+        return adminSettings()->get(Actions::$verification) ?? 0;
+    }
 
     /**
      * @param $hour

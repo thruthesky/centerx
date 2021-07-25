@@ -54,7 +54,7 @@ class UserModel extends Entity {
      */
     public function __get($name): mixed {
         if ( $name == 'verified' ) {
-            return $this->verifier;
+            return $this->verifier != '';
         } else if ( $name == 'age' ) {
             if ( strlen($this->birthdate) == 6) $birthYear = substr($this->birthdate, 0, 2);
             else if ( strlen($this->birthdate) == 8) $birthYear = substr($this->birthdate, 2, 2);

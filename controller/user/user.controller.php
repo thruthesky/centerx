@@ -73,6 +73,9 @@ class UserController
     /**
      * $in['code'] 의 값을 받아, 패스로그인 서버에 접속해서 사용자 정보를 가져 온 다음, 디코딩해서,
      *  회원 가입 또는 로그인, 또는 업데이트를 한다.
+     *
+     * 참고, README.md 에서 본인 인증시 보너스 포인트.
+     *
      * 주의, `passloginCallback()` 함수와는 다르게,
      *  - $in['code'] 를 받아서,
      *  - 현재 로그인을 한 상태이면, "패스로그인 사용자 정보"를 회원 정보에 업데이트하고,
@@ -94,6 +97,7 @@ class UserController
 
         if ( loggedIn() ) {
             // 회원 로그인을 한 상태이면, PASS LOGIN 으로 부터 넘어온 정보를 회원 정보로 업데이트한다.
+            userActivity()->verificationPoint();
             $res[VERIFIER] = VERIFIER_PASSLOGIN;
             login()->update($res);
             return login()->response();
@@ -106,7 +110,7 @@ class UserController
                 $res[VERIFIER] = VERIFIER_PASSLOGIN;
                 $user = user()->loginOrRegister($res);
             } else {
-                // 여러 차례 로그인,
+                // 여러 차례 로그인, (처음 로그인 또는 자동 로그인이 아닌 경우,)
                 // plid 가 들어 오는데, meta 에서 ci 를 끄집어 내서, 사용자가 누구인지 확인한다.
                 $userIdx = meta()->entity(USERS, 'plid',$res['plid']);
 

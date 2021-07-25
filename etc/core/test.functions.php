@@ -124,7 +124,7 @@ function createCategory(string $id = null): CategoryModel {
 }
 
 
-function createPost(string $categoryId=null, string $title = null, string $content = null, string $files = '', string $subcategory = ''): PostModel {
+function createPost(string $categoryId=null, string $title = null, string $content = null, string $files = '', string $subcategory = '', string $countryCode = ''): PostModel {
     if (category($categoryId ?? POINT)->exists() == false) category()->create([ID => $categoryId ?? POINT]); // create POINT category if not exists.
     return post()->create([
         CATEGORY_ID => $categoryId ?? POINT,
@@ -132,6 +132,7 @@ function createPost(string $categoryId=null, string $title = null, string $conte
         TITLE => $title ?? TITLE,
         CONTENT => $content ?? CONTENT,
         FILE_IDXES => $files,
+        COUNTRY_CODE => $countryCode,
         ]);
 }
 
@@ -146,7 +147,7 @@ function createPost(string $categoryId=null, string $title = null, string $conte
  * @param string $path
  * @return PostModel
  */
-function createPostWithPhoto(string $categoryId, string $subcategory, string $title = '', string $content= '', string $path = ''): PostModel {
+function createPostWithPhoto(string $categoryId, string $subcategory, string $title = '', string $content= '', string $path = '', string $countryCode = ''): PostModel {
     if ( $path ) {
         $file = files()->upload([
             TAXONOMY => POSTS,
@@ -165,7 +166,8 @@ function createPostWithPhoto(string $categoryId, string $subcategory, string $ti
         title: $title,
         content: $content,
         files: $files,
-        subcategory: $subcategory
+        subcategory: $subcategory,
+        countryCode: $countryCode,
     );
 }
 
@@ -244,7 +246,8 @@ function _post_create( string $path = '' ) {
             $post['subcategory'] ?? '',
             $post['title'],
             $post['content'],
-            $post['photo'] ?? ''
+            $post['photo'] ?? '',
+            $post[COUNTRY_CODE] ?? ''
         );
         if ( $created->hasError ) {
             d("Error: Category: $post[category], " . $created->getError() );

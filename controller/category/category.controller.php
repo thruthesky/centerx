@@ -37,7 +37,7 @@ class CategoryController {
      */
     public function get($in): array|string
     {
-        return category($in[IDX] ?? $in[ID] ?? $in[CATEGORY_ID])->response();
+        return category($in[IDX] ?? $in[ID] ?? $in[CATEGORY_ID] ?? 0)->response();
     }
 
     /**

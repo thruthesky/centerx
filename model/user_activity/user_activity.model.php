@@ -159,6 +159,26 @@ class UserActivityModel extends UserActivityBase {
         );
     }
 
+    /**
+     * 본인인증 보너스 포인트.
+     *
+     * 회원 정보에 verifier 를 업데이트하기 전에 호출해야 한다.
+     * 그렇지 않고, verifier 에 값이 미리 지정되면, 이미 본인인증을 한 것으로 간주하여 중복 보너스를 주지 않는다.
+     *
+     * @return $this
+     */
+    public function verificationPoint(): self {
+        if ( login()->verified ) return $this;
+        return $this->recordAction(
+            action: Actions::$verification,
+            fromUserIdx: 0,
+            fromUserPoint: 0,
+            toUserIdx:login()->idx,
+            toUserPoint: $this->getVerificationPoint(),
+        );
+    }
+
+
 
     /**
      * User votes on post ( or any taxonomy that users posts table ).
