@@ -1436,6 +1436,8 @@ isTrue((new AppController())->version(), "App version");
 /// Get hard coded banner on the source code(or admin settings).
 ```
 
+- If the cafe (or cafe domain) does not exists, then All country banners will be used.
+
 - Banners that has longer end dates will appear first.
 
 - Point payment

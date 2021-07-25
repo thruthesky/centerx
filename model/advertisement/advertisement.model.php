@@ -457,11 +457,8 @@ class AdvertisementModel extends PostModel
         // error check.
         if (!isset($in[CAFE_DOMAIN]) || empty($in[CAFE_DOMAIN])) return e()->empty_domain;
 
-        // Cafe domain is given, but the cafe does not exists.
+        // If the given cafe(or its domain) cafe does not exists, then return all country banner.
         $cafe = cafe(domain: $in[CAFE_DOMAIN]);
-        if ($cafe->exists == false) {
-            if ($cafe->isSubCafe($in[CAFE_DOMAIN])) return e()->cafe_not_exists;
-        }
 
         if (!isset($in[BANNER_TYPE]) || empty($in[BANNER_TYPE])) return e()->empty_banner_type;
 

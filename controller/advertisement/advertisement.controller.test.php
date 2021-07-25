@@ -58,6 +58,7 @@ $at = new AdvertisementTest();
 $at->maximumNoOfLimitTest();
 $at->globalCategoryBannerPoint();
 $at->defaultTopBannerTest();
+$at->topBannerLoadWithNonExistingCafe();
 
 //$at->allCountryBannerPoint();
 //
@@ -1374,6 +1375,7 @@ class AdvertisementTest
      */
     function defaultTopBannerTest() {
 
+        // hardCodedTopBanners() 는 1개 또는 2개의 베너를 리턴한다.
         $banners = banner()->hardCodedTopBanners(0);
         isTrue(count($banners) == 2, 'hard coded top banner must have 2 default banners');
         $banners = banner()->hardCodedTopBanners(1);
@@ -1391,6 +1393,11 @@ class AdvertisementTest
 
         isTrue( $banners[0]->idx == $firstHardCodedBanner[0]->idx, 'idx must be 0' );
         isTrue( $banners[0]->clickUrl == $firstHardCodedBanner[0]->clickUrl, 'click url match' );
+    }
 
+    function topBannerLoadWithNonExistingCafe() {
+        $this->clearAdvertisementData();
+        $banners = banner()->loadBanners([CAFE_DOMAIN => 'non-existing.domain.com', BANNER_TYPE => TOP_BANNER]);
+        d($banners);
     }
 }
