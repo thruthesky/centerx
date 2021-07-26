@@ -2117,6 +2117,14 @@ echo "<img src='{$file->url}'><br>"; // 원본 이미지 출력
 
 위에서 w 는 width, h 는 height, q 는 quality 이다.
 
+## WebP 지원
+
+- Light house 에서 WebP 를 사용하지 않는다고 뭐라한다. WebP 는 JPEG 나 PNG 보다 더 작은 양의 이미지를 생성해낸다.
+  Chrome, Firefox, Safari, Edge, Opera 등에서 지원한다.
+  
+- `https://sonub.com/etc/gdinfo.php` 와 같이 접속하면 GD 에서 지원하는 포멧을 알 수 있으며,
+  `https://sonub.com/etc/phpinfo.php` 를 통해서도 확인이 가능하다.
+
 
 
 # 관리자 페이지, Admin Page

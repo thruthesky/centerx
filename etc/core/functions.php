@@ -2228,8 +2228,13 @@ function zoomThumbnail(string $source_path, int $width=150, int $height=150, int
 
 
 
-    // 파일 저장
-    imagejpeg($desired_gdim, $destination_path, $quality);
+    // 썸네일 파일 저장.
+    // config.php 에서 설정을 변경 할 수 있다. 기본은 JPEG 형식이며, webp 형식을 지원한다.
+    if ( THUMBNAIL_FORMAT == 'webp') {
+        imagewebp($desired_gdim, $destination_path, $quality);
+    } else {
+        imagejpeg($desired_gdim, $destination_path, $quality);
+    }
 
 
     return $destination_path;

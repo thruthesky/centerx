@@ -4,6 +4,13 @@
  */
 
 
+/**
+ * zoomThumbnail() 함수로 썸네일을 저장할 때, 사용할 포멧.
+ *
+ * 기본적으로 JPEG 포멧으로 저장하는데, 이곳에서 'webp' 를 입력하여, WEBP 로 썸네일 이미지를 저장할 수 있다.
+ */
+const THUMBNAIL_FORMAT = 'webp';
+
 
 
 //const TEMP_IP_ADDRESS = '124.83.114.70'; // Manila IP
