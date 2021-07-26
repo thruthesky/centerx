@@ -6,7 +6,12 @@ $path = zoomThumbnail($file->path, in('w', 200), in('h', 200), in('q', 95));
 header('Pragma: public');
 header('Cache-Control: max-age=86400');
 header('Expires: '. gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
-header('Content-Type: image/jpeg');
+if ( THUMBNAIL_FORMAT == 'web' ) {
+    header('Content-Type: image/webp');
+}
+else {
+    header('Content-Type: image/jpeg');
+}
 
 
 
