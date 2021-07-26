@@ -6,7 +6,7 @@ $path = zoomThumbnail($file->path, in('w', 200), in('h', 200), in('q', 95));
 header('Pragma: public');
 header('Cache-Control: max-age=31536000'); // 365 days
 header('Expires: '. gmdate('D, d M Y H:i:s \G\M\T', time() + 31536000)); // 365 days
-if ( THUMBNAIL_FORMAT == 'webp' ) {
+if ( THUMBNAIL_FORMAT == 'webp' && isIE() == false ) {
     header('Content-Type: image/webp');
 }
 else {
