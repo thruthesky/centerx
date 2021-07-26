@@ -36,8 +36,9 @@ class AdvertisementModel extends PostModel
      * @param $name
      * @return mixed
      */
-    public function __get($name): mixed {
-        if ( $name == 'type' ) return $this->code;
+    public function __get($name): mixed
+    {
+        if ($name == 'type') return $this->code;
         return parent::__get($name);
     }
 
@@ -165,7 +166,8 @@ class AdvertisementModel extends PostModel
      * @param $category
      * @return string
      */
-    public function maxNoKey($banner_type, $category): string {
+    public function maxNoKey($banner_type, $category): string
+    {
         if ($category) $cat = "Category";
         else $cat = "Global";
         $banner_type = ucfirst($banner_type);
@@ -173,7 +175,7 @@ class AdvertisementModel extends PostModel
     }
     public function maxNoOn($banner_type, $category)
     {
-        return adminSettings()->get( $this->maxNoKey($banner_type, $category) ) ?? 0;
+        return adminSettings()->get($this->maxNoKey($banner_type, $category)) ?? 0;
     }
 
 
@@ -279,8 +281,8 @@ class AdvertisementModel extends PostModel
         // if (!isset($in[CODE]) || empty($in[CODE])) return $this->error(e()->code_is_empty);
 
         // check dates input
-        if (!isset($in['beginDate']) || empty($in['beginDate'])) return $this->error(e()->begin_date_empty);
-        if (!isset($in['endDate']) || empty($in['endDate'])) return $this->error(e()->end_date_empty);
+        if (!isset($in[BEGIN_DATE]) || empty($in[BEGIN_DATE])) return $this->error(e()->begin_date_empty);
+        if (!isset($in[END_DATE]) || empty($in[END_DATE])) return $this->error(e()->end_date_empty);
 
 
         $in = $banner->updateBeginEndDate($in);
@@ -318,8 +320,9 @@ class AdvertisementModel extends PostModel
         // BANNER LIMIT
         // If max number of banner limit is bigger than 0 and banner count is bigger than or equal max banner limit.
         // All country is also following this rule.
-        $maxNo = $this->maxNoOn($banner->type, $category);
-        $bannerCount = $this->countOf($banner->type, $category, $banner->countryCode);
+        // d("maxNoOn => $maxNo : $code");
+        $maxNo = $this->maxNoOn($code, $category);
+        $bannerCount = $this->countOf($code, $category, $banner->countryCode);
         if ($maxNo <= $bannerCount) return $this->error(e()->max_no_banner_limit_exeeded);
 
         // GLOBAL MULTIPLYING
@@ -544,7 +547,8 @@ class AdvertisementModel extends PostModel
      * Returns condition for querying active banners.
      * @return string
      */
-    private function activeBannerCondition() {
+    private function activeBannerCondition()
+    {
         $now = time();
         $today = today(); // 0 second of today.
         return "beginAt <= $now AND endAt >= $today AND fileIdxes != ''";

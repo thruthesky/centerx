@@ -1,13 +1,4 @@
 <?php
-
-// Create 'advertisement' category if it does not exists.
-
-use phpDocumentor\Reflection\Types\Boolean;
-
-if (!category()->exists([ID => ADVERTISEMENT_CATEGORY])) {
-    $admin = setLoginAsAdmin();
-    category()->create([ID => ADVERTISEMENT_CATEGORY]);
-}
 // 회원 가입 포인트를 0 으로 설정.
 userActivity()->setRegisterPoint(0);
 setLogout();
@@ -16,43 +7,40 @@ $at = new AdvertisementTest();
 
 
 //
-////
-////
-//$at->lackOfPoint();
-//$at->beginDateEmpty();
-//$at->endDateEmpty();
-//$at->wrongCode();
-//$at->loadBanners();
-//
-////
-//$at->statusCheck();
-//$at->createBanner();
-//$at->zero_point_advertisement();
-//
-////
-//$at->startDeduction();
-//$at->startWithCountryDeduction();
-//$at->stopWithDeductedRefund();
-//$at->stopWithCountryAndDeductedRefund();
-//$at->stopFullRefund();
-//$at->stopWithCountryFullRefund();
-//$at->stopNoRefund();
-//$at->stopOnPastOrExpiredBanner();
-//
-////
-//$at->settings();
-//$at->pointSettings();
-//$at->pointSettingDelete();
-//$at->maximumAdvertisementDays();
-//$at->stopAfterPointSettingChanged();
-//
-////
-//$at->startStopChangeDatesAndCountry();
-//
-////
-//$at->errorDeleteActiveAdvertisement();
-//$at->deleteAdvertisement();
-//
+$at->lackOfPoint();
+$at->beginDateEmpty();
+$at->endDateEmpty();
+$at->wrongCode();
+$at->loadBanners();
+
+
+$at->statusCheck();
+$at->createBanner();
+$at->zero_point_advertisement();
+
+
+$at->startDeduction();
+$at->startWithCountryDeduction();
+$at->stopWithDeductedRefund();
+$at->stopWithCountryAndDeductedRefund();
+$at->stopFullRefund();
+$at->stopWithCountryFullRefund();
+$at->stopNoRefund();
+$at->stopOnPastOrExpiredBanner();
+
+
+$at->settings();
+$at->pointSettings();
+$at->pointSettingDelete();
+$at->maximumAdvertisementDays();
+$at->stopAfterPointSettingChanged();
+
+
+$at->startStopChangeDatesAndCountry();
+
+
+$at->errorDeleteActiveAdvertisement();
+$at->deleteAdvertisement();
 
 
 $at->maximumNoOfLimitTest();
@@ -60,40 +48,40 @@ $at->globalCategoryBannerPoint();
 $at->defaultTopBannerTest();
 $at->topBannerLoadWithNonExistingCafe();
 
-//$at->allCountryBannerPoint();
-//
-////
-//$at->loadCafeCountryBanners();
-//$at->loadAllCountryBanners();
-//
-//
-//$at->topBannerLoad();
-//$at->squareBannerLoad();
+$at->allCountryBannerPoint();
+$at->loadCafeCountryBanners();
+$at->loadAllCountryBanners();
+
+// //
+$at->topBannerLoad();
+$at->squareBannerLoad();
 
 
-
-
-
-//
-//$at->bannerLimit(TOP_BANNER);
-//$at->bannerLimit(SIDEBAR_BANNER);
-//$at->bannerLimit(SQUARE_BANNER);
-//$at->bannerLimit(LINE_BANNER);
+$at->bannerLimit(TOP_BANNER);
+$at->bannerLimit(SIDEBAR_BANNER);
+$at->bannerLimit(SQUARE_BANNER);
+$at->bannerLimit(LINE_BANNER);
 
 class AdvertisementTest
 {
 
     function __construct()
     {
+        // Create 'advertisement' category if it does not exists.
+        if (!category()->exists([ID => ADVERTISEMENT_CATEGORY])) {
+            $admin = setLoginAsAdmin();
+            category()->create([ID => ADVERTISEMENT_CATEGORY]);
+        }
+
         $this->resetGlobalMulplying();
         $this->resetBannerLimit(TOP_BANNER);
         $this->resetBannerLimit(SIDEBAR_BANNER);
         $this->resetBannerLimit(SQUARE_BANNER);
         $this->resetBannerLimit(LINE_BANNER);
-        $this->resetBannerLimit(TOP_BANNER, 0, false);
-        $this->resetBannerLimit(SIDEBAR_BANNER, 0, false);
-        $this->resetBannerLimit(SQUARE_BANNER, 0, false);
-        $this->resetBannerLimit(LINE_BANNER, 0, false);
+        $this->resetBannerLimit(TOP_BANNER, category: false);
+        $this->resetBannerLimit(SIDEBAR_BANNER, category: false);
+        $this->resetBannerLimit(SQUARE_BANNER, category: false);
+        $this->resetBannerLimit(LINE_BANNER, category: false);
     }
 
     private function clearAdvertisementData()
@@ -169,11 +157,23 @@ class AdvertisementTest
         adminSettings()->set(ADVERTISEMENT_CATEGORIES, $categories);
     }
 
-    private function resetBannerLimit(string $banner_type, $value = 0, $category = true)
+    private function resetBannerLimit(string $banner_type, $value = 10, $category = true)
     {
         $k = banner()->maxNoKey($banner_type, $category);
         adminSettings()->set($k, $value);
     }
+
+    private function bannerIsPresent(mixed $banner, mixed $banners): bool
+    {
+        if (!$banner || !$banners || empty($banners)) return false;
+
+        $ret = 0;
+        foreach ($banners as $_b) {
+            if ($_b[IDX] == $banner[IDX]) $ret++;
+        }
+        return $ret != 0;
+    }
+
 
     // 배너 생성 테스트
     // 참고, readme.md
@@ -214,25 +214,13 @@ class AdvertisementTest
         $options = [
             IDX => $post[IDX],
             CODE => TOP_BANNER,
-            'beginDate' => time(),
-            'endDate' => time(),
+            BEGIN_DATE => time(),
+            END_DATE => time(),
         ];
 
         // 포인트가 0 이어도 가능.
         $re =  advertisement()->start($options);
         isTrue($re->beginAt > 0, "광고 시작 됨");
-    }
-
-
-    private function bannerIsPresent(mixed $banner, mixed $banners): bool
-    {
-        if (!$banner || !$banners || empty($banners)) return false;
-
-        $ret = 0;
-        foreach ($banners as $_b) {
-            if ($_b[IDX] == $banner[IDX]) $ret++;
-        }
-        return $ret != 0;
     }
 
     public function lackOfPoint()
@@ -247,14 +235,15 @@ class AdvertisementTest
         ]);
 
         // top banner 를 1 점으로 변경
-        $this->resetBannerPoints(top: 1);
+        $this->resetBannerPoints("AC", top: 1);
 
         // top banner 를 시작. 오늘 하루.
         $options = [
             IDX => $post[IDX],
             CODE => TOP_BANNER,
-            'beginDate' => time(),
-            'endDate' => time(),
+            COUNTRY_CODE => "AC",
+            BEGIN_DATE => time(),
+            END_DATE => time(),
         ];
 
         // 포인트가 0 이므로 에러
@@ -273,7 +262,7 @@ class AdvertisementTest
     function endDateEmpty()
     {
         $banner = $this->createAdvertisement([COUNTRY_CODE => "HH"]);
-        $options =  [SESSION_ID => login()->sessionId, IDX => $banner[IDX], 'beginDate' => time()];
+        $options =  [SESSION_ID => login()->sessionId, IDX => $banner[IDX], BEGIN_DATE => time()];
         $re = request("advertisement.start", $options);
         isTrue($re == e()->end_date_empty, "Expect: Error, empty advertisement end date.");
     }
@@ -281,7 +270,7 @@ class AdvertisementTest
     function wrongCode()
     {
         $banner = $this->createAdvertisement([COUNTRY_CODE => "HH"]);
-        $options =  [SESSION_ID => login()->sessionId, IDX => $banner[IDX], 'beginDate' => time(), 'endDate' => time()];
+        $options =  [SESSION_ID => login()->sessionId, IDX => $banner[IDX], BEGIN_DATE => time(), END_DATE => time()];
         $re = request("advertisement.start", $options);
         isTrue($re == e()->wrong_banner_code_or_no_point_setting, "Expect: Error. Wrong code.");
     }
@@ -297,8 +286,8 @@ class AdvertisementTest
         $re = $this->createAndStartAdvertisement([
             COUNTRY_CODE => "SS",
             CODE => TOP_BANNER,
-            'beginDate' => time(),
-            'endDate' => strtotime('+5 days'),
+            BEGIN_DATE => time(),
+            END_DATE => strtotime('+5 days'),
             SESSION_ID => login()->sessionId
         ]);
         isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
@@ -307,7 +296,7 @@ class AdvertisementTest
         // 에러 예상. 광고 기간이 3일인데, 3일 하고 하루 더 광고 진행 테스트.
         // Equivalent to $max + 1 days since begin date is counted to the total ad serving days.
         $re = $this->createAndStartAdvertisement([
-            COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$max days")
+            COUNTRY_CODE => "SS", CODE => TOP_BANNER, BEGIN_DATE => time(), END_DATE => strtotime("+$max days")
         ]);
         isTrue($re == e()->maximum_advertising_days, "Expect: Error, exceed maximum advertising days.");
 
@@ -315,7 +304,7 @@ class AdvertisementTest
         // 성공 예상. 광고 기간이 3일인데, 3일 보다 하루 적게 하고 광고 진행 테스트.
         $days = $max - 1;
         $re = $this->createAndStartAdvertisement([
-            COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime("+$days days")
+            COUNTRY_CODE => "SS", CODE => TOP_BANNER, BEGIN_DATE => time(), END_DATE => strtotime("+$days days")
         ]);
         isTrue($re[IDX], "Expect: Success, adv days does not exceed maximum allowed days.");
         $this->resetMaximumAdvertisementDays(0);
@@ -326,22 +315,19 @@ class AdvertisementTest
         $re = request("advertisement.loadBanners");
         isTrue($re == e()->empty_domain, "Expect: error, no domain when fetching active banners.");
 
-        $re = request("advertisement.loadBanners", ['cafeDomain' => '']);
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => '']);
         isTrue($re == e()->empty_domain, "Expect: error, no domain when fetching active banners.");
 
-        $re = request("advertisement.loadBanners", ['cafeDomain' => 'abc' . time() . '.def.com']);
-        isTrue($re == e()->cafe_not_exists, "Expect: error, cafe does not exists.");
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => 'main.sonub.com']);
+        isTrue($re == e()->empty_banner_type, "Expect: error, no banner type fetching active banners.");
 
-        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com']);
-        isTrue($re == e()->empty_banner_type, "Expect: error, no domain when fetching active banners.");
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => 'main.sonub.com', CODE => '']);
+        isTrue($re == e()->empty_banner_type, "Expect: error, empty banner type when fetching active banners.");
 
-        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com', CODE => '']);
-        isTrue($re == e()->empty_banner_type, "Expect: error, no domain when fetching active banners.");
-
-        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com', CODE => 'wrong']);
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => 'main.sonub.com', CODE => 'wrong']);
         isTrue($re == e()->wrong_banner_type, "Expect: error, wrong banner type is given.");
 
-        $re = request("advertisement.loadBanners", ['cafeDomain' => 'main.sonub.com', CODE => TOP_BANNER]);
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => 'main.sonub.com', CODE => TOP_BANNER]);
         isTrue(isError($re) == false, "Expect: success.");
     }
 
@@ -353,13 +339,13 @@ class AdvertisementTest
 
         // Advertisement begin date same as now, considered as active.
         $re = $this->createAndStartAdvertisement([
-            COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => strtotime('+1 days')
+            COUNTRY_CODE => "SS", CODE => TOP_BANNER, BEGIN_DATE => time(), END_DATE => strtotime('+1 days')
         ]);
         isTrue($re['status'] == 'active', "Expect: Status == 'active'");
 
         // Advertisement end date same as now, considered as active.
         $re = $this->createAndStartAdvertisement([
-            COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => strtotime('-1 days'), 'endDate' => time()
+            COUNTRY_CODE => "SS", CODE => TOP_BANNER, BEGIN_DATE => strtotime('-1 days'), END_DATE => time()
         ]);
         isTrue($re['status'] == 'active', "Expect: Status == 'active'");
 
@@ -374,13 +360,13 @@ class AdvertisementTest
 
         // Advertisement started but not served yet, considered as waiting.
         $re = $this->createAndStartAdvertisement([
-            COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => strtotime('+3 days'), 'endDate' => strtotime('+4 days')
+            COUNTRY_CODE => "SS", CODE => TOP_BANNER, BEGIN_DATE => strtotime('+3 days'), END_DATE => strtotime('+4 days')
         ]);
         isTrue($re['status'] == 'waiting', "Expect: Status == 'waiting'");
 
         // Expired advertisement, considered as inactive
         $re = $this->createAndStartAdvertisement([
-            COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => strtotime('-5 days'), 'endDate' => strtotime('-2 days')
+            COUNTRY_CODE => "SS", CODE => TOP_BANNER, BEGIN_DATE => strtotime('-5 days'), END_DATE => strtotime('-2 days')
         ]);
 
         isTrue($re['status'] == 'inactive', "Expect: Status == 'inactive', but got: " . $re['status']);
@@ -391,8 +377,8 @@ class AdvertisementTest
         $re = request("advertisement.edit", [
             COUNTRY_CODE => "SS",
             SESSION_ID => login()->sessionId,
-            'beginDate' => time(),
-            'endDate' => time()
+            BEGIN_DATE => time(),
+            END_DATE => time()
         ]);
 
         isTrue($re['status'] == 'inactive', "Expect: Status == 'inactive', but got: " . $re['status']);
@@ -403,8 +389,8 @@ class AdvertisementTest
         $re = request("advertisement.edit", [
             COUNTRY_CODE => "SS",
             SESSION_ID => login()->sessionId,
-            'beginDate' => strtotime('+3 days'),
-            'endDate' => strtotime('+10 days')
+            BEGIN_DATE => strtotime('+3 days'),
+            END_DATE => strtotime('+10 days')
         ]);
         isTrue($re['status'] == 'inactive', "Expect: Status == 'inactive', but got: " . $re['status']);
     }
@@ -425,7 +411,7 @@ class AdvertisementTest
         /// 오늘 하루 광고.
         /// 배너를 시작하면, pointPerDay 와 advertisementPoint 가 기록된다.
         $ad = $this->createAndStartAdvertisement([
-            COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => time()
+            COUNTRY_CODE => "SS", CODE => TOP_BANNER, BEGIN_DATE => time(), END_DATE => time()
         ]);
 
         /// 포인트 확인.
@@ -444,7 +430,7 @@ class AdvertisementTest
 
         /// 내일 부터 3 일간 광고 진행.
         $ad = $this->createAndStartAdvertisement([
-            COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => strtotime('+1 days'), 'endDate' => strtotime('+3 days')
+            COUNTRY_CODE => "SS", CODE => TOP_BANNER, BEGIN_DATE => strtotime('+1 days'), END_DATE => strtotime('+3 days')
         ]);
 
         /// 소모된 광고 포인트 3일치, 확인.
@@ -474,7 +460,7 @@ class AdvertisementTest
         // 필리핀 top banner point 는 70.
         $this->resetBannerPoints('PH', top: 70);
 
-        $adOpts = [CODE => TOP_BANNER, COUNTRY_CODE => 'PH', 'beginDate' => time(), 'endDate' => strtotime('+2 day')];
+        $adOpts = [CODE => TOP_BANNER, COUNTRY_CODE => 'PH', BEGIN_DATE => time(), END_DATE => strtotime('+2 day')];
         $ad = $this->createAndStartAdvertisement($adOpts);
 
         // 70.
@@ -509,7 +495,7 @@ class AdvertisementTest
         registerAndLogin($startingPoint);
         // 하루 광고.
         $ad = $this->createAndStartAdvertisement([
-            COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => time(), 'endDate' => time()
+            COUNTRY_CODE => "SS", CODE => TOP_BANNER, BEGIN_DATE => time(), END_DATE => time()
         ]);
 
         $topBannerPoint = advertisement()->topBannerPoint();
@@ -545,7 +531,7 @@ class AdvertisementTest
         $startingPoint = 1000000;
         registerAndLogin($startingPoint);
         // 광고 생성하고 시작, 그러나 이미 종료된 광고.
-        $ad = $this->createAndStartAdvertisement([COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => strtotime('-8 days'), 'endDate' => time()]);
+        $ad = $this->createAndStartAdvertisement([COUNTRY_CODE => "SS", CODE => TOP_BANNER, BEGIN_DATE => strtotime('-8 days'), END_DATE => time()]);
         // d(login()->getPoint());
 
         //
@@ -580,7 +566,7 @@ class AdvertisementTest
     {
         $startingPoint = 1000000; // 1m
         registerAndLogin($startingPoint);
-        $ad = $this->createAndStartAdvertisement([COUNTRY_CODE => "SS", CODE => TOP_BANNER, 'beginDate' => strtotime('-2 days'), 'endDate' => strtotime('+3 days')]);
+        $ad = $this->createAndStartAdvertisement([COUNTRY_CODE => "SS", CODE => TOP_BANNER, BEGIN_DATE => strtotime('-2 days'), END_DATE => strtotime('+3 days')]);
 
         $bannerPoint = advertisement()->topBannerPoint();
         $advPoint = $bannerPoint * 6;
@@ -610,8 +596,8 @@ class AdvertisementTest
         $ad = $this->createAndStartAdvertisement([
             CODE => TOP_BANNER,
             COUNTRY_CODE => 'PH',
-            'beginDate' => strtotime('-2 days'),
-            'endDate' => strtotime('+3 days')
+            BEGIN_DATE => strtotime('-2 days'),
+            END_DATE => strtotime('+3 days')
         ]);
 
         $bannerPoint = advertisement()->topBannerPoint('PH');
@@ -646,8 +632,8 @@ class AdvertisementTest
         $ad = $this->createAndStartAdvertisement([
             COUNTRY_CODE => "SS",
             CODE => LINE_BANNER,
-            'beginDate' => strtotime('+3 days'), // 4 days including today.
-            'endDate' => strtotime('+1 week 4 days') // 12 days including today. so, it's 9 days.
+            BEGIN_DATE => strtotime('+3 days'), // 4 days including today.
+            END_DATE => strtotime('+1 week 4 days') // 12 days including today. so, it's 9 days.
         ]);
 
         $bannerPoint = advertisement()->LineBannerPoint();
@@ -679,8 +665,8 @@ class AdvertisementTest
         $ad = $this->createAndStartAdvertisement([
             CODE => LINE_BANNER,
             COUNTRY_CODE => 'US',
-            'beginDate' => strtotime('+3 days'), //
-            'endDate' => strtotime('+1 week 4 days') // 9 days.
+            BEGIN_DATE => strtotime('+3 days'), //
+            END_DATE => strtotime('+1 week 4 days') // 9 days.
         ]);
 
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
@@ -695,11 +681,11 @@ class AdvertisementTest
     {
         registerAndLogin(1500000);
 
-        $ad = $this->createAndStartAdvertisement([COUNTRY_CODE => "SS", CODE => LINE_BANNER, 'beginDate' => time(), 'endDate' => time()]);
+        $ad = $this->createAndStartAdvertisement([COUNTRY_CODE => "SS", CODE => LINE_BANNER, BEGIN_DATE => time(), END_DATE => time()]);
         $re = request('advertisement.delete', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
         isTrue($re == e()->advertisement_is_active, "Expect: Error. Cannot delete active advertisement.");
 
-        $ad2 = $this->createAndStartAdvertisement([COUNTRY_CODE => "SS", CODE => LINE_BANNER, 'beginDate' => strtotime('+2 days'), 'endDate' => strtotime('+3 days')]);
+        $ad2 = $this->createAndStartAdvertisement([COUNTRY_CODE => "SS", CODE => LINE_BANNER, BEGIN_DATE => strtotime('+2 days'), END_DATE => strtotime('+3 days')]);
         $re = request('advertisement.delete', [SESSION_ID => login()->sessionId, IDX => $ad2[IDX]]);
         isTrue($re == e()->advertisement_is_active, "Expect: Error. Cannot delete active advertisement.");
     }
@@ -710,7 +696,7 @@ class AdvertisementTest
     function deleteAdvertisement()
     {
         registerAndLogin(1500000);
-        $ad = $this->createAndStartAdvertisement([COUNTRY_CODE => "SS", CODE => LINE_BANNER, 'beginDate' => time(), 'endDate' => time()]);
+        $ad = $this->createAndStartAdvertisement([COUNTRY_CODE => "SS", CODE => LINE_BANNER, BEGIN_DATE => time(), END_DATE => time()]);
 
         request('advertisement.stop', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
         $ad = request('advertisement.delete', [SESSION_ID => login()->sessionId, IDX => $ad[IDX]]);
@@ -746,8 +732,8 @@ class AdvertisementTest
         $ad = $this->createAndStartAdvertisement([
             COUNTRY_CODE => "SS",
             CODE => LINE_BANNER,
-            'beginDate' => strtotime('+3 days'), //
-            'endDate' => strtotime('+8 days') //
+            BEGIN_DATE => strtotime('+3 days'), //
+            END_DATE => strtotime('+8 days') //
         ]);
 
         $bannerPoint = advertisement()->LineBannerPoint();
@@ -765,8 +751,8 @@ class AdvertisementTest
         $newAd = $this->createAndStartAdvertisement([
             CODE => SQUARE_BANNER,
             COUNTRY_CODE => 'US',
-            'beginDate' => time(),
-            'endDate' => strtotime('+2 days') // advertisement days: 3 days. 2 days will be refunded.
+            BEGIN_DATE => time(),
+            END_DATE => strtotime('+2 days') // advertisement days: 3 days. 2 days will be refunded.
         ]);
 
         $bannerPoint = advertisement()->SquareBannerPoint('US');
@@ -936,8 +922,8 @@ class AdvertisementTest
         $adOpts = [
             CODE => TOP_BANNER,
             COUNTRY_CODE => $countryCode,
-            'beginDate' => time(),
-            'endDate' => strtotime('+2 day'),
+            BEGIN_DATE => time(),
+            END_DATE => strtotime('+2 day'),
             SESSION_ID => login()->sessionId
         ];
 
@@ -965,13 +951,15 @@ class AdvertisementTest
     }
 
 
-    function maximumNoOfLimitTest() {
+    function maximumNoOfLimitTest()
+    {
+        $this->resetBannerLimit(TOP_BANNER, 0, false);
         registerAndLogin(100);
         $advOpts = [
             COUNTRY_CODE => 'AC',
             CODE => TOP_BANNER,
-            'beginDate' => time(),
-            'endDate' => strtotime('+2 day'),
+            BEGIN_DATE => time(),
+            END_DATE => strtotime('+2 day'),
             SESSION_ID => login()->sessionId
         ];
         $adv1 = $this->createAndStartAdvertisement($advOpts);
@@ -981,12 +969,11 @@ class AdvertisementTest
     function globalCategoryBannerPoint()
     {
         $this->clearAdvertisementData();
-        $globalMultiplying = rand(2, 5);
-        $this->resetGlobalMulplying($globalMultiplying);
-
         $this->resetBannerLimit(TOP_BANNER, 2, true);
         $this->resetBannerLimit(TOP_BANNER, 2, false);
 
+        $globalMultiplying = rand(2, 5);
+        $this->resetGlobalMulplying($globalMultiplying);
 
         // set points for PH
         $countryCode = "PH";
@@ -998,16 +985,13 @@ class AdvertisementTest
         $advOpts = [
             COUNTRY_CODE => $countryCode,
             CODE => TOP_BANNER,
-            'beginDate' => time(),
-            'endDate' => strtotime('+2 day'),
+            BEGIN_DATE => time(),
+            END_DATE => strtotime('+2 day'),
             SESSION_ID => login()->sessionId
         ];
 
         // create adv1 - global top banner for PH for 3 days
         $adv1 = $this->createAndStartAdvertisement($advOpts);
-
-
-
 
         // create adv2 - qna top banner for PH for 3 days
         $advOpts[BANNER_CATEGORY] = 'qna';
@@ -1018,36 +1002,16 @@ class AdvertisementTest
         $globalBannerPoint = $bannerPoint * $globalMultiplying;
         $globalAdvertisementPoint = $globalBannerPoint * $noOfDays;
 
-        $categoryBannerPoint = $bannerPoint;
-        $categoryAdvertisementPoint = $bannerPoint * $noOfDays;
-
         // Global Advertisement
-        //
-        // expect it's POINT_PER_DAY == $globalMultiplying * TOP_BANNER
-        // expect it's ADVERTISEMENT_POINT == ($globalMultiplying * TOP_BANNER) * Number of days.
-        // expect user_activity toUserPointApply = ADVERTISEMENT_POINT
         isTrue($adv1['pointPerDay'] == $globalBannerPoint, "Expect: 'pointPerDay' == " . $globalBannerPoint);
         isTrue($adv1['advertisementPoint'] == $globalAdvertisementPoint, "Expect: 'advertisementPoint' == " . $globalAdvertisementPoint);
 
         $activity = userActivity()->last(taxonomy: POSTS, entity: $adv1[IDX], action: 'advertisement.start');
         isTrue($activity->toUserPointApply == -$globalAdvertisementPoint, "Expect: activity->toUserPointApply == $globalAdvertisementPoint. But applied " . $activity->toUserPointApply);
 
-        // Category Advertisement
-        //
-        // expect it's POINT_PER_DAY == TOP_BANNER
-        // expect it's ADVERTISEMENT_POINT == TOP_BANNER * Number of days.
-        // expect user_activity toUserPointApply = ADVERTISEMENT_POINT
-        isTrue($adv2['pointPerDay'] == $categoryBannerPoint, "Expect: 'pointPerDay' == " . $categoryBannerPoint);
-        isTrue($adv2['advertisementPoint'] == $categoryAdvertisementPoint, "Expect: 'advertisementPoint' == " . $categoryAdvertisementPoint);
-
-        $activity = userActivity()->last(taxonomy: POSTS, entity: $adv2[IDX], action: 'advertisement.start');
-        isTrue($activity->toUserPointApply == -$categoryAdvertisementPoint, "Expect: activity->toUserPointApply == $categoryAdvertisementPoint. But applied " . $activity->toUserPointApply);
-
-        // Advertisements points comparison
-        //
         // expect global banner point is not equal to category banner point
-        isTrue($adv1['pointPerDay'] != $adv2['pointPerDay'],  "Expect: Adv1 'pointPerDay' (" . $adv1['pointPerDay'] . ") != Adv2 'pointPerDay' (" . $adv2['pointPerDay'] . ")");
-        isTrue($adv1['advertisementPoint'] != $adv2['advertisementPoint'],  "Expect: Adv1 'advertisementPoint' (" . $adv1['advertisementPoint'] . ") != Adv2 'advertisementPoint' (" . $adv2['advertisementPoint'] . ")");
+        isTrue($adv1['pointPerDay'] != $adv2['pointPerDay'],  "Expect: Adv1 'pointPerDay' != Adv2 'pointPerDay' (");
+        isTrue($adv1['advertisementPoint'] != $adv2['advertisementPoint'],  "Expect: Adv1 'advertisementPoint' != Adv2 'advertisementPoint'");
     }
 
 
@@ -1055,13 +1019,15 @@ class AdvertisementTest
     {
 
         $this->clearAdvertisementData();
-        $startingPoint = 800000;
-        registerAndLogin($startingPoint);
+        $this->resetBannerLimit(LINE_BANNER, false);
+        registerAndLogin(800000);
 
         $rootDomain = 'ard' . time() . '.com';
         $subDomain = 'abc';
         $countryCodeA = 'XX';
         $countryCodeB = 'YY';
+
+        $domain = $subDomain . '.' . $rootDomain;
 
         $this->resetBannerPoints($countryCodeA, 1000, 2000, 3000, 4000);
         $this->resetBannerPoints($countryCodeB, 6000, 7000, 8000, 9000);
@@ -1069,16 +1035,13 @@ class AdvertisementTest
         $cafe = cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomain, 'countryCode' => $countryCodeA]);
         isTrue($cafe->ok, 'cafe for banner test has been created');
 
-        $domain = $subDomain . '.' . $rootDomain;
 
         $advOpts = [
             CODE => LINE_BANNER,
-            'beginDate' => time(),
-            'endDate' => time(),
+            BEGIN_DATE => time(),
+            END_DATE => time(),
             'fileIdxes' => '1',
         ];
-
-        $fetchOptions = ['cafeDomain' => $domain, CODE => LINE_BANNER];
 
         // Create 2 banner with the different countryCode.
         $advOpts[COUNTRY_CODE] = $countryCodeA;
@@ -1088,7 +1051,8 @@ class AdvertisementTest
 
         // Expect adv1 is present on banners since it has the same countryCode as the cafe.
         // and adv2 is not present since it has different countryCode.
-        $re = request("advertisement.loadBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => $domain, CODE => LINE_BANNER]);
+
         isTrue($this->bannerIsPresent($adv1, $re), 'Expect: ADV 1 is present');
         isTrue($this->bannerIsPresent($adv2, $re) == false, 'Expect: ADV 2 is not present');
 
@@ -1097,7 +1061,7 @@ class AdvertisementTest
         post($adv2[IDX])->update($advOpts);
 
         // Expect that adv2 now is present in cafe with countryCode of countryCodeA.
-        $re = request("advertisement.loadBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => $domain, CODE => LINE_BANNER]);
         isTrue($this->bannerIsPresent($adv2, $re), 'Expect: ADV 2 is present');
 
         // Change the country of the cafe from countryCodeA to countryCodeB.
@@ -1105,7 +1069,7 @@ class AdvertisementTest
         isTrue($cafe->countryCode == $countryCodeB, "Expect: country code changed from $countryCodeA to $countryCodeB.");
 
         // Expect that adv1 and adv2 is not present since cafe countryCode is changed from countryCodeA to countryCodeB.
-        $re = request("advertisement.loadBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => $domain, CODE => LINE_BANNER]);
         isTrue($this->bannerIsPresent($adv1, $re) == false, 'Expect: ADV 1 is not present');
         isTrue($this->bannerIsPresent($adv2, $re) == false, 'Expect: ADV 2 is not present');
     }
@@ -1113,7 +1077,9 @@ class AdvertisementTest
     function loadAllCountryBanners()
     {
         $this->clearAdvertisementData();
+        $this->resetBannerLimit(LINE_BANNER, category: false);
         $this->resetBannerPoints();
+
         registerAndLogin(1000000);
 
         $rootDomain = 'mnm' . time() . '.com';
@@ -1137,24 +1103,19 @@ class AdvertisementTest
         $banner = $this->createAndStartAdvertisement([
             CODE => LINE_BANNER,
             COUNTRY_CODE => $allCountryCode,
-            'beginDate' => time(),
-            'endDate' => time(),
+            BEGIN_DATE => time(),
+            END_DATE => time(),
             'fileIdxes' => '1',
         ]);
-
-
-        $fetchOptions = ['cafeDomain' => $domainA, CODE => LINE_BANNER];
 
         $banners = advertisement()->loadBanners([CAFE_DOMAIN => $domainA, BANNER_TYPE => LINE_BANNER]);
         isTrue(count($banners) == 1, 'There should be only one adv');
 
         // Both cafe should have the banner as it is set to $allCountryCode
-        $re = request("advertisement.loadBanners", $fetchOptions);
-
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => $domainA, CODE => LINE_BANNER]);
         isTrue($this->bannerIsPresent($banner, $re), "cafeDomain $domainA must have all country banner.");
 
-        $fetchOptions = ['cafeDomain' => $domainB, CODE => LINE_BANNER];
-        $re = request("advertisement.loadBanners", $fetchOptions);
+        $re = request("advertisement.loadBanners", [CAFE_DOMAIN => $domainB, CODE => LINE_BANNER]);
         isTrue($this->bannerIsPresent($banner, $re), "cafeDomain B ($domainB) must have also the same all country banner");
 
         banner($banner[IDX])->update([COUNTRY_CODE => $countryCodeA]);
@@ -1192,8 +1153,8 @@ class AdvertisementTest
         $advOpts = [
             CODE => TOP_BANNER,
             SUB_CATEGORY => 'qna',
-            'beginDate' => time(),
-            'endDate' => strtotime('+1 days')
+            BEGIN_DATE => time(),
+            END_DATE => strtotime('+1 days')
         ];
         $days = 2;
 
@@ -1211,11 +1172,11 @@ class AdvertisementTest
         // All Country Banner points must be greater than Cafe Country Banner
         isTrue(
             $allCountryBanner['pointPerDay'] > $cafeCountryBanner['pointPerDay'],
-            "Expect: All Country Banner 'pointPerDay' (" . $allCountryBanner['pointPerDay'] . ") is greater than Cafe Country Banner 'pointPerDay' (" . $cafeCountryBanner['pointPerDay'] . ")"
+            "Expect: All Country Banner 'pointPerDay' is greater than Cafe Country Banner 'pointPerDay'"
         );
         isTrue(
             $allCountryBanner['advertisementPoint'] > $cafeCountryBanner['advertisementPoint'],
-            "Expect: All Country Banner 'advertisementPoint' (" . $allCountryBanner['advertisementPoint'] . ") is greater than Cafe Country Banner 'advertisementPoint' (" . $cafeCountryBanner['advertisementPoint'] . ")"
+            "Expect: All Country Banner 'advertisementPoint' is greater than Cafe Country Banner 'advertisementPoint'"
         );
 
         isTrue($allCountryBanner['pointPerDay'] == $allCountryBannerPoint, "Expect: All Country Banner 'pointPerDay' == " . $allCountryBannerPoint . ". But got " . $allCountryBanner['pointPerDay']);
@@ -1244,8 +1205,8 @@ class AdvertisementTest
         $advOpts = [
             COUNTRY_CODE => 'AC',
             CODE => TOP_BANNER,
-            'beginDate' => time(),
-            'endDate' => strtotime('+1 day'),
+            BEGIN_DATE => time(),
+            END_DATE => strtotime('+1 day'),
             'fileIdxes' => '1'
         ];
 
@@ -1279,7 +1240,6 @@ class AdvertisementTest
         $subCategory = 'banana' . time();
         $rootDomain = 'wxy.com';
         $subDomain = 'abc' . time();
-        $domain = $subDomain . "." . $rootDomain;
         $cafe = cafe()->create(['rootDomain' => $rootDomain, 'domain' => $subDomain, 'countryCode' => $countryCode]);
 
         // create test advertisements
@@ -1321,10 +1281,7 @@ class AdvertisementTest
         isTrue($this->bannerIsPresent($banner4, $banners), 'banner 4 is present');
 
         // Add one more on all category of All country
-
         $banner4 = $this->createAndStartAdvertisement($advOpts);
-
-
     }
 
 
@@ -1342,8 +1299,8 @@ class AdvertisementTest
             COUNTRY_CODE => 'T1',
             BANNER_TYPE => $banner_type,
             BANNER_CATEGORY => '',
-            'beginDate' => time(),
-            'endDate' => strtotime('+1 day'),
+            BEGIN_DATE => time(),
+            END_DATE => strtotime('+1 day'),
             'fileIdxes' => '1'
         ];
 
@@ -1373,7 +1330,8 @@ class AdvertisementTest
     /**
      * Two default top banner test.
      */
-    function defaultTopBannerTest() {
+    function defaultTopBannerTest()
+    {
 
         // hardCodedTopBanners() 는 1개 또는 2개의 베너를 리턴한다.
         $banners = banner()->hardCodedTopBanners(0);
@@ -1391,11 +1349,12 @@ class AdvertisementTest
 
         $firstHardCodedBanner = banner()->hardCodedTopBanners(1);
 
-        isTrue( $banners[0]->idx == $firstHardCodedBanner[0]->idx, 'idx must be 0' );
-        isTrue( $banners[0]->clickUrl == $firstHardCodedBanner[0]->clickUrl, 'click url match' );
+        isTrue($banners[0]->idx == $firstHardCodedBanner[0]->idx, 'idx must be 0');
+        isTrue($banners[0]->clickUrl == $firstHardCodedBanner[0]->clickUrl, 'click url match');
     }
 
-    function topBannerLoadWithNonExistingCafe() {
+    function topBannerLoadWithNonExistingCafe()
+    {
         $this->clearAdvertisementData();
         $banners = banner()->loadBanners([CAFE_DOMAIN => 'non-existing.domain.com', BANNER_TYPE => TOP_BANNER]);
         isTrue(count($banners) >= 2, "Two top banners for non-existing domains.");

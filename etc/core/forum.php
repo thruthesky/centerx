@@ -271,18 +271,18 @@ class Forum extends Entity {
 
         if ( isset($in[BEGIN_AT]) && $in[BEGIN_AT] ) {
             $in[BEGIN_AT] = dateToTime($in[BEGIN_AT] ?? '');
-        } else if ( isset($in['beginDate']) && $in['beginDate'] ) {
-            $in[BEGIN_AT] = dateToTime($in['beginDate']);
-            unset($in['beginDate']);
+        } else if ( isset($in[BEGIN_DATE]) && $in[BEGIN_DATE] ) {
+            $in[BEGIN_AT] = dateToTime($in[BEGIN_DATE]);
+            unset($in[BEGIN_DATE]);
         } else {
 //            $in[BEGIN_AT] = 0;
         }
 
         if ( isset($in[END_AT]) && $in[END_AT] ) {
             $in[END_AT] = dateToTime($in[END_AT] ?? '');
-        } else if ( isset($in['endDate']) && $in['endDate'] ) {
-            $in[END_AT] = dateToTime($in['endDate']);
-            unset($in['endDate']);
+        } else if ( isset($in[END_DATE]) && $in[END_DATE] ) {
+            $in[END_AT] = dateToTime($in[END_DATE]);
+            unset($in[END_DATE]);
         } else {
 //            $in[END_AT] = 0;
         }
