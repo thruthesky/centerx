@@ -281,6 +281,17 @@ define('DOMAIN_THEMES', [
 아래의 live reload 항목 참고
 
 
+# 패키지 및 모듈 구성
+
+
+- [MobileDetect](https://github.com/serbanghita/Mobile-Detect)를 통해서 모바일인지 아닌지, 모바일의 정보를 확인한다.
+  참고로, IE11 을 잘 detect 하지 못해서, `isIE()` 함수를 따로 만들어 놓았다.
+  사용 설명: https://github.com/serbanghita/Mobile-Detect/wiki/Code-examples
+  
+  
+
+
+
 # 코딩 가이드라인, 스타일 가이드
 
 - 권한 체크를 하지 않아서, controller 또는 클라이언트에게 곧 바로 노출되면 위함한 함수는 언더바(_)로 시작한다.

@@ -354,19 +354,6 @@ cd etc/phpdoc
 
 
 
-# Component
-
-
-
-- [EzSQL](https://github.com/ezSQL/ezsql)
-  For database connection
-
-- Firebase
-
-- [MobileDetect](https://github.com/serbanghita/Mobile-Detect)
-  To detect the device is mobile
-
-
 
 
 # Configuration

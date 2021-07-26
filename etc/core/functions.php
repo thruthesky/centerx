@@ -2355,3 +2355,17 @@ function percentageOf(int $point): int {
     $p = round($myP / $total * 100);
     return $p;
 }
+
+/**
+ * IE 웹 브라우저이면 참을 리턴한다.
+ * 참고로, Mobile Detect 는 IE 를 제대로 확인하지 못한다.
+ * @return bool
+ */
+function isIE(): bool {
+    if (isset($_SERVER['HTTP_USER_AGENT']) && ( (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false ) || (strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/7.0; rv:11.0') !== false) ) ){
+        return true;
+    }
+    else {
+        return false;
+    }
+}
