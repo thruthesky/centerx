@@ -2145,6 +2145,15 @@ echo "<img src='{$file->url}'><br>"; // 원본 이미지 출력
   `https://sonub.com/etc/phpinfo.php` 를 통해서도 확인이 가능하다.
 
 
+- 썸네일은 기본적으로 jpeg 와 webp 두 가지만 지원한다.
+
+- config.php 에 설정된 `THUMBNAIL_FORMAT` 이 'webp' 이고, IE 웹브라우저가 아니면, 썸네일의 맨 끝에 .webp 를 붙이고,
+  WebP 포멧으로 썸네일을 생성한다.
+  아니면, 기존의 확장자를 유지하고, JPEG 포멧으로 썸네일을 생성한다.
+  이 때, 기존 파일 이름의 확장자가 .gif, .png 이면, 썸네일의 확장자도 그렇게 유지가 된다. 하지만, 이미지 포멧은 JPEG 이다.
+  
+- Internet Explorer 11 때문에, `THUMBNAIL_FORMAT` 을 `webp` 로 하는 경우, 예외 처리를 해서 코드가 복잡해진다.
+
 
 # 관리자 페이지, Admin Page
 
