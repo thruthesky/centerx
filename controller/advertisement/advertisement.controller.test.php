@@ -13,11 +13,9 @@ $at->endDateEmpty();
 $at->wrongCode();
 $at->loadBanners();
 
-
 $at->statusCheck();
 $at->createBanner();
 $at->zero_point_advertisement();
-
 
 $at->startDeduction();
 $at->startWithCountryDeduction();
@@ -28,20 +26,16 @@ $at->stopWithCountryFullRefund();
 $at->stopNoRefund();
 $at->stopOnPastOrExpiredBanner();
 
-
 $at->settings();
 $at->pointSettings();
 $at->pointSettingDelete();
 $at->maximumAdvertisementDays();
 $at->stopAfterPointSettingChanged();
 
-
 $at->startStopChangeDatesAndCountry();
-
 
 $at->errorDeleteActiveAdvertisement();
 $at->deleteAdvertisement();
-
 
 $at->maximumNoOfLimitTest();
 $at->globalCategoryBannerPoint();
@@ -52,7 +46,6 @@ $at->allCountryBannerPoint();
 $at->loadCafeCountryBanners();
 $at->loadAllCountryBanners();
 
-// //
 $at->topBannerLoad();
 $at->squareBannerLoad();
 
