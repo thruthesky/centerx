@@ -7,53 +7,52 @@ $at = new AdvertisementTest();
 
 
 // Input tests
-// $at->lackOfPoint();
-// $at->beginDateEmpty();
-// $at->endDateEmpty();
+$at->lackOfPoint();
+$at->beginDateEmpty();
+$at->endDateEmpty();
 $at->wrongBannerType();
-$at->noPointSettings();
-// $at->loadBanners();
+$at->loadBanners();
 
-// $at->statusCheck();
-// $at->createBanner();
-// $at->zero_point_advertisement();
+$at->statusCheck();
+$at->createBanner();
+$at->zero_point_advertisement();
 
-// $at->startDeduction();
-// $at->startWithCountryDeduction();
-// $at->stopWithDeductedRefund();
-// $at->stopWithCountryAndDeductedRefund();
-// $at->stopFullRefund();
-// $at->stopWithCountryFullRefund();
-// $at->stopNoRefund();
-// $at->stopOnPastOrExpiredBanner();
+$at->startDeduction();
+$at->startWithCountryDeduction();
+$at->stopWithDeductedRefund();
+$at->stopWithCountryAndDeductedRefund();
+$at->stopFullRefund();
+$at->stopWithCountryFullRefund();
+$at->stopNoRefund();
+$at->stopOnPastOrExpiredBanner();
 
-// $at->settings();
-// $at->pointSettings();
-// $at->pointSettingDelete();
-// $at->maximumAdvertisementDays();
-// $at->stopAfterPointSettingChanged();
+$at->settings();
+$at->pointSettings();
+$at->pointSettingDelete();
+$at->maximumAdvertisementDays();
+$at->stopAfterPointSettingChanged();
 
-// $at->startStopChangeDatesAndCountry();
+$at->startStopChangeDatesAndCountry();
 
-// $at->errorDeleteActiveAdvertisement();
-// $at->deleteAdvertisement();
+$at->errorDeleteActiveAdvertisement();
+$at->deleteAdvertisement();
 
-// $at->maximumNoOfLimitTest();
-// $at->globalCategoryBannerPoint();
-// $at->defaultTopBannerTest();
-// $at->topBannerLoadWithNonExistingCafe();
+$at->maximumNoOfLimitTest();
+$at->globalCategoryBannerPoint();
+$at->defaultTopBannerTest();
+$at->topBannerLoadWithNonExistingCafe();
 
-// $at->allCountryBannerPoint();
-// $at->loadCafeCountryBanners();
-// $at->loadAllCountryBanners();
+$at->allCountryBannerPoint();
+$at->loadCafeCountryBanners();
+$at->loadAllCountryBanners();
 
-// $at->topBannerLoad();
-// $at->squareBannerLoad();
+$at->topBannerLoad();
+$at->squareBannerLoad();
 
-// $at->bannerLimit(TOP_BANNER);
-// $at->bannerLimit(SIDEBAR_BANNER);
-// $at->bannerLimit(SQUARE_BANNER);
-// $at->bannerLimit(LINE_BANNER);
+$at->bannerLimit(TOP_BANNER);
+$at->bannerLimit(SIDEBAR_BANNER);
+$at->bannerLimit(SQUARE_BANNER);
+$at->bannerLimit(LINE_BANNER);
 
 class AdvertisementTest
 {
