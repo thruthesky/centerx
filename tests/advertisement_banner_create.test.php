@@ -2,7 +2,7 @@
 
 setLoginAsAdmin();
 
-$re = _banner_create();
 
+$re = _banner_create();
 isTrue ( isError($re) == false, "banner create must success");
 

@@ -9,6 +9,16 @@ adminSettings()->set(MAXIMUM_ADVERTISING_DAYS, 30);
 adminSettings()->set(ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING, 2);
 
 
+banner()->setMaxNoOn(TOP_BANNER);
+banner()->setMaxNoOn(SIDEBAR_BANNER);
+banner()->setMaxNoOn(SQUARE_BANNER);
+banner()->setMaxNoOn(LINE_BANNER);
+
+banner()->setMaxNoOn(TOP_BANNER, false);
+banner()->setMaxNoOn(SIDEBAR_BANNER, false);
+banner()->setMaxNoOn(SQUARE_BANNER, false);
+banner()->setMaxNoOn(LINE_BANNER, false);
+
 
 
 

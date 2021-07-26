@@ -162,6 +162,8 @@ class AdvertisementModel extends PostModel
 
 
     /**
+     * Returns the key for saving the number of maximum banners into meta table.
+     *
      * @param $banner_type
      * @param $category
      * @return string
@@ -173,9 +175,29 @@ class AdvertisementModel extends PostModel
         $banner_type = ucfirst($banner_type);
         return "maxNoOn{$cat}{$banner_type}Banner";
     }
+
+    /**
+     * Returns the maximum number of banner for that banner type and category.
+     * @param $banner_type
+     * @param $category
+     * @return int|mixed
+     */
     public function maxNoOn($banner_type, $category)
     {
         return adminSettings()->get($this->maxNoKey($banner_type, $category)) ?? 0;
+    }
+
+    /**
+     * Set maximum number of banners of the banner type and category.
+     *
+     * @param string $banner_type
+     * @param bool $category
+     * @param int $value
+     */
+    public function setMaxNoOn(string $banner_type, bool $category = true, int $value = 10): void
+    {
+        $k = banner()->maxNoKey($banner_type, $category);
+        adminSettings()->set($k, $value);
     }
 
 

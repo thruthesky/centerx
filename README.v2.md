@@ -1532,8 +1532,8 @@ isTrue((new AppController())->version(), "App version");
 - When client request banners (to display on the site or app) to server, the server must return with the minimum number
   of banners like below.
   * Top banner must return at least 2 banners. which means, if there is no banner at all, hard coded banner will be returned.
-  * Square banner is trying to return minimum of 4 banners.
-  *  - It will collect minimum of 4 banners following the default banner rule.
+  * Square banner is trying to return minimum of 2 banners.
+  *  - It will collect minimum of 2 banners following the default banner rule.
   *  - But there is no hard coded banner for square banner.
   * Sidebar and Line banner may return 0 banner.
   *  - If there is no available default banner, it return 0 banner.

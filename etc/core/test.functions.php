@@ -261,11 +261,17 @@ function _post_create( string $path = '' ) {
     }
 }
 
+
+
 function _banner_create() {
+
     $category = category(ADVERTISEMENT_CATEGORY);
     if ( $category->exists == false ) {
         $category->create([ID => ADVERTISEMENT_CATEGORY]);
     }
+
+    db()->delete(post()->getTable(), [CATEGORY_IDX => $category->idx]);
+
     global $data;
     include ROOT_DIR . 'etc/res/advertisement/sample.php';
     $idxes = [];

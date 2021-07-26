@@ -38,6 +38,11 @@ class MetaConfig {
 
     /**
      * 설정을 저장(또는 업데이트)한다. 설정은 metas 테이블에 저장되며, taxonomy=metaConfig, entity=0 이 된다.
+     *
+     *
+     * 주의, 프로그램적으로 adminSettings()->set() 와 같이 호출 할 수 있는데, 이 때 권한 체크는 이 함수를 호출하기 전에 해야 한다.
+     *
+     *
      * @param array|string $code - 문자열이면 1개의 값, 배열이면 여러개의 값을 저장한다.
      *  if $code is an array, then it updates multiple settings.
      * @param mixed $value

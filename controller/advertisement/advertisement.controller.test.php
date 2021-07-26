@@ -151,8 +151,9 @@ class AdvertisementTest
 
     private function resetBannerLimit(string $banner_type, $value = 10, $category = true)
     {
-        $k = banner()->maxNoKey($banner_type, $category);
-        adminSettings()->set($k, $value);
+        banner()->setMaxNoOn($banner_type, $category, $value);
+//        $k = banner()->maxNoKey($banner_type, $category);
+//        adminSettings()->set($k, $value);
     }
 
     private function bannerIsPresent(mixed $banner, mixed $banners): bool
@@ -1350,4 +1351,14 @@ class AdvertisementTest
         $banners = banner()->loadBanners([CAFE_DOMAIN => 'non-existing.domain.com', BANNER_TYPE => TOP_BANNER]);
         isTrue(count($banners) >= 2, "Two top banners for non-existing domains.");
     }
+
+
+    public function defaultBannerTest() {
+        // There is 1 square banner on PH on QnA category.
+        // There are 4 square banners on QnA category in global All country,
+        // Then, how many banners must be returned to client?
+
+
+    }
 }
+
