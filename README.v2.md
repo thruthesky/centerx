@@ -431,6 +431,14 @@ https://main.philov.com/index.php?route=user.latestByProfilePhoto
   - `library/model/entity.php` is a model class for each taxonomy.
   - `library/model/taxonomy.php` is the taxonomy class that extends entity class and is the parent of all taxonomy classes.
 
+- `files/uploads`
+  사용자가 파일/사진을 업로드하면 저장되는 공간이다.
+  
+- `files/thumbnails`
+  원본 사진은 `files/uploads` 에 저장되는데, 썸네일을 만들 때, 재 활용 가능하도록 `files/thumbnails` 폴더에 저장한다.
+  이 폴더와 폴더 안의 썸네일 이미지 파일은 언제든지 삭제가 가능하다.
+  삭제를 해도, 필요하면 다시 (자동으로) 생성해서 사용한다.
+  
 
 
 # 부팅 순서
