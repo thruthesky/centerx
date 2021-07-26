@@ -281,6 +281,17 @@ define('DOMAIN_THEMES', [
 아래의 live reload 항목 참고
 
 
+# 패키지 및 모듈 구성
+
+
+- [MobileDetect](https://github.com/serbanghita/Mobile-Detect)를 통해서 모바일인지 아닌지, 모바일의 정보를 확인한다.
+  참고로, IE11 을 잘 detect 하지 못해서, `isIE()` 함수를 따로 만들어 놓았다.
+  사용 설명: https://github.com/serbanghita/Mobile-Detect/wiki/Code-examples
+  
+  
+
+
+
 # 코딩 가이드라인, 스타일 가이드
 
 - 권한 체크를 하지 않아서, controller 또는 클라이언트에게 곧 바로 노출되면 위함한 함수는 언더바(_)로 시작한다.
@@ -420,6 +431,14 @@ https://main.philov.com/index.php?route=user.latestByProfilePhoto
   - `library/model/entity.php` is a model class for each taxonomy.
   - `library/model/taxonomy.php` is the taxonomy class that extends entity class and is the parent of all taxonomy classes.
 
+- `files/uploads`
+  사용자가 파일/사진을 업로드하면 저장되는 공간이다.
+  
+- `files/thumbnails`
+  원본 사진은 `files/uploads` 에 저장되는데, 썸네일을 만들 때, 재 활용 가능하도록 `files/thumbnails` 폴더에 저장한다.
+  이 폴더와 폴더 안의 썸네일 이미지 파일은 언제든지 삭제가 가능하다.
+  삭제를 해도, 필요하면 다시 (자동으로) 생성해서 사용한다.
+  
 
 
 # 부팅 순서
@@ -2125,6 +2144,15 @@ echo "<img src='{$file->url}'><br>"; // 원본 이미지 출력
 - `https://sonub.com/etc/gdinfo.php` 와 같이 접속하면 GD 에서 지원하는 포멧을 알 수 있으며,
   `https://sonub.com/etc/phpinfo.php` 를 통해서도 확인이 가능하다.
 
+
+- 썸네일은 기본적으로 jpeg 와 webp 두 가지만 지원한다.
+
+- config.php 에 설정된 `THUMBNAIL_FORMAT` 이 'webp' 이고, IE 웹브라우저가 아니면, 썸네일의 맨 끝에 .webp 를 붙이고,
+  WebP 포멧으로 썸네일을 생성한다.
+  아니면, 기존의 확장자를 유지하고, JPEG 포멧으로 썸네일을 생성한다.
+  이 때, 기존 파일 이름의 확장자가 .gif, .png 이면, 썸네일의 확장자도 그렇게 유지가 된다. 하지만, 이미지 포멧은 JPEG 이다.
+  
+- Internet Explorer 11 때문에, `THUMBNAIL_FORMAT` 을 `webp` 로 하는 경우, 예외 처리를 해서 코드가 복잡해진다.
 
 
 # 관리자 페이지, Admin Page

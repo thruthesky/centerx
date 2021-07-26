@@ -551,6 +551,7 @@ function leave_starting_debug_log() {
     if ( DEBUG_LOG == false ) return;
     $uri = $_SERVER['REQUEST_URI'] ?? '';
     $phpSelf = $_SERVER['PHP_SELF'] ?? '';
+    if ( str_contains($phpSelf, "thumbnail.php") ) return;
     debug_log("\n>\n>\n> --- start --- $phpSelf / (uri) $uri --> boot.code.php:", date('m/d H:i:s') . "\n>\n>\n");
     if ( str_contains($phpSelf, 'phpThumb.php') == false ) {
         debug_log('in();', in());
@@ -2131,6 +2132,8 @@ function isFuture($stamp): bool {
 /**
  * 이미지를 썸네일로 제작한다.
  *
+ * 참고, 썸네일 이미지 포멧은 JPEG 와 WEBP 두 가지로 하는데, IE 에서는 JPEG 로만 해야 한다.
+ *
  * @note 이 함수는 썸네일 이미지를 파일에 저장하고, 그 경로를 리턴한다.
  *  - 즉, 실시간으로 썸네일을 생성할 수가 없다.
  *  - 실시간으로 썸네일을 생성하기 위해서는 이미지 경로가 아니라 이미지 자체를 리턴해야 한다.
@@ -2150,10 +2153,10 @@ function zoomThumbnail(string $source_path, int $width=150, int $height=150, int
 
     // 이미 썸네일이 생성되어져 있으면 그 걸 리턴.
     if ( file_exists($destination_path) ) {
-        debug_log('------------> $destination_path: exists: ' . $destination_path);
+//        debug_log('----> Reusing thumbnails: $destination_path: exists: ' . $destination_path);
         return $destination_path;
     } else {
-        debug_log('------------> $destination_path: NOT exists: ' . $destination_path);
+//        debug_log('----> Thumbnail not exists. Creating $destination_path: ' . $destination_path);
     }
 
 
@@ -2248,7 +2251,13 @@ function thumbnailPath($path, $w, $h) {
     $ext = pathinfo($path, PATHINFO_EXTENSION);
     $new_path = str_replace($ext, "{$w}x{$h}.$ext", $path);
     $new_path = str_replace("uploads/", "thumbnails/", $new_path);
+
+    // @see README
+    if ( THUMBNAIL_FORMAT == "webp" && isIE() == false ) {
+        $new_path .= ".webp";
+    }
     return $new_path;
+
 }
 
 
@@ -2354,4 +2363,18 @@ function percentageOf(int $point): int {
     $total = pointBetween($lv);
     $p = round($myP / $total * 100);
     return $p;
+}
+
+/**
+ * IE 웹 브라우저이면 참을 리턴한다.
+ * 참고로, Mobile Detect 는 IE 를 제대로 확인하지 못한다.
+ * @return bool
+ */
+function isIE(): bool {
+    if (isset($_SERVER['HTTP_USER_AGENT']) && ( (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false ) || (strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/7.0; rv:11.0') !== false) ) ){
+        return true;
+    }
+    else {
+        return false;
+    }
 }
