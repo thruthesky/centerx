@@ -53,7 +53,7 @@ $at->maximumAdvertisementDays();
 $at->stopAfterPointSettingChanged();
 $at->allCountryBannerPoint();
 
-$at->maximumNoOfLimitTest();
+$at->zero_maximumNoOfLimitTest();
 $at->globalCategoryBannerPoint();
 
 /**
@@ -989,7 +989,7 @@ class AdvertisementTest
     }
 
 
-    function maximumNoOfLimitTest()
+    function zero_maximumNoOfLimitTest()
     {
         $this->resetBannerLimit(TOP_BANNER, 0, false);
         registerAndLogin(100);
