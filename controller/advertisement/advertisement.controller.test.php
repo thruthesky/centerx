@@ -14,7 +14,7 @@ $at->deleteInputTest();
 $at->loadBannersInputTest();
 
 /**
- * Advertisement Start logic tests.
+ * Advertisement Start tests.
  */
 $at->lackOfPoint();
 $at->zero_point_advertisement();
@@ -22,7 +22,7 @@ $at->startDeduction();
 $at->startWithCountryDeduction();
 
 /**
- * Advertisement Stop logic tests.
+ * Advertisement Stop tests.
  */
 $at->stopWithDeductedRefund();
 $at->stopWithCountryAndDeductedRefund();
@@ -32,7 +32,7 @@ $at->stopNoRefund();
 $at->stopOnPastOrExpiredBanner();
 
 /**
- * Advertisement delete logic tests.
+ * Advertisement delete tests.
  */
 $at->errorDeleteActiveAdvertisement();
 $at->deleteAdvertisement();
@@ -57,7 +57,7 @@ $at->zero_maximumNoOfLimitTest();
 $at->globalCategoryBannerPoint();
 
 /**
- * Advertisement loading logic tests.
+ * Advertisement loading tests.
  */
 $at->cafeCountryBannerLoadTest();
 $at->allCountryBannerLoadTest();
@@ -1397,7 +1397,7 @@ class AdvertisementTest
         // There is 1 square banner on PH on QnA category.
         $this->createAndStartAdvertisement($advOpts);
 
-        // There are 4 square banners on QnA category in global All country,
+        // There are 4 square banners on QnA category in All country,
         $advOpts[COUNTRY_CODE] = "AC";
         $this->createAndStartAdvertisement($advOpts);
         $this->createAndStartAdvertisement($advOpts);
@@ -1407,5 +1407,12 @@ class AdvertisementTest
         // Then, how many banners must be returned to client?
         $banners = banner()->loadBanners([CAFE_DOMAIN => $subDomain . '.test.com', BANNER_TYPE => SQUARE_BANNER, BANNER_CATEGORY => 'qna']);
         isTrue(count($banners) == 5, "Expect: 5 banners will be returned");
+        
+        // create 1 more square banner on PH with 'qna' category.
+        $advOpts[COUNTRY_CODE] = "PH";
+        $this->createAndStartAdvertisement($advOpts);
+
+        $banners = banner()->loadBanners([CAFE_DOMAIN => $subDomain . '.test.com', BANNER_TYPE => SQUARE_BANNER, BANNER_CATEGORY => 'qna']);
+        isTrue(count($banners) == 6, "Expect: 6 banners will be returned");
     }
 }
