@@ -12,6 +12,7 @@
  * @property-read string $name
  * @property-read string $nickname
  * @property-read string $nicknameOrName - 실제 DB 에 존재하지 않는 필드. 닉네임 또는 이름을 리턴한다. 만약, 닉네임 또는 이름이 존재하지 않으면, 이메일 주소의 계정에서 뒷자리 3자리를 xxx 로 변경해서 리턴한다.
+ * @property-read string $displayName - $nicknameOrName 의 alias.
  * @property-read int $photoIdx
  * @property-read string $phoneNo
  * @property-read string $gender
@@ -130,6 +131,7 @@ class UserModel extends Entity {
             $this->updateMemoryData('photoUrl', $one->url);
         }
         $this->updateMemoryData('nicknameOrName', $this->nicknameOrName());
+        $this->updateMemoryData('displayName', $this->nicknameOrName());
         $this->updateMemoryData('age', $this->age());
         $this->updateMemoryData('verified', $this->verifier);
 

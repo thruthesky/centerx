@@ -162,6 +162,8 @@ class AdvertisementModel extends PostModel
 
 
     /**
+     * Returns the key for saving the number of maximum banners into meta table.
+     *
      * @param $banner_type
      * @param $category
      * @return string
@@ -173,9 +175,29 @@ class AdvertisementModel extends PostModel
         $banner_type = ucfirst($banner_type);
         return "maxNoOn{$cat}{$banner_type}Banner";
     }
+
+    /**
+     * Returns the maximum number of banner for that banner type and category.
+     * @param $banner_type
+     * @param $category
+     * @return int|mixed
+     */
     public function maxNoOn($banner_type, $category)
     {
         return adminSettings()->get($this->maxNoKey($banner_type, $category)) ?? 0;
+    }
+
+    /**
+     * Set maximum number of banners of the banner type and category.
+     *
+     * @param string $banner_type
+     * @param bool $category
+     * @param int $value
+     */
+    public function setMaxNoOn(string $banner_type, bool $category = true, int $value = 10): void
+    {
+        $k = banner()->maxNoKey($banner_type, $category);
+        adminSettings()->set($k, $value);
     }
 
 
@@ -241,7 +263,7 @@ class AdvertisementModel extends PostModel
             return advertisement()->create($in);
         } else {
             $post = advertisement($in[IDX]);
-            if ($post->isMine() == false) return $this->error(e()->not_your_post);
+            if ($post->isMine() == false) return $this->error(e()->not_your_advertisement);
             return $post->update($in);
         }
     }
@@ -267,7 +289,6 @@ class AdvertisementModel extends PostModel
      */
     public function start($in): self
     {
-
         if (notLoggedIn()) return $this->error(e()->not_logged_in);
 
         // check if post idx is present.
@@ -275,7 +296,7 @@ class AdvertisementModel extends PostModel
 
         // check if banner is mine
         $banner = banner($in[IDX]);
-        if ($banner->isMine() == false) return $this->error(e()->not_your_post);
+        if ($banner->isMine() == false) return $this->error(e()->not_your_advertisement);
 
         // check code input
         // if (!isset($in[CODE]) || empty($in[CODE])) return $this->error(e()->code_is_empty);
@@ -479,7 +500,8 @@ class AdvertisementModel extends PostModel
 
         if (!isset($in[BANNER_TYPE]) || empty($in[BANNER_TYPE])) return e()->empty_banner_type;
 
-        //        d('cafe countryCode: ' . $cafe->countryCode);
+        // d($cafe);
+        // d('cafe countryCode: ' . $cafe->countryCode);
 
         return $this->loadBannersOf($in[BANNER_TYPE], $in[BANNER_CATEGORY] ?? GLOBAL_BANNER_CATEGORY, $cafe->countryCode ?? ALL_COUNTRY_CODE);
     }
@@ -512,11 +534,11 @@ class AdvertisementModel extends PostModel
 
         if ($banner_type == SIDEBAR_BANNER || $banner_type == LINE_BANNER) {
             $posts = $this->categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode);
-            if ($posts) return $posts;
+            if (count($posts)) return $posts;
             $posts = $this->globalBannersOfSameCountry($banner_type, $countryCode);
-            if ($posts) return $posts;
+            if (count($posts)) return $posts;
             $posts = $this->categoryBannersOfAllCountry($banner_type, $banner_category);
-            if ($posts) return $posts;
+            if (count($posts)) return $posts;
             $posts = $this->globalBannersOfAllCountry($banner_type);
             return $posts;
         } else if ($banner_type == TOP_BANNER) {

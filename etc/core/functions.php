@@ -184,9 +184,13 @@ function canLiveReload(): bool {
 
 
 /**
- * 도메인을 리턴한다.
- * 예) www.abc.com, second.host.abc.com
- * Returns requested url domain
+ * 2차 도메인을 포함한, 도메인을 리턴한다.
+ *
+ * 리턴 예)
+ *  abc.com
+ *  www.abc.com
+ *  second.host.abc.com
+ *
  * @return string
  */
 function get_host_name(): string
@@ -215,6 +219,7 @@ function get_domain_name(): string
 
 /**
  * Returns the root url of current page(url) including ending slash(/).
+ * It uses the domain of the web browser address input box.
  * If HOME_URL is set, then it will use HOME_URL as its root url.
  * @return string
  */
@@ -708,6 +713,11 @@ function safeFilename(string $name) {
  *    - converts all alpha chars to lowercase
  *    - not allow two "-" chars continued, convert them into only one single "-"
  *
+ * 참고, 이곳에서 입력 받은 문자열 $s 에 대한 SEO Friendly URL 을 리턴하면,
+ *  - 그 리턴된 SEO Friendly URL 값을 다시 복원하거나,
+ *  - 다시 $s 를 입력 받아, SEO Friendly URL 을 리턴 해서는 안된다. 단, 동일한 제목이 다시 입력 되는 경우는 제외.
+ *  - 즉, 한번 SEO Friendly URL 로 인코딩된 것으로 그대로 필요한 곳에 재 사용하면 된다.
+ *
  * @param string $s
  * @return string
  */
@@ -763,8 +773,12 @@ function seoFriendlyString(string $s): string {
     // 여러개의 공백을 한개의 공백으로 변경한다.
     $s = preg_replace('/ +/', ' ', $s);
 
+    // 앞 뒤에 공백과 - 로 끝이 나면, 없앤다.
     $s = trim($s, '- ');
 
+    // SEO Friendly URL 이 숫자로만 되면, 그 숫자를 글 제목이 아닌, 글 번호로 인식해 버려서, 올바로된 글을 읽지 못하는 상황이 발생.
+    // 그래서, 만약, 숫자로만 된 제목이면, 맨 끝에 -t 를 붙인다.
+    if ( is_numeric($s) ) $s = $s . "-";
     return $s;
 }
 
@@ -2234,7 +2248,7 @@ function zoomThumbnail(string $source_path, int $width=150, int $height=150, int
     // 썸네일 파일 저장.
     // config.php 에서 설정을 변경 할 수 있다. 기본은 JPEG 형식이며, webp 형식을 지원한다.
     // 주의, 이 때, 저장되는 파일 이름의 확장자는 ".jpg" 일 수 있지만, 이미지의 형식은 webp 이다.
-    if ( THUMBNAIL_FORMAT == 'webp') {
+    if ( str_contains($destination_path, ".webp") ) {
         imagewebp($desired_gdim, $destination_path, $quality);
     } else {
         imagejpeg($desired_gdim, $destination_path, $quality);
