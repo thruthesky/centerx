@@ -584,6 +584,64 @@ https://main.philov.com/index.php?route=user.latestByProfilePhoto
     그리고 도착하는 링크(글)에는 새로운 글들과 게시판 링크를 두어 크롤러가 인덱싱을 해 주는 것이다.
   - 이 때, Vue.js 의 index.html 에 `<div id="app">...</div>` 내에 `<?=display_latest_posts()?>` 를 두지 말고, 밖에 두어 Vue.js 가 관리하는 영역과 잘 조화가 되게 디자인을 하는 것이 좋다.
 
+### SEO, 소너브 SEO 방법
+
+- Sonub 에서 SEO 를 하는 방식은 위의 SEO 설명에 나오는 로직과 거의 동일하다.
+
+- Vue.js 를 배포하면 `index.html` 의 `#app` 안에 Vue.js 가 부팅한다.
+  즉, `<div id=app>...</div>` 의 내용은 부팅 할 때(index.html 에서 각종 .css, .js 로딩하는 시간)만 보이고, 부팅하면,
+  Vue.js 에 가려져 화면에는 보이지 않는다.
+
+```html
+<div id=app>
+	<div class="app-shell">
+	    <!--seo-->
+	    <div class="app-shell-menu mt-space">
+	      <a href="/forum/discussion">자유게시판</a>
+	      <a href="/forum/qna">질문게시판</a>
+	      <a href="/sitemap">사이트맵</a>
+	    </div>
+	    <!--/seo-->
+	</div>
+</div>
+```
+- 위에서 `#app` 안에 있는 `.app-shell` 클래스안에 SEO 를 위한, 일반적인 H1 태그나 사이트맵, 게시판을 기록 한다.
+
+
+- 클라이언트가 처음 접속을 하게 되면, index.php 로 랜딩하고, 이는 sonub index.php 인 `var/sonub/sonub.index.php` 로 연결된다.
+  `var/sonub/sonub.index.php` 에서는 접속하는 URL 을 보고, SEO 처리를 한다.
+  - 게시판 목록 URL. 페이지네이션을 함.
+  - 게시글 읽기 URL. 해당 글 밑으로 글 10개를 보여 줌.
+  - 사이트맵 URL. 모든 게시판으로 이동하는 URL 과, 카페 URL 을 보여주고, 최근 100개 글을 보여준다.
+  - 이 때, `<!--seo-->` 와 `<!--/seo-->` 사이를 없애고, HTML 태그로만 최근 글, 각종 게시판 목록 URL 등을 적어주면 된다.
+ 
+- Google 에서는 Vue.js 를 이해해서, 알아서 SEO 가 된다고 한다. 하지만, 네이버나 다음은 안되므로, SEO 를 해 주어야 하는데,
+  위의 HTML 에서 자유게시판, 질문게시판, 그리고 특히 사이트맵 링크가 바로 Naver 나 Daum 과 같은 Javascript 를 이해하지 못하는 검색 로봇을 위해서
+  SEO 링크를 추가한 것이다.
+
+- 특히, 사이트맵 링크가 중요한데, 사이트맵 페이지에서는 `<!--seo-->...<!--/seo-->` 대신 각 게시판 링크를 추가한다.
+  - 카페의 경우, 카페 게시판의 링크와 최근 글 몇개를 표시해 준다.
+  - 사이트맵 페이지에서도 기타 게시판의 최근 글을 이 안에 표시를 한다.
+
+- 각 게시판에서, 최근 글 제목만 100 개씩 이곳에 표시를 하고 페이지네이션을 한다.
+
+- 위에서 `/forum/xxxxx` 와 같이 `/forum/` 이, URI 에 포함되어져 있으면, 글 목록이고,
+  각 게시판의 목록을 한다.
+  페이지 번호 별 이동도 하도록 하고, 다른 게시판 링크도 같이 걸어 놓는다.
+  
+- 페이지 읽기이면, 해당 글 내용을 SEO 및 OG 태그 등 모든 SEO 기능을 다 추가한다.
+  또한, 해당 글의 아래 글 20개를 추가로 링크 걸어준다.
+  
+- 테스트 작업을 편하게 하기 위해서는,
+  - 확인을 하기 위해서는
+    - 크롬으로 사이트에 접속 한 다음, 소스 보기에서 링크를 클릭하면 된다.
+    - 또는 Post Man 으로 접속해서 본다.
+
+  - 테스트 할 때에는 포트 번호가 "https://main.sonub.com:4430/" 과 같이 붙는데,
+    - 확인을 할 때에는 포트번호 4430 을 빼고, 직접 서버로 접속한다. PHP 를 실행하고, SEO 내용을 볼 수 있다.
+
+
+
 ## Vue.js 클라이언트 모듈
 
 - Vue.js 모듈은 https://github.com/withcenter/x-vue 에 있다.

@@ -47,6 +47,24 @@ if (isset($_REQUEST['route'])) {
     return;
 }
 
+/**
+ * SEO 처리.
+ * 게시판 글 목록 또는 글 읽기, 사이트 맵이면,
+ */
+if (isset($_SERVER['REQUEST_URI'])) {
+    $uri = $_SERVER['REQUEST_URI'];
+    if ( $uri == '/sitemap' ) {
+        // 사이트 맵 처리. @see README
+    } else if ( str_contains($uri, "/forum/") ) {
+        // 게시판 목록 처리. @see README
+    } else {
+        $post = post($uri);
+        if ( $post->idx ) {
+            // 게시글 읽기 처리. @see README
+//            d($post);
+        }
+    }
+}
 
 
 
