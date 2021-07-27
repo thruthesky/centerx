@@ -181,8 +181,8 @@ function send_message_to_users($in): array|string
         if (gettype($in[USERS]) == 'array') {
             $users = array_merge($users, $in[USERS]);
         } else {
-            $users = preg_replace('/\s+/', '', $in[USERS]);
-            $users = array_merge($users, explode(',', $users));
+            $_users = preg_replace('/\s+/', '', $in[USERS]);
+            $users = array_merge($users, explode(',', $_users));
         }
     }
 
