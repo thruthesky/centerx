@@ -128,6 +128,8 @@ class UserModel extends Entity {
         $one = files()->findOne([CODE => PROFILE_PHOTO, USER_IDX => $this->idx]);
         if ( $one->exists ) {
             $this->updateMemoryData('photoIdx', $one->idx);
+            // Note, it returns original image.
+            // If the app needs a thumbnail, then the app needs to use thumbnail url from the `photoIdx`.
             $this->updateMemoryData('photoUrl', $one->url);
         }
         $this->updateMemoryData('nicknameOrName', $this->nicknameOrName());
@@ -366,6 +368,10 @@ class UserModel extends Entity {
             'verifier' => $this->verifier,
             'point' => $this->point,
             'photoIdx' => $this->photoIdx ?? 0,
+            // Note, it returns thumbnail url if profile photo uploaded,
+            //  - or it returns the photo url from SNS if exists,
+            //  - or it returns empty string.
+            // Note, to get the original image, you need to use the `photoIdx` to get the bigger thumbnail url.
             'photoUrl' =>  $this->photoIdx ? thumbnailUrl($this->photoIdx ?? 0, 100, 100) : ($this->photoUrl ?? ''),
 'level' => $this->level,
             'levelPercentage' => $this->levelPercentage,

@@ -65,42 +65,67 @@ function patchSeo($html): string {
     if (isset($_SERVER['REQUEST_URI'])) {
         $uri = $_SERVER['REQUEST_URI'];
         if ( $uri == '/sitemap' ) {
-            // 사이트 맵 처리. @see README
+            // 사이트 맵 페이지 처리. @see README
+            $html = patchSeoHeader($html);
+            $html = patchSeoSitemap($html);
+            $html = patchSeoNextPosts($html);
+            return $html;
         } else if ( str_contains($uri, "/forum/") ) {
             // 게시판 목록 처리. @see README
             $categoryId = str_replace('/forum/', '', $uri);
             $html = patchSeoHeader($html);
-            $html = patchNextPosts($html, categoryId: $categoryId );
+            $html = patchSeoNextPosts($html, categoryId: $categoryId );
             return $html;
         } else {
+            // URI 가 있는데, sitemap 페이지도 아니고, 게시판 목록도 아닌 경우,
             $post = post($uri);
             if ( $post->idx ) {
+                // 글 읽기
                 $html = patchSeoHeader($html, post: $post);
-                $html = patchNextPosts($html, $post);
+                $html = patchSeoNextPosts($html, $post);
                 return $html;
             } else {
+                // 회원 가입, 로그인, 프로필, 가입 약관 등의 기타 페이지.
                 // 사이트 맵 페이지도 아니고, 글 목록도 아니고, 글 읽기도 아니면, 그냥 헤더의 SEO 항목만 패치해서 리턴.
                 return patchSeoHeader($html);
             }
         }
     } else {
+        // 홈 또는 잘못된 페이지?
         // URI 가 없으면, 그냥 헤더 SEO 항목 패치해서 리턴.
         return patchSeoHeader($html);
     }
 }
 
+function patchSeoSitemap($html) {
+
+    $parts = explode('<nav>', $html, 2);
+
+    $seo = "";
+    foreach( cafe()->mainMenus as $menu ) {
+        $seo .= "<a href='/forum/$menu'>$menu</a>\n";
+    }
+
+    $html = $parts[0] . "\n<div class='sitemap'>" . $seo . "</div><nav>" . $parts[1];
+
+    return $html;
+}
+
 /**
- * 글 읽기의 경우, 같은 카테고리의 다음 글을 몇개를 리턴한다.
+ * 글 읽기의 경우, 같은 카테고리의 다음 글(코멘트 포함)을 몇개를 리턴한다.
  */
-function patchNextPosts(string $html, PostModel $post = null, string $categoryId = '', int $no=10) {
+function patchSeoNextPosts(string $html, PostModel $post = null, string $categoryId = '', int $no=10) {
     if ( $post ) {
+        // 글 읽기
         $where = "categoryIdx=? AND idx < ?";
         $params = [ $post->categoryIdx, $post->idx ];
     } else if ( $categoryId ) {
+        // 글 목록
         $cat = category($categoryId);
         $where = "categoryIdx=?";
         $params = [$cat->idx];
     } else {
+        // 기타. 최근 글 표시.
         $where = "1";
         $params = [];
     }
@@ -136,7 +161,7 @@ function patchNextPosts(string $html, PostModel $post = null, string $categoryId
     $before = explode('<nav>', $html, 2);
     $after = explode('</nav>', $html, 2);
 
-    $html = $before[0] . "<nav class='seo'>" . $seo . "</nav>" . $after[1];
+    $html = $before[0] . "\n<nav class='seo'>" . $seo . "</nav>" . $after[1];
 
     return $html;
 }
