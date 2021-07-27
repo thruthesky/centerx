@@ -249,6 +249,7 @@ class E {
 
     public string $empty_banner_type = 'error_empty_banner_type';
     public string $wrong_banner_type = 'error_wrong_banner_type';
+    public string $not_your_advertisement = 'error_not_your_advertisement';
 
 
     public bool $isError = false;

@@ -120,7 +120,7 @@ class AdvertisementController
         if (!isset($in[IDX]) || empty($in[IDX])) return e()->idx_is_empty;
 
         $advertisement = advertisement($in[IDX]);
-        if ($advertisement->isMine() == false) return  e()->not_your_post;
+        if ($advertisement->isMine() == false) return  e()->not_your_advertisement;
 
         $status = advertisement()->getStatus($advertisement);
         if ($status == 'active' || $status == 'waiting') return e()->advertisement_is_active;
