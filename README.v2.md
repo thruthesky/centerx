@@ -493,6 +493,11 @@ https://main.philov.com/index.php?route=user.latestByProfilePhoto
 
 # 클라이언트
 
+- 웹/PWA 클라이언트 프레임워크는 Vue.js 를 기본으로 하여 설명한다. 물론 어떤 프레임어크라도 상관없지만, 문서화의 편의성을 위해 하나의 프레임워크를 선택한 것이다.
+- 앱 개발 프레임워크는 Flutter 를 기본으로 하여 설명한다. 물론 어떤 프레임어크라도 상관없지만, 문서화의 편의성을 위해 하나의 프레임워크를 선택한 것이다.
+
+
+
 ## 클라이언트 작업시 참고 사항
 
 - [Vue.js 프로젝트 진행시 참고 사항](https://docs.google.com/document/d/1WG3caN7_3eXRhPthBgDAgzzkI-OrVir1Bvnrbt-nsR0/edit#heading=h.lmaeoe85dwyn)
@@ -583,6 +588,110 @@ https://main.philov.com/index.php?route=user.latestByProfilePhoto
     요약을 하면, php 를 통해서 검색 로봇이 다른 글, 페이지로 크롤링을 할 수 있는 링크를 만들어 주는 것이다.
     그리고 도착하는 링크(글)에는 새로운 글들과 게시판 링크를 두어 크롤러가 인덱싱을 해 주는 것이다.
   - 이 때, Vue.js 의 index.html 에 `<div id="app">...</div>` 내에 `<?=display_latest_posts()?>` 를 두지 말고, 밖에 두어 Vue.js 가 관리하는 영역과 잘 조화가 되게 디자인을 하는 것이 좋다.
+  
+
+
+## SEO, 소너브 SEO 방법
+
+- Sonub 에서 SEO 를 하는 방식은 위의 SEO 설명에 나오는 로직과 거의 동일하다.
+
+- Vue.js 를 배포하면 `index.html` 의 `#app` 안에 Vue.js 가 부팅한다.
+  즉, `<div id=app>...</div>` 의 내용은 부팅 할 때(index.html 에서 각종 .css, .js 로딩하는 시간)만 보이고, 부팅하면,
+  Vue.js 에 가려져 화면에는 보이지 않는다.
+
+```html
+<div id=app>
+	<div class="app-shell">
+	    <nav class="app-shell-menu mt-space">
+	      <a href="/forum/discussion">자유게시판</a>
+	      <a href="/forum/qna">질문게시판</a>
+	      <a href="/sitemap">사이트맵</a>
+	    </nav>
+	</div>
+</div>
+```
+- 위에서 `#app` 안에 있는 `.app-shell` 클래스안에 SEO 를 위한, 일반적인 H1 태그나 사이트맵, 게시판을 기록 한다.
+
+
+- 클라이언트가 처음 접속을 하게 되면, index.php 로 랜딩하고, 이는 sonub index.php 인 `var/sonub/sonub.index.php` 로 연결된다.
+  `var/sonub/sonub.index.php` 에서는 접속하는 URL 을 보고, SEO 처리를 한다.
+  - 게시판 목록 URL. 페이지네이션을 함.
+  - 게시글 읽기 URL. 해당 글 밑으로 글 10개를 보여 줌.
+  - 사이트맵 URL. 모든 게시판으로 이동하는 URL 과, 카페 URL 을 보여주고, 최근 100개 글을 보여준다.
+  - 이 때, `<nav>` 와 `</nav>` 사이를 없애고, HTML 태그로만 최근 글, 각종 게시판 목록 URL 등을 적어주면 된다.
+    참고로 `<!--seo-->` 와 같은 주석은 build 할 때 사라진다.
+ 
+- Google 에서는 Vue.js 를 이해해서, 알아서 SEO 가 된다고 한다. 하지만, 네이버나 다음은 안되므로, SEO 를 해 주어야 하는데,
+  위의 HTML 에서 자유게시판, 질문게시판, 그리고 특히 사이트맵 링크가 바로 Naver 나 Daum 과 같은 Javascript 를 이해하지 못하는 검색 로봇을 위해서
+  SEO 링크를 추가한 것이다.
+
+- 특히, 사이트맵 링크가 중요한데, 사이트맵 페이지에서는 `<nav>...</nav>` 대신 각 게시판 링크를 추가한다.
+  - 카페의 경우, 카페 게시판의 링크와 최근 글 몇개를 표시해 준다.
+  - 사이트맵 페이지에서도 기타 게시판의 최근 글을 이 안에 표시를 한다.
+
+- 각 게시판에서, 최근 글 제목만 100 개씩 이곳에 표시를 하고 페이지네이션을 한다.
+
+- 위에서 `/forum/xxxxx` 와 같이 `/forum/` 이, URI 에 포함되어져 있으면, 글 목록이고,
+  각 게시판의 목록을 한다.
+  페이지 번호 별 이동도 하도록 하고, 다른 게시판 링크도 같이 걸어 놓는다.
+  
+- 페이지 읽기이면, 해당 글 내용을 SEO 및 OG 태그 등 모든 SEO 기능을 다 추가한다.
+  또한, 해당 글의 아래 글 20개를 추가로 링크 걸어준다.
+  
+- 테스트 작업을 편하게 하기 위해서는,
+  - 확인을 하기 위해서는
+    - 크롬으로 사이트에 접속 한 다음, 소스 보기에서 링크를 클릭하면 된다.
+    - 또는 Post Man 으로 접속해서 본다.
+
+  - 테스트 할 때에는 포트 번호가 "https://main.sonub.com:4430/" 과 같이 붙는데,
+    - 확인을 할 때에는 포트번호 4430 을 빼고, 직접 서버로 접속한다. PHP 를 실행하고, SEO 내용을 볼 수 있다.
+
+
+### SEO patch & Site Preview patch
+
+- Vue.js 로 만든 사이트에 접속을 하면, index.php 가 실행된다. 그리고 index.php 가 index.html 을 읽어 클라이언트에게 전달한다.
+  - 이 때, index.php 가 index.html 을 읽어 SEO patch 를 한 다음, 클라이언트에게 전달한다.
+  
+- Site preview 테스트는 카카오톡과 페이스북 두가지 정도만 테스트를 하면 된다.
+
+- Site preview 및 SEO patch 에 사용되는 기본 항목은 config.php 에 저장한다.
+
+예)
+```php
+const SEO_SITE_NAME = "소너브";
+const SEO_URl = "https://www.sonub.com";
+const SEO_AUTHOR = "소너브";
+const SEO_TITLE = "함께 떠나는 여행";
+const SEO_KEYWORDS = "여행,세계여행,여행사이트,여행카페,여행커뮤니티,여행정보,교민,교민사이트,교민카페,교민장터,해외구인구직,해외카페,해외여행";
+const SEO_DESCRIPTION = "해외 여행을 계획하고 있나요? 해외 거주를 생각하고 있나요? ... 소너브.";
+const SEO_IMAGE = "https://www.sonub.com/img/seo/preview/sonub.com.jpg";
+```
+
+만약, 여러개의 도메인을 동시에 지원(사용)한다면, 아래와 같이 if 문을 써서, 각 도메인에 맞게 적용 할 수 있다.
+
+예)
+```php
+$_domain = get_domain();
+if ( str_contains($_domain, 'philov') ) {
+    define('SEO_SITE_NAME',  "필러브");
+    define('SEO_URl',  "https://www.philov.com");
+    define('SEO_AUTHOR',  "필러브");
+    define('SEO_TITLE',  "함께 떠나는 여행");
+    define('SEO_KEYWORDS',  "필리핀,필리핀여행,필리핀이민,마닐라,세부,앙헬레스,클락,다바오,여행,세계여행,여행사이트,여행카페,여행커뮤니티,여행정보,교민,교민사이트,교민카페,교민장터,해외구인구직,해외카페,해외여행");
+    define('SEO_DESCRIPTION',  "필리핀 여행을 계획하고 있나요? 필리핀에 거주를 생각하고 있나요? 전세계 교민들과 함께하지 않으시겠어요? 소셜 네트워크 허브, 소너브.");
+    define('SEO_IMAGE',  "https://www.philov.com/img/seo/preview/philov.com.jpg");
+} else {
+    define('SEO_SITE_NAME',  "소너브");
+    define('SEO_URl',  "https://www.sonub.com");
+    define('SEO_AUTHOR',  "소너브");
+    define('SEO_TITLE',  "함께 떠나는 여행");
+    define('SEO_KEYWORDS',  "여행,세계여행,여행사이트,여행카페,여행커뮤니티,여행정보,교민,교민사이트,교민카페,교민장터,해외구인구직,해외카페,해외여행");
+    define('SEO_DESCRIPTION',  "해외 여행을 계획하고 있나요? 해외 거주를 생각하고 있나요? 전세계 교민들과 함께하지 않으시겠어요? 소셜 네트워크 허브, 소너브.");
+    define('SEO_IMAGE',  "https://www.sonub.com/img/seo/preview/sonub.com.jpg");
+}
+```
+
+
 
 ## Vue.js 클라이언트 모듈
 
@@ -700,6 +809,33 @@ include CONTROLLER_DIR . 'api.php';
   index.php 와 x.config.php 의 내용은 아무것도 없으며 오로지 var/sonub/** 의 파일을 읽어 들여서 실행한다. 
   즉, index.php 와 x.config.php 는 껍데기 뿐이고, 실제 PHP 코드는 var/sonub/** 에 들어 있다.
 
+### Vue.js CI/CD, 소너브 배포 예
+
+- 소너브에서는 배포를 하고자 할 때, `p` 명령 하나만 입력하면 된다. `p` 명령을 입력하면,
+  - 빌드하고
+  - 로컬에서 테스트하고
+  - Git 서버에 코드 올리고
+  - Remote Production Server 에 Git Pull 을 하고,
+  - 실제 Production Server 에 테스트를 한다.
+  
+- 이러한 동작을 하는 코드는 아래와 같다.
+
+  - `$ p`
+    와 같이 명령을 하면, `npm run publish` 가 실행되고
+    아래와 같이 package.json 에 따라 배포 작업이 진행된다.
+
+```json
+{
+  "scripts": {
+    "build": "vue-cli-service build",
+    "test:main.sonub.com": "npx cypress run --config baseUrl=https://main.sonub.com,chromeWebSecurity=false,supportFile=tests/e2e/support/index.js,integrationFolder=tests,testFiles='**/*.spec.js',userAgent=cyTest",
+    "test:sonub.com": "npx cypress run --config baseUrl=https://sonub.com,chromeWebSecurity=false,supportFile=tests/e2e/support/index.js,integrationFolder=tests,testFiles='**/*.spec.js',userAgent=cyTest",
+    "git:push": "cd ~/www/docker/home/centerx; git add .; git commit -a -m 'publish'; git push",
+    "server:git:pull": "ssh sonub@sonub.com 'git pull'",
+    "publish": "./tools/patch-version.php && npm run build && npm run test:main.sonub.com && npm run git:push && npm run server:git:pull && npm run test:sonub.com"
+  }
+}
+```
 
 ## PWA
 
