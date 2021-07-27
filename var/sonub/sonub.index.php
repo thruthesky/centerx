@@ -69,6 +69,9 @@ function patchSeo($html): string {
         } else if ( str_contains($uri, "/forum/") ) {
             // 게시판 목록 처리. @see README
             $categoryId = str_replace('/forum/', '', $uri);
+            $html = patchSeoHeader($html);
+            $html = patchNextPosts($html, categoryId: $categoryId );
+            return $html;
         } else {
             $post = post($uri);
             if ( $post->idx ) {
@@ -87,18 +90,53 @@ function patchSeo($html): string {
 }
 
 /**
- *
+ * 글 읽기의 경우, 같은 카테고리의 다음 글을 몇개를 리턴한다.
  */
-function patchNextPosts(string $html, PostModel $post) {
+function patchNextPosts(string $html, PostModel $post = null, string $categoryId = '', int $no=10) {
+    if ( $post ) {
+        $where = "categoryIdx=? AND idx < ?";
+        $params = [ $post->categoryIdx, $post->idx ];
+    } else if ( $categoryId ) {
+        $cat = category($categoryId);
+        $where = "categoryIdx=?";
+        $params = [$cat->idx];
+    } else {
+        $where = "1";
+        $params = [];
+    }
+
     $posts = post()->search(
-        where: "idx < ? AND parentIdx = 0 AND title <> ''",
-        params: [$post->idx],
-        limit: 2,
+        where: $where,
+        params: $params,
+        limit: $no,
     );
+
+
+    $seo = "\n";
     foreach( idxes($posts) as $idx ) {
         $post = post($idx);
-        d($post->title);
+        if ( $post->parentIdx == 0 ) {
+            // 글이면, 글 정보
+            if ( $post->title ) $title = $post->title;
+            else $title = mb_substr($post->content, 0, 60);
+            $url = $post->url;
+        } else {
+            // 코멘트이면, 코멘트 내용을 제목으로, 그리고 URL 은 원 글의 URL 로 한다.
+            $title = mb_substr($post->content, 0, 60);
+            $root = post($post->rootIdx);
+            $url = $root->url;
+        }
+        // 제목이 없으면, 에러 방지를 위해서, 숫자로 표시한다.
+        if ( empty($title) ) $title = $post->idx;
+        $title = trim($title);
+        $seo .= "<a href='$url'>$title</a>\n";
     }
+
+
+    $before = explode('<nav>', $html, 2);
+    $after = explode('</nav>', $html, 2);
+
+    $html = $before[0] . "<nav>" . $seo . "</nav>" . $after[1];
 
     return $html;
 }

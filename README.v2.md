@@ -615,11 +615,12 @@ https://main.philov.com/index.php?route=user.latestByProfilePhoto
 
 - 클라이언트가 처음 접속을 하게 되면, index.php 로 랜딩하고, 이는 sonub index.php 인 `var/sonub/sonub.index.php` 로 연결된다.
   `var/sonub/sonub.index.php` 에서는 접속하는 URL 을 보고, SEO 처리를 한다.
-  - 게시판 목록 URL. 페이지네이션을 함.
+  - 게시판 목록 URL. Pagination 할 필요 없다.
+    - 글 읽기 페이지에서 그 다음 글들을 보여주므로, 굳이 Pagination 을 안해도, 모든 글들을 색인 할 수 있는 링크가 주어진다.
   - 게시글 읽기 URL. 해당 글 밑으로 글 10개를 보여 줌.
   - 사이트맵 URL. 모든 게시판으로 이동하는 URL 과, 카페 URL 을 보여주고, 최근 100개 글을 보여준다.
   - 이 때, `<nav>` 와 `</nav>` 사이를 없애고, HTML 태그로만 최근 글, 각종 게시판 목록 URL 등을 적어주면 된다.
-    참고로 `<!--seo-->` 와 같은 주석은 build 할 때 사라진다.
+    참고로 `<!--seo-->` 와 같은 주석은 build 할 때 사라지므로, `nav` 와 같은 실제 태그로 해야 한다.
  
 - Google 에서는 Vue.js 를 이해해서, 알아서 SEO 가 된다고 한다. 하지만, 네이버나 다음은 안되므로, SEO 를 해 주어야 하는데,
   위의 HTML 에서 자유게시판, 질문게시판, 그리고 특히 사이트맵 링크가 바로 Naver 나 Daum 과 같은 Javascript 를 이해하지 못하는 검색 로봇을 위해서
@@ -629,7 +630,7 @@ https://main.philov.com/index.php?route=user.latestByProfilePhoto
   - 카페의 경우, 카페 게시판의 링크와 최근 글 몇개를 표시해 준다.
   - 사이트맵 페이지에서도 기타 게시판의 최근 글을 이 안에 표시를 한다.
 
-- 각 게시판에서, 최근 글 제목만 100 개씩 이곳에 표시를 하고 페이지네이션을 한다.
+- 각 게시판에서, 최근 글 제목만 100 개씩 이곳에 표시를 하고 pagination 은 할 필요 없다.
 
 - 위에서 `/forum/xxxxx` 와 같이 `/forum/` 이, URI 에 포함되어져 있으면, 글 목록이고,
   각 게시판의 목록을 한다.
