@@ -364,11 +364,6 @@ const MESSAGE_CATEGORY = 'message';
 
 
 
-
-
-
-
-
 /**
  * Advertisement and Banner Settings
  *
@@ -385,3 +380,23 @@ const BANNER_TYPES = [ TOP_BANNER, SIDEBAR_BANNER, SQUARE_BANNER, LINE_BANNER ];
 
 /// @see readme.md
 if ( !defined('MATRIX_API_KEYS' ) ) define('MATRIX_API_KEYS', []);
+
+/// @see README.md
+$_domain = get_domain();
+if ( str_contains($_domain, 'philov') ) {
+    define('SEO_SITE_NAME',  "필러브");
+    define('SEO_URL',  "https://www.philov.com");
+    define('SEO_AUTHOR',  "필러브");
+    define('SEO_TITLE',  "함께 떠나는 여행");
+    define('SEO_KEYWORDS',  "필리핀,필리핀여행,필리핀이민,마닐라,세부,앙헬레스,클락,다바오,여행,세계여행,여행사이트,여행카페,여행커뮤니티,여행정보,교민,교민사이트,교민카페,교민장터,해외구인구직,해외카페,해외여행");
+    define('SEO_DESCRIPTION',  "필리핀 여행을 계획하고 있나요? 필리핀에 거주를 생각하고 있나요? 전세계 교민들과 함께하지 않으시겠어요? 소셜 네트워크 허브, 소너브.");
+    define('SEO_IMAGE',  "https://www.philov.com/img/seo/preview/philov.com.jpg");
+} else {
+    define('SEO_SITE_NAME',  "소너브");
+    define('SEO_URL',  "https://www.sonub.com");
+    define('SEO_AUTHOR',  "소너브");
+    define('SEO_TITLE',  "함께 떠나는 여행");
+    define('SEO_KEYWORDS',  "여행,세계여행,여행사이트,여행카페,여행커뮤니티,여행정보,교민,교민사이트,교민카페,교민장터,해외구인구직,해외카페,해외여행");
+    define('SEO_DESCRIPTION',  "해외 여행을 계획하고 있나요? 해외 거주를 생각하고 있나요? 전세계 교민들과 함께하지 않으시겠어요? 소셜 네트워크 허브, 소너브.");
+    define('SEO_IMAGE',  "https://www.sonub.com/img/seo/preview/sonub.com.jpg");
+}

@@ -184,9 +184,13 @@ function canLiveReload(): bool {
 
 
 /**
- * 도메인을 리턴한다.
- * 예) www.abc.com, second.host.abc.com
- * Returns requested url domain
+ * 2차 도메인을 포함한, 도메인을 리턴한다.
+ *
+ * 리턴 예)
+ *  abc.com
+ *  www.abc.com
+ *  second.host.abc.com
+ *
  * @return string
  */
 function get_host_name(): string
@@ -215,6 +219,7 @@ function get_domain_name(): string
 
 /**
  * Returns the root url of current page(url) including ending slash(/).
+ * It uses the domain of the web browser address input box.
  * If HOME_URL is set, then it will use HOME_URL as its root url.
  * @return string
  */
