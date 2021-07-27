@@ -1106,6 +1106,7 @@ class AdvertisementTest
         isTrue($activity->toUserPointApply == -$allCountryAdvPoint, "Expect: activity->toUserPointApply == -$allCountryAdvPoint. Deducted " . $activity->toUserPointApply);
         isTrue($activity->toUserPointAfter == login()->getPoint(), "Expect: activity->toUserPointAfter == user's points. got " . $activity->toUserPointAfter);
     }
+
     function cafeCountryBannerLoadTest()
     {
 
@@ -1285,7 +1286,7 @@ class AdvertisementTest
         $banners = request("advertisement.loadBanners", $fetchOptions);
 
         if ($banner_type == SIDEBAR_BANNER || $banner_type == LINE_BANNER) {
-            isTrue(count($banners) == 1, 'banners should be equal to 4');
+            isTrue(count($banners) == 1, 'banners should be equal to 1');
             isTrue($this->bannerIsPresent($banner4, $banners), 'banner 4 is present');
             isTrue($this->bannerIsPresent($banner3, $banners) == false, 'banner 3 is not present');
             isTrue($this->bannerIsPresent($banner2, $banners) == false, 'banner 2 is not present');
@@ -1379,8 +1380,10 @@ class AdvertisementTest
 
     public function squareBannerLoadTest()
     {
-        registerAndLogin(1000000);
+        $this->resetBannerLimit(SQUARE_BANNER);
         $this->clearAdvertisementData();
+
+        registerAndLogin(1000000);
         $subDomain = 'test' . time();
         cafe()->create(['rootDomain' => 'test.com', 'domain' => $subDomain, COUNTRY_CODE => 'PH']);
         $advOpts = [
