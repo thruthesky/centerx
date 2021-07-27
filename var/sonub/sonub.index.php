@@ -136,7 +136,7 @@ function patchNextPosts(string $html, PostModel $post = null, string $categoryId
     $before = explode('<nav>', $html, 2);
     $after = explode('</nav>', $html, 2);
 
-    $html = $before[0] . "<nav>" . $seo . "</nav>" . $after[1];
+    $html = $before[0] . "<nav class='seo'>" . $seo . "</nav>" . $after[1];
 
     return $html;
 }
