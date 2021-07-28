@@ -78,6 +78,7 @@ $at->bannerLimit(SQUARE_BANNER);
 $at->bannerLimit(LINE_BANNER);
 
 $at->defaultTopBannerTest();
+$at->topBannerLoadTest();
 $at->squareBannerLoadTest();
 class AdvertisementTest
 {
@@ -1376,6 +1377,23 @@ class AdvertisementTest
 
         isTrue($banners[0]->idx == $firstHardCodedBanner[0]->idx, 'idx must be 0');
         isTrue($banners[0]->clickUrl == $firstHardCodedBanner[0]->clickUrl, 'click url match');
+    }
+
+    function topBannerLoadTest() {
+        registerAndLogin(100000);
+        $this->resetBannerLimit(TOP_BANNER);
+        $this->clearAdvertisementData();
+
+        $subDomain = 'test' . time();
+        cafe()->create(['rootDomain' => 'test.com', 'domain' => $subDomain, COUNTRY_CODE => 'PH']);
+
+        $allCountryGlobalBanner = $this->createAndStartAdvertisement([COUNTRY_CODE => "AC", BANNER_TYPE => TOP_BANNER, BEGIN_DATE => time(), END_DATE => time(), FILE_IDXES => '1' ]);
+        $phQnaBanner = $this->createAndStartAdvertisement([COUNTRY_CODE => "PH", BANNER_CATEGORY => 'qna', BANNER_TYPE => TOP_BANNER, BEGIN_DATE => time(), END_DATE => time(), FILE_IDXES => '1' ]);
+
+        $banners = request("advertisement.loadBanners", [CAFE_DOMAIN => $subDomain . '.test.com', BANNER_TYPE => TOP_BANNER, BANNER_CATEGORY => 'qna']);
+
+        isTrue($this->bannerIsPresent($allCountryGlobalBanner, $banners), 'allCountryGlobalBanner is present');
+        isTrue($this->bannerIsPresent($phQnaBanner, $banners), 'phQnaBanner 1 is present');
     }
 
     public function squareBannerLoadTest()
