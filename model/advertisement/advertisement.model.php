@@ -595,6 +595,7 @@ class AdvertisementModel extends PostModel
     private function categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode)
     {
         if (!$banner_category) return [];
+        if ($countryCode == ALL_COUNTRY_CODE) return [];
 
         // endAt is the 0 second of last day.
         $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND " . $this->activeBannerCondition();
@@ -610,6 +611,8 @@ class AdvertisementModel extends PostModel
      */
     private function globalBannersOfSameCountry($banner_type, $countryCode): array
     {
+        if ($countryCode == ALL_COUNTRY_CODE) return [];
+
         // Get global banner of same type of same country.
         $where = "code = ? AND subcategory='' AND countryCode='$countryCode' AND " . $this->activeBannerCondition();
         $params = [$banner_type];

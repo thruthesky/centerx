@@ -1669,9 +1669,9 @@ isTrue((new AppController())->version(), "App version");
 - When client request banners (to display on the site or app) to server, the server must return with the minimum number
   of banners like below.
   * Top banner must return at least 2 banners. which means, if there is no banner at all, hard coded banner will be returned.
-  * Square banner is trying to return minimum of 2 banners.
-  *  - It will collect minimum of 2 banners following the default banner rule.
-  *  - But there is no hard coded banner for square banner.
+  * Square banner should return minimum of 4 banners.
+  *  - It will collect minimum of 4 banners following the default banner rule.
+  *  - But there is no hard coded banner for square banner. It means it can return 0 banners. or less than 4 banners if there is no available banners based on the default banner rule.
   * Sidebar and Line banner may return 0 banner.
   *  - If there is no available default banner, it return 0 banner.
   *  - It does not collect minimum number of banners. If there is a banner following the default banner rule, it returns.
@@ -1685,6 +1685,15 @@ isTrue((new AppController())->version(), "App version");
 
 - Client end app will display default top banner hard coded inside the client app while loading the banner or,
   just in case, there is an error loading top banners from server.
+  
+
+- For non-exisiting cafe,
+  - The cafe has no countryCode so, the app cannot get global banner of the same banner type of same country.
+  - For this reason,
+    - it will first get banners of same category from all country.
+    - secondly, it will get banners of global category from all country.
+  
+
 
 ## 광고 기능 코딩 기법 및 로직 설명
 
@@ -1738,7 +1747,7 @@ Line Banner |Category page|Category page|Category only|5 global banners. 5 banne
   If the banner type has `global & category` class, global banner will take place when there is no category banner for that category.
   
 
-### Top banner rotation
+### Top banner rotation logic
 
 - If the no of global top banner is set to 10, then only 10 global banner can be uploaded.
 - when there is no top banner (for a category or or site), **default banner** will be displayed.
@@ -1751,7 +1760,7 @@ Line Banner |Category page|Category page|Category only|5 global banners. 5 banne
 - If a category has only one category banner, then the category banner will be display on left side and all the global
   banners will be displayed on right side.
 
-### Sidebar banner rotation
+### Sidebar banner rotation logic
 
 - all banners will be rotated in one place.
 - when a category has no sidebar banner, **default banner** will be displayed.
