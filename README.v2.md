@@ -1666,9 +1666,23 @@ isTrue((new AppController())->version(), "App version");
   And the banner image must not being shown.
   So, there must a special design(view page) for advertisement.
 
-- When client request banners (to display on the site or app) to server, the server must return with the minimum number
+- Minimum number of banners
+  When client request banners (to display on the site or app) to server, the server must return with the minimum number
   of banners like below.
   * Top banner must return at least 2 banners. which means, if there is no banner at all, hard coded banner will be returned.
+    * When there is only 1 category banner,
+        * it will get all the global banners of same country.
+          * For instance, there is 1 global banner of same country, the 1 banner will be returned with category banner.
+            if there are more than 2 banners of same country, then all banners of the same country with category banner.
+              For instance, there are 3 global banners, then the return will be 4.
+        * When there is no global banner of same country, it will look for same category of all country.
+            If there is 1 for same category of all country, then it will return the banner with category banner.
+            if there are 7 banners of same category of all country, then 8 will be returned.
+        * When there is no global banner of same country, and no banner of same category, then it will look for global banner of all country.
+            And it will return minimum of 2 top banners. It can be upto the number of banners specified in admin page.
+        * When there is no global banner of same country, no banner of same category of all country, no global banner of all country,
+            then, it will get 1 hard coded banner. so it will return 2 banners.
+    
   * Square banner should return minimum of 4 banners.
   *  - It will collect minimum of 4 banners following the default banner rule.
   *  - But there is no hard coded banner for square banner. It means it can return 0 banners. or less than 4 banners if there is no available banners based on the default banner rule.
@@ -1687,11 +1701,13 @@ isTrue((new AppController())->version(), "App version");
   just in case, there is an error loading top banners from server.
   
 
-- For non-exisiting cafe,
-  - The cafe has no countryCode so, the app cannot get global banner of the same banner type of same country.
-  - For this reason,
-    - it will first get banners of same category from all country.
-    - secondly, it will get banners of global category from all country.
+- If the cafe does not exist with the given domain, there is no countryCode for the cafe.
+  - Then, the back end will look into the root domain's country code.
+    - If the root domain has country code, then it will use the root domain's, country code.
+      - Note, some root domains belongs to their countries and they have country code like philov.com
+        and some root domains do not belong to any countries and they don't have country code like sonub.com
+    - If there is no banner for the root domain's country code, then it will look for banners from all country.
+  
   
 
 
@@ -1722,16 +1738,15 @@ isTrue((new AppController())->version(), "App version");
     - 광고 시작과 끝 시간 사이에 있으면, active
     - 광고 종료되었으면, inactive,
 
-## Banner Place & Display
+## Banner Place & Display logic
 
 
 - Banner types are saved in `BANNER_TYPES` inside `config.php`.
 
 - The table below explains how banners are displayed.
-
-You can read it from left to right.
-
-For instance, "Top banner is displayed on Top. And displayed always on Desktop. And displayed on main page on Mobile.".
+  - The numbers on the table are only sample numbers.
+  - The data in the table can be read like,
+    "Top banner is displayed on Top. And displayed always on Desktop. And displayed on main page on Mobile.".
 
 Banner Type|Place on Desktop|Place on Mobile|Class|Limit
 ------|-----|-------|------|-----
@@ -1749,16 +1764,13 @@ Line Banner |Category page|Category page|Category only|5 global banners. 5 banne
 
 ### Top banner rotation logic
 
-- If the no of global top banner is set to 10, then only 10 global banner can be uploaded.
-- when there is no top banner (for a category or or site), **default banner** will be displayed.
-- when there is only 1 global banner (for a category or a site), then, that global banner will be displayed on left, and
-  **default banner** will be displayed on right.
-- when there are 2 global banners, they will be displayed on one left side, and the other right side.
-- when there are more than 2 global banners, they will be divided into two group and one group will be displayed on left, and the other group will be displayed on right.
-- If a category has no category banner, then, global banner will be displayed just the way it is displayed as globally.
-  If there no available(global) banner, then **default banner** will be displayed.
-- If a category has only one category banner, then the category banner will be display on left side and all the global
-  banners will be displayed on right side.
+- If the number of global top banner is set to 10, then only 10 global banner can be uploaded.
+- When there is less than 2 top banner (for a category or site), **default banner** will be displayed.
+- When there are more than 2 top banners, half of them will be display on left, and the other half of them will be displayed on right.
+  - And the banner should rotate each banner by 9 seconds.
+
+  
+
 
 ### Sidebar banner rotation logic
 

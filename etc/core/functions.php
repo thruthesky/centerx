@@ -231,10 +231,14 @@ function get_current_root_url(): string {
 
 
 /**
+ * Returns root domain.
  * 1차 도메인을 리턴한다.
  *
  * 예)
  * www.abc.co.kr -> abc.co.kr
+ * www.sonub.com -> sonub.com
+ * your-domain.sonub.com -> sonub.com
+ * a.b.c.d.e.philov.com -> philov.com
  * apple.banana.philgo.com -> philgo.com
  *
  * @param string|null $_domain 테스트 할 도메인

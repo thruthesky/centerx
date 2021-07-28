@@ -500,10 +500,19 @@ class AdvertisementModel extends PostModel
 
         if (!isset($in[BANNER_TYPE]) || empty($in[BANNER_TYPE])) return e()->empty_banner_type;
 
-        // d($cafe);
-        // d('cafe countryCode: ' . $cafe->countryCode);
+        if ( $cafe->exists ) {
+            $countryCode = $cafe->countryCode;
+        } else {
 
-        return $this->loadBannersOf($in[BANNER_TYPE], $in[BANNER_CATEGORY] ?? GLOBAL_BANNER_CATEGORY, $cafe->countryCode ?? ALL_COUNTRY_CODE);
+            $rootDomain = get_root_domain($in[CAFE_DOMAIN]);
+            if ( isset(cafe()->mainCafeSettings[$rootDomain]) ) {
+                $countryCode = cafe()->mainCafeSettings[$rootDomain][COUNTRY_CODE];
+            } else {
+                $countryCode = ALL_COUNTRY_CODE;
+            }
+        }
+
+        return $this->loadBannersOf($in[BANNER_TYPE], $in[BANNER_CATEGORY] ?? GLOBAL_BANNER_CATEGORY, $countryCode);
     }
 
     /**

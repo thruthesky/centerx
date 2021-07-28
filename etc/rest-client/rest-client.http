@@ -139,3 +139,13 @@ https://main.philov.com/index.php?route=advertisement.loadBanners&cafeDomain=abc
 
 ### User stats
 https://main.philov.com/index.php?route=user.stats
+
+
+### Advertisement - load top banners of main.philov.com
+https://main.philov.com/index.php?route=advertisement.loadBanners&cafeDomain=main.philov.com&code=top
+
+### Advertisement - load top banners of main.sonub.com
+https://main.philov.com/index.php?route=advertisement.loadBanners&cafeDomain=main.sonub.com&code=top
+
+### Advertisement - load top banners of worng.domain.com. It's not main cafe. and the cafe does not exists.
+https://main.philov.com/index.php?route=advertisement.loadBanners&cafeDomain=worng.domain.com&code=top
