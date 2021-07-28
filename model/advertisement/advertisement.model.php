@@ -530,7 +530,7 @@ class AdvertisementModel extends PostModel
      */
     private function loadBannersOf(string $banner_type, string $banner_category, string $countryCode)
     {
-        // d(" $banner_type, $banner_category, $countryCode, $hardCodedbanners ");
+        // d(" $banner_type, $banner_category, $countryCode ");
 
         if ($banner_type == SIDEBAR_BANNER || $banner_type == LINE_BANNER) {
             $posts = $this->categoryBannersOfSameCountry($banner_type, $banner_category, $countryCode);

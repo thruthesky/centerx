@@ -1243,6 +1243,22 @@ class AdvertisementTest
         if ($banner_type == SQUARE_BANNER || $banner_type == LINE_BANNER || $banner_type == SIDEBAR_BANNER) {
             isTrue(count($banners) == 0, "0 $banner_type banners for non-existing domains.");
         }
+
+        registerAndLogin(1000000);
+        $banner1 = $this->createAndStartAdvertisement([ COUNTRY_CODE => 'PH', BANNER_TYPE => $banner_type, BANNER_CATEGORY => '', BEGIN_DATE => time(), END_DATE => strtotime('+1 day'), FILE_IDXES => '1' ]);
+        $banner2 = $this->createAndStartAdvertisement([ COUNTRY_CODE => 'AC', BANNER_TYPE => $banner_type, BANNER_CATEGORY => '', BEGIN_DATE => time(), END_DATE => strtotime('+1 day'), FILE_IDXES => '1' ]);
+
+        $banners = request("advertisement.loadBanners", [CAFE_DOMAIN => 'a-non-existing.domain.com', BANNER_TYPE => $banner_type]);
+        if ($banner_type == TOP_BANNER) {
+            isTrue(count($banners) == 2, "Two top banners for non-existing domains.");
+            isTrue($this->bannerIsPresent($banner1, $banners) == false, 'banner 1 is not present');
+            isTrue($this->bannerIsPresent($banner2, $banners), 'banner 2 is present');
+        }
+
+        if ($banner_type == SQUARE_BANNER || $banner_type == LINE_BANNER || $banner_type == SIDEBAR_BANNER) {
+            isTrue($this->bannerIsPresent($banner1, $banners) == false, 'banner 1 is not present');
+            isTrue($this->bannerIsPresent($banner2, $banners), 'banner 2 is present');
+        }
     }
 
     function bannerLoadTest($banner_type)
