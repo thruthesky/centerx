@@ -81,7 +81,7 @@ $data = [
         'title' => "AC GLOBAL SQUARE 1",
         'content' => "AC GLOBAL SQUARE 1 CONTENT",
         PRIVATE_CONTENT => 'adv memo',
-    ], 
+    ],
     /// Global top PH - 1
     [
         COUNTRY_CODE => 'PH',
@@ -91,6 +91,66 @@ $data = [
         END_DATE => strtotime('+3 days'),
         'files' => [
             'banner' => ROOT_DIR . 'etc/res/advertisement/img/g2.jpg',
+            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
+        ],
+        'title' => "PH GLOBAL TOP 1",
+        'content' => "PH GLOBAL TOP 1 CONTENT",
+        PRIVATE_CONTENT => 'adv memo',
+    ],
+    /// Global top PH - 1
+    [
+        COUNTRY_CODE => 'PH',
+        SUB_CATEGORY => 'qna',
+        CODE => TOP_BANNER,
+        BEGIN_DATE => time(),
+        END_DATE => strtotime('+3 days'),
+        'files' => [
+            'banner' => ROOT_DIR . 'etc/res/advertisement/img/qna-top-ph.jpg',
+            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
+        ],
+        'title' => "PH GLOBAL TOP 1",
+        'content' => "PH GLOBAL TOP 1 CONTENT",
+        PRIVATE_CONTENT => 'adv memo',
+    ],
+    /// Global top PH - 1
+    [
+        COUNTRY_CODE => 'PH',
+        SUB_CATEGORY => 'job',
+        CODE => TOP_BANNER,
+        BEGIN_DATE => time(),
+        END_DATE => strtotime('+3 days'),
+        'files' => [
+            'banner' => ROOT_DIR . 'etc/res/advertisement/img/job-top-ph.jpg',
+            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
+        ],
+        'title' => "PH GLOBAL TOP 1",
+        'content' => "PH GLOBAL TOP 1 CONTENT",
+        PRIVATE_CONTENT => 'adv memo',
+    ],
+    /// Global top PH - 1
+    [
+        COUNTRY_CODE => 'PH',
+        SUB_CATEGORY => 'job',
+        CODE => TOP_BANNER,
+        BEGIN_DATE => time(),
+        END_DATE => strtotime('+3 days'),
+        'files' => [
+            'banner' => ROOT_DIR . 'etc/res/advertisement/img/job-top-ph-2.jpg',
+            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
+        ],
+        'title' => "PH GLOBAL TOP 1",
+        'content' => "PH GLOBAL TOP 1 CONTENT",
+        PRIVATE_CONTENT => 'adv memo',
+    ],
+    /// Global top PH - 1
+    [
+        COUNTRY_CODE => 'PH',
+        SUB_CATEGORY => 'job',
+        CODE => TOP_BANNER,
+        BEGIN_DATE => time(),
+        END_DATE => strtotime('+3 days'),
+        'files' => [
+            'banner' => ROOT_DIR . 'etc/res/advertisement/img/job-top-ph-3.jpg',
             'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
         ],
         'title' => "PH GLOBAL TOP 1",

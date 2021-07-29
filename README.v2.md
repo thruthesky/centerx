@@ -1748,18 +1748,26 @@ isTrue((new AppController())->version(), "App version");
   - The data in the table can be read like,
     "Top banner is displayed on Top. And displayed always on Desktop. And displayed on main page on Mobile.".
 
-Banner Type|Place on Desktop|Place on Mobile|Class|Limit
+Banner Type|Rotation|Place on Desktop|Place on Mobile|Class|Limit
 ------|-----|-------|------|-----
-Top Banner|Top|Main|Global & Category|10 global banners. 2 banners per each category.
-Sidebar Banner|Sidebar|Main|Global & Category|4 global banners. 2 banners per each category.
-Square Banner|Category page|Category page|Category only|5 global banners. 12 banners per each category.
-Line Banner |Category page|Category page|Category only|5 global banners. 5 banners per each category.
+Top Banner|Yes|Top|Main|Global & Category|10 global banners. 2 banners per each category. **The number is subject to be changed.**
+Sidebar Banner|Yes|Sidebar|Main|Global & Category|4 global banners. 2 banners per each category.
+Square Banner|No|Category page|Category page|Category only|5 global banners. 12 banners per each category.
+Line Banner|No|Category page|Category page|Category only|5 global banners. 5 banners per each category.
 
 * Note, that admin can change the number of banners in the table above in admin page setting. So, just consider the
   numbers in table are for examples.
 
 * Class\
   If the banner type has `global & category` class, global banner will take place when there is no category banner for that category.
+  
+* Rotation\
+  Multiple banners appear in one place, banner will be shown rotationally every n'th seconds set by admin page.
+  The default is 9 seconds.
+  
+* No 'gif' image.
+  The reason why we don't accept gif image is because user may add a lot of flashing animation
+  and the size of image becomes very big. And it goes very dirty.
   
 
 ### Top banner rotation logic
