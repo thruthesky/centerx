@@ -160,6 +160,10 @@ class AdvertisementModel extends PostModel
         return intVal(adminSettings()->get('maximumAdvertisementDays') ?? 0);
     }
 
+    public function bannerRotationInterval(): int
+    {
+        return intVal(adminSettings()->get('bannerRotationInterval') ?? 0);
+    }
 
     /**
      * Returns the key for saving the number of maximum banners into meta table.
