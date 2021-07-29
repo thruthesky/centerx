@@ -164,6 +164,15 @@ class UserController
     }
 
     /**
+     * Return multiple users' short profile by user idx or firebase uid.
+     * @param $in
+     * @todo from here.
+     */
+    public function gets($in) {
+
+    }
+
+    /**
      * 사용자 정보 수정
      *
      * @param $in

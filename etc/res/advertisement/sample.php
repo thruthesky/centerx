@@ -157,6 +157,36 @@ $data = [
         'content' => "PH GLOBAL TOP 1 CONTENT",
         PRIVATE_CONTENT => 'adv memo',
     ],
+    /// Global top PH - 1
+    [
+        COUNTRY_CODE => 'PH',
+        SUB_CATEGORY => 'discussion',
+        CODE => TOP_BANNER,
+        BEGIN_DATE => time(),
+        END_DATE => strtotime('+3 days'),
+        'files' => [
+            'banner' => ROOT_DIR . 'etc/res/advertisement/img/discussion-top-ph-1.jpg',
+            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
+        ],
+        'title' => "PH GLOBAL TOP 1",
+        'content' => "PH GLOBAL TOP 1 CONTENT",
+        PRIVATE_CONTENT => 'adv memo',
+    ],
+    /// Global top PH - 1
+    [
+        COUNTRY_CODE => 'PH',
+        SUB_CATEGORY => 'discussion',
+        CODE => TOP_BANNER,
+        BEGIN_DATE => time(),
+        END_DATE => strtotime('+3 days'),
+        'files' => [
+            'banner' => ROOT_DIR . 'etc/res/advertisement/img/discussion-top-ph-2.jpg',
+            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
+        ],
+        'title' => "PH GLOBAL TOP 1",
+        'content' => "PH GLOBAL TOP 1 CONTENT",
+        PRIVATE_CONTENT => 'adv memo',
+    ],
     /// Global square PH - 1
     [
         COUNTRY_CODE => 'PH',
