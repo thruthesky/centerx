@@ -131,6 +131,7 @@ class UserModel extends Entity {
             // Note, it returns original image.
             // If the app needs a thumbnail, then the app needs to use thumbnail url from the `photoIdx`.
             $this->updateMemoryData('photoUrl', $one->url);
+            $this->updateMemoryData('thumbnailPhotoUrl', thumbnailUrl($one->idx ?? 0, 100, 100));
         }
         $this->updateMemoryData('nicknameOrName', $this->nicknameOrName());
         $this->updateMemoryData('displayName', $this->nicknameOrName());
