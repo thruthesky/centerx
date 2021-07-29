@@ -22,7 +22,7 @@ banner()->setMaxNoOn(LINE_BANNER, false);
 
 /**
  * PH
- *  GLOBAL TOP - 2
+ *  GLOBAL TOP - 1
  *  GLOBAL SQUARE - 1
  *  GLOBAL LINE - 2
  *  QNA SQUARE - 1
