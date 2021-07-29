@@ -7,6 +7,7 @@ login()->_setPoint(1000000);
 /// banner settings
 adminSettings()->set(MAXIMUM_ADVERTISING_DAYS, 30);
 adminSettings()->set(ADVERTISEMENT_GLOBAL_BANNER_MULTIPLYING, 2);
+adminSettings()->set(ADVERTISEMENT_CATEGORIES, 'qna,discussion');
 
 
 banner()->setMaxNoOn(TOP_BANNER);
@@ -19,15 +20,25 @@ banner()->setMaxNoOn(SIDEBAR_BANNER, false);
 banner()->setMaxNoOn(SQUARE_BANNER, false);
 banner()->setMaxNoOn(LINE_BANNER, false);
 
-
-
-
-
-///
+/**
+ * PH
+ *  GLOBAL TOP - 2
+ *  GLOBAL SQUARE - 1
+ *  GLOBAL LINE - 2
+ *  QNA SQUARE - 1
+ *  QNA LINE - 1  
+ *  DISCUSSION SQUARE - 1
+ *  DISCUSSION LINE - 2
+ * 
+ * AC
+ *  GLOBAL TOP - 1
+ *  GLOBAL SIDEBAR - 1
+ *  GLOBAL SQUARE - 1
+ */
 $data = [
-    /// Global top PH - 2
+    /// AC GLOBAL TOP - 1
     [
-        COUNTRY_CODE => 'PH',
+        COUNTRY_CODE => 'AC',
         SUB_CATEGORY => '',
         CODE => TOP_BANNER,
         BEGIN_DATE => time(),
@@ -36,11 +47,42 @@ $data = [
             'banner' => ROOT_DIR . 'etc/res/advertisement/img/g1.jpg',
             'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
         ],
-        'title' => "Global banner",
-        'content' => "This is global content",
+        'title' => "AC GLOBAL TOP 1",
+        'content' => "AC GLOBAL TOP 1 CONTENT",
         CLICK_URL => 'https://naver.com',
         PRIVATE_CONTENT => 'adv memo',
     ],
+    /// AC GLOBAL SIDEBAR - 1
+    [
+        COUNTRY_CODE => 'AC',
+        SUB_CATEGORY => '',
+        CODE => SIDEBAR_BANNER,
+        BEGIN_DATE => time(),
+        END_DATE => strtotime('+3 days'),
+        'files' => [
+            'banner' => ROOT_DIR . 'etc/res/advertisement/img/l_2.jpg',
+            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
+        ],
+        'title' => "AC GLOBAL SIDEBAR 1",
+        'content' => "AC GLOBAL SIDEBAR 1 CONTENT",
+        PRIVATE_CONTENT => 'adv memo',
+    ],
+    /// AC GLOBAL SQUARE - 1
+    [
+        COUNTRY_CODE => 'AC',
+        SUB_CATEGORY => '',
+        CODE => SQUARE_BANNER,
+        BEGIN_DATE => time(),
+        END_DATE => strtotime('+3 days'),
+        'files' => [
+            'banner' => ROOT_DIR . 'etc/res/advertisement/img/sq_2.jpg',
+            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
+        ],
+        'title' => "AC GLOBAL SQUARE 1",
+        'content' => "AC GLOBAL SQUARE 1 CONTENT",
+        PRIVATE_CONTENT => 'adv memo',
+    ], 
+    /// Global top PH - 1
     [
         COUNTRY_CODE => 'PH',
         SUB_CATEGORY => '',
@@ -51,9 +93,8 @@ $data = [
             'banner' => ROOT_DIR . 'etc/res/advertisement/img/g2.jpg',
             'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
         ],
-        'title' => "Global banner 2",
-        'content' => "This is global banner content 2",
-        CLICK_URL => 'https://daum.com',
+        'title' => "PH GLOBAL TOP 1",
+        'content' => "PH GLOBAL TOP 1 CONTENT",
         PRIVATE_CONTENT => 'adv memo',
     ],
     /// Global square PH - 1
@@ -67,9 +108,8 @@ $data = [
             'banner' => ROOT_DIR . 'etc/res/advertisement/img/g_sq_1.jpg',
             'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
         ],
-        'title' => "Global banner 2",
-        'content' => "This is global banner content 2",
-        CLICK_URL => 'https://daum.com',
+        'title' => "PH GLOBAL SQUARE 1",
+        'content' => "PH GLOBAL SQUARE 1",
         PRIVATE_CONTENT => 'adv memo',
     ],
     // Global line PH - 2
@@ -83,9 +123,8 @@ $data = [
             'banner' => ROOT_DIR . 'etc/res/advertisement/img/g_l_1.jpg',
             'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
         ],
-        'title' => "Global banner 2",
-        'content' => "This is global banner content 2",
-        CLICK_URL => 'https://daum.com',
+        'title' => "PH GLOBAL LINE 1",
+        'content' => "PH GLOBAL LINE 1 CONTENT",
         PRIVATE_CONTENT => 'adv memo',
     ],
     [
@@ -98,9 +137,8 @@ $data = [
             'banner' => ROOT_DIR . 'etc/res/advertisement/img/g_l_2.jpg',
             'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
         ],
-        'title' => "Global banner 2",
-        'content' => "This is global banner content 2",
-        CLICK_URL => 'https://daum.com',
+        'title' => "PH GLOBAL LINE 2",
+        'content' => "PH GLOBAL LINE 2 CONTENT",
         PRIVATE_CONTENT => 'adv memo',
     ],
     /// QNA Square PH - 1
@@ -114,9 +152,8 @@ $data = [
             'banner' => ROOT_DIR . 'etc/res/advertisement/img/sq_1.jpg',
             'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
         ],
-        'title' => "QNA Square 1",
-        'content' => "This is banner content 2",
-        CLICK_URL => 'https://s8.philgo.com',
+        'title' => "PH QNA SQUARE 1",
+        'content' => "PH QNA SQUARE 1 CONTENT",
         PRIVATE_CONTENT => 'adv memo',
     ],
     /// Qna Line PH - 1
@@ -130,9 +167,8 @@ $data = [
             'banner' => ROOT_DIR . 'etc/res/advertisement/img/l_2.jpg',
             'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
         ],
-        'title' => "QNA line 2",
-        'content' => "This is banner content 2",
-        CLICK_URL => 'https://s8.philgo.com',
+        'title' => "PH QNA LINE 1",
+        'content' => "PH QNA LINE 1 CONTENT",
         PRIVATE_CONTENT => 'adv memo',
     ],
     /// Discussion Square PH - 1
@@ -146,9 +182,8 @@ $data = [
             'banner' => ROOT_DIR . 'etc/res/advertisement/img/sq_3.jpg',
             'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
         ],
-        'title' => "Discussion Square 2",
-        'content' => "This is banner content 2",
-        CLICK_URL => 'https://s8.philgo.com',
+        'title' => "PH DISCUSSION SQUARE 1",
+        'content' => "PH DISCUSSION SQUARE 1 CONTENT",
         PRIVATE_CONTENT => 'adv memo',
     ],
     // Discussion line PH - 2
@@ -162,8 +197,8 @@ $data = [
             'banner' => ROOT_DIR . 'etc/res/advertisement/img/l_3.jpg',
             'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
         ],
-        'title' => "Discussion Line 1",
-        'content' => "This is banner content 2",
+        'title' => "PH DISCUSSION LINE 1",
+        'content' => "PH DISCUSSION LINE 1 CONTENT",
         CLICK_URL => 'https://s8.philgo.com',
         PRIVATE_CONTENT => 'adv memo',
     ],
@@ -177,38 +212,9 @@ $data = [
             'banner' => ROOT_DIR . 'etc/res/advertisement/img/sq_2.jpg',
             'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
         ],
-        'title' => "Discussion Square 1",
-        'content' => "This is banner content 2",
+        'title' => "PH DISCUSSION LINE 2",
+        'content' => "PH DISCUSSION LINE 1 CONTENT",
         CLICK_URL => 'https://s8.philgo.com',
         PRIVATE_CONTENT => 'adv memo',
-    ],   
-    // All country job - 2
-    [
-        COUNTRY_CODE => 'AC',
-        SUB_CATEGORY => 'job',
-        CODE => LINE_BANNER,
-        BEGIN_DATE => time(),
-        END_DATE => strtotime('+3 days'),
-        'files' => [
-            'banner' => ROOT_DIR . 'etc/res/advertisement/img/l_2.jpg',
-            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
-        ],
-        'title' => "All Country Line 1",
-        'content' => "All Country Line 1",
-        PRIVATE_CONTENT => 'adv memo',
-    ],   
-    [
-        COUNTRY_CODE => 'AC',
-        SUB_CATEGORY => 'job',
-        CODE => SQUARE_BANNER,
-        BEGIN_DATE => time(),
-        END_DATE => strtotime('+3 days'),
-        'files' => [
-            'banner' => ROOT_DIR . 'etc/res/advertisement/img/sq_2.jpg',
-            'content' => ROOT_DIR . 'etc/res/advertisement/img/c1.jpg',
-        ],
-        'title' => "All Country Square 1",
-        'content' => "All Country Square 1",
-        PRIVATE_CONTENT => 'adv memo',
-    ], 
+    ],
 ];
