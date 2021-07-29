@@ -10,19 +10,6 @@ const VIEW_FOLDER_NAME = 'view';
 const VIEW_DIR = ROOT_DIR . VIEW_FOLDER_NAME . '/';
 const CONTROLLER_DIR = ROOT_DIR . 'controller/';
 
-/**
- * Debug Configurations
- * 디버그 옵션 및 기록할 로그 파일 경로.
- *
- * 이 설정을 여기에 두어, boot.php 의 가장 빠른 위치에서 로그를 남길 수 있도록 한다.
- *
- * If DEBUG_LOG is set to false, no debug log will recorded.
- */
-const DEBUG_LOG = true;
-const DEBUG_LOG_FILE_PATH = ROOT_DIR . 'var/logs/debug.log';
-//
-
-
 // Restful Api
 require ROOT_DIR . 'etc/preflight.php';
 // Kill wrong access or malicious access.
@@ -91,15 +78,17 @@ require_once ROOT_DIR . 'model/cafe/cafe.model.php';
 require_once ROOT_DIR . 'etc/core/hook.php';
 
 
-// Leave a record, for stating that a new script run time begins.
-leave_starting_debug_log();
-
 
 // config.php 에는 theme config 도 실행되므로, 사실 모든 종류의 코드가 다 필요하다. 단, DB 에 직접 접속 할 수 없고, 정히 필요하다면, hook 이나 route 를 통해서 할 수 있다.
 // 하지만, hook 이나 route 는 theme functions.php 에 저장되는 것이 좋다.
 //
 // Load global config.php that loads config.php in each theme.
 require_once ROOT_DIR . 'config.php';
+
+// Leave a record, for stating that a new script run time begins.
+// This must be here because the debug configuration comes from config.php
+leave_starting_debug_log();
+
 
 
 // test function is depending on the configuration. like LOCAL_HOSTS.

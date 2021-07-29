@@ -148,6 +148,7 @@ class AdvertisementController
             'categoryArray' => $adv->advertisementCategoryArray(),
             'point' => $adv->advertisementPoints(),
             'globalBannerMultiplying' => $adv->globalBannerMultiplying(),
+            'bannerRotationInterval' => $adv->bannerRotationInterval(),
         ];
     }
 

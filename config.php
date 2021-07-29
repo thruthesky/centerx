@@ -5,6 +5,21 @@
 
 
 /**
+ * Debug Configurations
+ * 디버그 옵션 및 기록할 로그 파일 경로.
+ *
+ * 이 설정을 여기에 두어, 가장 빠른 위치에서 로그를 남길 수 있도록 한다.
+ *
+ * If DEBUG_LOG is set to false, no debug log will recorded.
+ */
+
+const DEBUG_LOG = true;
+const DEBUG_LOG_FILE_PATH = ROOT_DIR . 'var/logs/debug.log';
+//
+
+
+
+/**
  * zoomThumbnail() 함수로 썸네일을 저장할 때, 사용할 포멧.
  *
  * 기본적으로 JPEG 포멧으로 저장하는데, 이곳에서 'webp' 를 입력하여, WEBP 로 썸네일 이미지를 저장할 수 있다.
