@@ -168,7 +168,34 @@ class UserController
      * @param $in
      * @todo from here.
      */
-    public function gets($in) {
+    public function gets($in): array| string {
+        if (!isset($in[UIDS])) return e()->uids_is_not_exist;
+
+
+        $users = [];
+
+        if (gettype($in[UIDS]) == 'array') {
+            $uids = $in[UIDS];
+        } else {
+            $uids = preg_replace('/\s+/', '', $in[UIDS]);
+            $uids = explode(',', $uids);
+        }
+
+        foreach ($uids as $uid) {
+            $_user = user()->by($uid);
+            if ($_user->hasError) {
+                $_user = user()->findOne(['firebaseUid' => $uid]);
+            }
+
+            if ($_user->hasError) continue; // if user() has error continue. entity not found
+
+            if (isset($in['full']) && $in['full'] && admin()) {
+                $users[] = $_user->read()->profile();
+            }
+            $users[] = $_user->shortProfile(firebaseUid: true);
+        }
+
+        return $users;
 
     }
 

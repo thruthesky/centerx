@@ -252,6 +252,10 @@ class E {
     public string $not_your_advertisement = 'error_not_your_advertisement';
 
 
+
+    public string $uids_is_not_exist = 'error_uids_is_not_exist';
+
+
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)
     {

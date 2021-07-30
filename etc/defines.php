@@ -165,6 +165,9 @@ const CHANNEL = 'channel';
 const EMAILS = 'emails';
 
 
+const UIDS = 'uids';
+
+
 define('USERFILE', 'userfile');
 define('SHOPPING_MALL', 'shopping_mall');
 
