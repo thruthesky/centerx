@@ -1,7 +1,7 @@
 <?php
 include '../boot.php';
 
-$file = files(in(IDX));
+$file = files(in(IDX, 0));
 $path = zoomThumbnail($file->path, in('w', 200), in('h', 200), in('q', 95));
 
 header('Pragma: public');

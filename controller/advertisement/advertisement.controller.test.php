@@ -440,6 +440,8 @@ class AdvertisementTest
 
     function startWithCountryDeduction()
     {
+        $this->clearAdvertisementData();
+
         // 시작 포인트
         $startingPoint = 1000000;
         registerAndLogin($startingPoint);
@@ -1171,7 +1173,7 @@ class AdvertisementTest
     {
         $this->clearAdvertisementData();
         $this->resetBannerLimit(LINE_BANNER, category: false);
-        $this->resetBannerPoints();
+        $this->resetBannerPoints(ALL_COUNTRY_CODE, line: 1000);
 
         registerAndLogin(1000000);
 
@@ -1246,7 +1248,8 @@ class AdvertisementTest
 
         $this->clearAdvertisementData();
         $this->resetBannerLimit($banner_type);
-        $this->resetBannerPoints('', 1000, 1000, 1000, 1000);
+        $this->resetBannerPoints('T2', 1000, 1000, 1000, 1000);
+        $this->resetBannerPoints('AC', 1000, 1000, 1000, 1000);
         registerAndLogin(1000000);
 
         // create test cafe

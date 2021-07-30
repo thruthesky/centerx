@@ -614,7 +614,13 @@ class AdvertisementModel extends PostModel
         $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND " . $this->activeBannerCondition();
         $params = [$banner_type, $banner_category];
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
-        return $posts;
+
+        $rets = [];
+        foreach ($posts as $post) {
+            if ($post->getStatus() == 'active') $rets[] = $post;
+        }
+        return $rets;
+        // return $posts;
     }
 
     /**
@@ -631,7 +637,12 @@ class AdvertisementModel extends PostModel
         $params = [$banner_type];
 
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
-        return $posts;
+        $rets = [];
+        foreach ($posts as $post) {
+            if ($post->getStatus() == 'active') $rets[] = $post;
+        }
+        return $rets;
+        // return $posts;
     }
 
     private function categoryBannersOfAllCountry($banner_type, $banner_category)
@@ -643,7 +654,12 @@ class AdvertisementModel extends PostModel
         $where = "code = ? AND subcategory=? AND countryCode='$ac' AND " . $this->activeBannerCondition();
         $params = [$banner_type, $banner_category];
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
-        return $posts;
+        $rets = [];
+        foreach ($posts as $post) {
+            if ($post->getStatus() == 'active') $rets[] = $post;
+        }
+        return $rets;
+        // return $posts;
     }
 
     private function globalBannersOfAllCountry($banner_type)
@@ -655,7 +671,12 @@ class AdvertisementModel extends PostModel
         $where = "code = ? AND subcategory='' AND countryCode='$ac' AND " . $this->activeBannerCondition();
         $params = [$banner_type];
         $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
-        return $posts;
+        $rets = [];
+        foreach ($posts as $post) {
+            if ($post->getStatus() == 'active') $rets[] = $post;
+        }
+        return $rets;
+        // return $posts;
     }
 
     /**
@@ -702,6 +723,7 @@ class AdvertisementModel extends PostModel
                 'subcategory' => $post->subcategory, // if it's empty, it's global.
                 'code' => $post->code,
                 'countryCode' => $post->countryCode, // it may be all country.
+                // 'status' => $post->getStatus(),
             ];
 
             if ($post->code == LINE_BANNER) $data['title'] = $post->title;
