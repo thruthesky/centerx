@@ -38,6 +38,8 @@ const COMMENTS = 'comments';
 const FILES = 'files';
 const FILE_IDXES = 'fileIdxes';
 
+const CHAT = 'chat';
+
 const NO_OF_COMMENTS = 'noOfComments';
 const RELATIVE_URL = 'relativeUrl';
 
