@@ -589,6 +589,14 @@ class AdvertisementModel extends PostModel
         return "beginAt <= $now AND endAt >= $today AND fileIdxes != ''";
     }
 
+    private function getActiveStatusBanners(array $banners) {
+        $rets = [];
+        foreach ($banners as $banner) {
+            if ($banner->getStatus() == 'active') $rets[] = $banner;
+        }
+        return $rets;
+    }
+
     /**
      * returns count of active banners according to type, category and countryCode.
      */
@@ -613,13 +621,9 @@ class AdvertisementModel extends PostModel
         // endAt is the 0 second of last day.
         $where = "code = ? AND subcategory=? AND countryCode='$countryCode' AND " . $this->activeBannerCondition();
         $params = [$banner_type, $banner_category];
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
+        $banners = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
 
-        $rets = [];
-        foreach ($posts as $post) {
-            if ($post->getStatus() == 'active') $rets[] = $post;
-        }
-        return $rets;
+        return $this->getActiveStatusBanners($banners);
         // return $posts;
     }
 
@@ -636,12 +640,9 @@ class AdvertisementModel extends PostModel
         $where = "code = ? AND subcategory='' AND countryCode='$countryCode' AND " . $this->activeBannerCondition();
         $params = [$banner_type];
 
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
-        $rets = [];
-        foreach ($posts as $post) {
-            if ($post->getStatus() == 'active') $rets[] = $post;
-        }
-        return $rets;
+        $banners = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
+        
+        return $this->getActiveStatusBanners($banners);
         // return $posts;
     }
 
@@ -653,12 +654,9 @@ class AdvertisementModel extends PostModel
         // Get banner of same type of same category of all country.
         $where = "code = ? AND subcategory=? AND countryCode='$ac' AND " . $this->activeBannerCondition();
         $params = [$banner_type, $banner_category];
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
-        $rets = [];
-        foreach ($posts as $post) {
-            if ($post->getStatus() == 'active') $rets[] = $post;
-        }
-        return $rets;
+        $banners = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
+        
+        return $this->getActiveStatusBanners($banners);
         // return $posts;
     }
 
@@ -670,12 +668,9 @@ class AdvertisementModel extends PostModel
         // Get global banner of same type of all country.
         $where = "code = ? AND subcategory='' AND countryCode='$ac' AND " . $this->activeBannerCondition();
         $params = [$banner_type];
-        $posts = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
-        $rets = [];
-        foreach ($posts as $post) {
-            if ($post->getStatus() == 'active') $rets[] = $post;
-        }
-        return $rets;
+        $banners = advertisement()->search(where: $where, params: $params, order: 'endAt', object: true, limit: 500);
+        
+        return $this->getActiveStatusBanners($banners);
         // return $posts;
     }
 
