@@ -166,11 +166,14 @@ class UserController
     /**
      * Return multiple users' short profile by user idx or firebase uid.
      * @param $in
+     *  $in['uids'] - It can be an array of a string with commas(,).
+     *      - It can contain user idx, email, or firebase Uid. it can have mixed data like
+     *          "123,abc@gmail.com,FirebaseUid-abcd"
+     *  $in['full'] - To get full user profile, pass a truthy value. Only admin can get full user profile.
      * @todo from here.
      */
     public function gets($in): array| string {
-        if (!isset($in[UIDS])) return e()->uids_is_not_exist;
-
+        if (!isset($in[UIDS])) return e()->empty_uids;
 
         $users = [];
 
@@ -189,10 +192,12 @@ class UserController
 
             if ($_user->hasError) continue; // if user() has error continue. entity not found
 
+            // Admin can get full user profile.
             if (isset($in['full']) && $in['full'] && admin()) {
                 $users[] = $_user->read()->profile();
+            } else {
+                $users[] = $_user->shortProfile(firebaseUid: true);
             }
-            $users[] = $_user->shortProfile(firebaseUid: true);
         }
 
         return $users;

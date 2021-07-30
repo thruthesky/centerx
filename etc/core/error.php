@@ -253,7 +253,7 @@ class E {
 
 
 
-    public string $uids_is_not_exist = 'error_uids_is_not_exist';
+    public string $empty_uids = 'error_empty_uids';
 
 
     public bool $isError = false;
