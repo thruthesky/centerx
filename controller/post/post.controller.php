@@ -117,6 +117,10 @@ class PostController {
             $re = parsePostSearchHttpParams($in);
             if ( isError($re) ) return $re;
             list ($where, $params ) = $re;
+
+            $advCat = category(ADVERTISEMENT_CATEGORY);
+            $where = $where . " AND categoryIdx != " . $advCat->idx;
+
             $in['where'] = $where;
             $in['params'] = $params;
         }
