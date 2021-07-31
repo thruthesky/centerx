@@ -82,6 +82,7 @@ function patchSeo($html): string {
             if ( $post->idx ) {
                 // 글 읽기
                 $html = patchSeoHeader($html, post: $post);
+                $html = patchPostView($html, post: $post);
                 $html = patchSeoNextPosts($html, $post);
                 return $html;
             } else {
@@ -91,7 +92,7 @@ function patchSeo($html): string {
             }
         }
     } else {
-        // 홈 또는 잘못된 페이지?
+        // 홈페이지 또는 잘못된 페이지?
         // URI 가 없으면, 그냥 헤더 SEO 항목 패치해서 리턴.
         return patchSeoHeader($html);
     }
@@ -110,7 +111,22 @@ function patchSeoSitemap($html) {
 
     return $html;
 }
+function patchPostView($html, PostModel $post) {
+    $arr = explode("</section>", $html, 2);
+    $dt = date('Y년 m월 d일 H시 i분', $post->createdAt);
+    $name = $post->user()->displayName;
+    $seo =<<<EOH
+<article>
+    <h1>{$post->title}</h1>
+    글쓴이: <address class="author">$name</address> 
+    날짜: $dt
+    <p>{$post->content}</p>
+</article>
+EOH;
 
+    $html = $arr[0] . "\n$seo\n</section>\n" . $arr[1];
+    return $html;
+}
 /**
  * 글 읽기의 경우, 같은 카테고리의 다음 글(코멘트 포함)을 몇개를 리턴한다.
  */
