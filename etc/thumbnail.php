@@ -1,7 +1,10 @@
 <?php
 include '../boot.php';
 
-$file = files(in(IDX));
+if ( ! is_numeric(in(IDX, 0) ) ) {
+    debug_log('ERROR; etc/phpthumbnail.php, input idx is not a number; ', in(IDX));
+}
+$file = files(in(IDX, 0));
 $path = zoomThumbnail($file->path, in('w', 200), in('h', 200), in('q', 95));
 
 header('Pragma: public');
