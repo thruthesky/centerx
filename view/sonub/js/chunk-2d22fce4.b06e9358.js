@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d22fce4"],{ea1c:function(e,n,t){"use strict";t.r(n);var c=function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("section",[e._v("'chat' is deleted. Work on chat_v2")])},a=[],l=t("2877"),o={},s=Object(l["a"])(o,c,a,!1,null,null,null);n["default"]=s.exports}}]);
+//# sourceMappingURL=chunk-2d22fce4.b06e9358.js.map
