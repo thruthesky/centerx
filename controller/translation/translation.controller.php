@@ -7,12 +7,27 @@
  * Class TranslationController
  */
 class TranslationController {
+
+    public function load() {
+        return translation()->load();
+    }
+
     public function list() {
         return translation()->loadByLanguageCode();
     }
 
     public function update($in) {
-        return translation()->updateCode($in);
+        $re = translation()->updateCode($in);
+        if ( isError($re) ) return $re;
+        else {
+            rdbSet('/notifications/translations', ['time' => time()]);
+            return $re;
+        }
+    }
+
+    public function delete($in) {
+        rdbSet('/notifications/translations', ['time' => time()]);
+        return translation()->deleteCode($in);
     }
 
     /**

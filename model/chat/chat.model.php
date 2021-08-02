@@ -21,14 +21,7 @@ class ChatModel extends Entity
     public function sendMessage(array $in) {
         $in[USER_IDX] = login()->idx;
         $message = $this->create($in);
-        $path = "/chat/{$in[OTHER_USER_IDX]}";
-
-        $db = getRealtimeDatabase();
-        $reference = $db->getReference($path);
-        $stamp = time();
-        $reference->set( $message->response());
-
-
+        rdbSet( "/chat/{$in[OTHER_USER_IDX]}", $message->response() );
     }
 }
 

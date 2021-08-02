@@ -28,13 +28,17 @@ class AppController
      *
      * The app settings contains
      *  - the settings that are set by admin in admin page.
+     *  - other basic settings for app.
+     *
      * All the app should get this settings on boot.
      *
      * @return mixed
      */
     public function settings()
     {
-        return adminSettings()->get();
+        $settings = adminSettings()->get();
+        $settings['SUPPORTED_LANGUAGES'] = SUPPORTED_LANGUAGES;
+        return $settings;
     }
 
     /**

@@ -57,8 +57,10 @@ class TranslationModel extends Entity
     }
 
     /**
-     * - `[ 'code' => 'apple', 'en' => 'Apple', 'ko' => '사과' ]` 와 같이 값을 입력 받아 저장을 한다.
-     * - 저장 후, Firebase realtime database 의 notification 도큐먼트에 time 을 업데이트 한다.
+     *
+     * 참고, 입력 예
+     *  `[ 'code' => 'apple', 'en' => 'Apple', 'ko' => '사과' ]` 와 같이 값을 입력 받아 저장을 한다.
+     * 참고, 저장 후, Firebase realtime database 의 notification 도큐먼트에 time 을 업데이트 한다.
      *
      * @param $in
      * @return string
@@ -77,7 +79,6 @@ class TranslationModel extends Entity
             ]);
 
         }
-//        setRealtimeDatabaseDocument('/notifications/translations', ['time' => time()]);
         if ( $this->hasError ) return $this->getError();
         return $in[CODE];
     }
@@ -86,13 +87,22 @@ class TranslationModel extends Entity
      * Update translation cod and text.
      * 코드와 텍스트를 변경한다.
      *
+     * 중요, 실제로 번역 텍스트 업데이트 기능은 없다. 업데이트를 위해 기존 코드를 삭제를하고 새로 생성한다.
+     *
      * - Note, that it will produce error if new code name exists.
      * - 코드를 변경하는 경우, 새로은 코드 이름이 이미 존재한다면, 에러.
      *
      * @param $in
-     *   $in['currentCodeName'] is the current code name.
+     *   $in['currentCodeName'] is the current code name. If it is empty, then $in['code'] will be used for it.
+     *      - 현재 코드 이름
+     *      - 옵션으로, 이 값이 생략되면, $in['code'] 와 동일한 값이 적용됨.
+     *      - 만약, 업데이트를 하려면, 이 $in['currentCodeName'] 값과 $in['code'] 두개가 꼭 들어와야 한다.
+     *
      *   $in['code'] is the new code name.
-     *   - To update 'currentCodeName' and 'code' must have same value.
+     *      - 새로운 코드 이름
+     *      - 현재 코드 이름과 새로운 코드 이름이 같으면, 현재 코드를 삭제하고, 새로 생성한다. 즉, 업데이트 한다.
+     *      - 현재 코드 이름과 새로운 코드 이름이 다르면, 새로운 코드 이름이 존재하는지 보고, 존재하면 에러, 아니면, 현재 코드 삭제하고, 새로운 코드 생성.
+     *   - To update(or create) 'currentCodeName' and 'code' must have same value.
      *   - To change code, 'currentCodeName' must be the currentCodeName, and 'code' should have new code name.
      *   Example input)
      *      ['code' => '...', 'currentCodeName' => '...', 'en' => '...', 'ko' => '...']
@@ -106,7 +116,7 @@ class TranslationModel extends Entity
         if ( $in['currentCodeName'] != $in['code'] ) {
             if ( $this->exists([CODE => $in[CODE]]) ) return e()->code_exists;
         }
-        $this->deleteCode($in['currentCodeName']);
+        $this->deleteCode([CODE => $in['currentCodeName']]);
         $res =  $this->createCode($in);
         if($res != $in[CODE]) return $res;
         return [ CODE => $res ];
@@ -114,15 +124,18 @@ class TranslationModel extends Entity
 
     /**
      * 코드 삭제
-     * @param string $code
-     * @return string $code
+     * @param array $in
+     *  $in['code'] - 삭제할 코드
+     * @return array
+     * @throws \Kreait\Firebase\Exception\DatabaseException
      */
-    public function deleteCode(string $code): string {
+    public function deleteCode(array $in): array {
+        $code = $in[CODE];
         $idxes = $this->search(where: "code=?", params: [$code]);
         foreach(ids($idxes) as $idx) {
             translation($idx)->delete();
         }
-        return $code;
+        return [CODE => $code ];
     }
 
     /**

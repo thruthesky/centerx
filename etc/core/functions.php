@@ -2396,3 +2396,17 @@ function isIE(): bool {
         return false;
     }
 }
+
+
+/**
+ * Set document on firebase.
+ * @param string $path
+ * @param mixed $data
+ * @return \Kreait\Firebase\Database\Reference
+ * @throws \Kreait\Firebase\Exception\DatabaseException
+ */
+function rdbSet(string $path, mixed $data): \Kreait\Firebase\Database\Reference {
+    $db = getRealtimeDatabase();
+    $reference = $db->getReference($path);
+    return $reference->set($data);
+}
