@@ -75,7 +75,7 @@ require_once ROOT_DIR . 'model/cafe/cafe.model.php';
 
 
 
-require_once ROOT_DIR . 'model/chat/chat.model.php';
+require_once ROOT_DIR . 'model/chat/chat-message.model.php';
 
 require_once ROOT_DIR . 'etc/core/hook.php';
 

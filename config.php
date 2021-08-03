@@ -229,7 +229,7 @@ if ( ! defined('UPLOAD_SERVER_URL') ) {
  * I.e) 'thruthesky@gmail.com'
  * I.e) 'abc@domain.com,thruthesky@gmail.com,...'
  */
-const ADMIN_EMAIL = 'thruthesky@gmail.com,pinedaclp@gmail.com';
+const ADMIN_EMAIL = 'thruthesky@gmail.com,pinedaclp@gmail.com,ghselrahc@gmail.com';
 
 
 

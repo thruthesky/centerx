@@ -255,6 +255,11 @@ class E {
 
     public string $empty_uids = 'error_empty_uids';
 
+    //chat
+
+    public string $empty_other_user_idx = 'error_empty_other_user_idx';
+
+
 
     public bool $isError = false;
     public function __construct(public mixed $errcode=null)
