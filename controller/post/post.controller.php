@@ -119,7 +119,9 @@ class PostController {
             list ($where, $params ) = $re;
 
             $advCat = category(ADVERTISEMENT_CATEGORY);
-            $where = $where . " AND categoryIdx != " . $advCat->idx;
+            if ($advCat->exists()) {
+                $where = $where . " AND categoryIdx != " . $advCat->idx;
+            }
 
             $in['where'] = $where;
             $in['params'] = $params;
