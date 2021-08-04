@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 <div class="mt-4">
-                    <a class="p-2" style="font-size: 1rem" href="/">다운로드</a>
+<!--                    <a class="p-2" style="font-size: 1rem" href="/">다운로드</a>-->
                     <a class="p-2 scroll" style="font-size: 1rem" href="/#home3">서비스소개</a>
                     <a class="p-2 scroll" style="font-size: 1rem" href="/#home5">제휴서비스</a>
                     <a class="p-2" style="font-size: 1rem" href="/?doc.privacy">개인정보처리방침</a>

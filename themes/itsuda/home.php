@@ -3,6 +3,7 @@
 
 ?>
 <div class="mb-3 d-flex justify-content-end">
+    <a href="https://apps.apple.com/pk/app/%EC%9E%88%EC%88%98%EB%8B%A4/id1560827977" target="_blank"><img style="width: 240px;" src="themes/itsuda/img/ios-download.png" hspace=10></a>
     <a href="https://play.google.com/store/apps/details?id=com.itsuda50.app3" target="_blank"><img style="width: 240px;" src="themes/itsuda/img/android-download.png"></a>
 </div>
 
