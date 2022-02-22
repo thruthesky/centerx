@@ -47,7 +47,7 @@ if(modeSubmit()) {
         <div class="form-row">
             <div class="form-group col-6">
                 <label for="atoken">a-token</label>
-                <input type="text" class="form-control" placeholder="A-token" name="atoken" id="atoken"  value="<?=$profile->atoken?>" disabled>
+                <input type="text" class="form-control" placeholder="A-token" name="atoken" id="atoken"  value="<?=$profile->atoken?>">
             </div>
 
             <div class="form-group col-6">
