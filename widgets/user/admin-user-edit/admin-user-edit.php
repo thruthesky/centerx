@@ -52,7 +52,7 @@ if(modeSubmit()) {
 
             <div class="form-group col-6">
                 <label for="gtoken">g-token</label>
-                <input type="text" class="form-control" placeholder="G-token" name="gtoken" id="gtoken"  value="<?=$profile->gtoken?>">
+                <input type="text" class="form-control" placeholder="G-token" name="gtoken" id="gtoken"  value="<?=$profile->gtoken?>" disabled>
             </div>
         </div>
 
