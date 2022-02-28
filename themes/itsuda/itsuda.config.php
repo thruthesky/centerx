@@ -21,6 +21,7 @@ define('HEALTH_CATEGORIES', [
     'health_meal_lunch',
     'health_meal_dinner',
     'health_scribble',
+    'health_stress',
     'health_exercise',
     'health_sleep',
     'health_brain'
@@ -49,6 +50,7 @@ define('DEFAULT_CATEGORIES',  [
     'health_meal_morning',
     'health_meal_dinner',
     'health_scribble',
+    'health_stress',
     'health_exercise',
     'health_sleep',
     'health_brain',
