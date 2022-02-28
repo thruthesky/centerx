@@ -24,7 +24,12 @@ define('HEALTH_CATEGORIES', [
     'health_stress',
     'health_exercise',
     'health_sleep',
-    'health_brain'
+    'health_brain',
+    'find_wrong_picture',
+    'card_flip0',
+    'card_flip1',
+    'card_flip2',
+
 ]);
 
 define('COMMUNITY_CATEGORIES', [
@@ -57,6 +62,10 @@ define('DEFAULT_CATEGORIES',  [
     'daily_life',
     'hobby',
     'health',
+    'find_wrong_picture',
+    'card_flip0',
+    'card_flip1',
+    'card_flip2',
 ]);
 
 
