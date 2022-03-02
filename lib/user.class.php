@@ -230,7 +230,7 @@ class User extends Entity {
             'nickname' => $this->nickname ? $this->nickname : '',
             'gender' => $this->gender,
             'birthdate' => $this->birthdate,
-            'token' => $this->atoken,
+            'token' => $this->atoken ?? 0,
             'point' => $this->point,
             'photoIdx' => $this->photoIdx ?? 0,
             'photoUrl' =>  $this->photoIdx ? thumbnailUrl($this->photoIdx ?? 0, 100, 100) : ($this->photoUrl ?? ''),

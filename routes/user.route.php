@@ -163,7 +163,7 @@ class UserRoute {
     }
 
     public function myTokenRank() {
-        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE birthdate <=19720000 AND  point >= (SELECT atoken FROM wc_users WHERE idx=".login()->idx.")");
+        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE birthdate <=19720000 AND  atoken >= (SELECT atoken FROM wc_users WHERE idx=".login()->idx.")");
         if ( !$rankNo ) $rankNo = 0;
         return ['rankNo' => $rankNo];
     }
