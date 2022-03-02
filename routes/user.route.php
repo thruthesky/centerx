@@ -112,6 +112,23 @@ class UserRoute {
         return $rets;
     }
 
+    public function tokenRank($in): array
+    {
+        $users = user()->search(
+            order: 'atoken',
+            page: $in['page'] ?? 1,
+            limit: $in['limit'],
+            where:"birthdate <= 19720000",
+        );
+//        debug_log('pointRank:', count($users));
+        $rets = [];
+        foreach( $users as $user ) {
+            $rets[] = $user->shortProfile();
+        }
+
+        return $rets;
+    }
+
     /**
      * 내가 추천 받은 총 수를 리턴한다.
      * @param $in
@@ -145,6 +162,11 @@ class UserRoute {
         return ['rankNo' => $rankNo];
     }
 
+    public function myTokenRank() {
+        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE birthdate <=19720000 AND  point >= (SELECT atoken FROM wc_users WHERE idx=".login()->idx.")");
+        if ( !$rankNo ) $rankNo = 0;
+        return ['rankNo' => $rankNo];
+    }
 
     public function recommend($in) {
 
