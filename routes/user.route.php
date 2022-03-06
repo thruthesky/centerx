@@ -112,6 +112,10 @@ class UserRoute {
         return $rets;
     }
 
+    /**
+     * @param $in
+     * @return array
+     */
     public function tokenRank($in): array
     {
         $users = user()->search(

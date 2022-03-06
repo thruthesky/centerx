@@ -230,7 +230,7 @@ class User extends Entity {
             'nickname' => $this->nickname ? $this->nickname : '',
             'gender' => $this->gender,
             'birthdate' => $this->birthdate,
-            'token' => $this->atoken ?? 0,
+            'token' => $this->atoken,
             'point' => $this->point,
             'photoIdx' => $this->photoIdx ?? 0,
             'photoUrl' =>  $this->photoIdx ? thumbnailUrl($this->photoIdx ?? 0, 100, 100) : ($this->photoUrl ?? ''),
@@ -291,7 +291,7 @@ class User extends Entity {
 
     public function getToken(bool $cache=false): mixed {
         if ( $cache ) {
-            return $this->getData()['token'];
+            return $this->getData()['atoken'];
         } else {
             return parent::getVar(ATOKEN, [IDX => $this->idx]);
         }
