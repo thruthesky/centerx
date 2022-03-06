@@ -134,6 +134,27 @@ class UserRoute {
     }
 
     /**
+     * @param $in
+     * @return array
+     */
+    public function scoreRank($in): array
+    {
+        $users = user()->search(
+            select: 'idx, nickname, point+(atoken * 100) as score',
+            order: 'score',
+            page: $in['page'] ?? 1,
+            limit: $in['limit'],
+            where:"birthdate <= 19720000",
+        );
+        $rets = [];
+        foreach( $users as $user ) {
+            $rets[] = $user->shortProfile();
+        }
+
+        return $rets;
+    }
+
+    /**
      * 내가 추천 받은 총 수를 리턴한다.
      * @param $in
      * @return string
@@ -171,6 +192,14 @@ class UserRoute {
         if ( !$rankNo ) $rankNo = 0;
         return ['rankNo' => $rankNo];
     }
+
+    public function myScoreRank() {
+        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE birthdate <=19720000 AND  point + (atoken *100) >= (SELECT point + (atoken *100) as score FROM wc_users WHERE idx=".login()->idx.")");
+        if ( !$rankNo ) $rankNo = 0;
+        return ['rankNo' => $rankNo];
+    }
+
+
 
     public function recommend($in) {
 
