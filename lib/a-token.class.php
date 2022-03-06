@@ -10,13 +10,13 @@ class AToken
 
     public function register(User $user)
     {
-        $user->update(['atoken' => config()->get(TOKEN_REGISTER)]);
+        $user->update(['atoken' => (int)(config()->get(TOKEN_REGISTER))]);
         $this->log(
             userIdx : $user-> profile()[IDX],
             reason: 'tokenRegister',
             pointAfterApply:  $user -> profile()[POINT],
-            tokenApply: config()->get(TOKEN_REGISTER),
-            tokenAfterApply : config()->get(TOKEN_REGISTER),
+            tokenApply: (int)(config()->get(TOKEN_REGISTER)),
+            tokenAfterApply : (int)(config()->get(TOKEN_REGISTER)),
         );
 
     }

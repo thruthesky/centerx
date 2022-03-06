@@ -97,7 +97,7 @@ class User extends Entity {
         $this->create($in);
 
         point()->register($this->profile());
-        aToken()->register($this);
+        aToken()->register($this->profile());
 
 
         return $this;
