@@ -91,6 +91,11 @@ class UserRoute {
         return entity('a_token_histories')->search(where: "userIdx=$myIdx ", limit: 200, select: '*');
     }
 
+    public function logs($in) {
+        $myIdx = login()->idx;
+        return entity('logs')->search(where: "userIdx=$myIdx ", limit: 30, select: '*');
+    }
+
     /**
      * @param $in
      * @return array
@@ -101,7 +106,7 @@ class UserRoute {
             order: 'point',
             page: $in['page'] ?? 1,
             limit: $in['limit'],
-            where:"birthdate <= 19720000",
+            where:"birthdate <= 19770000",
         );
         debug_log('pointRank:', count($users));
         $rets = [];
@@ -122,7 +127,7 @@ class UserRoute {
             order: 'atoken',
             page: $in['page'] ?? 1,
             limit: $in['limit'],
-            where:"birthdate <= 19720000",
+            where:"birthdate <= 19770000",
         );
 //        debug_log('pointRank:', count($users));
         $rets = [];
@@ -144,7 +149,7 @@ class UserRoute {
             order: 'score',
             page: $in['page'] ?? 1,
             limit: $in['limit'],
-            where:"birthdate <= 19720000",
+            where:"birthdate <= 19770000",
         );
         $rets = [];
         foreach( $users as $user ) {
@@ -182,19 +187,19 @@ class UserRoute {
      * @return bool|int|mixed|null
      */
     public function myPointRank() {
-        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE birthdate <=19720000 AND  point >= (SELECT point FROM wc_users WHERE idx=".login()->idx.")");
+        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE birthdate <=19770000 AND  point >= (SELECT point FROM wc_users WHERE idx=".login()->idx.")");
         if ( !$rankNo ) $rankNo = 0;
         return ['rankNo' => $rankNo];
     }
 
     public function myTokenRank() {
-        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE birthdate <=19720000 AND  atoken >= (SELECT atoken FROM wc_users WHERE idx=".login()->idx.")");
+        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE birthdate <=19770000 AND  atoken >= (SELECT atoken FROM wc_users WHERE idx=".login()->idx.")");
         if ( !$rankNo ) $rankNo = 0;
         return ['rankNo' => $rankNo];
     }
 
     public function myScoreRank() {
-        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE birthdate <=19720000 AND  point + (atoken *100) >= (SELECT point + (atoken *100) as score FROM wc_users WHERE idx=".login()->idx.")");
+        $rankNo = db()->get_var("SELECT COUNT(*) as raking FROM wc_users WHERE birthdate <=19770000 AND  point + (atoken *100) >= (SELECT point + (atoken *100) as score FROM wc_users WHERE idx=".login()->idx.")");
         if ( !$rankNo ) $rankNo = 0;
         return ['rankNo' => $rankNo];
     }
