@@ -34,13 +34,13 @@ class AToken
     public function inAppPurchase($point = 0)
     {
         $saving = $point * ( config()->get(TOKEN_REGISTER) / 100 ) * 0.01;
-        $atoken = login()->atoken;
+        $atoken = login()->getToken();
         login()->update(['atoken' => $atoken + $saving]);
         $this->log(
             userIdx: login() -> idx,
             reason: 'pointInAppPurchase',
             tokenApply: $saving,
-            tokenAfterApply : login()->atoken,
+            tokenAfterApply : login()->getToken(),
         );
     }
 
@@ -52,14 +52,14 @@ class AToken
         debug_log("user point: ",  login()->getPoint());
 
         $changedPoint = point()->addUserPoint(login()->idx, -$point);
-        $atoken = login()->atoken;
+        $atoken = login()->getToken();
 
         debug_log('changedPoint;', $changedPoint);
         debug_log("atoken: ",  $atoken);
 
         login()->update(['atoken' => $atoken + $exchangedToken]);
 
-        debug_log('changedToken;', login() -> atoken);
+        debug_log('changedToken;', login() -> getToken());
 
 //        tokenHistory()->create([
 //            USER_IDX => login()->idx,
@@ -76,30 +76,30 @@ class AToken
             pointApply: $point,
             pointAfterApply : login()->getPoint(),
             tokenApply : $exchangedToken,
-            tokenAfterApply : login()->atoken,
+            tokenAfterApply : login()->getToken(),
         );
 
-        return ['changedPoint;'=> $changedPoint, 'changedToken;'=> login() -> atoken, 'history' => $idx];
+        return ['changedPoint;'=> $changedPoint, 'changedToken;'=> login() -> getToken(), 'history' => $idx];
     }
 
     /**
      * @param User $user 추천 받는 사용자.
      */
     public function recommend($in) {
-        user($in['otherIdx'])->update(['atoken' => user($in['otherIdx'])->atoken + config()->get(TOKEN_RECOMMENDATION)]);
+        user($in['otherIdx'])->update(['atoken' => user($in['otherIdx'])->getToken() + config()->get(TOKEN_RECOMMENDATION)]);
 
        $this->log(
            userIdx : $in['otherIdx'],
            reason: 'userRecommend',
            tokenApply: config()->get(TOKEN_RECOMMENDATION),
-           tokenAfterApply: user($in['otherIdx'])->atoken,
+           tokenAfterApply: user($in['otherIdx'])->getToken(),
        );
     }
 
     public function admin($in)
     {
 
-       $re = user($in['otherIdx'])->update(['atoken' => user($in['otherIdx'])->atoken + $in['value']]);
+       $re = user($in['otherIdx'])->update(['atoken' => user($in['otherIdx'])->getToken() + $in['value']]);
 
        debug_log('re', $re);
 
@@ -107,7 +107,7 @@ class AToken
             userIdx : $in['otherIdx'],
             reason: $in['reason'],
             tokenApply: $in['value'],
-            tokenAfterApply: user($in['otherIdx'])->atoken,
+            tokenAfterApply: user($in['otherIdx'])->getToken(),
         );
     }
 
