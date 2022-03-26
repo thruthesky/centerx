@@ -54,6 +54,16 @@ class Comment extends PostTaxonomy {
         if ( !isset($in[ROOT_IDX]) ) return $this->error(e()->root_idx_is_empty);
         $in[USER_IDX] = login()->idx;
 
+        // get post of the comment.
+        $post = post($in[ROOT_IDX]);
+
+        // get category idx of the comment. it might be replaced with $categoryIdx = $post->idx
+        $categoryIdx = postCategoryIdx($in[ROOT_IDX]);
+
+
+        $in[CATEGORY_IDX] = $categoryIdx;
+        $category = category($categoryIdx);
+
         // 제한에 걸렸으면, 에러 리턴.
         if ( $category->BAN_ON_LIMIT == 'Y') {
             $limit = point()->checkCategoryLimit($category->idx);
@@ -66,14 +76,7 @@ class Comment extends PostTaxonomy {
             if ( login(POINT) < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
         }
 
-        // get post of the comment.
-        $post = post($in[ROOT_IDX]);
 
-        // get category idx of the comment. it might be replaced with $categoryIdx = $post->idx
-        $categoryIdx = postCategoryIdx($in[ROOT_IDX]);
-
-
-        $in[CATEGORY_IDX] = $categoryIdx;
         $in['Ymd'] = date('Ymd'); // 오늘 날짜
         parent::create($in);
         if ( $this->hasError ) return $this;
@@ -84,7 +87,7 @@ class Comment extends PostTaxonomy {
         // 업로드된 파일의 taxonomy 와 enttity 수정
         $this->fixUploadedFiles($in);
 
-        $category = category($categoryIdx);
+
 
         // $comment = parent::create($in);
         point()->forum(POINT_COMMENT_CREATE, $this->idx);
