@@ -54,6 +54,17 @@ class Comment extends PostTaxonomy {
         if ( !isset($in[ROOT_IDX]) ) return $this->error(e()->root_idx_is_empty);
         $in[USER_IDX] = login()->idx;
 
+        // 제한에 걸렸으면, 에러 리턴.
+        if ( $category->BAN_ON_LIMIT == 'Y') {
+            $limit = point()->checkCategoryLimit($category->idx);
+            if ( isError($limit) ) return $this->error($limit);
+        }
+
+        // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
+        $pointToCreate = point()->getCommentCreate($category->idx);
+        if ( $pointToCreate < 0 ) {
+            if ( login(POINT) < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
+        }
 
         // get post of the comment.
         $post = post($in[ROOT_IDX]);
@@ -74,18 +85,6 @@ class Comment extends PostTaxonomy {
         $this->fixUploadedFiles($in);
 
         $category = category($categoryIdx);
-
-        // 제한에 걸렸으면, 에러 리턴.
-        if ( $category->BAN_ON_LIMIT == 'Y') {
-            $limit = point()->checkCategoryLimit($category->idx);
-            if ( isError($limit) ) return $this->error($limit);
-        }
-
-        // 글/코멘트 쓰기에서 포인트 감소하도록 설정한 경우, 포인트가 모자라면, 에러
-        $pointToCreate = point()->getCommentCreate($category->idx);
-        if ( $pointToCreate < 0 ) {
-            if ( login(POINT) < abs( $pointToCreate ) ) return $this->error(e()->lack_of_point);
-        }
 
         // $comment = parent::create($in);
         point()->forum(POINT_COMMENT_CREATE, $this->idx);
