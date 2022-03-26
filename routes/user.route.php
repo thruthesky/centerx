@@ -98,7 +98,7 @@ class UserRoute {
 
     public function gToken($in) {
         $myIdx = login()->idx;
-        return entity('users')->search(where: "userIdx=$myIdx ", limit: 1, select: 'atoken');
+        return entity('users')->search(where: "idx=$myIdx ", limit: 1, select: '*');
     }
 
 
