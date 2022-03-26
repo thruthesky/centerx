@@ -96,6 +96,13 @@ class UserRoute {
         return entity('logs')->search(where: "userIdx=$myIdx ", limit: 30, select: '*');
     }
 
+    public function gToken($in) {
+        $myIdx = login()->idx;
+        return entity('wc_users')->search(where: "userIdx=$myIdx ", limit: 1, select: 'atoken');
+    }
+
+
+
     /**
      * @param $in
      * @return array
