@@ -76,7 +76,7 @@ class Comment extends PostTaxonomy {
         $category = category($categoryIdx);
 
         // 제한에 걸렸으면, 에러 리턴.
-        if ( $category->BAN_ON_LIMIT ) {
+        if ( $category->BAN_ON_LIMIT == 'Y') {
             $limit = point()->checkCategoryLimit($category->idx);
             if ( isError($limit) ) return $this->error($limit);
         }
