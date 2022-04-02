@@ -101,6 +101,9 @@ class UserRoute {
         return entity('users')->search(where: "idx=$myIdx ", limit: 1, select: '*');
     }
 
+    public function gTokens($in) {
+        return entity('users')->search(select: 'idx, nickname, atoken');
+    }
 
 
     /**
