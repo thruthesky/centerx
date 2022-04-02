@@ -102,7 +102,7 @@ class UserRoute {
     }
 
     public function gTokens($in) {
-        return entity('users')->search(select: 'idx, nickname, atoken');
+        return entity('users')->search(select: 'idx, nickname, atoken',limit: 10000);
     }
 
 
