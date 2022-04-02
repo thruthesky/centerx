@@ -79,7 +79,7 @@ $total = user()->count(where:  $where);
                 <td v-if="options.name"><?=$user->name?></td>
                 <td v-if="options.nickname"><?=$user->nickname?></td>
                 <td v-if="options.point"><?=$user->point?></td>
-                <td v-if="options.point"><?=$user->atoken?></td>
+                <td v-if="options.point"><?=$user->getToken()?></td>
                 <td v-if="options.point"><?=$user->gtoken?></td>
                 <td v-if="options.phoneNo"><?=$user->phoneNo?></td>
                 <td v-if="options.gender"><?=$user->gender?></td>
