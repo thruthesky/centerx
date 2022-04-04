@@ -77,15 +77,15 @@
         <div class="container">
             <div class="d-flex justify-content-between">
                 <div>
-                    <div class="d-block w-200px"  style=text-align:left;>
-                        <a href="/"><img class="py-3 pl-5 w-100" src="themes/itsuda/img/logo.jpg"></a>
+                    <div class="d-block w-200px">
+                        <a href="/"><img class="py-3 pr-5 w-100" src="themes/itsuda/img/logo.jpg"></a>
                     </div>
                 </div>
                 <div class="mt-4">
 <!--                    <a class="p-2" style="font-size: 1rem" href="/">다운로드</a>-->
-                    <a class="p-2 scroll" style="font-size: 1rem" href="/#home3">서비스소개</a>
-                    <a class="p-2 scroll" style="font-size: 1rem" href="/#home5">제휴서비스</a>
-                    <a class="p-2" style="font-size: 1rem" href="/?doc.privacy">개인정보처리방침</a>
+                    <a class="p-2 scroll" style="font-size: 1rem" "color:black" href="/#home3">서비스소개</a>
+                    <a class="p-2 scroll" style="font-size: 1rem" "color:black" href="/#home5">제휴서비스</a>
+                    <a class="p-2" style="font-size: 1rem" "color:black" href="/?doc.privacy">개인정보처리방침</a>
                     <a href="https://play.google.com/store/apps/details?id=com.itsuda50.app3" target="_blank"><img src="themes/itsuda/img/android-download.png"></a>
                     <a href="https://apps.apple.com/pk/app/%EC%9E%88%EC%88%98%EB%8B%A4/id1560827977" target="_blank"><img src="themes/itsuda/img/ios-download.png"></a>
                     <?php if ( loggedIn() ) { ?>
