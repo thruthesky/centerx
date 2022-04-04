@@ -62,6 +62,7 @@ class PointRoute {
             postIdx: $postIdx,
             point: $point,
         );
+
         return ['logIdx' => $logIdx];
     }
 

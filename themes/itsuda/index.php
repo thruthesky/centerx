@@ -5,6 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.itsuda50.com/">
+    <meta property="og:title" content="있수다">
+    <meta property="og:description" content="있수다’ 에는?  건강 · 돈 · 친구가 있수다.">
+    <meta property="og:image" content="https://www.itsuda50.com/themes/itsuda/img/logo.jpg">
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 
@@ -27,6 +34,7 @@
         const mixins = [];
         function later(fn) { window.addEventListener('load', fn); }
     </script>
+
 </head>
 
 
