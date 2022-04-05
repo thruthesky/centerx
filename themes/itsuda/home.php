@@ -6,7 +6,7 @@
 
 <!--</div>-->
 
-<img id="home1" class="w-100" src="themes/itsuda/img/home1.jpg">
+<img id="home1" class="w-100" src="themes/itsuda/img/home1.jpg" style="height: auto;" vspace=30>
 <img id="home1" class="w-100" src="themes/itsuda/img/home2.jpg">
 <img id="home3" class="w-100" src="themes/itsuda/img/home3.jpg">
 <img id="home4" class="w-100" src="themes/itsuda/img/home4.jpg">
