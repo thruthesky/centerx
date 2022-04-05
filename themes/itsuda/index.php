@@ -77,8 +77,8 @@
         <div class="container">
             <div class="d-flex justify-content-between">
                 <div>
-                    <div class="mt-4 d-block  w-200px">
-                        <a href="/"><img src="themes/itsuda/img/logo.jpg"></a>
+                    <div class="mt-4">
+                        <a href="/"><img class="py-3 pr-5 w-100" src="themes/itsuda/img/logo.jpg"></a>
                     </div>
                 </div>
                 <div class="mt-4">
