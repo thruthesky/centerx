@@ -152,6 +152,36 @@ addRoute('health.year', function($in) {
 });
 
 
+/**
+ * 년/월을 입력 받아서, 그 년/월의 출석 기록을 리턴한다.
+ */
+addRoute('attend.year', function($in) {
+    $beginStamp = mktime(0, 0, 0, 1, 1, $in['year']);
+    $endStamp = mktime(0, 0, 0, 12, 31, $in['year']);
+    $beginYmd = date('Ymd', $beginStamp);
+    $endYmd = date('Ymd', $endStamp);
+
+    $rets = [];
+    $userIdx = login()->idx;
+    $categoryId = 'attend';
+    $categoryIdx = category($categoryId)->idx;
+    $where = "userIdx=$userIdx AND categoryIdx=$categoryIdx AND Ymd>=$beginYmd AND Ymd<=$endYmd";
+    $posts = post()->search(where: $where);
+    foreach( $posts as $post ) {
+        $r = $post->response();
+        $data = [ CATEGORY_ID => $categoryId, 'point' => $r['appliedPoint'] ];
+        if ( $r['title'] ) $data['title'] = $r['title'];
+        if ( $r['content'] ) $data['content'] = $r['content'];
+        if ( isset($r['files']) && count($r['files']) ) {
+            $data['photoUrl'] = thumbnailUrl($r['files'][0]['idx']);
+        }
+        $rets[$post->Ymd][$categoryId] = $data;
+    }
+    return $rets;
+});
+
+
+
 addRoute('health.pointRank', function($in) {
     $entity = entity('itsuda');
     $rows = $entity->search(select: 'userIdx, healthPoint', order: 'healthPoint', page: $in['page'] ?? 1, limit: $in['limit']);
