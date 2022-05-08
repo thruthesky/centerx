@@ -182,7 +182,9 @@ class UserRoute {
 
         $name = $in[NAME] ?? '';
         if ( empty($name) ) return e()->empty_name;
-        $rows = db()->get_results("SELECT idx FROM " . entity(USERS)->getTable() . " WHERE name='$name' OR nickname='$name'", ARRAY_A);
+//        $rows = db()->get_results("SELECT idx FROM " . entity(USERS)->getTable() . " WHERE name='*$name*' OR nickname='$name'", ARRAY_A);
+        $rows = db()->get_results("SELECT idx FROM " . entity(USERS)->getTable() . " WHERE name LIKE '%$name%' OR nickname LIKE '%$name%'", ARRAY_A);
+
         $rets = [];
         foreach( $rows as $row ) {
             $idx = $row[IDX];
